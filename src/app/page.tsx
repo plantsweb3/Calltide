@@ -10,7 +10,7 @@ export default function Home() {
           Never miss a call again.
         </p>
         <div className="flex gap-4 text-sm text-zinc-500">
-          <span>Phase 2: Outreach Engine + Admin Portal</span>
+          <span>Phase 2: Outreach Engine + Admin Portal — Live</span>
         </div>
       </main>
     </div>
