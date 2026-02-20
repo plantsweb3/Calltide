@@ -20,6 +20,7 @@ const envSchema = z.object({
   GOOGLE_PLACES_API_KEY: z.string().min(1).optional(),
   RESEND_API_KEY: z.string().min(1).optional(),
   ADMIN_PASSWORD: z.string().min(1).optional(),
+  CLIENT_AUTH_SECRET: z.string().min(1).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
