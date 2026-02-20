@@ -380,11 +380,10 @@ export default function LandingPage() {
             <div className="reveal relative text-center">
               <div className="relative mx-auto w-fit">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber transition-transform duration-500 ease-out hover:scale-105 md:h-20 md:w-20">
-                  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="md:w-10 md:h-10" aria-hidden>
-                    <path d="M13.5 5.25C12.5 5.25 11.25 6 10.5 7.5C9.75 9 9 11.25 9 13.5C9 17.25 11.25 21 14.25 24C17.25 27 21 29.25 24.75 29.25C27 29.25 29.25 28.5 30.75 27.75C32.25 27 33 25.75 33 24.75C33 24.25 32.75 23.75 32.25 23.25L27.75 19.5C27.25 19.1 26.5 18.85 26 18.85C25.25 18.85 24.5 19.35 24 19.85L22.5 21.35C22.25 21.6 21.85 21.6 21.6 21.45C20.25 20.7 18.5 19.25 17 17.75C15.5 16.25 14.05 14.5 13.3 13.15C13.15 12.9 13.15 12.5 13.4 12.25L14.9 10.75C15.4 10.25 15.9 9.5 15.9 8.75C15.9 8.25 15.65 7.5 15.25 7L11.5 2.5C11 2 10.5 1.75 10 1.75" fill="white" transform="translate(0, 2)"/>
-                    {/* Ring lines */}
-                    <path d="M25 4C27 5 29 7 30 9" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                    <path d="M22 7C23.5 7.8 25 9.2 25.8 11" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" className="md:w-10 md:h-10" aria-hidden>
+                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M14.5 2a8.38 8.38 0 015.7 2.3A8.38 8.38 0 0122.5 10" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M14.5 6a4.5 4.5 0 014 4" stroke="white" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
                 </div>
                 <div className="absolute -top-1.5 -left-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#1B2A4A] text-xs font-bold text-white shadow">
