@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: "Calltide — Never Miss a Call. In Any Language.",
     description:
       "AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Texts you the details. Costs less than $17/day.",
-    url: "https://calltide.com",
+    url: "https://calltide.app",
     siteName: "Calltide",
     type: "website",
     locale: "en_US",
