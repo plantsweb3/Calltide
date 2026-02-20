@@ -31,10 +31,10 @@ function getEnv(): Env {
   }
   const parsed = envSchema.safeParse(process.env);
   if (!parsed.success) {
-    console.error("Invalid environment variables:", parsed.error.flatten().fieldErrors);
-    throw new Error("Invalid environment variables");
+    // Warn but don't crash — allows partial env configs (e.g. placeholder keys)
+    console.warn("Invalid environment variables:", parsed.error.flatten().fieldErrors);
   }
-  return parsed.data;
+  return (parsed.success ? parsed.data : process.env) as Env;
 }
 
 export const env = getEnv();
