@@ -373,38 +373,93 @@ export default function LandingPage() {
             {/* Connecting line */}
             <div
               aria-hidden
-              className="absolute top-10 left-[16.67%] right-[16.67%] hidden h-px bg-gradient-to-r from-amber/0 via-amber/40 to-amber/0 md:block"
+              className="absolute top-[40px] left-[16.67%] right-[16.67%] hidden h-px bg-gradient-to-r from-amber/0 via-amber/40 to-amber/0 md:block"
             />
 
-            {[
-              {
-                num: "1",
-                title: "Customer Calls",
-                body: "Your phone rings. Calltide answers instantly — in English or Spanish, detected from the caller's first words. No hold music. No voicemail. A real conversation.",
-              },
-              {
-                num: "2",
-                title: "AI Books the Job",
-                body: "Gets their name, address, what they need, and how urgent it is. Checks your calendar. Books the appointment. Sends them a confirmation text.",
-              },
-              {
-                num: "3",
-                title: "You Get a Text",
-                body: "Customer info, appointment details, and a full summary of the call — sent to your phone before you set your tools down. Show up, do the job, get paid.",
-              },
-            ].map((step) => (
-              <div key={step.num} className="reveal relative text-center">
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-amber bg-navy text-2xl font-bold text-amber">
-                  {step.num}
+            {/* Step 1 — Customer Calls */}
+            <div className="reveal relative text-center">
+              <div className="relative mx-auto w-fit">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber transition-transform duration-500 ease-out hover:scale-105 md:h-20 md:w-20">
+                  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="md:w-10 md:h-10" aria-hidden>
+                    <path d="M13.5 5.25C12.5 5.25 11.25 6 10.5 7.5C9.75 9 9 11.25 9 13.5C9 17.25 11.25 21 14.25 24C17.25 27 21 29.25 24.75 29.25C27 29.25 29.25 28.5 30.75 27.75C32.25 27 33 25.75 33 24.75C33 24.25 32.75 23.75 32.25 23.25L27.75 19.5C27.25 19.1 26.5 18.85 26 18.85C25.25 18.85 24.5 19.35 24 19.85L22.5 21.35C22.25 21.6 21.85 21.6 21.6 21.45C20.25 20.7 18.5 19.25 17 17.75C15.5 16.25 14.05 14.5 13.3 13.15C13.15 12.9 13.15 12.5 13.4 12.25L14.9 10.75C15.4 10.25 15.9 9.5 15.9 8.75C15.9 8.25 15.65 7.5 15.25 7L11.5 2.5C11 2 10.5 1.75 10 1.75" fill="white" transform="translate(0, 2)"/>
+                    {/* Ring lines */}
+                    <path d="M25 4C27 5 29 7 30 9" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M22 7C23.5 7.8 25 9.2 25.8 11" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
                 </div>
-                <h3 className="mt-6 font-display text-xl font-bold text-white">
-                  {step.title}
-                </h3>
-                <p className="mt-3 leading-relaxed text-slate-400">
-                  {step.body}
-                </p>
+                <div className="absolute -top-1.5 -left-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#1B2A4A] text-xs font-bold text-white shadow">
+                  1
+                </div>
               </div>
-            ))}
+              <h3 className="mt-6 font-display text-xl font-bold text-white">
+                Customer Calls
+              </h3>
+              <p className="mt-3 leading-relaxed text-slate-400">
+                Your phone rings. Calltide answers instantly — in English or
+                Spanish, detected from the caller&apos;s first words. No hold music.
+                No voicemail. A real conversation.
+              </p>
+            </div>
+
+            {/* Step 2 — AI Books the Job */}
+            <div className="reveal relative text-center">
+              <div className="relative mx-auto w-fit">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber transition-transform duration-500 ease-out hover:scale-105 md:h-20 md:w-20">
+                  <svg width="34" height="34" viewBox="0 0 34 34" fill="none" className="md:w-10 md:h-10" aria-hidden>
+                    {/* Calendar body */}
+                    <rect x="3" y="6" width="28" height="24" rx="3" fill="white"/>
+                    {/* Calendar header bar */}
+                    <rect x="3" y="6" width="28" height="8" rx="3" fill="#1B2A4A"/>
+                    {/* Hanging tabs */}
+                    <rect x="10" y="3" width="2.5" height="6" rx="1.25" fill="white"/>
+                    <rect x="21.5" y="3" width="2.5" height="6" rx="1.25" fill="white"/>
+                    {/* Checkmark */}
+                    <path d="M11 20L15.5 24.5L24 16" stroke="#D4910A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="absolute -top-1.5 -left-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#1B2A4A] text-xs font-bold text-white shadow">
+                  2
+                </div>
+              </div>
+              <h3 className="mt-6 font-display text-xl font-bold text-white">
+                AI Books the Job
+              </h3>
+              <p className="mt-3 leading-relaxed text-slate-400">
+                Gets their name, address, what they need, and how urgent it is.
+                Checks your calendar. Books the appointment. Sends them a
+                confirmation text.
+              </p>
+            </div>
+
+            {/* Step 3 — You Get a Text */}
+            <div className="reveal relative text-center">
+              <div className="relative mx-auto w-fit">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber transition-transform duration-500 ease-out hover:scale-105 md:h-20 md:w-20">
+                  <svg width="34" height="34" viewBox="0 0 34 34" fill="none" className="md:w-10 md:h-10" aria-hidden>
+                    {/* Chat bubble */}
+                    <path d="M5 7C5 5.34 6.34 4 8 4H26C27.66 4 29 5.34 29 7V21C29 22.66 27.66 24 26 24H13L7 29V24H8C6.34 24 5 22.66 5 21V7Z" fill="white"/>
+                    {/* Text lines */}
+                    <rect x="10" y="10" width="14" height="2" rx="1" fill="#1B2A4A"/>
+                    <rect x="10" y="15" width="10" height="2" rx="1" fill="#1B2A4A"/>
+                    <rect x="10" y="20" width="6" height="2" rx="1" fill="#1B2A4A"/>
+                    {/* Notification dot */}
+                    <circle cx="28" cy="5" r="4" fill="#D4910A" stroke="#D4910A" strokeWidth="1"/>
+                    <circle cx="28" cy="5" r="2.5" fill="white"/>
+                  </svg>
+                </div>
+                <div className="absolute -top-1.5 -left-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#1B2A4A] text-xs font-bold text-white shadow">
+                  3
+                </div>
+              </div>
+              <h3 className="mt-6 font-display text-xl font-bold text-white">
+                You Get a Text
+              </h3>
+              <p className="mt-3 leading-relaxed text-slate-400">
+                Customer info, appointment details, and a full summary of the
+                call — sent to your phone before you set your tools down. Show
+                up, do the job, get paid.
+              </p>
+            </div>
           </div>
 
           <p className="reveal mt-16 text-center text-lg text-slate-400">
