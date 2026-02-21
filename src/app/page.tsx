@@ -246,10 +246,27 @@ export default function LandingPage() {
       <ExitIntent />
 
       {/* ── HERO ── */}
-      <section className="relative flex min-h-[90vh] flex-col items-center justify-center px-6 py-24 text-center">
-        <Waveform />
+      <section className="relative flex min-h-[90vh] flex-col items-center justify-center px-6 text-center">
+        {/* Hero image — mobile: above content, desktop: background */}
+        <div className="absolute inset-0 hidden md:block">
+          <img
+            src="/images/hero-plumber.webp"
+            alt="Plumber kneeling under kitchen sink with phone ringing on floor showing incoming call he cannot answer"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[#0A1628]/75" />
+        </div>
+        <div className="w-full pt-12 pb-4 md:hidden">
+          <div className="mx-auto max-w-sm overflow-hidden rounded-2xl" style={{ aspectRatio: "864/1184" }}>
+            <img
+              src="/images/hero-plumber.webp"
+              alt="Plumber kneeling under kitchen sink with phone ringing on floor showing incoming call he cannot answer"
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </div>
 
-        <div className="relative z-10 mx-auto max-w-3xl">
+        <div className="relative z-10 mx-auto max-w-3xl py-12 md:py-24">
           {/* Local trust badge */}
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-navy-border bg-navy-card px-4 py-1.5 text-sm text-slate-400">
             <span className="text-amber">&#9679;</span>
@@ -354,6 +371,18 @@ export default function LandingPage() {
               That&apos;s $2,000+ per week walking out your door.
             </p>
           </div>
+        </div>
+      </Section>
+
+      {/* ── TRANSITION IMAGE — problem to solution ── */}
+      <Section className="px-6 py-12">
+        <div className="mx-auto max-w-md overflow-hidden rounded-2xl" style={{ aspectRatio: "800/1067" }}>
+          <img
+            src="/images/plumber-van-phone.webp"
+            loading="lazy"
+            alt="Plumber leaning against work van smiling while checking phone notification from Calltide"
+            className="h-full w-full object-cover"
+          />
         </div>
       </Section>
 
@@ -620,6 +649,7 @@ export default function LandingPage() {
             What Calltide Actually Does for You
           </h2>
 
+          {/* First row of features */}
           <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
@@ -637,6 +667,45 @@ export default function LandingPage() {
                 title: "Know Who's Calling Before You Call Back",
                 body: "Every caller gets qualified: name, number, address, service needed, urgency level. You get the full brief via text. Show up prepared.",
               },
+            ].map((feature) => (
+              <div
+                key={feature.title}
+                className="reveal rounded-2xl border border-navy-border bg-navy-card p-7"
+              >
+                <span className="text-2xl">{feature.icon}</span>
+                <h3 className="mt-3 font-display text-lg font-bold text-white">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                  {feature.body}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Lifestyle images between feature rows */}
+          <div className="reveal mt-8 grid gap-6 sm:grid-cols-2">
+            <div className="overflow-hidden rounded-2xl" style={{ aspectRatio: "3/4" }}>
+              <img
+                src="/images/landscaper-tailgate.webp"
+                loading="lazy"
+                alt="Young landscaper sitting on truck tailgate checking phone during break with work boots and cooler"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="overflow-hidden rounded-2xl" style={{ aspectRatio: "3/4" }}>
+              <img
+                src="/images/electrician-panel.webp"
+                loading="lazy"
+                alt="Electrician smiling at phone while standing next to electrical panel in garage with tool bag"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Second row of features */}
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
               {
                 icon: "🚨",
                 title: "Never Miss a Real Emergency",
@@ -667,12 +736,36 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+
+          {/* Dashboard phone mockup */}
+          <div className="reveal mt-12 flex justify-center">
+            <div className="relative mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2 shadow-2xl">
+              <div className="overflow-hidden rounded-[2rem]" style={{ aspectRatio: "600/1053" }}>
+                <img
+                  src="/images/dashboard-screenshot.webp"
+                  loading="lazy"
+                  alt="Calltide mobile dashboard showing call activity with 20 total calls, 15 appointments, and a list of booked jobs"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </Section>
 
       {/* ── SOCIAL PROOF / STATS ── */}
       <Section className="px-6 py-24" stagger>
         <div className="mx-auto max-w-4xl">
+          {/* Crew image */}
+          <div className="reveal mx-auto mb-12 max-w-sm overflow-hidden rounded-2xl" style={{ aspectRatio: "1000/1334" }}>
+            <img
+              src="/images/crew-van.webp"
+              loading="lazy"
+              alt="Two-man plumbing crew in matching navy polos smiling at phone by work van checking new booking notification"
+              className="h-full w-full object-cover"
+            />
+          </div>
+
           <div className="grid gap-8 md:grid-cols-3">
             {[
               {
@@ -705,8 +798,19 @@ export default function LandingPage() {
       </Section>
 
       {/* ── OBJECTION-HANDLING FAQ ── */}
-      <Section className="px-6 py-24">
-        <div className="mx-auto max-w-3xl">
+      <Section className="relative px-6 py-24 overflow-hidden">
+        {/* Background texture */}
+        <div className="absolute inset-0">
+          <img
+            src="/images/phone-concrete-tools.webp"
+            loading="lazy"
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[#0A1628]/85" />
+        </div>
+        <div className="relative mx-auto max-w-3xl">
           <h2 className="font-display text-center text-4xl font-bold text-white sm:text-5xl">
             &ldquo;Yeah, But...&rdquo;
           </h2>
@@ -796,8 +900,19 @@ export default function LandingPage() {
       </Section>
 
       {/* ── FINAL CTA ── */}
-      <Section className="px-6 py-24">
-        <div className="mx-auto max-w-3xl text-center">
+      <Section className="relative px-6 py-24 overflow-hidden">
+        {/* Background — work glove holding phone in truck */}
+        <div className="absolute inset-0">
+          <img
+            src="/images/glove-phone-truck.webp"
+            loading="lazy"
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[#0A1628]/70" />
+        </div>
+        <div className="relative mx-auto max-w-3xl text-center">
           <h2 className="font-display text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
             Your Competitors Are Still
             <br />
@@ -817,7 +932,7 @@ export default function LandingPage() {
             </span>
           </a>
 
-          <p className="mt-6 text-slate-400">
+          <p className="mt-6 text-slate-300">
             Or call the demo right now:
           </p>
           <a
