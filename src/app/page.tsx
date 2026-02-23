@@ -246,13 +246,19 @@ export default function LandingPage() {
       <ExitIntent />
 
       {/* ── HEADER ── */}
-      <header className="absolute top-0 left-0 right-0 z-20 px-6 py-5">
-        <div className="mx-auto max-w-5xl">
+      <header className="relative z-20 bg-amber px-6 py-3">
+        <div className="mx-auto max-w-5xl flex items-center justify-between">
           <img
             src="/images/logo.webp"
             alt="Calltide"
-            className="h-8 w-auto brightness-0 invert sm:h-10"
+            className="h-7 w-auto sm:h-9"
           />
+          <a
+            href={PHONE_TEL}
+            className="hidden items-center gap-2 rounded-lg bg-navy px-5 py-2 text-sm font-bold text-white transition hover:bg-navy-light sm:inline-flex"
+          >
+            Call Demo: {PHONE}
+          </a>
         </div>
       </header>
 
@@ -278,12 +284,6 @@ export default function LandingPage() {
         </div>
 
         <div className="relative z-10 mx-auto max-w-3xl py-12 md:py-24">
-          {/* Local trust badge */}
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-navy-border bg-navy-card px-4 py-1.5 text-sm text-slate-400">
-            <span className="text-amber">&#9679;</span>
-            Built in San Antonio by a local business owner
-          </div>
-
           <h1 className="font-display text-5xl font-bold leading-[1.08] tracking-tight text-white sm:text-6xl lg:text-7xl">
             Stop Losing Jobs
             <br />
