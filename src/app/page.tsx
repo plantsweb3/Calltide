@@ -245,6 +245,17 @@ export default function LandingPage() {
       <MobileCTA />
       <ExitIntent />
 
+      {/* ── HEADER ── */}
+      <header className="absolute top-0 left-0 right-0 z-20 px-6 py-5">
+        <div className="mx-auto max-w-5xl">
+          <img
+            src="/images/logo.webp"
+            alt="Calltide"
+            className="h-8 w-auto brightness-0 invert sm:h-10"
+          />
+        </div>
+      </header>
+
       {/* ── HERO ── */}
       <section className="relative flex min-h-[90vh] flex-col items-center justify-center px-6 text-center">
         {/* Hero image — mobile: above content, desktop: background */}
@@ -947,9 +958,11 @@ export default function LandingPage() {
       {/* ── FOOTER ── */}
       <footer className="border-t border-navy-border px-6 py-12">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 text-center text-sm text-slate-500">
-          <span className="font-display text-lg font-bold text-amber">
-            Calltide
-          </span>
+          <img
+            src="/images/logo.webp"
+            alt="Calltide"
+            className="h-7 w-auto brightness-0 invert opacity-50"
+          />
           <p>Built in San Antonio, TX</p>
           <p>
             &copy; {new Date().getFullYear()} Calltide. All rights reserved.
