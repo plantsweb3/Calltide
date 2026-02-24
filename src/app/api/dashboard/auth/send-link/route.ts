@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 
     const resend = new Resend(env.RESEND_API_KEY);
     await resend.emails.send({
-      from: "Calltide <hello@calltide.com>",
+      from: "Calltide <hello@calltide.app>",
       to: email,
       subject: "Your Calltide login link",
       html: `

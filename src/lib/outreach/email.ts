@@ -26,7 +26,7 @@ export async function sendOutreachEmail(params: {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: "Calltide <hello@calltide.com>",
+      from: "Calltide <hello@calltide.app>",
       to: params.to,
       subject: params.subject,
       html: params.html,

@@ -111,7 +111,7 @@ export default function SettingsPage() {
             <p className="text-sm text-slate-200">
               Hey [Business Name], just following up. Missing calls = missing
               revenue. Our AI answers, books appointments & takes messages for
-              you. 10-min demo? Reply YES or visit calltide.com. Reply STOP to
+              you. 10-min demo? Reply YES or visit calltide.app. Reply STOP to
               opt out.
             </p>
           </div>

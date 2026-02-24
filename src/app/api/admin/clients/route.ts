@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { businesses, calls, appointments } from "@/db/schema";
 import { sql, eq } from "drizzle-orm";
@@ -48,4 +48,46 @@ export async function GET() {
   );
 
   return NextResponse.json(results);
+}
+
+const DEFAULT_HOURS: Record<string, { open: string; close: string }> = {
+  monday: { open: "08:00", close: "17:00" },
+  tuesday: { open: "08:00", close: "17:00" },
+  wednesday: { open: "08:00", close: "17:00" },
+  thursday: { open: "08:00", close: "17:00" },
+  friday: { open: "08:00", close: "17:00" },
+  saturday: { open: "closed", close: "closed" },
+  sunday: { open: "closed", close: "closed" },
+};
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+
+  const { name, type, ownerName, ownerPhone, ownerEmail, twilioNumber, services, businessHours, timezone, defaultLanguage, greeting } = body;
+
+  if (!name || !type || !ownerName || !ownerPhone || !twilioNumber) {
+    return NextResponse.json(
+      { error: "name, type, ownerName, ownerPhone, and twilioNumber are required" },
+      { status: 400 }
+    );
+  }
+
+  const [created] = await db
+    .insert(businesses)
+    .values({
+      name,
+      type,
+      ownerName,
+      ownerPhone,
+      ownerEmail: ownerEmail || null,
+      twilioNumber,
+      services: services || [],
+      businessHours: businessHours || DEFAULT_HOURS,
+      timezone: timezone || "America/Chicago",
+      defaultLanguage: defaultLanguage || "en",
+      greeting: greeting || null,
+    })
+    .returning();
+
+  return NextResponse.json(created, { status: 201 });
 }
