@@ -1,13 +1,19 @@
 import { NextRequest } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
-import { getBusinessByPhone } from "@/lib/ai/context-builder";
-import { buildSystemPrompt } from "@/lib/ai/system-prompts";
-import { detectLanguage } from "@/lib/ai/context-builder";
 import type { ChatCompletionRequest, SSEChunk } from "@/types";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-});
+let _anthropic: import("@anthropic-ai/sdk").default | null = null;
+
+function getAnthropic() {
+  if (!_anthropic) {
+    // Dynamic require to avoid module-level crash
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const Anthropic = require("@anthropic-ai/sdk").default;
+    _anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
+  }
+  return _anthropic;
+}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,6 +37,10 @@ export async function GET() {
  */
 export async function POST(req: NextRequest) {
   try {
+    const { getBusinessByPhone, detectLanguage } = await import("@/lib/ai/context-builder");
+    const { buildSystemPrompt } = await import("@/lib/ai/system-prompts");
+    const anthropic = getAnthropic();
+
     const body: ChatCompletionRequest = await req.json();
     const { messages, metadata } = body;
 
@@ -66,7 +76,7 @@ export async function POST(req: NextRequest) {
     const cleanedMessages = ensureAlternatingRoles(anthropicMessages);
 
     // Stream from Claude
-    const stream = anthropic.messages.stream({
+    const stream = anthropic!.messages.stream({
       model: "claude-sonnet-4-5-20250514",
       max_tokens: 300,
       system: systemPrompt,
@@ -141,8 +151,9 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("CLM endpoint error:", error);
+    const message = error instanceof Error ? error.message : "Internal server error";
     return Response.json(
-      { error: "Internal server error" },
+      { error: message },
       { status: 500, headers: corsHeaders }
     );
   }
