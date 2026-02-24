@@ -1,19 +1,8 @@
 import { NextRequest } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
+import { getBusinessByPhone, detectLanguage } from "@/lib/ai/context-builder";
+import { buildSystemPrompt } from "@/lib/ai/system-prompts";
 import type { ChatCompletionRequest, SSEChunk } from "@/types";
-
-let _anthropic: import("@anthropic-ai/sdk").default | null = null;
-
-function getAnthropic() {
-  if (!_anthropic) {
-    // Dynamic require to avoid module-level crash
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const Anthropic = require("@anthropic-ai/sdk").default;
-    _anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    });
-  }
-  return _anthropic;
-}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -37,9 +26,9 @@ export async function GET() {
  */
 export async function POST(req: NextRequest) {
   try {
-    const { getBusinessByPhone, detectLanguage } = await import("@/lib/ai/context-builder");
-    const { buildSystemPrompt } = await import("@/lib/ai/system-prompts");
-    const anthropic = getAnthropic();
+    const anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
 
     const body: ChatCompletionRequest = await req.json();
     const { messages, metadata } = body;
