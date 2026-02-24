@@ -25,7 +25,10 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
       connect({
         auth: { type: "accessToken" as const, value: accessToken },
         configId: process.env.NEXT_PUBLIC_HUME_CONFIG_ID,
-      }).catch(() => setError("Connection failed. Please try again."));
+      }).catch((err) => {
+        console.error("Hume connect error:", err);
+        setError(err?.message || "Connection failed. Please try again.");
+      });
     }
   }, [readyState, accessToken, connect, disconnect]);
 
@@ -166,7 +169,10 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
 
 export default function VoiceChat({ onClose }: { onClose: () => void }) {
   return (
-    <VoiceProvider>
+    <VoiceProvider
+      onError={(err) => console.error("VoiceProvider error:", err)}
+      onClose={(event) => console.log("VoiceProvider closed:", event)}
+    >
       <VoiceChatInner onClose={onClose} />
     </VoiceProvider>
   );
