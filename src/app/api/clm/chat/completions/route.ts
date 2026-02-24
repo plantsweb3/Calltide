@@ -9,6 +9,20 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
 });
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 200, headers: corsHeaders });
+}
+
+export async function GET() {
+  return Response.json({ status: "ok" }, { headers: corsHeaders });
+}
+
 /**
  * CLM (Custom Language Model) endpoint for Hume EVI.
  * Receives OpenAI-compatible chat completion requests from Hume,
@@ -122,13 +136,14 @@ export async function POST(req: NextRequest) {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
+        ...corsHeaders,
       },
     });
   } catch (error) {
     console.error("CLM endpoint error:", error);
     return Response.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }
