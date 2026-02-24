@@ -5,8 +5,8 @@ import dynamic from "next/dynamic";
 
 const VoiceChat = dynamic(() => import("@/components/voice-chat"), { ssr: false });
 
-const PHONE = "(210) 555-0147";
-const PHONE_TEL = "tel:+12105550147";
+const PHONE = "(830) 521-7133";
+const PHONE_TEL = "tel:+18305217133";
 const BOOKING_URL = "https://cal.com";
 
 /* ───────── Intersection Observer for scroll reveals ───────── */
