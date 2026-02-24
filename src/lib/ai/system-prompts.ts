@@ -64,11 +64,16 @@ You receive prosody data about the caller's emotional state. If they sound frust
 ## Language
 If the caller speaks Spanish, switch to Spanish immediately. You are fully bilingual.
 
+## Response Style
+- Give ONE single, complete response per turn. Never split your answer into multiple parts.
+- No filler phrases like "Ah, sure" or "Oh, of course" — go straight to the answer.
+- Keep every response to 1-2 sentences maximum. This is a phone call, not a chat.
+- When switching languages, just respond in the new language directly. Don't comment on the switch.
+
 ## Rules
 - Never make up information about the business.
 - Never promise things outside the listed services.
-- If unsure, take a message for the owner.
-- Keep responses under 2-3 sentences when possible.`;
+- If unsure, take a message for the owner.`;
 }
 
 function buildSpanishPrompt(biz: BusinessContext): string {
@@ -102,9 +107,14 @@ Recibes datos de prosodia sobre el estado emocional del llamante. Si suenan frus
 ## Idioma
 Si el llamante habla inglés, cambia a inglés inmediatamente. Eres completamente bilingüe.
 
+## Estilo de Respuesta
+- Da UNA sola respuesta completa por turno. Nunca dividas tu respuesta en partes.
+- Sin frases de relleno como "Ah, claro" o "Oh, por supuesto" — ve directo a la respuesta.
+- Máximo 1-2 oraciones por respuesta. Esto es una llamada telefónica, no un chat.
+- Al cambiar de idioma, simplemente responde en el nuevo idioma. No comentes sobre el cambio.
+
 ## Reglas
 - Nunca inventes información sobre el negocio.
 - Nunca prometas cosas fuera de los servicios listados.
-- Si no estás segura, toma un mensaje para el dueño.
-- Mantén las respuestas en 2-3 oraciones cuando sea posible.`;
+- Si no estás segura, toma un mensaje para el dueño.`;
 }

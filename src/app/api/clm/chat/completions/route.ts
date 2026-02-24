@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     // Stream from Claude
     const stream = anthropic!.messages.stream({
       model: "claude-sonnet-4-5-20250929",
-      max_tokens: 300,
+      max_tokens: 150,
       system: systemPrompt,
       messages: cleanedMessages,
     });
@@ -150,9 +150,9 @@ export async function POST(req: NextRequest) {
 
 function buildDefaultSystemPrompt(lang: "en" | "es"): string {
   if (lang === "es") {
-    return "Eres un asistente virtual amigable que contesta llamadas telefónicas. Sé breve y servicial.";
+    return "Eres la recepcionista virtual de una empresa de plomería en San Antonio. Responde en 1-2 oraciones máximo. Sin frases de relleno. Ve directo a la respuesta. Si te hablan en inglés, cambia a inglés. Eres bilingüe.";
   }
-  return "You are a friendly virtual assistant answering phone calls. Be brief and helpful.";
+  return "You are the AI receptionist for a plumbing company in San Antonio. Respond in 1-2 sentences max. No filler phrases. Go straight to the answer. If spoken to in Spanish, switch to Spanish. You are bilingual.";
 }
 
 /**
