@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import dynamic from "next/dynamic";
+
+const VoiceChat = dynamic(() => import("@/components/voice-chat"), { ssr: false });
 
 const PHONE = "(210) 555-0147";
 const PHONE_TEL = "tel:+12105550147";
@@ -158,7 +161,7 @@ function FAQ() {
 
 /* ───────── Mobile sticky CTA ───────── */
 
-function MobileCTA() {
+function MobileCTA({ onTryInBrowser }: { onTryInBrowser: () => void }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     function onScroll() {
@@ -174,19 +177,27 @@ function MobileCTA() {
         show ? "translate-y-0" : "translate-y-full"
       }`}
     >
-      <a
-        href={PHONE_TEL}
-        className="flex items-center justify-center gap-2 rounded-xl bg-amber px-6 py-3.5 text-sm font-bold text-navy"
-      >
-        Hear It Live — Call {PHONE}
-      </a>
+      <div className="flex gap-2">
+        <a
+          href={PHONE_TEL}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber px-4 py-3.5 text-sm font-bold text-navy"
+        >
+          Call Demo
+        </a>
+        <button
+          onClick={onTryInBrowser}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-amber px-4 py-3.5 text-sm font-bold text-amber"
+        >
+          Try in Browser
+        </button>
+      </div>
     </div>
   );
 }
 
 /* ───────── Exit-intent popup ───────── */
 
-function ExitIntent() {
+function ExitIntent({ onTryInBrowser }: { onTryInBrowser: () => void }) {
   const [show, setShow] = useState(false);
   const dismissed = useRef(false);
 
@@ -217,15 +228,18 @@ function ExitIntent() {
           Wait — hear it before you go.
         </p>
         <p className="mt-3 text-slate-400">
-          Call the demo number and experience Calltide answering as a real
-          plumbing company. Takes 30 seconds. No signup needed.
+          Experience Calltide answering as a real plumbing company.
+          Takes 30 seconds. No signup needed.
         </p>
-        <a
-          href={PHONE_TEL}
+        <button
+          onClick={() => { setShow(false); onTryInBrowser(); }}
           className="mt-6 inline-flex items-center gap-2 rounded-xl bg-amber px-8 py-4 text-lg font-bold text-navy shadow-lg shadow-amber/20 transition hover:bg-amber-dark"
         >
-          Call {PHONE}
-        </a>
+          Try It in Your Browser
+        </button>
+        <p className="mt-3 text-sm text-slate-500">
+          or call <a href={PHONE_TEL} className="text-amber hover:underline">{PHONE}</a>
+        </p>
         <button
           onClick={() => setShow(false)}
           className="mt-4 block w-full text-sm text-slate-500 hover:text-slate-300 transition-colors"
@@ -240,10 +254,13 @@ function ExitIntent() {
 /* ───────── Page ───────── */
 
 export default function LandingPage() {
+  const [showVoiceChat, setShowVoiceChat] = useState(false);
+
   return (
     <div className="relative overflow-x-hidden">
-      <MobileCTA />
-      <ExitIntent />
+      {showVoiceChat && <VoiceChat onClose={() => setShowVoiceChat(false)} />}
+      <MobileCTA onTryInBrowser={() => setShowVoiceChat(true)} />
+      <ExitIntent onTryInBrowser={() => setShowVoiceChat(true)} />
 
       {/* ── HEADER ── */}
       <header className="relative z-20 bg-amber px-6 py-3">
@@ -299,21 +316,29 @@ export default function LandingPage() {
             Cada llamada perdida es un trabajo para tu competencia.
           </p>
 
-          {/* Single CTA — call the demo */}
-          <div className="mt-10">
-            <a
-              href={PHONE_TEL}
+          {/* Dual CTA — browser demo + phone */}
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <button
+              onClick={() => setShowVoiceChat(true)}
               className="group inline-flex items-center gap-2 rounded-xl bg-amber px-10 py-4 text-lg font-bold text-navy shadow-lg shadow-amber/20 transition hover:bg-amber-dark hover:shadow-amber/30"
             >
-              Hear It Live
-              <span className="transition-transform group-hover:translate-x-0.5">
-                &rarr;
-              </span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" x2="12" y1="19" y2="22" />
+              </svg>
+              Try It Live
+            </button>
+            <a
+              href={PHONE_TEL}
+              className="inline-flex items-center gap-2 rounded-xl border-2 border-white/20 px-8 py-4 text-lg font-bold text-white transition hover:border-white/40 hover:bg-white/5"
+            >
+              Or Call {PHONE}
             </a>
-            <p className="mt-2 text-sm text-slate-500">
-              Call our demo number — no signup needed
-            </p>
           </div>
+          <p className="mt-3 text-sm text-slate-500">
+            No signup needed — talk to our AI in your browser right now
+          </p>
 
           <div className="mt-12">
             <a
@@ -513,20 +538,25 @@ export default function LandingPage() {
           <h2 className="font-display text-3xl font-bold text-navy sm:text-4xl lg:text-5xl">
             Don&apos;t Take Our Word For It.
             <br />
-            Call Right Now.
+            Try It Right Now.
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-lg text-navy/70">
-            Dial the number below. Calltide will answer as a San Antonio plumbing
-            company. Try it in English. Call back in Spanish. Takes 30 seconds.
+            Talk to Calltide as it answers for a real San Antonio plumbing
+            company. Try English. Try Spanish. Takes 30 seconds.
           </p>
-          <a
-            href={PHONE_TEL}
-            className="mt-8 inline-block font-display text-4xl font-bold text-navy transition hover:opacity-80 sm:text-5xl"
+          <button
+            onClick={() => setShowVoiceChat(true)}
+            className="mt-8 inline-flex items-center gap-3 rounded-xl bg-navy px-10 py-4 text-lg font-bold text-white shadow-lg transition hover:bg-navy-light"
           >
-            {PHONE}
-          </a>
-          <p className="mt-3 text-sm font-medium text-navy/50">
-            No signup. No credit card. Just call.
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" x2="12" y1="19" y2="22" />
+            </svg>
+            Talk to Our AI Now
+          </button>
+          <p className="mt-4 text-sm font-medium text-navy/50">
+            No signup. No credit card. Or call <a href={PHONE_TEL} className="underline">{PHONE}</a>
           </p>
         </div>
       </Section>
