@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
 
     // Stream from Claude
     const stream = anthropic!.messages.stream({
-      model: "claude-sonnet-4-5-20250514",
+      model: "claude-sonnet-4-5-20250929",
       max_tokens: 300,
       system: systemPrompt,
       messages: cleanedMessages,
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
                 id: responseId,
                 object: "chat.completion.chunk",
                 created,
-                model: "claude-sonnet-4-5-20250514",
+                model: "claude-sonnet-4-5-20250929",
                 choices: [
                   {
                     index: 0,
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
             id: responseId,
             object: "chat.completion.chunk",
             created,
-            model: "claude-sonnet-4-5-20250514",
+            model: "claude-sonnet-4-5-20250929",
             choices: [
               {
                 index: 0,
