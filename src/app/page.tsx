@@ -471,7 +471,7 @@ export default function LandingPage() {
           </h2>
 
           <div className="mt-16 grid gap-8 md:grid-cols-3">
-            <div className="fade-up card-shadow card-shadow-hover rounded-xl bg-white p-10">
+            <div className="fade-up card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
               <p className="font-serif text-[24px] font-medium text-charcoal">
                 Tuesday, 2:14 PM.
               </p>
@@ -482,7 +482,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="fade-up card-shadow card-shadow-hover rounded-xl bg-white p-10">
+            <div className="fade-up card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
               <p className="font-serif text-[24px] font-medium text-charcoal">
                 &ldquo;Hola, necesito ayuda...&rdquo;
               </p>
@@ -494,7 +494,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="fade-up card-shadow card-shadow-hover rounded-xl bg-white p-10">
+            <div className="fade-up card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
               <p className="font-serif text-[24px] font-medium text-charcoal">
                 Saturday, 11:30 AM.
               </p>
@@ -566,7 +566,7 @@ export default function LandingPage() {
             </div>
 
             <div className="hidden md:col-span-2 md:flex md:items-center">
-              <div className="card-shadow flex w-full flex-col items-center gap-5 rounded-xl border border-cream-border bg-white p-10">
+              <div className="card-shadow card-shadow-hover flex w-full flex-col items-center gap-5 rounded-xl border border-cream-border bg-white p-10">
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-amber/10">
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
@@ -626,7 +626,7 @@ export default function LandingPage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="fade-up card-shadow card-shadow-hover rounded-xl bg-white p-10"
+                className="fade-up card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10"
               >
                 <span className="text-2xl">{feature.icon}</span>
                 <h3 className="mt-4 font-serif text-[24px] font-medium leading-[1.3] text-charcoal">
@@ -805,7 +805,7 @@ export default function LandingPage() {
       {/* ── 9. GUARANTEE ── */}
       <Section className="bg-white px-6 py-[120px]">
         <div className="mx-auto max-w-3xl">
-          <div className="card-shadow rounded-xl border-l-4 border-l-navy bg-white p-10 sm:p-14">
+          <div className="card-shadow rounded-xl border border-cream-border border-l-4 border-l-navy bg-white p-10 sm:p-14">
             <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
               Zero-Risk Guarantee
             </p>
