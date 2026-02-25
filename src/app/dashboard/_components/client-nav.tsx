@@ -74,6 +74,17 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
           </button>
         </div>
 
+        {/* AI Status */}
+        <div className="mx-4 mb-2 flex items-center gap-2 rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ background: "#4ade80" }} />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ background: "#4ade80" }} />
+          </span>
+          <span className="text-xs font-medium" style={{ color: "var(--db-text-secondary)" }}>
+            AI Receptionist Active
+          </span>
+        </div>
+
         {/* Navigation */}
         <nav className="flex-1 space-y-0.5 px-3 py-2">
           {navItems.map((item) => {

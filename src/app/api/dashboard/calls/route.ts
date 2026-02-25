@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { calls, leads } from "@/db/schema";
 import { eq, and, or, like, desc, count, sql } from "drizzle-orm";
-import { DEMO_BUSINESS_ID, DEMO_CALLS } from "../demo-data";
+import { DEMO_BUSINESS_ID, DEMO_CALLS, DEMO_TRANSCRIPTS, DEMO_RECOVERY_TIMELINES } from "../demo-data";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -26,7 +26,11 @@ export async function GET(req: NextRequest) {
       );
     }
     const total = filtered.length;
-    const paged = filtered.slice(offset, offset + limit);
+    const paged = filtered.slice(offset, offset + limit).map((c) => ({
+      ...c,
+      transcript: DEMO_TRANSCRIPTS[c.id] || null,
+      recoveryTimeline: DEMO_RECOVERY_TIMELINES[c.id] || null,
+    }));
     return NextResponse.json({
       calls: paged,
       total,

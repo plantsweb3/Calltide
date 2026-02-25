@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import DataTable, { type Column } from "@/components/data-table";
+import AppointmentCalendar from "@/app/dashboard/_components/appointment-calendar";
 
 interface Appointment {
   id: string;
@@ -19,6 +20,7 @@ interface Appointment {
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [filter, setFilter] = useState<"upcoming" | "past">("upcoming");
+  const [view, setView] = useState<"calendar" | "list">("calendar");
   const [loading, setLoading] = useState(true);
 
   const fetchAppointments = useCallback(async () => {
@@ -92,30 +94,68 @@ export default function AppointmentsPage() {
         >
           Appointments
         </h1>
-        <div
-          className="flex rounded-lg overflow-hidden"
-          style={{ border: "1px solid var(--db-border)" }}
-        >
-          <button
-            onClick={() => setFilter("upcoming")}
-            className="px-4 py-2 text-sm font-medium transition-colors"
-            style={{
-              background: filter === "upcoming" ? "var(--db-accent)" : "var(--db-card)",
-              color: filter === "upcoming" ? "#fff" : "var(--db-text-muted)",
-            }}
+        <div className="flex items-center gap-3">
+          {/* View toggle */}
+          {filter === "upcoming" && (
+            <div
+              className="flex rounded-lg overflow-hidden"
+              style={{ border: "1px solid var(--db-border)" }}
+            >
+              <button
+                onClick={() => setView("calendar")}
+                className="px-3 py-2 transition-colors"
+                style={{
+                  background: view === "calendar" ? "var(--db-accent)" : "var(--db-card)",
+                  color: view === "calendar" ? "#fff" : "var(--db-text-muted)",
+                }}
+                title="Calendar view"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setView("list")}
+                className="px-3 py-2 transition-colors"
+                style={{
+                  background: view === "list" ? "var(--db-accent)" : "var(--db-card)",
+                  color: view === "list" ? "#fff" : "var(--db-text-muted)",
+                }}
+                title="List view"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
+                </svg>
+              </button>
+            </div>
+          )}
+
+          {/* Filter toggle */}
+          <div
+            className="flex rounded-lg overflow-hidden"
+            style={{ border: "1px solid var(--db-border)" }}
           >
-            Upcoming
-          </button>
-          <button
-            onClick={() => setFilter("past")}
-            className="px-4 py-2 text-sm font-medium transition-colors"
-            style={{
-              background: filter === "past" ? "var(--db-accent)" : "var(--db-card)",
-              color: filter === "past" ? "#fff" : "var(--db-text-muted)",
-            }}
-          >
-            Past
-          </button>
+            <button
+              onClick={() => { setFilter("upcoming"); setView("calendar"); }}
+              className="px-4 py-2 text-sm font-medium transition-colors"
+              style={{
+                background: filter === "upcoming" ? "var(--db-accent)" : "var(--db-card)",
+                color: filter === "upcoming" ? "#fff" : "var(--db-text-muted)",
+              }}
+            >
+              Upcoming
+            </button>
+            <button
+              onClick={() => { setFilter("past"); setView("list"); }}
+              className="px-4 py-2 text-sm font-medium transition-colors"
+              style={{
+                background: filter === "past" ? "var(--db-accent)" : "var(--db-card)",
+                color: filter === "past" ? "#fff" : "var(--db-text-muted)",
+              }}
+            >
+              Past
+            </button>
+          </div>
         </div>
       </div>
 
@@ -146,7 +186,11 @@ export default function AppointmentsPage() {
         </div>
       )}
 
-      {appointments.length > 0 && (
+      {appointments.length > 0 && view === "calendar" && filter === "upcoming" && (
+        <AppointmentCalendar appointments={appointments} />
+      )}
+
+      {appointments.length > 0 && (view === "list" || filter === "past") && (
         <DataTable columns={columns} data={appointments} />
       )}
     </div>

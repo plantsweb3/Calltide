@@ -2,6 +2,19 @@
 
 import { useEffect, useState, useCallback } from "react";
 import DataTable, { type Column } from "@/components/data-table";
+import CallTranscript from "@/app/dashboard/_components/call-transcript";
+
+interface TranscriptLine {
+  speaker: "ai" | "caller";
+  text: string;
+}
+
+interface RecoveryStep {
+  time: string;
+  event: string;
+  detail: string;
+  status: "missed" | "action" | "reply" | "recovered";
+}
 
 interface Call {
   id: string;
@@ -15,7 +28,16 @@ interface Call {
   sentiment: string | null;
   createdAt: string;
   leadName: string | null;
+  transcript?: TranscriptLine[] | null;
+  recoveryTimeline?: RecoveryStep[] | null;
 }
+
+const statusColors: Record<string, { bg: string; text: string }> = {
+  completed: { bg: "rgba(74,222,128,0.1)", text: "#4ade80" },
+  missed: { bg: "rgba(251,191,36,0.1)", text: "#fbbf24" },
+  failed: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
+  in_progress: { bg: "rgba(96,165,250,0.1)", text: "#60a5fa" },
+};
 
 export default function CallsPage() {
   const [calls, setCalls] = useState<Call[]>([]);
@@ -24,6 +46,7 @@ export default function CallsPage() {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selectedCall, setSelectedCall] = useState<Call | null>(null);
 
   const fetchCalls = useCallback(async () => {
     setLoading(true);
@@ -61,6 +84,13 @@ export default function CallsPage() {
     });
   }
 
+  function formatRecoveryTime(iso: string): string {
+    return new Date(iso).toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  }
+
   const columns: Column<Call>[] = [
     {
       key: "createdAt",
@@ -70,7 +100,18 @@ export default function CallsPage() {
     {
       key: "caller",
       label: "Caller",
-      render: (row) => row.leadName || row.callerPhone || "-",
+      render: (row) => (
+        <button
+          className="text-left hover:underline"
+          style={{ color: "var(--db-accent)" }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedCall(row);
+          }}
+        >
+          {row.leadName || row.callerPhone || "-"}
+        </button>
+      ),
     },
     {
       key: "duration",
@@ -80,19 +121,26 @@ export default function CallsPage() {
     {
       key: "language",
       label: "Language",
-      render: (row) => (row.language || "-").toUpperCase(),
+      render: (row) => {
+        const lang = (row.language || "-").toUpperCase();
+        return (
+          <span
+            className="rounded px-1.5 py-0.5 text-[10px] font-medium"
+            style={{
+              background: row.language === "es" ? "rgba(197,154,39,0.15)" : "rgba(96,165,250,0.1)",
+              color: row.language === "es" ? "#C59A27" : "#60a5fa",
+            }}
+          >
+            {lang}
+          </span>
+        );
+      },
     },
     {
       key: "status",
       label: "Outcome",
       render: (row) => {
-        const colors: Record<string, { bg: string; text: string }> = {
-          completed: { bg: "rgba(74,222,128,0.1)", text: "#4ade80" },
-          missed: { bg: "rgba(251,191,36,0.1)", text: "#fbbf24" },
-          failed: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
-          in_progress: { bg: "rgba(96,165,250,0.1)", text: "#60a5fa" },
-        };
-        const c = colors[row.status] || { bg: "var(--db-hover)", text: "var(--db-text-secondary)" };
+        const c = statusColors[row.status] || { bg: "var(--db-hover)", text: "var(--db-text-secondary)" };
         return (
           <span
             className="rounded-full px-2 py-0.5 text-xs font-medium"
@@ -183,28 +231,114 @@ export default function CallsPage() {
             total,
             onPageChange: setPage,
           }}
-          expandedContent={(row) =>
-            row.summary ? (
-              <div className="space-y-1">
-                <p
-                  className="text-xs font-medium uppercase tracking-wider"
-                  style={{ color: "var(--db-text-muted)" }}
+          expandedContent={(row) => (
+            <div className="space-y-4">
+              {/* Summary */}
+              {row.summary && (
+                <div className="space-y-1">
+                  <p
+                    className="text-xs font-medium uppercase tracking-wider"
+                    style={{ color: "var(--db-text-muted)" }}
+                  >
+                    AI Summary
+                  </p>
+                  <p
+                    className="whitespace-pre-wrap text-sm"
+                    style={{ color: "var(--db-text-secondary)" }}
+                  >
+                    {row.summary}
+                  </p>
+                </div>
+              )}
+
+              {/* Recovery timeline for missed calls */}
+              {row.recoveryTimeline && row.recoveryTimeline.length > 0 && (
+                <div className="space-y-1">
+                  <p
+                    className="text-xs font-medium uppercase tracking-wider"
+                    style={{ color: "var(--db-text-muted)" }}
+                  >
+                    Recovery Timeline
+                  </p>
+                  <div className="mt-2 space-y-0">
+                    {row.recoveryTimeline.map((step, i) => {
+                      const dotColor =
+                        step.status === "missed" ? "#fbbf24"
+                          : step.status === "recovered" ? "#4ade80"
+                            : step.status === "reply" ? "#60a5fa"
+                              : "var(--db-text-muted)";
+                      return (
+                        <div key={i} className="flex items-start gap-3 py-1.5">
+                          <div className="flex flex-col items-center">
+                            <div
+                              className="h-2.5 w-2.5 rounded-full shrink-0 mt-1"
+                              style={{ background: dotColor }}
+                            />
+                            {i < row.recoveryTimeline!.length - 1 && (
+                              <div className="w-px flex-1 min-h-[16px]" style={{ background: "var(--db-border)" }} />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
+                                {formatRecoveryTime(step.time)}
+                              </span>
+                              <span className="text-xs font-medium" style={{ color: "var(--db-text)" }}>
+                                {step.event}
+                              </span>
+                              {step.status === "recovered" && (
+                                <span
+                                  className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase"
+                                  style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80" }}
+                                >
+                                  Saved
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
+                              {step.detail}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* View transcript button */}
+              {(row.transcript || row.summary) && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedCall(row);
+                  }}
+                  className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+                  style={{
+                    background: "rgba(197,154,39,0.12)",
+                    color: "var(--db-accent)",
+                  }}
                 >
-                  Summary
+                  {row.transcript ? "View Full Transcript" : "View Call Details"}
+                </button>
+              )}
+
+              {!row.summary && (
+                <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
+                  No summary available
                 </p>
-                <p
-                  className="whitespace-pre-wrap text-sm"
-                  style={{ color: "var(--db-text-secondary)" }}
-                >
-                  {row.summary}
-                </p>
-              </div>
-            ) : (
-              <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-                No summary available
-              </p>
-            )
-          }
+              )}
+            </div>
+          )}
+        />
+      )}
+
+      {/* Transcript Panel */}
+      {selectedCall && (
+        <CallTranscript
+          call={selectedCall}
+          transcript={selectedCall.transcript || null}
+          onClose={() => setSelectedCall(null)}
         />
       )}
     </div>
