@@ -399,16 +399,17 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Right — Photo (40%) */}
+            {/* Right — Dashboard Preview (40%) */}
             <div className="md:col-span-2">
-              {/* Mobile: show above text via order-first */}
-              <div className="warm-photo overflow-hidden rounded-[20px] shadow-[0_24px_64px_rgba(27,42,74,0.15)]">
-                <img
-                  src="/images/plumber-van-phone.webp"
-                  alt="Service professional checking phone by work van, smiling at new booking notification"
-                  className="h-full w-full object-cover"
-                  style={{ aspectRatio: "800/1067" }}
-                />
+              <div className="mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2 shadow-[0_24px_64px_rgba(27,42,74,0.2)]">
+                <div
+                  role="img"
+                  aria-label="Calltide mobile dashboard showing call activity with 6 calls today, 23 this week, and a list of booked appointments"
+                  className="overflow-hidden rounded-[2rem]"
+                  style={{ aspectRatio: "600/1053" }}
+                >
+                  <DashboardMockup />
+                </div>
               </div>
             </div>
           </div>
@@ -545,16 +546,16 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* Photo — right (2 cols) */}
+            {/* Visual — right (2 cols) */}
             <div className="hidden md:col-span-2 md:flex md:items-center">
-              <div className="warm-photo overflow-hidden rounded-[20px] shadow-[0_24px_64px_rgba(27,42,74,0.12)]">
-                <img
-                  src="/images/hero-plumber.webp"
-                  alt="Plumber working on job site"
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                  style={{ aspectRatio: "864/1184" }}
-                />
+              <div className="flex w-full flex-col items-center gap-4 rounded-2xl border border-cream-border bg-white p-8 shadow-sm">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-amber/10">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4910A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                  </svg>
+                </div>
+                <p className="text-center font-serif text-xl text-charcoal">Ring &rarr; Answer &rarr; Book &rarr; Text</p>
+                <p className="text-center text-sm text-charcoal-muted">Every call, handled automatically.</p>
               </div>
             </div>
           </div>
@@ -650,15 +651,14 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Crew image — full-width divider */}
-          <div className="fade-up mt-16 overflow-hidden rounded-2xl warm-photo">
-            <img
-              src="/images/crew-van.webp"
-              loading="lazy"
-              alt="Two-man crew in matching navy polos smiling by work van checking new booking notification"
-              className="h-full w-full object-cover"
-              style={{ aspectRatio: "1000/667" }}
-            />
+          {/* Divider quote */}
+          <div className="fade-up mt-16 rounded-2xl bg-navy px-8 py-12 text-center sm:px-16">
+            <p className="font-serif text-2xl text-cream sm:text-3xl">
+              &ldquo;My phone used to ring 20 times a day. I answered maybe 8. Now every single one gets handled.&rdquo;
+            </p>
+            <p className="mt-4 text-sm font-medium text-amber">
+              &mdash; The kind of result Calltide delivers
+            </p>
           </div>
         </div>
       </Section>
@@ -879,19 +879,8 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 12. FINAL CTA ── */}
-      <Section className="relative px-6 py-24 overflow-hidden">
-        {/* Background — work glove holding phone in truck */}
-        <div className="absolute inset-0">
-          <img
-            src="/images/glove-phone-truck.webp"
-            loading="lazy"
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-navy/75" />
-        </div>
-        <div className="relative mx-auto max-w-3xl text-center">
+      <Section className="bg-navy px-6 py-24 overflow-hidden">
+        <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-serif text-3xl text-white sm:text-4xl lg:text-5xl">
             Your Competitors Are Still
             <br />
