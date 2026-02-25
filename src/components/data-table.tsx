@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 export interface Column<T> {
   key: string;
@@ -151,9 +151,8 @@ export default function DataTable<T extends { id: string }>({
               </tr>
             )}
             {data.map((row) => (
-              <>
+              <Fragment key={row.id}>
                 <tr
-                  key={row.id}
                   className={`transition-colors ${
                     expandedContent ? "cursor-pointer" : ""
                   }`}
@@ -190,7 +189,7 @@ export default function DataTable<T extends { id: string }>({
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className="px-4 py-3"
+                      className="whitespace-nowrap px-4 py-3"
                       style={{ color: "var(--db-text)" }}
                     >
                       {col.render
@@ -200,7 +199,7 @@ export default function DataTable<T extends { id: string }>({
                   ))}
                 </tr>
                 {expandedContent && expandedId === row.id && (
-                  <tr key={`${row.id}-expanded`}>
+                  <tr>
                     <td
                       colSpan={colSpan}
                       className="px-6 py-4"
@@ -210,7 +209,7 @@ export default function DataTable<T extends { id: string }>({
                     </td>
                   </tr>
                 )}
-              </>
+              </Fragment>
             ))}
           </tbody>
         </table>
@@ -229,19 +228,31 @@ export default function DataTable<T extends { id: string }>({
             <button
               onClick={() => pagination.onPageChange(pagination.page - 1)}
               disabled={pagination.page <= 1}
-              className="rounded-lg px-3 py-1 text-xs disabled:opacity-30 transition-colors"
+              className="rounded-lg px-3 py-1.5 text-xs font-medium disabled:opacity-30 transition-colors"
               style={{ color: "var(--db-text-muted)" }}
+              onMouseEnter={(e) => {
+                if (pagination.page > 1) e.currentTarget.style.background = "var(--db-hover)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+              }}
             >
               Prev
             </button>
-            <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            <span className="text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
               {pagination.page} / {pagination.totalPages}
             </span>
             <button
               onClick={() => pagination.onPageChange(pagination.page + 1)}
               disabled={pagination.page >= pagination.totalPages}
-              className="rounded-lg px-3 py-1 text-xs disabled:opacity-30 transition-colors"
+              className="rounded-lg px-3 py-1.5 text-xs font-medium disabled:opacity-30 transition-colors"
               style={{ color: "var(--db-text-muted)" }}
+              onMouseEnter={(e) => {
+                if (pagination.page < pagination.totalPages) e.currentTarget.style.background = "var(--db-hover)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+              }}
             >
               Next
             </button>

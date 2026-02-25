@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import DataTable, { type Column } from "@/components/data-table";
+import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 
 interface SmsMessage {
   id: string;
@@ -21,6 +22,7 @@ export default function SmsPage() {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const fetchMessages = useCallback(async () => {
     setLoading(true);
@@ -51,6 +53,17 @@ export default function SmsPage() {
     });
   }
 
+  function formatPhone(phone: string): string {
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length === 11 && digits[0] === "1") {
+      return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+    }
+    if (digits.length === 10) {
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+    return phone;
+  }
+
   const columns: Column<SmsMessage>[] = [
     {
       key: "createdAt",
@@ -78,10 +91,12 @@ export default function SmsPage() {
     {
       key: "fromNumber",
       label: "From",
+      render: (row) => formatPhone(row.fromNumber),
     },
     {
       key: "toNumber",
       label: "To",
+      render: (row) => formatPhone(row.toNumber),
     },
     {
       key: "body",
@@ -126,27 +141,28 @@ export default function SmsPage() {
         <input
           type="text"
           placeholder="Search by phone number..."
-          value={search}
+          defaultValue={search}
           onChange={(e) => {
-            setSearch(e.target.value);
-            setPage(1);
+            const val = e.target.value;
+            clearTimeout(searchTimer.current);
+            searchTimer.current = setTimeout(() => {
+              setSearch(val);
+              setPage(1);
+            }, 300);
           }}
-          className="rounded-lg px-4 py-2 text-sm outline-none transition-colors duration-300 w-full sm:w-64"
+          className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-64"
           style={{
             background: "var(--db-card)",
             border: "1px solid var(--db-border)",
             color: "var(--db-text)",
           }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
         />
       </div>
 
       {loading && messages.length === 0 && (
-        <div
-          className="flex items-center justify-center py-20"
-          style={{ color: "var(--db-text-muted)" }}
-        >
-          Loading...
-        </div>
+        <LoadingSpinner message="Loading messages..." />
       )}
 
       {!loading && messages.length === 0 && !search && (

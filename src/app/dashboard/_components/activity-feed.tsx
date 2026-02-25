@@ -99,7 +99,7 @@ export default function ActivityFeed({ events }: { events: FeedEvent[] }) {
         className="mb-4 text-sm font-semibold uppercase tracking-wider"
         style={{ color: "var(--db-text-muted)" }}
       >
-        Live Activity
+        Recent Activity
       </h3>
       <div className="space-y-0">
         {events.map((evt, i) => (

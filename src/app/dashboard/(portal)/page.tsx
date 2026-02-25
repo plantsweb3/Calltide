@@ -6,6 +6,7 @@ import AnimatedCounter from "@/app/dashboard/_components/animated-counter";
 import ActivityFeed from "@/app/dashboard/_components/activity-feed";
 import WeeklySummary from "@/app/dashboard/_components/weekly-summary";
 import BusinessInsights from "@/app/dashboard/_components/business-insights";
+import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 
 interface Overview {
   callsToday: number;
@@ -66,14 +67,7 @@ export default function OverviewPage() {
   }, []);
 
   if (!data) {
-    return (
-      <div
-        className="flex items-center justify-center py-20"
-        style={{ color: "var(--db-text-muted)" }}
-      >
-        Loading...
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   const isEnhanced = !!data.revenueThisMonth;

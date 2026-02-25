@@ -188,3 +188,17 @@ body {
   --db-accent-hover: #A17D1F;
   --db-card-shadow: 0px 4px 16px rgba(15, 23, 42, 0.08), 0px 12px 32px rgba(15, 23, 42, 0.06);
 }
+
+/* ── Dashboard Animations ── */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}

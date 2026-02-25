@@ -16,9 +16,9 @@ export default function PortalLayout({
 
       {/* Mobile header */}
       <div
-        className="fixed top-0 left-0 right-0 z-30 flex h-14 items-center px-4 md:hidden"
+        className="fixed top-0 left-0 right-0 z-30 flex h-14 items-center px-4 backdrop-blur-sm md:hidden"
         style={{
-          background: "var(--db-surface)",
+          background: "color-mix(in srgb, var(--db-surface) 90%, transparent)",
           borderBottom: "1px solid var(--db-border)",
         }}
       >
@@ -41,7 +41,7 @@ export default function PortalLayout({
       </div>
 
       <main
-        className="flex-1 p-4 pt-18 md:ml-60 md:p-6 md:pt-6"
+        className="min-w-0 flex-1 p-4 pt-18 md:ml-60 md:p-6 md:pt-6"
       >
         {children}
       </main>

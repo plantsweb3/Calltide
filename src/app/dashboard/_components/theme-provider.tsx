@@ -48,7 +48,7 @@ export default function ThemeProvider({
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <div
         data-theme={theme}
-        className="min-h-screen transition-colors duration-300"
+        className="min-h-screen overflow-x-hidden transition-colors duration-300"
         style={{
           background: "var(--db-bg)",
           color: "var(--db-text)",

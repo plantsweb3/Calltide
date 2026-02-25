@@ -61,7 +61,7 @@ export default function CallTranscript({
 
       {/* Panel */}
       <div
-        className="fixed right-0 top-0 z-50 flex h-screen w-full max-w-lg flex-col overflow-y-auto"
+        className="fixed right-0 top-0 z-50 flex h-screen w-full max-w-lg flex-col overflow-y-auto animate-slide-in-right"
         style={{
           background: "var(--db-surface)",
           borderLeft: "1px solid var(--db-border)",

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import DataTable, { type Column } from "@/components/data-table";
 import AppointmentCalendar from "@/app/dashboard/_components/appointment-calendar";
+import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 
 interface Appointment {
   id: string;
@@ -160,12 +161,7 @@ export default function AppointmentsPage() {
       </div>
 
       {loading && appointments.length === 0 && (
-        <div
-          className="flex items-center justify-center py-20"
-          style={{ color: "var(--db-text-muted)" }}
-        >
-          Loading...
-        </div>
+        <LoadingSpinner message="Loading appointments..." />
       )}
 
       {!loading && appointments.length === 0 && (
