@@ -15,6 +15,7 @@ export const businesses = sqliteTable("businesses", {
   timezone: text("timezone").notNull().default("America/Chicago"),
   defaultLanguage: text("default_language").notNull().default("en"),
   greeting: text("greeting"), // custom greeting override
+  avgJobValue: integer("avg_job_value").default(250), // average $ per appointment for revenue estimates
   active: integer("active", { mode: "boolean" }).notNull().default(true),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
@@ -47,6 +48,7 @@ export const calls = sqliteTable("calls", {
   language: text("language"),
   summary: text("summary"),
   sentiment: text("sentiment"), // positive, neutral, negative
+  transcript: text("transcript", { mode: "json" }).$type<Array<{ speaker: "ai" | "caller"; text: string }>>(),
   transferRequested: integer("transfer_requested", { mode: "boolean" }).default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),

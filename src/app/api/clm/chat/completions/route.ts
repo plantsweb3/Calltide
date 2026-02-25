@@ -2,6 +2,9 @@ import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessByPhone, detectLanguage } from "@/lib/ai/context-builder";
 import { buildSystemPrompt } from "@/lib/ai/system-prompts";
+import { db } from "@/db";
+import { calls } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import type { ChatCompletionRequest, SSEChunk } from "@/types";
 
 const corsHeaders = {
@@ -76,15 +79,18 @@ export async function POST(req: NextRequest) {
     const encoder = new TextEncoder();
     const responseId = `chatcmpl-${crypto.randomUUID()}`;
     const created = Math.floor(Date.now() / 1000);
+    const chatGroupId = metadata?.chat_group_id;
 
     const readableStream = new ReadableStream({
       async start(controller) {
+        let aiResponseText = "";
         try {
           for await (const event of stream) {
             if (
               event.type === "content_block_delta" &&
               event.delta.type === "text_delta"
             ) {
+              aiResponseText += event.delta.text;
               const chunk: SSEChunk = {
                 id: responseId,
                 object: "chat.completion.chunk",
@@ -123,6 +129,13 @@ export async function POST(req: NextRequest) {
           );
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
           controller.close();
+
+          // Save transcript to DB after stream completes
+          if (chatGroupId) {
+            saveTranscript(chatGroupId, messages, aiResponseText, detectedLang).catch(
+              (err) => console.error("Failed to save transcript:", err)
+            );
+          }
         } catch (error) {
           console.error("Stream error:", error);
           controller.error(error);
@@ -153,6 +166,49 @@ function buildDefaultSystemPrompt(lang: "en" | "es"): string {
     return `Eres Maria, recepcionista de una empresa de plomería en San Antonio. Contesta llamadas, toma información del llamante y ayuda a agendar citas. Responde en 1-2 oraciones máximo. Sin frases de relleno. Ve directo al punto. Si te hablan en inglés, cambia a inglés. Eres bilingüe. Nunca discutas precios. Si te preguntan si eres humana, di que eres asistente de IA.`;
   }
   return `You are Maria, a receptionist for a plumbing company in San Antonio. Answer calls, collect caller info, and help schedule appointments. Respond in 1-2 sentences max. No filler phrases. Go straight to the point. If spoken to in Spanish, switch to Spanish. You are bilingual. Never discuss pricing. If asked if you're human, say you're an AI assistant.`;
+}
+
+/**
+ * Convert Hume messages + latest AI response into transcript format
+ * and save to the call record. Runs fire-and-forget after streaming.
+ */
+async function saveTranscript(
+  chatGroupId: string,
+  messages: ChatCompletionRequest["messages"],
+  aiResponse: string,
+  language: string
+) {
+  // Build transcript from conversation messages (skip system)
+  const transcript: Array<{ speaker: "ai" | "caller"; text: string }> = [];
+  for (const msg of messages) {
+    if (msg.role === "system") continue;
+    transcript.push({
+      speaker: msg.role === "assistant" ? "ai" : "caller",
+      text: msg.content,
+    });
+  }
+  // Append the latest AI response
+  if (aiResponse.trim()) {
+    transcript.push({ speaker: "ai", text: aiResponse.trim() });
+  }
+
+  // Find call by chat_group_id and update transcript + language
+  const [call] = await db
+    .select({ id: calls.id })
+    .from(calls)
+    .where(eq(calls.humeChatGroupId, chatGroupId))
+    .limit(1);
+
+  if (call) {
+    await db
+      .update(calls)
+      .set({
+        transcript,
+        language,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(calls.id, call.id));
+  }
 }
 
 /**
