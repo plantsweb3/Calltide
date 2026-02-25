@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { calls, appointments, smsMessages, businesses, leads } from "@/db/schema";
-import { eq, and, sql, gte, lte, count, desc, or } from "drizzle-orm";
+import { eq, and, sql, gte, lte, count, desc, or, inArray } from "drizzle-orm";
 import { DEMO_BUSINESS_ID, DEMO_OVERVIEW } from "../demo-data";
 
 export async function GET(req: NextRequest) {
@@ -77,7 +77,15 @@ export async function GET(req: NextRequest) {
     .from(calls)
     .where(eq(calls.businessId, businessId));
 
-  // ── Enhanced metrics ──
+  const basicResponse = {
+    callsToday: callsToday.count,
+    appointmentsThisWeek: appointmentsThisWeekResult.count,
+    missedCallsSaved: missedCallsSaved.count,
+    totalCalls: totalCallsResult.count,
+  };
+
+  // ── Enhanced metrics (wrapped so basic always returns) ──
+  try {
 
   // Revenue this month = appointments booked this month × avgJobValue
   const [appointmentsThisMonth] = await db
@@ -136,7 +144,7 @@ export async function GET(req: NextRequest) {
           and(
             eq(appointments.businessId, businessId),
             or(eq(appointments.status, "confirmed"), eq(appointments.status, "completed")),
-            sql`${appointments.leadId} IN (${sql.join(leadIds.map(id => sql`${id}`), sql`, `)})`,
+            inArray(appointments.leadId, leadIds),
           ),
         );
       missedCallsRecoveredCount = recovered.count;
@@ -413,10 +421,7 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json({
-    callsToday: callsToday.count,
-    appointmentsThisWeek: appointmentsThisWeekResult.count,
-    missedCallsSaved: missedCallsSaved.count,
-    totalCalls: totalCallsResult.count,
+    ...basicResponse,
     // Enhanced fields
     businessName: biz?.name,
     revenueThisMonth,
@@ -428,4 +433,9 @@ export async function GET(req: NextRequest) {
     insights,
     bilingualStats,
   });
+
+  } catch (err) {
+    console.error("Enhanced metrics failed, returning basic:", err);
+    return NextResponse.json(basicResponse);
+  }
 }
