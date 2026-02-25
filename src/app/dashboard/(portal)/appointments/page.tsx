@@ -19,11 +19,14 @@ interface Appointment {
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [filter, setFilter] = useState<"upcoming" | "past">("upcoming");
+  const [loading, setLoading] = useState(true);
 
   const fetchAppointments = useCallback(async () => {
+    setLoading(true);
     const res = await fetch(`/api/dashboard/appointments?filter=${filter}`);
     const data = await res.json();
     setAppointments(data.appointments);
+    setLoading(false);
   }, [filter]);
 
   useEffect(() => {
@@ -106,7 +109,26 @@ export default function AppointmentsPage() {
         </div>
       </div>
 
-      <DataTable columns={columns} data={appointments} />
+      {loading && appointments.length === 0 && (
+        <div className="flex items-center justify-center py-20 text-slate-500">
+          Loading...
+        </div>
+      )}
+
+      {!loading && appointments.length === 0 && (
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-12 text-center">
+          <p className="text-lg font-medium text-slate-300">
+            No {filter} appointments
+          </p>
+          <p className="mt-2 text-sm text-slate-500">
+            When your AI receptionist books appointments, they&apos;ll appear here.
+          </p>
+        </div>
+      )}
+
+      {appointments.length > 0 && (
+        <DataTable columns={columns} data={appointments} />
+      )}
     </div>
   );
 }

@@ -27,6 +27,27 @@ export default function OverviewPage() {
     );
   }
 
+  if (
+    data.totalCalls === 0 &&
+    data.callsToday === 0 &&
+    data.appointmentsThisWeek === 0
+  ) {
+    return (
+      <div>
+        <h1 className="mb-6 text-2xl font-semibold">Overview</h1>
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-12 text-center">
+          <p className="text-lg font-medium text-slate-300">
+            Welcome to Calltide
+          </p>
+          <p className="mt-2 text-sm text-slate-500">
+            Your AI receptionist is ready. Once calls start coming in,
+            you&apos;ll see your metrics here.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h1 className="mb-6 text-2xl font-semibold">Overview</h1>

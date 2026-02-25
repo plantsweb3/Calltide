@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { smsMessages } from "@/db/schema";
-import { eq, desc, count } from "drizzle-orm";
+import { eq, and, or, like, desc, count } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -11,12 +11,25 @@ export async function GET(req: NextRequest) {
 
   const page = parseInt(req.nextUrl.searchParams.get("page") || "1");
   const limit = parseInt(req.nextUrl.searchParams.get("limit") || "20");
+  const search = req.nextUrl.searchParams.get("search") || "";
   const offset = (page - 1) * limit;
+
+  const baseWhere = eq(smsMessages.businessId, businessId);
+  const whereClause = search
+    ? and(
+        baseWhere,
+        or(
+          like(smsMessages.fromNumber, `%${search}%`),
+          like(smsMessages.toNumber, `%${search}%`),
+          like(smsMessages.body, `%${search}%`),
+        ),
+      )
+    : baseWhere;
 
   const [totalResult] = await db
     .select({ count: count() })
     .from(smsMessages)
-    .where(eq(smsMessages.businessId, businessId));
+    .where(whereClause);
 
   const rows = await db
     .select({
@@ -30,7 +43,7 @@ export async function GET(req: NextRequest) {
       createdAt: smsMessages.createdAt,
     })
     .from(smsMessages)
-    .where(eq(smsMessages.businessId, businessId))
+    .where(whereClause)
     .orderBy(desc(smsMessages.createdAt))
     .limit(limit)
     .offset(offset);

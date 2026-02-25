@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import DataTable, { type Column } from "../../_components/data-table";
+import AddClientModal from "../../_components/add-client-modal";
+import ClientDetail from "../../_components/client-detail";
 
 interface Client {
   id: string;
@@ -24,12 +26,18 @@ const healthColors = {
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+
+  const fetchClients = useCallback(async () => {
+    const res = await fetch("/api/admin/clients");
+    const data = await res.json();
+    setClients(data);
+  }, []);
 
   useEffect(() => {
-    fetch("/api/admin/clients")
-      .then((r) => r.json())
-      .then(setClients);
-  }, []);
+    fetchClients();
+  }, [fetchClients]);
 
   const columns: Column<Client>[] = [
     {
@@ -42,7 +50,19 @@ export default function ClientsPage() {
         />
       ),
     },
-    { key: "name", label: "Business", sortable: true },
+    {
+      key: "name",
+      label: "Business",
+      sortable: true,
+      render: (row) => (
+        <button
+          onClick={() => setSelectedClient(row)}
+          className="text-left font-medium text-blue-400 hover:text-blue-300"
+        >
+          {row.name}
+        </button>
+      ),
+    },
     { key: "type", label: "Type", sortable: true },
     { key: "ownerName", label: "Owner" },
     {
@@ -80,14 +100,36 @@ export default function ClientsPage() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Clients</h1>
-        <p className="text-sm text-slate-400">
-          {clients.length} businesses
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Clients</h1>
+          <p className="text-sm text-slate-400">
+            {clients.length} businesses
+          </p>
+        </div>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-green-500"
+        >
+          Add Client
+        </button>
       </div>
 
       <DataTable columns={columns} data={clients} />
+
+      {showAddModal && (
+        <AddClientModal
+          onClose={() => setShowAddModal(false)}
+          onComplete={fetchClients}
+        />
+      )}
+
+      {selectedClient && (
+        <ClientDetail
+          client={selectedClient}
+          onClose={() => setSelectedClient(null)}
+        />
+      )}
     </div>
   );
 }

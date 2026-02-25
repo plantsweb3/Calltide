@@ -23,8 +23,10 @@ export default function CallsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const fetchCalls = useCallback(async () => {
+    setLoading(true);
     const params = new URLSearchParams({
       page: String(page),
       limit: "20",
@@ -36,6 +38,7 @@ export default function CallsPage() {
     setCalls(data.calls);
     setTotal(data.total);
     setTotalPages(data.totalPages);
+    setLoading(false);
   }, [page, search]);
 
   useEffect(() => {
@@ -118,30 +121,56 @@ export default function CallsPage() {
         />
       </div>
 
-      <DataTable
-        columns={columns}
-        data={calls}
-        pagination={{
-          page,
-          totalPages,
-          total,
-          onPageChange: setPage,
-        }}
-        expandedContent={(row) =>
-          row.summary ? (
-            <div className="space-y-1">
-              <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
-                Summary
-              </p>
-              <p className="whitespace-pre-wrap text-sm text-slate-300">
-                {row.summary}
-              </p>
-            </div>
-          ) : (
-            <p className="text-sm text-slate-500">No summary available</p>
-          )
-        }
-      />
+      {loading && calls.length === 0 && (
+        <div className="flex items-center justify-center py-20 text-slate-500">
+          Loading...
+        </div>
+      )}
+
+      {!loading && calls.length === 0 && !search && (
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-12 text-center">
+          <p className="text-lg font-medium text-slate-300">No calls yet</p>
+          <p className="mt-2 text-sm text-slate-500">
+            When your AI receptionist handles calls, they&apos;ll show up here
+            with full transcripts and summaries.
+          </p>
+        </div>
+      )}
+
+      {!loading && calls.length === 0 && search && (
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-12 text-center">
+          <p className="text-sm text-slate-500">
+            No calls matching &ldquo;{search}&rdquo;
+          </p>
+        </div>
+      )}
+
+      {calls.length > 0 && (
+        <DataTable
+          columns={columns}
+          data={calls}
+          pagination={{
+            page,
+            totalPages,
+            total,
+            onPageChange: setPage,
+          }}
+          expandedContent={(row) =>
+            row.summary ? (
+              <div className="space-y-1">
+                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+                  Summary
+                </p>
+                <p className="whitespace-pre-wrap text-sm text-slate-300">
+                  {row.summary}
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm text-slate-500">No summary available</p>
+            )
+          }
+        />
+      )}
     </div>
   );
 }

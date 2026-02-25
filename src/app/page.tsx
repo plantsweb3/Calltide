@@ -7,7 +7,7 @@ const VoiceChat = dynamic(() => import("@/components/voice-chat"), { ssr: false 
 
 const PHONE = "(830) 521-7133";
 const PHONE_TEL = "tel:+18305217133";
-const BOOKING_URL = "https://cal.com";
+const BOOKING_URL = "https://cal.com/calltide/onboarding";
 
 /* ───────── Intersection Observer for scroll reveals ───────── */
 
@@ -251,6 +251,62 @@ function ExitIntent({ onTryInBrowser }: { onTryInBrowser: () => void }) {
   );
 }
 
+/* ───────── Dashboard Mockup (replaces AI image) ───────── */
+
+function DashboardMockup() {
+  const mockCalls = [
+    { name: "Maria Garcia", time: "9:14 AM", status: "Booked", service: "AC Repair", lang: "ES" },
+    { name: "James Wilson", time: "10:32 AM", status: "Booked", service: "Pipe Leak", lang: "EN" },
+    { name: "Robert Chen", time: "11:45 AM", status: "Booked", service: "Water Heater", lang: "EN" },
+    { name: "Ana Rodriguez", time: "1:08 PM", status: "Booked", service: "Drain Clean", lang: "ES" },
+    { name: "Mike Johnson", time: "2:51 PM", status: "Missed", service: "\u2014", lang: "EN" },
+    { name: "Sofia Martinez", time: "4:22 PM", status: "Booked", service: "Showing", lang: "ES" },
+  ];
+
+  return (
+    <div className="h-full w-full bg-slate-950 p-3 text-[10px] overflow-hidden">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-bold text-green-500">Calltide</span>
+        <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[8px] text-slate-400">PORTAL</span>
+      </div>
+      <div className="grid grid-cols-2 gap-1.5 mb-3">
+        {[
+          { label: "Today", value: "6", color: "text-slate-100" },
+          { label: "This Week", value: "23", color: "text-slate-100" },
+          { label: "Booked", value: "18", color: "text-green-400" },
+          { label: "Saved", value: "5", color: "text-amber" },
+        ].map((m) => (
+          <div key={m.label} className="rounded-lg border border-slate-800 bg-slate-900 p-2">
+            <p className="text-[8px] text-slate-400">{m.label}</p>
+            <p className={`text-sm font-bold ${m.color}`}>{m.value}</p>
+          </div>
+        ))}
+      </div>
+      <p className="text-[9px] font-medium text-slate-400 mb-1.5">Recent Calls</p>
+      <div className="space-y-1">
+        {mockCalls.map((call, i) => (
+          <div key={i} className="flex items-center justify-between rounded-lg bg-slate-900 px-2 py-1.5">
+            <div className="min-w-0">
+              <p className="text-[9px] font-medium text-slate-200 truncate">{call.name}</p>
+              <p className="text-[8px] text-slate-500">{call.time} &middot; {call.service}</p>
+            </div>
+            <div className="flex shrink-0 items-center gap-1">
+              <span className={`rounded-full px-1.5 py-0.5 text-[7px] font-medium ${
+                call.status === "Booked"
+                  ? "bg-green-500/10 text-green-400"
+                  : "bg-amber-500/10 text-amber-400"
+              }`}>
+                {call.status}
+              </span>
+              <span className="text-[7px] text-slate-500">{call.lang}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ───────── Page ───────── */
 
 export default function LandingPage() {
@@ -389,12 +445,13 @@ export default function LandingPage() {
 
             <div className="reveal rounded-2xl border border-navy-border bg-navy-card p-8">
               <p className="font-display text-xl font-bold text-white">
-                Sunday, 9:47 PM.
+                Saturday, 11:30 AM.
               </p>
               <p className="mt-3 leading-relaxed text-slate-400">
-                A water heater dies. They need someone first thing Monday
-                morning. Your phone goes to voicemail. By Monday at 7 AM,
-                they&apos;ve already booked someone else.
+                A couple drives by a house for sale and calls the agent&apos;s
+                number on the sign. No answer. They call the next listing. By
+                Monday, they&apos;ve scheduled three showings with your
+                competitor.
               </p>
             </div>
           </div>
@@ -696,7 +753,7 @@ export default function LandingPage() {
               {
                 icon: "🌐",
                 title: "Win the Jobs Others Can't",
-                body: "40% of San Antonio residents speak Spanish at home. When they call you and hear their own language, you've already won. Calltide switches between English, Spanish, and Spanglish seamlessly.",
+                body: "Millions of potential customers prefer to do business in Spanish. When they call you and hear their own language, you've already won. Calltide switches between English, Spanish, and Spanglish seamlessly.",
               },
               {
                 icon: "📅",
@@ -781,13 +838,13 @@ export default function LandingPage() {
           {/* Dashboard phone mockup */}
           <div className="reveal mt-12 flex justify-center">
             <div className="relative mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2 shadow-2xl">
-              <div className="overflow-hidden rounded-[2rem]" style={{ aspectRatio: "600/1053" }}>
-                <img
-                  src="/images/dashboard-screenshot.webp"
-                  loading="lazy"
-                  alt="Calltide mobile dashboard showing call activity with 20 total calls, 15 appointments, and a list of booked jobs"
-                  className="h-full w-full object-cover"
-                />
+              <div
+                role="img"
+                aria-label="Calltide mobile dashboard showing call activity with 6 calls today, 23 this week, and a list of booked appointments"
+                className="overflow-hidden rounded-[2rem]"
+                style={{ aspectRatio: "600/1053" }}
+              >
+                <DashboardMockup />
               </div>
             </div>
           </div>
