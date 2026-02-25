@@ -96,14 +96,14 @@ function FAQ() {
         <div key={i}>
           <button
             onClick={() => setOpenIndex(openIndex === i ? null : i)}
-            className="flex w-full items-center justify-between py-5 text-left"
+            className="flex w-full items-center justify-between py-6 text-left"
           >
             <span className="pr-4 text-lg font-semibold text-charcoal">
               {faq.q}
             </span>
             <span
               className={`shrink-0 text-xl font-bold transition-transform duration-300 ${
-                openIndex === i ? "text-amber rotate-0" : "text-charcoal-light rotate-0"
+                openIndex === i ? "text-amber" : "text-charcoal-light"
               }`}
             >
               {openIndex === i ? "\u2212" : "+"}
@@ -111,7 +111,7 @@ function FAQ() {
           </button>
           <div className={`faq-answer ${openIndex === i ? "open" : ""}`}>
             <div>
-              <p className="pb-5 text-[17px] leading-relaxed text-charcoal-muted">{faq.a}</p>
+              <p className="pb-6 text-base leading-relaxed text-charcoal-muted">{faq.a}</p>
             </div>
           </div>
         </div>
@@ -141,13 +141,13 @@ function MobileCTA({ onTryInBrowser }: { onTryInBrowser: () => void }) {
       <div className="flex gap-2">
         <a
           href={PHONE_TEL}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber px-4 py-3.5 text-sm font-bold text-white"
+          className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-amber px-4 py-4 text-sm font-bold text-white"
         >
           Call Demo
         </a>
         <button
           onClick={onTryInBrowser}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-navy px-4 py-3.5 text-sm font-bold text-navy"
+          className="flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-navy px-4 py-4 text-sm font-bold text-navy"
         >
           Try in Browser
         </button>
@@ -182,28 +182,28 @@ function ExitIntent({ onTryInBrowser }: { onTryInBrowser: () => void }) {
       onClick={() => setShow(false)}
     >
       <div
-        className="exit-card w-full max-w-md rounded-2xl border border-cream-border bg-white p-8 text-center shadow-2xl"
+        className="exit-card card-shadow w-full max-w-md rounded-xl border border-cream-border bg-white p-10 text-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="font-serif text-2xl text-charcoal sm:text-3xl">
+        <p className="font-serif text-[28px] leading-tight text-charcoal sm:text-[32px]">
           Wait — hear it before you go.
         </p>
-        <p className="mt-3 text-charcoal-muted">
+        <p className="mt-4 text-base text-charcoal-muted">
           Experience Calltide answering as a real business.
           Takes 30 seconds. No signup needed.
         </p>
         <button
           onClick={() => { setShow(false); onTryInBrowser(); }}
-          className="cta-shimmer mt-6 inline-flex items-center gap-2 rounded-xl bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-amber-dark hover:scale-[1.02]"
+          className="cta-shimmer mt-8 inline-flex items-center gap-2 rounded-lg bg-amber px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5"
         >
           Try It in Your Browser
         </button>
-        <p className="mt-3 text-sm text-charcoal-light">
+        <p className="mt-4 text-sm text-charcoal-light">
           or call <a href={PHONE_TEL} className="text-amber hover:underline">{PHONE}</a>
         </p>
         <button
           onClick={() => setShow(false)}
-          className="mt-4 block w-full text-sm text-charcoal-light hover:text-charcoal transition-colors"
+          className="mt-5 block w-full text-sm text-charcoal-light hover:text-charcoal transition-colors"
         >
           No thanks
         </button>
@@ -236,7 +236,6 @@ function DashboardMockup() {
         <span className="text-xs font-bold text-green-500">Calltide</span>
         <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[8px] text-slate-400">PORTAL</span>
       </div>
-      {/* Stats row */}
       <div className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 mb-3">
         <div className="text-center">
           <p className="text-sm font-bold text-slate-100">23</p>
@@ -340,11 +339,10 @@ export default function LandingPage() {
             </a>
             <a
               href={PHONE_TEL}
-              className="hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-cream transition hover:bg-navy-light sm:inline-flex"
+              className="hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-light sm:inline-flex"
             >
               Call Demo: {PHONE}
             </a>
-            {/* Mobile hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="flex h-10 w-10 items-center justify-center rounded-lg text-charcoal md:hidden"
@@ -365,29 +363,15 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Mobile menu dropdown */}
         {mobileMenuOpen && (
           <div className="border-t border-cream-border bg-white px-6 py-4 md:hidden">
             <div className="flex flex-col gap-4">
-              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">
-                How It Works
-              </a>
-              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">
-                What You Get
-              </a>
-              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">
-                Pricing
-              </a>
-              <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">
-                FAQ
-              </a>
-              <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">
-                Log In
-              </a>
-              <a
-                href={PHONE_TEL}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-cream"
-              >
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">How It Works</a>
+              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">What You Get</a>
+              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Pricing</a>
+              <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">FAQ</a>
+              <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">Log In</a>
+              <a href={PHONE_TEL} className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white">
                 Call Demo: {PHONE}
               </a>
             </div>
@@ -395,34 +379,32 @@ export default function LandingPage() {
         )}
       </nav>
 
-      {/* ── 2. HERO — Split Layout ── */}
+      {/* ── 2. HERO ── */}
       <section className="relative overflow-hidden bg-cream grain-overlay">
-        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:py-28">
-          <div className="grid items-center gap-12 md:grid-cols-5">
-            {/* Left — Text (60%) */}
+        <div className="relative z-10 mx-auto max-w-6xl px-6 py-[120px]">
+          <div className="grid items-center gap-16 md:grid-cols-5">
             <div className="md:col-span-3">
-              <p className="text-sm font-semibold uppercase tracking-widest text-amber">
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
                 The Front Office for Your Business
               </p>
-              <h1 className="mt-4 font-serif text-[42px] leading-[1.08] text-charcoal sm:text-[52px] lg:text-[60px]">
+              <h1 className="mt-6 font-serif text-[42px] font-semibold leading-[1.1] tracking-[-0.02em] text-charcoal sm:text-[56px] lg:text-[72px]">
                 Answer Every Lead
                 <br />
                 Like You Have a Full-Time Receptionist
               </h1>
-              <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-charcoal-muted">
+              <p className="mt-6 max-w-xl text-xl leading-relaxed text-charcoal-muted">
                 Your AI picks up in English or Spanish — 24/7. Qualifies the caller,
                 books the appointment, and texts you the details before you set your
                 tools down.
               </p>
-              <p className="mt-3 font-serif text-lg italic text-amber">
+              <p className="mt-4 font-serif text-lg italic text-amber">
                 Cada llamada contestada. Cada trabajo agendado.
               </p>
 
-              {/* CTA Row */}
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
                 <button
                   onClick={() => setShowVoiceChat(true)}
-                  className="cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl bg-amber px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-150 hover:bg-amber-dark hover:shadow-amber/30 hover:scale-[1.02]"
+                  className="cta-shimmer inline-flex items-center justify-center gap-2 rounded-lg bg-amber px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5 hover:shadow-amber/30"
                 >
                   Talk to Maria Now &rarr;
                 </button>
@@ -433,14 +415,13 @@ export default function LandingPage() {
                   Or call the demo: <span className="font-semibold text-charcoal">{PHONE}</span>
                 </a>
               </div>
-              <p className="mt-3 text-[13px] text-charcoal-light">
+              <p className="mt-4 text-sm text-charcoal-light">
                 No signup needed. Talk to our AI receptionist in your browser right now.
               </p>
             </div>
 
-            {/* Right — Dashboard Preview (40%) */}
             <div className="md:col-span-2">
-              <div className="mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2 shadow-[0_24px_64px_rgba(27,42,74,0.2)]">
+              <div className="mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2 shadow-[0_24px_64px_rgba(15,23,42,0.2)]">
                 <div
                   role="img"
                   aria-label="Calltide mobile dashboard showing today's call activity with booked appointments and revenue saved"
@@ -456,8 +437,8 @@ export default function LandingPage() {
       </section>
 
       {/* ── 3. SOCIAL PROOF BAR ── */}
-      <Section className="bg-navy px-6 py-10">
-        <div className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-8 md:flex-row md:gap-0">
+      <Section className="bg-navy px-6 py-14">
+        <div className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-10 md:flex-row md:gap-0">
           {[
             { value: "24/7", label: "Every call answered, nights, weekends, holidays" },
             { value: "2 Languages", label: "English and Spanish, including Spanglish" },
@@ -465,10 +446,10 @@ export default function LandingPage() {
           ].map((stat, i) => (
             <div key={stat.value} className="flex items-center gap-0">
               {i > 0 && (
-                <div className="mx-8 hidden h-12 w-px bg-amber/30 md:block" />
+                <div className="mx-10 hidden h-12 w-px bg-amber/20 md:block" />
               )}
               <div className="text-center">
-                <p className="font-serif text-3xl text-white sm:text-4xl">
+                <p className="font-serif text-[36px] font-semibold text-white sm:text-[40px]">
                   {stat.value}
                 </p>
                 <p className="mt-1 text-sm text-slate-400">
@@ -480,32 +461,32 @@ export default function LandingPage() {
         </div>
       </Section>
 
-      {/* ── 4. PROBLEM — "The Cost of a Missed Call" ── */}
-      <Section id="problem" className="bg-white px-6 py-24" stagger>
+      {/* ── 4. PROBLEM ── */}
+      <Section id="problem" className="bg-white px-6 py-[120px]" stagger>
         <div className="mx-auto max-w-5xl">
-          <h2 className="fade-up text-center font-serif text-4xl text-charcoal sm:text-5xl">
+          <h2 className="fade-up text-center font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
             Every Missed Call Is a Job
             <br />
             Your Competitor Gets
           </h2>
 
           <div className="mt-16 grid gap-8 md:grid-cols-3">
-            <div className="fade-up rounded-2xl bg-cream-dark p-8 shadow-sm transition-shadow duration-200 hover:shadow-md">
-              <p className="font-serif text-xl text-charcoal">
+            <div className="fade-up card-shadow card-shadow-hover rounded-xl bg-white p-10">
+              <p className="font-serif text-[24px] font-medium text-charcoal">
                 Tuesday, 2:14 PM.
               </p>
-              <p className="mt-3 text-[17px] leading-relaxed text-charcoal-muted">
+              <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
                 A homeowner has a burst pipe. She calls three plumbers.
                 Two go to voicemail. The third answers and gets a $1,200
                 job. Which plumber were you?
               </p>
             </div>
 
-            <div className="fade-up rounded-2xl bg-cream-dark p-8 shadow-sm transition-shadow duration-200 hover:shadow-md">
-              <p className="font-serif text-xl text-charcoal">
+            <div className="fade-up card-shadow card-shadow-hover rounded-xl bg-white p-10">
+              <p className="font-serif text-[24px] font-medium text-charcoal">
                 &ldquo;Hola, necesito ayuda...&rdquo;
               </p>
-              <p className="mt-3 text-[17px] leading-relaxed text-charcoal-muted">
+              <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
                 A Spanish-speaking family needs their AC fixed. Your voicemail is
                 in English. They don&apos;t leave a message. They call the
                 company with the bilingual receptionist. You never even know they
@@ -513,11 +494,11 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="fade-up rounded-2xl bg-cream-dark p-8 shadow-sm transition-shadow duration-200 hover:shadow-md">
-              <p className="font-serif text-xl text-charcoal">
+            <div className="fade-up card-shadow card-shadow-hover rounded-xl bg-white p-10">
+              <p className="font-serif text-[24px] font-medium text-charcoal">
                 Saturday, 11:30 AM.
               </p>
-              <p className="mt-3 text-[17px] leading-relaxed text-charcoal-muted">
+              <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
                 A couple drives by a house for sale and calls the agent&apos;s
                 number on the sign. No answer. They call the next listing. By
                 Monday, they&apos;ve scheduled three showings with your
@@ -526,32 +507,31 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="mt-16 text-center">
-            <p className="font-serif text-3xl text-amber sm:text-4xl">
+          <div className="mt-20 text-center">
+            <p className="font-serif text-[32px] font-semibold leading-tight text-amber sm:text-[40px]">
               Most service businesses miss more than half their incoming calls.
             </p>
-            <p className="mt-3 text-lg text-charcoal-muted">
+            <p className="mt-4 text-lg text-charcoal-muted">
               Every one of those is revenue walking out your door.
             </p>
           </div>
         </div>
       </Section>
 
-      {/* ── 5. SOLUTION — "How It Works" ── */}
-      <Section id="how-it-works" className="bg-cream px-6 py-24" stagger>
+      {/* ── 5. HOW IT WORKS ── */}
+      <Section id="how-it-works" className="bg-cream px-6 py-[120px]" stagger>
         <div className="mx-auto max-w-5xl">
           <div className="fade-up text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-amber">
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
               How It Works
             </p>
-            <h2 className="mt-3 font-serif text-4xl text-charcoal sm:text-5xl">
+            <h2 className="mt-4 font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
               Your Phone Never Goes to Voicemail Again
             </h2>
           </div>
 
-          <div className="mt-20 grid gap-12 md:grid-cols-5">
-            {/* Steps — left (3 cols) */}
-            <div className="space-y-12 md:col-span-3">
+          <div className="mt-20 grid gap-16 md:grid-cols-5">
+            <div className="space-y-14 md:col-span-3">
               {[
                 {
                   num: "1",
@@ -569,15 +549,15 @@ export default function LandingPage() {
                   desc: "Full summary of the call before you've even set your tools down. Show up, do the job, get paid.",
                 },
               ].map((step) => (
-                <div key={step.num} className="fade-up flex gap-5">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-amber text-lg font-bold text-white">
+                <div key={step.num} className="fade-up flex gap-6">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber text-lg font-bold text-white">
                     {step.num}
                   </div>
                   <div>
-                    <h3 className="font-serif text-xl text-charcoal">
+                    <h3 className="font-serif text-[24px] font-medium text-charcoal">
                       {step.title}
                     </h3>
-                    <p className="mt-2 text-[17px] leading-relaxed text-charcoal-muted">
+                    <p className="mt-3 text-base leading-relaxed text-charcoal-muted">
                       {step.desc}
                     </p>
                   </div>
@@ -585,34 +565,33 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* Visual — right (2 cols) */}
             <div className="hidden md:col-span-2 md:flex md:items-center">
-              <div className="flex w-full flex-col items-center gap-4 rounded-2xl border border-cream-border bg-white p-8 shadow-sm">
+              <div className="card-shadow flex w-full flex-col items-center gap-5 rounded-xl border border-cream-border bg-white p-10">
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-amber/10">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4910A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
                   </svg>
                 </div>
-                <p className="text-center font-serif text-xl text-charcoal">Ring &rarr; Answer &rarr; Book &rarr; Text</p>
+                <p className="text-center font-serif text-[24px] font-medium text-charcoal">Ring &rarr; Answer &rarr; Book &rarr; Text</p>
                 <p className="text-center text-sm text-charcoal-muted">Every call, handled automatically.</p>
               </div>
             </div>
           </div>
 
-          <p className="fade-up mt-16 text-center text-lg italic text-charcoal-muted">
+          <p className="fade-up mt-20 text-center text-lg italic text-charcoal-muted">
             All while you&apos;re on a job, eating dinner, or sleeping.
           </p>
         </div>
       </Section>
 
-      {/* ── 6. FEATURES — "What You Actually Get" ── */}
-      <Section id="features" className="bg-white px-6 py-24" stagger>
+      {/* ── 6. FEATURES ── */}
+      <Section id="features" className="bg-white px-6 py-[120px]" stagger>
         <div className="mx-auto max-w-5xl">
-          <h2 className="fade-up text-center font-serif text-3xl text-charcoal sm:text-4xl lg:text-5xl">
+          <h2 className="fade-up text-center font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px] lg:text-[48px]">
             Built for How Service Businesses Actually Work
           </h2>
 
-          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 icon: "\uD83C\uDF10",
@@ -647,13 +626,13 @@ export default function LandingPage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="fade-up rounded-2xl border border-cream-border bg-cream p-7 transition-shadow duration-200 hover:shadow-md"
+                className="fade-up card-shadow card-shadow-hover rounded-xl bg-white p-10"
               >
                 <span className="text-2xl">{feature.icon}</span>
-                <h3 className="mt-3 font-serif text-lg text-charcoal">
+                <h3 className="mt-4 font-serif text-[24px] font-medium leading-[1.3] text-charcoal">
                   {feature.title}
                 </h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-charcoal-muted">
+                <p className="mt-3 text-base leading-relaxed text-charcoal-muted">
                   {feature.body}
                 </p>
               </div>
@@ -663,21 +642,21 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 7. DEMO PROOF ── */}
-      <Section className="bg-navy px-6 py-24">
-        <div className="mx-auto max-w-lg rounded-2xl bg-cream p-10 text-center shadow-2xl sm:p-14">
-          <p className="text-sm font-semibold uppercase tracking-widest text-amber">
+      <Section className="bg-navy px-6 py-[120px]">
+        <div className="card-shadow mx-auto max-w-lg rounded-xl bg-white p-10 text-center sm:p-14">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
             Hear It for Yourself
           </p>
-          <h2 className="mt-3 font-serif text-3xl text-charcoal sm:text-4xl">
+          <h2 className="mt-4 font-serif text-[32px] font-semibold leading-tight tracking-[-0.01em] text-charcoal sm:text-[40px]">
             Talk to Maria Right Now
           </h2>
-          <p className="mt-3 text-[17px] text-charcoal-muted">
+          <p className="mt-4 text-base text-charcoal-muted">
             Try English. Try Spanish. Ask about a plumbing emergency,
             a showing request, or an HVAC repair. Takes 30 seconds.
           </p>
           <button
             onClick={() => setShowVoiceChat(true)}
-            className="cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-amber-dark hover:scale-[1.02] sm:w-auto"
+            className="cta-shimmer mt-10 inline-flex w-full items-center justify-center gap-3 rounded-lg bg-amber px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5 sm:w-auto"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
@@ -686,33 +665,32 @@ export default function LandingPage() {
             </svg>
             Talk to Our AI Now
           </button>
-          <p className="mt-4 text-[15px] text-charcoal-light">
+          <p className="mt-4 text-sm text-charcoal-light">
             No signup. No credit card. Or call <a href={PHONE_TEL} className="font-semibold text-amber hover:underline">{PHONE}</a>
           </p>
         </div>
       </Section>
 
-      {/* ── 8. PRICING — Comparison + CTA ── */}
-      <Section id="pricing" className="bg-white px-6 py-24" stagger>
+      {/* ── 8. PRICING ── */}
+      <Section id="pricing" className="bg-cream px-6 py-[120px]" stagger>
         <div className="mx-auto max-w-5xl">
-          <h2 className="fade-up text-center font-serif text-3xl text-charcoal sm:text-4xl lg:text-5xl">
+          <h2 className="fade-up text-center font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px] lg:text-[48px]">
             The Math Is Simple
           </h2>
-          <p className="fade-up mt-3 text-center text-lg text-charcoal-muted">
+          <p className="fade-up mt-4 text-center text-lg text-charcoal-muted">
             What does it actually cost to answer your phone?
           </p>
 
-          <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {/* Missing calls */}
-            <div className="fade-up rounded-2xl border border-red-200 bg-red-50 p-8 text-center">
-              <p className="text-sm font-semibold uppercase tracking-wider text-red-500">
+          <div className="mt-16 grid gap-8 md:grid-cols-3">
+            <div className="fade-up card-shadow rounded-xl border border-red-200 bg-red-50 p-10 text-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-red-500">
                 Missing Calls
               </p>
-              <p className="mt-4 font-serif text-4xl text-charcoal">
+              <p className="mt-6 font-serif text-[40px] font-semibold text-charcoal">
                 $0
               </p>
               <p className="text-sm text-charcoal-light">/month</p>
-              <ul className="mt-6 space-y-3 text-left text-sm text-charcoal-muted">
+              <ul className="mt-8 space-y-3 text-left text-sm text-charcoal-muted">
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-red-400">&#10007;</span>
                   Most calls go unanswered
@@ -734,21 +712,20 @@ export default function LandingPage() {
                   No appointment booking
                 </li>
               </ul>
-              <p className="mt-6 text-xs font-semibold text-red-500">
+              <p className="mt-8 text-xs font-semibold text-red-500">
                 True cost: thousands in lost jobs every month
               </p>
             </div>
 
-            {/* Receptionist */}
-            <div className="fade-up rounded-2xl border border-cream-border bg-cream p-8 text-center">
-              <p className="text-sm font-semibold uppercase tracking-wider text-charcoal-light">
+            <div className="fade-up card-shadow rounded-xl bg-white p-10 text-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-charcoal-light">
                 Bilingual Receptionist
               </p>
-              <p className="mt-4 font-serif text-4xl text-charcoal">
+              <p className="mt-6 font-serif text-[40px] font-semibold text-charcoal">
                 $3,200
               </p>
               <p className="text-sm text-charcoal-light">/month</p>
-              <ul className="mt-6 space-y-3 text-left text-sm text-charcoal-muted">
+              <ul className="mt-8 space-y-3 text-left text-sm text-charcoal-muted">
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-amber">&#10003;</span>
                   Answers during business hours
@@ -770,21 +747,20 @@ export default function LandingPage() {
                   $38K/year + benefits + training
                 </li>
               </ul>
-              <p className="mt-6 text-xs text-charcoal-light">
+              <p className="mt-8 text-xs text-charcoal-light">
                 40 hours/week coverage only
               </p>
             </div>
 
-            {/* Calltide */}
-            <div className="fade-up rounded-2xl border-2 border-amber bg-white p-8 text-center shadow-lg shadow-amber/10">
-              <p className="text-sm font-semibold uppercase tracking-wider text-amber">
+            <div className="fade-up pricing-glow rounded-xl border-2 border-amber bg-white p-10 text-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
                 Calltide
               </p>
-              <p className="mt-4 font-serif text-4xl text-charcoal">
+              <p className="mt-6 font-serif text-[40px] font-semibold text-charcoal">
                 $497
               </p>
               <p className="text-sm text-charcoal-light">/month</p>
-              <ul className="mt-6 space-y-3 text-left text-sm text-charcoal">
+              <ul className="mt-8 space-y-3 text-left text-sm text-charcoal">
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-amber">&#10003;</span>
                   24/7/365 — never misses a call
@@ -806,20 +782,20 @@ export default function LandingPage() {
                   No sick days, no training, no turnover
                 </li>
               </ul>
-              <p className="mt-6 text-xs font-semibold text-amber">
+              <p className="mt-8 text-xs font-semibold text-amber">
                 One booked job pays for the entire month
               </p>
             </div>
           </div>
 
-          <div className="fade-up mt-12 text-center">
+          <div className="fade-up mt-14 text-center">
             <a
               href={BOOKING_URL}
-              className="cta-shimmer inline-flex items-center gap-2 rounded-xl bg-amber px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-150 hover:bg-amber-dark hover:scale-[1.02]"
+              className="cta-shimmer inline-flex items-center gap-2 rounded-lg bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5"
             >
               Book Your Setup Call &rarr;
             </a>
-            <p className="mt-3 text-sm text-charcoal-light">
+            <p className="mt-4 text-sm text-charcoal-light">
               30-minute call. We handle everything from there.
             </p>
           </div>
@@ -827,18 +803,18 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 9. GUARANTEE ── */}
-      <Section className="bg-cream px-6 py-24">
+      <Section className="bg-white px-6 py-[120px]">
         <div className="mx-auto max-w-3xl">
-          <div className="rounded-2xl border-l-4 border-l-navy bg-white p-10 sm:p-14">
-            <p className="font-serif text-lg uppercase tracking-widest text-amber">
+          <div className="card-shadow rounded-xl border-l-4 border-l-navy bg-white p-10 sm:p-14">
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
               Zero-Risk Guarantee
             </p>
-            <h2 className="mt-4 font-serif text-3xl text-charcoal sm:text-4xl">
+            <h2 className="mt-6 font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px]">
               Try Calltide for 30 Days.
               <br />
               If It Doesn&apos;t Book, You Don&apos;t Pay.
             </h2>
-            <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-charcoal-muted">
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-charcoal-muted">
               If your AI receptionist doesn&apos;t book at least 5 appointments in
               your first 30 days, we refund your first month. No questions
               asked. No long-term contracts. Cancel anytime.
@@ -848,24 +824,24 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 10. FAQ ── */}
-      <Section id="faq" className="relative bg-white px-6 py-24 overflow-hidden">
+      <Section id="faq" className="relative bg-cream px-6 py-[120px] overflow-hidden">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-center font-serif text-4xl text-charcoal sm:text-5xl">
+          <h2 className="text-center font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
             Questions We Hear
           </h2>
-          <p className="mt-3 text-center text-lg text-charcoal-muted">
+          <p className="mt-4 text-center text-lg text-charcoal-muted">
             Straight answers, no runaround.
           </p>
-          <div className="mt-12">
+          <div className="mt-14">
             <FAQ />
           </div>
         </div>
       </Section>
 
       {/* ── 11. FINAL CTA ── */}
-      <Section className="bg-navy px-6 py-24 overflow-hidden">
+      <Section className="bg-navy px-6 py-[120px] overflow-hidden">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-serif text-3xl text-white sm:text-4xl lg:text-5xl">
+          <h2 className="font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-white sm:text-[40px] lg:text-[48px]">
             Your Competitors Are Still
             <br />
             Sending Calls to Voicemail.
@@ -873,7 +849,7 @@ export default function LandingPage() {
 
           <a
             href={BOOKING_URL}
-            className="cta-shimmer group mt-10 inline-flex items-center gap-2 rounded-xl bg-amber px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-150 hover:bg-amber-dark hover:shadow-amber/30 hover:scale-[1.02]"
+            className="cta-shimmer group mt-12 inline-flex items-center gap-2 rounded-lg bg-amber px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5 hover:shadow-amber/30"
           >
             Book Your Setup Call
             <span className="transition-transform group-hover:translate-x-0.5">
@@ -881,12 +857,12 @@ export default function LandingPage() {
             </span>
           </a>
 
-          <p className="mt-6 text-slate-300">
+          <p className="mt-8 text-slate-400">
             Or hear the AI yourself right now:
           </p>
           <a
             href={PHONE_TEL}
-            className="mt-1 inline-block font-serif text-2xl text-white transition hover:text-amber"
+            className="mt-2 inline-block font-serif text-[28px] font-semibold text-white transition hover:text-amber"
           >
             {PHONE}
           </a>
@@ -894,36 +870,35 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 12. FOOTER ── */}
-      <footer className="bg-charcoal px-6 py-12">
+      <footer className="bg-charcoal px-6 py-14">
         <div className="mx-auto max-w-5xl">
-          <div className="flex flex-col items-center gap-4 text-center text-sm">
+          <div className="flex flex-col items-center gap-5 text-center text-sm">
             <img
               src="/images/logo.webp"
               alt="Calltide"
               className="h-7 w-auto brightness-0 invert opacity-60"
             />
-            <p className="text-cream/50">Built in San Antonio, TX</p>
-            <div className="flex items-center gap-4 text-cream/40">
-              <a href="mailto:hello@calltide.app" className="transition hover:text-cream/60">
+            <p className="text-white/40">Built in San Antonio, TX</p>
+            <div className="flex items-center gap-4 text-white/30">
+              <a href="mailto:hello@calltide.app" className="transition hover:text-white/50">
                 hello@calltide.app
               </a>
               <span>&middot;</span>
-              <a href="/terms" className="transition hover:text-cream/60">
+              <a href="/terms" className="transition hover:text-white/50">
                 Terms
               </a>
               <span>&middot;</span>
-              <a href="/privacy" className="transition hover:text-cream/60">
+              <a href="/privacy" className="transition hover:text-white/50">
                 Privacy
               </a>
             </div>
-            <p className="text-cream/40">
+            <p className="text-white/30">
               &copy; {new Date().getFullYear()} Calltide. All rights reserved.
             </p>
           </div>
         </div>
       </footer>
 
-      {/* Bottom padding for mobile sticky CTA */}
       <div className="h-16 md:hidden" />
     </div>
   );

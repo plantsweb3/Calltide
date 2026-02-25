@@ -47,7 +47,7 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="relative mx-4 w-full max-w-md rounded-2xl border border-[#1A2A44] bg-[#0F1D32] p-6 shadow-2xl">
+      <div className="relative mx-4 w-full max-w-md rounded-xl border border-[#1E293B] bg-[#111827] p-6 shadow-2xl">
         {/* Close button */}
         <button
           onClick={() => {
@@ -71,13 +71,13 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
 
         {/* Header */}
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5A623]/15">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#C59A27]/15">
             <svg
               width="28"
               height="28"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#F5A623"
+              stroke="#C59A27"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -106,7 +106,7 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
 
         {/* Messages */}
         {recentMessages.length > 0 && (
-          <div className="mb-5 max-h-48 space-y-2 overflow-y-auto rounded-xl bg-[#0A1628] p-4">
+          <div className="mb-5 max-h-48 space-y-2 overflow-y-auto rounded-lg bg-[#0B0F19] p-4">
             {recentMessages.map((msg, i) => {
               const role = msg.message.role;
               const isAI = role === "assistant";
@@ -116,7 +116,7 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
                   className={`text-sm ${isAI ? "text-slate-200" : "text-slate-400"}`}
                 >
                   <span
-                    className={`text-xs font-medium ${isAI ? "text-[#F5A623]" : "text-slate-500"}`}
+                    className={`text-xs font-medium ${isAI ? "text-[#C59A27]" : "text-slate-500"}`}
                   >
                     {isAI ? "AI" : "You"}:
                   </span>{" "}
@@ -133,7 +133,7 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
             {[0, 1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="wave-bar h-8 w-1.5 rounded-full bg-[#F5A623]"
+                className="wave-bar h-8 w-1.5 rounded-full bg-[#C59A27]"
                 style={{ animationDelay: `${i * 0.15}s` }}
               />
             ))}
@@ -144,10 +144,10 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
         <button
           onClick={handleToggle}
           disabled={(!accessToken && !error) || isConnecting}
-          className={`w-full rounded-xl px-6 py-3.5 text-sm font-semibold transition-all ${
+          className={`w-full rounded-lg px-6 py-3.5 text-sm font-semibold transition-all duration-300 ${
             isConnected
               ? "bg-red-500/90 text-white hover:bg-red-500"
-              : "bg-[#F5A623] text-[#0A1628] hover:bg-[#D4901E] disabled:opacity-40 disabled:cursor-not-allowed"
+              : "bg-[#C59A27] text-white hover:bg-[#A17D1F] disabled:opacity-40 disabled:cursor-not-allowed"
           }`}
         >
           {isConnecting
