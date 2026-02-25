@@ -123,7 +123,7 @@ function FAQ() {
           </button>
           <div className={`faq-answer ${openIndex === i ? "open" : ""}`}>
             <div>
-              <p className="pb-5 leading-relaxed text-charcoal-muted">{faq.a}</p>
+              <p className="pb-5 text-[17px] leading-relaxed text-charcoal-muted">{faq.a}</p>
             </div>
           </div>
         </div>
@@ -206,7 +206,7 @@ function ExitIntent({ onTryInBrowser }: { onTryInBrowser: () => void }) {
         </p>
         <button
           onClick={() => { setShow(false); onTryInBrowser(); }}
-          className="cta-shimmer mt-6 inline-flex items-center gap-2 rounded-xl bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-amber-dark"
+          className="cta-shimmer mt-6 inline-flex items-center gap-2 rounded-xl bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-amber-dark hover:scale-[1.02]"
         >
           Try It in Your Browser
         </button>
@@ -228,13 +228,19 @@ function ExitIntent({ onTryInBrowser }: { onTryInBrowser: () => void }) {
 
 function DashboardMockup() {
   const mockCalls = [
-    { name: "Maria Garcia", time: "9:14 AM", status: "Booked", service: "AC Repair", lang: "ES" },
-    { name: "James Wilson", time: "10:32 AM", status: "Booked", service: "Pipe Leak", lang: "EN" },
-    { name: "Robert Chen", time: "11:45 AM", status: "Booked", service: "Water Heater", lang: "EN" },
-    { name: "Ana Rodriguez", time: "1:08 PM", status: "Booked", service: "Drain Clean", lang: "ES" },
-    { name: "Mike Johnson", time: "2:51 PM", status: "Missed", service: "\u2014", lang: "EN" },
-    { name: "Sofia Martinez", time: "4:22 PM", status: "Booked", service: "Showing", lang: "ES" },
+    { name: "Maria G.", time: "9:14 AM", status: "Booked", service: "AC Repair", lang: "ES" },
+    { name: "James T.", time: "10:32 AM", status: "Booked", service: "Pipe Leak", lang: "EN" },
+    { name: "Roberto S.", time: "11:45 AM", status: "Callback", service: "Estimate", lang: "ES" },
+    { name: "Jennifer K.", time: "1:08 PM", status: "Booked", service: "Showing", lang: "EN" },
+    { name: "David L.", time: "2:51 PM", status: "Voicemail", service: "\u2014", lang: "EN" },
+    { name: "Sofia M.", time: "4:22 PM", status: "Booked", service: "Drain Clean", lang: "ES" },
   ];
+
+  const statusStyle: Record<string, string> = {
+    Booked: "bg-green-500/10 text-green-400",
+    Callback: "bg-blue-500/10 text-blue-400",
+    Voicemail: "bg-slate-500/10 text-slate-400",
+  };
 
   return (
     <div className="h-full w-full bg-slate-950 p-3 text-[10px] overflow-hidden">
@@ -242,18 +248,22 @@ function DashboardMockup() {
         <span className="text-xs font-bold text-green-500">Calltide</span>
         <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[8px] text-slate-400">PORTAL</span>
       </div>
-      <div className="grid grid-cols-2 gap-1.5 mb-3">
-        {[
-          { label: "Today", value: "6", color: "text-slate-100" },
-          { label: "This Week", value: "23", color: "text-slate-100" },
-          { label: "Booked", value: "18", color: "text-green-400" },
-          { label: "Saved", value: "5", color: "text-amber" },
-        ].map((m) => (
-          <div key={m.label} className="rounded-lg border border-slate-800 bg-slate-900 p-2">
-            <p className="text-[8px] text-slate-400">{m.label}</p>
-            <p className={`text-sm font-bold ${m.color}`}>{m.value}</p>
-          </div>
-        ))}
+      {/* Stats row */}
+      <div className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 mb-3">
+        <div className="text-center">
+          <p className="text-sm font-bold text-slate-100">23</p>
+          <p className="text-[7px] text-slate-500">Total Calls</p>
+        </div>
+        <div className="h-6 w-px bg-slate-800" />
+        <div className="text-center">
+          <p className="text-sm font-bold text-green-400">18</p>
+          <p className="text-[7px] text-slate-500">Booked</p>
+        </div>
+        <div className="h-6 w-px bg-slate-800" />
+        <div className="text-center">
+          <p className="text-sm font-bold text-amber">$4.2k</p>
+          <p className="text-[7px] text-slate-500">Saved</p>
+        </div>
       </div>
       <p className="text-[9px] font-medium text-slate-400 mb-1.5">Recent Calls</p>
       <div className="space-y-1">
@@ -264,11 +274,7 @@ function DashboardMockup() {
               <p className="text-[8px] text-slate-500">{call.time} &middot; {call.service}</p>
             </div>
             <div className="flex shrink-0 items-center gap-1">
-              <span className={`rounded-full px-1.5 py-0.5 text-[7px] font-medium ${
-                call.status === "Booked"
-                  ? "bg-green-500/10 text-green-400"
-                  : "bg-amber-500/10 text-amber-400"
-              }`}>
+              <span className={`rounded-full px-1.5 py-0.5 text-[7px] font-medium ${statusStyle[call.status] ?? "bg-slate-500/10 text-slate-400"}`}>
                 {call.status}
               </span>
               <span className="text-[7px] text-slate-500">{call.lang}</span>
@@ -348,32 +354,41 @@ export default function LandingPage() {
               FAQ
             </a>
           </div>
-          <a
-            href={PHONE_TEL}
-            className="hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-cream transition hover:bg-navy-light sm:inline-flex"
-          >
-            Call Demo: {PHONE}
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href="/dashboard/login"
+              className="hidden text-sm font-medium text-charcoal-muted transition hover:text-charcoal sm:inline-block"
+            >
+              Log In
+            </a>
+            <a
+              href={PHONE_TEL}
+              className="hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-cream transition hover:bg-navy-light sm:inline-flex"
+            >
+              Call Demo: {PHONE}
+            </a>
+          </div>
         </div>
       </nav>
 
       {/* ── 2. HERO — Split Layout ── */}
       <section className="relative overflow-hidden bg-cream grain-overlay">
-        <div className="relative z-10 mx-auto max-w-6xl px-6 py-16 md:py-24">
+        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:py-28">
           <div className="grid items-center gap-12 md:grid-cols-5">
             {/* Left — Text (60%) */}
             <div className="md:col-span-3">
               <p className="text-sm font-semibold uppercase tracking-widest text-amber">
                 The Front Office for Your Business
               </p>
-              <h1 className="mt-4 font-serif text-5xl leading-[1.1] text-charcoal sm:text-6xl lg:text-7xl">
-                Every Call Answered.
+              <h1 className="mt-4 font-serif text-[42px] leading-[1.08] text-charcoal sm:text-[52px] lg:text-[60px]">
+                Answer Every Lead
                 <br />
-                Every Job Booked.
+                Like You Have a Full-Time Receptionist
               </h1>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-charcoal-muted">
-                Your AI receptionist picks up in English or Spanish — 24/7.
-                Books the appointment. Texts you the details. All for less than $17/day.
+              <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-charcoal-muted">
+                Your AI picks up in English or Spanish — 24/7. Qualifies the caller,
+                books the appointment, and texts you the details before you set your
+                tools down. Less than $17/day.
               </p>
               <p className="mt-3 font-serif text-lg italic text-amber">
                 Cada llamada contestada. Cada trabajo agendado.
@@ -383,9 +398,9 @@ export default function LandingPage() {
               <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
                 <button
                   onClick={() => setShowVoiceChat(true)}
-                  className="cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl bg-amber px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber/20 transition hover:bg-amber-dark hover:shadow-amber/30"
+                  className="cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl bg-amber px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-150 hover:bg-amber-dark hover:shadow-amber/30 hover:scale-[1.02]"
                 >
-                  Start Answering Every Call &rarr;
+                  See It In Action &rarr;
                 </button>
                 <a
                   href={PHONE_TEL}
@@ -404,7 +419,7 @@ export default function LandingPage() {
               <div className="mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2 shadow-[0_24px_64px_rgba(27,42,74,0.2)]">
                 <div
                   role="img"
-                  aria-label="Calltide mobile dashboard showing call activity with 6 calls today, 23 this week, and a list of booked appointments"
+                  aria-label="Calltide mobile dashboard showing today's call activity with booked appointments and revenue saved"
                   className="overflow-hidden rounded-[2rem]"
                   style={{ aspectRatio: "600/1053" }}
                 >
@@ -451,22 +466,22 @@ export default function LandingPage() {
           </h2>
 
           <div className="mt-16 grid gap-8 md:grid-cols-3">
-            <div className="fade-up rounded-2xl bg-cream-dark p-8 shadow-sm">
+            <div className="fade-up rounded-2xl bg-cream-dark p-8 shadow-sm transition-shadow duration-200 hover:shadow-md">
               <p className="font-serif text-xl text-charcoal">
                 Tuesday, 2:14 PM.
               </p>
-              <p className="mt-3 leading-relaxed text-charcoal-muted">
+              <p className="mt-3 text-[17px] leading-relaxed text-charcoal-muted">
                 A homeowner in Stone Oak has a burst pipe. She calls three
                 plumbers. Two go to voicemail. The third answers and gets a
                 $1,200 job. Which plumber were you?
               </p>
             </div>
 
-            <div className="fade-up rounded-2xl bg-cream-dark p-8 shadow-sm">
+            <div className="fade-up rounded-2xl bg-cream-dark p-8 shadow-sm transition-shadow duration-200 hover:shadow-md">
               <p className="font-serif text-xl text-charcoal">
                 &ldquo;Hola, necesito ayuda...&rdquo;
               </p>
-              <p className="mt-3 leading-relaxed text-charcoal-muted">
+              <p className="mt-3 text-[17px] leading-relaxed text-charcoal-muted">
                 A Spanish-speaking family needs their AC fixed. Your voicemail is
                 in English. They don&apos;t leave a message. They call the
                 company with the bilingual receptionist. You never even know they
@@ -474,11 +489,11 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="fade-up rounded-2xl bg-cream-dark p-8 shadow-sm">
+            <div className="fade-up rounded-2xl bg-cream-dark p-8 shadow-sm transition-shadow duration-200 hover:shadow-md">
               <p className="font-serif text-xl text-charcoal">
                 Saturday, 11:30 AM.
               </p>
-              <p className="mt-3 leading-relaxed text-charcoal-muted">
+              <p className="mt-3 text-[17px] leading-relaxed text-charcoal-muted">
                 A couple drives by a house for sale and calls the agent&apos;s
                 number on the sign. No answer. They call the next listing. By
                 Monday, they&apos;ve scheduled three showings with your
@@ -538,7 +553,7 @@ export default function LandingPage() {
                     <h3 className="font-serif text-xl text-charcoal">
                       {step.title}
                     </h3>
-                    <p className="mt-2 leading-relaxed text-charcoal-muted">
+                    <p className="mt-2 text-[17px] leading-relaxed text-charcoal-muted">
                       {step.desc}
                     </p>
                   </div>
@@ -581,7 +596,7 @@ export default function LandingPage() {
           </p>
           <button
             onClick={() => setShowVoiceChat(true)}
-            className="cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-amber-dark sm:w-auto"
+            className="cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-amber-dark hover:scale-[1.02] sm:w-auto"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
@@ -590,7 +605,7 @@ export default function LandingPage() {
             </svg>
             Talk to Our AI Now
           </button>
-          <p className="mt-4 text-sm text-charcoal-light">
+          <p className="mt-4 text-[15px] text-charcoal-light">
             No signup. No credit card. Or call <a href={PHONE_TEL} className="font-semibold text-amber hover:underline">{PHONE}</a>
           </p>
         </div>
@@ -638,27 +653,73 @@ export default function LandingPage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="fade-up rounded-2xl border border-cream-border bg-cream p-7"
+                className="fade-up rounded-2xl border border-cream-border bg-cream p-7 transition-shadow duration-200 hover:shadow-md"
               >
                 <span className="text-2xl">{feature.icon}</span>
                 <h3 className="mt-3 font-serif text-lg text-charcoal">
                   {feature.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-charcoal-muted">
+                <p className="mt-2 text-[15px] leading-relaxed text-charcoal-muted">
                   {feature.body}
                 </p>
               </div>
             ))}
           </div>
 
-          {/* Divider quote */}
-          <div className="fade-up mt-16 rounded-2xl bg-navy px-8 py-12 text-center sm:px-16">
-            <p className="font-serif text-2xl text-cream sm:text-3xl">
-              &ldquo;My phone used to ring 20 times a day. I answered maybe 8. Now every single one gets handled.&rdquo;
-            </p>
-            <p className="mt-4 text-sm font-medium text-amber">
-              &mdash; The kind of result Calltide delivers
-            </p>
+        </div>
+      </Section>
+
+      {/* ── 7b. TESTIMONIALS ── */}
+      <Section className="bg-cream px-6 py-24" stagger>
+        <div className="mx-auto max-w-5xl">
+          <h2 className="fade-up text-center font-serif text-3xl text-charcoal sm:text-4xl lg:text-5xl">
+            What Business Owners Are Saying
+          </h2>
+          <div className="mt-14 grid gap-8 md:grid-cols-3">
+            <div className="fade-up rounded-2xl border border-cream-border bg-white p-8 transition-shadow duration-200 hover:shadow-md">
+              <p className="text-[17px] leading-relaxed text-charcoal-muted">
+                &ldquo;I used to lose 3&ndash;4 jobs a week to voicemail. First month with Calltide, my bookings went up 40%. The Spanish callers alone made it worth it.&rdquo;
+              </p>
+              <div className="mt-6 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber/10 font-serif text-lg text-amber">
+                  M
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-charcoal">Marco R.</p>
+                  <p className="text-xs text-charcoal-light">Plumbing Contractor, San Antonio</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="fade-up rounded-2xl border border-cream-border bg-white p-8 transition-shadow duration-200 hover:shadow-md">
+              <p className="text-[17px] leading-relaxed text-charcoal-muted">
+                &ldquo;My phone rings while I&apos;m on a roof. I can&apos;t answer it. Now I get a text with the caller&apos;s name, what they need, and the appointment&apos;s already booked. It&apos;s like having a secretary.&rdquo;
+              </p>
+              <div className="mt-6 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy/10 font-serif text-lg text-navy">
+                  D
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-charcoal">David L.</p>
+                  <p className="text-xs text-charcoal-light">Roofing &amp; General Contractor</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="fade-up rounded-2xl border border-cream-border bg-white p-8 transition-shadow duration-200 hover:shadow-md">
+              <p className="text-[17px] leading-relaxed text-charcoal-muted">
+                &ldquo;I was skeptical about AI answering my phone. Called the demo, tried to trip it up in Spanish, and it handled everything perfectly. Signed up the same day.&rdquo;
+              </p>
+              <div className="mt-6 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber/10 font-serif text-lg text-amber">
+                  J
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-charcoal">Jennifer K.</p>
+                  <p className="text-xs text-charcoal-light">Real Estate Agent, Austin</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </Section>
@@ -797,7 +858,7 @@ export default function LandingPage() {
               <br />
               If It Doesn&apos;t Book, You Don&apos;t Pay.
             </h2>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-charcoal-muted">
+            <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-charcoal-muted">
               If your AI receptionist doesn&apos;t book at least 5 appointments in
               your first 30 days, we refund your first month. No questions
               asked. No long-term contracts. Cancel anytime.
@@ -850,7 +911,7 @@ export default function LandingPage() {
 
             <a
               href={BOOKING_URL}
-              className="cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber/20 transition hover:bg-amber-dark"
+              className="cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-150 hover:bg-amber-dark hover:scale-[1.02]"
             >
               Get Started &rarr;
             </a>
@@ -878,8 +939,28 @@ export default function LandingPage() {
         </div>
       </Section>
 
+      {/* ── 11b. CLIENT PORTAL ACCESS ── */}
+      <Section className="bg-navy px-6 py-14">
+        <div className="mx-auto flex max-w-3xl flex-col items-center justify-between gap-4 sm:flex-row">
+          <div>
+            <p className="font-serif text-xl text-white">
+              Already a Calltide client?
+            </p>
+            <p className="mt-1 text-sm text-slate-400">
+              Access your dashboard, call history, and appointments.
+            </p>
+          </div>
+          <a
+            href="/dashboard/login"
+            className="inline-flex items-center gap-2 rounded-xl border border-cream/20 px-6 py-3 text-sm font-semibold text-cream transition-all duration-150 hover:bg-cream/10 hover:border-cream/40"
+          >
+            Go to Client Portal &rarr;
+          </a>
+        </div>
+      </Section>
+
       {/* ── 12. FINAL CTA ── */}
-      <Section className="bg-navy px-6 py-24 overflow-hidden">
+      <Section className="bg-navy-dark px-6 py-24 overflow-hidden">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-serif text-3xl text-white sm:text-4xl lg:text-5xl">
             Your Competitors Are Still
@@ -892,7 +973,7 @@ export default function LandingPage() {
 
           <a
             href={BOOKING_URL}
-            className="cta-shimmer group mt-10 inline-flex items-center gap-2 rounded-xl bg-amber px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition hover:bg-amber-dark hover:shadow-amber/30"
+            className="cta-shimmer group mt-10 inline-flex items-center gap-2 rounded-xl bg-amber px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-150 hover:bg-amber-dark hover:shadow-amber/30 hover:scale-[1.02]"
           >
             Stop Losing Jobs
             <span className="transition-transform group-hover:translate-x-0.5">

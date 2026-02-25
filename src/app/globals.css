@@ -155,6 +155,7 @@ body {
 /* Sticky nav state */
 .nav-scrolled {
   background: rgba(255, 255, 255, 0.97);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
   border-bottom-color: transparent;
 }
