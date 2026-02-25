@@ -75,23 +75,11 @@ const faqs = [
   },
   {
     q: "I can't afford $497/month right now.",
-    a: "One booked job covers the entire month. If Calltide books just one appointment you would have missed, it's paid for itself. Most of our clients see 5-10 additional bookings per month from calls they were previously missing — that's $1,000-$5,000 in revenue they were leaving on the table.",
+    a: "One booked job covers the entire month. If Calltide books just one appointment you would have missed, it's paid for itself. Most of our clients see 5-10 additional bookings per month from calls they were previously missing — that's thousands in revenue they were leaving on the table.",
   },
   {
     q: "What if I already have a receptionist?",
     a: "Great — Calltide covers the other 128 hours per week they're not working. Nights, weekends, lunch breaks, sick days, holidays. Your receptionist handles business hours; Calltide handles everything else.",
-  },
-  {
-    q: "How does it know which language to speak?",
-    a: "It listens to the caller's first few words and responds in that language automatically. If they switch mid-conversation — even to Spanglish — it follows seamlessly.",
-  },
-  {
-    q: "How long does setup take?",
-    a: "48 hours from signing to your phone being answered by AI. We configure everything — your services, hours, pricing, calendar, service area. You don't touch a thing.",
-  },
-  {
-    q: "What about my existing phone number?",
-    a: "You keep your number. We set up call forwarding so calls route through Calltide first. Takes 5 minutes.",
   },
   {
     q: "What if the customer needs a real person?",
@@ -306,6 +294,7 @@ function useScrolled() {
 
 export default function LandingPage() {
   const [showVoiceChat, setShowVoiceChat] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const scrolled = useScrolled();
 
   return (
@@ -313,18 +302,6 @@ export default function LandingPage() {
       {showVoiceChat && <VoiceChat onClose={() => setShowVoiceChat(false)} />}
       <MobileCTA onTryInBrowser={() => setShowVoiceChat(true)} />
       <ExitIntent onTryInBrowser={() => setShowVoiceChat(true)} />
-
-      {/* ── 0. TOP BAR ── */}
-      <div className="bg-navy px-4 py-2.5 text-center">
-        <a
-          href="#pricing"
-          className="inline-flex items-center gap-2 text-sm font-medium text-amber transition hover:text-amber-light"
-        >
-          <span className="pulse-dot">&bull;</span>
-          Founding member pricing: $297/mo locked — 3 of 5 spots remaining
-          <span className="hidden sm:inline">&rarr; Claim yours</span>
-        </a>
-      </div>
 
       {/* ── 1. NAVIGATION ── */}
       <nav
@@ -367,8 +344,55 @@ export default function LandingPage() {
             >
               Call Demo: {PHONE}
             </a>
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-charcoal md:hidden"
+              aria-label="Menu"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                {mobileMenuOpen ? (
+                  <path d="M18 6L6 18M6 6l12 12" />
+                ) : (
+                  <>
+                    <path d="M4 6h16" />
+                    <path d="M4 12h16" />
+                    <path d="M4 18h16" />
+                  </>
+                )}
+              </svg>
+            </button>
           </div>
         </div>
+
+        {/* Mobile menu dropdown */}
+        {mobileMenuOpen && (
+          <div className="border-t border-cream-border bg-white px-6 py-4 md:hidden">
+            <div className="flex flex-col gap-4">
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">
+                How It Works
+              </a>
+              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">
+                What You Get
+              </a>
+              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">
+                Pricing
+              </a>
+              <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">
+                FAQ
+              </a>
+              <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">
+                Log In
+              </a>
+              <a
+                href={PHONE_TEL}
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-cream"
+              >
+                Call Demo: {PHONE}
+              </a>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* ── 2. HERO — Split Layout ── */}
@@ -388,7 +412,7 @@ export default function LandingPage() {
               <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-charcoal-muted">
                 Your AI picks up in English or Spanish — 24/7. Qualifies the caller,
                 books the appointment, and texts you the details before you set your
-                tools down. Less than $17/day.
+                tools down.
               </p>
               <p className="mt-3 font-serif text-lg italic text-amber">
                 Cada llamada contestada. Cada trabajo agendado.
@@ -400,7 +424,7 @@ export default function LandingPage() {
                   onClick={() => setShowVoiceChat(true)}
                   className="cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl bg-amber px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-150 hover:bg-amber-dark hover:shadow-amber/30 hover:scale-[1.02]"
                 >
-                  See It In Action &rarr;
+                  Talk to Maria Now &rarr;
                 </button>
                 <a
                   href={PHONE_TEL}
@@ -410,7 +434,7 @@ export default function LandingPage() {
                 </a>
               </div>
               <p className="mt-3 text-[13px] text-charcoal-light">
-                No signup needed. Talk to our AI in your browser right now.
+                No signup needed. Talk to our AI receptionist in your browser right now.
               </p>
             </div>
 
@@ -471,9 +495,9 @@ export default function LandingPage() {
                 Tuesday, 2:14 PM.
               </p>
               <p className="mt-3 text-[17px] leading-relaxed text-charcoal-muted">
-                A homeowner in Stone Oak has a burst pipe. She calls three
-                plumbers. Two go to voicemail. The third answers and gets a
-                $1,200 job. Which plumber were you?
+                A homeowner has a burst pipe. She calls three plumbers.
+                Two go to voicemail. The third answers and gets a $1,200
+                job. Which plumber were you?
               </p>
             </div>
 
@@ -504,10 +528,10 @@ export default function LandingPage() {
 
           <div className="mt-16 text-center">
             <p className="font-serif text-3xl text-amber sm:text-4xl">
-              The average service business misses 62% of incoming calls.
+              Most service businesses miss more than half their incoming calls.
             </p>
             <p className="mt-3 text-lg text-charcoal-muted">
-              That&apos;s $2,000+ per week walking out your door.
+              Every one of those is revenue walking out your door.
             </p>
           </div>
         </div>
@@ -581,37 +605,7 @@ export default function LandingPage() {
         </div>
       </Section>
 
-      {/* ── 6. DEMO CTA ── */}
-      <Section className="bg-navy px-6 py-24">
-        <div className="mx-auto max-w-lg rounded-2xl bg-cream p-10 text-center shadow-2xl sm:p-14">
-          <p className="text-sm font-semibold uppercase tracking-widest text-amber">
-            Don&apos;t Take Our Word for It
-          </p>
-          <h2 className="mt-3 font-serif text-3xl text-charcoal sm:text-4xl">
-            Talk to Maria Right Now
-          </h2>
-          <p className="mt-3 text-charcoal-muted">
-            Try English. Try Spanish. Ask about a plumbing emergency.
-            Takes 30 seconds.
-          </p>
-          <button
-            onClick={() => setShowVoiceChat(true)}
-            className="cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-amber-dark hover:scale-[1.02] sm:w-auto"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-              <line x1="12" x2="12" y1="19" y2="22" />
-            </svg>
-            Talk to Our AI Now
-          </button>
-          <p className="mt-4 text-[15px] text-charcoal-light">
-            No signup. No credit card. Or call <a href={PHONE_TEL} className="font-semibold text-amber hover:underline">{PHONE}</a>
-          </p>
-        </div>
-      </Section>
-
-      {/* ── 7. FEATURES — "What You Actually Get" ── */}
+      {/* ── 6. FEATURES — "What You Actually Get" ── */}
       <Section id="features" className="bg-white px-6 py-24" stagger>
         <div className="mx-auto max-w-5xl">
           <h2 className="fade-up text-center font-serif text-3xl text-charcoal sm:text-4xl lg:text-5xl">
@@ -665,67 +659,41 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-
         </div>
       </Section>
 
-      {/* ── 7b. TESTIMONIALS ── */}
-      <Section className="bg-cream px-6 py-24" stagger>
-        <div className="mx-auto max-w-5xl">
-          <h2 className="fade-up text-center font-serif text-3xl text-charcoal sm:text-4xl lg:text-5xl">
-            What Business Owners Are Saying
+      {/* ── 7. DEMO PROOF ── */}
+      <Section className="bg-navy px-6 py-24">
+        <div className="mx-auto max-w-lg rounded-2xl bg-cream p-10 text-center shadow-2xl sm:p-14">
+          <p className="text-sm font-semibold uppercase tracking-widest text-amber">
+            Hear It for Yourself
+          </p>
+          <h2 className="mt-3 font-serif text-3xl text-charcoal sm:text-4xl">
+            Talk to Maria Right Now
           </h2>
-          <div className="mt-14 grid gap-8 md:grid-cols-3">
-            <div className="fade-up rounded-2xl border border-cream-border bg-white p-8 transition-shadow duration-200 hover:shadow-md">
-              <p className="text-[17px] leading-relaxed text-charcoal-muted">
-                &ldquo;I used to lose 3&ndash;4 jobs a week to voicemail. First month with Calltide, my bookings went up 40%. The Spanish callers alone made it worth it.&rdquo;
-              </p>
-              <div className="mt-6 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber/10 font-serif text-lg text-amber">
-                  M
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-charcoal">Marco R.</p>
-                  <p className="text-xs text-charcoal-light">Plumbing Contractor, San Antonio</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="fade-up rounded-2xl border border-cream-border bg-white p-8 transition-shadow duration-200 hover:shadow-md">
-              <p className="text-[17px] leading-relaxed text-charcoal-muted">
-                &ldquo;My phone rings while I&apos;m on a roof. I can&apos;t answer it. Now I get a text with the caller&apos;s name, what they need, and the appointment&apos;s already booked. It&apos;s like having a secretary.&rdquo;
-              </p>
-              <div className="mt-6 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy/10 font-serif text-lg text-navy">
-                  D
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-charcoal">David L.</p>
-                  <p className="text-xs text-charcoal-light">Roofing &amp; General Contractor</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="fade-up rounded-2xl border border-cream-border bg-white p-8 transition-shadow duration-200 hover:shadow-md">
-              <p className="text-[17px] leading-relaxed text-charcoal-muted">
-                &ldquo;I was skeptical about AI answering my phone. Called the demo, tried to trip it up in Spanish, and it handled everything perfectly. Signed up the same day.&rdquo;
-              </p>
-              <div className="mt-6 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber/10 font-serif text-lg text-amber">
-                  J
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-charcoal">Jennifer K.</p>
-                  <p className="text-xs text-charcoal-light">Real Estate Agent, Austin</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <p className="mt-3 text-[17px] text-charcoal-muted">
+            Try English. Try Spanish. Ask about a plumbing emergency,
+            a showing request, or an HVAC repair. Takes 30 seconds.
+          </p>
+          <button
+            onClick={() => setShowVoiceChat(true)}
+            className="cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-150 hover:bg-amber-dark hover:scale-[1.02] sm:w-auto"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" x2="12" y1="19" y2="22" />
+            </svg>
+            Talk to Our AI Now
+          </button>
+          <p className="mt-4 text-[15px] text-charcoal-light">
+            No signup. No credit card. Or call <a href={PHONE_TEL} className="font-semibold text-amber hover:underline">{PHONE}</a>
+          </p>
         </div>
       </Section>
 
-      {/* ── 8. COMPARISON — "The Math Is Simple" ── */}
-      <Section className="bg-cream px-6 py-24" stagger>
+      {/* ── 8. PRICING — Comparison + CTA ── */}
+      <Section id="pricing" className="bg-white px-6 py-24" stagger>
         <div className="mx-auto max-w-5xl">
           <h2 className="fade-up text-center font-serif text-3xl text-charcoal sm:text-4xl lg:text-5xl">
             The Math Is Simple
@@ -747,11 +715,11 @@ export default function LandingPage() {
               <ul className="mt-6 space-y-3 text-left text-sm text-charcoal-muted">
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-red-400">&#10007;</span>
-                  62% of calls go unanswered
+                  Most calls go unanswered
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-red-400">&#10007;</span>
-                  $2K+/week in lost revenue
+                  Lost revenue every week
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-red-400">&#10007;</span>
@@ -767,12 +735,12 @@ export default function LandingPage() {
                 </li>
               </ul>
               <p className="mt-6 text-xs font-semibold text-red-500">
-                True cost: $8K&ndash;10K/mo in lost jobs
+                True cost: thousands in lost jobs every month
               </p>
             </div>
 
             {/* Receptionist */}
-            <div className="fade-up rounded-2xl border border-cream-border bg-white p-8 text-center">
+            <div className="fade-up rounded-2xl border border-cream-border bg-cream p-8 text-center">
               <p className="text-sm font-semibold uppercase tracking-wider text-charcoal-light">
                 Bilingual Receptionist
               </p>
@@ -839,17 +807,29 @@ export default function LandingPage() {
                 </li>
               </ul>
               <p className="mt-6 text-xs font-semibold text-amber">
-                That&apos;s $17/day
+                One booked job pays for the entire month
               </p>
             </div>
+          </div>
+
+          <div className="fade-up mt-12 text-center">
+            <a
+              href={BOOKING_URL}
+              className="cta-shimmer inline-flex items-center gap-2 rounded-xl bg-amber px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-150 hover:bg-amber-dark hover:scale-[1.02]"
+            >
+              Book Your Setup Call &rarr;
+            </a>
+            <p className="mt-3 text-sm text-charcoal-light">
+              30-minute call. We handle everything from there.
+            </p>
           </div>
         </div>
       </Section>
 
       {/* ── 9. GUARANTEE ── */}
-      <Section className="bg-white px-6 py-24">
+      <Section className="bg-cream px-6 py-24">
         <div className="mx-auto max-w-3xl">
-          <div className="rounded-2xl border-l-4 border-l-navy bg-cream p-10 sm:p-14">
+          <div className="rounded-2xl border-l-4 border-l-navy bg-white p-10 sm:p-14">
             <p className="font-serif text-lg uppercase tracking-widest text-amber">
               Zero-Risk Guarantee
             </p>
@@ -863,75 +843,18 @@ export default function LandingPage() {
               your first 30 days, we refund your first month. No questions
               asked. No long-term contracts. Cancel anytime.
             </p>
-            <p className="mt-6 font-serif text-xl italic text-amber">
-              Sin riesgo. Sin contratos. Cancela cuando quieras.
-            </p>
           </div>
         </div>
       </Section>
 
-      {/* ── 10. PRICING ── */}
-      <Section id="pricing" className="bg-navy px-6 py-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-serif text-4xl text-cream sm:text-5xl">
-            $17/Day to Never Miss Another Job
-          </h2>
-          <p className="mt-3 text-lg text-slate-400">
-            One booked job pays for the entire month.
-          </p>
-
-          <div className="mx-auto mt-12 max-w-md rounded-2xl bg-cream p-10 text-left shadow-2xl">
-            <div className="text-center">
-              <p className="font-serif text-5xl text-charcoal sm:text-6xl">
-                $497
-                <span className="text-2xl font-normal text-charcoal-light">/mo</span>
-              </p>
-              <p className="mt-1 text-sm text-charcoal-light">
-                + $1,500 one-time setup &amp; configuration
-              </p>
-            </div>
-
-            <ul className="mt-8 space-y-3 text-sm text-charcoal">
-              {[
-                "AI receptionist — English + Spanish, 24/7",
-                "Appointment booking on your calendar",
-                "SMS confirmations & reminders",
-                "Missed call auto-texts",
-                "Follow-up & review request sequences",
-                "Owner dashboard with full call history",
-                "Outbound campaign support",
-                "Dedicated setup — we configure everything",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <span className="mt-0.5 text-amber">&#10003;</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            <a
-              href={BOOKING_URL}
-              className="cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-150 hover:bg-amber-dark hover:scale-[1.02]"
-            >
-              Get Started &rarr;
-            </a>
-          </div>
-
-          <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-amber/30 bg-amber-glow px-5 py-2 text-sm font-semibold text-amber">
-            <span className="pulse-dot">&bull;</span>
-            Founding member pricing: $297/mo locked — 3 of 5 spots remaining
-          </div>
-        </div>
-      </Section>
-
-      {/* ── 11. FAQ ── */}
-      <Section id="faq" className="relative bg-cream px-6 py-24 overflow-hidden">
+      {/* ── 10. FAQ ── */}
+      <Section id="faq" className="relative bg-white px-6 py-24 overflow-hidden">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-center font-serif text-4xl text-charcoal sm:text-5xl">
-            &ldquo;Yeah, But...&rdquo;
+            Questions We Hear
           </h2>
           <p className="mt-3 text-center text-lg text-charcoal-muted">
-            We hear you. Here are the real answers.
+            Straight answers, no runaround.
           </p>
           <div className="mt-12">
             <FAQ />
@@ -939,50 +862,27 @@ export default function LandingPage() {
         </div>
       </Section>
 
-      {/* ── 11b. CLIENT PORTAL ACCESS ── */}
-      <Section className="bg-navy px-6 py-14">
-        <div className="mx-auto flex max-w-3xl flex-col items-center justify-between gap-4 sm:flex-row">
-          <div>
-            <p className="font-serif text-xl text-white">
-              Already a Calltide client?
-            </p>
-            <p className="mt-1 text-sm text-slate-400">
-              Access your dashboard, call history, and appointments.
-            </p>
-          </div>
-          <a
-            href="/dashboard/login"
-            className="inline-flex items-center gap-2 rounded-xl border border-cream/20 px-6 py-3 text-sm font-semibold text-cream transition-all duration-150 hover:bg-cream/10 hover:border-cream/40"
-          >
-            Go to Client Portal &rarr;
-          </a>
-        </div>
-      </Section>
-
-      {/* ── 12. FINAL CTA ── */}
-      <Section className="bg-navy-dark px-6 py-24 overflow-hidden">
+      {/* ── 11. FINAL CTA ── */}
+      <Section className="bg-navy px-6 py-24 overflow-hidden">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-serif text-3xl text-white sm:text-4xl lg:text-5xl">
             Your Competitors Are Still
             <br />
             Sending Calls to Voicemail.
           </h2>
-          <p className="mt-3 font-serif text-lg italic text-amber">
-            Tus competidores siguen mandando llamadas al buzón de voz.
-          </p>
 
           <a
             href={BOOKING_URL}
             className="cta-shimmer group mt-10 inline-flex items-center gap-2 rounded-xl bg-amber px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-150 hover:bg-amber-dark hover:shadow-amber/30 hover:scale-[1.02]"
           >
-            Stop Losing Jobs
+            Book Your Setup Call
             <span className="transition-transform group-hover:translate-x-0.5">
               &rarr;
             </span>
           </a>
 
           <p className="mt-6 text-slate-300">
-            Or call the demo right now:
+            Or hear the AI yourself right now:
           </p>
           <a
             href={PHONE_TEL}
@@ -993,18 +893,33 @@ export default function LandingPage() {
         </div>
       </Section>
 
-      {/* ── 13. FOOTER ── */}
+      {/* ── 12. FOOTER ── */}
       <footer className="bg-charcoal px-6 py-12">
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 text-center text-sm">
-          <img
-            src="/images/logo.webp"
-            alt="Calltide"
-            className="h-7 w-auto brightness-0 invert opacity-60"
-          />
-          <p className="text-cream/50">Built in San Antonio, TX</p>
-          <p className="text-cream/40">
-            &copy; {new Date().getFullYear()} Calltide. All rights reserved.
-          </p>
+        <div className="mx-auto max-w-5xl">
+          <div className="flex flex-col items-center gap-4 text-center text-sm">
+            <img
+              src="/images/logo.webp"
+              alt="Calltide"
+              className="h-7 w-auto brightness-0 invert opacity-60"
+            />
+            <p className="text-cream/50">Built in San Antonio, TX</p>
+            <div className="flex items-center gap-4 text-cream/40">
+              <a href="mailto:hello@calltide.app" className="transition hover:text-cream/60">
+                hello@calltide.app
+              </a>
+              <span>&middot;</span>
+              <a href="/terms" className="transition hover:text-cream/60">
+                Terms
+              </a>
+              <span>&middot;</span>
+              <a href="/privacy" className="transition hover:text-cream/60">
+                Privacy
+              </a>
+            </div>
+            <p className="text-cream/40">
+              &copy; {new Date().getFullYear()} Calltide. All rights reserved.
+            </p>
+          </div>
         </div>
       </footer>
 
