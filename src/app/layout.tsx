@@ -1,27 +1,28 @@
 import type { Metadata } from "next";
-import { DM_Sans, Space_Grotesk } from "next/font/google";
+import { DM_Serif_Display, Outfit } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const dmSerif = DM_Serif_Display({
+  variable: "--font-dm-serif",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Calltide — AI Receptionist for Small Businesses",
+  title: "Calltide — The Front Office for Your Business",
   description:
-    "Bilingual AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Texts you the details. Built in San Antonio, TX.",
+    "AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Texts you the details. Built for service businesses.",
   openGraph: {
-    title: "Calltide — Never Miss a Call. In Any Language.",
+    title: "Calltide — Every Call Answered. Every Job Booked.",
     description:
-      "AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Texts you the details. Costs less than $17/day.",
+      "AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Texts you the details. Less than $17/day.",
     url: "https://calltide.app",
     siteName: "Calltide",
     type: "website",
@@ -29,9 +30,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Calltide — Never Miss a Call. In Any Language.",
+    title: "Calltide — Every Call Answered. Every Job Booked.",
     description:
-      "AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Costs less than $17/day.",
+      "AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Less than $17/day.",
   },
 };
 
@@ -43,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${dmSans.variable} ${spaceGrotesk.variable} antialiased`}
+        className={`${dmSerif.variable} ${outfit.variable} antialiased`}
       >
         {children}
       </body>

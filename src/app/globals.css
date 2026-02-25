@@ -1,15 +1,28 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-navy: #0A1628;
-  --color-navy-light: #0F1D32;
+  /* Primary palette */
+  --color-cream: #F7F3EC;
+  --color-cream-dark: #F0EBE2;
+  --color-cream-border: #E8E2D9;
+  --color-charcoal: #1A1A1A;
+  --color-charcoal-muted: #555555;
+  --color-charcoal-light: #777777;
+
+  /* Brand colors */
+  --color-navy: #1B2A4A;
+  --color-navy-light: #243556;
+  --color-navy-dark: #0F1D32;
   --color-navy-card: #111E33;
   --color-navy-border: #1A2A44;
-  --color-amber: #F5A623;
-  --color-amber-dark: #D4901E;
-  --color-amber-glow: rgba(245, 166, 35, 0.15);
-  --font-display: var(--font-space-grotesk);
-  --font-body: var(--font-dm-sans);
+  --color-amber: #D4910A;
+  --color-amber-light: #E5A31B;
+  --color-amber-dark: #B87A08;
+  --color-amber-glow: rgba(212, 145, 10, 0.12);
+
+  /* Typography */
+  --font-serif: var(--font-dm-serif);
+  --font-body: var(--font-outfit);
 }
 
 html {
@@ -17,42 +30,42 @@ html {
 }
 
 body {
-  background: var(--color-navy);
-  color: #f1f5f9;
+  background: var(--color-cream);
+  color: var(--color-charcoal);
   font-family: var(--font-body), system-ui, sans-serif;
 }
 
-/* Grain texture overlay */
-body::before {
+/* Grain texture overlay — hero only */
+.grain-overlay::before {
   content: "";
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: 9999;
+  z-index: 1;
   pointer-events: none;
-  opacity: 0.03;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 256px 256px;
 }
 
 /* Scroll reveal animation */
-.reveal {
+.fade-up {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
-.reveal.visible {
+.fade-up.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
 /* Staggered children */
-.reveal-stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
-.reveal-stagger > .reveal:nth-child(2) { transition-delay: 120ms; }
-.reveal-stagger > .reveal:nth-child(3) { transition-delay: 240ms; }
-.reveal-stagger > .reveal:nth-child(4) { transition-delay: 360ms; }
-.reveal-stagger > .reveal:nth-child(5) { transition-delay: 480ms; }
-.reveal-stagger > .reveal:nth-child(6) { transition-delay: 600ms; }
+.stagger-children > .fade-up:nth-child(1) { transition-delay: 0ms; }
+.stagger-children > .fade-up:nth-child(2) { transition-delay: 120ms; }
+.stagger-children > .fade-up:nth-child(3) { transition-delay: 240ms; }
+.stagger-children > .fade-up:nth-child(4) { transition-delay: 360ms; }
+.stagger-children > .fade-up:nth-child(5) { transition-delay: 480ms; }
+.stagger-children > .fade-up:nth-child(6) { transition-delay: 600ms; }
 
 /* Hero waveform animation */
 @keyframes wave-pulse {
@@ -91,4 +104,57 @@ body::before {
 }
 .exit-card {
   animation: slide-up 0.35s ease 0.05s both;
+}
+
+/* Amber pulse for founding member badge */
+@keyframes pulse-amber {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.pulse-dot {
+  animation: pulse-amber 2s ease-in-out infinite;
+}
+
+/* CTA shimmer effect */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.cta-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.cta-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Photo warm overlay */
+.warm-photo {
+  position: relative;
+}
+.warm-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(212, 145, 10, 0.08), rgba(27, 42, 74, 0.05));
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Sticky nav state */
+.nav-scrolled {
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border-bottom-color: transparent;
 }
