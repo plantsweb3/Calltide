@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { appointments, leads } from "@/db/schema";
 import { eq, and, gte, lt, asc, desc } from "drizzle-orm";
+import {
+  DEMO_BUSINESS_ID,
+  DEMO_APPOINTMENTS_UPCOMING,
+  DEMO_APPOINTMENTS_PAST,
+} from "../demo-data";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -10,6 +15,12 @@ export async function GET(req: NextRequest) {
   }
 
   const filter = req.nextUrl.searchParams.get("filter") || "upcoming";
+
+  if (businessId === DEMO_BUSINESS_ID) {
+    const data =
+      filter === "past" ? DEMO_APPOINTMENTS_PAST : DEMO_APPOINTMENTS_UPCOMING;
+    return NextResponse.json({ appointments: data });
+  }
   const today = new Date().toISOString().slice(0, 10);
 
   const dateCondition =

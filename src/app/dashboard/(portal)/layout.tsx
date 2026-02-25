@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import ClientNav from "../_components/client-nav";
 
 export default function PortalLayout({
@@ -5,10 +8,43 @@ export default function PortalLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="flex min-h-screen">
-      <ClientNav />
-      <main className="ml-60 flex-1 p-6">{children}</main>
+      <ClientNav open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+      {/* Mobile header */}
+      <div
+        className="fixed top-0 left-0 right-0 z-30 flex h-14 items-center px-4 md:hidden"
+        style={{
+          background: "var(--db-surface)",
+          borderBottom: "1px solid var(--db-border)",
+        }}
+      >
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="rounded-lg p-2 transition-colors"
+          style={{ color: "var(--db-text-secondary)" }}
+          aria-label="Open menu"
+        >
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M3 6h18M3 12h18M3 18h18" />
+          </svg>
+        </button>
+        <span
+          className="ml-3 text-lg font-bold"
+          style={{ color: "var(--db-accent)" }}
+        >
+          Calltide
+        </span>
+      </div>
+
+      <main
+        className="flex-1 p-4 pt-18 md:ml-60 md:p-6 md:pt-6"
+      >
+        {children}
+      </main>
     </div>
   );
 }

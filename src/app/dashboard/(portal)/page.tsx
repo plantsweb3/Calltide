@@ -21,7 +21,10 @@ export default function OverviewPage() {
 
   if (!data) {
     return (
-      <div className="flex items-center justify-center py-20 text-slate-500">
+      <div
+        className="flex items-center justify-center py-20"
+        style={{ color: "var(--db-text-muted)" }}
+      >
         Loading...
       </div>
     );
@@ -34,12 +37,24 @@ export default function OverviewPage() {
   ) {
     return (
       <div>
-        <h1 className="mb-6 text-2xl font-semibold">Overview</h1>
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-12 text-center">
-          <p className="text-lg font-medium text-slate-300">
+        <h1
+          className="mb-6 text-2xl font-semibold"
+          style={{ fontFamily: "var(--font-serif), serif", color: "var(--db-text)" }}
+        >
+          Overview
+        </h1>
+        <div
+          className="rounded-xl p-12 text-center"
+          style={{
+            background: "var(--db-card)",
+            border: "1px solid var(--db-border)",
+            boxShadow: "var(--db-card-shadow)",
+          }}
+        >
+          <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
             Welcome to Calltide
           </p>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
             Your AI receptionist is ready. Once calls start coming in,
             you&apos;ll see your metrics here.
           </p>
@@ -50,7 +65,12 @@ export default function OverviewPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-semibold">Overview</h1>
+      <h1
+        className="mb-6 text-2xl font-semibold"
+        style={{ fontFamily: "var(--font-serif), serif", color: "var(--db-text)" }}
+      >
+        Overview
+      </h1>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard label="Calls Today" value={data.callsToday} />
         <MetricCard label="Appointments This Week" value={data.appointmentsThisWeek} />

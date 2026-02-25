@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -37,10 +38,22 @@ function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-sm space-y-6 rounded-xl border border-slate-800 bg-slate-900 p-8">
+    <div
+      className="w-full max-w-sm space-y-6 rounded-xl p-8 transition-colors duration-300"
+      style={{
+        background: "var(--db-card)",
+        border: "1px solid var(--db-border)",
+        boxShadow: "var(--db-card-shadow)",
+      }}
+    >
       <div>
-        <h1 className="text-2xl font-semibold text-slate-100">Client Portal</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <h1
+          className="text-2xl font-semibold"
+          style={{ fontFamily: "var(--font-serif), serif", color: "var(--db-text)" }}
+        >
+          Client Portal
+        </h1>
+        <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
           {success
             ? "Check your email for a login link"
             : "Enter your email to sign in"}
@@ -48,19 +61,29 @@ function LoginForm() {
       </div>
 
       {error && (
-        <div className="rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <div
+          className="rounded-lg px-4 py-3 text-sm"
+          style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+        >
           {error}
         </div>
       )}
 
       {success ? (
-        <div className="rounded-lg bg-green-500/10 px-4 py-3 text-sm text-green-400">
+        <div
+          className="rounded-lg px-4 py-3 text-sm"
+          style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
+        >
           We sent a login link to <strong>{email}</strong>. It expires in 15 minutes.
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-300">
+            <label
+              htmlFor="email"
+              className="mb-1.5 block text-sm font-medium"
+              style={{ color: "var(--db-text-secondary)" }}
+            >
               Email
             </label>
             <input
@@ -68,7 +91,12 @@ function LoginForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+              className="w-full rounded-lg px-4 py-2.5 text-sm outline-none transition-colors"
+              style={{
+                background: "var(--db-surface)",
+                border: "1px solid var(--db-border)",
+                color: "var(--db-text)",
+              }}
               placeholder="you@business.com"
               autoFocus
               required
@@ -78,19 +106,44 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full rounded-lg bg-green-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full rounded-lg px-4 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            style={{
+              background: "var(--db-accent)",
+            }}
+            onMouseEnter={(e) => {
+              if (!loading && email) e.currentTarget.style.background = "var(--db-accent-hover)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "var(--db-accent)";
+            }}
           >
             {loading ? "Sending..." : "Send Login Link"}
           </button>
         </form>
       )}
+
+      <div
+        className="pt-2 text-center"
+        style={{ borderTop: "1px solid var(--db-border)" }}
+      >
+        <Link
+          href="/api/dashboard/auth/demo"
+          className="text-sm font-medium transition-colors"
+          style={{ color: "var(--db-accent)" }}
+        >
+          Try Demo
+        </Link>
+        <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
+          Explore the portal with sample data
+        </p>
+      </div>
     </div>
   );
 }
 
 export default function ClientLoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center px-4">
       <Suspense>
         <LoginForm />
       </Suspense>

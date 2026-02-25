@@ -57,11 +57,37 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // ── Dashboard routes ──
-  if (pathname.startsWith("/dashboard")) {
-    // Allow login page and auth API routes through
-    if (pathname === "/dashboard/login") return NextResponse.next();
+  // ── Dashboard API routes ──
+  if (pathname.startsWith("/api/dashboard")) {
+    // Allow auth endpoints through without cookie
     if (pathname.startsWith("/api/dashboard/auth")) return NextResponse.next();
+
+    const secret = process.env.CLIENT_AUTH_SECRET;
+    if (!secret) return NextResponse.next();
+
+    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
+    if (!cookie) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const valid = await verifyToken(cookie, secret);
+    if (!valid) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const businessId = parseClientPayload(cookie);
+    if (!businessId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const headers = new Headers(req.headers);
+    headers.set("x-business-id", businessId);
+    return NextResponse.next({ request: { headers } });
+  }
+
+  // ── Dashboard pages ──
+  if (pathname.startsWith("/dashboard")) {
+    if (pathname === "/dashboard/login") return NextResponse.next();
 
     const secret = process.env.CLIENT_AUTH_SECRET;
     if (!secret) return NextResponse.next();
@@ -81,7 +107,6 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/dashboard/login", req.url));
     }
 
-    // Inject business ID into request headers for downstream API routes
     const headers = new Headers(req.headers);
     headers.set("x-business-id", businessId);
     return NextResponse.next({ request: { headers } });
@@ -91,5 +116,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*"],
+  matcher: ["/admin/:path*", "/dashboard/:path*", "/api/dashboard/:path*"],
 };

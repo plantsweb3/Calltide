@@ -157,3 +157,34 @@ body {
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
   border-bottom-color: transparent;
 }
+
+/* ── Dashboard Theme Variables ── */
+[data-theme="dark"] {
+  --db-bg: #020617;
+  --db-surface: #0f172a;
+  --db-card: #1e293b;
+  --db-border: #1e293b;
+  --db-border-light: rgba(30,41,59,0.5);
+  --db-text: #f1f5f9;
+  --db-text-secondary: #94a3b8;
+  --db-text-muted: #64748b;
+  --db-hover: rgba(30,41,59,0.4);
+  --db-accent: #C59A27;
+  --db-accent-hover: #A17D1F;
+  --db-card-shadow: none;
+}
+
+[data-theme="light"] {
+  --db-bg: #FBFBF9;
+  --db-surface: #FFFFFF;
+  --db-card: #FFFFFF;
+  --db-border: #E2E8F0;
+  --db-border-light: #F1F5F9;
+  --db-text: #0F172A;
+  --db-text-secondary: #475569;
+  --db-text-muted: #64748B;
+  --db-hover: rgba(241,245,249,0.6);
+  --db-accent: #C59A27;
+  --db-accent-hover: #A17D1F;
+  --db-card-shadow: 0px 4px 16px rgba(15, 23, 42, 0.08), 0px 12px 32px rgba(15, 23, 42, 0.06);
+}

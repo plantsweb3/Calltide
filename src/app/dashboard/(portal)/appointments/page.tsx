@@ -44,11 +44,11 @@ export default function AppointmentsPage() {
     });
   }
 
-  const statusColors: Record<string, string> = {
-    confirmed: "bg-green-500/10 text-green-400",
-    cancelled: "bg-red-500/10 text-red-400",
-    completed: "bg-blue-500/10 text-blue-400",
-    no_show: "bg-amber-500/10 text-amber-400",
+  const statusColors: Record<string, { bg: string; text: string }> = {
+    confirmed: { bg: "rgba(74,222,128,0.1)", text: "#4ade80" },
+    cancelled: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
+    completed: { bg: "rgba(96,165,250,0.1)", text: "#60a5fa" },
+    no_show: { bg: "rgba(251,191,36,0.1)", text: "#fbbf24" },
   };
 
   const columns: Column<Appointment>[] = [
@@ -69,40 +69,50 @@ export default function AppointmentsPage() {
     {
       key: "status",
       label: "Status",
-      render: (row) => (
-        <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-            statusColors[row.status] || "bg-slate-700 text-slate-300"
-          }`}
-        >
-          {row.status.replace("_", " ")}
-        </span>
-      ),
+      render: (row) => {
+        const c = statusColors[row.status] || { bg: "var(--db-hover)", text: "var(--db-text-secondary)" };
+        return (
+          <span
+            className="rounded-full px-2 py-0.5 text-xs font-medium"
+            style={{ background: c.bg, color: c.text }}
+          >
+            {row.status.replace("_", " ")}
+          </span>
+        );
+      },
     },
   ];
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Appointments</h1>
-        <div className="flex rounded-lg border border-slate-700 overflow-hidden">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1
+          className="text-2xl font-semibold"
+          style={{ fontFamily: "var(--font-serif), serif", color: "var(--db-text)" }}
+        >
+          Appointments
+        </h1>
+        <div
+          className="flex rounded-lg overflow-hidden"
+          style={{ border: "1px solid var(--db-border)" }}
+        >
           <button
             onClick={() => setFilter("upcoming")}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              filter === "upcoming"
-                ? "bg-slate-700 text-slate-100"
-                : "bg-slate-800 text-slate-400 hover:text-slate-200"
-            }`}
+            className="px-4 py-2 text-sm font-medium transition-colors"
+            style={{
+              background: filter === "upcoming" ? "var(--db-accent)" : "var(--db-card)",
+              color: filter === "upcoming" ? "#fff" : "var(--db-text-muted)",
+            }}
           >
             Upcoming
           </button>
           <button
             onClick={() => setFilter("past")}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              filter === "past"
-                ? "bg-slate-700 text-slate-100"
-                : "bg-slate-800 text-slate-400 hover:text-slate-200"
-            }`}
+            className="px-4 py-2 text-sm font-medium transition-colors"
+            style={{
+              background: filter === "past" ? "var(--db-accent)" : "var(--db-card)",
+              color: filter === "past" ? "#fff" : "var(--db-text-muted)",
+            }}
           >
             Past
           </button>
@@ -110,17 +120,27 @@ export default function AppointmentsPage() {
       </div>
 
       {loading && appointments.length === 0 && (
-        <div className="flex items-center justify-center py-20 text-slate-500">
+        <div
+          className="flex items-center justify-center py-20"
+          style={{ color: "var(--db-text-muted)" }}
+        >
           Loading...
         </div>
       )}
 
       {!loading && appointments.length === 0 && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-12 text-center">
-          <p className="text-lg font-medium text-slate-300">
+        <div
+          className="rounded-xl p-12 text-center"
+          style={{
+            background: "var(--db-card)",
+            border: "1px solid var(--db-border)",
+            boxShadow: "var(--db-card-shadow)",
+          }}
+        >
+          <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
             No {filter} appointments
           </p>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
             When your AI receptionist books appointments, they&apos;ll appear here.
           </p>
         </div>

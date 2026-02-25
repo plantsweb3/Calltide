@@ -13,17 +13,30 @@ export default function MetricCard({
 }: MetricCardProps) {
   const changeColor =
     changeType === "positive"
-      ? "text-green-400"
+      ? "#4ade80"
       : changeType === "negative"
-        ? "text-red-400"
-        : "text-slate-400";
+        ? "#f87171"
+        : "var(--db-text-muted)";
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-      <p className="text-sm font-medium text-slate-400">{label}</p>
-      <p className="mt-2 text-3xl font-semibold text-slate-100">{value}</p>
+    <div
+      className="rounded-xl p-5 transition-colors duration-300"
+      style={{
+        background: "var(--db-card)",
+        border: "1px solid var(--db-border)",
+        boxShadow: "var(--db-card-shadow)",
+      }}
+    >
+      <p className="text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
+        {label}
+      </p>
+      <p className="mt-2 text-3xl font-semibold" style={{ color: "var(--db-text)" }}>
+        {value}
+      </p>
       {change && (
-        <p className={`mt-1 text-sm ${changeColor}`}>{change}</p>
+        <p className="mt-1 text-sm" style={{ color: changeColor }}>
+          {change}
+        </p>
       )}
     </div>
   );

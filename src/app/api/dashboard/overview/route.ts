@@ -2,11 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { calls, appointments } from "@/db/schema";
 import { eq, and, sql, gte, count } from "drizzle-orm";
+import { DEMO_BUSINESS_ID, DEMO_OVERVIEW } from "../demo-data";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (businessId === DEMO_BUSINESS_ID) {
+    return NextResponse.json(DEMO_OVERVIEW);
   }
 
   const today = new Date().toISOString().slice(0, 10);
