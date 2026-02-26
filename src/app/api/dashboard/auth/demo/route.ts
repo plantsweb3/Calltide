@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { signClientCookie } from "@/lib/client-auth";
+import { reportWarning } from "@/lib/error-reporting";
 
 const DEMO_BUSINESS_ID = "demo-client-001";
 
 export async function GET(req: NextRequest) {
   const secret = process.env.CLIENT_AUTH_SECRET;
   if (!secret) {
-    console.error("CLIENT_AUTH_SECRET is not set");
+    reportWarning("CLIENT_AUTH_SECRET is not set");
     return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
   }
 

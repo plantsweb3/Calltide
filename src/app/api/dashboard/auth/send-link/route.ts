@@ -5,6 +5,7 @@ import { businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { generateMagicLink } from "@/lib/client-auth";
+import { reportError } from "@/lib/error-reporting";
 
 export async function POST(req: NextRequest) {
   try {
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Check your email for a login link" });
   } catch (error) {
-    console.error("Send magic link error:", error);
+    reportError("Send magic link error", error);
     return NextResponse.json({ error: "Failed to send login link" }, { status: 500 });
   }
 }

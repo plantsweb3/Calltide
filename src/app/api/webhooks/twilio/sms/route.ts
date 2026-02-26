@@ -4,11 +4,12 @@ import { db } from "@/db";
 import { businesses, smsMessages } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { findOrCreateLead } from "@/lib/ai/context-builder";
+import { reportWarning } from "@/lib/error-reporting";
 
 export async function POST(req: NextRequest) {
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   if (!authToken) {
-    console.error("TWILIO_AUTH_TOKEN is not set");
+    reportWarning("TWILIO_AUTH_TOKEN is not set");
     return twimlResponse("We're unable to process your message at this time.");
   }
 
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
 
   const valid = twilio.validateRequest(authToken, signature, url, params);
   if (!valid) {
-    console.error("Invalid Twilio webhook signature", {
+    reportWarning("Invalid Twilio webhook signature", {
       url,
       signature: signature.slice(0, 10) + "...",
     });

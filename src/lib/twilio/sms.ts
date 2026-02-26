@@ -1,6 +1,7 @@
 import { getTwilioClient } from "./client";
 import { db } from "@/db";
 import { smsMessages } from "@/db/schema";
+import { reportError } from "@/lib/error-reporting";
 
 interface SendSMSParams {
   to: string;
@@ -37,7 +38,7 @@ export async function sendSMS(params: SendSMSParams) {
 
     return { success: true, sid: message.sid };
   } catch (error) {
-    console.error("SMS send failed:", error);
+    reportError("SMS send failed", error, { businessId: params.businessId });
 
     await db.insert(smsMessages).values({
       businessId: params.businessId,

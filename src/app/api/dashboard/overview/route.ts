@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { calls, appointments, smsMessages, businesses, leads } from "@/db/schema";
 import { eq, and, sql, gte, lte, count, desc, or, inArray } from "drizzle-orm";
 import { DEMO_BUSINESS_ID, DEMO_OVERVIEW } from "../demo-data";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -435,7 +436,7 @@ export async function GET(req: NextRequest) {
   });
 
   } catch (err) {
-    console.error("Enhanced metrics failed, returning basic:", err);
+    reportError("Enhanced metrics failed", err, { businessId });
     return NextResponse.json(basicResponse);
   }
 }

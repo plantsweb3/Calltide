@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { calls } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import type { ChatCompletionRequest, SSEChunk } from "@/types";
+import { reportError } from "@/lib/error-reporting";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -133,11 +134,11 @@ export async function POST(req: NextRequest) {
           // Save transcript to DB after stream completes
           if (chatGroupId) {
             saveTranscript(chatGroupId, messages, aiResponseText, detectedLang).catch(
-              (err) => console.error("Failed to save transcript:", err)
+              (err) => reportError("Failed to save transcript", err, { extra: { chatGroupId } })
             );
           }
         } catch (error) {
-          console.error("Stream error:", error);
+          reportError("Stream error", error, { extra: { chatGroupId } });
           controller.error(error);
         }
       },
@@ -152,7 +153,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("CLM endpoint error:", error);
+    reportError("CLM endpoint error", error);
     const message = error instanceof Error ? error.message : "Internal server error";
     return Response.json(
       { error: message },

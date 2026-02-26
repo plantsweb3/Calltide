@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { VoiceProvider, useVoice, VoiceReadyState } from "@humeai/voice-react";
+import * as Sentry from "@sentry/nextjs";
 
 function VoiceChatInner({ onClose }: { onClose: () => void }) {
   const { connect, disconnect, readyState, messages } = useVoice();
@@ -26,7 +27,7 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
         auth: { type: "accessToken" as const, value: accessToken },
         configId: process.env.NEXT_PUBLIC_HUME_CONFIG_ID,
       }).catch((err) => {
-        console.error("Hume connect error:", err);
+        Sentry.captureException(err);
         setError(err?.message || "Connection failed. Please try again.");
       });
     }
@@ -170,7 +171,7 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
 export default function VoiceChat({ onClose }: { onClose: () => void }) {
   return (
     <VoiceProvider
-      onError={(err) => console.error("VoiceProvider error:", err)}
+      onError={(err) => Sentry.captureException(err)}
       onClose={(event) => console.log("VoiceProvider closed:", event)}
     >
       <VoiceChatInner onClose={onClose} />

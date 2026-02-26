@@ -17,6 +17,7 @@
     "@anthropic-ai/sdk": "^0.77.0",
     "@humeai/voice-react": "^0.2.14",
     "@libsql/client": "^0.17.0",
+    "@sentry/nextjs": "^10.40.0",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "hume": "^0.15.13",
@@ -38,6 +39,6 @@
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "5.9.3"
   }
 }

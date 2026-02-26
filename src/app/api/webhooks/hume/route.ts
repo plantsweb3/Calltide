@@ -7,6 +7,7 @@ import { calls } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import type { HumeWebhookEvent, HumeChatStartedData, HumeChatEndedData, HumeToolCallData } from "@/types";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 
 export async function POST(req: NextRequest) {
   const rawBody = await req.text();
@@ -18,7 +19,7 @@ export async function POST(req: NextRequest) {
   if (secretKey && signature) {
     const valid = verifyHumeSignature(rawBody, signature, secretKey);
     if (!valid) {
-      console.error("Invalid Hume webhook signature");
+      reportWarning("Invalid Hume webhook signature");
       return Response.json({ error: "Invalid signature" }, { status: 401 });
     }
   }
@@ -48,7 +49,9 @@ export async function POST(req: NextRequest) {
 
     return Response.json({ ok: true });
   } catch (error) {
-    console.error("Webhook handler error:", error);
+    reportError("Webhook handler error", error, {
+      extra: { eventType: event.type, chatId: event.chat_id, chatGroupId: event.chat_group_id },
+    });
     return Response.json({ error: "Internal error" }, { status: 500 });
   }
 }
