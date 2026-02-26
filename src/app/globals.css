@@ -462,6 +462,28 @@ button:focus-visible {
   }
 }
 
+/* ── Grit vs Glass — Background Image Overlays ── */
+.hero-bg-overlay {
+  background: linear-gradient(to right, rgba(15, 26, 46, 0.92) 0%, rgba(15, 26, 46, 0.75) 50%, rgba(15, 26, 46, 0.6) 100%);
+}
+.grit-overlay-problem {
+  background: rgba(15, 26, 46, 0.88);
+}
+.grit-overlay-cta {
+  background: rgba(15, 26, 46, 0.85);
+}
+@media (max-width: 767px) {
+  .hero-bg-overlay {
+    background: rgba(15, 26, 46, 0.95);
+  }
+  .grit-overlay-problem {
+    background: rgba(15, 26, 46, 0.93);
+  }
+  .grit-overlay-cta {
+    background: rgba(15, 26, 46, 0.92);
+  }
+}
+
 /* ── Dashboard Theme Variables ── */
 [data-theme="dark"] {
   --db-bg: #020617;

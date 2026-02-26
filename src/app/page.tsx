@@ -576,7 +576,14 @@ export default function LandingPage() {
       </nav>
 
       {/* ── 2. HERO ── */}
-      <section className="relative overflow-hidden hero-gradient grain-overlay">
+      <section className="relative overflow-hidden grain-overlay">
+        <img
+          src="/images/grit-hvac.webp"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          fetchPriority="high"
+        />
+        <div className="hero-bg-overlay absolute inset-0" />
         <div className="relative z-10 mx-auto max-w-6xl px-6 sm:px-8 py-24 sm:py-32">
           <div className="grid items-center gap-16 md:grid-cols-5">
             <div className="md:col-span-3">
@@ -670,16 +677,23 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 4. PROBLEM ── */}
-      <Section id="problem" className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="reveal text-center text-[36px] font-extrabold leading-[1.1] tracking-tight text-charcoal sm:text-[48px]">
+      <Section id="problem" className="relative overflow-hidden px-6 sm:px-8 py-24 sm:py-32 grain-overlay">
+        <img
+          src="/images/grit-solar.webp"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          loading="lazy"
+        />
+        <div className="grit-overlay-problem absolute inset-0" />
+        <div className="relative z-10 mx-auto max-w-5xl">
+          <h2 className="reveal text-center text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[48px]">
             Every Missed Call
             <br />
             Is a Lost Job
           </h2>
 
           <div className="snap-scroll-mobile mt-16 grid gap-[48px] sm:gap-8 md:grid-cols-3">
-            <div className="reveal reveal-stagger problem-card rounded-xl border border-cream-border bg-white p-10 sm:p-12">
+            <div className="reveal reveal-stagger problem-card rounded-xl p-10 sm:p-12" style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)" }}>
               <p className="gold-gradient-text text-[24px] font-semibold">
                 Tuesday, 2:14 PM.
               </p>
@@ -689,7 +703,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="reveal reveal-stagger problem-card rounded-xl border border-cream-border bg-white p-10 sm:p-12">
+            <div className="reveal reveal-stagger problem-card rounded-xl p-10 sm:p-12" style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)" }}>
               <p className="gold-gradient-text text-[24px] font-semibold">
                 &ldquo;Hola, necesito ayuda...&rdquo;
               </p>
@@ -699,7 +713,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="reveal reveal-stagger problem-card rounded-xl border border-cream-border bg-white p-10 sm:p-12">
+            <div className="reveal reveal-stagger problem-card rounded-xl p-10 sm:p-12" style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)" }}>
               <p className="gold-gradient-text text-[24px] font-semibold">
                 Saturday, 11:30 AM.
               </p>
@@ -715,7 +729,7 @@ export default function LandingPage() {
             <p className="gold-gradient-text text-[32px] font-extrabold leading-tight sm:text-[40px]">
               62% of calls to service businesses go unanswered.
             </p>
-            <p className="mt-4 text-lg text-charcoal-muted">
+            <p className="mt-4 text-lg text-slate-300">
               Every one is revenue you&apos;ll never see.
             </p>
           </div>
@@ -1116,7 +1130,14 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 11. FINAL CTA ── */}
-      <Section className="relative bg-navy px-6 sm:px-8 py-24 sm:py-32 overflow-hidden dark-section grain-overlay">
+      <Section className="relative px-6 sm:px-8 py-24 sm:py-32 overflow-hidden dark-section grain-overlay">
+        <img
+          src="/images/grit-texture.webp"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          loading="lazy"
+        />
+        <div className="grit-overlay-cta absolute inset-0" />
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <h2 className="reveal text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[40px] lg:text-[48px]">
             Your Competitors Are Still
