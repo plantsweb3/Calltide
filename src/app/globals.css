@@ -445,11 +445,16 @@ button:focus-visible {
   .snap-scroll-mobile {
     display: flex !important;
     overflow-x: auto;
+    overflow-y: visible;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     gap: 16px;
     padding: 4px 0 12px;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
   .snap-scroll-mobile::-webkit-scrollbar {
     display: none;

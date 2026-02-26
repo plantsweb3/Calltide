@@ -141,6 +141,101 @@ function Counter({ value, suffix = "", prefix = "" }: { value: number; suffix?: 
   return <motion.span ref={ref}>{display}</motion.span>;
 }
 
+/* ───────── Pricing Dismiss Animation ───────── */
+
+function PricingDismiss() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [phase, setPhase] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPhase(4);
+      return;
+    }
+    const t1 = setTimeout(() => setPhase(1), 300);
+    const t2 = setTimeout(() => setPhase(2), 1500);
+    const t3 = setTimeout(() => setPhase(3), 2100);
+    const t4 = setTimeout(() => setPhase(4), 3300);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+  }, [inView]);
+
+  const lines = [
+    { price: "$0/mo", label: "Missing Calls", note: "Thousands in lost jobs", show: 1, strike: 2 },
+    { price: "$3,200/mo", label: "Human Receptionist", note: "40hrs/week only", show: 3, strike: 4 },
+  ];
+
+  return (
+    <div ref={ref} className="mt-12 flex flex-col items-center gap-4">
+      {lines.map((line, i) => {
+        const visible = phase >= line.show;
+        const struck = phase >= line.strike;
+        const glowing = visible && !struck;
+        return (
+          <div
+            key={i}
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: `translateY(${visible ? 0 : 12}px)`,
+              transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)",
+            }}
+          >
+            <div
+              className="flex items-center gap-3 rounded-lg px-5 py-2.5"
+              style={{
+                boxShadow: glowing
+                  ? "0 0 24px rgba(197,154,39,0.25), 0 0 48px rgba(197,154,39,0.08)"
+                  : "none",
+                background: glowing ? "rgba(197,154,39,0.06)" : "transparent",
+                transition: "box-shadow 0.8s cubic-bezier(0.16,1,0.3,1), background 0.8s cubic-bezier(0.16,1,0.3,1)",
+              }}
+            >
+              <span
+                className="text-base font-medium"
+                style={{
+                  color: struck ? "#f87171" : "#E8E9EB",
+                  transition: "color 0.5s ease",
+                }}
+              >
+                &#10007;
+              </span>
+              <span className="relative inline-block">
+                <span
+                  className="text-base font-medium"
+                  style={{
+                    color: struck ? "#6B7280" : "#E8E9EB",
+                    transition: "color 0.5s ease",
+                  }}
+                >
+                  {line.price} &mdash; {line.label}
+                </span>
+                <span
+                  className="absolute left-0 top-1/2 h-[1.5px]"
+                  style={{
+                    width: struck ? "100%" : "0%",
+                    background: "rgba(248,113,113,0.5)",
+                    transition: "width 0.7s cubic-bezier(0.16,1,0.3,1)",
+                  }}
+                />
+              </span>
+              <span
+                className="text-xs font-medium"
+                style={{
+                  color: struck ? "rgba(248,113,113,0.6)" : "transparent",
+                  transition: "color 0.5s ease 0.2s",
+                }}
+              >
+                {line.note}
+              </span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ───────── FAQ Accordion ───────── */
 
 const faqs = [
@@ -1021,19 +1116,8 @@ export default function LandingPage() {
             The rest is pure profit.
           </p>
 
-          {/* Context lines — alternatives struck through */}
-          <div className="reveal mt-12 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-8">
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-red-400">&#10007;</span>
-              <span className="line-through text-[#6B7280]">$0/mo — Missing Calls</span>
-              <span className="text-[11px] text-red-400/70">Thousands in lost jobs</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-[#6B7280]">&#10007;</span>
-              <span className="line-through text-[#6B7280]">$3,200/mo — Human Receptionist</span>
-              <span className="text-[11px] text-[#6B7280]">40hrs/week only</span>
-            </div>
-          </div>
+          {/* Context lines — animated consider-then-dismiss */}
+          <PricingDismiss />
 
           {/* Main pricing card */}
           <div className="reveal mt-10 mx-auto max-w-lg">
