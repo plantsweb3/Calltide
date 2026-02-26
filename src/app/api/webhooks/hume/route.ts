@@ -56,15 +56,26 @@ export async function POST(req: NextRequest) {
 async function handleChatStarted(event: HumeWebhookEvent) {
   const data = event.data as unknown as HumeChatStartedData;
 
-  // Find business by the called phone number
   const calledPhone = data.called_phone;
   const callerPhone = data.caller_phone;
 
-  let businessId = "test-business-001"; // fallback
+  // Find business by the called phone number — reject if unknown
+  let businessId: string | undefined;
 
   if (calledPhone) {
     const biz = await getBusinessByPhone(calledPhone);
     if (biz) businessId = biz.id;
+  }
+
+  if (!businessId) {
+    console.warn("Unmatched incoming call — no business found", {
+      callerPhone,
+      calledPhone,
+      chatId: event.chat_id,
+      timestamp: new Date().toISOString(),
+    });
+    // Do NOT create any DB records for unknown callers
+    return;
   }
 
   // Find or create lead
@@ -145,12 +156,23 @@ async function handleToolCall(event: HumeWebhookEvent) {
     params = {};
   }
 
+  if (!call) {
+    console.warn("Tool call for unknown chat — no call record found", {
+      chatId: event.chat_id,
+      toolName: data.name,
+    });
+    return Response.json({
+      tool_call_id: data.tool_call_id,
+      content: JSON.stringify({ error: "No active call found" }),
+    });
+  }
+
   const result = await dispatchToolCall(data.name, params, {
-    businessId: call?.businessId || "test-business-001",
-    callId: call?.id,
-    leadId: call?.leadId || undefined,
-    callerPhone: call?.callerPhone || undefined,
-    language: (call?.language as "en" | "es") || "en",
+    businessId: call.businessId,
+    callId: call.id,
+    leadId: call.leadId || undefined,
+    callerPhone: call.callerPhone || undefined,
+    language: (call.language as "en" | "es") || "en",
   });
 
   // Return tool result for Hume to feed back to the conversation

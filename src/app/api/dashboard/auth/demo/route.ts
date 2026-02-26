@@ -4,7 +4,11 @@ import { signClientCookie } from "@/lib/client-auth";
 const DEMO_BUSINESS_ID = "demo-client-001";
 
 export async function GET(req: NextRequest) {
-  const secret = process.env.CLIENT_AUTH_SECRET || "demo-secret-fallback";
+  const secret = process.env.CLIENT_AUTH_SECRET;
+  if (!secret) {
+    console.error("CLIENT_AUTH_SECRET is not set");
+    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+  }
 
   const cookieValue = await signClientCookie(DEMO_BUSINESS_ID, secret);
 

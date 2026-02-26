@@ -12,7 +12,7 @@ async function seed() {
   const db = drizzle(client);
 
   const testBusiness = {
-    id: "test-business-001",
+    id: crypto.randomUUID(),
     name: "Rodriguez Plumbing & HVAC",
     type: "plumbing",
     ownerName: "Carlos Rodriguez",
