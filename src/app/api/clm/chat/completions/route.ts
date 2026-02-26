@@ -8,6 +8,8 @@ import { eq } from "drizzle-orm";
 import type { ChatCompletionRequest, SSEChunk } from "@/types";
 import { reportError } from "@/lib/error-reporting";
 
+const CLAUDE_MODEL = process.env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -70,7 +72,7 @@ export async function POST(req: NextRequest) {
 
     // Stream from Claude
     const stream = anthropic!.messages.stream({
-      model: "claude-sonnet-4-5-20250929",
+      model: CLAUDE_MODEL,
       max_tokens: 150,
       system: systemPrompt,
       messages: cleanedMessages,
@@ -96,7 +98,7 @@ export async function POST(req: NextRequest) {
                 id: responseId,
                 object: "chat.completion.chunk",
                 created,
-                model: "claude-sonnet-4-5-20250929",
+                model: CLAUDE_MODEL,
                 choices: [
                   {
                     index: 0,
@@ -116,7 +118,7 @@ export async function POST(req: NextRequest) {
             id: responseId,
             object: "chat.completion.chunk",
             created,
-            model: "claude-sonnet-4-5-20250929",
+            model: CLAUDE_MODEL,
             choices: [
               {
                 index: 0,
@@ -164,9 +166,9 @@ export async function POST(req: NextRequest) {
 
 function buildDefaultSystemPrompt(lang: "en" | "es"): string {
   if (lang === "es") {
-    return `Eres Maria, recepcionista de una empresa de plomería en San Antonio. Contesta llamadas, toma información del llamante y ayuda a agendar citas. Responde en 1-2 oraciones máximo. Sin frases de relleno. Ve directo al punto. Si te hablan en inglés, cambia a inglés. Eres bilingüe. Nunca discutas precios. Si te preguntan si eres humana, di que eres asistente de IA.`;
+    return `Eres una recepcionista virtual de una empresa de servicios. Contesta llamadas, toma información del llamante y ayuda a agendar citas. Responde en 1-2 oraciones máximo. Sin frases de relleno. Ve directo al punto. Si te hablan en inglés, cambia a inglés. Eres bilingüe. Nunca discutas precios. Si te preguntan si eres humana, di que eres asistente de IA.`;
   }
-  return `You are Maria, a receptionist for a plumbing company in San Antonio. Answer calls, collect caller info, and help schedule appointments. Respond in 1-2 sentences max. No filler phrases. Go straight to the point. If spoken to in Spanish, switch to Spanish. You are bilingual. Never discuss pricing. If asked if you're human, say you're an AI assistant.`;
+  return `You are a virtual receptionist for a service business. Answer calls, collect caller info, and help schedule appointments. Respond in 1-2 sentences max. No filler phrases. Go straight to the point. If spoken to in Spanish, switch to Spanish. You are bilingual. Never discuss pricing. If asked if you're human, say you're an AI assistant.`;
 }
 
 /**

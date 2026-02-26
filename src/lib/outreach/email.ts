@@ -5,6 +5,8 @@ import { prospectOutreach } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 
+const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+
 let resendClient: Resend | null = null;
 
 function getResend(): Resend {
@@ -26,7 +28,7 @@ export async function sendOutreachEmail(params: {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: "Calltide <hello@contact.calltide.app>",
+      from: FROM_EMAIL,
       to: params.to,
       subject: params.subject,
       html: params.html,

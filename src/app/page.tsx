@@ -6,9 +6,9 @@ import dynamic from "next/dynamic";
 
 const VoiceChat = dynamic(() => import("@/components/voice-chat"), { ssr: false });
 
-const PHONE = "(830) 521-7133";
-const PHONE_TEL = "tel:+18305217133";
-const BOOKING_URL = "https://cal.com/calltide/onboarding";
+const PHONE = process.env.NEXT_PUBLIC_PHONE ?? "(830) 521-7133";
+const PHONE_TEL = `tel:${process.env.NEXT_PUBLIC_PHONE_TEL ?? "+18305217133"}`;
+const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.com/calltide/onboarding";
 
 /* ───────── SVG Icons — monoline, 1.5px stroke ───────── */
 

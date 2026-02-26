@@ -5,7 +5,8 @@ const COOKIE_NAME = "calltide_admin";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 async function signToken(payload: string): Promise<string> {
-  const secret = env.ADMIN_PASSWORD ?? "calltide-default";
+  const secret = env.ADMIN_PASSWORD;
+  if (!secret) throw new Error("ADMIN_PASSWORD is required for token signing");
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
     "raw",

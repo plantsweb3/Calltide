@@ -1,4 +1,5 @@
 const BRAND_COLOR = "#22c55e";
+const MARKETING_URL = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://calltide.app";
 
 function baseLayout(content: string): string {
   return `<!DOCTYPE html>
@@ -29,7 +30,7 @@ export const missedCallSequence = {
         Calltide is an AI voice agent that answers every call 24/7 — in English and Spanish.
         It books appointments, takes messages, and never puts anyone on hold.
       </p>
-      <a href="https://calltide.app" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
+      <a href="${MARKETING_URL}" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
         See How It Works →
       </a>
     `),
@@ -48,7 +49,7 @@ export const missedCallSequence = {
       <p style="color:#475569;line-height:1.6;">
         Would a quick 10-minute demo make sense? We'll show you exactly how it works with your business type.
       </p>
-      <a href="https://calltide.app" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
+      <a href="${MARKETING_URL}" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
         Book a Demo
       </a>
     `),
@@ -86,7 +87,7 @@ export const answeredSequence = {
         Calltide handles overflow and after-hours calls automatically.
         Same quality, fraction of the cost of a full-time receptionist.
       </p>
-      <a href="https://calltide.app" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
+      <a href="${MARKETING_URL}" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
         Learn More →
       </a>
     `),
