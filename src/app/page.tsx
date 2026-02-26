@@ -9,50 +9,19 @@ const PHONE = "(830) 521-7133";
 const PHONE_TEL = "tel:+18305217133";
 const BOOKING_URL = "https://cal.com/calltide/onboarding";
 
-/* ───────── Intersection Observer for scroll reveals ───────── */
-
-function useFadeUp() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("visible");
-            e.target.querySelectorAll(".fade-up").forEach((child) =>
-              child.classList.add("visible"),
-            );
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-  return ref;
-}
+/* ───────── Simple Section wrapper ───────── */
 
 function Section({
   children,
   className = "",
   id,
-  stagger = false,
 }: {
   children: React.ReactNode;
   className?: string;
   id?: string;
-  stagger?: boolean;
 }) {
-  const ref = useFadeUp();
   return (
-    <section
-      ref={ref}
-      id={id}
-      className={`fade-up ${stagger ? "stagger-children" : ""} ${className}`}
-    >
+    <section id={id} className={className}>
       {children}
     </section>
   );
@@ -437,7 +406,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── 3. SOCIAL PROOF BAR ── */}
-      <Section className="bg-navy px-6 py-14">
+      <Section className="bg-navy px-6 py-12 sm:py-14">
         <div className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-10 md:flex-row md:gap-0">
           {[
             { value: "24/7", label: "Every call answered, nights, weekends, holidays" },
@@ -462,16 +431,16 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 4. PROBLEM ── */}
-      <Section id="problem" className="bg-white px-6 py-[120px]" stagger>
+      <Section id="problem" className="bg-white px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="fade-up text-center font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
+          <h2 className="text-center font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
             Every Missed Call Is a Job
             <br />
             Your Competitor Gets
           </h2>
 
           <div className="mt-16 grid gap-8 md:grid-cols-3">
-            <div className="fade-up card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
+            <div className="card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
               <p className="font-serif text-[24px] font-medium text-charcoal">
                 Tuesday, 2:14 PM.
               </p>
@@ -482,7 +451,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="fade-up card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
+            <div className="card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
               <p className="font-serif text-[24px] font-medium text-charcoal">
                 &ldquo;Hola, necesito ayuda...&rdquo;
               </p>
@@ -494,7 +463,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="fade-up card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
+            <div className="card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
               <p className="font-serif text-[24px] font-medium text-charcoal">
                 Saturday, 11:30 AM.
               </p>
@@ -519,9 +488,9 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 5. HOW IT WORKS ── */}
-      <Section id="how-it-works" className="bg-cream px-6 py-[120px]" stagger>
+      <Section id="how-it-works" className="bg-cream px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-5xl">
-          <div className="fade-up text-center">
+          <div className="text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
               How It Works
             </p>
@@ -549,7 +518,7 @@ export default function LandingPage() {
                   desc: "Full summary of the call before you've even set your tools down. Show up, do the job, get paid.",
                 },
               ].map((step) => (
-                <div key={step.num} className="fade-up flex gap-6">
+                <div key={step.num} className="flex gap-6">
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber text-lg font-bold text-white">
                     {step.num}
                   </div>
@@ -578,16 +547,16 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <p className="fade-up mt-20 text-center text-lg italic text-charcoal-muted">
+          <p className="mt-20 text-center text-lg italic text-charcoal-muted">
             All while you&apos;re on a job, eating dinner, or sleeping.
           </p>
         </div>
       </Section>
 
       {/* ── 6. FEATURES ── */}
-      <Section id="features" className="bg-white px-6 py-[120px]" stagger>
+      <Section id="features" className="bg-white px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="fade-up text-center font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px] lg:text-[48px]">
+          <h2 className="text-center font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px] lg:text-[48px]">
             Built for How Service Businesses Actually Work
           </h2>
 
@@ -626,7 +595,7 @@ export default function LandingPage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="fade-up card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10"
+                className="card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10"
               >
                 <span className="text-2xl">{feature.icon}</span>
                 <h3 className="mt-4 font-serif text-[24px] font-medium leading-[1.3] text-charcoal">
@@ -642,7 +611,7 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 7. DEMO PROOF ── */}
-      <Section className="bg-navy px-6 py-[120px]">
+      <Section className="bg-navy px-6 py-16 sm:py-20">
         <div className="card-shadow mx-auto max-w-lg rounded-xl bg-white p-10 text-center sm:p-14">
           <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
             Hear It for Yourself
@@ -672,17 +641,17 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 8. PRICING ── */}
-      <Section id="pricing" className="bg-cream px-6 py-[120px]" stagger>
+      <Section id="pricing" className="bg-cream px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="fade-up text-center font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px] lg:text-[48px]">
+          <h2 className="text-center font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px] lg:text-[48px]">
             The Math Is Simple
           </h2>
-          <p className="fade-up mt-4 text-center text-lg text-charcoal-muted">
+          <p className="mt-4 text-center text-lg text-charcoal-muted">
             What does it actually cost to answer your phone?
           </p>
 
           <div className="mt-16 grid gap-8 md:grid-cols-3">
-            <div className="fade-up card-shadow rounded-xl border border-red-200 bg-red-50 p-10 text-center">
+            <div className="card-shadow rounded-xl border border-red-200 bg-red-50 p-10 text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-red-500">
                 Missing Calls
               </p>
@@ -717,7 +686,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="fade-up card-shadow rounded-xl bg-white p-10 text-center">
+            <div className="card-shadow rounded-xl bg-white p-10 text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-charcoal-light">
                 Bilingual Receptionist
               </p>
@@ -752,7 +721,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="fade-up pricing-glow rounded-xl border-2 border-amber bg-white p-10 text-center">
+            <div className="pricing-glow rounded-xl border-2 border-amber bg-white p-10 text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
                 Calltide
               </p>
@@ -788,7 +757,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="fade-up mt-14 text-center">
+          <div className="mt-14 text-center">
             <a
               href={BOOKING_URL}
               className="cta-shimmer inline-flex items-center gap-2 rounded-lg bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5"
@@ -803,7 +772,7 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 9. GUARANTEE ── */}
-      <Section className="bg-white px-6 py-[120px]">
+      <Section className="bg-white px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl">
           <div className="card-shadow rounded-xl border border-cream-border border-l-4 border-l-navy bg-white p-10 sm:p-14">
             <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
@@ -824,7 +793,7 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 10. FAQ ── */}
-      <Section id="faq" className="relative bg-cream px-6 py-[120px] overflow-hidden">
+      <Section id="faq" className="relative bg-cream px-6 py-16 sm:py-20 overflow-hidden">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-center font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
             Questions We Hear
@@ -839,7 +808,7 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 11. FINAL CTA ── */}
-      <Section className="bg-navy px-6 py-[120px] overflow-hidden">
+      <Section className="bg-navy px-6 py-16 sm:py-20 overflow-hidden">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-white sm:text-[40px] lg:text-[48px]">
             Your Competitors Are Still
