@@ -1,12 +1,19 @@
 import { NextRequest } from "next/server";
 import twilio from "twilio";
 import { db } from "@/db";
-import { businesses, smsMessages } from "@/db/schema";
+import { businesses, leads, smsMessages } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { findOrCreateLead } from "@/lib/ai/context-builder";
 import { reportWarning } from "@/lib/error-reporting";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+
+const OPT_OUT_KEYWORDS = ["stop", "unsubscribe", "cancel", "quit", "end", "optout", "opt out"];
+const OPT_IN_KEYWORDS = ["start", "unstop", "subscribe", "opt in", "optin"];
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = rateLimit(`twilio-sms:${ip}`, RATE_LIMITS.webhook);
+  if (!rl.success) return rateLimitResponse(rl);
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   if (!authToken) {
     reportWarning("TWILIO_AUTH_TOKEN is not set");
@@ -73,6 +80,29 @@ export async function POST(req: NextRequest) {
   });
 
   console.log(`Inbound SMS for ${biz.name} from ${from}: "${body.slice(0, 80)}"`);
+
+  // Handle SMS opt-out / opt-in
+  const normalizedBody = body.trim().toLowerCase();
+
+  if (OPT_OUT_KEYWORDS.some((kw) => normalizedBody === kw)) {
+    await db.update(leads).set({
+      smsOptOut: true,
+      updatedAt: new Date().toISOString(),
+    }).where(eq(leads.id, lead.id));
+
+    console.log(`SMS opt-out recorded for lead ${lead.id} (${from})`);
+    return twimlResponse("You have been unsubscribed and will no longer receive SMS messages from us. Reply START to re-subscribe.");
+  }
+
+  if (OPT_IN_KEYWORDS.some((kw) => normalizedBody === kw)) {
+    await db.update(leads).set({
+      smsOptOut: false,
+      updatedAt: new Date().toISOString(),
+    }).where(eq(leads.id, lead.id));
+
+    console.log(`SMS opt-in recorded for lead ${lead.id} (${from})`);
+    return twimlResponse("You have been re-subscribed to SMS messages. Reply STOP to unsubscribe.");
+  }
 
   // Flag for owner notification
   if (biz.ownerEmail) {

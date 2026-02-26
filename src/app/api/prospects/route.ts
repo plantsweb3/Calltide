@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { prospects } from "@/db/schema";
 import { desc, asc, eq, like, sql, and } from "drizzle-orm";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = rateLimit(`prospects:${ip}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
   const url = req.nextUrl.searchParams;
   const page = parseInt(url.get("page") ?? "1", 10);
   const limit = Math.min(parseInt(url.get("limit") ?? "50", 10), 100);

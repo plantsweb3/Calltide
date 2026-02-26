@@ -1,16 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { startOutreachForProspect } from "@/lib/outreach/orchestrator";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+
+const outreachSchema = z.object({
+  prospectIds: z.array(z.string()).min(1).max(100),
+});
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { prospectIds } = body as { prospectIds: string[] };
+  const ip = getClientIp(req);
+  const rl = rateLimit(`outreach-start:${ip}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
-  if (!prospectIds?.length) {
+  const body = await req.json();
+  const parsed = outreachSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "prospectIds is required" },
+      { error: parsed.error.issues[0].message },
       { status: 400 },
     );
   }
+  const { prospectIds } = parsed.data;
 
   const results = [];
   for (const id of prospectIds) {

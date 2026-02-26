@@ -7,6 +7,7 @@ import { calls } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import type { ChatCompletionRequest, SSEChunk } from "@/types";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 const CLAUDE_MODEL = process.env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929";
 
@@ -31,6 +32,10 @@ export async function GET() {
  * as OpenAI-compatible SSE chunks.
  */
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = rateLimit(`clm:${ip}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
+
   try {
     const anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,

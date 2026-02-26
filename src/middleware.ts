@@ -37,20 +37,29 @@ function parseClientPayload(cookie: string): string | null {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // ── Admin routes ──
-  if (pathname.startsWith("/admin")) {
-    if (pathname === "/admin/login") return NextResponse.next();
+  // ── Admin routes (pages + API) ──
+  if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
+    // Allow auth endpoints through
+    if (pathname === "/admin/login" || pathname === "/api/admin/auth") {
+      return NextResponse.next();
+    }
 
     const adminPassword = process.env.ADMIN_PASSWORD;
     if (!adminPassword) return NextResponse.next();
 
     const cookie = req.cookies.get(ADMIN_COOKIE)?.value;
     if (!cookie) {
+      if (pathname.startsWith("/api/admin")) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
       return NextResponse.redirect(new URL("/admin/login", req.url));
     }
 
     const valid = await verifyToken(cookie, adminPassword);
     if (!valid) {
+      if (pathname.startsWith("/api/admin")) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
       return NextResponse.redirect(new URL("/admin/login", req.url));
     }
 
@@ -116,5 +125,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*", "/api/dashboard/:path*"],
+  matcher: ["/admin/:path*", "/api/admin/:path*", "/dashboard/:path*", "/api/dashboard/:path*"],
 };

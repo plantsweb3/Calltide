@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { customerNotes } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
+
+const createNoteSchema = z.object({
+  noteText: z.string().min(1, "noteText is required").max(5000),
+  createdBy: z.string().max(100).default("admin"),
+});
 
 export async function GET(
   _req: NextRequest,
@@ -31,18 +37,17 @@ export async function POST(
 
   try {
     const body = await req.json();
-    const { noteText, createdBy } = body;
-
-    if (!noteText) {
-      return NextResponse.json({ error: "noteText is required" }, { status: 400 });
+    const parsed = createNoteSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
 
     const [note] = await db
       .insert(customerNotes)
       .values({
         customerId,
-        noteText,
-        createdBy: createdBy || "admin",
+        noteText: parsed.data.noteText,
+        createdBy: parsed.data.createdBy,
       })
       .returning();
 

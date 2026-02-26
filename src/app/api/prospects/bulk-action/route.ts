@@ -1,24 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { prospects } from "@/db/schema";
 import { inArray } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 import { startOutreachForProspect } from "@/lib/outreach/orchestrator";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+
+const bulkActionSchema = z.object({
+  ids: z.array(z.string().uuid()).min(1).max(500),
+  action: z.enum(["change_status", "start_outreach", "export"]),
+  status: z.string().max(50).optional(),
+});
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { ids, action, status: newStatus } = body as {
-    ids: string[];
-    action: string;
-    status?: string;
-  };
+  const ip = getClientIp(req);
+  const rl = rateLimit(`bulk-action:${ip}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
-  if (!ids?.length || !action) {
+  const body = await req.json();
+  const parsed = bulkActionSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "ids and action are required" },
+      { error: parsed.error.issues.map((i) => i.message).join(", ") },
       { status: 400 },
     );
   }
+
+  const { ids, action, status: newStatus } = parsed.data;
 
   switch (action) {
     case "change_status": {

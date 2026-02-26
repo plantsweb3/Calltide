@@ -6,10 +6,16 @@ import { db } from "@/db";
 import { calls } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
+import { processCallSummary } from "@/lib/ai/call-summary";
 import type { HumeWebhookEvent, HumeChatStartedData, HumeChatEndedData, HumeToolCallData } from "@/types";
 import { reportError, reportWarning } from "@/lib/error-reporting";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = rateLimit(`hume-webhook:${ip}`, RATE_LIMITS.webhook);
+  if (!rl.success) return rateLimitResponse(rl);
+
   const rawBody = await req.text();
 
   // Verify HMAC signature
@@ -137,6 +143,13 @@ async function handleChatEnded(event: HumeWebhookEvent) {
         templateType: "owner_notify",
       });
     }
+
+    // Generate AI summary from transcript (fire-and-forget)
+    processCallSummary(call.id, event.chat_id).catch((err) => {
+      reportError("Background call summary failed", err, {
+        extra: { callId: call.id, chatId: event.chat_id },
+      });
+    });
   }
 
   console.log("Call ended:", { chatId: event.chat_id });

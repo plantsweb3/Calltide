@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { businesses, calls, appointments } from "@/db/schema";
 import { sql, eq } from "drizzle-orm";
+
+const createClientSchema = z.object({
+  name: z.string().min(1).max(200),
+  type: z.string().min(1).max(100),
+  ownerName: z.string().min(1).max(200),
+  ownerPhone: z.string().min(1).max(20),
+  ownerEmail: z.string().email().optional().or(z.literal("")),
+  twilioNumber: z.string().min(1).max(20),
+  services: z.array(z.string()).optional(),
+  businessHours: z.record(z.string(), z.object({ open: z.string(), close: z.string() })).optional(),
+  timezone: z.string().max(50).optional(),
+  defaultLanguage: z.enum(["en", "es"]).optional(),
+  greeting: z.string().max(500).optional(),
+});
 
 export async function GET() {
   const businessRows = await db.select().from(businesses);
@@ -62,15 +77,15 @@ const DEFAULT_HOURS: Record<string, { open: string; close: string }> = {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-
-  const { name, type, ownerName, ownerPhone, ownerEmail, twilioNumber, services, businessHours, timezone, defaultLanguage, greeting } = body;
-
-  if (!name || !type || !ownerName || !ownerPhone || !twilioNumber) {
+  const parsed = createClientSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "name, type, ownerName, ownerPhone, and twilioNumber are required" },
-      { status: 400 }
+      { error: parsed.error.issues.map((i) => i.message).join(", ") },
+      { status: 400 },
     );
   }
+
+  const { name, type, ownerName, ownerPhone, ownerEmail, twilioNumber, services, businessHours, timezone, defaultLanguage, greeting } = parsed.data;
 
   const [created] = await db
     .insert(businesses)

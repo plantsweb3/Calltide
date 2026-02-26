@@ -1,18 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { z } from "zod";
 import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { generateMagicLink } from "@/lib/client-auth";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+
+const sendLinkSchema = z.object({
+  email: z.string().email("Valid email is required"),
+});
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 5 attempts per minute per IP
+  const ip = getClientIp(req);
+  const rl = rateLimit(`send-link:${ip}`, RATE_LIMITS.auth);
+  if (!rl.success) return rateLimitResponse(rl);
+
   try {
-    const { email } = await req.json();
-    if (!email || typeof email !== "string") {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    const body = await req.json();
+    const parsed = sendLinkSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
+    const email = parsed.data.email;
 
     const [business] = await db
       .select({ id: businesses.id, name: businesses.name })

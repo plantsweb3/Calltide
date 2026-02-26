@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { demos, prospects } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
+
+const patchDemoSchema = z.object({
+  status: z.string().max(50).optional(),
+  outcome: z.string().max(50).optional(),
+  notes: z.string().max(2000).optional(),
+  revenue: z.number().min(0).optional(),
+});
 
 export async function PATCH(
   req: NextRequest,
@@ -10,6 +18,13 @@ export async function PATCH(
 ) {
   const { id } = await params;
   const body = await req.json();
+  const parsed = patchDemoSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues.map((i) => i.message).join(", ") },
+      { status: 400 },
+    );
+  }
 
   const [existing] = await db.select().from(demos).where(eq(demos.id, id));
   if (!existing) {
@@ -19,10 +34,10 @@ export async function PATCH(
   const updates: Partial<typeof demos.$inferInsert> = {
     updatedAt: new Date().toISOString(),
   };
-  if (body.status) updates.status = body.status;
-  if (body.outcome) updates.outcome = body.outcome;
-  if (body.notes !== undefined) updates.notes = body.notes;
-  if (body.revenue !== undefined) updates.revenue = body.revenue;
+  if (parsed.data.status) updates.status = parsed.data.status;
+  if (parsed.data.outcome) updates.outcome = parsed.data.outcome;
+  if (parsed.data.notes !== undefined) updates.notes = parsed.data.notes;
+  if (parsed.data.revenue !== undefined) updates.revenue = parsed.data.revenue;
 
   const [updated] = await db
     .update(demos)
@@ -31,7 +46,7 @@ export async function PATCH(
     .returning();
 
   // If demo converted, update prospect status
-  if (body.outcome === "signed" && existing.prospectId) {
+  if (parsed.data.outcome === "signed" && existing.prospectId) {
     await db
       .update(prospects)
       .set({ status: "converted", updatedAt: new Date().toISOString() })
@@ -42,7 +57,7 @@ export async function PATCH(
     type: "demo_updated",
     entityType: "demo",
     entityId: id,
-    title: `Demo updated: ${body.status ?? ""} ${body.outcome ?? ""}`.trim(),
+    title: `Demo updated: ${parsed.data.status ?? ""} ${parsed.data.outcome ?? ""}`.trim(),
   });
 
   return NextResponse.json(updated);

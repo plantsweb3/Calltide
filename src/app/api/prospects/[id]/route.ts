@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { prospects, prospectAuditCalls, prospectOutreach } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { logStatusChange } from "@/lib/activity";
+
+const patchProspectSchema = z.object({
+  status: z.string().max(50).optional(),
+  notes: z.string().max(5000).optional(),
+  tags: z.array(z.string().max(100)).max(20).optional(),
+  email: z.string().email().or(z.literal("")).optional(),
+});
 
 export async function GET(
   _req: NextRequest,
@@ -41,6 +49,13 @@ export async function PATCH(
 ) {
   const { id } = await params;
   const body = await req.json();
+  const parsed = patchProspectSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues.map((i) => i.message).join(", ") },
+      { status: 400 },
+    );
+  }
 
   const [existing] = await db
     .select()
@@ -55,15 +70,15 @@ export async function PATCH(
     updatedAt: new Date().toISOString(),
   };
 
-  if (body.status) {
-    updates.status = body.status;
-    if (body.status !== existing.status) {
-      await logStatusChange("prospect", id, existing.status, body.status);
+  if (parsed.data.status) {
+    updates.status = parsed.data.status;
+    if (parsed.data.status !== existing.status) {
+      await logStatusChange("prospect", id, existing.status, parsed.data.status);
     }
   }
-  if (body.notes !== undefined) updates.notes = body.notes;
-  if (body.tags) updates.tags = body.tags;
-  if (body.email !== undefined) updates.email = body.email;
+  if (parsed.data.notes !== undefined) updates.notes = parsed.data.notes;
+  if (parsed.data.tags) updates.tags = parsed.data.tags;
+  if (parsed.data.email !== undefined) updates.email = parsed.data.email;
 
   const [updated] = await db
     .update(prospects)

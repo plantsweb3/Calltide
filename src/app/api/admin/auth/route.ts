@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { env } from "@/lib/env";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 const COOKIE_NAME = "calltide_admin";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
+
+const loginSchema = z.object({
+  password: z.string().min(1, "Password is required"),
+});
 
 async function signToken(payload: string): Promise<string> {
   const secret = env.ADMIN_PASSWORD;
@@ -21,14 +27,22 @@ async function signToken(payload: string): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 5 attempts per minute per IP
+  const ip = getClientIp(req);
+  const rl = rateLimit(`admin-auth:${ip}`, RATE_LIMITS.auth);
+  if (!rl.success) return rateLimitResponse(rl);
+
   const body = await req.json();
-  const { password } = body;
+  const parsed = loginSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+  }
 
   if (!env.ADMIN_PASSWORD) {
     return NextResponse.json({ error: "Admin auth not configured" }, { status: 500 });
   }
 
-  if (password !== env.ADMIN_PASSWORD) {
+  if (parsed.data.password !== env.ADMIN_PASSWORD) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 

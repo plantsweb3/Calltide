@@ -1,12 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { demos, prospects } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { logDemoBooked } from "@/lib/activity";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+
+const createDemoSchema = z.object({
+  prospectId: z.string().optional(),
+  contactName: z.string().min(1).max(200),
+  contactEmail: z.string().email().optional(),
+  contactPhone: z.string().max(20).optional(),
+  scheduledAt: z.string().min(1),
+  notes: z.string().max(2000).optional(),
+});
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = rateLimit(`demo-create:${ip}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
+
   const body = await req.json();
-  const { prospectId, contactName, contactEmail, contactPhone, scheduledAt, notes } = body;
+  const parsed = createDemoSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues.map((i) => i.message).join(", ") },
+      { status: 400 },
+    );
+  }
+  const { prospectId, contactName, contactEmail, contactPhone, scheduledAt, notes } = parsed.data;
 
   const [demo] = await db
     .insert(demos)
