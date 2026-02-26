@@ -190,3 +190,54 @@ export const activityLog = sqliteTable("activity_log", {
   metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>(),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
+
+// ── Phase 3: Admin Portal ──
+
+export const customerNotes = sqliteTable("customer_notes", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  customerId: text("customer_id").notNull().references(() => businesses.id),
+  noteText: text("note_text").notNull(),
+  createdBy: text("created_by").notNull().default("admin"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const systemHealthLogs = sqliteTable("system_health_logs", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  serviceName: text("service_name").notNull(),
+  status: text("status").notNull().default("operational"), // operational, degraded, down
+  latencyMs: integer("latency_ms"),
+  errorCount: integer("error_count").default(0),
+  uptimePct: real("uptime_pct").default(100),
+  checkedAt: text("checked_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const revenueMetrics = sqliteTable("revenue_metrics", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  date: text("date").notNull(), // ISO date: 2025-06-15
+  mrr: real("mrr").notNull().default(0),
+  arr: real("arr").notNull().default(0),
+  customerCount: integer("customer_count").notNull().default(0),
+  newCustomers: integer("new_customers").default(0),
+  churnedCustomers: integer("churned_customers").default(0),
+  failedPayments: integer("failed_payments").default(0),
+});
+
+export const churnRiskScores = sqliteTable("churn_risk_scores", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  customerId: text("customer_id").notNull().references(() => businesses.id),
+  score: integer("score").notNull().default(0), // 0-10
+  factors: text("factors", { mode: "json" }).$type<string[]>().default([]),
+  calculatedAt: text("calculated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const escalations = sqliteTable("escalations", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  callId: text("call_id").references(() => calls.id),
+  customerId: text("customer_id").notNull().references(() => businesses.id),
+  reason: text("reason").notNull(),
+  resolutionStatus: text("resolution_status").notNull().default("open"), // open, in_progress, resolved
+  assignedTo: text("assigned_to"),
+  notes: text("notes"),
+  resolvedAt: text("resolved_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});

@@ -2,10 +2,10 @@
 
 @theme inline {
   /* Premium palette — Midnight & Gold */
-  --color-cream: #FBFBF9;
+  --color-cream: #FBFBFC;
   --color-cream-dark: #F5F5F0;
   --color-cream-border: #E2E8F0;
-  --color-charcoal: #0F172A;
+  --color-charcoal: #1A1D24;
   --color-charcoal-muted: #475569;
   --color-charcoal-light: #64748B;
 
@@ -19,8 +19,10 @@
   --color-amber-light: #D4A832;
   --color-amber-dark: #A17D1F;
 
-  /* Typography */
-  --font-serif: var(--font-playfair);
+  /* Deep dark for alternating sections */
+  --color-deep-dark: #111317;
+
+  /* Typography — Inter only */
   --font-body: var(--font-inter);
 }
 
@@ -29,9 +31,11 @@ html {
 }
 
 body {
-  background: var(--color-cream);
-  color: var(--color-charcoal);
+  background: #FBFBFC;
+  color: #1A1D24;
   font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 500;
+  line-height: 1.7;
 }
 
 /* Selection color */
@@ -47,7 +51,11 @@ button:focus-visible {
   border-radius: 4px;
 }
 
-/* Grain texture overlay — hero only */
+/* ── Grain texture overlay — hero and dark sections ── */
+.grain-overlay {
+  position: relative;
+  overflow: hidden;
+}
 .grain-overlay::before {
   content: "";
   position: absolute;
@@ -56,6 +64,22 @@ button:focus-visible {
   pointer-events: none;
   opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Noise grain for all dark sections (Part 12) */
+.dark-section {
+  position: relative;
+  overflow: hidden;
+}
+.dark-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 256px 256px;
 }
@@ -100,7 +124,24 @@ button:focus-visible {
   animation: slide-up 0.35s ease 0.05s both;
 }
 
-/* CTA shimmer effect */
+/* ── Gold CTA button — gradient materiality (Part 5) ── */
+.cta-gold {
+  background: linear-gradient(180deg, #D6A846 0%, #C0963E 100%);
+  border: 1px solid #B08535;
+  color: #fff;
+  transition: all 0.2s ease;
+}
+.cta-gold:hover {
+  background: linear-gradient(180deg, #C0963E 0%, #A07F31 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(200, 170, 110, 0.3);
+}
+.cta-gold:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(200, 170, 110, 0.2);
+}
+
+/* CTA shimmer effect (layered on top of gradient) */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -137,17 +178,28 @@ button:focus-visible {
 .card-shadow {
   box-shadow: 0px 4px 16px rgba(15, 23, 42, 0.08), 0px 12px 32px rgba(15, 23, 42, 0.06);
 }
+
+/* Consistent card hover (Part 11) */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Legacy card-shadow-hover (kept for compat) */
 .card-shadow-hover {
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 .card-shadow-hover:hover {
   box-shadow: 0px 8px 24px rgba(15, 23, 42, 0.12), 0px 16px 48px rgba(15, 23, 42, 0.08);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
 
 /* Sticky nav state */
 .nav-scrolled {
-  background: rgba(251, 251, 249, 0.97);
+  background: rgba(251, 251, 252, 0.97);
   backdrop-filter: blur(8px);
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
   border-bottom-color: transparent;
@@ -172,7 +224,15 @@ button:focus-visible {
 }
 .hero-cta-glow:hover {
   box-shadow: 0 0 30px rgba(212, 145, 10, 0.5);
-  transform: translateY(-2px);
+}
+
+/* Phone mockup premium shadow (Part 8) */
+.phone-mockup-premium {
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.03),
+    0 2px 4px rgba(0,0,0,0.04),
+    0 6px 16px -4px rgba(0,0,0,0.08),
+    0 24px 48px -12px rgba(0,0,0,0.12);
 }
 
 /* Phone mockup glow */
@@ -183,11 +243,11 @@ button:focus-visible {
 /* Problem cards — enhanced hover */
 .problem-card {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .problem-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
 /* Glassmorphic feature cards */
@@ -195,10 +255,12 @@ button:focus-visible {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .glass-card:hover {
   border-color: rgba(212, 145, 10, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
 }
 
 /* Step circle glow */
@@ -227,11 +289,12 @@ button:focus-visible {
   backdrop-filter: blur(12px);
   border: 1px solid rgba(197, 154, 39, 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .glass-card-light:hover {
   border-color: rgba(197, 154, 39, 0.3);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
 /* Demo card dark glassmorphic */
@@ -279,8 +342,32 @@ button:focus-visible {
   color: #C59A27 !important;
 }
 
+/* ── Scroll Reveal Animations (Part 10) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered delays for card grids */
+.reveal-stagger:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger:nth-child(2) { transition-delay: 75ms; }
+.reveal-stagger:nth-child(3) { transition-delay: 150ms; }
+.reveal-stagger:nth-child(4) { transition-delay: 225ms; }
+.reveal-stagger:nth-child(5) { transition-delay: 300ms; }
+.reveal-stagger:nth-child(6) { transition-delay: 375ms; }
+
 /* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
   *,
   *::before,
   *::after {
@@ -307,12 +394,12 @@ button:focus-visible {
 }
 
 [data-theme="light"] {
-  --db-bg: #FBFBF9;
+  --db-bg: #FBFBFC;
   --db-surface: #FFFFFF;
   --db-card: #FFFFFF;
   --db-border: #E2E8F0;
   --db-border-light: #F1F5F9;
-  --db-text: #0F172A;
+  --db-text: #1A1D24;
   --db-text-secondary: #475569;
   --db-text-muted: #64748B;
   --db-hover: rgba(241,245,249,0.6);

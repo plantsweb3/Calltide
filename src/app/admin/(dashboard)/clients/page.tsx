@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import DataTable, { type Column } from "../../_components/data-table";
 import AddClientModal from "../../_components/add-client-modal";
-import ClientDetail from "../../_components/client-detail";
 
 interface Client {
   id: string;
@@ -27,7 +27,9 @@ const healthColors = {
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const fetchClients = useCallback(async () => {
     const res = await fetch("/api/admin/clients");
@@ -38,6 +40,16 @@ export default function ClientsPage() {
   useEffect(() => {
     fetchClients();
   }, [fetchClients]);
+
+  const filteredClients = clients.filter((c) => {
+    if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
+    if (typeFilter && c.type !== typeFilter) return false;
+    if (statusFilter === "active" && !c.active) return false;
+    if (statusFilter === "inactive" && c.active) return false;
+    return true;
+  });
+
+  const types = Array.from(new Set(clients.map((c) => c.type)));
 
   const columns: Column<Client>[] = [
     {
@@ -55,12 +67,12 @@ export default function ClientsPage() {
       label: "Business",
       sortable: true,
       render: (row) => (
-        <button
-          onClick={() => setSelectedClient(row)}
+        <Link
+          href={`/admin/clients/${row.id}`}
           className="text-left font-medium text-blue-400 hover:text-blue-300"
         >
           {row.name}
-        </button>
+        </Link>
       ),
     },
     { key: "type", label: "Type", sortable: true },
@@ -102,9 +114,9 @@ export default function ClientsPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Clients</h1>
+          <h1 className="text-2xl font-semibold">Customers</h1>
           <p className="text-sm text-slate-400">
-            {clients.length} businesses
+            {filteredClients.length} of {clients.length} businesses
           </p>
         </div>
         <button
@@ -115,19 +127,44 @@ export default function ClientsPage() {
         </button>
       </div>
 
-      <DataTable columns={columns} data={clients} />
+      {/* Search + Filters */}
+      <div className="flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          placeholder="Search businesses..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-slate-600"
+        />
+        <select
+          value={typeFilter}
+          onChange={(e) => setTypeFilter(e.target.value)}
+          className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 outline-none focus:border-slate-600"
+        >
+          <option value="">All Types</option>
+          {types.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 outline-none focus:border-slate-600"
+        >
+          <option value="">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <DataTable columns={columns} data={filteredClients} />
 
       {showAddModal && (
         <AddClientModal
           onClose={() => setShowAddModal(false)}
           onComplete={fetchClients}
-        />
-      )}
-
-      {selectedClient && (
-        <ClientDetail
-          client={selectedClient}
-          onClose={() => setSelectedClient(null)}
         />
       )}
     </div>

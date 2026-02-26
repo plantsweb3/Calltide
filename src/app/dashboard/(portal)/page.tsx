@@ -82,7 +82,7 @@ export default function OverviewPage() {
       <div>
         <h1
           className="mb-6 text-2xl font-semibold"
-          style={{ fontFamily: "var(--font-serif), serif", color: "var(--db-text)" }}
+          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
         >
           Overview
         </h1>
@@ -114,7 +114,7 @@ export default function OverviewPage() {
         <div>
           <h1
             className="text-2xl font-semibold"
-            style={{ fontFamily: "var(--font-serif), serif", color: "var(--db-text)" }}
+            style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
           >
             {getGreeting()}, {data.businessName?.split(" ")[0] || "there"}
           </h1>
@@ -277,7 +277,7 @@ export default function OverviewPage() {
     <div>
       <h1
         className="mb-6 text-2xl font-semibold"
-        style={{ fontFamily: "var(--font-serif), serif", color: "var(--db-text)" }}
+        style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
       >
         Overview
       </h1>

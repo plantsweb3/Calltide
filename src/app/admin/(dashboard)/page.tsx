@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import MetricCard from "../_components/metric-card";
 import ActivityFeed from "../_components/activity-feed";
+import QuickActions from "../_components/quick-actions";
+import StatusBadge from "../_components/status-badge";
 import {
   AreaChart,
   Area,
@@ -30,17 +32,42 @@ interface MetricsData {
   auditsByDay: Array<{ date: string; count: number }>;
 }
 
+interface BillingData {
+  current: { mrr: number; arr: number; customerCount: number };
+}
+
+interface OpsData {
+  services: Array<{
+    serviceName: string;
+    status: string;
+    latencyMs: number | null;
+    uptimePct: number | null;
+  }>;
+}
+
 export default function AdminDashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [metrics, setMetrics] = useState<MetricsData | null>(null);
+  const [billing, setBilling] = useState<BillingData | null>(null);
+  const [ops, setOps] = useState<OpsData | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/dashboard")
       .then((r) => r.json())
-      .then(setData);
+      .then(setData)
+      .catch(() => {});
     fetch("/api/admin/metrics?days=30")
       .then((r) => r.json())
-      .then(setMetrics);
+      .then(setMetrics)
+      .catch(() => {});
+    fetch("/api/admin/billing")
+      .then((r) => r.json())
+      .then(setBilling)
+      .catch(() => {});
+    fetch("/api/admin/ops")
+      .then((r) => r.json())
+      .then(setOps)
+      .catch(() => {});
   }, []);
 
   if (!data) {
@@ -63,28 +90,32 @@ export default function AdminDashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="text-sm text-slate-400">Calltide outreach overview</p>
+        <p className="text-sm text-slate-400">Calltide admin overview</p>
       </div>
 
-      {/* Metric cards */}
+      {/* Quick Actions */}
+      <QuickActions />
+
+      {/* Revenue + Core Metric cards */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <MetricCard label="Total Prospects" value={data.prospects.total} />
-        <MetricCard label="Audit Calls" value={data.audit.total} />
-        <MetricCard label="Emails Sent" value={data.outreach.total} />
-        <MetricCard label="Demos Booked" value={data.demos.total} />
+        <MetricCard
+          label="MRR"
+          value={billing?.current.mrr ?? 0}
+          prefix="$"
+        />
+        <MetricCard
+          label="ARR"
+          value={billing?.current.arr ?? 0}
+          prefix="$"
+        />
         <MetricCard label="Active Clients" value={data.businesses} />
         <MetricCard
           label="Client Calls (30d)"
           value={data.calls.total}
         />
-        <MetricCard
-          label="Email Open Rate"
-          value={
-            data.outreach.total > 0
-              ? `${Math.round((data.outreach.opened / data.outreach.total) * 100)}%`
-              : "—"
-          }
-        />
+        <MetricCard label="Total Prospects" value={data.prospects.total} />
+        <MetricCard label="Audit Calls" value={data.audit.total} />
+        <MetricCard label="Emails Sent" value={data.outreach.total} />
         <MetricCard
           label="Demos Converted"
           value={data.demos.converted}
@@ -96,6 +127,34 @@ export default function AdminDashboardPage() {
           changeType="positive"
         />
       </div>
+
+      {/* System Health Grid */}
+      {ops?.services && ops.services.length > 0 && (
+        <div>
+          <h2 className="mb-3 text-sm font-medium text-slate-300">System Health</h2>
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+            {ops.services.map((svc) => (
+              <div
+                key={svc.serviceName}
+                className="rounded-lg border border-slate-800 bg-slate-900 p-3"
+              >
+                <p className="truncate text-xs font-medium text-slate-300">
+                  {svc.serviceName}
+                </p>
+                <div className="mt-1.5">
+                  <StatusBadge status={svc.status} />
+                </div>
+                <div className="mt-2 flex items-center justify-between text-[10px] text-slate-500">
+                  <span>{svc.latencyMs != null ? `${svc.latencyMs}ms` : "—"}</span>
+                  <span>
+                    {svc.uptimePct != null ? `${svc.uptimePct.toFixed(1)}%` : "—"}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-2">

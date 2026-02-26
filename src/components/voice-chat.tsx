@@ -88,7 +88,7 @@ function VoiceChatInner({ onClose }: { onClose: () => void }) {
               <line x1="12" x2="12" y1="19" y2="22" />
             </svg>
           </div>
-          <h3 className="font-serif text-xl font-normal text-white">
+          <h3 className="text-xl font-bold tracking-[-0.02em] text-white">
             Talk to Our AI Receptionist
           </h3>
           <p className="mt-1 text-sm text-slate-400">

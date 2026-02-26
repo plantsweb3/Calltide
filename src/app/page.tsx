@@ -80,7 +80,7 @@ function FAQ() {
           </button>
           <div className={`faq-answer ${openIndex === i ? "open" : ""}`}>
             <div>
-              <p className="pb-6 text-base leading-relaxed text-charcoal-muted">{faq.a}</p>
+              <p className="pb-6 text-base leading-[1.7] text-charcoal-muted">{faq.a}</p>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@ function MobileCTA({ onTryInBrowser }: { onTryInBrowser: () => void }) {
       <div className="flex items-center gap-2">
         <a
           href={PHONE_TEL}
-          className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-amber px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-amber/20 transition-all duration-300 hover:-translate-y-0.5"
+          className="cta-gold cta-shimmer flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-3.5 text-sm font-bold text-white shadow-lg"
         >
           Call Demo: {PHONE}
         </a>
@@ -166,16 +166,16 @@ function ExitIntent({ onTryInBrowser }: { onTryInBrowser: () => void }) {
         className="exit-card card-shadow w-full max-w-md rounded-xl border border-cream-border bg-white p-10 text-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="text-[28px] font-bold leading-tight text-charcoal sm:text-[32px]">
+        <p className="text-[28px] font-extrabold leading-tight tracking-[-0.03em] text-charcoal sm:text-[32px]">
           Wait — hear it before you go.
         </p>
-        <p className="mt-4 text-base text-charcoal-muted">
+        <p className="mt-4 text-base leading-[1.7] text-charcoal-muted">
           Experience Calltide answering as a real business.
           Takes 30 seconds. No signup needed.
         </p>
         <button
           onClick={() => { setShow(false); onTryInBrowser(); }}
-          className="cta-shimmer mt-8 inline-flex items-center gap-2 rounded-lg bg-amber px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5"
+          className="cta-gold cta-shimmer mt-8 inline-flex items-center gap-2 rounded-lg px-8 py-4 text-lg font-semibold text-white"
         >
           Try It in Your Browser
         </button>
@@ -268,6 +268,37 @@ function useScrolled() {
   return scrolled;
 }
 
+/* ───────── Scroll Reveal Hook (Part 10) ───────── */
+
+function useScrollReveal() {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+    // Safety net — never leave content hidden
+    const timeout = setTimeout(() => {
+      document.querySelectorAll(".reveal:not(.visible)").forEach((el) => {
+        el.classList.add("visible");
+      });
+    }, 3000);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timeout);
+    };
+  }, []);
+}
+
 /* ═══════════════════════════════════════════════════════════════
    PAGE
    ═══════════════════════════════════════════════════════════════ */
@@ -276,6 +307,7 @@ export default function LandingPage() {
   const [showVoiceChat, setShowVoiceChat] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const scrolled = useScrolled();
+  useScrollReveal();
 
   return (
     <div className="relative overflow-x-hidden">
@@ -393,16 +425,16 @@ export default function LandingPage() {
         <div className="relative z-10 mx-auto max-w-6xl px-6 py-[120px]">
           <div className="grid items-center gap-16 md:grid-cols-5">
             <div className="md:col-span-3">
-              <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-amber">
+              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-amber">
                 The Front Office for Your Business
               </p>
-              <h1 className="mt-6 font-serif text-[42px] font-semibold leading-[1.1] tracking-[-0.02em] text-white sm:text-[56px] lg:text-[72px]">
+              <h1 className="mt-6 text-[clamp(48px,6vw,80px)] font-extrabold leading-[1.05] tracking-[-0.04em] text-white">
                 Answer Every Lead
                 <br />
                 Like You Have a{" "}
                 <span className="gold-gradient-text">Full-Time Receptionist</span>
               </h1>
-              <p className="mt-6 max-w-xl text-xl leading-relaxed text-slate-300">
+              <p className="mt-6 max-w-xl text-xl font-medium leading-[1.7] text-slate-300">
                 Your AI picks up in English or Spanish — 24/7. Qualifies the caller,
                 books the appointment, and texts you the details before you set your
                 tools down.
@@ -414,7 +446,7 @@ export default function LandingPage() {
               <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
                 <button
                   onClick={() => setShowVoiceChat(true)}
-                  className="cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg bg-amber px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:bg-amber-dark"
+                  className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white"
                 >
                   Talk to Maria Now &rarr;
                 </button>
@@ -435,7 +467,7 @@ export default function LandingPage() {
 
             <div className="md:col-span-2 relative">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(212,145,10,0.15),transparent_70%)]" />
-              <div className="phone-mockup-glow relative mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2 shadow-[0_24px_64px_rgba(15,23,42,0.2)]">
+              <div className="phone-mockup-premium phone-mockup-glow relative mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2 lg:sticky lg:top-[120px]">
                 <div
                   role="img"
                   aria-label="Calltide mobile dashboard showing today's call activity with booked appointments and revenue saved"
@@ -451,7 +483,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── 3. SOCIAL PROOF BAR ── */}
-      <Section className="relative bg-navy border-t border-amber px-6 py-12 sm:py-14 grain-overlay">
+      <Section className="relative bg-navy border-t border-amber px-6 py-12 sm:py-14 dark-section grain-overlay">
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center justify-center gap-10 md:flex-row md:gap-0">
           {[
             { value: "24/7", label: "Every call answered, nights, weekends, holidays" },
@@ -476,31 +508,31 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 4. PROBLEM ── */}
-      <Section id="problem" className="bg-white px-6 py-24 sm:py-32">
+      <Section id="problem" className="bg-[#FBFBFC] px-6 py-[96px] sm:py-[160px]">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-center font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
+          <h2 className="reveal text-center text-[36px] font-bold leading-[1.1] tracking-[-0.02em] text-charcoal sm:text-[48px]">
             While You&apos;re on a Job,
             <br />
             Your Phone Is Losing You Money
           </h2>
 
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
-            <div className="problem-card rounded-xl border border-cream-border bg-white p-10">
+          <div className="mt-16 grid gap-[48px] md:grid-cols-3">
+            <div className="reveal reveal-stagger problem-card rounded-xl border border-cream-border bg-white p-12">
               <p className="gold-gradient-text text-[24px] font-semibold">
                 Tuesday, 2:14 PM.
               </p>
-              <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
+              <p className="mt-4 text-base leading-[1.7] text-charcoal-muted">
                 A homeowner has a burst pipe. She calls three plumbers.
                 Two go to voicemail. The third answers and gets a $1,200
                 job. Which plumber were you?
               </p>
             </div>
 
-            <div className="problem-card rounded-xl border border-cream-border bg-white p-10">
+            <div className="reveal reveal-stagger problem-card rounded-xl border border-cream-border bg-white p-12">
               <p className="gold-gradient-text text-[24px] font-semibold">
                 &ldquo;Hola, necesito ayuda...&rdquo;
               </p>
-              <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
+              <p className="mt-4 text-base leading-[1.7] text-charcoal-muted">
                 A Spanish-speaking family needs their AC fixed. Your voicemail is
                 in English. They don&apos;t leave a message. They call the
                 company with the bilingual receptionist. You never even know they
@@ -508,11 +540,11 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="problem-card rounded-xl border border-cream-border bg-white p-10">
+            <div className="reveal reveal-stagger problem-card rounded-xl border border-cream-border bg-white p-12">
               <p className="gold-gradient-text text-[24px] font-semibold">
                 Saturday, 11:30 AM.
               </p>
-              <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
+              <p className="mt-4 text-base leading-[1.7] text-charcoal-muted">
                 A homeowner&apos;s AC dies in the middle of July. She calls three
                 HVAC companies. Two go to voicemail. The third answers, books a
                 same-day diagnostic, and earns a $2,800 system replacement. The
@@ -521,7 +553,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="mt-20 text-center">
+          <div className="reveal mt-20 text-center">
             <p className="gold-gradient-text text-[32px] font-bold leading-tight sm:text-[40px]">
               Most service businesses miss more than half their incoming calls.
             </p>
@@ -533,13 +565,13 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 4b. AUDIO DEMO ── */}
-      <Section className="bg-cream px-6 py-24 sm:py-32">
+      <Section className="bg-[#FBFBFC] px-6 py-[96px] sm:py-[160px]">
         <div className="mx-auto max-w-4xl">
-          <div className="text-center">
-            <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-amber">
+          <div className="reveal text-center">
+            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#6F737C]">
               Hear The Difference
             </p>
-            <h2 className="mt-4 font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
+            <h2 className="mt-4 text-[36px] font-bold leading-[1.1] tracking-[-0.02em] text-charcoal sm:text-[48px]">
               This Is What Your Callers Hear
             </h2>
             <p className="mt-4 text-lg text-charcoal-muted">
@@ -549,7 +581,7 @@ export default function LandingPage() {
 
           <div className="mt-16 grid gap-8 sm:grid-cols-2">
             {/* English demo */}
-            <div className="glass-card-light rounded-xl p-8">
+            <div className="reveal reveal-stagger glass-card-light card-hover rounded-xl p-12">
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-amber/10 text-lg">
                   🇺🇸
@@ -579,7 +611,7 @@ export default function LandingPage() {
             </div>
 
             {/* Spanish demo */}
-            <div className="glass-card-light rounded-xl p-8">
+            <div className="reveal reveal-stagger glass-card-light card-hover rounded-xl p-12">
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-amber/10 text-lg">
                   🇲🇽
@@ -616,13 +648,13 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 5. HOW IT WORKS ── */}
-      <Section id="how-it-works" className="bg-cream px-6 py-24 sm:py-32">
+      <Section id="how-it-works" className="bg-[#FBFBFC] px-6 py-[96px] sm:py-[160px]">
         <div className="mx-auto max-w-5xl">
-          <div className="text-center">
-            <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-amber">
+          <div className="reveal text-center">
+            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#6F737C]">
               How It Works
             </p>
-            <h2 className="mt-4 font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
+            <h2 className="mt-4 text-[36px] font-bold leading-[1.1] tracking-[-0.02em] text-charcoal sm:text-[48px]">
               Your Phone Never Goes to Voicemail Again
             </h2>
           </div>
@@ -646,15 +678,15 @@ export default function LandingPage() {
                   desc: "Full summary of the call before you've even set your tools down. Show up, do the job, get paid.",
                 },
               ].map((step) => (
-                <div key={step.num} className="flex gap-6">
+                <div key={step.num} className="reveal flex gap-6">
                   <div className="step-circle-glow relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber text-lg font-bold text-white">
                     {step.num}
                   </div>
                   <div>
-                    <h3 className="text-[24px] font-semibold text-charcoal">
+                    <h3 className="text-[24px] font-bold tracking-[-0.01em] text-charcoal">
                       {step.title}
                     </h3>
-                    <p className="mt-3 text-base leading-relaxed text-charcoal-muted">
+                    <p className="mt-3 text-base leading-[1.7] text-charcoal-muted">
                       {step.desc}
                     </p>
                   </div>
@@ -663,28 +695,28 @@ export default function LandingPage() {
             </div>
 
             <div className="hidden md:col-span-2 md:flex md:items-center">
-              <div className="glass-card-light flex w-full flex-col items-center gap-5 rounded-xl p-10">
+              <div className="reveal glass-card-light flex w-full flex-col items-center gap-5 rounded-xl p-12">
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-amber/10">
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
                   </svg>
                 </div>
-                <p className="text-center text-[24px] font-semibold text-charcoal">Ring &rarr; Answer &rarr; Book &rarr; Text</p>
+                <p className="text-center text-[24px] font-bold text-charcoal">Ring &rarr; Answer &rarr; Book &rarr; Text</p>
                 <p className="text-center text-sm text-charcoal-muted">Every call, handled automatically.</p>
               </div>
             </div>
           </div>
 
-          <p className="mt-20 text-center text-lg italic text-charcoal-muted">
+          <p className="reveal mt-20 text-center text-lg italic text-charcoal-muted">
             All while you&apos;re on a job, eating dinner, or sleeping.
           </p>
         </div>
       </Section>
 
       {/* ── 6. FEATURES ── */}
-      <Section id="features" className="relative bg-[#1B2A4A] px-6 py-24 sm:py-32 grain-overlay">
+      <Section id="features" className="relative bg-[#1B2A4A] px-6 py-[96px] sm:py-[160px] dark-section grain-overlay">
         <div className="relative z-10 mx-auto max-w-5xl">
-          <h2 className="text-center font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-white sm:text-[40px] lg:text-[48px]">
+          <h2 className="reveal text-center text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-white sm:text-[40px] lg:text-[48px]">
             Built for How Service Businesses{" "}
             <span className="gold-gradient-text">Actually Work</span>
           </h2>
@@ -724,13 +756,13 @@ export default function LandingPage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="glass-card rounded-xl p-10"
+                className="reveal reveal-stagger glass-card rounded-xl p-12"
               >
                 <span className="text-2xl">{feature.icon}</span>
-                <h3 className="mt-4 text-[24px] font-semibold leading-[1.3] text-white">
+                <h3 className="mt-4 text-[24px] font-bold leading-[1.3] text-white">
                   {feature.title}
                 </h3>
-                <p className="mt-3 text-base leading-relaxed text-[#B8C4D4]">
+                <p className="mt-3 text-base leading-[1.7] text-[#B8C4D4]">
                   {feature.body}
                 </p>
               </div>
@@ -740,38 +772,38 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 6b. SOCIAL PROOF ── */}
-      <Section className="bg-white px-6 py-24 sm:py-32">
+      <Section className="bg-[#FBFBFC] px-6 py-[96px] sm:py-[160px]">
         <div className="mx-auto max-w-5xl">
-          <div className="text-center">
-            <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-amber">
+          <div className="reveal text-center">
+            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#6F737C]">
               By The Numbers
             </p>
-            <h2 className="mt-4 font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
+            <h2 className="mt-4 text-[36px] font-bold leading-[1.1] tracking-[-0.02em] text-charcoal sm:text-[48px]">
               Built to Perform. Proven to Deliver.
             </h2>
           </div>
 
           <div className="mt-16 grid gap-8 sm:grid-cols-3">
-            <div className="card-shadow rounded-xl border border-cream-border bg-white p-10 text-center">
+            <div className="reveal reveal-stagger card-shadow card-hover rounded-xl border border-cream-border bg-white p-12 text-center">
               <p className="gold-gradient-text text-[48px] font-bold">8s</p>
               <p className="mt-2 text-base font-semibold text-charcoal">Avg. Answer Time</p>
-              <p className="mt-1 text-sm text-charcoal-muted">Your phone never rings more than twice.</p>
+              <p className="mt-1 text-sm leading-[1.7] text-charcoal-muted">Your phone never rings more than twice.</p>
             </div>
-            <div className="card-shadow rounded-xl border border-cream-border bg-white p-10 text-center">
+            <div className="reveal reveal-stagger card-shadow card-hover rounded-xl border border-cream-border bg-white p-12 text-center">
               <p className="gold-gradient-text text-[48px] font-bold">94%</p>
               <p className="mt-2 text-base font-semibold text-charcoal">Booking Rate</p>
-              <p className="mt-1 text-sm text-charcoal-muted">Callers who need service get booked on the spot.</p>
+              <p className="mt-1 text-sm leading-[1.7] text-charcoal-muted">Callers who need service get booked on the spot.</p>
             </div>
-            <div className="card-shadow rounded-xl border border-cream-border bg-white p-10 text-center">
+            <div className="reveal reveal-stagger card-shadow card-hover rounded-xl border border-cream-border bg-white p-12 text-center">
               <p className="gold-gradient-text text-[48px] font-bold">$16</p>
               <p className="mt-2 text-base font-semibold text-charcoal">Per Day</p>
-              <p className="mt-1 text-sm text-charcoal-muted">Less than a coffee run. More than a full-time hire.</p>
+              <p className="mt-1 text-sm leading-[1.7] text-charcoal-muted">Less than a coffee run. More than a full-time hire.</p>
             </div>
           </div>
 
-          <div className="mt-16 mx-auto max-w-2xl">
-            <div className="card-shadow rounded-xl border border-cream-border bg-white p-10">
-              <p className="text-lg leading-relaxed text-charcoal-muted italic">
+          <div className="reveal mt-16 mx-auto max-w-2xl">
+            <div className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-12">
+              <p className="text-lg leading-[1.7] text-charcoal-muted italic">
                 &ldquo;We were missing 60% of our calls. First week with Calltide, we booked 11 jobs
                 we would have lost. The Spanish line alone brought in three new families. This thing
                 pays for itself before Tuesday.&rdquo;
@@ -791,21 +823,21 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 7. DEMO PROOF ── */}
-      <Section className="relative bg-navy px-6 py-24 sm:py-32 grain-overlay">
+      <Section className="relative bg-navy px-6 py-[96px] sm:py-[160px] dark-section grain-overlay">
         <div className="glass-card-demo relative z-10 mx-auto max-w-lg rounded-xl p-10 text-center sm:p-14">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-amber">
+          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#C8AA6E]">
             Hear It for Yourself
           </p>
-          <h2 className="mt-4 font-serif text-[32px] font-semibold leading-tight tracking-[-0.01em] text-white sm:text-[40px]">
+          <h2 className="mt-4 text-[32px] font-bold leading-tight tracking-[-0.02em] text-white sm:text-[40px]">
             Talk to Maria Right Now
           </h2>
-          <p className="mt-4 text-base text-slate-300">
+          <p className="mt-4 text-base leading-[1.7] text-slate-300">
             Try English. Try Spanish. Ask about a plumbing emergency,
             an AC repair, or a weekend callback. Takes 30 seconds.
           </p>
           <button
             onClick={() => setShowVoiceChat(true)}
-            className="cta-shimmer pulse-ring mt-10 inline-flex w-full items-center justify-center gap-3 rounded-lg bg-amber px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5 sm:w-auto"
+            className="cta-gold cta-shimmer pulse-ring mt-10 inline-flex w-full items-center justify-center gap-3 rounded-lg px-8 py-4 text-lg font-semibold text-white sm:w-auto"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
@@ -820,26 +852,26 @@ export default function LandingPage() {
         </div>
       </Section>
 
-      {/* ── 8. PRICING ── */}
-      <Section id="pricing" className="bg-cream px-6 py-24 sm:py-32">
+      {/* ── 8. PRICING (Part 9: dark section) ── */}
+      <Section id="pricing" className="bg-[#111317] px-6 py-[96px] sm:py-[160px] dark-section">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-center font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px] lg:text-[48px]">
+          <h2 className="reveal text-center text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-[#E8E9EB] sm:text-[40px] lg:text-[48px]">
             The Math Is Simple
           </h2>
-          <p className="mt-4 text-center text-lg text-charcoal-muted">
+          <p className="mt-4 text-center text-lg text-[#A0A3A8]">
             What does it actually cost to answer your phone?
           </p>
 
           <div className="mt-16 grid gap-8 md:grid-cols-3">
-            <div className="card-shadow rounded-xl border border-red-200 border-t-4 border-t-red-500 bg-red-50 p-10 text-center">
-              <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-red-500">
+            <div className="reveal reveal-stagger card-hover rounded-xl border border-red-900/30 border-t-4 border-t-red-500 bg-[#1A1114] p-12 text-center">
+              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-red-500">
                 Missing Calls
               </p>
-              <p className="mt-6 text-[40px] font-bold text-charcoal">
+              <p className="mt-6 text-[40px] font-bold text-[#E8E9EB]">
                 $0
               </p>
-              <p className="text-sm text-charcoal-light">/month</p>
-              <ul className="mt-8 space-y-3 text-left text-sm text-charcoal-muted">
+              <p className="text-sm text-[#A0A3A8]">/month</p>
+              <ul className="mt-8 space-y-4 text-left text-sm text-[#A0A3A8]">
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-red-400">&#10007;</span>
                   Most calls go unanswered
@@ -866,17 +898,17 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="card-shadow rounded-xl border-t-4 border-t-slate-300 bg-white p-10 text-center">
-              <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-charcoal-light">
+            <div className="reveal reveal-stagger card-hover rounded-xl border border-[#2A2D33] border-t-4 border-t-slate-500 bg-[#1A1D24] p-12 text-center">
+              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#A0A3A8]">
                 Bilingual Receptionist
               </p>
-              <p className="mt-6 text-[40px] font-bold text-charcoal">
+              <p className="mt-6 text-[40px] font-bold text-[#E8E9EB]">
                 $3,200
               </p>
-              <p className="text-sm text-charcoal-light">/month</p>
-              <ul className="mt-8 space-y-3 text-left text-sm text-charcoal-muted">
+              <p className="text-sm text-[#A0A3A8]">/month</p>
+              <ul className="mt-8 space-y-4 text-left text-sm text-[#A0A3A8]">
                 <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-amber">&#10003;</span>
+                  <span className="mt-0.5 text-[#C8AA6E]">&#10003;</span>
                   Answers during business hours
                 </li>
                 <li className="flex items-start gap-2">
@@ -896,88 +928,88 @@ export default function LandingPage() {
                   $38K/year + benefits + training
                 </li>
               </ul>
-              <p className="mt-8 text-xs text-charcoal-light">
+              <p className="mt-8 text-xs text-[#A0A3A8]">
                 40 hours/week coverage only
               </p>
             </div>
 
-            <div className="pricing-glow relative scale-[1.02] rounded-xl border-2 border-amber border-t-4 border-t-amber bg-[#FFFDF5] p-10 text-center">
+            <div className="reveal reveal-stagger pricing-glow relative scale-[1.02] rounded-xl border-2 border-[#C8AA6E] border-t-4 border-t-[#C8AA6E] bg-[#1A1D0F] p-12 text-center">
               <span className="best-value-badge">MOST POPULAR</span>
-              <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-amber">
+              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#C8AA6E]">
                 Calltide
               </p>
-              <p className="mt-6 text-[40px] font-bold text-charcoal">
+              <p className="mt-6 text-[40px] font-bold text-[#E8E9EB]">
                 $497
               </p>
-              <p className="text-sm text-charcoal-light">/month</p>
-              <p className="mt-1 text-sm font-medium text-amber">
+              <p className="text-sm text-[#A0A3A8]">/month</p>
+              <p className="mt-1 text-sm font-medium text-[#C8AA6E]">
                 That&apos;s $16/day. One booked job covers the entire year.
               </p>
-              <ul className="mt-8 space-y-3 text-left text-sm text-charcoal">
+              <ul className="mt-8 space-y-4 text-left text-sm text-[#E8E9EB]">
                 <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-amber">&#10003;</span>
+                  <span className="mt-0.5 text-[#C8AA6E]">&#10003;</span>
                   24/7/365 — never misses a call
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-amber">&#10003;</span>
+                  <span className="mt-0.5 text-[#C8AA6E]">&#10003;</span>
                   Fluent English &amp; Spanish
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-amber">&#10003;</span>
+                  <span className="mt-0.5 text-[#C8AA6E]">&#10003;</span>
                   Books appointments automatically
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-amber">&#10003;</span>
+                  <span className="mt-0.5 text-[#C8AA6E]">&#10003;</span>
                   Handles unlimited simultaneous calls
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-amber">&#10003;</span>
+                  <span className="mt-0.5 text-[#C8AA6E]">&#10003;</span>
                   No sick days, no training, no turnover
                 </li>
               </ul>
-              <p className="mt-8 text-xs font-semibold text-amber">
+              <p className="mt-8 text-xs font-semibold text-[#C8AA6E]">
                 One booked job pays for the entire month
               </p>
             </div>
           </div>
 
-          <div className="mt-14 text-center">
+          <div className="reveal mt-14 text-center">
             <a
               href={BOOKING_URL}
-              className="cta-shimmer inline-flex items-center gap-2 rounded-lg bg-amber px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5"
+              className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20"
             >
               Book Your Setup Call &rarr;
             </a>
-            <p className="mt-4 text-sm text-charcoal-light">
+            <p className="mt-4 text-sm text-[#A0A3A8]">
               30-minute call. We handle everything from there.
             </p>
           </div>
         </div>
       </Section>
 
-      {/* ── 9. GUARANTEE ── */}
-      <Section className="bg-white px-6 py-24 sm:py-32">
+      {/* ── 9. GUARANTEE (Part 9: dark section) ── */}
+      <Section className="bg-[#111317] px-6 py-[96px] sm:py-[160px] dark-section">
         <div className="mx-auto max-w-3xl">
-          <div className="card-shadow rounded-xl border border-cream-border border-l-[6px] border-l-amber bg-white p-10 sm:p-14">
+          <div className="reveal rounded-xl border border-[#2A2D33] border-l-[6px] border-l-[#C8AA6E] bg-[#1A1D24] p-10 sm:p-14">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber/10">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#C8AA6E]/10">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8AA6E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   <path d="M9 12l2 2 4-4" />
                 </svg>
               </div>
-              <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-amber">
+              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#C8AA6E]">
                 Zero-Risk Guarantee
               </p>
             </div>
-            <h2 className="mt-6 font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px]">
+            <h2 className="mt-6 text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-[#E8E9EB] sm:text-[40px]">
               Try Calltide for 30 Days.
               <br />
               If It Doesn&apos;t Book, You Don&apos;t Pay.
             </h2>
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-charcoal-muted">
+            <p className="mt-6 max-w-lg text-base leading-[1.7] text-[#A0A3A8]">
               If your AI receptionist doesn&apos;t book at least{" "}
-              <span className="font-bold text-amber">5 appointments</span> in
+              <span className="font-bold text-[#C8AA6E]">5 appointments</span> in
               your first 30 days, we refund your first month. No questions
               asked. No long-term contracts. Cancel anytime.
             </p>
@@ -986,24 +1018,24 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 10. FAQ ── */}
-      <Section id="faq" className="relative bg-cream px-6 py-24 sm:py-32 overflow-hidden">
+      <Section id="faq" className="relative bg-[#FBFBFC] px-6 py-[96px] sm:py-[160px] overflow-hidden">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-center font-serif text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[48px]">
+          <h2 className="reveal text-center text-[36px] font-bold leading-[1.1] tracking-[-0.02em] text-charcoal sm:text-[48px]">
             Questions We Hear
           </h2>
           <p className="mt-4 text-center text-lg text-charcoal-muted">
             Straight answers, no runaround.
           </p>
-          <div className="mt-14">
+          <div className="reveal mt-14">
             <FAQ />
           </div>
         </div>
       </Section>
 
       {/* ── 11. FINAL CTA ── */}
-      <Section className="relative bg-navy px-6 py-24 sm:py-32 overflow-hidden grain-overlay">
+      <Section className="relative bg-navy px-6 py-[96px] sm:py-[160px] overflow-hidden dark-section grain-overlay">
         <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <h2 className="font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-white sm:text-[40px] lg:text-[48px]">
+          <h2 className="reveal text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-white sm:text-[40px] lg:text-[48px]">
             Your Competitors Are Still
             <br />
             Sending Calls to <span className="text-[#EF4444]">Voicemail</span>.
@@ -1011,7 +1043,7 @@ export default function LandingPage() {
 
           <a
             href={BOOKING_URL}
-            className="cta-shimmer pulse-ring group mt-12 inline-flex items-center gap-2 rounded-lg bg-amber px-10 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5"
+            className="cta-gold cta-shimmer pulse-ring group mt-12 inline-flex items-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white"
           >
             Book Your Setup Call
             <span className="transition-transform group-hover:translate-x-0.5">
@@ -1057,7 +1089,7 @@ export default function LandingPage() {
 
             {/* Platform column */}
             <div>
-              <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-white/50">Platform</p>
+              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">Platform</p>
               <ul className="mt-4 space-y-3 text-sm">
                 <li><a href="#features" className="text-white/40 transition hover:text-white/60">Features</a></li>
                 <li><a href="#how-it-works" className="text-white/40 transition hover:text-white/60">How It Works</a></li>
@@ -1068,7 +1100,7 @@ export default function LandingPage() {
 
             {/* Company column */}
             <div>
-              <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-white/50">Company</p>
+              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">Company</p>
               <ul className="mt-4 space-y-3 text-sm">
                 <li><a href="mailto:hello@calltide.app" className="text-white/40 transition hover:text-white/60">Contact</a></li>
                 <li><a href={BOOKING_URL} className="text-white/40 transition hover:text-white/60">Book a Call</a></li>
@@ -1078,7 +1110,7 @@ export default function LandingPage() {
 
             {/* Legal column */}
             <div>
-              <p className="text-[13px] font-semibold uppercase tracking-[0.15em] text-white/50">Legal</p>
+              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">Legal</p>
               <ul className="mt-4 space-y-3 text-sm">
                 <li><a href="/terms" className="text-white/40 transition hover:text-white/60">Terms of Service</a></li>
                 <li><a href="/privacy" className="text-white/40 transition hover:text-white/60">Privacy Policy</a></li>

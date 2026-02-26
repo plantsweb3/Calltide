@@ -22,6 +22,13 @@
       "when": 1772060439172,
       "tag": "0002_cynical_mister_fear",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1772125203902,
+      "tag": "0003_slow_bucky",
+      "breakpoints": true
     }
   ]
 }

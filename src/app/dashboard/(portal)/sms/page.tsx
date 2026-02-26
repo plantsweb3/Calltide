@@ -134,7 +134,7 @@ export default function SmsPage() {
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1
           className="text-2xl font-semibold"
-          style={{ fontFamily: "var(--font-serif), serif", color: "var(--db-text)" }}
+          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
         >
           SMS Log
         </h1>
