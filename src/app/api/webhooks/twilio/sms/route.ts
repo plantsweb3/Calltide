@@ -6,6 +6,7 @@ import { eq, and } from "drizzle-orm";
 import { findOrCreateLead } from "@/lib/ai/context-builder";
 import { reportWarning } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+import { handleProspectSmsKeyword } from "@/lib/outreach/sms-outreach";
 
 const OPT_OUT_KEYWORDS = ["stop", "unsubscribe", "cancel", "quit", "end", "optout", "opt out"];
 const OPT_IN_KEYWORDS = ["start", "unstop", "subscribe", "opt in", "optin"];
@@ -102,6 +103,12 @@ export async function POST(req: NextRequest) {
 
     console.log(`SMS opt-in recorded for lead ${lead.id} (${from})`);
     return twimlResponse("You have been re-subscribed to SMS messages. Reply STOP to unsubscribe.");
+  }
+
+  // Also check prospect opt-out/opt-in (outreach targets)
+  const prospectResult = await handleProspectSmsKeyword(from, body);
+  if (prospectResult.handled) {
+    console.log(`Prospect SMS ${prospectResult.action} from ${from}`);
   }
 
   // Flag for owner notification

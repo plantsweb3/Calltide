@@ -71,11 +71,24 @@ export async function sendProspectSms(params: {
   }
 }
 
-export async function handleSmsOptOut(fromNumber: string, body: string) {
-  const normalized = body.trim().toUpperCase();
-  if (normalized !== "STOP") return;
+const PROSPECT_OPT_OUT_KEYWORDS = ["stop", "unsubscribe", "cancel", "quit", "end", "optout", "opt out"];
+const PROSPECT_OPT_IN_KEYWORDS = ["start", "unstop", "subscribe", "opt in", "optin"];
 
-  // Find prospect by phone and opt them out
+/**
+ * Handle SMS opt-out for prospects (outreach targets).
+ * Returns true if the message was an opt-out/opt-in keyword.
+ */
+export async function handleProspectSmsKeyword(
+  fromNumber: string,
+  body: string,
+): Promise<{ handled: boolean; action?: "opt_out" | "opt_in" }> {
+  const normalized = body.trim().toLowerCase();
+
+  const isOptOut = PROSPECT_OPT_OUT_KEYWORDS.some((kw) => normalized === kw);
+  const isOptIn = PROSPECT_OPT_IN_KEYWORDS.some((kw) => normalized === kw);
+
+  if (!isOptOut && !isOptIn) return { handled: false };
+
   const matchingProspects = await db
     .select()
     .from(prospects)
@@ -84,15 +97,20 @@ export async function handleSmsOptOut(fromNumber: string, body: string) {
   for (const prospect of matchingProspects) {
     await db
       .update(prospects)
-      .set({ smsOptOut: true, updatedAt: new Date().toISOString() })
+      .set({
+        smsOptOut: isOptOut,
+        updatedAt: new Date().toISOString(),
+      })
       .where(eq(prospects.id, prospect.id));
 
     await logActivity({
-      type: "sms_opt_out",
+      type: isOptOut ? "sms_opt_out" : "sms_opt_in",
       entityType: "prospect",
       entityId: prospect.id,
-      title: `SMS opt-out: ${prospect.businessName}`,
+      title: `SMS ${isOptOut ? "opt-out" : "opt-in"}: ${prospect.businessName}`,
       detail: `Phone: ${fromNumber}`,
     });
   }
+
+  return { handled: true, action: isOptOut ? "opt_out" : "opt_in" };
 }
