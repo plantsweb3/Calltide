@@ -29,6 +29,7 @@ export async function GET(
       language: calls.language,
       summary: calls.summary,
       sentiment: calls.sentiment,
+      transcript: calls.transcript,
       createdAt: calls.createdAt,
       leadName: leads.name,
     })
