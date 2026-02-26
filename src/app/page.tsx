@@ -62,7 +62,7 @@ function FAQ() {
   return (
     <div className="mx-auto max-w-2xl divide-y divide-cream-border">
       {faqs.map((faq, i) => (
-        <div key={i}>
+        <div key={i} className="faq-item">
           <button
             onClick={() => setOpenIndex(openIndex === i ? null : i)}
             className="flex w-full items-center justify-between py-6 text-left"
@@ -71,7 +71,7 @@ function FAQ() {
               {faq.q}
             </span>
             <span
-              className={`shrink-0 text-xl font-bold transition-transform duration-300 ${
+              className={`faq-plus shrink-0 text-xl font-bold transition-all duration-300 ${
                 openIndex === i ? "text-amber" : "text-charcoal-light"
               }`}
             >
@@ -93,6 +93,7 @@ function FAQ() {
 
 function MobileCTA({ onTryInBrowser }: { onTryInBrowser: () => void }) {
   const [show, setShow] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
   useEffect(() => {
     function onScroll() {
       setShow(window.scrollY > 400);
@@ -101,24 +102,35 @@ function MobileCTA({ onTryInBrowser }: { onTryInBrowser: () => void }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  if (dismissed) return null;
+
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-50 border-t border-cream-border bg-white/95 backdrop-blur-sm px-4 py-3 md:hidden transition-transform duration-300 ${
+      className={`fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm px-4 py-3 md:hidden transition-transform duration-300 ${
         show ? "translate-y-0" : "translate-y-full"
       }`}
     >
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <a
           href={PHONE_TEL}
-          className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-amber px-4 py-4 text-sm font-bold text-white"
+          className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-amber px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-amber/20 transition-all duration-300 hover:-translate-y-0.5"
         >
-          Call Demo
+          Call Demo: {PHONE}
         </a>
         <button
           onClick={onTryInBrowser}
-          className="flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-navy px-4 py-4 text-sm font-bold text-navy"
+          className="flex shrink-0 items-center justify-center rounded-lg border-2 border-navy px-4 py-3.5 text-sm font-bold text-navy"
         >
           Try in Browser
+        </button>
+        <button
+          onClick={() => setDismissed(true)}
+          className="flex h-10 w-10 shrink-0 items-center justify-center text-charcoal-light"
+          aria-label="Dismiss"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
         </button>
       </div>
     </div>
@@ -267,6 +279,25 @@ export default function LandingPage() {
 
   return (
     <div className="relative overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "Calltide",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            offers: {
+              "@type": "Offer",
+              price: "497",
+              priceCurrency: "USD",
+            },
+            description:
+              "AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Texts you the details.",
+          }),
+        }}
+      />
       {showVoiceChat && <VoiceChat onClose={() => setShowVoiceChat(false)} />}
       <MobileCTA onTryInBrowser={() => setShowVoiceChat(true)} />
       <ExitIntent onTryInBrowser={() => setShowVoiceChat(true)} />
@@ -349,19 +380,20 @@ export default function LandingPage() {
       </nav>
 
       {/* ── 2. HERO ── */}
-      <section className="relative overflow-hidden bg-cream grain-overlay">
+      <section className="relative overflow-hidden hero-gradient grain-overlay">
         <div className="relative z-10 mx-auto max-w-6xl px-6 py-[120px]">
           <div className="grid items-center gap-16 md:grid-cols-5">
             <div className="md:col-span-3">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
                 The Front Office for Your Business
               </p>
-              <h1 className="mt-6 font-serif text-[42px] font-semibold leading-[1.1] tracking-[-0.02em] text-charcoal sm:text-[56px] lg:text-[72px]">
+              <h1 className="mt-6 font-serif text-[42px] font-semibold leading-[1.1] tracking-[-0.02em] text-white sm:text-[56px] lg:text-[72px]">
                 Answer Every Lead
                 <br />
-                Like You Have a Full-Time Receptionist
+                Like You Have a{" "}
+                <span className="gold-gradient-text">Full-Time Receptionist</span>
               </h1>
-              <p className="mt-6 max-w-xl text-xl leading-relaxed text-charcoal-muted">
+              <p className="mt-6 max-w-xl text-xl leading-relaxed text-slate-300">
                 Your AI picks up in English or Spanish — 24/7. Qualifies the caller,
                 books the appointment, and texts you the details before you set your
                 tools down.
@@ -373,24 +405,24 @@ export default function LandingPage() {
               <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
                 <button
                   onClick={() => setShowVoiceChat(true)}
-                  className="cta-shimmer inline-flex items-center justify-center gap-2 rounded-lg bg-amber px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5 hover:shadow-amber/30"
+                  className="cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg bg-amber px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:bg-amber-dark"
                 >
                   Talk to Maria Now &rarr;
                 </button>
                 <a
                   href={PHONE_TEL}
-                  className="text-center text-sm font-medium text-charcoal-muted transition hover:text-charcoal sm:text-left"
+                  className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left"
                 >
-                  Or call the demo: <span className="font-semibold text-charcoal">{PHONE}</span>
+                  Or call the demo: <span className="font-semibold text-white">{PHONE}</span>
                 </a>
               </div>
-              <p className="mt-4 text-sm text-charcoal-light">
+              <p className="mt-4 text-sm text-slate-400">
                 No signup needed. Talk to our AI receptionist in your browser right now.
               </p>
             </div>
 
             <div className="md:col-span-2">
-              <div className="mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2 shadow-[0_24px_64px_rgba(15,23,42,0.2)]">
+              <div className="phone-mockup-glow mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2 shadow-[0_24px_64px_rgba(15,23,42,0.2)]">
                 <div
                   role="img"
                   aria-label="Calltide mobile dashboard showing today's call activity with booked appointments and revenue saved"
@@ -406,7 +438,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── 3. SOCIAL PROOF BAR ── */}
-      <Section className="bg-navy px-6 py-12 sm:py-14">
+      <Section className="bg-navy border-t border-amber px-6 py-12 sm:py-14">
         <div className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-10 md:flex-row md:gap-0">
           {[
             { value: "24/7", label: "Every call answered, nights, weekends, holidays" },
@@ -415,10 +447,10 @@ export default function LandingPage() {
           ].map((stat, i) => (
             <div key={stat.value} className="flex items-center gap-0">
               {i > 0 && (
-                <div className="mx-10 hidden h-12 w-px bg-amber/20 md:block" />
+                <div className="mx-10 hidden h-12 w-px bg-amber md:block" />
               )}
               <div className="text-center">
-                <p className="font-serif text-[36px] font-semibold text-white sm:text-[40px]">
+                <p className="gold-gradient-text font-serif text-[36px] font-semibold sm:text-[40px]">
                   {stat.value}
                 </p>
                 <p className="mt-1 text-sm text-slate-400">
@@ -440,8 +472,8 @@ export default function LandingPage() {
           </h2>
 
           <div className="mt-16 grid gap-8 md:grid-cols-3">
-            <div className="card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
-              <p className="font-serif text-[24px] font-medium text-charcoal">
+            <div className="problem-card rounded-xl border border-cream-border bg-white p-10">
+              <p className="gold-gradient-text font-serif text-[24px] font-medium">
                 Tuesday, 2:14 PM.
               </p>
               <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
@@ -451,8 +483,8 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
-              <p className="font-serif text-[24px] font-medium text-charcoal">
+            <div className="problem-card rounded-xl border border-cream-border bg-white p-10">
+              <p className="gold-gradient-text font-serif text-[24px] font-medium">
                 &ldquo;Hola, necesito ayuda...&rdquo;
               </p>
               <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
@@ -463,8 +495,8 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10">
-              <p className="font-serif text-[24px] font-medium text-charcoal">
+            <div className="problem-card rounded-xl border border-cream-border bg-white p-10">
+              <p className="gold-gradient-text font-serif text-[24px] font-medium">
                 Saturday, 11:30 AM.
               </p>
               <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
@@ -477,7 +509,7 @@ export default function LandingPage() {
           </div>
 
           <div className="mt-20 text-center">
-            <p className="font-serif text-[32px] font-semibold leading-tight text-amber sm:text-[40px]">
+            <p className="gold-gradient-text font-serif text-[32px] font-bold leading-tight sm:text-[40px]">
               Most service businesses miss more than half their incoming calls.
             </p>
             <p className="mt-4 text-lg text-charcoal-muted">
@@ -500,7 +532,7 @@ export default function LandingPage() {
           </div>
 
           <div className="mt-20 grid gap-16 md:grid-cols-5">
-            <div className="space-y-14 md:col-span-3">
+            <div className="steps-timeline space-y-14 md:col-span-3">
               {[
                 {
                   num: "1",
@@ -519,7 +551,7 @@ export default function LandingPage() {
                 },
               ].map((step) => (
                 <div key={step.num} className="flex gap-6">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber text-lg font-bold text-white">
+                  <div className="step-circle-glow relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber text-lg font-bold text-white">
                     {step.num}
                   </div>
                   <div>
@@ -535,7 +567,7 @@ export default function LandingPage() {
             </div>
 
             <div className="hidden md:col-span-2 md:flex md:items-center">
-              <div className="card-shadow card-shadow-hover flex w-full flex-col items-center gap-5 rounded-xl border border-cream-border bg-white p-10">
+              <div className="glass-card-light flex w-full flex-col items-center gap-5 rounded-xl p-10">
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-amber/10">
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
@@ -554,10 +586,11 @@ export default function LandingPage() {
       </Section>
 
       {/* ── 6. FEATURES ── */}
-      <Section id="features" className="bg-white px-6 py-16 sm:py-20">
+      <Section id="features" className="bg-[#1B2A4A] px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-center font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px] lg:text-[48px]">
-            Built for How Service Businesses Actually Work
+          <h2 className="text-center font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-white sm:text-[40px] lg:text-[48px]">
+            Built for How Service Businesses{" "}
+            <span className="gold-gradient-text">Actually Work</span>
           </h2>
 
           <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -595,13 +628,13 @@ export default function LandingPage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="card-shadow card-shadow-hover rounded-xl border border-cream-border bg-white p-10"
+                className="glass-card rounded-xl p-10"
               >
                 <span className="text-2xl">{feature.icon}</span>
-                <h3 className="mt-4 font-serif text-[24px] font-medium leading-[1.3] text-charcoal">
+                <h3 className="mt-4 font-serif text-[24px] font-medium leading-[1.3] text-white">
                   {feature.title}
                 </h3>
-                <p className="mt-3 text-base leading-relaxed text-charcoal-muted">
+                <p className="mt-3 text-base leading-relaxed text-[#B8C4D4]">
                   {feature.body}
                 </p>
               </div>
@@ -612,20 +645,20 @@ export default function LandingPage() {
 
       {/* ── 7. DEMO PROOF ── */}
       <Section className="bg-navy px-6 py-16 sm:py-20">
-        <div className="card-shadow mx-auto max-w-lg rounded-xl bg-white p-10 text-center sm:p-14">
+        <div className="glass-card-demo mx-auto max-w-lg rounded-xl p-10 text-center sm:p-14">
           <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
             Hear It for Yourself
           </p>
-          <h2 className="mt-4 font-serif text-[32px] font-semibold leading-tight tracking-[-0.01em] text-charcoal sm:text-[40px]">
+          <h2 className="mt-4 font-serif text-[32px] font-semibold leading-tight tracking-[-0.01em] text-white sm:text-[40px]">
             Talk to Maria Right Now
           </h2>
-          <p className="mt-4 text-base text-charcoal-muted">
+          <p className="mt-4 text-base text-slate-300">
             Try English. Try Spanish. Ask about a plumbing emergency,
             a showing request, or an HVAC repair. Takes 30 seconds.
           </p>
           <button
             onClick={() => setShowVoiceChat(true)}
-            className="cta-shimmer mt-10 inline-flex w-full items-center justify-center gap-3 rounded-lg bg-amber px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5 sm:w-auto"
+            className="cta-shimmer pulse-ring mt-10 inline-flex w-full items-center justify-center gap-3 rounded-lg bg-amber px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5 sm:w-auto"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
@@ -634,7 +667,7 @@ export default function LandingPage() {
             </svg>
             Talk to Our AI Now
           </button>
-          <p className="mt-4 text-sm text-charcoal-light">
+          <p className="mt-4 text-sm text-slate-400">
             No signup. No credit card. Or call <a href={PHONE_TEL} className="font-semibold text-amber hover:underline">{PHONE}</a>
           </p>
         </div>
@@ -651,7 +684,7 @@ export default function LandingPage() {
           </p>
 
           <div className="mt-16 grid gap-8 md:grid-cols-3">
-            <div className="card-shadow rounded-xl border border-red-200 bg-red-50 p-10 text-center">
+            <div className="card-shadow rounded-xl border border-red-200 border-t-4 border-t-red-500 bg-red-50 p-10 text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-red-500">
                 Missing Calls
               </p>
@@ -686,7 +719,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="card-shadow rounded-xl bg-white p-10 text-center">
+            <div className="card-shadow rounded-xl border-t-4 border-t-slate-300 bg-white p-10 text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-charcoal-light">
                 Bilingual Receptionist
               </p>
@@ -721,7 +754,8 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="pricing-glow rounded-xl border-2 border-amber bg-white p-10 text-center">
+            <div className="pricing-glow relative scale-[1.02] rounded-xl border-2 border-amber border-t-4 border-t-amber bg-white p-10 text-center">
+              <span className="best-value-badge">BEST VALUE</span>
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
                 Calltide
               </p>
@@ -774,17 +808,26 @@ export default function LandingPage() {
       {/* ── 9. GUARANTEE ── */}
       <Section className="bg-white px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl">
-          <div className="card-shadow rounded-xl border border-cream-border border-l-4 border-l-navy bg-white p-10 sm:p-14">
-            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
-              Zero-Risk Guarantee
-            </p>
+          <div className="card-shadow rounded-xl border border-cream-border border-l-[6px] border-l-amber bg-white p-10 sm:p-14">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber/10">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <path d="M9 12l2 2 4-4" />
+                </svg>
+              </div>
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber">
+                Zero-Risk Guarantee
+              </p>
+            </div>
             <h2 className="mt-6 font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-charcoal sm:text-[40px]">
               Try Calltide for 30 Days.
               <br />
               If It Doesn&apos;t Book, You Don&apos;t Pay.
             </h2>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-charcoal-muted">
-              If your AI receptionist doesn&apos;t book at least 5 appointments in
+              If your AI receptionist doesn&apos;t book at least{" "}
+              <span className="font-bold text-amber">5 appointments</span> in
               your first 30 days, we refund your first month. No questions
               asked. No long-term contracts. Cancel anytime.
             </p>
@@ -813,12 +856,12 @@ export default function LandingPage() {
           <h2 className="font-serif text-[32px] font-semibold leading-[1.2] tracking-[-0.01em] text-white sm:text-[40px] lg:text-[48px]">
             Your Competitors Are Still
             <br />
-            Sending Calls to Voicemail.
+            Sending Calls to <span className="text-[#EF4444]">Voicemail</span>.
           </h2>
 
           <a
             href={BOOKING_URL}
-            className="cta-shimmer group mt-12 inline-flex items-center gap-2 rounded-lg bg-amber px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-amber/20 transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5 hover:shadow-amber/30"
+            className="cta-shimmer pulse-ring group mt-12 inline-flex items-center gap-2 rounded-lg bg-amber px-10 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-amber-dark hover:-translate-y-0.5"
           >
             Book Your Setup Call
             <span className="transition-transform group-hover:translate-x-0.5">

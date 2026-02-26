@@ -140,6 +140,143 @@ body {
   border-bottom-color: transparent;
 }
 
+/* Gold gradient text effect */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #D4910A, #F0C75E);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hero radial gradient background */
+.hero-gradient {
+  background: radial-gradient(ellipse at center, #243656 0%, #1B2A4A 70%);
+}
+
+/* Hero CTA button glow */
+.hero-cta-glow {
+  box-shadow: 0 0 20px rgba(212, 145, 10, 0.3);
+}
+.hero-cta-glow:hover {
+  box-shadow: 0 0 30px rgba(212, 145, 10, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Phone mockup glow */
+.phone-mockup-glow {
+  filter: drop-shadow(0 0 40px rgba(212, 145, 10, 0.15));
+}
+
+/* Problem cards — enhanced hover */
+.problem-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+.problem-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Glassmorphic feature cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+.glass-card:hover {
+  border-color: rgba(212, 145, 10, 0.3);
+}
+
+/* Step circle glow */
+.step-circle-glow {
+  box-shadow: 0 0 15px rgba(212, 145, 10, 0.3);
+}
+
+/* Steps timeline vertical connector */
+.steps-timeline {
+  position: relative;
+}
+.steps-timeline::before {
+  content: "";
+  position: absolute;
+  left: 27px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #C59A27, rgba(197, 154, 39, 0.1));
+  pointer-events: none;
+}
+
+/* Light glassmorphic card (for cream backgrounds) */
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(197, 154, 39, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+.glass-card-light:hover {
+  border-color: rgba(197, 154, 39, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Demo card dark glassmorphic */
+.glass-card-demo {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Pulse ring animation */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(212, 145, 10, 0.4); }
+  70% { box-shadow: 0 0 0 15px transparent; }
+  100% { box-shadow: 0 0 0 0 rgba(212, 145, 10, 0.4); }
+}
+.pulse-ring {
+  animation: pulse-ring 2s infinite;
+}
+
+/* Best value badge */
+.best-value-badge {
+  position: absolute;
+  top: -12px;
+  right: 16px;
+  background: linear-gradient(135deg, #D4910A, #F0C75E);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  letter-spacing: 0.05em;
+}
+
+/* FAQ item hover */
+.faq-item {
+  border-left: 3px solid transparent;
+  padding-left: 0;
+  transition: all 0.3s ease;
+}
+.faq-item:hover {
+  border-left-color: #C59A27;
+  padding-left: 12px;
+}
+.faq-item:hover .faq-plus {
+  color: #C59A27 !important;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ── Dashboard Theme Variables ── */
 [data-theme="dark"] {
   --db-bg: #020617;
