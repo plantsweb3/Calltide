@@ -61,7 +61,7 @@ export default function AIPerformancePage() {
   if (!data) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <p className="text-slate-500">Loading AI performance data...</p>
+        <p style={{ color: "var(--db-text-muted)" }}>Loading AI performance data...</p>
       </div>
     );
   }
@@ -78,14 +78,14 @@ export default function AIPerformancePage() {
       key: "businessName",
       label: "Business",
       render: (row) => (
-        <span className="font-medium text-slate-200">{row.businessName || "—"}</span>
+        <span className="font-medium" style={{ color: "var(--db-text)" }}>{row.businessName || "—"}</span>
       ),
     },
     {
       key: "reason",
       label: "Reason",
       render: (row) => (
-        <span className="text-sm text-slate-300">{row.reason}</span>
+        <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{row.reason}</span>
       ),
     },
     {
@@ -97,14 +97,14 @@ export default function AIPerformancePage() {
       key: "assignedTo",
       label: "Assigned",
       render: (row) => (
-        <span className="text-xs text-slate-400">{row.assignedTo || "Unassigned"}</span>
+        <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{row.assignedTo || "Unassigned"}</span>
       ),
     },
     {
       key: "createdAt",
       label: "Created",
       render: (row) => (
-        <span className="text-xs text-slate-500">
+        <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
           {new Date(row.createdAt).toLocaleString(undefined, {
             month: "short",
             day: "numeric",
@@ -120,7 +120,7 @@ export default function AIPerformancePage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">AI Performance</h1>
-        <p className="text-sm text-slate-400">Quality metrics and escalation tracking</p>
+        <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>Quality metrics and escalation tracking</p>
       </div>
 
       {/* Quality metric cards */}
@@ -142,8 +142,8 @@ export default function AIPerformancePage() {
       {/* Sentiment + Escalation stats */}
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Sentiment pie */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-          <h3 className="mb-4 text-sm font-medium text-slate-300">Sentiment Distribution</h3>
+        <div className="rounded-xl p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+          <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Sentiment Distribution</h3>
           <ResponsiveContainer width="100%" height={240}>
             <PieChart>
               <Pie
@@ -166,57 +166,54 @@ export default function AIPerformancePage() {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  background: "#0f172a",
-                  border: "1px solid #1e293b",
+                  background: "var(--db-surface)",
+                  border: "1px solid var(--db-border)",
                   borderRadius: 8,
-                  color: "#e2e8f0",
+                  color: "var(--db-text)",
                   fontSize: 12,
                 }}
               />
             </PieChart>
           </ResponsiveContainer>
           <div className="mt-2 flex justify-center gap-4 text-xs">
-            <span className="text-green-400">Positive: {data.quality.positiveRate}%</span>
-            <span className="text-slate-400">Neutral: {data.quality.neutralRate}%</span>
-            <span className="text-red-400">Negative: {data.quality.negativeRate}%</span>
+            <span style={{ color: "#4ade80" }}>Positive: {data.quality.positiveRate}%</span>
+            <span style={{ color: "var(--db-text-muted)" }}>Neutral: {data.quality.neutralRate}%</span>
+            <span style={{ color: "#f87171" }}>Negative: {data.quality.negativeRate}%</span>
           </div>
         </div>
 
         {/* Escalation summary */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-          <h3 className="mb-4 text-sm font-medium text-slate-300">Escalation Summary</h3>
+        <div className="rounded-xl p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+          <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Escalation Summary</h3>
           <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-lg border border-slate-700 p-3">
-              <p className="text-xs text-slate-500">Total</p>
+            <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Total</p>
               <p className="mt-1 text-2xl font-semibold">{data.escalations.stats.total}</p>
             </div>
-            <div className="rounded-lg border border-slate-700 p-3">
-              <p className="text-xs text-slate-500">Open</p>
-              <p className="mt-1 text-2xl font-semibold text-blue-400">{data.escalations.stats.open}</p>
+            <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Open</p>
+              <p className="mt-1 text-2xl font-semibold" style={{ color: "#60a5fa" }}>{data.escalations.stats.open}</p>
             </div>
-            <div className="rounded-lg border border-slate-700 p-3">
-              <p className="text-xs text-slate-500">In Progress</p>
-              <p className="mt-1 text-2xl font-semibold text-amber-400">{data.escalations.stats.inProgress}</p>
+            <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>In Progress</p>
+              <p className="mt-1 text-2xl font-semibold" style={{ color: "#fbbf24" }}>{data.escalations.stats.inProgress}</p>
             </div>
-            <div className="rounded-lg border border-slate-700 p-3">
-              <p className="text-xs text-slate-500">Resolved</p>
-              <p className="mt-1 text-2xl font-semibold text-green-400">{data.escalations.stats.resolved}</p>
+            <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Resolved</p>
+              <p className="mt-1 text-2xl font-semibold" style={{ color: "#4ade80" }}>{data.escalations.stats.resolved}</p>
             </div>
           </div>
           {data.escalations.stats.total > 0 && (
             <div className="mt-4">
-              <div className="flex h-2 overflow-hidden rounded-full bg-slate-800">
+              <div className="flex h-2 overflow-hidden rounded-full" style={{ background: "var(--db-hover)" }}>
                 <div
-                  className="bg-green-500"
-                  style={{ width: `${(data.escalations.stats.resolved / data.escalations.stats.total) * 100}%` }}
+                  style={{ width: `${(data.escalations.stats.resolved / data.escalations.stats.total) * 100}%`, background: "#22c55e" }}
                 />
                 <div
-                  className="bg-amber-500"
-                  style={{ width: `${(data.escalations.stats.inProgress / data.escalations.stats.total) * 100}%` }}
+                  style={{ width: `${(data.escalations.stats.inProgress / data.escalations.stats.total) * 100}%`, background: "#f59e0b" }}
                 />
                 <div
-                  className="bg-blue-500"
-                  style={{ width: `${(data.escalations.stats.open / data.escalations.stats.total) * 100}%` }}
+                  style={{ width: `${(data.escalations.stats.open / data.escalations.stats.total) * 100}%`, background: "#3b82f6" }}
                 />
               </div>
             </div>
@@ -224,18 +221,42 @@ export default function AIPerformancePage() {
         </div>
       </div>
 
-      {/* AI Settings placeholder */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-        <h3 className="mb-2 text-sm font-medium text-slate-300">AI Configuration</h3>
-        <p className="text-sm text-slate-400">
-          AI model settings, voice configuration, and prompt tuning tools are coming in a future update.
-          Current configuration is managed through Hume AI dashboard and the Settings page.
-        </p>
+      {/* AI Configuration */}
+      <div className="rounded-xl p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+        <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>AI Configuration</h3>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Language Model</p>
+            <p className="mt-1 text-sm font-medium font-mono" style={{ color: "var(--db-text)" }}>
+              {process.env.NEXT_PUBLIC_CLAUDE_MODEL ?? "claude-sonnet-4-5"}
+            </p>
+          </div>
+          <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Voice Engine</p>
+            <p className="mt-1 text-sm font-medium" style={{ color: "var(--db-text)" }}>Hume EVI</p>
+          </div>
+          <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Languages</p>
+            <p className="mt-1 text-sm font-medium" style={{ color: "var(--db-text)" }}>English, Spanish (bilingual)</p>
+          </div>
+          <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Max Response Tokens</p>
+            <p className="mt-1 text-sm font-medium" style={{ color: "var(--db-text)" }}>150</p>
+          </div>
+          <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Summary Generation</p>
+            <p className="mt-1 text-sm font-medium" style={{ color: "#4ade80" }}>Active</p>
+          </div>
+          <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Sentiment Analysis</p>
+            <p className="mt-1 text-sm font-medium" style={{ color: "#4ade80" }}>Active</p>
+          </div>
+        </div>
       </div>
 
       {/* Escalation table */}
       <div>
-        <h3 className="mb-3 text-sm font-medium text-slate-300">Escalation Log</h3>
+        <h3 className="mb-3 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Escalation Log</h3>
         <DataTable columns={escalationColumns} data={data.escalations.log} />
       </div>
     </div>
