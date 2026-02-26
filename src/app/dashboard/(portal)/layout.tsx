@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ClientNav from "../_components/client-nav";
+import ErrorBoundary from "@/components/error-boundary";
 
 export default function PortalLayout({
   children,
@@ -43,7 +44,7 @@ export default function PortalLayout({
       <main
         className="min-w-0 flex-1 p-4 pt-18 md:ml-60 md:p-6 md:pt-6"
       >
-        {children}
+        <ErrorBoundary>{children}</ErrorBoundary>
       </main>
     </div>
   );

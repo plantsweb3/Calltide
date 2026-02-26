@@ -1,6 +1,7 @@
 import { getTwilioClient } from "./client";
 import { db } from "@/db";
-import { smsMessages } from "@/db/schema";
+import { leads, smsMessages } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 
 interface SendSMSParams {
@@ -14,6 +15,20 @@ interface SendSMSParams {
 }
 
 export async function sendSMS(params: SendSMSParams) {
+  // Check SMS opt-out before sending (skip for owner notifications)
+  if (params.templateType !== "owner_notify" && params.leadId) {
+    const [lead] = await db
+      .select({ smsOptOut: leads.smsOptOut })
+      .from(leads)
+      .where(eq(leads.id, params.leadId))
+      .limit(1);
+
+    if (lead?.smsOptOut) {
+      console.log(`SMS blocked — lead ${params.leadId} has opted out`);
+      return { success: false, error: "Lead has opted out of SMS" };
+    }
+  }
+
   const client = getTwilioClient();
 
   try {

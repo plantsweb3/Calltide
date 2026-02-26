@@ -45,6 +45,14 @@ interface OpsData {
   }>;
 }
 
+const tooltipStyle = {
+  background: "var(--db-surface)",
+  border: "1px solid var(--db-border)",
+  borderRadius: 8,
+  color: "var(--db-text)",
+  fontSize: 12,
+};
+
 export default function AdminDashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [metrics, setMetrics] = useState<MetricsData | null>(null);
@@ -73,7 +81,7 @@ export default function AdminDashboardPage() {
   if (!data) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <p className="text-slate-500">Loading dashboard...</p>
+        <p style={{ color: "var(--db-text-muted)" }}>Loading dashboard...</p>
       </div>
     );
   }
@@ -89,8 +97,12 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="text-sm text-slate-400">Calltide admin overview</p>
+        <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)" }}>
+          Dashboard
+        </h1>
+        <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
+          Calltide admin overview
+        </p>
       </div>
 
       {/* Quick Actions */}
@@ -131,23 +143,29 @@ export default function AdminDashboardPage() {
       {/* System Health Grid */}
       {ops?.services && ops.services.length > 0 && (
         <div>
-          <h2 className="mb-3 text-sm font-medium text-slate-300">System Health</h2>
+          <h2 className="mb-3 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
+            System Health
+          </h2>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
             {ops.services.map((svc) => (
               <div
                 key={svc.serviceName}
-                className="rounded-lg border border-slate-800 bg-slate-900 p-3"
+                className="rounded-lg p-3"
+                style={{
+                  background: "var(--db-card)",
+                  border: "1px solid var(--db-border)",
+                }}
               >
-                <p className="truncate text-xs font-medium text-slate-300">
+                <p className="truncate text-xs font-medium" style={{ color: "var(--db-text-secondary)" }}>
                   {svc.serviceName}
                 </p>
                 <div className="mt-1.5">
                   <StatusBadge status={svc.status} />
                 </div>
-                <div className="mt-2 flex items-center justify-between text-[10px] text-slate-500">
-                  <span>{svc.latencyMs != null ? `${svc.latencyMs}ms` : "—"}</span>
+                <div className="mt-2 flex items-center justify-between text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                  <span>{svc.latencyMs != null ? `${svc.latencyMs}ms` : "\u2014"}</span>
                   <span>
-                    {svc.uptimePct != null ? `${svc.uptimePct.toFixed(1)}%` : "—"}
+                    {svc.uptimePct != null ? `${svc.uptimePct.toFixed(1)}%` : "\u2014"}
                   </span>
                 </div>
               </div>
@@ -158,61 +176,57 @@ export default function AdminDashboardPage() {
 
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-          <h3 className="mb-4 text-sm font-medium text-slate-300">
+        <div
+          className="rounded-xl p-5"
+          style={{
+            background: "var(--db-card)",
+            border: "1px solid var(--db-border)",
+          }}
+        >
+          <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
             Client Calls / Day
           </h3>
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart data={metrics?.callsByDay ?? []}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--db-border)" />
               <XAxis
                 dataKey="date"
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: "var(--db-text-muted)", fontSize: 11 }}
                 tickFormatter={(d: string) => d.slice(5)}
               />
-              <YAxis tick={{ fill: "#64748b", fontSize: 11 }} />
-              <Tooltip
-                contentStyle={{
-                  background: "#0f172a",
-                  border: "1px solid #1e293b",
-                  borderRadius: 8,
-                  color: "#e2e8f0",
-                  fontSize: 12,
-                }}
-              />
+              <YAxis tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} />
+              <Tooltip contentStyle={tooltipStyle} />
               <Area
                 type="monotone"
                 dataKey="count"
-                stroke="#22c55e"
-                fill="#22c55e"
+                stroke="#C59A27"
+                fill="#C59A27"
                 fillOpacity={0.1}
               />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-          <h3 className="mb-4 text-sm font-medium text-slate-300">
+        <div
+          className="rounded-xl p-5"
+          style={{
+            background: "var(--db-card)",
+            border: "1px solid var(--db-border)",
+          }}
+        >
+          <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
             Prospect Funnel
           </h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={funnelData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--db-border)" />
               <XAxis
                 dataKey="name"
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: "var(--db-text-muted)", fontSize: 11 }}
               />
-              <YAxis tick={{ fill: "#64748b", fontSize: 11 }} />
-              <Tooltip
-                contentStyle={{
-                  background: "#0f172a",
-                  border: "1px solid #1e293b",
-                  borderRadius: 8,
-                  color: "#e2e8f0",
-                  fontSize: 12,
-                }}
-              />
-              <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              <YAxis tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Bar dataKey="value" fill="#C59A27" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

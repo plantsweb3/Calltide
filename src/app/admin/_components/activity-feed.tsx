@@ -11,21 +11,21 @@ interface Activity {
 }
 
 const typeColors: Record<string, string> = {
-  prospect_scraped: "bg-blue-500",
-  audit_call: "bg-amber-500",
-  audit_result: "bg-amber-500",
-  email_sent: "bg-purple-500",
-  email_opened: "bg-purple-400",
-  email_clicked: "bg-green-500",
-  sms_sent: "bg-blue-400",
-  sms_opt_out: "bg-red-500",
-  demo_booked: "bg-green-500",
-  demo_updated: "bg-green-400",
-  outreach_started: "bg-purple-500",
-  outreach_paused: "bg-amber-500",
-  status_change: "bg-slate-500",
-  csv_import: "bg-blue-500",
-  bulk_status_change: "bg-slate-500",
+  prospect_scraped: "#3b82f6",
+  audit_call: "#fbbf24",
+  audit_result: "#fbbf24",
+  email_sent: "#a855f7",
+  email_opened: "#c084fc",
+  email_clicked: "#4ade80",
+  sms_sent: "#60a5fa",
+  sms_opt_out: "#f87171",
+  demo_booked: "#4ade80",
+  demo_updated: "#4ade80",
+  outreach_started: "#a855f7",
+  outreach_paused: "#fbbf24",
+  status_change: "#94a3b8",
+  csv_import: "#3b82f6",
+  bulk_status_change: "#94a3b8",
 };
 
 function formatTime(dateStr: string): string {
@@ -59,28 +59,50 @@ export default function ActivityFeed() {
   }, []);
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900">
-      <div className="border-b border-slate-800 px-5 py-3">
-        <h3 className="text-sm font-medium text-slate-300">Activity Feed</h3>
+    <div
+      className="rounded-xl"
+      style={{
+        background: "var(--db-card)",
+        border: "1px solid var(--db-border)",
+      }}
+    >
+      <div
+        className="px-5 py-3"
+        style={{ borderBottom: "1px solid var(--db-border)" }}
+      >
+        <h3 className="text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
+          Activity Feed
+        </h3>
       </div>
-      <div className="divide-y divide-slate-800/50 max-h-[400px] overflow-y-auto">
+      <div className="max-h-[400px] overflow-y-auto">
         {activities.length === 0 && (
-          <p className="px-5 py-8 text-center text-sm text-slate-500">
+          <p className="px-5 py-8 text-center text-sm" style={{ color: "var(--db-text-muted)" }}>
             No activity yet
           </p>
         )}
-        {activities.map((a) => (
-          <div key={a.id} className="flex items-start gap-3 px-5 py-3">
+        {activities.map((a, i) => (
+          <div
+            key={a.id}
+            className="flex items-start gap-3 px-5 py-3"
+            style={{
+              borderBottom: i < activities.length - 1 ? "1px solid var(--db-border-light)" : undefined,
+            }}
+          >
             <div
-              className={`mt-1 h-2 w-2 rounded-full ${typeColors[a.type] ?? "bg-slate-500"}`}
+              className="mt-1 h-2 w-2 rounded-full shrink-0"
+              style={{ background: typeColors[a.type] ?? "var(--db-text-muted)" }}
             />
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-slate-200 truncate">{a.title}</p>
+              <p className="text-sm truncate" style={{ color: "var(--db-text)" }}>
+                {a.title}
+              </p>
               {a.detail && (
-                <p className="text-xs text-slate-500 truncate">{a.detail}</p>
+                <p className="text-xs truncate" style={{ color: "var(--db-text-muted)" }}>
+                  {a.detail}
+                </p>
               )}
             </div>
-            <span className="shrink-0 text-xs text-slate-500">
+            <span className="shrink-0 text-xs" style={{ color: "var(--db-text-muted)" }}>
               {formatTime(a.createdAt)}
             </span>
           </div>

@@ -13,6 +13,12 @@ const BUSINESS_TYPES = [
   "general",
 ];
 
+const inputStyle = {
+  background: "var(--db-hover)",
+  border: "1px solid var(--db-border)",
+  color: "var(--db-text)",
+};
+
 export default function AddClientModal({
   onClose,
   onComplete,
@@ -60,12 +66,21 @@ export default function AddClientModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-6">
+      <div
+        className="w-full max-w-md rounded-xl p-6"
+        style={{
+          background: "var(--db-card)",
+          border: "1px solid var(--db-border)",
+        }}
+      >
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Add Client</h2>
+          <h2 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+            Add Client
+          </h2>
           <button
             onClick={onClose}
-            className="text-lg text-slate-400 hover:text-slate-200"
+            className="text-lg"
+            style={{ color: "var(--db-text-muted)" }}
           >
             &times;
           </button>
@@ -73,26 +88,30 @@ export default function AddClientModal({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm text-slate-400">
+            <label className="mb-1 block text-sm" style={{ color: "var(--db-text-muted)" }}>
               Business Name
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+              className="w-full rounded-lg px-3 py-2 text-sm outline-none"
+              style={inputStyle}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
               required
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-slate-400">
+            <label className="mb-1 block text-sm" style={{ color: "var(--db-text-muted)" }}>
               Business Type
             </label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+              className="w-full rounded-lg px-3 py-2 text-sm outline-none"
+              style={inputStyle}
             >
               {BUSINESS_TYPES.map((t) => (
                 <option key={t} value={t}>
@@ -103,59 +122,74 @@ export default function AddClientModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-slate-400">
+            <label className="mb-1 block text-sm" style={{ color: "var(--db-text-muted)" }}>
               Twilio Phone Number
             </label>
             <input
               type="tel"
               value={twilioNumber}
               onChange={(e) => setTwilioNumber(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+              className="w-full rounded-lg px-3 py-2 text-sm outline-none"
+              style={inputStyle}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
               placeholder="+1..."
               required
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-slate-400">
+            <label className="mb-1 block text-sm" style={{ color: "var(--db-text-muted)" }}>
               Owner Name
             </label>
             <input
               type="text"
               value={ownerName}
               onChange={(e) => setOwnerName(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+              className="w-full rounded-lg px-3 py-2 text-sm outline-none"
+              style={inputStyle}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
               required
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-slate-400">
+            <label className="mb-1 block text-sm" style={{ color: "var(--db-text-muted)" }}>
               Owner Phone
             </label>
             <input
               type="tel"
               value={ownerPhone}
               onChange={(e) => setOwnerPhone(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+              className="w-full rounded-lg px-3 py-2 text-sm outline-none"
+              style={inputStyle}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
               required
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-slate-400">
+            <label className="mb-1 block text-sm" style={{ color: "var(--db-text-muted)" }}>
               Owner Email (optional)
             </label>
             <input
               type="email"
               value={ownerEmail}
               onChange={(e) => setOwnerEmail(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+              className="w-full rounded-lg px-3 py-2 text-sm outline-none"
+              style={inputStyle}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
             />
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
+            <div
+              className="rounded-lg px-3 py-2 text-sm"
+              style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+            >
               {error}
             </div>
           )}
@@ -165,7 +199,8 @@ export default function AddClientModal({
             disabled={
               loading || !name || !ownerName || !ownerPhone || !twilioNumber
             }
-            className="w-full rounded-lg bg-green-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-500 disabled:opacity-50"
+            className="w-full rounded-lg py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+            style={{ background: "var(--db-accent)", color: "#fff" }}
           >
             {loading ? "Creating..." : "Add Client"}
           </button>

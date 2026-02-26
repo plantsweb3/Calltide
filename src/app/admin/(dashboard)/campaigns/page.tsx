@@ -23,7 +23,6 @@ export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
 
   useEffect(() => {
-    // Fetch outreach stats from dashboard
     fetch("/api/admin/dashboard")
       .then((r) => r.json())
       .then((data) => {
@@ -37,25 +36,39 @@ export default function CampaignsPage() {
       });
   }, []);
 
-  const tabClass = (t: string) =>
-    `px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-      tab === t
-        ? "bg-slate-800 text-slate-100"
-        : "text-slate-400 hover:text-slate-200"
-    }`;
-
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold">Campaigns</h1>
-        <p className="text-sm text-slate-400">Sales and client outreach</p>
+        <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)" }}>
+          Campaigns
+        </h1>
+        <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
+          Sales and client outreach
+        </p>
       </div>
 
-      <div className="flex gap-1 rounded-xl bg-slate-900 p-1 w-fit border border-slate-800">
-        <button onClick={() => setTab("sales")} className={tabClass("sales")}>
+      <div
+        className="flex gap-1 rounded-xl p-1 w-fit"
+        style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+      >
+        <button
+          onClick={() => setTab("sales")}
+          className="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+          style={{
+            background: tab === "sales" ? "var(--db-hover)" : "transparent",
+            color: tab === "sales" ? "var(--db-text)" : "var(--db-text-muted)",
+          }}
+        >
           Sales Campaigns
         </button>
-        <button onClick={() => setTab("client")} className={tabClass("client")}>
+        <button
+          onClick={() => setTab("client")}
+          className="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+          style={{
+            background: tab === "client" ? "var(--db-hover)" : "transparent",
+            color: tab === "client" ? "var(--db-text)" : "var(--db-text-muted)",
+          }}
+        >
           Client Campaigns
         </button>
       </div>
@@ -70,18 +83,30 @@ export default function CampaignsPage() {
               .map((s) => (
                 <div
                   key={s.status}
-                  className="rounded-xl border border-slate-800 bg-slate-900 p-4"
+                  className="rounded-xl p-4"
+                  style={{
+                    background: "var(--db-card)",
+                    border: "1px solid var(--db-border)",
+                  }}
                 >
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
                     {s.status.replace(/_/g, " ")}
                   </p>
-                  <p className="mt-1 text-2xl font-semibold">{s.count}</p>
+                  <p className="mt-1 text-2xl font-semibold" style={{ color: "var(--db-text)" }}>
+                    {s.count}
+                  </p>
                 </div>
               ))}
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-            <h3 className="mb-3 text-sm font-medium text-slate-300">
+          <div
+            className="rounded-xl p-5"
+            style={{
+              background: "var(--db-card)",
+              border: "1px solid var(--db-border)",
+            }}
+          >
+            <h3 className="mb-3 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
               Outreach Funnel
             </h3>
             <div className="space-y-2">
@@ -90,16 +115,19 @@ export default function CampaignsPage() {
                 const pct = (s.count / maxCount) * 100;
                 return (
                   <div key={s.status} className="flex items-center gap-3">
-                    <span className="w-32 text-xs text-slate-400 truncate">
+                    <span className="w-32 text-xs truncate" style={{ color: "var(--db-text-muted)" }}>
                       {s.status.replace(/_/g, " ")}
                     </span>
-                    <div className="flex-1 h-5 rounded-full bg-slate-800 overflow-hidden">
+                    <div
+                      className="flex-1 h-5 rounded-full overflow-hidden"
+                      style={{ background: "var(--db-hover)" }}
+                    >
                       <div
-                        className="h-full rounded-full bg-blue-500 transition-all"
-                        style={{ width: `${pct}%` }}
+                        className="h-full rounded-full transition-all"
+                        style={{ width: `${pct}%`, background: "#C59A27" }}
                       />
                     </div>
-                    <span className="w-10 text-right text-xs text-slate-300">
+                    <span className="w-10 text-right text-xs" style={{ color: "var(--db-text-secondary)" }}>
                       {s.count}
                     </span>
                   </div>
@@ -111,46 +139,59 @@ export default function CampaignsPage() {
       )}
 
       {tab === "client" && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900">
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{
+            background: "var(--db-card)",
+            border: "1px solid var(--db-border)",
+          }}
+        >
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-800">
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
-                  Campaign
-                </th>
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
-                  Type
-                </th>
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
-                  Status
-                </th>
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
-                  Contacts
-                </th>
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
-                  Reached
-                </th>
+              <tr style={{ borderBottom: "1px solid var(--db-border)" }}>
+                {["Campaign", "Type", "Status", "Contacts", "Reached"].map((h) => (
+                  <th
+                    key={h}
+                    className="px-4 py-3 text-xs font-medium uppercase"
+                    style={{ color: "var(--db-text-muted)" }}
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/50">
+            <tbody>
               {campaigns.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                  <td
+                    colSpan={5}
+                    className="px-4 py-12 text-center"
+                    style={{ color: "var(--db-text-muted)" }}
+                  >
                     No client campaigns yet
                   </td>
                 </tr>
               )}
               {campaigns.map((c) => (
-                <tr key={c.id} className="hover:bg-slate-800/40">
-                  <td className="px-4 py-3 text-slate-200">{c.name}</td>
-                  <td className="px-4 py-3 text-slate-400 text-xs">{c.type}</td>
+                <tr
+                  key={c.id}
+                  className="transition-colors"
+                  style={{ borderBottom: "1px solid var(--db-border-light)" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                >
+                  <td className="px-4 py-3" style={{ color: "var(--db-text)" }}>{c.name}</td>
+                  <td className="px-4 py-3 text-xs" style={{ color: "var(--db-text-muted)" }}>{c.type}</td>
                   <td className="px-4 py-3">
-                    <span className="rounded-full bg-slate-700 px-2 py-0.5 text-xs text-slate-300">
+                    <span
+                      className="rounded-full px-2 py-0.5 text-xs"
+                      style={{ background: "var(--db-hover)", color: "var(--db-text-secondary)" }}
+                    >
                       {c.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-xs">{c.totalContacts}</td>
-                  <td className="px-4 py-3 text-xs">{c.contactsReached}</td>
+                  <td className="px-4 py-3 text-xs" style={{ color: "var(--db-text)" }}>{c.totalContacts}</td>
+                  <td className="px-4 py-3 text-xs" style={{ color: "var(--db-text)" }}>{c.contactsReached}</td>
                 </tr>
               ))}
             </tbody>

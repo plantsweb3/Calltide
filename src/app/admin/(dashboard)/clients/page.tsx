@@ -69,7 +69,8 @@ export default function ClientsPage() {
       render: (row) => (
         <Link
           href={`/admin/clients/${row.id}`}
-          className="text-left font-medium text-blue-400 hover:text-blue-300"
+          className="text-left font-medium"
+          style={{ color: "var(--db-accent)" }}
         >
           {row.name}
         </Link>
@@ -98,11 +99,12 @@ export default function ClientsPage() {
       label: "Status",
       render: (row) => (
         <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+          className="rounded-full px-2 py-0.5 text-xs font-medium"
+          style={
             row.active
-              ? "bg-green-500/10 text-green-400"
-              : "bg-red-500/10 text-red-400"
-          }`}
+              ? { background: "rgba(74,222,128,0.1)", color: "#4ade80" }
+              : { background: "rgba(248,113,113,0.1)", color: "#f87171" }
+          }
         >
           {row.active ? "Active" : "Inactive"}
         </span>
@@ -115,13 +117,14 @@ export default function ClientsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Customers</h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
             {filteredClients.length} of {clients.length} businesses
           </p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-green-500"
+          className="rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+          style={{ background: "var(--db-accent)", color: "#fff" }}
         >
           Add Client
         </button>
@@ -134,12 +137,22 @@ export default function ClientsPage() {
           placeholder="Search businesses..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-slate-600"
+          className="rounded-lg px-3 py-2 text-sm outline-none"
+          style={{
+            border: "1px solid var(--db-border)",
+            background: "var(--db-card)",
+            color: "var(--db-text)",
+          }}
         />
         <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 outline-none focus:border-slate-600"
+          className="rounded-lg px-3 py-2 text-sm outline-none"
+          style={{
+            border: "1px solid var(--db-border)",
+            background: "var(--db-card)",
+            color: "var(--db-text)",
+          }}
         >
           <option value="">All Types</option>
           {types.map((t) => (
@@ -151,7 +164,12 @@ export default function ClientsPage() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 outline-none focus:border-slate-600"
+          className="rounded-lg px-3 py-2 text-sm outline-none"
+          style={{
+            border: "1px solid var(--db-border)",
+            background: "var(--db-card)",
+            color: "var(--db-text)",
+          }}
         >
           <option value="">All Statuses</option>
           <option value="active">Active</option>

@@ -45,7 +45,7 @@ interface CallAnalytics {
   }>;
 }
 
-const PIE_COLORS = ["#22c55e", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"];
+const PIE_COLORS = ["#C59A27", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"];
 const SENTIMENT_COLORS: Record<string, string> = {
   positive: "#22c55e",
   neutral: "#64748b",
@@ -66,7 +66,7 @@ export default function CallAnalyticsPage() {
   if (!data) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <p className="text-slate-500">Loading call analytics...</p>
+        <p style={{ color: "var(--db-text-muted)" }}>Loading call analytics...</p>
       </div>
     );
   }
@@ -88,14 +88,14 @@ export default function CallAnalyticsPage() {
       key: "businessName",
       label: "Business",
       render: (row) => (
-        <span className="text-sm text-slate-200">{row.businessName || "—"}</span>
+        <span className="text-sm" style={{ color: "var(--db-text)" }}>{row.businessName || "—"}</span>
       ),
     },
     {
       key: "callerPhone",
       label: "Caller",
       render: (row) => (
-        <span className="text-xs text-slate-400">{row.callerPhone || "—"}</span>
+        <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{row.callerPhone || "—"}</span>
       ),
     },
     {
@@ -111,14 +111,15 @@ export default function CallAnalyticsPage() {
       key: "status",
       label: "Status",
       render: (row) => {
-        const colors: Record<string, string> = {
-          completed: "bg-green-500/10 text-green-400",
-          missed: "bg-amber-500/10 text-amber-400",
-          failed: "bg-red-500/10 text-red-400",
-          in_progress: "bg-blue-500/10 text-blue-400",
+        const statusStyles: Record<string, { background: string; color: string }> = {
+          completed: { background: "rgba(74,222,128,0.1)", color: "#4ade80" },
+          missed: { background: "rgba(251,191,36,0.1)", color: "#fbbf24" },
+          failed: { background: "rgba(239,68,68,0.1)", color: "#ef4444" },
+          in_progress: { background: "rgba(96,165,250,0.1)", color: "#60a5fa" },
         };
+        const style = statusStyles[row.status] || { background: "var(--db-hover)", color: "var(--db-text-secondary)" };
         return (
-          <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${colors[row.status] || "bg-slate-700 text-slate-300"}`}>
+          <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={style}>
             {row.status.replace("_", " ")}
           </span>
         );
@@ -128,17 +129,17 @@ export default function CallAnalyticsPage() {
       key: "duration",
       label: "Duration",
       render: (row) => (
-        <span className="text-xs text-slate-400">{row.duration ? formatDuration(row.duration) : "—"}</span>
+        <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{row.duration ? formatDuration(row.duration) : "—"}</span>
       ),
     },
     {
       key: "sentiment",
       label: "Sentiment",
       render: (row) => (
-        <span className={`text-xs ${
-          row.sentiment === "positive" ? "text-green-400" :
-          row.sentiment === "negative" ? "text-red-400" : "text-slate-500"
-        }`}>
+        <span className="text-xs" style={{
+          color: row.sentiment === "positive" ? "#4ade80" :
+                 row.sentiment === "negative" ? "#ef4444" : "var(--db-text-muted)"
+        }}>
           {row.sentiment || "—"}
         </span>
       ),
@@ -147,7 +148,7 @@ export default function CallAnalyticsPage() {
       key: "createdAt",
       label: "Time",
       render: (row) => (
-        <span className="text-xs text-slate-500">
+        <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
           {new Date(row.createdAt).toLocaleString(undefined, {
             month: "short",
             day: "numeric",
@@ -163,7 +164,7 @@ export default function CallAnalyticsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Call Analytics</h1>
-        <p className="text-sm text-slate-400">All-platform call metrics and trends</p>
+        <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>All-platform call metrics and trends</p>
       </div>
 
       {/* Metric cards */}
@@ -182,24 +183,24 @@ export default function CallAnalyticsPage() {
       {/* Charts row */}
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Volume chart */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5 lg:col-span-2">
-          <h3 className="mb-4 text-sm font-medium text-slate-300">Call Volume (30 days)</h3>
+        <div className="rounded-xl p-5 lg:col-span-2" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+          <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Call Volume (30 days)</h3>
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart data={data.volumeByDay}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="date" tick={{ fill: "#64748b", fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
-              <YAxis tick={{ fill: "#64748b", fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--db-border)" />
+              <XAxis dataKey="date" tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
+              <YAxis tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} />
               <Tooltip
-                contentStyle={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: 8, color: "#e2e8f0", fontSize: 12 }}
+                contentStyle={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", borderRadius: 8, color: "var(--db-text)", fontSize: 12 }}
               />
-              <Area type="monotone" dataKey="count" stroke="#22c55e" fill="#22c55e" fillOpacity={0.1} />
+              <Area type="monotone" dataKey="count" stroke="#C59A27" fill="#C59A27" fillOpacity={0.1} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
         {/* Language pie */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-          <h3 className="mb-4 text-sm font-medium text-slate-300">Language Distribution</h3>
+        <div className="rounded-xl p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+          <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Language Distribution</h3>
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
               <Pie
@@ -221,7 +222,7 @@ export default function CallAnalyticsPage() {
                 ))}
               </Pie>
               <Tooltip
-                contentStyle={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: 8, color: "#e2e8f0", fontSize: 12 }}
+                contentStyle={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", borderRadius: 8, color: "var(--db-text)", fontSize: 12 }}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -229,15 +230,15 @@ export default function CallAnalyticsPage() {
       </div>
 
       {/* Sentiment bars */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-        <h3 className="mb-4 text-sm font-medium text-slate-300">Sentiment Breakdown</h3>
+      <div className="rounded-xl p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+        <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Sentiment Breakdown</h3>
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={data.sentimentBreakdown} layout="vertical">
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-            <XAxis type="number" tick={{ fill: "#64748b", fontSize: 11 }} />
-            <YAxis dataKey="sentiment" type="category" tick={{ fill: "#64748b", fontSize: 11 }} width={80} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--db-border)" />
+            <XAxis type="number" tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} />
+            <YAxis dataKey="sentiment" type="category" tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} width={80} />
             <Tooltip
-              contentStyle={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: 8, color: "#e2e8f0", fontSize: 12 }}
+              contentStyle={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", borderRadius: 8, color: "var(--db-text)", fontSize: 12 }}
             />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
               {data.sentimentBreakdown.map((entry, index) => (
@@ -250,7 +251,7 @@ export default function CallAnalyticsPage() {
 
       {/* Recent calls table */}
       <div>
-        <h3 className="mb-3 text-sm font-medium text-slate-300">Recent Calls</h3>
+        <h3 className="mb-3 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Recent Calls</h3>
         <DataTable columns={callColumns} data={data.recentCalls} />
       </div>
     </div>

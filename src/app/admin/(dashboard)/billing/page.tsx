@@ -55,7 +55,7 @@ export default function BillingPage() {
   if (!data) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <p className="text-slate-500">Loading billing data...</p>
+        <p style={{ color: "var(--db-text-muted)" }}>Loading billing data...</p>
       </div>
     );
   }
@@ -66,14 +66,14 @@ export default function BillingPage() {
       label: "Business",
       sortable: true,
       render: (row) => (
-        <span className="font-medium text-slate-200">{row.businessName || "—"}</span>
+        <span className="font-medium" style={{ color: "var(--db-text)" }}>{row.businessName || "—"}</span>
       ),
     },
     {
       key: "businessType",
       label: "Type",
       render: (row) => (
-        <span className="capitalize text-slate-400">{row.businessType || "—"}</span>
+        <span className="capitalize" style={{ color: "var(--db-text-muted)" }}>{row.businessType || "—"}</span>
       ),
     },
     {
@@ -82,8 +82,8 @@ export default function BillingPage() {
       sortable: true,
       render: (row) => {
         const color =
-          row.score > 7 ? "text-red-400" : row.score > 4 ? "text-amber-400" : "text-green-400";
-        return <span className={`font-semibold ${color}`}>{row.score}/10</span>;
+          row.score > 7 ? "#f87171" : row.score > 4 ? "#fbbf24" : "#4ade80";
+        return <span className="font-semibold" style={{ color }}>{row.score}/10</span>;
       },
     },
     {
@@ -92,12 +92,12 @@ export default function BillingPage() {
       render: (row) => (
         <div className="flex flex-wrap gap-1">
           {(row.factors || []).slice(0, 2).map((f, i) => (
-            <span key={i} className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">
+            <span key={i} className="rounded px-1.5 py-0.5 text-[10px]" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
               {f}
             </span>
           ))}
           {(row.factors || []).length > 2 && (
-            <span className="text-[10px] text-slate-500">+{(row.factors || []).length - 2}</span>
+            <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>+{(row.factors || []).length - 2}</span>
           )}
         </div>
       ),
@@ -108,7 +108,7 @@ export default function BillingPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Billing</h1>
-        <p className="text-sm text-slate-400">Revenue metrics and churn analysis</p>
+        <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>Revenue metrics and churn analysis</p>
       </div>
 
       {/* Revenue cards */}
@@ -133,76 +133,76 @@ export default function BillingPage() {
       </div>
 
       {/* MRR Trend chart */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-        <h3 className="mb-4 text-sm font-medium text-slate-300">MRR Trend (30 days)</h3>
+      <div className="rounded-xl p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+        <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>MRR Trend (30 days)</h3>
         <ResponsiveContainer width="100%" height={260}>
           <AreaChart data={data.trend}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--db-border)" />
             <XAxis
               dataKey="date"
-              tick={{ fill: "#64748b", fontSize: 11 }}
+              tick={{ fill: "var(--db-text-muted)", fontSize: 11 }}
               tickFormatter={(d: string) => d.slice(5)}
             />
             <YAxis
-              tick={{ fill: "#64748b", fontSize: 11 }}
+              tick={{ fill: "var(--db-text-muted)", fontSize: 11 }}
               tickFormatter={(v: number) => `$${(v / 1000).toFixed(1)}k`}
             />
             <Tooltip
               contentStyle={{
-                background: "#0f172a",
-                border: "1px solid #1e293b",
+                background: "var(--db-surface)",
+                border: "1px solid var(--db-border)",
                 borderRadius: 8,
-                color: "#e2e8f0",
+                color: "var(--db-text)",
                 fontSize: 12,
               }}
               formatter={(value?: number) => [`$${(value ?? 0).toLocaleString()}`, "MRR"]}
             />
-            <Area type="monotone" dataKey="mrr" stroke="#22c55e" fill="#22c55e" fillOpacity={0.1} />
+            <Area type="monotone" dataKey="mrr" stroke="#C59A27" fill="#C59A27" fillOpacity={0.1} />
           </AreaChart>
         </ResponsiveContainer>
       </div>
 
       {/* Forecast + Failed Payments */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-          <h3 className="mb-4 text-sm font-medium text-slate-300">Revenue Forecast</h3>
+        <div className="rounded-xl p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+          <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Revenue Forecast</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">Next Month</span>
-              <span className="font-semibold text-slate-200">${data.forecast.nextMonth.toLocaleString()}</span>
+              <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>Next Month</span>
+              <span className="font-semibold" style={{ color: "var(--db-text)" }}>${data.forecast.nextMonth.toLocaleString()}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">3 Months</span>
-              <span className="font-semibold text-slate-200">${data.forecast.threeMonth.toLocaleString()}</span>
+              <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>3 Months</span>
+              <span className="font-semibold" style={{ color: "var(--db-text)" }}>${data.forecast.threeMonth.toLocaleString()}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">6 Months</span>
-              <span className="font-semibold text-slate-200">${data.forecast.sixMonth.toLocaleString()}</span>
+              <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>6 Months</span>
+              <span className="font-semibold" style={{ color: "var(--db-text)" }}>${data.forecast.sixMonth.toLocaleString()}</span>
             </div>
           </div>
-          <p className="mt-4 text-xs text-slate-500">
+          <p className="mt-4 text-xs" style={{ color: "var(--db-text-muted)" }}>
             Based on current growth rate extrapolation
           </p>
         </div>
 
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-          <h3 className="mb-4 text-sm font-medium text-slate-300">Payment Health</h3>
+        <div className="rounded-xl p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+          <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Payment Health</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">Failed Payments (30d)</span>
-              <span className={`font-semibold ${data.aggregates.failedPayments30d > 0 ? "text-red-400" : "text-green-400"}`}>
+              <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>Failed Payments (30d)</span>
+              <span className="font-semibold" style={{ color: data.aggregates.failedPayments30d > 0 ? "#f87171" : "#4ade80" }}>
                 {data.aggregates.failedPayments30d}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">Churned (30d)</span>
-              <span className={`font-semibold ${data.aggregates.churned30d > 0 ? "text-amber-400" : "text-green-400"}`}>
+              <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>Churned (30d)</span>
+              <span className="font-semibold" style={{ color: data.aggregates.churned30d > 0 ? "#fbbf24" : "#4ade80" }}>
                 {data.aggregates.churned30d}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">Net New (30d)</span>
-              <span className="font-semibold text-green-400">
+              <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>Net New (30d)</span>
+              <span className="font-semibold" style={{ color: "#4ade80" }}>
                 {data.aggregates.newCustomers30d - data.aggregates.churned30d}
               </span>
             </div>
@@ -212,7 +212,7 @@ export default function BillingPage() {
 
       {/* Churn risk table */}
       <div>
-        <h3 className="mb-3 text-sm font-medium text-slate-300">Churn Risk Analysis</h3>
+        <h3 className="mb-3 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Churn Risk Analysis</h3>
         <DataTable columns={churnColumns} data={data.churnRisks} />
       </div>
     </div>

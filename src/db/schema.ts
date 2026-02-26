@@ -30,6 +30,7 @@ export const leads = sqliteTable("leads", {
   language: text("language").notNull().default("en"),
   notes: text("notes"),
   source: text("source").notNull().default("inbound_call"), // inbound_call, outbound_campaign, manual
+  smsOptOut: integer("sms_opt_out", { mode: "boolean" }).default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });

@@ -33,16 +33,17 @@ const STATUS_OPTIONS = [
   "disqualified",
 ];
 
-const statusColors: Record<string, string> = {
-  new: "bg-slate-600",
-  audit_scheduled: "bg-amber-600",
-  audit_complete: "bg-blue-600",
-  outreach_active: "bg-purple-600",
-  outreach_paused: "bg-amber-600",
-  demo_booked: "bg-green-600",
-  converted: "bg-green-500",
-  disqualified: "bg-red-600",
+const statusColors: Record<string, { bg: string; text: string }> = {
+  new: { bg: "rgba(148,163,184,0.15)", text: "#94a3b8" },
+  audit_scheduled: { bg: "rgba(251,191,36,0.15)", text: "#fbbf24" },
+  audit_complete: { bg: "rgba(96,165,250,0.15)", text: "#60a5fa" },
+  outreach_active: { bg: "rgba(168,85,247,0.15)", text: "#a855f7" },
+  outreach_paused: { bg: "rgba(251,191,36,0.15)", text: "#fbbf24" },
+  demo_booked: { bg: "rgba(74,222,128,0.15)", text: "#4ade80" },
+  converted: { bg: "rgba(74,222,128,0.2)", text: "#4ade80" },
+  disqualified: { bg: "rgba(248,113,113,0.15)", text: "#f87171" },
 };
+const defaultStatusColor = { bg: "var(--db-hover)", text: "var(--db-text-muted)" };
 
 export default function ProspectsPage() {
   const [prospects, setProspects] = useState<Prospect[]>([]);
@@ -128,7 +129,8 @@ export default function ProspectsPage() {
       render: (row) => (
         <button
           onClick={() => setDetailId(row.id)}
-          className="text-left text-blue-400 hover:text-blue-300 font-medium"
+          className="text-left font-medium"
+          style={{ color: "var(--db-accent)" }}
         >
           {row.businessName}
         </button>
@@ -140,19 +142,23 @@ export default function ProspectsPage() {
       key: "status",
       label: "Status",
       sortable: true,
-      render: (row) => (
-        <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium text-white ${statusColors[row.status] ?? "bg-slate-600"}`}
-        >
-          {row.status.replace(/_/g, " ")}
-        </span>
-      ),
+      render: (row) => {
+        const sc = statusColors[row.status] ?? defaultStatusColor;
+        return (
+          <span
+            className="rounded-full px-2 py-0.5 text-xs font-medium"
+            style={{ background: sc.bg, color: sc.text }}
+          >
+            {row.status.replace(/_/g, " ")}
+          </span>
+        );
+      },
     },
     {
       key: "auditResult",
       label: "Audit",
       render: (row) => (
-        <span className="text-xs text-slate-400">{row.auditResult ?? "—"}</span>
+        <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{row.auditResult ?? "\u2014"}</span>
       ),
     },
     {
@@ -178,20 +184,22 @@ export default function ProspectsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Prospects</h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
             {pagination.total} total prospects
           </p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setShowImport(true)}
-            className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800 transition-colors"
+            className="rounded-lg px-3 py-2 text-sm transition-colors"
+            style={{ border: "1px solid var(--db-border)", color: "var(--db-text-secondary)" }}
           >
             Import CSV
           </button>
           <button
             onClick={() => setShowScrape(true)}
-            className="rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-500 transition-colors"
+            className="rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+            style={{ background: "var(--db-accent)", color: "#fff" }}
           >
             Scrape New
           </button>
@@ -205,12 +213,16 @@ export default function ProspectsPage() {
           placeholder="Search businesses..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500 w-64"
+          className="rounded-lg px-3 py-2 text-sm outline-none w-64"
+          style={{ background: "var(--db-hover)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
         />
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+          className="rounded-lg px-3 py-2 text-sm outline-none"
+          style={{ background: "var(--db-hover)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
         >
           <option value="">All Statuses</option>
           {STATUS_OPTIONS.map((s) => (
