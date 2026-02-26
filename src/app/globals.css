@@ -377,6 +377,59 @@ button:focus-visible {
   }
 }
 
+/* ── V4: Status Indicator Pulse ── */
+@keyframes status-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: status-blink 2s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+}
+
+/* ── V4: Ambient Edge Lighting (dark cards) ── */
+.ambient-edge {
+  position: relative;
+}
+.ambient-edge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 168, 70, 0.4) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── V4: Mobile Horizontal Scroll Snap ── */
+@media (max-width: 639px) {
+  .snap-scroll-mobile {
+    display: flex !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 16px;
+    padding: 4px 0 12px;
+  }
+  .snap-scroll-mobile::-webkit-scrollbar {
+    display: none;
+  }
+  .snap-scroll-mobile > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    width: 85vw;
+    max-width: 320px;
+  }
+}
+
 /* ── Dashboard Theme Variables ── */
 [data-theme="dark"] {
   --db-bg: #020617;
