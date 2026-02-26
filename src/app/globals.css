@@ -95,6 +95,16 @@ button:focus-visible {
   animation: wave-pulse 1.5s ease-in-out infinite;
 }
 
+/* ── V5: Generative Voice Waveform ── */
+@keyframes waveform-bounce {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+.waveform-bar {
+  transform-origin: bottom;
+  animation: waveform-bounce 1.2s ease-in-out infinite;
+}
+
 /* FAQ accordion */
 .faq-answer {
   display: grid;
@@ -281,6 +291,28 @@ button:focus-visible {
   width: 2px;
   background: linear-gradient(180deg, #C59A27, rgba(197, 154, 39, 0.1));
   pointer-events: none;
+}
+
+/* ── V5: Synaptic Timeline Pulse ── */
+@keyframes synaptic-pulse {
+  0% { top: 0; opacity: 0; }
+  5% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: calc(100% - 20px); opacity: 0; }
+}
+.steps-timeline::after {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 0;
+  width: 8px;
+  height: 20px;
+  border-radius: 4px;
+  background: rgba(212, 145, 10, 0.8);
+  box-shadow: 0 0 12px rgba(212, 145, 10, 0.6), 0 0 24px rgba(212, 145, 10, 0.3);
+  animation: synaptic-pulse 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
 }
 
 /* Light glassmorphic card (for cream backgrounds) */

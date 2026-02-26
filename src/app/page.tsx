@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { motion, useMotionValue, useSpring, useTransform, useInView } from "framer-motion";
 import dynamic from "next/dynamic";
 
 const VoiceChat = dynamic(() => import("@/components/voice-chat"), { ssr: false });
@@ -89,6 +90,55 @@ function Section({
       {children}
     </section>
   );
+}
+
+/* ───────── Mouse Spotlight Card ───────── */
+
+function SpotlightCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }
+
+  return (
+    <div
+      ref={cardRef}
+      className={`relative overflow-hidden ${className}`}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 z-10 transition-opacity duration-300"
+        style={{
+          opacity: isHovered ? 1 : 0,
+          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(255,255,255,0.06), transparent 40%)`,
+        }}
+      />
+      {children}
+    </div>
+  );
+}
+
+/* ───────── Animated Counter ───────── */
+
+function Counter({ value, suffix = "", prefix = "" }: { value: number; suffix?: string; prefix?: string }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const motionVal = useMotionValue(0);
+  const spring = useSpring(motionVal, { stiffness: 100, damping: 30 });
+  const display = useTransform(spring, (v) => `${prefix}${Math.round(v)}${suffix}`);
+
+  useEffect(() => {
+    if (inView) motionVal.set(value);
+  }, [inView, motionVal, value]);
+
+  return <motion.span ref={ref}>{display}</motion.span>;
 }
 
 /* ───────── FAQ Accordion ───────── */
@@ -738,8 +788,8 @@ export default function LandingPage() {
                   {[35, 60, 45, 80, 55, 70, 40, 85, 50, 75, 60, 35, 70, 45, 80, 55, 65, 40, 75, 50, 60, 45, 70, 55].map((h, i) => (
                     <div
                       key={i}
-                      className="w-[3px] rounded-full bg-amber/30"
-                      style={{ height: `${h}%` }}
+                      className="waveform-bar w-[3px] rounded-full bg-amber/30"
+                      style={{ height: `${h}%`, animationDelay: `${i * 0.08}s` }}
                     />
                   ))}
                 </div>
@@ -833,23 +883,31 @@ export default function LandingPage() {
           </h2>
 
           <div className="snap-scroll-mobile mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((f) => (
-              <div
+            {features.map((f, i) => (
+              <SpotlightCard
                 key={f.title}
-                className={`reveal reveal-stagger glass-card ambient-edge rounded-xl p-8 sm:p-10 ${
+                className={`glass-card ambient-edge rounded-xl ${
                   f.wide ? "lg:col-span-2" : ""
                 }`}
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber/10">
-                  <f.Icon size={20} className="text-amber" />
-                </div>
-                <h3 className="mt-4 text-xl font-extrabold leading-[1.3] tracking-tight text-white sm:text-2xl">
-                  {f.title}
-                </h3>
-                <p className="mt-3 text-base leading-[1.7] text-[#B8C4D4]">
-                  {f.body}
-                </p>
-              </div>
+                <motion.div
+                  className="p-8 sm:p-10"
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber/10">
+                    <f.Icon size={20} className="text-amber" />
+                  </div>
+                  <h3 className="mt-4 text-xl font-extrabold leading-[1.3] tracking-tight text-white sm:text-2xl">
+                    {f.title}
+                  </h3>
+                  <p className="mt-3 text-base leading-[1.7] text-[#B8C4D4]">
+                    {f.body}
+                  </p>
+                </motion.div>
+              </SpotlightCard>
             ))}
           </div>
         </div>
@@ -868,21 +926,26 @@ export default function LandingPage() {
           </div>
 
           <div className="snap-scroll-mobile mt-16 grid gap-8 sm:grid-cols-3">
-            <div className="reveal reveal-stagger card-shadow card-hover rounded-xl border border-cream-border bg-white p-10 sm:p-12 text-center">
-              <p className="gold-gradient-text text-[48px] font-extrabold">8s</p>
-              <p className="mt-2 text-base font-semibold text-charcoal">Avg. Pickup</p>
-              <p className="mt-1 text-sm leading-[1.7] text-charcoal-muted">Two rings. That&apos;s it.</p>
-            </div>
-            <div className="reveal reveal-stagger card-shadow card-hover rounded-xl border border-cream-border bg-white p-10 sm:p-12 text-center">
-              <p className="gold-gradient-text text-[48px] font-extrabold">94%</p>
-              <p className="mt-2 text-base font-semibold text-charcoal">Booking Rate</p>
-              <p className="mt-1 text-sm leading-[1.7] text-charcoal-muted">If they need service, they get booked.</p>
-            </div>
-            <div className="reveal reveal-stagger card-shadow card-hover rounded-xl border border-cream-border bg-white p-10 sm:p-12 text-center">
-              <p className="gold-gradient-text text-[48px] font-extrabold">$16</p>
-              <p className="mt-2 text-base font-semibold text-charcoal">Per Day</p>
-              <p className="mt-1 text-sm leading-[1.7] text-charcoal-muted">One job covers the entire year.</p>
-            </div>
+            {[
+              { value: 8, suffix: "s", prefix: "", label: "Avg. Pickup", desc: "Two rings. That\u2019s it." },
+              { value: 94, suffix: "%", prefix: "", label: "Booking Rate", desc: "If they need service, they get booked." },
+              { value: 16, suffix: "", prefix: "$", label: "Per Day", desc: "One job covers the entire year." },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-10 sm:p-12 text-center"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <p className="gold-gradient-text text-[48px] font-extrabold">
+                  <Counter value={stat.value} suffix={stat.suffix} prefix={stat.prefix} />
+                </p>
+                <p className="mt-2 text-base font-semibold text-charcoal">{stat.label}</p>
+                <p className="mt-1 text-sm leading-[1.7] text-charcoal-muted">{stat.desc}</p>
+              </motion.div>
+            ))}
           </div>
 
           <div className="reveal mt-16 mx-auto max-w-2xl">
