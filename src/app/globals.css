@@ -34,6 +34,19 @@ body {
   font-family: var(--font-body), system-ui, sans-serif;
 }
 
+/* Selection color */
+::selection {
+  background: rgba(200, 170, 100, 0.3);
+}
+
+/* Focus states */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #C59A27;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* Grain texture overlay — hero only */
 .grain-overlay::before {
   content: "";
