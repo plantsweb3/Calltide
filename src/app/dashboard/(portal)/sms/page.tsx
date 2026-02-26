@@ -207,6 +207,38 @@ export default function SmsPage() {
             total,
             onPageChange: setPage,
           }}
+          expandedContent={(row) => (
+            <div className="space-y-2">
+              <p
+                className="text-xs font-medium uppercase tracking-wider"
+                style={{ color: "var(--db-text-muted)" }}
+              >
+                Full Message
+              </p>
+              <p
+                className="whitespace-pre-wrap text-sm"
+                style={{ color: "var(--db-text-secondary)" }}
+              >
+                {row.body}
+              </p>
+              <div className="flex items-center gap-4 pt-1">
+                <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  From: {formatPhone(row.fromNumber)}
+                </span>
+                <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  To: {formatPhone(row.toNumber)}
+                </span>
+                {row.templateType && (
+                  <span
+                    className="rounded px-1.5 py-0.5 text-[10px] font-medium"
+                    style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
+                  >
+                    {row.templateType}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
         />
       )}
     </div>

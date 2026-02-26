@@ -151,6 +151,27 @@ export default function CallsPage() {
       },
     },
     {
+      key: "sentiment",
+      label: "Sentiment",
+      render: (row) => {
+        if (!row.sentiment) return <span style={{ color: "var(--db-text-muted)" }}>—</span>;
+        const sentimentColors: Record<string, { bg: string; text: string }> = {
+          positive: { bg: "rgba(74,222,128,0.1)", text: "#4ade80" },
+          neutral: { bg: "rgba(148,163,184,0.1)", text: "#94a3b8" },
+          negative: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
+        };
+        const c = sentimentColors[row.sentiment] || { bg: "var(--db-hover)", text: "var(--db-text-secondary)" };
+        return (
+          <span
+            className="rounded-full px-2 py-0.5 text-xs font-medium"
+            style={{ background: c.bg, color: c.text }}
+          >
+            {row.sentiment}
+          </span>
+        );
+      },
+    },
+    {
       key: "status",
       label: "Outcome",
       render: (row) => {

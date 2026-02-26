@@ -274,19 +274,54 @@ export default function OverviewPage() {
 
   // ── Basic Dashboard (real clients) ──
   return (
-    <div>
-      <h1
-        className="mb-6 text-2xl font-semibold"
-        style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
-      >
-        Overview
-      </h1>
+    <div className="space-y-6">
+      <div>
+        <h1
+          className="text-2xl font-semibold"
+          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+        >
+          {getGreeting()}
+        </h1>
+        <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
+          Here&apos;s your AI receptionist summary
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard label="Calls Today" value={data.callsToday} />
         <MetricCard label="Appointments This Week" value={data.appointmentsThisWeek} />
-        <MetricCard label="Missed Calls Saved" value={data.missedCallsSaved} />
+        <MetricCard
+          label="Missed Calls Saved"
+          value={data.missedCallsSaved}
+          changeType={data.missedCallsSaved > 0 ? "positive" : "neutral"}
+          change={data.missedCallsSaved > 0 ? "Recovered by AI" : undefined}
+        />
         <MetricCard label="Total Calls" value={data.totalCalls} />
       </div>
+
+      {/* Activity Feed + Weekly Summary (when available) */}
+      {(data.activityFeed || data.weeklySummary) && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+          {data.activityFeed && (
+            <div className="lg:col-span-3">
+              <ActivityFeed events={data.activityFeed} />
+            </div>
+          )}
+          {data.weeklySummary && (
+            <div className="lg:col-span-2">
+              <WeeklySummary data={data.weeklySummary} />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Insights (when available) */}
+      {data.insights && (
+        <BusinessInsights
+          insights={data.insights}
+          bilingualStats={data.bilingualStats}
+        />
+      )}
     </div>
   );
 }
