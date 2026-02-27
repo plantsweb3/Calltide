@@ -108,12 +108,12 @@ export async function POST(req: NextRequest) {
   // Also check prospect opt-out/opt-in (outreach targets)
   const prospectResult = await handleProspectSmsKeyword(from, body);
   if (prospectResult.handled) {
-    console.log(`Prospect SMS ${prospectResult.action} from ${from}`);
+    console.log(`Prospect SMS ${prospectResult.action} processed`);
   }
 
   // Flag for owner notification
   if (biz.ownerEmail) {
-    console.log(`[notify] Email notification pending for ${biz.ownerName} <${biz.ownerEmail}> — inbound SMS from ${from}`);
+    console.log(`[notify] Email notification pending for business ${biz.id ?? "unknown"} — inbound SMS`);
   }
 
   return twimlResponse("");

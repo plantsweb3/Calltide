@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { npsResponses } from "@/db/schema";
 import { eq, and, gte, desc } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 const feedbackSchema = z.object({
   businessId: z.string().min(1, "businessId is required"),
@@ -11,6 +12,9 @@ const feedbackSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  const rl = rateLimit(`nps-feedback:${getClientIp(request)}`, { limit: 10, windowSeconds: 3600 });
+  if (!rl.success) return rateLimitResponse(rl);
+
   try {
     const body = await request.json();
     const parsed = feedbackSchema.safeParse(body);

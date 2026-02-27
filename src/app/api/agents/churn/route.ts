@@ -13,9 +13,11 @@ import { runAgent, CHURN_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
  */
 export async function GET(req: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
+  }
   const authHeader = req.headers.get("authorization");
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -79,9 +81,11 @@ Based on these signals, update the churn risk score and take appropriate action 
  */
 export async function POST(req: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
+  }
   const authHeader = req.headers.get("authorization");
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

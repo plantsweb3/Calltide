@@ -35,22 +35,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  // Idempotency check
-  const [existing] = await db
-    .select({ id: processedStripeEvents.id })
-    .from(processedStripeEvents)
-    .where(eq(processedStripeEvents.stripeEventId, event.id))
-    .limit(1);
+  // Atomic idempotency: INSERT OR IGNORE avoids SELECT-then-INSERT race condition
+  const [inserted] = await db
+    .insert(processedStripeEvents)
+    .values({
+      stripeEventId: event.id,
+      eventType: event.type,
+    })
+    .onConflictDoNothing()
+    .returning({ id: processedStripeEvents.id });
 
-  if (existing) {
+  if (!inserted) {
     return NextResponse.json({ received: true, duplicate: true });
   }
-
-  // Mark as processed BEFORE handling (at-least-once → exactly-once)
-  await db.insert(processedStripeEvents).values({
-    stripeEventId: event.id,
-    eventType: event.type,
-  });
 
   // Route event — fire-and-forget for side effects
   try {

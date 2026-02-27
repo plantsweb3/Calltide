@@ -122,7 +122,7 @@ export default async function BlogPostEsPage({ params }: PageProps) {
 
         <AuditCTA variant="inline" lang="es" postSlug={post.slug} postId={post.id} />
 
-        <article className="prose prose-lg prose-slate mt-10 max-w-none" style={{ lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: post.body }} />
+        <article className="prose prose-lg prose-slate mt-10 max-w-none" style={{ lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.body) }} />
 
         <div className="mt-16">
           <AuditCTA variant="full" lang="es" postSlug={post.slug} postId={post.id} />
@@ -148,4 +148,13 @@ export default async function BlogPostEsPage({ params }: PageProps) {
       <BlogFooter lang="es" />
     </div>
   );
+}
+
+function sanitizeHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
+    .replace(/\son\w+\s*=\s*"[^"]*"/gi, "")
+    .replace(/\son\w+\s*=\s*'[^']*'/gi, "")
+    .replace(/javascript:/gi, "");
 }

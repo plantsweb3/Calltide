@@ -71,7 +71,8 @@ function isProtectedInternalRoute(pathname: string): boolean {
     pathname === "/api/audit/schedule" ||
     pathname.startsWith("/api/audit/call/") ||
     pathname.startsWith("/api/marketing/") ||
-    pathname.startsWith("/api/content-queue")
+    pathname.startsWith("/api/content-queue") ||
+    pathname.startsWith("/api/notifications")
   );
 }
 
@@ -185,5 +186,7 @@ export const config = {
     "/api/marketing/:path*",
     "/api/content-queue",
     "/api/content-queue/:path*",
+    "/api/notifications",
+    "/api/notifications/:path*",
   ],
 };

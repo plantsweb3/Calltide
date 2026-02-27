@@ -11,6 +11,7 @@ import {
 import { eq, and, gte, sql } from "drizzle-orm";
 import { getTwilioClient } from "@/lib/twilio/client";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
@@ -27,6 +28,9 @@ function timingSafeEqual(a: string, b: string): boolean {
 }
 
 export async function GET(request: NextRequest) {
+  const rl = rateLimit(`nps:${getClientIp(request)}`, { limit: 10, windowSeconds: 3600 });
+  if (!rl.success) return rateLimitResponse(rl);
+
   const { searchParams } = request.nextUrl;
   const businessId = searchParams.get("businessId");
   const scoreRaw = searchParams.get("score");

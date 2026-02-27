@@ -28,15 +28,34 @@ type Severity = "critical" | "major" | "minor" | "maintenance";
 const unhealthyStreak = new Map<string, number>();
 const healthyStreak = new Map<string, number>();
 const cooldowns = new Map<string, number>(); // service -> timestamp when cooldown expires
+const lastSeen = new Map<string, number>(); // service -> last activity timestamp
 
 const UNHEALTHY_THRESHOLD = 2; // consecutive unhealthy checks before creating incident
 const HEALTHY_THRESHOLD = 2;   // consecutive healthy checks before auto-resolving
 const COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes between incidents for same service
+const STREAK_TTL_MS = 60 * 60 * 1000; // 1 hour — evict entries not seen in this window
+
+let lastStreakCleanup = Date.now();
+function cleanupStreakMaps() {
+  const now = Date.now();
+  if (now - lastStreakCleanup < 5 * 60 * 1000) return; // sweep every 5 minutes
+  lastStreakCleanup = now;
+  for (const [key, ts] of lastSeen) {
+    if (now - ts > STREAK_TTL_MS) {
+      unhealthyStreak.delete(key);
+      healthyStreak.delete(key);
+      cooldowns.delete(key);
+      lastSeen.delete(key);
+    }
+  }
+}
 
 // ── Public API ──
 
 export async function handleUnhealthyService(check: HealthCheckResult): Promise<void> {
+  cleanupStreakMaps();
   const service = check.name;
+  lastSeen.set(service, Date.now());
 
   // Reset healthy streak
   healthyStreak.set(service, 0);
@@ -74,7 +93,9 @@ export async function handleUnhealthyService(check: HealthCheckResult): Promise<
 }
 
 export async function handleHealthyService(check: HealthCheckResult): Promise<void> {
+  cleanupStreakMaps();
   const service = check.name;
+  lastSeen.set(service, Date.now());
 
   // Reset unhealthy streak
   unhealthyStreak.set(service, 0);

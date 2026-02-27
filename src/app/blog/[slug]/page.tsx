@@ -152,7 +152,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         <article
           className="prose prose-lg prose-slate mt-10 max-w-none"
           style={{ lineHeight: 1.8 }}
-          dangerouslySetInnerHTML={{ __html: post.body }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.body) }}
         />
 
         {/* Bottom CTA */}
@@ -181,4 +181,13 @@ export default async function BlogPostPage({ params }: PageProps) {
       <BlogFooter lang="en" />
     </div>
   );
+}
+
+function sanitizeHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
+    .replace(/\son\w+\s*=\s*"[^"]*"/gi, "")
+    .replace(/\son\w+\s*=\s*'[^']*'/gi, "")
+    .replace(/javascript:/gi, "");
 }

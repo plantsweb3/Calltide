@@ -298,7 +298,7 @@ async function sendDunningEmail(
       html,
     });
   } catch (e) {
-    console.error(`[dunning] Failed to send ${stage} to ${business.ownerEmail}:`, e);
+    console.error(`[dunning] Failed to send ${stage} email:`, e);
   }
 }
 
@@ -320,6 +320,6 @@ async function sendDunningSms(
       to: business.ownerPhone,
     });
   } catch (e) {
-    console.error(`[dunning] Failed to send SMS to ${business.ownerPhone}:`, e);
+    console.error("[dunning] Failed to send SMS:", e);
   }
 }

@@ -68,8 +68,17 @@ function LegalPageLayout({ doc, type }: { doc: typeof legalDocuments.$inferSelec
   );
 }
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function simpleMarkdown(md: string): string {
-  return md
+  return escapeHtml(md)
     .replace(/^### (.+)$/gm, '<h3 style="font-size:1.1rem;font-weight:600;margin:24px 0 8px;color:#1A1D24;">$1</h3>')
     .replace(/^## (.+)$/gm, '<h2 style="font-size:1.25rem;font-weight:600;margin:32px 0 12px;color:#1A1D24;">$1</h2>')
     .replace(/^# (.+)$/gm, '<h1 style="font-size:1.75rem;font-weight:700;margin:0 0 16px;color:#1A1D24;">$1</h1>')

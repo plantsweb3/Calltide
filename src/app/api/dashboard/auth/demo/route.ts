@@ -5,6 +5,10 @@ import { reportWarning } from "@/lib/error-reporting";
 const DEMO_BUSINESS_ID = "demo-client-001";
 
 export async function GET(req: NextRequest) {
+  if (process.env.DEMO_MODE !== "true") {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
   const secret = process.env.CLIENT_AUTH_SECRET;
   if (!secret) {
     reportWarning("CLIENT_AUTH_SECRET is not set");

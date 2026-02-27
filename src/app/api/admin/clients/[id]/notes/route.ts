@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
-import { customerNotes } from "@/db/schema";
+import { customerNotes, businesses } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 
 const createNoteSchema = z.object({
@@ -36,7 +36,22 @@ export async function POST(
   const { id: customerId } = await params;
 
   try {
-    const body = await req.json();
+    // Validate customer exists
+    const [customer] = await db
+      .select({ id: businesses.id })
+      .from(businesses)
+      .where(eq(businesses.id, customerId))
+      .limit(1);
+    if (!customer) {
+      return NextResponse.json({ error: "Customer not found" }, { status: 404 });
+    }
+
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    }
     const parsed = createNoteSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });

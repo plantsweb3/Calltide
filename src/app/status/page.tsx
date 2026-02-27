@@ -448,8 +448,17 @@ function formatDurationClient(seconds: number): string {
   return m > 0 ? `${h}h ${m}m` : `${h}h`;
 }
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function simpleMarkdown(md: string): string {
-  return md
+  return escapeHtml(md)
     .replace(/^### (.+)$/gm, '<h4 style="font-weight:600;margin:12px 0 4px;color:#1e293b;">$1</h4>')
     .replace(/^## (.+)$/gm, '<h3 style="font-weight:600;margin:16px 0 8px;color:#1e293b;">$1</h3>')
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")

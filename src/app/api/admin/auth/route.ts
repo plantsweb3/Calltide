@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { timingSafeEqual } from "crypto";
 import { env } from "@/lib/env";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
@@ -32,7 +33,12 @@ export async function POST(req: NextRequest) {
   const rl = rateLimit(`admin-auth:${ip}`, RATE_LIMITS.auth);
   if (!rl.success) return rateLimitResponse(rl);
 
-  const body = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
   const parsed = loginSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
@@ -42,7 +48,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Admin auth not configured" }, { status: 500 });
   }
 
-  if (parsed.data.password !== env.ADMIN_PASSWORD) {
+  const a = Buffer.from(parsed.data.password);
+  const b = Buffer.from(env.ADMIN_PASSWORD);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 
