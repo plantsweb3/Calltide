@@ -6,6 +6,7 @@ import Twilio from "twilio";
 import { env } from "@/lib/env";
 import { canSendSms } from "@/lib/compliance/sms";
 import { createNotification } from "@/lib/notifications";
+import { canContactToday, logOutreach } from "@/lib/outreach";
 
 const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
 
@@ -134,6 +135,13 @@ export async function processDunning() {
 
     if (!business) continue;
 
+    // Skip if already contacted today by another system
+    if (!(await canContactToday(state.businessId))) {
+      console.log(`[dunning] Skipping ${business.name} — already contacted today`);
+      results.processed++;
+      continue;
+    }
+
     const daysSinceFailure = Math.floor(
       (Date.now() - new Date(state.firstFailedAt).getTime()) / (1000 * 60 * 60 * 24),
     );
@@ -143,6 +151,7 @@ export async function processDunning() {
     // Day 0: Email 1 — friendly "payment failed, please update"
     if (!state.email1SentAt && daysSinceFailure >= 0) {
       await sendDunningEmail(business, lang, "email1", portalUrl);
+      await logOutreach(state.businessId, "dunning", "email");
       await db
         .update(dunningState)
         .set({ email1SentAt: new Date().toISOString(), updatedAt: new Date().toISOString() })
@@ -153,6 +162,7 @@ export async function processDunning() {
     // Day 3: Email 2 — slightly more urgent
     if (!state.email2SentAt && daysSinceFailure >= 3) {
       await sendDunningEmail(business, lang, "email2", portalUrl);
+      await logOutreach(state.businessId, "dunning", "email");
       await db
         .update(dunningState)
         .set({ email2SentAt: new Date().toISOString(), updatedAt: new Date().toISOString() })
@@ -165,6 +175,7 @@ export async function processDunning() {
       const smsCheck = await canSendSms(business.ownerPhone);
       if (smsCheck.allowed) {
         await sendDunningSms(business, lang, portalUrl);
+        await logOutreach(state.businessId, "dunning", "sms");
         await db
           .update(dunningState)
           .set({ smsSentAt: new Date().toISOString(), updatedAt: new Date().toISOString() })
@@ -176,6 +187,7 @@ export async function processDunning() {
     // Day 7: Email 3 — final warning
     if (!state.email3SentAt && daysSinceFailure >= 7) {
       await sendDunningEmail(business, lang, "email3", portalUrl);
+      await logOutreach(state.businessId, "dunning", "email");
       await db
         .update(dunningState)
         .set({ email3SentAt: new Date().toISOString(), updatedAt: new Date().toISOString() })

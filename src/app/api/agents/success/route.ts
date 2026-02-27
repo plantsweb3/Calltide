@@ -16,6 +16,7 @@ import {
 import { eq, sql, desc, and, gte, lt, ne } from "drizzle-orm";
 import { logAgentActivity } from "@/lib/agents";
 import { reportError } from "@/lib/error-reporting";
+import { canContactToday, logOutreach } from "@/lib/outreach";
 
 // ── Constants ──
 
@@ -914,34 +915,43 @@ async function processBusinessSuccess(business: Business, now: Date): Promise<Re
   const result: Record<string, unknown> = { businessId: business.id, name: business.name };
   const age = daysBetween(business.createdAt, now);
 
+  // Skip email-sending actions if already contacted today
+  const canContact = await canContactToday(business.id);
+
   try {
     // a. DAY 7: First week report
-    if (age === 7 && !business.onboardingQaCompleteAt) {
+    if (age === 7 && !business.onboardingQaCompleteAt && canContact) {
       result.firstWeek = await generateFirstWeekReport(business, now);
+      await logOutreach(business.id, "success_agent", "email");
     }
 
     // b. DAY 30: Monthly report + NPS survey
-    if (age === 30) {
+    if (age === 30 && canContact) {
       result.monthlyReport = await generateMonthlyReport(business, now);
       result.npsSurvey = await sendNpsSurvey(business, now);
+      await logOutreach(business.id, "success_agent", "email");
     }
 
     // c. FIRST OF MONTH: Monthly report for clients active 30+ days (skip if already sent for day-30)
-    if (now.getDate() === 1 && age > 30) {
+    if (now.getDate() === 1 && age > 30 && canContact) {
       result.monthlyReport = await generateMonthlyReport(business, now);
+      await logOutreach(business.id, "success_agent", "email");
     }
 
     // d. DAY 90, 180, 365: Comprehensive review
-    if (age === 90 || age === 180 || age === 365) {
+    if ((age === 90 || age === 180 || age === 365) && canContact) {
       result.comprehensiveReview = await sendComprehensiveReview(business, age, now);
-      // Also send NPS at these milestones
       result.npsSurvey = await sendNpsSurvey(business, now);
+      await logOutreach(business.id, "success_agent", "email");
     }
 
     // e. MILESTONES: Check call/revenue thresholds
-    const milestoneResults = await checkMilestones(business, now);
-    if (milestoneResults.length > 0) {
-      result.milestones = milestoneResults;
+    if (canContact) {
+      const milestoneResults = await checkMilestones(business, now);
+      if (milestoneResults.length > 0) {
+        result.milestones = milestoneResults;
+        await logOutreach(business.id, "success_agent", "email");
+      }
     }
 
     // f. HEALTH SCORE: Calculate for every client daily
