@@ -462,3 +462,58 @@ export const helpSearchMisses = sqliteTable("help_search_misses", {
   businessId: text("business_id"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 });
+
+// ── Phase 8: Incident Response + Status Page ──
+
+export const incidents = sqliteTable("incidents", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  titleEs: text("title_es"),
+  status: text("status").notNull().default("detected"), // detected, investigating, identified, monitoring, resolved, postmortem
+  severity: text("severity").notNull().default("minor"), // critical, major, minor, maintenance
+  affectedServices: text("affected_services", { mode: "json" }).notNull().$type<string[]>(),
+  startedAt: text("started_at").notNull().default(sql`(datetime('now'))`),
+  resolvedAt: text("resolved_at"),
+  duration: integer("duration"), // seconds
+  clientsAffected: integer("clients_affected").default(0),
+  estimatedCallsImpacted: integer("estimated_calls_impacted").default(0),
+  postmortem: text("postmortem"),
+  postmortemEs: text("postmortem_es"),
+  postmortemPublished: integer("postmortem_published", { mode: "boolean" }).default(false),
+  postmortemScheduledFor: text("postmortem_scheduled_for"),
+  createdBy: text("created_by").default("system"), // system or admin
+  consecutiveUnhealthyChecks: integer("consecutive_unhealthy_checks").default(0),
+  metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>(),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const incidentUpdates = sqliteTable("incident_updates", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  incidentId: text("incident_id").notNull().references(() => incidents.id),
+  status: text("status").notNull(),
+  message: text("message").notNull(),
+  messageEs: text("message_es"),
+  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(true),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const incidentNotifications = sqliteTable("incident_notifications", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  incidentId: text("incident_id").notNull().references(() => incidents.id),
+  notificationType: text("notification_type").notNull(), // client_sms, client_email, owner_sms, owner_email, subscriber_email
+  recipientId: text("recipient_id"),
+  recipientContact: text("recipient_contact"),
+  status: text("status").notNull().default("sent"), // sent, delivered, failed
+  sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const statusPageSubscribers = sqliteTable("status_page_subscribers", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  email: text("email").unique().notNull(),
+  language: text("language").notNull().default("en"),
+  verified: integer("verified", { mode: "boolean" }).notNull().default(false),
+  verificationToken: text("verification_token"),
+  subscribedAt: text("subscribed_at").notNull().default(sql`(datetime('now'))`),
+  unsubscribedAt: text("unsubscribed_at"),
+});
