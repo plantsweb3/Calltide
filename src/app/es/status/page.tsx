@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { StatusPageInner } from "@/app/status/page";
 
 const t = {
@@ -29,5 +30,9 @@ const t = {
 };
 
 export default function StatusPageEs() {
-  return <StatusPageInner lang="es" t={t} />;
+  return (
+    <Suspense>
+      <StatusPageInner lang="es" t={t} />
+    </Suspense>
+  );
 }

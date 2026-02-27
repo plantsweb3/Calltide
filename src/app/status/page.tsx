@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -74,7 +74,11 @@ const t = {
 };
 
 export default function StatusPage() {
-  return <StatusPageInner lang="en" t={t} />;
+  return (
+    <Suspense>
+      <StatusPageInner lang="en" t={t} />
+    </Suspense>
+  );
 }
 
 export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }) {
