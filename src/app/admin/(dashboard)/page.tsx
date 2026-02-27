@@ -53,11 +53,22 @@ const tooltipStyle = {
   fontSize: 12,
 };
 
+interface NotificationItem {
+  id: string;
+  source: string;
+  severity: string;
+  title: string;
+  message: string;
+  actionUrl: string | null;
+  createdAt: string;
+}
+
 export default function AdminDashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [metrics, setMetrics] = useState<MetricsData | null>(null);
   const [billing, setBilling] = useState<BillingData | null>(null);
   const [ops, setOps] = useState<OpsData | null>(null);
+  const [alerts, setAlerts] = useState<NotificationItem[]>([]);
 
   useEffect(() => {
     fetch("/api/admin/dashboard")
@@ -75,6 +86,10 @@ export default function AdminDashboardPage() {
     fetch("/api/admin/ops")
       .then((r) => r.json())
       .then(setOps)
+      .catch(() => {});
+    fetch("/api/notifications?unacknowledged=true&limit=10")
+      .then((r) => r.json())
+      .then((d) => setAlerts(d.items ?? []))
       .catch(() => {});
   }, []);
 
@@ -98,7 +113,7 @@ export default function AdminDashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)" }}>
-          Dashboard
+          Mission Control
         </h1>
         <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
           Calltide admin overview
@@ -230,6 +245,51 @@ export default function AdminDashboardPage() {
             </BarChart>
           </ResponsiveContainer>
         </div>
+      </div>
+
+      {/* Attention Required */}
+      <div>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
+            Attention Required
+          </h2>
+          {alerts.length > 0 && (
+            <a href="/admin/notifications" className="text-xs font-medium" style={{ color: "var(--db-accent)" }}>
+              View all &rarr;
+            </a>
+          )}
+        </div>
+        {alerts.length === 0 ? (
+          <div
+            className="rounded-xl p-4 text-center text-sm"
+            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text-muted)" }}
+          >
+            All clear — nothing needs your attention
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {alerts.slice(0, 5).map((n) => {
+              const color = n.severity === "emergency" ? "#ef4444" : n.severity === "critical" ? "#f59e0b" : n.severity === "warning" ? "#3b82f6" : "#94a3b8";
+              return (
+                <div
+                  key={n.id}
+                  className="flex items-center gap-3 rounded-lg p-3"
+                  style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+                >
+                  <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: color }} />
+                  <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase" style={{ background: `${color}15`, color }}>{n.source}</span>
+                  <span className="flex-1 truncate text-sm" style={{ color: "var(--db-text)" }}>{n.title}</span>
+                  <span className="text-[11px] shrink-0" style={{ color: "var(--db-text-muted)" }}>
+                    {new Date(n.createdAt).toLocaleDateString()}
+                  </span>
+                  {n.actionUrl && (
+                    <a href={n.actionUrl} className="shrink-0 text-xs font-medium" style={{ color: "var(--db-accent)" }}>View</a>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Activity feed */}
