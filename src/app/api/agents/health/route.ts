@@ -24,6 +24,20 @@ export async function GET(req: NextRequest) {
   // Run health checks against all services
   const checks = await runHealthChecks();
 
+  // Incident engine hooks — detect/resolve incidents automatically
+  try {
+    const { handleUnhealthyService, handleHealthyService } = await import("@/lib/incidents/engine");
+    const { checkAndGeneratePendingPostmortems } = await import("@/lib/incidents/postmortem");
+
+    for (const check of checks) {
+      if (!check.healthy) await handleUnhealthyService(check);
+      else await handleHealthyService(check);
+    }
+    await checkAndGeneratePendingPostmortems();
+  } catch (err) {
+    console.error("Incident engine error (non-fatal):", err);
+  }
+
   const message = `Here are the health check results for all Calltide services. Log each result and escalate if any service is unhealthy or degraded.
 
 ${checks.map((c) => `SERVICE: ${c.name}
