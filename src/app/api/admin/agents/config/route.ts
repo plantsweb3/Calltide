@@ -20,8 +20,13 @@ export async function GET() {
  * Body: { agentName: string, enabled?: boolean, cronExpression?: string, escalationThreshold?: number, systemPromptOverride?: string }
  */
 export async function PATCH(req: NextRequest) {
-  const body = await req.json();
-  const { agentName, ...updates } = body;
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const { agentName, ...updates } = body as Record<string, unknown>;
 
   if (!agentName || typeof agentName !== "string") {
     return NextResponse.json({ error: "agentName is required" }, { status: 400 });

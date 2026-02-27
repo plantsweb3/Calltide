@@ -7,7 +7,13 @@ import { NextRequest, NextResponse } from "next/server";
  * Middleware handles admin auth. This route calls the agent with CRON_SECRET.
  */
 export async function POST(req: NextRequest) {
-  const { agentName, method, body } = (await req.json()) as {
+  let rawBody: unknown;
+  try {
+    rawBody = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const { agentName, method, body } = rawBody as {
     agentName: string;
     method?: string;
     body?: Record<string, unknown>;

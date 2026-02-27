@@ -8,7 +8,13 @@ export async function POST(req: NextRequest) {
   const rl = rateLimit(`help-view:${getClientIp(req)}`, { limit: 60, windowSeconds: 60 });
   if (!rl.success) return rateLimitResponse(rl);
 
-  const { articleId } = (await req.json()) as { articleId: string };
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const { articleId } = body as { articleId: string };
   if (!articleId) {
     return NextResponse.json({ error: "articleId required" }, { status: 400 });
   }

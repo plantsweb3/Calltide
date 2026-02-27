@@ -8,7 +8,12 @@ export async function POST(req: NextRequest) {
   const rl = rateLimit(`help-feedback:${getClientIp(req)}`, { limit: 20, windowSeconds: 60 });
   if (!rl.success) return rateLimitResponse(rl);
 
-  const body = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
   const { articleId, helpful, sessionId } = body as {
     articleId: string;
     helpful: boolean;

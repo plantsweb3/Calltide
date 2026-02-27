@@ -70,7 +70,12 @@ export async function PATCH(
   const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
   if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
 
-  const body = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });

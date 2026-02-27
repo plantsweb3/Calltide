@@ -37,7 +37,13 @@ Return a JSON object with these exact fields:
 Return ONLY valid JSON, no extra text.`;
 
 export async function POST(req: NextRequest) {
-  const { title, titleEs, category, keyPoints, audience } = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const { title, titleEs, category, keyPoints, audience } = body as Record<string, unknown>;
 
   if (!title) {
     return NextResponse.json({ error: "title required" }, { status: 400 });

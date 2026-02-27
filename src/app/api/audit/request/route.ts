@@ -45,7 +45,12 @@ export async function POST(req: NextRequest) {
   const rl = rateLimit(`audit-request:${ip}`, AUDIT_RATE_LIMIT);
   if (!rl.success) return rateLimitResponse(rl);
 
-  const body = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
   const parsed = auditSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
