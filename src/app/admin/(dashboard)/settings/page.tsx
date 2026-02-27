@@ -136,7 +136,7 @@ export default function SettingsPage() {
             <div>
               <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Account SID</p>
               <p className="font-mono" style={{ color: "var(--db-text)" }}>
-                {process.env.NEXT_PUBLIC_APP_URL ? "Configured" : "Not set"}
+                {process.env.NEXT_PUBLIC_APP_URL ? "Configured" : "Not configured"}
               </p>
             </div>
             <div>

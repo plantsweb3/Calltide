@@ -10,6 +10,7 @@ import {
 import { eq, sql } from "drizzle-orm";
 import { startDunning, clearDunning, cancelDunning } from "@/lib/financial/dunning";
 import { createNotification } from "@/lib/notifications";
+import { logActivity } from "@/lib/activity";
 
 function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -299,6 +300,15 @@ async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
     title: "Subscription canceled",
     message: `${business.name} — subscription canceled, data retention hold set for 30 days`,
     actionUrl: "/admin/billing",
+  });
+
+  // Activity log
+  await logActivity({
+    type: "subscription_canceled",
+    entityType: "business",
+    entityId: business.id,
+    title: `${business.name} subscription canceled`,
+    detail: `Data retention hold until ${holdUntil.toISOString().slice(0, 10)}. MRR impact: $${((business.mrr ?? 49700) / 100).toFixed(0)}`,
   });
 }
 

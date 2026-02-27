@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { env } from "@/lib/env";
-import { runAgent, SHARED_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
-
-const HEALTH_TOOLS = SHARED_TOOLS.filter((t) =>
-  ["log_health_status", "escalate_to_owner"].includes(t.name),
-);
+import { db } from "@/db";
+import { systemHealthLogs } from "@/db/schema";
+import { createNotification } from "@/lib/notifications";
 
 /**
  * GET /api/agents/health
  *
  * Cron-triggered health check.
- * Pings all external services and logs results.
- * Schedule: every 5 minutes (* /5 * * * *)
+ * Pings all external services and logs results directly — no LLM call needed.
+ * Schedule: every 15 minutes
  */
 export async function GET(req: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
@@ -38,28 +36,34 @@ export async function GET(req: NextRequest) {
     console.error("Incident engine error (non-fatal):", err);
   }
 
-  const message = `Here are the health check results for all Calltide services. Log each result and escalate if any service is unhealthy or degraded.
+  // Log each result directly to systemHealthLogs — no Anthropic API call
+  const unhealthy: string[] = [];
+  for (const check of checks) {
+    await db.insert(systemHealthLogs).values({
+      serviceName: check.name,
+      status: check.healthy ? "operational" : "down",
+      latencyMs: check.responseTimeMs,
+      errorCount: check.healthy ? 0 : 1,
+    });
 
-${checks.map((c) => `SERVICE: ${c.name}
-  Status Code: ${c.statusCode}
-  Response Time: ${c.responseTimeMs}ms
-  Healthy: ${c.healthy}
-  ${c.error ? `Error: ${c.error}` : ""}`).join("\n\n")}
-
-Log all results using log_health_status. If any service is unhealthy, escalate to the owner.`;
-
-  const result = await runAgent({
-    agentName: "health",
-    systemPrompt: AGENT_PROMPTS.health,
-    userMessage: message,
-    tools: HEALTH_TOOLS,
-    targetType: "system",
-    inputSummary: `Health check: ${checks.filter((c) => !c.healthy).length} unhealthy`,
-  });
+    if (!check.healthy) {
+      unhealthy.push(check.name);
+      await createNotification({
+        source: "agents",
+        severity: "emergency",
+        title: `${check.name} is DOWN`,
+        message: `Status code: ${check.statusCode}, Response: ${check.responseTimeMs}ms${check.error ? `, Error: ${check.error}` : ""}`,
+        actionUrl: "/admin/ops",
+      });
+    }
+  }
 
   return NextResponse.json({
     checks,
-    agentResult: result,
+    unhealthy,
+    summary: unhealthy.length > 0
+      ? `${unhealthy.length} service(s) unhealthy: ${unhealthy.join(", ")}`
+      : "All services operational",
   });
 }
 

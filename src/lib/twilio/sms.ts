@@ -1,8 +1,9 @@
 import { getTwilioClient } from "./client";
 import { db } from "@/db";
 import { leads, smsMessages } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { canSendSms } from "@/lib/compliance/sms";
 
 interface SendSMSParams {
   to: string;
@@ -26,6 +27,19 @@ export async function sendSMS(params: SendSMSParams) {
     if (lead?.smsOptOut) {
       console.log(`SMS blocked — lead ${params.leadId} has opted out`);
       return { success: false, error: "Lead has opted out of SMS" };
+    }
+  }
+
+  // TCPA compliance check (skip for system/owner notifications)
+  if (params.templateType !== "owner_notify" && params.templateType !== "emergency_dispatch") {
+    try {
+      const smsCheck = await canSendSms(params.to);
+      if (!smsCheck.allowed) {
+        console.log(`SMS blocked by TCPA compliance — ${smsCheck.reason}`);
+        return { success: false, error: `TCPA blocked: ${smsCheck.reason}` };
+      }
+    } catch {
+      // Non-fatal: if compliance check fails, allow the SMS to proceed
     }
   }
 

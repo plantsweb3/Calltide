@@ -1,0 +1,20 @@
+-- Performance indexes on foreign key columns used in JOINs and WHERE clauses
+CREATE INDEX IF NOT EXISTS idx_calls_business_id ON calls(business_id);
+CREATE INDEX IF NOT EXISTS idx_calls_status ON calls(status);
+CREATE INDEX IF NOT EXISTS idx_calls_created_at ON calls(created_at);
+CREATE INDEX IF NOT EXISTS idx_appointments_business_id ON appointments(business_id);
+CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(date);
+CREATE INDEX IF NOT EXISTS idx_sms_messages_business_id ON sms_messages(business_id);
+CREATE INDEX IF NOT EXISTS idx_call_qa_scores_business_id ON call_qa_scores(business_id);
+CREATE INDEX IF NOT EXISTS idx_nps_responses_business_id ON nps_responses(business_id);
+CREATE INDEX IF NOT EXISTS idx_referrals_referrer ON referrals(referrer_business_id);
+CREATE INDEX IF NOT EXISTS idx_activity_log_entity ON activity_log(entity_type, entity_id);
+CREATE INDEX IF NOT EXISTS idx_churn_risk_scores_customer ON churn_risk_scores(customer_id);
+CREATE INDEX IF NOT EXISTS idx_payment_events_business_id ON payment_events(business_id);
+CREATE INDEX IF NOT EXISTS idx_dunning_state_business_id ON dunning_state(business_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_acknowledged ON notifications(acknowledged);
+CREATE INDEX IF NOT EXISTS idx_notifications_source ON notifications(source);
+CREATE INDEX IF NOT EXISTS idx_outreach_log_business_sent ON outreach_log(business_id, sent_at);
+CREATE INDEX IF NOT EXISTS idx_leads_business_id ON leads(business_id);
+CREATE INDEX IF NOT EXISTS idx_incidents_status ON incidents(status);
+CREATE INDEX IF NOT EXISTS idx_subscription_events_business ON subscription_events(business_id);

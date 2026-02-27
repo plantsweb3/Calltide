@@ -1,48 +1,17 @@
 {
   "crons": [
-    {
-      "path": "/api/cron/reminders",
-      "schedule": "0 14 * * *"
-    },
-    {
-      "path": "/api/agents/churn",
-      "schedule": "0 14 * * *"
-    },
-    {
-      "path": "/api/agents/onboard",
-      "schedule": "0 * * * *"
-    },
-    {
-      "path": "/api/agents/health",
-      "schedule": "*/5 * * * *"
-    },
-    {
-      "path": "/api/agents/success",
-      "schedule": "0 15 * * *"
-    },
-    {
-      "path": "/api/financial/dunning",
-      "schedule": "0 16 * * *"
-    },
-    {
-      "path": "/api/financial/mrr-snapshot",
-      "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/financial/costs",
-      "schedule": "0 12 1 * *"
-    },
-    {
-      "path": "/api/capacity/snapshot",
-      "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/capacity/weekly-report",
-      "schedule": "0 14 * * 1"
-    },
-    {
-      "path": "/api/capacity/real-time",
-      "schedule": "*/5 * * * *"
-    }
+    { "path": "/api/capacity/real-time", "schedule": "*/5 * * * *" },
+    { "path": "/api/agents/health", "schedule": "*/15 * * * *" },
+    { "path": "/api/agents/onboard", "schedule": "0 * * * *" },
+    { "path": "/api/capacity/snapshot", "schedule": "55 5 * * *" },
+    { "path": "/api/financial/mrr-snapshot", "schedule": "0 6 * * *" },
+    { "path": "/api/agents/qualify", "schedule": "0 8 * * *" },
+    { "path": "/api/compliance/retention", "schedule": "0 9 * * 0" },
+    { "path": "/api/financial/costs", "schedule": "0 12 1 * *" },
+    { "path": "/api/cron/reminders", "schedule": "0 14 * * *" },
+    { "path": "/api/agents/churn", "schedule": "0 14 * * *" },
+    { "path": "/api/capacity/weekly-report", "schedule": "0 14 * * 1" },
+    { "path": "/api/agents/success", "schedule": "0 15 * * *" },
+    { "path": "/api/financial/dunning", "schedule": "0 16 * * *" }
   ]
 }

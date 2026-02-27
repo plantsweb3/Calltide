@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, calls, churnRiskScores, dunningState } from "@/db/schema";
+import { businesses, calls, churnRiskScores, dunningState, callQaScores, npsResponses } from "@/db/schema";
 import { eq, and, sql, desc } from "drizzle-orm";
 import { runAgent, CHURN_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
 
@@ -50,6 +50,8 @@ HEALTH SIGNALS:
 - Payment status: ${signals.paymentStatus ?? "unknown"}
 - Dunning stage: ${signals.dunningStage ?? "none"}
 - Dunning attempt count: ${signals.dunningAttemptCount ?? 0}
+- Average QA score: ${signals.avgQaScore ?? "no data"}
+- Latest NPS score: ${signals.latestNpsScore ?? "no data"}
 
 Based on these signals, update the churn risk score and take appropriate action (check-in email, escalation, or no action).`;
 
@@ -189,6 +191,20 @@ async function gatherClientSignals(businessId: string) {
     .where(and(eq(dunningState.businessId, businessId), eq(dunningState.status, "active")))
     .limit(1);
 
+  // Average QA score (from Retention system)
+  const [qaAvg] = await db
+    .select({ avg: sql<number>`COALESCE(AVG(${callQaScores.score}), 0)` })
+    .from(callQaScores)
+    .where(eq(callQaScores.businessId, businessId));
+
+  // Latest NPS score (from Retention system)
+  const [latestNps] = await db
+    .select({ score: npsResponses.score })
+    .from(npsResponses)
+    .where(eq(npsResponses.businessId, businessId))
+    .orderBy(desc(npsResponses.createdAt))
+    .limit(1);
+
   return {
     callsThisMonth,
     callsLastMonth,
@@ -200,5 +216,7 @@ async function gatherClientSignals(businessId: string) {
     paymentStatus: business?.paymentStatus ?? null,
     dunningStage: activeDunning?.status ?? null,
     dunningAttemptCount: activeDunning?.attemptCount ?? 0,
+    avgQaScore: qaAvg?.avg ? Math.round(qaAvg.avg * 10) / 10 : null,
+    latestNpsScore: latestNps?.score ?? null,
   };
 }

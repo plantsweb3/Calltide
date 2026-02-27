@@ -29,8 +29,12 @@ const envSchema = z.object({
   // AI model
   CLAUDE_MODEL: z.string().min(1).optional(),             // defaults to claude-sonnet-4-5-20250929
 
+  // Owner contact
+  OWNER_EMAIL: z.string().email().optional(),
+  OWNER_PHONE: z.string().min(10).optional(),
+
   // Cron + Webhooks
-  CRON_SECRET: z.string().min(16).optional(),             // Required in production for /api/cron/reminders
+  CRON_SECRET: z.string().min(16),
   RESEND_WEBHOOK_SECRET: z.string().min(1).optional(),    // SVIX secret for Resend webhook verification
 
   // Stripe

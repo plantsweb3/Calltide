@@ -452,24 +452,23 @@ function TriggersTab({ configs, onRefresh }: { configs: AgentConfig[]; onRefresh
     setResults((prev) => ({ ...prev, [agentName]: "" }));
 
     try {
-      const cronSecret = "manual-trigger"; // will be validated server-side via CRON_SECRET
       const isGetAgent = ["churn", "onboard", "health"].includes(agentName);
 
-      const res = await fetch(`/api/agents/${agentName}`, {
-        method: isGetAgent ? "GET" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${cronSecret}`,
-        },
-        ...(!isGetAgent
-          ? {
-              body: JSON.stringify(
-                agentName === "support"
-                  ? { message: "Manual test run from admin panel" }
-                  : { prospectId: "test" },
-              ),
-            }
-          : {}),
+      const res = await fetch("/api/admin/agents/trigger", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          agentName,
+          method: isGetAgent ? "GET" : "POST",
+          ...(!isGetAgent
+            ? {
+                body:
+                  agentName === "support"
+                    ? { message: "Manual test run from admin panel" }
+                    : { prospectId: "test" },
+              }
+            : {}),
+        }),
       });
 
       const data = await res.json();
