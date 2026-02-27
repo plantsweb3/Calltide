@@ -31,6 +31,18 @@
     {
       "path": "/api/financial/costs",
       "schedule": "0 12 1 * *"
+    },
+    {
+      "path": "/api/capacity/snapshot",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/capacity/weekly-report",
+      "schedule": "0 14 * * 1"
+    },
+    {
+      "path": "/api/capacity/real-time",
+      "schedule": "*/5 * * * *"
     }
   ]
 }
