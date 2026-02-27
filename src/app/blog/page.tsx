@@ -1,0 +1,200 @@
+import Link from "next/link";
+import { db } from "@/db";
+import { blogPosts } from "@/db/schema";
+import { eq, desc, and, sql } from "drizzle-orm";
+
+export const dynamic = "force-dynamic";
+
+const POSTS_PER_PAGE = 10;
+
+const CATEGORY_LABELS: Record<string, string> = {
+  pillar: "Pillar",
+  "data-driven": "Data",
+  comparison: "Comparison",
+  "city-specific": "Local",
+  "problem-solution": "Guide",
+};
+
+export const metadata = {
+  title: "Blog — Calltide",
+  description: "Tips, data, and insights on missed calls, AI receptionists, and growing your service business.",
+  openGraph: {
+    title: "Calltide Blog",
+    description: "Tips, data, and insights on missed calls, AI receptionists, and growing your service business.",
+    url: "https://calltide.app/blog",
+  },
+};
+
+export default async function BlogIndexPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; category?: string }>;
+}) {
+  const params = await searchParams;
+  const page = Math.max(1, parseInt(params.page ?? "1", 10));
+  const category = params.category;
+  const offset = (page - 1) * POSTS_PER_PAGE;
+
+  const conditions = [eq(blogPosts.published, true), eq(blogPosts.language, "en")];
+  if (category) conditions.push(eq(blogPosts.category, category));
+
+  const posts = await db
+    .select()
+    .from(blogPosts)
+    .where(and(...conditions))
+    .orderBy(desc(blogPosts.publishedAt))
+    .limit(POSTS_PER_PAGE)
+    .offset(offset);
+
+  const [countResult] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(blogPosts)
+    .where(and(...conditions));
+  const totalPosts = countResult?.count ?? 0;
+  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+
+  return (
+    <div className="min-h-screen bg-[#FBFBFC]">
+      <BlogNav lang="en" />
+
+      <main className="mx-auto max-w-5xl px-6 pt-28 pb-20">
+        <div className="text-center">
+          <h1 className="text-[36px] font-extrabold tracking-tight text-charcoal sm:text-[48px]">Blog</h1>
+          <p className="mt-3 text-lg text-charcoal-muted">
+            Tips, data, and insights for service businesses.
+          </p>
+        </div>
+
+        {/* Category filters */}
+        <div className="mt-10 flex flex-wrap justify-center gap-2">
+          <Link
+            href="/blog"
+            className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
+              !category ? "border-amber bg-amber/10 text-amber" : "border-cream-border text-charcoal-muted hover:border-amber"
+            }`}
+          >
+            All
+          </Link>
+          {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+            <Link
+              key={key}
+              href={`/blog?category=${key}`}
+              className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
+                category === key ? "border-amber bg-amber/10 text-amber" : "border-cream-border text-charcoal-muted hover:border-amber"
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Audit CTA banner */}
+        <div className="mt-10 rounded-xl bg-navy p-6 text-center dark-section">
+          <p className="text-lg font-bold text-white">Free Missed Call Audit</p>
+          <p className="mt-1 text-sm text-slate-300">Find out what your customers experience when they call.</p>
+          <Link
+            href="/audit?utm_source=blog&utm_medium=banner"
+            className="cta-gold cta-shimmer mt-4 inline-block rounded-lg px-6 py-2.5 text-sm font-semibold text-white"
+          >
+            Get Your Free Audit &rarr;
+          </Link>
+        </div>
+
+        {/* Posts grid */}
+        {posts.length === 0 ? (
+          <div className="mt-16 text-center">
+            <p className="text-lg text-charcoal-muted">No posts yet. Check back soon!</p>
+          </div>
+        ) : (
+          <div className="mt-12 grid gap-8 md:grid-cols-2">
+            {posts.map((post) => (
+              <Link key={post.id} href={`/blog/${post.slug}`} className="group">
+                <article className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-6 sm:p-8">
+                  <div className="flex items-center gap-2">
+                    {post.category && (
+                      <span className="rounded-full bg-amber/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber">
+                        {CATEGORY_LABELS[post.category] ?? post.category}
+                      </span>
+                    )}
+                    {post.readingTimeMin && (
+                      <span className="text-xs text-charcoal-light">{post.readingTimeMin} min read</span>
+                    )}
+                  </div>
+                  <h2 className="mt-3 text-xl font-extrabold tracking-tight text-charcoal group-hover:text-amber transition-colors">
+                    {post.title}
+                  </h2>
+                  {post.metaDescription && (
+                    <p className="mt-2 text-sm leading-relaxed text-charcoal-muted line-clamp-2">
+                      {post.metaDescription}
+                    </p>
+                  )}
+                  <p className="mt-4 text-xs text-charcoal-light">
+                    {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}
+                  </p>
+                </article>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-12 flex justify-center gap-2">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <Link
+                key={p}
+                href={`/blog?page=${p}${category ? `&category=${category}` : ""}`}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  p === page ? "bg-amber text-white" : "border border-cream-border text-charcoal-muted hover:bg-cream-dark"
+                }`}
+              >
+                {p}
+              </Link>
+            ))}
+          </div>
+        )}
+      </main>
+
+      <BlogFooter lang="en" />
+    </div>
+  );
+}
+
+function BlogNav({ lang }: { lang: "en" | "es" }) {
+  const otherLang = lang === "en" ? "/es/blog" : "/blog";
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-cream-border bg-white/95 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
+        <Link href="/">
+          <img src="/images/logo.webp" alt="Calltide" className="h-6 w-auto" />
+        </Link>
+        <div className="flex items-center gap-4 text-sm">
+          <Link href={otherLang} className="rounded-full border border-cream-border px-3 py-1 text-xs font-semibold text-charcoal-muted hover:border-amber hover:text-amber transition-colors">
+            {lang === "en" ? "ES" : "EN"}
+          </Link>
+          <Link href="/audit" className="text-charcoal-muted hover:text-charcoal transition-colors">Free Audit</Link>
+          <Link href={lang === "en" ? "/blog" : "/es/blog"} className="font-semibold text-charcoal">Blog</Link>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function BlogFooter({ lang }: { lang: "en" | "es" }) {
+  return (
+    <footer className="bg-charcoal px-6 py-12">
+      <div className="mx-auto max-w-5xl flex flex-col items-center gap-4 text-center">
+        <img src="/images/logo.webp" alt="Calltide" className="h-6 w-auto brightness-0 invert opacity-70" />
+        <p className="text-sm text-white/40">Every call answered. Every job booked.</p>
+        <div className="flex gap-6 text-sm">
+          <Link href="/" className="text-white/40 hover:text-white/60 transition-colors">Home</Link>
+          <Link href="/audit" className="text-white/40 hover:text-white/60 transition-colors">Free Audit</Link>
+          <Link href={lang === "en" ? "/blog" : "/es/blog"} className="text-white/40 hover:text-white/60 transition-colors">Blog</Link>
+        </div>
+        <p className="text-xs text-white/30">&copy; {new Date().getFullYear()} Calltide. All rights reserved.</p>
+      </div>
+    </footer>
+  );
+}
+
+export { BlogNav, BlogFooter, CATEGORY_LABELS };

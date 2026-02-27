@@ -69,8 +69,18 @@ function isProtectedInternalRoute(pathname: string): boolean {
     pathname === "/api/outreach/start" ||
     pathname === "/api/outreach/pause" ||
     pathname === "/api/audit/schedule" ||
-    pathname.startsWith("/api/audit/call/")
+    pathname.startsWith("/api/audit/call/") ||
+    pathname.startsWith("/api/marketing/") ||
+    pathname.startsWith("/api/content-queue")
   );
+}
+
+/** Blog post API routes that need admin auth for write methods only. */
+function isBlogWriteRoute(pathname: string, method: string): boolean {
+  if (!pathname.startsWith("/api/blog/posts")) return false;
+  // GET requests to /api/blog/posts are public (used by blog pages)
+  // POST/PATCH/DELETE require admin auth
+  return method !== "GET";
 }
 
 export async function middleware(req: NextRequest) {
@@ -89,7 +99,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // ── Internal API routes requiring admin auth ──
-  if (isProtectedInternalRoute(pathname)) {
+  if (isProtectedInternalRoute(pathname) || isBlogWriteRoute(pathname, req.method)) {
     const error = await requireAdminAuth(req, true);
     if (error) return error;
     return NextResponse.next();
@@ -170,5 +180,10 @@ export const config = {
     "/api/outreach/pause",
     "/api/audit/schedule",
     "/api/audit/call/:path*",
+    "/api/blog/posts",
+    "/api/blog/posts/:path*",
+    "/api/marketing/:path*",
+    "/api/content-queue",
+    "/api/content-queue/:path*",
   ],
 };

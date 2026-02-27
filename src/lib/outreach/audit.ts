@@ -1,9 +1,10 @@
 import { getTwilioClient } from "@/lib/twilio/client";
 import { env } from "@/lib/env";
 import { db } from "@/db";
-import { prospectAuditCalls, prospects } from "@/db/schema";
+import { prospectAuditCalls, prospects, auditRequests } from "@/db/schema";
 import { eq, and, gte, sql } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
+import { generateAndSendAuditReport } from "@/lib/audit-report";
 
 const MAX_CALLS_PER_DAY = 50;
 const CALL_WINDOW_START = 9; // 9 AM CT
@@ -165,5 +166,32 @@ export async function handleAuditStatusCallback(params: {
       title: `Audit call ${auditResult}`,
       detail: `Duration: ${CallDuration ?? 0}s, Answered by: ${AnsweredBy ?? "unknown"}`,
     });
+
+    // Update matching audit request + trigger report generation
+    const [matchingRequest] = await db
+      .select()
+      .from(auditRequests)
+      .where(eq(auditRequests.prospectId, auditCall.prospectId))
+      .limit(1);
+
+    if (matchingRequest) {
+      await db.update(auditRequests).set({
+        auditCallSid: CallSid,
+        auditCallStatus: auditResult,
+        auditCallAnsweredBy: AnsweredBy ?? undefined,
+        auditCallRingTime: auditCall.ringTime ?? undefined,
+        auditCallCompletedAt: new Date().toISOString(),
+      }).where(eq(auditRequests.id, matchingRequest.id));
+
+      // Fire-and-forget report generation
+      generateAndSendAuditReport({
+        auditRequestId: matchingRequest.id,
+        result: auditResult as "answered" | "missed" | "voicemail" | "failed",
+        ringTime: auditCall.ringTime ?? undefined,
+        answeredBy: AnsweredBy,
+      }).catch((err) =>
+        console.error("Audit report generation failed:", err),
+      );
+    }
   }
 }

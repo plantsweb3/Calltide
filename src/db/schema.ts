@@ -274,3 +274,65 @@ export const agentConfig = sqliteTable("agent_config", {
   config: text("config", { mode: "json" }).$type<Record<string, unknown>>(),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
+
+// ── Phase 5: Marketing System ──
+
+export const blogPosts = sqliteTable("blog_posts", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  slug: text("slug").unique().notNull(),
+  body: text("body").notNull(),
+  language: text("language").notNull().default("en"),
+  category: text("category"), // pillar, data-driven, comparison, city-specific, problem-solution
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  ogImage: text("og_image"),
+  published: integer("published", { mode: "boolean" }).default(false),
+  publishedAt: text("published_at"),
+  authorName: text("author_name").default("Calltide"),
+  readingTimeMin: integer("reading_time_min"),
+  targetKeyword: text("target_keyword"),
+  relatedPostSlugs: text("related_post_slugs", { mode: "json" }).$type<string[]>(),
+  auditCtaClicks: integer("audit_cta_clicks").default(0),
+  pageViews: integer("page_views").default(0),
+  pairedPostId: text("paired_post_id"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const auditRequests = sqliteTable("audit_requests", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessName: text("business_name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  businessType: text("business_type"), // plumber, hvac, electrician, landscaper, general_contractor, other
+  language: text("language").default("en"),
+  prospectId: text("prospect_id"),
+  auditCallSid: text("audit_call_sid"),
+  auditCallStatus: text("audit_call_status").default("scheduled"), // scheduled, calling, answered, missed, voicemail, failed
+  auditCallAnsweredBy: text("audit_call_answered_by"),
+  auditCallRingTime: integer("audit_call_ring_time"),
+  auditCallCompletedAt: text("audit_call_completed_at"),
+  reportSentAt: text("report_sent_at"),
+  reportOpenedAt: text("report_opened_at"),
+  demoBookedAt: text("demo_booked_at"),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const contentQueue = sqliteTable("content_queue", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  platform: text("platform").notNull(), // facebook, instagram, linkedin
+  language: text("language").notNull().default("en"),
+  title: text("title"),
+  body: text("body").notNull(),
+  imageUrl: text("image_url"),
+  scheduledFor: text("scheduled_for"),
+  publishedAt: text("published_at"),
+  status: text("status").default("draft"), // draft, approved, published
+  category: text("category"), // data-drop, maria-demo, client-win, education, behind-the-scenes
+  engagementData: text("engagement_data", { mode: "json" }).$type<Record<string, unknown>>(),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
