@@ -17,6 +17,12 @@ export const businesses = sqliteTable("businesses", {
   greeting: text("greeting"), // custom greeting override
   avgJobValue: integer("avg_job_value").default(250), // average $ per appointment for revenue estimates
   active: integer("active", { mode: "boolean" }).notNull().default(true),
+  referralCode: text("referral_code").unique(),
+  healthScore: integer("health_score").default(50),
+  lastNpsScore: integer("last_nps_score"),
+  lastNpsDate: text("last_nps_date"),
+  onboardingQaGrade: text("onboarding_qa_grade"), // A/B/C/D/F
+  onboardingQaCompleteAt: text("onboarding_qa_complete_at"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -334,5 +340,63 @@ export const contentQueue = sqliteTable("content_queue", {
   status: text("status").default("draft"), // draft, approved, published
   category: text("category"), // data-drop, maria-demo, client-win, education, behind-the-scenes
   engagementData: text("engagement_data", { mode: "json" }).$type<Record<string, unknown>>(),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Phase 6: Retention + Onboarding QA ──
+
+export const callQaScores = sqliteTable("call_qa_scores", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  callId: text("call_id").notNull().references(() => calls.id),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  score: integer("score").notNull(), // 0-100
+  breakdown: text("breakdown", { mode: "json" }).$type<{
+    greeting: number;
+    languageMatch: number;
+    needCapture: number;
+    actionTaken: number;
+    accuracy: number;
+    sentiment: number;
+  }>(),
+  flags: text("flags", { mode: "json" }).$type<string[]>(),
+  fixRecommendation: text("fix_recommendation"),
+  summary: text("summary"),
+  isFirstWeek: integer("is_first_week", { mode: "boolean" }).default(false),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const clientSuccessLog = sqliteTable("client_success_log", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  eventType: text("event_type").notNull(), // first_week_report, monthly_report, nps_survey_sent, nps_response, milestone, quarterly_review, anniversary, referral_prompt
+  eventData: text("event_data", { mode: "json" }).$type<Record<string, unknown>>(),
+  emailSentAt: text("email_sent_at"),
+  emailOpenedAt: text("email_opened_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const npsResponses = sqliteTable("nps_responses", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  score: integer("score").notNull(), // 1-10
+  classification: text("classification").notNull(), // promoter, passive, detractor
+  feedback: text("feedback"),
+  followUpAction: text("follow_up_action"),
+  escalated: integer("escalated", { mode: "boolean" }).default(false),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const referrals = sqliteTable("referrals", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  referrerBusinessId: text("referrer_business_id").notNull().references(() => businesses.id),
+  referredBusinessId: text("referred_business_id"),
+  referralCode: text("referral_code").notNull(),
+  status: text("status").default("pending"), // pending, signed_up, activated, churned, expired
+  referrerCreditAmount: integer("referrer_credit_amount").default(497),
+  referrerCreditApplied: integer("referrer_credit_applied", { mode: "boolean" }).default(false),
+  referrerCreditAppliedAt: text("referrer_credit_applied_at"),
+  referredDiscountApplied: integer("referred_discount_applied", { mode: "boolean" }).default(false),
+  signedUpAt: text("signed_up_at"),
+  activatedAt: text("activated_at"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });

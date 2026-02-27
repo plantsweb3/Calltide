@@ -3,7 +3,9 @@ import { getHumeClient } from "@/lib/hume/client";
 import { db } from "@/db";
 import { calls } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { businesses } from "@/db/schema";
 import { reportError } from "@/lib/error-reporting";
+import { triggerQaIfNewClient } from "@/lib/agents/qa";
 
 interface TranscriptLine {
   speaker: "ai" | "caller";
@@ -107,6 +109,20 @@ export async function processCallSummary(callId: string, chatId: string): Promis
     }).where(eq(calls.id, callId));
 
     console.log("Call summary generated:", { callId, sentiment, lines: transcript.length });
+
+    // Trigger QA scoring (fire-and-forget)
+    const [call] = await db.select().from(calls).where(eq(calls.id, callId)).limit(1);
+    if (call) {
+      const [biz] = await db.select().from(businesses).where(eq(businesses.id, call.businessId)).limit(1);
+      if (biz) {
+        triggerQaIfNewClient(
+          { ...call, transcript, summary, sentiment },
+          biz,
+        ).catch((err) => {
+          reportError("QA trigger failed", err, { extra: { callId } });
+        });
+      }
+    }
 
     return { summary, sentiment, transcript };
   } catch (error) {

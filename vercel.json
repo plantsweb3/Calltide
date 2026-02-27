@@ -15,6 +15,10 @@
     {
       "path": "/api/agents/health",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/agents/success",
+      "schedule": "0 15 * * *"
     }
   ]
 }

@@ -1,6 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 
-export type AgentName = "support" | "qualify" | "churn" | "onboard" | "health";
+export type AgentName = "support" | "qualify" | "churn" | "onboard" | "health" | "qa" | "success";
 
 export type ActionType =
   | "email_sent"
@@ -10,7 +10,12 @@ export type ActionType =
   | "qualified"
   | "nudged"
   | "health_check"
-  | "demo_created";
+  | "demo_created"
+  | "qa_scored"
+  | "report_sent"
+  | "nps_sent"
+  | "milestone"
+  | "health_score_updated";
 
 export type TargetType = "client" | "prospect" | "system";
 

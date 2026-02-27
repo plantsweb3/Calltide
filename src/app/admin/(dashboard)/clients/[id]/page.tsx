@@ -4,7 +4,7 @@ import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import StatusBadge from "../../../_components/status-badge";
 
-type Tab = "calls" | "bookings" | "communications" | "ai" | "notes";
+type Tab = "calls" | "bookings" | "communications" | "ai" | "notes" | "qa" | "nps" | "referral" | "timeline";
 
 interface BusinessDetail {
   id: string;
@@ -85,6 +85,12 @@ export default function ClientDetailPage({
   const [loading, setLoading] = useState(true);
   const [expandedCall, setExpandedCall] = useState<string | null>(null);
 
+  // QA, NPS, Referral, Timeline data
+  const [qaScores, setQaScores] = useState<Array<{ callId: string; score: number; flags: string[]; fixRecommendation: string | null; summary: string | null; createdAt: string }>>([]);
+  const [npsHistory, setNpsHistory] = useState<Array<{ id: string; score: number; classification: string; feedback: string | null; createdAt: string }>>([]);
+  const [referralData, setReferralData] = useState<{ code: string | null; referrals: Array<{ id: string; status: string; creditAmount: number; creditApplied: boolean; createdAt: string }> }>({ code: null, referrals: [] });
+  const [timeline, setTimeline] = useState<Array<{ id: string; eventType: string; emailSentAt: string | null; createdAt: string; eventData: Record<string, unknown> | null }>>([]);
+
   useEffect(() => {
     fetch(`/api/admin/clients/${id}`)
       .then((r) => r.json())
@@ -112,6 +118,27 @@ export default function ClientDetailPage({
     fetch(`/api/admin/clients/${id}/notes`)
       .then((r) => r.json())
       .then((d) => setNotes(d.notes || []))
+      .catch(() => {});
+
+    // Fetch QA, NPS, referral, timeline data
+    fetch(`/api/admin/clients/${id}/qa`)
+      .then((r) => r.json())
+      .then((d) => setQaScores(d.scores || []))
+      .catch(() => {});
+
+    fetch(`/api/admin/clients/${id}/nps`)
+      .then((r) => r.json())
+      .then((d) => setNpsHistory(d.responses || []))
+      .catch(() => {});
+
+    fetch(`/api/admin/clients/${id}/referrals`)
+      .then((r) => r.json())
+      .then((d) => setReferralData(d))
+      .catch(() => {});
+
+    fetch(`/api/admin/clients/${id}/timeline`)
+      .then((r) => r.json())
+      .then((d) => setTimeline(d.events || []))
       .catch(() => {});
   }, [id]);
 
@@ -181,6 +208,10 @@ export default function ClientDetailPage({
     { key: "bookings", label: "Bookings", count: appointmentsData.total },
     { key: "communications", label: "Communications", count: smsData.total },
     { key: "ai", label: "AI Performance" },
+    { key: "qa", label: "QA", count: qaScores.length },
+    { key: "nps", label: "NPS", count: npsHistory.length },
+    { key: "referral", label: "Referral", count: referralData.referrals.length },
+    { key: "timeline", label: "Timeline", count: timeline.length },
     { key: "notes", label: "Notes", count: notes.length },
   ];
 
@@ -489,6 +520,216 @@ export default function ClientDetailPage({
                 page.
               </p>
             </div>
+          </div>
+        )}
+
+        {/* QA Tab */}
+        {tab === "qa" && (
+          <div className="space-y-2">
+            {qaScores.length === 0 && (
+              <p className="py-8 text-center text-xs" style={{ color: "var(--db-text-muted)" }}>No QA scores yet</p>
+            )}
+            {qaScores.map((qa) => {
+              const scoreColor = qa.score >= 80 ? "#4ade80" : qa.score >= 60 ? "#fbbf24" : "#f87171";
+              return (
+                <div
+                  key={qa.callId + qa.createdAt}
+                  className="rounded-lg px-4 py-3 text-sm"
+                  style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="rounded-full px-2.5 py-1 text-xs font-bold"
+                        style={{ background: `${scoreColor}15`, color: scoreColor }}
+                      >
+                        {qa.score}/100
+                      </span>
+                      {qa.flags && qa.flags.length > 0 && (
+                        <div className="flex gap-1">
+                          {qa.flags.map((flag, i) => (
+                            <span
+                              key={i}
+                              className="rounded px-1.5 py-0.5 text-[10px]"
+                              style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+                            >
+                              {flag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{formatDate(qa.createdAt)}</span>
+                  </div>
+                  {qa.summary && (
+                    <p className="mt-2 text-xs leading-relaxed" style={{ color: "var(--db-text-secondary)" }}>{qa.summary}</p>
+                  )}
+                  {qa.fixRecommendation && (
+                    <p className="mt-1.5 text-xs" style={{ color: "#fbbf24" }}>
+                      Fix: {qa.fixRecommendation}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* NPS Tab */}
+        {tab === "nps" && (
+          <div className="space-y-2">
+            {npsHistory.length === 0 && (
+              <p className="py-8 text-center text-xs" style={{ color: "var(--db-text-muted)" }}>No NPS responses yet</p>
+            )}
+            {npsHistory.map((nps) => {
+              const classColor =
+                nps.classification === "promoter" ? "#4ade80" :
+                nps.classification === "passive" ? "#fbbf24" : "#f87171";
+              return (
+                <div
+                  key={nps.id}
+                  className="rounded-lg px-4 py-3 text-sm"
+                  style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="rounded-full px-2.5 py-1 text-xs font-bold"
+                        style={{ background: `${classColor}15`, color: classColor }}
+                      >
+                        {nps.score}/10
+                      </span>
+                      <span
+                        className="rounded-full px-2 py-0.5 text-[10px] font-medium capitalize"
+                        style={{ background: `${classColor}15`, color: classColor }}
+                      >
+                        {nps.classification}
+                      </span>
+                    </div>
+                    <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{formatDate(nps.createdAt)}</span>
+                  </div>
+                  {nps.feedback && (
+                    <p className="mt-2 text-xs leading-relaxed" style={{ color: "var(--db-text-secondary)" }}>
+                      &ldquo;{nps.feedback}&rdquo;
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Referral Tab */}
+        {tab === "referral" && (
+          <div className="space-y-4">
+            {referralData.code ? (
+              <div
+                className="rounded-lg p-4"
+                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--db-text-muted)" }}>
+                  Referral Code
+                </p>
+                <code
+                  className="rounded-lg px-3 py-1.5 text-sm font-bold tracking-wide"
+                  style={{ background: "var(--db-hover)", color: "var(--db-accent)" }}
+                >
+                  {referralData.code}
+                </code>
+              </div>
+            ) : (
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>No referral code assigned</p>
+            )}
+
+            {referralData.referrals.length === 0 ? (
+              <p className="py-8 text-center text-xs" style={{ color: "var(--db-text-muted)" }}>No referrals yet</p>
+            ) : (
+              <div className="space-y-2">
+                {referralData.referrals.map((ref) => {
+                  const refColor =
+                    ref.status === "activated" ? "#4ade80" :
+                    ref.status === "signed_up" ? "#60a5fa" :
+                    ref.status === "churned" ? "#f87171" : "var(--db-text-muted)";
+                  return (
+                    <div
+                      key={ref.id}
+                      className="rounded-lg px-4 py-3 text-sm"
+                      style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="rounded-full px-2 py-0.5 text-[10px] font-medium"
+                            style={{ background: `${refColor}15`, color: refColor }}
+                          >
+                            {ref.status?.replace("_", " ")}
+                          </span>
+                          <span className="text-xs" style={{ color: "var(--db-text-secondary)" }}>
+                            ${ref.creditAmount} {ref.creditApplied ? "applied" : "pending"}
+                          </span>
+                        </div>
+                        <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{formatDate(ref.createdAt)}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Timeline Tab */}
+        {tab === "timeline" && (
+          <div className="space-y-2">
+            {timeline.length === 0 && (
+              <p className="py-8 text-center text-xs" style={{ color: "var(--db-text-muted)" }}>No success events yet</p>
+            )}
+            {timeline.map((event) => {
+              const typeLabels: Record<string, { label: string; color: string }> = {
+                first_week_report: { label: "First Week Report", color: "#60a5fa" },
+                monthly_report: { label: "Monthly Report", color: "#a78bfa" },
+                nps_survey_sent: { label: "NPS Survey Sent", color: "#fbbf24" },
+                nps_response: { label: "NPS Response", color: "#4ade80" },
+                milestone: { label: "Milestone", color: "#f59e0b" },
+                quarterly_review: { label: "Quarterly Review", color: "#8b5cf6" },
+                anniversary: { label: "Anniversary", color: "#ec4899" },
+                referral_prompt: { label: "Referral Prompt", color: "#22c55e" },
+                health_score_updated: { label: "Health Score", color: "#06b6d4" },
+              };
+              const meta = typeLabels[event.eventType] ?? { label: event.eventType.replace(/_/g, " "), color: "var(--db-text-muted)" };
+              return (
+                <div
+                  key={event.id}
+                  className="rounded-lg px-4 py-3 text-sm"
+                  style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="rounded-full px-2 py-0.5 text-[10px] font-medium capitalize"
+                        style={{ background: `${meta.color}15`, color: meta.color }}
+                      >
+                        {meta.label}
+                      </span>
+                      {event.emailSentAt && (
+                        <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                          Email sent
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{formatDate(event.createdAt)}</span>
+                  </div>
+                  {event.eventData && Object.keys(event.eventData).length > 0 && (
+                    <p className="mt-1.5 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                      {Object.entries(event.eventData)
+                        .filter(([, v]) => v !== null && v !== undefined)
+                        .map(([k, v]) => `${k.replace(/_/g, " ")}: ${v}`)
+                        .join(" · ")}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
 

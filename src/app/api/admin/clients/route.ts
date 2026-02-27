@@ -3,6 +3,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { businesses, calls, appointments } from "@/db/schema";
 import { sql, eq } from "drizzle-orm";
+import { assignReferralCode } from "@/lib/referral";
 
 const createClientSchema = z.object({
   name: z.string().min(1).max(200),
@@ -103,6 +104,9 @@ export async function POST(req: NextRequest) {
       greeting: greeting || null,
     })
     .returning();
+
+  // Generate referral code for the new business
+  assignReferralCode(created.id, created.name).catch(() => {});
 
   return NextResponse.json(created, { status: 201 });
 }
