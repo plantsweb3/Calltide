@@ -4,16 +4,21 @@ import { prospects } from "@/db/schema";
 import { desc, asc, eq, like, sql, and } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
+const ALLOWED_SORT_COLUMNS = new Set([
+  "createdAt", "businessName", "leadScore", "rating", "reviewCount", "status", "city", "state", "vertical",
+]);
+
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
   const rl = rateLimit(`prospects:${ip}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
   const url = req.nextUrl.searchParams;
-  const page = parseInt(url.get("page") ?? "1", 10);
-  const limit = Math.min(parseInt(url.get("limit") ?? "50", 10), 100);
+  const page = Math.max(1, parseInt(url.get("page") ?? "1", 10));
+  const limit = Math.min(Math.max(1, parseInt(url.get("limit") ?? "50", 10)), 100);
   const offset = (page - 1) * limit;
-  const sortBy = url.get("sortBy") ?? "createdAt";
-  const sortOrder = url.get("sortOrder") ?? "desc";
+  const sortByParam = url.get("sortBy") ?? "createdAt";
+  const sortBy = ALLOWED_SORT_COLUMNS.has(sortByParam) ? sortByParam : "createdAt";
+  const sortOrder = url.get("sortOrder") === "asc" ? "asc" : "desc";
   const status = url.get("status");
   const vertical = url.get("vertical");
   const city = url.get("city");

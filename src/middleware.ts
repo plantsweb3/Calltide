@@ -34,35 +34,64 @@ function parseClientPayload(cookie: string): string | null {
   }
 }
 
+/** Verify admin cookie and return error response if invalid, or null if OK. */
+async function requireAdminAuth(req: NextRequest, isApi: boolean): Promise<NextResponse | null> {
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminPassword) {
+    return isApi
+      ? NextResponse.json({ error: "Auth not configured" }, { status: 500 })
+      : NextResponse.redirect(new URL("/admin/login", req.url));
+  }
+
+  const cookie = req.cookies.get(ADMIN_COOKIE)?.value;
+  if (!cookie) {
+    return isApi
+      ? NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      : NextResponse.redirect(new URL("/admin/login", req.url));
+  }
+
+  const valid = await verifyToken(cookie, adminPassword);
+  if (!valid) {
+    return isApi
+      ? NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      : NextResponse.redirect(new URL("/admin/login", req.url));
+  }
+
+  return null;
+}
+
+/** Routes that require admin auth but aren't under /admin or /api/admin. */
+function isProtectedInternalRoute(pathname: string): boolean {
+  return (
+    pathname.startsWith("/api/prospects") ||
+    pathname.startsWith("/api/demos") ||
+    pathname.startsWith("/api/scrape") ||
+    pathname === "/api/outreach/start" ||
+    pathname === "/api/outreach/pause" ||
+    pathname === "/api/audit/schedule" ||
+    pathname.startsWith("/api/audit/call/")
+  );
+}
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // ── Admin routes (pages + API) ──
   if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
     // Allow auth endpoints through
-    if (pathname === "/admin/login" || pathname === "/api/admin/auth") {
+    if (pathname === "/admin/login" || pathname === "/api/admin/auth" || pathname === "/api/admin/auth/logout") {
       return NextResponse.next();
     }
 
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    if (!adminPassword) return NextResponse.next();
+    const error = await requireAdminAuth(req, pathname.startsWith("/api/"));
+    if (error) return error;
+    return NextResponse.next();
+  }
 
-    const cookie = req.cookies.get(ADMIN_COOKIE)?.value;
-    if (!cookie) {
-      if (pathname.startsWith("/api/admin")) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-      }
-      return NextResponse.redirect(new URL("/admin/login", req.url));
-    }
-
-    const valid = await verifyToken(cookie, adminPassword);
-    if (!valid) {
-      if (pathname.startsWith("/api/admin")) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-      }
-      return NextResponse.redirect(new URL("/admin/login", req.url));
-    }
-
+  // ── Internal API routes requiring admin auth ──
+  if (isProtectedInternalRoute(pathname)) {
+    const error = await requireAdminAuth(req, true);
+    if (error) return error;
     return NextResponse.next();
   }
 
@@ -72,7 +101,9 @@ export async function middleware(req: NextRequest) {
     if (pathname.startsWith("/api/dashboard/auth")) return NextResponse.next();
 
     const secret = process.env.CLIENT_AUTH_SECRET;
-    if (!secret) return NextResponse.next();
+    if (!secret) {
+      return NextResponse.json({ error: "Auth not configured" }, { status: 500 });
+    }
 
     const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
     if (!cookie) {
@@ -99,7 +130,9 @@ export async function middleware(req: NextRequest) {
     if (pathname === "/dashboard/login") return NextResponse.next();
 
     const secret = process.env.CLIENT_AUTH_SECRET;
-    if (!secret) return NextResponse.next();
+    if (!secret) {
+      return NextResponse.redirect(new URL("/dashboard/login", req.url));
+    }
 
     const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
     if (!cookie) {
@@ -125,5 +158,17 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*", "/dashboard/:path*", "/api/dashboard/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/api/admin/:path*",
+    "/dashboard/:path*",
+    "/api/dashboard/:path*",
+    "/api/prospects/:path*",
+    "/api/demos/:path*",
+    "/api/scrape/:path*",
+    "/api/outreach/start",
+    "/api/outreach/pause",
+    "/api/audit/schedule",
+    "/api/audit/call/:path*",
+  ],
 };

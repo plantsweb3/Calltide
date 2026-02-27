@@ -28,7 +28,7 @@ async function fetchTranscript(chatId: string): Promise<TranscriptLine[]> {
     ascendingOrder: true,
   });
 
-  for (const event of page) {
+  for await (const event of page) {
     if (!event.messageText) continue;
 
     if (event.role === "USER") {

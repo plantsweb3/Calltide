@@ -4,7 +4,7 @@ import { calls, prospects, prospectAuditCalls } from "@/db/schema";
 import { sql, gte } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
-  const days = parseInt(req.nextUrl.searchParams.get("days") ?? "30", 10);
+  const days = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("days") ?? "30", 10)), 365);
   const startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0];

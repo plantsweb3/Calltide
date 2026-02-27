@@ -27,13 +27,17 @@ export async function POST(req: NextRequest) {
     }
     const email = parsed.data.email;
 
+    // Always return the same response regardless of whether the email exists
+    // to prevent user enumeration attacks
+    const genericResponse = { message: "If this email is registered, you'll receive a login link shortly" };
+
     const [business] = await db
       .select({ id: businesses.id, name: businesses.name })
       .from(businesses)
       .where(eq(businesses.ownerEmail, email.toLowerCase().trim()));
 
     if (!business) {
-      return NextResponse.json({ error: "No account found for this email" }, { status: 404 });
+      return NextResponse.json(genericResponse);
     }
 
     const secret = env.CLIENT_AUTH_SECRET;
@@ -69,7 +73,7 @@ export async function POST(req: NextRequest) {
       `,
     });
 
-    return NextResponse.json({ message: "Check your email for a login link" });
+    return NextResponse.json(genericResponse);
   } catch (error) {
     reportError("Send magic link error", error);
     return NextResponse.json({ error: "Failed to send login link" }, { status: 500 });

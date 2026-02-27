@@ -16,10 +16,14 @@ import type { Language } from "@/types";
  *   vercel.json: { "crons": [{ "path": "/api/cron/reminders", "schedule": "0 14 * * *" }] }
  */
 export async function GET(req: NextRequest) {
-  // Optional: verify cron secret
-  const authHeader = req.headers.get("authorization");
+  // Verify cron secret — mandatory in production
   const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  if (!cronSecret) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
+  }
+
+  const authHeader = req.headers.get("authorization");
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

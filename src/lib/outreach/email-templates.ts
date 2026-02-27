@@ -1,7 +1,9 @@
 const BRAND_COLOR = "#22c55e";
 const MARKETING_URL = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://calltide.app";
+const COMPANY_ADDRESS = "Calltide LLC, PO Box 1247, San Marcos, TX 78667";
 
-function baseLayout(content: string): string {
+function baseLayout(content: string, prospectEmail?: string): string {
+  const unsubscribeUrl = `${MARKETING_URL}/unsubscribe${prospectEmail ? `?email=${encodeURIComponent(prospectEmail)}` : ""}`;
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -10,6 +12,11 @@ function baseLayout(content: string): string {
 ${content}
 <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;">
 <p>Calltide — AI Voice Agents for Local Businesses</p>
+<p style="margin-top:8px;">${COMPANY_ADDRESS}</p>
+<p style="margin-top:8px;">
+  <a href="${unsubscribeUrl}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>
+  &nbsp;|&nbsp; You're receiving this because we think Calltide could help your business. We'll never spam you.
+</p>
 </div>
 </div>
 </body>
@@ -18,7 +25,7 @@ ${content}
 
 // Missed call sequence — 3 emails over ~7 days
 export const missedCallSequence = {
-  missed_call_1: (businessName: string) => ({
+  missed_call_1: (businessName: string, email?: string) => ({
     subject: `${businessName}, you're missing calls — we tested it`,
     html: baseLayout(`
       <h2 style="color:#0f172a;margin-bottom:8px;">We called. Nobody picked up.</h2>
@@ -33,10 +40,10 @@ export const missedCallSequence = {
       <a href="${MARKETING_URL}" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
         See How It Works →
       </a>
-    `),
+    `, email),
   }),
 
-  missed_call_2: (businessName: string) => ({
+  missed_call_2: (businessName: string, email?: string) => ({
     subject: `Quick question, ${businessName}`,
     html: baseLayout(`
       <p style="color:#475569;line-height:1.6;">
@@ -52,10 +59,10 @@ export const missedCallSequence = {
       <a href="${MARKETING_URL}" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
         Book a Demo
       </a>
-    `),
+    `, email),
   }),
 
-  missed_call_3: (businessName: string) => ({
+  missed_call_3: (businessName: string, email?: string) => ({
     subject: `Last note from Calltide`,
     html: baseLayout(`
       <p style="color:#475569;line-height:1.6;">
@@ -69,13 +76,13 @@ export const missedCallSequence = {
         Reply to this email anytime — happy to answer questions.
       </p>
       <p style="color:${BRAND_COLOR};font-weight:600;">— Team Calltide</p>
-    `),
+    `, email),
   }),
 };
 
 // Answered sequence — 1 email (they have someone answering, so lighter touch)
 export const answeredSequence = {
-  answered_1: (businessName: string) => ({
+  answered_1: (businessName: string, email?: string) => ({
     subject: `${businessName} — save on receptionist costs?`,
     html: baseLayout(`
       <p style="color:#475569;line-height:1.6;">
@@ -90,7 +97,7 @@ export const answeredSequence = {
       <a href="${MARKETING_URL}" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
         Learn More →
       </a>
-    `),
+    `, email),
   }),
 };
 
@@ -99,11 +106,12 @@ export type TemplateKey = keyof typeof missedCallSequence | keyof typeof answere
 export function getEmailTemplate(
   key: string,
   businessName: string,
+  email?: string,
 ): { subject: string; html: string } | null {
-  const allTemplates: Record<string, (name: string) => { subject: string; html: string }> = {
+  const allTemplates: Record<string, (name: string, email?: string) => { subject: string; html: string }> = {
     ...missedCallSequence,
     ...answeredSequence,
   };
   const factory = allTemplates[key];
-  return factory ? factory(businessName) : null;
+  return factory ? factory(businessName, email) : null;
 }

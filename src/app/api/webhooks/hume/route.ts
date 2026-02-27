@@ -18,16 +18,18 @@ export async function POST(req: NextRequest) {
 
   const rawBody = await req.text();
 
-  // Verify HMAC signature
+  // Verify HMAC signature — mandatory
   const signature = req.headers.get("x-hume-signature") || "";
-  const secretKey = process.env.HUME_SECRET_KEY!;
+  const secretKey = process.env.HUME_SECRET_KEY;
 
-  if (secretKey && signature) {
-    const valid = verifyHumeSignature(rawBody, signature, secretKey);
-    if (!valid) {
-      reportWarning("Invalid Hume webhook signature");
-      return Response.json({ error: "Invalid signature" }, { status: 401 });
-    }
+  if (!secretKey) {
+    reportWarning("HUME_SECRET_KEY is not set — rejecting webhook");
+    return Response.json({ error: "Webhook auth not configured" }, { status: 500 });
+  }
+
+  if (!signature || !verifyHumeSignature(rawBody, signature, secretKey)) {
+    reportWarning("Invalid Hume webhook signature");
+    return Response.json({ error: "Invalid signature" }, { status: 401 });
   }
 
   let event: HumeWebhookEvent;

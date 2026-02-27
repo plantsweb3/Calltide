@@ -95,7 +95,7 @@ export async function executeNextStep(
     if (!prospect.email) {
       return { success: false, error: "No email address" };
     }
-    const template = getEmailTemplate(nextStep.key, prospect.businessName);
+    const template = getEmailTemplate(nextStep.key, prospect.businessName, prospect.email);
     if (!template) return { success: false, error: `Template not found: ${nextStep.key}` };
 
     const emailResult = await sendOutreachEmail({

@@ -10,19 +10,33 @@ import { reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 const CLAUDE_MODEL = process.env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929";
+const MAX_MESSAGES = 50; // Cap conversation history to prevent unbounded input
+const MAX_MESSAGE_LENGTH = 2000; // Cap individual message content length
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
-
-export async function OPTIONS() {
-  return new Response(null, { status: 200, headers: corsHeaders });
+function getAllowedOrigin(req: NextRequest): string {
+  const origin = req.headers.get("origin") || "";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "";
+  // Allow requests from our own app and from Hume's servers (no origin header on server-to-server)
+  if (!origin || origin === appUrl || origin.endsWith(".hume.ai")) {
+    return origin || appUrl;
+  }
+  return appUrl;
 }
 
-export async function GET() {
-  return Response.json({ status: "ok" }, { headers: corsHeaders });
+function getCorsHeaders(req: NextRequest) {
+  return {
+    "Access-Control-Allow-Origin": getAllowedOrigin(req),
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
+}
+
+export async function OPTIONS(req: NextRequest) {
+  return new Response(null, { status: 200, headers: getCorsHeaders(req) });
+}
+
+export async function GET(req: NextRequest) {
+  return Response.json({ status: "ok" }, { headers: getCorsHeaders(req) });
 }
 
 /**
@@ -42,7 +56,21 @@ export async function POST(req: NextRequest) {
     });
 
     const body: ChatCompletionRequest = await req.json();
-    const { messages, metadata } = body;
+    const { messages: rawMessages, metadata } = body;
+
+    // Validate and sanitize input
+    if (!Array.isArray(rawMessages) || rawMessages.length === 0) {
+      return Response.json(
+        { error: "messages array is required" },
+        { status: 400, headers: getCorsHeaders(req) }
+      );
+    }
+
+    // Cap message history and content length to prevent abuse
+    const messages = rawMessages.slice(-MAX_MESSAGES).map((m) => ({
+      ...m,
+      content: typeof m.content === "string" ? m.content.slice(0, MAX_MESSAGE_LENGTH) : m.content,
+    }));
 
     // Resolve business context from the called phone number or fall back to first business
     let businessContext = null;
@@ -156,7 +184,7 @@ export async function POST(req: NextRequest) {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
-        ...corsHeaders,
+        ...getCorsHeaders(req),
       },
     });
   } catch (error) {
@@ -164,7 +192,7 @@ export async function POST(req: NextRequest) {
     const message = error instanceof Error ? error.message : "Internal server error";
     return Response.json(
       { error: message },
-      { status: 500, headers: corsHeaders }
+      { status: 500, headers: getCorsHeaders(req) }
     );
   }
 }

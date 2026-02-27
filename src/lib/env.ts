@@ -29,11 +29,15 @@ const envSchema = z.object({
   // AI model
   CLAUDE_MODEL: z.string().min(1).optional(),             // defaults to claude-sonnet-4-5-20250929
 
+  // Cron + Webhooks
+  CRON_SECRET: z.string().min(16).optional(),             // Required in production for /api/cron/reminders
+  RESEND_WEBHOOK_SECRET: z.string().min(1).optional(),    // SVIX secret for Resend webhook verification
+
   // Phase 2: Outreach Engine (optional)
   GOOGLE_PLACES_API_KEY: z.string().min(1).optional(),
   RESEND_API_KEY: z.string().min(1).optional(),
-  ADMIN_PASSWORD: z.string().min(1).optional(),
-  CLIENT_AUTH_SECRET: z.string().min(1).optional(),
+  ADMIN_PASSWORD: z.string().min(8),
+  CLIENT_AUTH_SECRET: z.string().min(16),
 });
 
 export type Env = z.infer<typeof envSchema>;
