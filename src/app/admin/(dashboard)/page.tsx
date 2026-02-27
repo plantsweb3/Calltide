@@ -69,34 +69,44 @@ export default function AdminDashboardPage() {
   const [billing, setBilling] = useState<BillingData | null>(null);
   const [ops, setOps] = useState<OpsData | null>(null);
   const [alerts, setAlerts] = useState<NotificationItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/dashboard")
       .then((r) => r.json())
       .then(setData)
-      .catch(() => {});
+      .catch(() => setError("Failed to load dashboard data"));
     fetch("/api/admin/metrics?days=30")
       .then((r) => r.json())
       .then(setMetrics)
-      .catch(() => {});
+      .catch(() => setError("Failed to load metrics"));
     fetch("/api/admin/billing")
       .then((r) => r.json())
       .then(setBilling)
-      .catch(() => {});
+      .catch(() => setError("Failed to load billing data"));
     fetch("/api/admin/ops")
       .then((r) => r.json())
       .then(setOps)
-      .catch(() => {});
+      .catch(() => setError("Failed to load ops data"));
     fetch("/api/notifications?unacknowledged=true&limit=10")
       .then((r) => r.json())
       .then((d) => setAlerts(d.items ?? []))
-      .catch(() => {});
+      .catch(() => setError("Failed to load notifications"));
   }, []);
 
   if (!data) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <p style={{ color: "var(--db-text-muted)" }}>Loading dashboard...</p>
+      <div className="space-y-4">
+        {error && (
+          <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+            <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          </div>
+        )}
+        {!error && (
+          <div className="flex h-64 items-center justify-center">
+            <p style={{ color: "var(--db-text-muted)" }}>Loading dashboard...</p>
+          </div>
+        )}
       </div>
     );
   }
@@ -119,6 +129,12 @@ export default function AdminDashboardPage() {
           Calltide admin overview
         </p>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <QuickActions />

@@ -56,12 +56,13 @@ export default function IncidentsPage() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchIncidents = useCallback(() => {
     fetch("/api/admin/incidents")
       .then((r) => r.json())
       .then((d) => setIncidents(d.incidents ?? []))
-      .catch(() => {})
+      .catch(() => setError("Failed to load incidents"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -69,7 +70,7 @@ export default function IncidentsPage() {
     fetch("/api/admin/incidents/subscribers")
       .then((r) => r.json())
       .then((d) => setSubscribers(d.subscribers ?? []))
-      .catch(() => {});
+      .catch(() => setError("Failed to load subscribers"));
   }, []);
 
   useEffect(() => {
@@ -100,6 +101,12 @@ export default function IncidentsPage() {
           Incident response, status page management, and reliability metrics
         </p>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 rounded-lg p-1" style={{ background: "var(--db-hover)" }}>

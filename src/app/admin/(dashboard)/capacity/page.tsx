@@ -31,12 +31,13 @@ export default function CapacityPage() {
   const [tab, setTab] = useState<Tab>("status");
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(() => {
     fetch("/api/capacity/status")
       .then((r) => r.json())
       .then(setData)
-      .catch(() => {})
+      .catch(() => setError("Failed to load capacity data"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -54,7 +55,7 @@ export default function CapacityPage() {
     { key: "playbook", label: "Scaling Playbook" },
   ];
 
-  if (loading) {
+  if (loading && !error) {
     return (
       <div className="flex h-64 items-center justify-center">
         <p style={{ color: "var(--db-text-muted)" }}>Loading...</p>
@@ -70,6 +71,12 @@ export default function CapacityPage() {
           Infrastructure monitoring, provider utilization, and scaling readiness
         </p>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        </div>
+      )}
 
       <div className="flex gap-1 rounded-lg p-1" style={{ background: "var(--db-hover)" }}>
         {tabs.map((t) => (

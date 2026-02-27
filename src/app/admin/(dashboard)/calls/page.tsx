@@ -55,18 +55,28 @@ const SENTIMENT_COLORS: Record<string, string> = {
 
 export default function CallAnalyticsPage() {
   const [data, setData] = useState<CallAnalytics | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/calls")
       .then((r) => r.json())
       .then(setData)
-      .catch(() => {});
+      .catch(() => setError("Failed to load call analytics"));
   }, []);
 
   if (!data) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <p style={{ color: "var(--db-text-muted)" }}>Loading call analytics...</p>
+      <div className="space-y-4">
+        {error && (
+          <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+            <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          </div>
+        )}
+        {!error && (
+          <div className="flex h-64 items-center justify-center">
+            <p style={{ color: "var(--db-text-muted)" }}>Loading call analytics...</p>
+          </div>
+        )}
       </div>
     );
   }

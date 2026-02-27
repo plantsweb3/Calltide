@@ -27,7 +27,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
     fetch("/api/notifications/count")
       .then((r) => (r.ok ? r.json() : { count: 0 }))
       .then((d) => setBadgeCount(d.count))
-      .catch(() => {});
+      .catch(() => setBadgeCount(0));
   }, []);
 
   const handleLogout = async () => {

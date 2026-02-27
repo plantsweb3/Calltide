@@ -63,6 +63,7 @@ export default function KnowledgeBasePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [filter, setFilter] = useState({ category: "", status: "", search: "" });
+  const [error, setError] = useState<string | null>(null);
 
   // Generator state
   const [genTitle, setGenTitle] = useState("");
@@ -79,13 +80,13 @@ export default function KnowledgeBasePage() {
   const [newCat, setNewCat] = useState({ slug: "", name: "", nameEs: "", description: "", descriptionEs: "", icon: "", sortOrder: 0 });
 
   useEffect(() => {
-    fetch("/api/admin/help/articles").then((r) => r.json()).then((d) => setArticles(d.articles || [])).catch(() => {});
-    fetch("/api/admin/help/categories").then((r) => r.json()).then((d) => setCategories(d.categories || [])).catch(() => {});
+    fetch("/api/admin/help/articles").then((r) => r.json()).then((d) => setArticles(d.articles || [])).catch(() => setError("Failed to load articles"));
+    fetch("/api/admin/help/categories").then((r) => r.json()).then((d) => setCategories(d.categories || [])).catch(() => setError("Failed to load categories"));
   }, []);
 
   useEffect(() => {
     if (tab === "analytics" && !analytics) {
-      fetch("/api/admin/help/analytics").then((r) => r.json()).then(setAnalytics).catch(() => {});
+      fetch("/api/admin/help/analytics").then((r) => r.json()).then(setAnalytics).catch(() => setError("Failed to load analytics"));
     }
   }, [tab, analytics]);
 
@@ -197,6 +198,12 @@ export default function KnowledgeBasePage() {
           New Article
         </Link>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">

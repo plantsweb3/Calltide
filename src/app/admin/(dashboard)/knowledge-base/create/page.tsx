@@ -74,17 +74,18 @@ function ArticleEditor() {
   const [articles, setArticles] = useState<Array<{ id: string; title: string }>>([]);
   const [saving, setSaving] = useState(false);
   const [preview, setPreview] = useState<"en" | "es">("en");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/help/categories")
       .then((r) => r.json())
       .then((d) => setCategories(d.categories || []))
-      .catch(() => {});
+      .catch(() => setError("Failed to load categories"));
 
     fetch("/api/admin/help/articles")
       .then((r) => r.json())
       .then((d) => setArticles((d.articles || []).map((a: { id: string; title: string }) => ({ id: a.id, title: a.title }))))
-      .catch(() => {});
+      .catch(() => setError("Failed to load articles"));
 
     if (editId) {
       fetch(`/api/admin/help/articles/${editId}`)
@@ -114,7 +115,7 @@ function ArticleEditor() {
             });
           }
         })
-        .catch(() => {});
+        .catch(() => setError("Failed to load article"));
     }
   }, [editId]);
 
@@ -187,6 +188,12 @@ function ArticleEditor() {
           </button>
         </div>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Editor */}

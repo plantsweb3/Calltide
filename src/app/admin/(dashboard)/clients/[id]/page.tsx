@@ -83,6 +83,7 @@ export default function ClientDetailPage({
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [expandedCall, setExpandedCall] = useState<string | null>(null);
 
   // QA, NPS, Referral, Timeline data
@@ -98,48 +99,48 @@ export default function ClientDetailPage({
         setBusiness(d);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => { setLoading(false); setError("Failed to load client data"); });
 
     fetch(`/api/admin/clients/${id}/calls?limit=50`)
       .then((r) => r.json())
       .then(setCallsData)
-      .catch(() => {});
+      .catch(() => setError("Failed to load calls data"));
 
     fetch(`/api/admin/clients/${id}/appointments?limit=50`)
       .then((r) => r.json())
       .then(setAppointmentsData)
-      .catch(() => {});
+      .catch(() => setError("Failed to load appointments data"));
 
     fetch(`/api/admin/clients/${id}/sms?limit=50`)
       .then((r) => r.json())
       .then(setSmsData)
-      .catch(() => {});
+      .catch(() => setError("Failed to load SMS data"));
 
     fetch(`/api/admin/clients/${id}/notes`)
       .then((r) => r.json())
       .then((d) => setNotes(d.notes || []))
-      .catch(() => {});
+      .catch(() => setError("Failed to load notes"));
 
     // Fetch QA, NPS, referral, timeline data
     fetch(`/api/admin/clients/${id}/qa`)
       .then((r) => r.json())
       .then((d) => setQaScores(d.scores || []))
-      .catch(() => {});
+      .catch(() => setError("Failed to load QA data"));
 
     fetch(`/api/admin/clients/${id}/nps`)
       .then((r) => r.json())
       .then((d) => setNpsHistory(d.responses || []))
-      .catch(() => {});
+      .catch(() => setError("Failed to load NPS data"));
 
     fetch(`/api/admin/clients/${id}/referrals`)
       .then((r) => r.json())
       .then((d) => setReferralData(d))
-      .catch(() => {});
+      .catch(() => setError("Failed to load referral data"));
 
     fetch(`/api/admin/clients/${id}/timeline`)
       .then((r) => r.json())
       .then((d) => setTimeline(d.events || []))
-      .catch(() => {});
+      .catch(() => setError("Failed to load timeline data"));
   }, [id]);
 
   async function addNote() {
@@ -232,6 +233,12 @@ export default function ClientDetailPage({
         <span>/</span>
         <span style={{ color: "var(--db-text)" }}>{business.name}</span>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        </div>
+      )}
 
       {/* Header */}
       <div className="flex items-start justify-between">

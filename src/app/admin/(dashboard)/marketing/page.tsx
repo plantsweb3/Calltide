@@ -326,12 +326,13 @@ export default function MarketingPage() {
   const [showNewContent, setShowNewContent] = useState(false);
   const [contentFilter, setContentFilter] = useState<string>("");
   const [auditStatusFilter, setAuditStatusFilter] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   const fetchStats = useCallback(() => {
     fetch("/api/marketing/stats")
       .then((r) => r.json())
       .then(setStats)
-      .catch(() => {});
+      .catch(() => setError("Failed to load marketing stats"));
   }, []);
 
   const fetchAuditRequests = useCallback(() => {
@@ -341,7 +342,7 @@ export default function MarketingPage() {
     fetch(`/api/marketing/audit-requests${params}`)
       .then((r) => r.json())
       .then((data) => setAuditRequests(Array.isArray(data) ? data : data.data ?? []))
-      .catch(() => {});
+      .catch(() => setError("Failed to load audit requests"));
   }, [auditStatusFilter]);
 
   const fetchContentQueue = useCallback(() => {
@@ -351,7 +352,7 @@ export default function MarketingPage() {
     fetch(`/api/content-queue${params}`)
       .then((r) => r.json())
       .then((data) => setContentQueue(Array.isArray(data) ? data : data.data ?? []))
-      .catch(() => {});
+      .catch(() => setError("Failed to load content queue"));
   }, [contentFilter]);
 
   useEffect(() => { fetchStats(); }, [fetchStats]);
@@ -592,6 +593,12 @@ export default function MarketingPage() {
           Audit funnel performance and content scheduling
         </p>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        </div>
+      )}
 
       {/* ------------------------------------------------------------------ */}
       {/* TOP ROW — Audit Funnel Metrics                                       */}

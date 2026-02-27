@@ -73,9 +73,11 @@ export default function FinancialsPage() {
 
 function RevenueTab() {
   const [data, setData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/financials?tab=revenue").then((r) => r.json()).then(setData).catch(() => {});
+    fetch("/api/admin/financials?tab=revenue").then((r) => r.json()).then(setData).catch(() => setError("Failed to load revenue data"));
   }, []);
+  if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
   const chartData = (data.snapshots ?? []).slice(-90).map((s: any) => ({
@@ -142,9 +144,11 @@ function RevenueTab() {
 
 function PaymentsTab() {
   const [data, setData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/financials?tab=payments").then((r) => r.json()).then(setData).catch(() => {});
+    fetch("/api/admin/financials?tab=payments").then((r) => r.json()).then(setData).catch(() => setError("Failed to load payments data"));
   }, []);
+  if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
   const atRiskColumns: Column<any>[] = [
@@ -205,9 +209,11 @@ function PaymentsTab() {
 
 function CostsTab() {
   const [data, setData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/financials?tab=costs").then((r) => r.json()).then(setData).catch(() => {});
+    fetch("/api/admin/financials?tab=costs").then((r) => r.json()).then(setData).catch(() => setError("Failed to load cost data"));
   }, []);
+  if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
   const columns: Column<any>[] = [
@@ -249,9 +255,11 @@ function CostsTab() {
 
 function ForecastTab() {
   const [data, setData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/financials?tab=forecast").then((r) => r.json()).then(setData).catch(() => {});
+    fetch("/api/admin/financials?tab=forecast").then((r) => r.json()).then(setData).catch(() => setError("Failed to load forecast data"));
   }, []);
+  if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
   // Sample projections at 30-day intervals
@@ -308,6 +316,14 @@ function Loading() {
   return (
     <div className="flex h-64 items-center justify-center">
       <p style={{ color: "var(--db-text-muted)" }}>Loading...</p>
+    </div>
+  );
+}
+
+function ErrorBanner({ message }: { message: string }) {
+  return (
+    <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+      <p className="text-sm" style={{ color: "#f87171" }}>{message}</p>
     </div>
   );
 }

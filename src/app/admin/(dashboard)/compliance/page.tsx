@@ -55,9 +55,11 @@ export default function CompliancePage() {
 
 function ConsentTab() {
   const [data, setData] = useState<{ records: any[]; outdatedTosCount: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/compliance?tab=consent").then((r) => r.json()).then(setData).catch(() => {});
+    fetch("/api/admin/compliance?tab=consent").then((r) => r.json()).then(setData).catch(() => setError("Failed to load consent data"));
   }, []);
+  if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
   const columns: Column<any>[] = [
@@ -85,9 +87,11 @@ function ConsentTab() {
 
 function SmsTab() {
   const [data, setData] = useState<{ optOuts: any[]; activeConsentCount: number; optOutCount: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/compliance?tab=sms").then((r) => r.json()).then(setData).catch(() => {});
+    fetch("/api/admin/compliance?tab=sms").then((r) => r.json()).then(setData).catch(() => setError("Failed to load SMS compliance data"));
   }, []);
+  if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
   const columns: Column<any>[] = [
@@ -110,9 +114,11 @@ function SmsTab() {
 
 function DocumentsTab() {
   const [data, setData] = useState<{ documents: any[]; totalActiveClients: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/compliance?tab=documents").then((r) => r.json()).then(setData).catch(() => {});
+    fetch("/api/admin/compliance?tab=documents").then((r) => r.json()).then(setData).catch(() => setError("Failed to load documents data"));
   }, []);
+  if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
   const currentDocs = data.documents.filter((d: any) => d.isCurrentVersion);
@@ -137,9 +143,11 @@ function DocumentsTab() {
 
 function RetentionTab() {
   const [data, setData] = useState<{ logs: any[]; deletionRequests: any[] } | null>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/compliance?tab=retention").then((r) => r.json()).then(setData).catch(() => {});
+    fetch("/api/admin/compliance?tab=retention").then((r) => r.json()).then(setData).catch(() => setError("Failed to load retention data"));
   }, []);
+  if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
   const retentionSchedule = [
@@ -196,9 +204,11 @@ function RetentionTab() {
 
 function SubProcessorsTab() {
   const [data, setData] = useState<{ processors: any[] } | null>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/compliance?tab=subprocessors").then((r) => r.json()).then(setData).catch(() => {});
+    fetch("/api/admin/compliance?tab=subprocessors").then((r) => r.json()).then(setData).catch(() => setError("Failed to load sub-processors data"));
   }, []);
+  if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
   const columns: Column<any>[] = [
@@ -216,6 +226,14 @@ function Loading() {
   return (
     <div className="flex h-64 items-center justify-center">
       <p style={{ color: "var(--db-text-muted)" }}>Loading...</p>
+    </div>
+  );
+}
+
+function ErrorBanner({ message }: { message: string }) {
+  return (
+    <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+      <p className="text-sm" style={{ color: "#f87171" }}>{message}</p>
     </div>
   );
 }
