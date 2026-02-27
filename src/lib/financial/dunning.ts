@@ -5,6 +5,7 @@ import { Resend } from "resend";
 import Twilio from "twilio";
 import { env } from "@/lib/env";
 import { canSendSms } from "@/lib/compliance/sms";
+import { createNotification } from "@/lib/notifications";
 
 const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
 
@@ -186,6 +187,15 @@ export async function processDunning() {
         .update(businesses)
         .set({ paymentStatus: "grace_period", updatedAt: new Date().toISOString() })
         .where(eq(businesses.id, state.businessId));
+
+      // Notification — all retries exhausted
+      await createNotification({
+        source: "financial",
+        severity: "critical",
+        title: "Dunning exhausted",
+        message: `${business.name} — all retry attempts exhausted, moved to grace period`,
+        actionUrl: "/admin/billing",
+      });
     }
 
     results.processed++;

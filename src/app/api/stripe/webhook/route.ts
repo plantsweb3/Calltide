@@ -9,6 +9,7 @@ import {
 } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { startDunning, clearDunning, cancelDunning } from "@/lib/financial/dunning";
+import { createNotification } from "@/lib/notifications";
 
 function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -163,6 +164,15 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
 
   // Start or update dunning
   await startDunning(business.id, failureCode);
+
+  // Unified notification
+  await createNotification({
+    source: "financial",
+    severity: "warning",
+    title: "Payment failed",
+    message: `${business.name} — ${failureCode ?? "unknown error"}`,
+    actionUrl: "/admin/billing",
+  });
 }
 
 async function handleSubscriptionCreated(sub: Stripe.Subscription) {
@@ -281,6 +291,15 @@ async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
 
   // Cancel any active dunning
   await cancelDunning(business.id);
+
+  // Unified notification
+  await createNotification({
+    source: "financial",
+    severity: "critical",
+    title: "Subscription canceled",
+    message: `${business.name} — subscription canceled, data retention hold set for 30 days`,
+    actionUrl: "/admin/billing",
+  });
 }
 
 async function handleChargeRefunded(charge: Stripe.Charge) {

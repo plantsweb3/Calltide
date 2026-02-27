@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { helpArticles, helpCategories, helpSearchMisses } from "@/db/schema";
 import { eq, and, or, like, desc, sql } from "drizzle-orm";
+import { createNotification } from "@/lib/notifications";
 
 interface SearchOptions {
   lang?: "en" | "es";
@@ -72,6 +73,23 @@ export async function searchArticles(query: string, options?: SearchOptions) {
         businessId: options?.businessId,
       })
       .catch(() => {});
+
+    // Check if this term has accumulated 5+ misses
+    try {
+      const [missCount] = await db
+        .select({ count: sql<number>`COUNT(*)` })
+        .from(helpSearchMisses)
+        .where(eq(helpSearchMisses.query, query));
+      if ((missCount?.count ?? 0) === 5) {
+        await createNotification({
+          source: "knowledge",
+          severity: "info",
+          title: "KB gap detected",
+          message: `"${query}" searched 5 times with no results`,
+          actionUrl: "/admin/knowledge-base",
+        });
+      }
+    } catch {}
   }
 
   return results;

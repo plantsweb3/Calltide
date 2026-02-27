@@ -8,6 +8,7 @@ import {
 } from "@/db/schema";
 import { eq, and, sql, desc, inArray } from "drizzle-orm";
 import { notifyOwner, notifyClients, notifySubscribers } from "./notifications";
+import { createNotification } from "@/lib/notifications";
 
 // ── Types ──
 
@@ -123,6 +124,15 @@ export async function createIncident(check: HealthCheckResult): Promise<string> 
   await addIncidentUpdate(incident.id, "detected", {
     message: `${check.name} detected as unhealthy. Status code: ${check.statusCode}, Response time: ${check.responseTimeMs}ms${check.error ? `. Error: ${check.error}` : ""}`,
     messageEs: `${check.name} detectado como no saludable. Código de estado: ${check.statusCode}, Tiempo de respuesta: ${check.responseTimeMs}ms${check.error ? `. Error: ${check.error}` : ""}`,
+  });
+
+  // Unified notification
+  await createNotification({
+    source: "incident",
+    severity: severity === "critical" ? "critical" : severity === "major" ? "warning" : "info",
+    title: title,
+    message: `${check.name} is unhealthy. Status: ${check.statusCode}, Response: ${check.responseTimeMs}ms`,
+    actionUrl: "/admin/incidents",
   });
 
   // Trigger notifications

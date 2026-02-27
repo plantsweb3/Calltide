@@ -13,6 +13,7 @@ import {
 } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { createNotification } from "@/lib/notifications";
 import type { ToolDefinition, AgentName, ActionType, TargetType } from "./types";
 
 // ── Tool Definitions (Anthropic format) ──
@@ -292,6 +293,17 @@ async function toolUpdateChurnScore(input: Record<string, unknown>): Promise<str
     });
   }
 
+  // Notify on high churn risk
+  if (score >= 8) {
+    await createNotification({
+      source: "retention",
+      severity: "warning",
+      title: "High churn risk",
+      message: `Risk score ${score}/10 — ${reasoning}`,
+      actionUrl: "/admin/client-success",
+    });
+  }
+
   return `Churn score updated to ${score} for business ${businessId}`;
 }
 
@@ -302,6 +314,17 @@ async function toolLogHealthStatus(input: Record<string, unknown>): Promise<stri
     latencyMs: Number(input.responseTimeMs),
     errorCount: input.healthy ? 0 : 1,
   });
+
+  // Notify on provider down
+  if (!input.healthy) {
+    await createNotification({
+      source: "agents",
+      severity: "emergency",
+      title: `${input.service} is DOWN`,
+      message: `Status: unhealthy, Response: ${input.responseTimeMs}ms`,
+      actionUrl: "/admin/ops",
+    });
+  }
 
   return `Health logged: ${input.service} — ${input.healthy ? "healthy" : "unhealthy"} (${input.responseTimeMs}ms)`;
 }

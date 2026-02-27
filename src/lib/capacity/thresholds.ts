@@ -3,6 +3,7 @@ import { capacityAlerts } from "@/db/schema";
 import { eq, and, isNull } from "drizzle-orm";
 import { Resend } from "resend";
 import { env } from "@/lib/env";
+import { createNotification } from "@/lib/notifications";
 
 export type AlertSeverity = "warning" | "critical" | "emergency";
 
@@ -62,6 +63,15 @@ export async function checkThresholds(checks: ThresholdCheck[]): Promise<void> {
 
     // Notify admin
     await notifyAdmin(match.severity, message);
+
+    // Unified notification
+    await createNotification({
+      source: "capacity",
+      severity: match.severity === "emergency" ? "emergency" : match.severity === "critical" ? "critical" : "warning",
+      title: `${check.provider} at ${pctUsed.toFixed(0)}%`,
+      message,
+      actionUrl: "/admin/capacity",
+    });
 
     // If critical or emergency, create incident
     if (match.severity === "critical" || match.severity === "emergency") {
