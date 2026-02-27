@@ -48,7 +48,7 @@ export default function HelpWidget() {
     fetch(`/api/help/articles?slugs=${slugs.join(",")}`)
       .then((r) => r.json())
       .then((d) => setArticles(d.articles || []))
-      .catch(() => {});
+      .catch(() => setArticles([]));
   }, [open, pathname]);
 
   function handleSearch(value: string) {

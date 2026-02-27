@@ -18,3 +18,26 @@ CREATE INDEX IF NOT EXISTS idx_outreach_log_business_sent ON outreach_log(busine
 CREATE INDEX IF NOT EXISTS idx_leads_business_id ON leads(business_id);
 CREATE INDEX IF NOT EXISTS idx_incidents_status ON incidents(status);
 CREATE INDEX IF NOT EXISTS idx_subscription_events_business ON subscription_events(business_id);
+
+-- Additional FK indexes for remaining foreign key columns
+CREATE INDEX IF NOT EXISTS idx_calls_lead_id ON calls(lead_id);
+CREATE INDEX IF NOT EXISTS idx_appointments_lead_id ON appointments(lead_id);
+CREATE INDEX IF NOT EXISTS idx_appointments_call_id ON appointments(call_id);
+CREATE INDEX IF NOT EXISTS idx_sms_messages_lead_id ON sms_messages(lead_id);
+CREATE INDEX IF NOT EXISTS idx_sms_messages_call_id ON sms_messages(call_id);
+CREATE INDEX IF NOT EXISTS idx_outbound_campaigns_business_id ON outbound_campaigns(business_id);
+CREATE INDEX IF NOT EXISTS idx_campaign_contacts_campaign_id ON campaign_contacts(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_campaign_contacts_lead_id ON campaign_contacts(lead_id);
+CREATE INDEX IF NOT EXISTS idx_prospect_audit_calls_prospect_id ON prospect_audit_calls(prospect_id);
+CREATE INDEX IF NOT EXISTS idx_prospect_outreach_prospect_id ON prospect_outreach(prospect_id);
+CREATE INDEX IF NOT EXISTS idx_demos_prospect_id ON demos(prospect_id);
+CREATE INDEX IF NOT EXISTS idx_customer_notes_customer_id ON customer_notes(customer_id);
+CREATE INDEX IF NOT EXISTS idx_escalations_call_id ON escalations(call_id);
+CREATE INDEX IF NOT EXISTS idx_escalations_customer_id ON escalations(customer_id);
+CREATE INDEX IF NOT EXISTS idx_call_qa_scores_call_id ON call_qa_scores(call_id);
+CREATE INDEX IF NOT EXISTS idx_client_success_log_business_id ON client_success_log(business_id);
+CREATE INDEX IF NOT EXISTS idx_help_articles_category_id ON help_articles(category_id);
+CREATE INDEX IF NOT EXISTS idx_help_article_feedback_article_id ON help_article_feedback(article_id);
+CREATE INDEX IF NOT EXISTS idx_incident_updates_incident_id ON incident_updates(incident_id);
+CREATE INDEX IF NOT EXISTS idx_incident_notifications_incident_id ON incident_notifications(incident_id);
+CREATE INDEX IF NOT EXISTS idx_client_costs_business_id ON client_costs(business_id);

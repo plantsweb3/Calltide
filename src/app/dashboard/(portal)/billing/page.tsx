@@ -24,13 +24,22 @@ function fmt(cents: number): string {
 export default function BillingPage() {
   const [data, setData] = useState<BillingData | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/dashboard/billing")
       .then((r) => r.json())
       .then(setData)
-      .catch(() => {});
+      .catch(() => setError("Failed to load billing data"));
   }, []);
+
+  if (error) {
+    return (
+      <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+        <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+      </div>
+    );
+  }
 
   if (!data) return <LoadingSpinner message="Loading billing..." />;
 

@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const ownerEmail = process.env.OWNER_EMAIL;
+  const ownerEmail = env.OWNER_EMAIL;
   if (!ownerEmail || !env.RESEND_API_KEY) {
     return NextResponse.json({ error: "Missing OWNER_EMAIL or RESEND_API_KEY" }, { status: 500 });
   }

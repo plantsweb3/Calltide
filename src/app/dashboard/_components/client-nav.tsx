@@ -99,7 +99,7 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
     fetch("/api/dashboard/billing")
       .then((r) => r.json())
       .then((d) => setAiStatus(d.status ?? "active"))
-      .catch(() => {});
+      .catch(() => setAiStatus("active"));
   }, []);
 
   const statusConfig: Record<string, { color: string; pulse: boolean; label: string }> = {

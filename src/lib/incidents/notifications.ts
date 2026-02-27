@@ -28,8 +28,8 @@ function getResend(): Resend {
 }
 
 const FROM_EMAIL = "Calltide Status <status@contact.calltide.app>";
-const OWNER_PHONE = process.env.OWNER_PHONE;
-const OWNER_EMAIL = process.env.OWNER_EMAIL;
+const OWNER_PHONE = env.OWNER_PHONE;
+const OWNER_EMAIL = env.OWNER_EMAIL;
 
 // ── Notify Owner (always SMS + email) ──
 

@@ -28,18 +28,27 @@ const STATUS_STYLES: Record<string, { bg: string; color: string }> = {
 export default function ReferralsPage() {
   const [data, setData] = useState<ReferralData | null>(null);
   const [copied, setCopied] = useState<"code" | "link" | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/dashboard/referrals")
       .then((r) => r.json())
       .then(setData)
-      .catch(() => {});
+      .catch(() => setError("Failed to load referral data"));
   }, []);
 
   function copyToClipboard(text: string, type: "code" | "link") {
     navigator.clipboard.writeText(text);
     setCopied(type);
     setTimeout(() => setCopied(null), 2000);
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+        <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+      </div>
+    );
   }
 
   if (!data) {

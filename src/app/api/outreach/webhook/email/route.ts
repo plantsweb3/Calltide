@@ -1,12 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createHmac } from "crypto";
 import { handleEmailWebhook } from "@/lib/outreach/email";
 import { reportWarning } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+
+/**
+ * Verify SVIX webhook signature (HMAC-SHA256).
+ * Secret format from Resend: "whsec_<base64-key>"
+ */
+function verifySvixSignature(
+  secret: string,
+  svixId: string,
+  svixTimestamp: string,
+  body: string,
+  signatureHeader: string,
+): boolean {
+  // Resend SVIX secrets are prefixed with "whsec_" — strip it to get the base64 key
+  const rawKey = secret.startsWith("whsec_") ? secret.slice(6) : secret;
+  const keyBytes = Buffer.from(rawKey, "base64");
+  const toSign = `${svixId}.${svixTimestamp}.${body}`;
+  const expected = createHmac("sha256", keyBytes).update(toSign).digest("base64");
+
+  // signatureHeader may contain multiple signatures: "v1,<sig1> v1,<sig2>"
+  const signatures = signatureHeader.split(" ");
+  return signatures.some((s) => {
+    const parts = s.split(",");
+    return parts.length === 2 && parts[1] === expected;
+  });
+}
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
   const rl = rateLimit(`email-webhook:${ip}`, RATE_LIMITS.webhook);
   if (!rl.success) return rateLimitResponse(rl);
+
+  // Read raw body for signature verification
+  const rawBody = await req.text();
 
   // Validate webhook signature if Resend webhook secret is configured
   const webhookSecret = process.env.RESEND_WEBHOOK_SECRET;
@@ -27,11 +56,17 @@ export async function POST(req: NextRequest) {
       reportWarning("Stale email webhook timestamp");
       return NextResponse.json({ error: "Stale webhook" }, { status: 401 });
     }
+
+    // Verify cryptographic signature
+    if (!verifySvixSignature(webhookSecret, svixId, svixTimestamp, rawBody, svixSignature)) {
+      reportWarning("Invalid SVIX signature on email webhook");
+      return NextResponse.json({ error: "Invalid webhook signature" }, { status: 401 });
+    }
   }
 
   let body;
   try {
-    body = await req.json();
+    body = JSON.parse(rawBody);
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }

@@ -50,6 +50,18 @@ export async function POST(req: NextRequest) {
   const rl = rateLimit(`clm:${ip}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
 
+  // Authenticate CLM requests when CLM_API_KEY is configured
+  const clmKey = process.env.CLM_API_KEY;
+  if (clmKey) {
+    const authHeader = req.headers.get("authorization");
+    if (authHeader !== `Bearer ${clmKey}`) {
+      return Response.json(
+        { error: "Unauthorized" },
+        { status: 401, headers: getCorsHeaders(req) }
+      );
+    }
+  }
+
   try {
     const anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,

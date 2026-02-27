@@ -93,7 +93,7 @@ export async function checkThresholds(checks: ThresholdCheck[]): Promise<void> {
 }
 
 async function notifyAdmin(severity: AlertSeverity, message: string) {
-  const ownerEmail = process.env.OWNER_EMAIL;
+  const ownerEmail = env.OWNER_EMAIL;
   if (!ownerEmail || !env.RESEND_API_KEY) return;
 
   const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";

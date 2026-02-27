@@ -1,4 +1,4 @@
-const BRAND_COLOR = "#22c55e";
+const BRAND_COLOR = "#C59A27";
 const MARKETING_URL = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://calltide.app";
 const COMPANY_ADDRESS = "Calltide LLC, PO Box 1247, San Marcos, TX 78667";
 

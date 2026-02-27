@@ -62,6 +62,8 @@ export async function verifyMagicToken(
   }
 }
 
+const COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
 export async function signClientCookie(
   businessId: string,
   secret: string,
@@ -69,6 +71,7 @@ export async function signClientCookie(
   const payload = btoa(JSON.stringify({
     businessId,
     iat: Date.now(),
+    exp: Date.now() + COOKIE_MAX_AGE_MS,
   }));
   const signature = await hmacSign(payload, secret);
   return `${payload}.${signature}`;
@@ -89,6 +92,8 @@ export async function verifyClientCookie(
 
   try {
     const data = JSON.parse(atob(payload));
+    // Reject expired cookies (tokens without exp are treated as expired)
+    if (!data.exp || data.exp < Date.now()) return null;
     return data.businessId ?? null;
   } catch {
     return null;

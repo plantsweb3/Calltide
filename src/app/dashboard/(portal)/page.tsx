@@ -61,12 +61,22 @@ function getGreeting(): string {
 
 export default function OverviewPage() {
   const [data, setData] = useState<Overview | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/dashboard/overview")
       .then((r) => r.json())
-      .then(setData);
+      .then(setData)
+      .catch(() => setError("Failed to load dashboard data"));
   }, []);
+
+  if (error) {
+    return (
+      <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+        <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+      </div>
+    );
+  }
 
   if (!data) {
     return <LoadingSpinner />;

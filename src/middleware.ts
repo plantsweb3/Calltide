@@ -28,6 +28,8 @@ function parseClientPayload(cookie: string): string | null {
   if (lastDot === -1) return null;
   try {
     const data = JSON.parse(atob(cookie.slice(0, lastDot)));
+    // Reject expired cookies
+    if (data.exp && data.exp < Date.now()) return null;
     return data.businessId ?? null;
   } catch {
     return null;
@@ -86,6 +88,23 @@ function isBlogWriteRoute(pathname: string, method: string): boolean {
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // ── CSRF protection for state-changing API requests ──
+  if (
+    pathname.startsWith("/api/") &&
+    !pathname.startsWith("/api/webhooks/") &&
+    !pathname.startsWith("/api/outreach/webhook/") &&
+    !pathname.startsWith("/api/stripe/webhook") &&
+    ["POST", "PUT", "PATCH", "DELETE"].includes(req.method)
+  ) {
+    const origin = req.headers.get("origin");
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    // Allow requests with no origin (server-to-server, curl, cron jobs)
+    // but reject requests from foreign origins
+    if (origin && appUrl && origin !== appUrl) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+  }
 
   // ── Admin routes (pages + API) ──
   if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {

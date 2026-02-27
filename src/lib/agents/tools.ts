@@ -184,8 +184,8 @@ async function toolSendSms(input: Record<string, unknown>): Promise<string> {
 }
 
 async function toolEscalateToOwner(input: Record<string, unknown>, agentName: string): Promise<string> {
-  const ownerPhone = process.env.OWNER_PHONE;
-  const ownerEmail = process.env.OWNER_EMAIL;
+  const ownerPhone = env.OWNER_PHONE;
+  const ownerEmail = env.OWNER_EMAIL;
   const reason = String(input.reason);
   const urgency = String(input.urgency);
   const context = String(input.context);

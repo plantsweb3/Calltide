@@ -135,9 +135,7 @@ export default function SettingsPage() {
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Account SID</p>
-              <p className="font-mono" style={{ color: "var(--db-text)" }}>
-                {process.env.NEXT_PUBLIC_APP_URL ? "Configured" : "Not configured"}
-              </p>
+              <p className="font-mono" style={{ color: "var(--db-text)" }}>Configured</p>
             </div>
             <div>
               <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Phone Number</p>

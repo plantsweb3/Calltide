@@ -9,7 +9,7 @@ export default function PaymentBanner() {
     fetch("/api/dashboard/billing")
       .then((r) => r.json())
       .then((d) => setStatus(d.status ?? "active"))
-      .catch(() => {});
+      .catch(() => setStatus("active"));
   }, []);
 
   if (!status || !["past_due", "grace_period"].includes(status)) return null;
