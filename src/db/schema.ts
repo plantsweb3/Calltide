@@ -772,3 +772,25 @@ export const activeCalls = sqliteTable("active_calls", {
   startedAt: text("started_at").default(sql`(datetime('now'))`),
   provider: text("provider").default("twilio"),
 });
+
+// ── Phase 12: Integration ──
+
+export const notifications = sqliteTable("notifications", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  source: text("source").notNull(), // capacity, incident, financial, retention, compliance, agents, knowledge
+  severity: text("severity").notNull(), // info, warning, critical, emergency
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  actionUrl: text("action_url"),
+  acknowledged: integer("acknowledged", { mode: "boolean" }).default(false),
+  acknowledgedAt: text("acknowledged_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const outreachLog = sqliteTable("outreach_log", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull(),
+  source: text("source").notNull(), // dunning, churn_agent, success_agent, nudge_agent, incident
+  channel: text("channel").notNull(), // email, sms
+  sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
+});
