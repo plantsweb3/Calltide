@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ClientNav from "../_components/client-nav";
+import HelpWidget from "../_components/help-widget";
 import ErrorBoundary from "@/components/error-boundary";
 
 export default function PortalLayout({
@@ -46,6 +47,8 @@ export default function PortalLayout({
       >
         <ErrorBoundary>{children}</ErrorBoundary>
       </main>
+
+      <HelpWidget />
     </div>
   );
 }

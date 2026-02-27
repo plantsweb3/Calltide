@@ -400,3 +400,65 @@ export const referrals = sqliteTable("referrals", {
   activatedAt: text("activated_at"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
+
+// ── Phase 7: Knowledge Base + Help Center ──
+
+export const helpCategories = sqliteTable("help_categories", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  slug: text("slug").unique().notNull(),
+  name: text("name").notNull(),
+  nameEs: text("name_es"),
+  description: text("description"),
+  descriptionEs: text("description_es"),
+  icon: text("icon"),
+  sortOrder: integer("sort_order").default(0),
+  articleCount: integer("article_count").default(0),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+});
+
+export const helpArticles = sqliteTable("help_articles", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  categoryId: text("category_id").notNull().references(() => helpCategories.id),
+  slug: text("slug").unique().notNull(),
+  title: text("title").notNull(),
+  titleEs: text("title_es"),
+  excerpt: text("excerpt"),
+  excerptEs: text("excerpt_es"),
+  content: text("content").notNull(),
+  contentEs: text("content_es"),
+  metaTitle: text("meta_title"),
+  metaTitleEs: text("meta_title_es"),
+  metaDescription: text("meta_description"),
+  metaDescriptionEs: text("meta_description_es"),
+  relatedArticles: text("related_articles", { mode: "json" }).$type<string[]>(),
+  dashboardContextRoutes: text("dashboard_context_routes", { mode: "json" }).$type<string[]>(),
+  status: text("status").default("draft"),
+  viewCount: integer("view_count").default(0),
+  helpfulYes: integer("helpful_yes").default(0),
+  helpfulNo: integer("helpful_no").default(0),
+  searchKeywords: text("search_keywords"),
+  searchKeywordsEs: text("search_keywords_es"),
+  readingTimeMinutes: integer("reading_time_minutes").default(3),
+  sortOrder: integer("sort_order").default(0),
+  publishedAt: text("published_at"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+});
+
+export const helpArticleFeedback = sqliteTable("help_article_feedback", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  articleId: text("article_id").notNull().references(() => helpArticles.id),
+  helpful: integer("helpful", { mode: "boolean" }).notNull(),
+  sessionId: text("session_id"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+export const helpSearchMisses = sqliteTable("help_search_misses", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  query: text("query").notNull(),
+  source: text("source").notNull(),
+  resultCount: integer("result_count").default(0),
+  businessId: text("business_id"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
