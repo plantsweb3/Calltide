@@ -29,6 +29,13 @@
       "when": 1772125203902,
       "tag": "0003_slow_bucky",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1772169129093,
+      "tag": "0004_lowly_red_wolf",
+      "breakpoints": true
     }
   ]
 }

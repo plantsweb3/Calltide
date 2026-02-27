@@ -242,3 +242,35 @@ export const escalations = sqliteTable("escalations", {
   resolvedAt: text("resolved_at"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
+
+// ── Phase 4: Agent System ──
+
+export const agentActivityLog = sqliteTable("agent_activity_log", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  agentName: text("agent_name").notNull(), // support, qualify, churn, onboard, health
+  actionType: text("action_type").notNull(), // email_sent, sms_sent, escalated, resolved, qualified, nudged, health_check, demo_created
+  targetId: text("target_id"),
+  targetType: text("target_type"), // client, prospect, system
+  inputSummary: text("input_summary"),
+  outputSummary: text("output_summary"),
+  toolsCalled: text("tools_called", { mode: "json" }).$type<string[]>(),
+  escalated: integer("escalated", { mode: "boolean" }).default(false),
+  resolvedWithoutEscalation: integer("resolved_without_escalation", { mode: "boolean" }).default(false),
+  category: text("category"), // billing, technical, how-to, feature-request, cancellation
+  metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>(),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const agentConfig = sqliteTable("agent_config", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  agentName: text("agent_name").unique().notNull(),
+  enabled: integer("enabled", { mode: "boolean" }).default(true),
+  cronExpression: text("cron_expression"),
+  systemPromptOverride: text("system_prompt_override"),
+  escalationThreshold: integer("escalation_threshold"),
+  lastRunAt: text("last_run_at"),
+  lastErrorAt: text("last_error_at"),
+  lastErrorMessage: text("last_error_message"),
+  config: text("config", { mode: "json" }).$type<Record<string, unknown>>(),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});

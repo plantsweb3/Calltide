@@ -1,0 +1,36 @@
+import type Anthropic from "@anthropic-ai/sdk";
+
+export type AgentName = "support" | "qualify" | "churn" | "onboard" | "health";
+
+export type ActionType =
+  | "email_sent"
+  | "sms_sent"
+  | "escalated"
+  | "resolved"
+  | "qualified"
+  | "nudged"
+  | "health_check"
+  | "demo_created";
+
+export type TargetType = "client" | "prospect" | "system";
+
+export interface AgentContext {
+  agentName: AgentName;
+  targetId?: string;
+  targetType?: TargetType;
+  trigger: string;
+}
+
+export interface AgentResult {
+  actions: string[];
+  escalated: boolean;
+  toolsCalled: string[];
+  summary: string;
+}
+
+export type ToolDefinition = Anthropic.Tool;
+
+export type ToolExecutor = (
+  toolName: string,
+  input: Record<string, unknown>,
+) => Promise<string>;
