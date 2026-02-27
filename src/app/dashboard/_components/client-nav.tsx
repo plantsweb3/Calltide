@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "./theme-provider";
@@ -92,6 +93,23 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
+  const [aiStatus, setAiStatus] = useState<string>("active");
+
+  useEffect(() => {
+    fetch("/api/dashboard/billing")
+      .then((r) => r.json())
+      .then((d) => setAiStatus(d.status ?? "active"))
+      .catch(() => {});
+  }, []);
+
+  const statusConfig: Record<string, { color: string; pulse: boolean; label: string }> = {
+    active: { color: "#4ade80", pulse: true, label: "AI Receptionist Active" },
+    past_due: { color: "#fbbf24", pulse: false, label: "AI Receptionist Active" },
+    grace_period: { color: "#f59e0b", pulse: false, label: "Payment Overdue" },
+    suspended: { color: "#f87171", pulse: false, label: "Service Suspended" },
+    canceled: { color: "#94a3b8", pulse: false, label: "Service Canceled" },
+  };
+  const sc = statusConfig[aiStatus] ?? statusConfig.active;
 
   async function handleLogout() {
     await fetch("/api/dashboard/auth/logout", { method: "POST" });
@@ -149,11 +167,13 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
         {/* AI Status */}
         <div className="mx-4 mb-2 flex items-center gap-2 rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
           <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ background: "#4ade80" }} />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ background: "#4ade80" }} />
+            {sc.pulse && (
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ background: sc.color }} />
+            )}
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ background: sc.color }} />
           </span>
           <span className="text-xs font-medium" style={{ color: "var(--db-text-secondary)" }}>
-            AI Receptionist Active
+            {sc.label}
           </span>
         </div>
 

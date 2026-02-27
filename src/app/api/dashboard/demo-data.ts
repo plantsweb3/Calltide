@@ -40,7 +40,9 @@ export const DEMO_OVERVIEW = {
   totalCalls: 142,
   // Revenue
   revenueThisMonth: 4200,
+  revenueChange: 23,
   revenueSaved: 1800,
+  missedCallsRecoveredCount: 4,
   costPerLead: 3.47,
   roiMultiple: 8.4,
   // Business

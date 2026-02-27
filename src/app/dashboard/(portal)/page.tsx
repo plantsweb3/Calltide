@@ -13,9 +13,11 @@ interface Overview {
   appointmentsThisWeek: number;
   missedCallsSaved: number;
   totalCalls: number;
-  // Enhanced (demo)
+  // Enhanced
   revenueThisMonth?: number;
+  revenueChange?: number;
   revenueSaved?: number;
+  missedCallsRecoveredCount?: number;
   costPerLead?: number;
   roiMultiple?: number;
   businessName?: string;
@@ -183,14 +185,22 @@ export default function OverviewPage() {
             label="Revenue Captured"
             value={data.revenueThisMonth!}
             prefix="$"
-            change="+23% vs last month"
-            changeType="positive"
+            change={
+              data.revenueChange != null && data.revenueChange !== 0
+                ? `${data.revenueChange > 0 ? "+" : ""}${data.revenueChange}% vs last month`
+                : undefined
+            }
+            changeType={data.revenueChange != null && data.revenueChange > 0 ? "positive" : data.revenueChange != null && data.revenueChange < 0 ? "negative" : "neutral"}
           />
           <MetricCard
             label="Recovered from Missed"
             value={data.revenueSaved!}
             prefix="$"
-            change="4 calls saved"
+            change={
+              data.missedCallsRecoveredCount
+                ? `${data.missedCallsRecoveredCount} call${data.missedCallsRecoveredCount === 1 ? "" : "s"} saved`
+                : undefined
+            }
             changeType="positive"
           />
           <MetricCard

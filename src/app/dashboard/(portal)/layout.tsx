@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ClientNav from "../_components/client-nav";
 import HelpWidget from "../_components/help-widget";
+import PaymentBanner from "../_components/payment-banner";
 import ErrorBoundary from "@/components/error-boundary";
 
 export default function PortalLayout({
@@ -45,6 +46,7 @@ export default function PortalLayout({
       <main
         className="min-w-0 flex-1 p-4 pt-18 md:ml-60 md:p-6 md:pt-6"
       >
+        <PaymentBanner />
         <ErrorBoundary>{children}</ErrorBoundary>
       </main>
 

@@ -36,6 +36,8 @@ export default function HelpWidget() {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Article[]>([]);
   const [searching, setSearching] = useState(false);
+  const [feedbackGiven, setFeedbackGiven] = useState<Record<string, boolean>>({});
+  const [sessionId] = useState(() => Math.random().toString(36).slice(2));
 
   // Fetch context-based articles when panel opens
   useEffect(() => {
@@ -68,9 +70,28 @@ export default function HelpWidget() {
       .finally(() => setSearching(false));
   }
 
+  function trackView(articleId: string) {
+    fetch("/api/help/view", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ articleId }),
+    }).catch(() => {});
+  }
+
+  function sendFeedback(articleId: string, helpful: boolean) {
+    if (feedbackGiven[articleId]) return;
+    setFeedbackGiven((prev) => ({ ...prev, [articleId]: true }));
+    fetch("/api/help/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ articleId, helpful, sessionId }),
+    }).catch(() => {});
+  }
+
   function viewArticle(article: Article) {
     if (article.content) {
       setViewing(article);
+      trackView(article.id);
       return;
     }
     // Fetch full article content
@@ -78,7 +99,10 @@ export default function HelpWidget() {
       .then((r) => r.json())
       .then((d) => {
         const full = d.articles?.[0];
-        if (full) setViewing(full);
+        if (full) {
+          setViewing(full);
+          trackView(full.id);
+        }
       })
       .catch(() => {});
   }
@@ -155,11 +179,42 @@ export default function HelpWidget() {
                 <div className="prose-help mt-4 text-sm" style={{ color: "var(--db-text-secondary)" }}>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{viewing.content}</ReactMarkdown>
                 </div>
+                {/* Feedback */}
+                <div
+                  className="mt-6 flex items-center gap-3 rounded-lg px-3 py-2"
+                  style={{ background: "var(--db-hover)" }}
+                >
+                  <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                    {feedbackGiven[viewing.id] ? "Thanks for your feedback!" : "Was this helpful?"}
+                  </span>
+                  {!feedbackGiven[viewing.id] && (
+                    <div className="flex gap-1 ml-auto">
+                      <button
+                        onClick={() => sendFeedback(viewing.id, true)}
+                        className="rounded px-2 py-1 text-xs transition-colors"
+                        style={{ color: "var(--db-text-muted)" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-border)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                      >
+                        Yes
+                      </button>
+                      <button
+                        onClick={() => sendFeedback(viewing.id, false)}
+                        className="rounded px-2 py-1 text-xs transition-colors"
+                        style={{ color: "var(--db-text-muted)" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-border)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                      >
+                        No
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <a
                   href={`/help/${viewing.categorySlug}/${viewing.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 block text-sm font-medium"
+                  className="mt-3 block text-sm font-medium"
                   style={{ color: "var(--db-accent)" }}
                 >
                   Open full article &rarr;

@@ -426,7 +426,9 @@ export async function GET(req: NextRequest) {
     // Enhanced fields
     businessName: biz?.name,
     revenueThisMonth,
+    revenueChange,
     revenueSaved,
+    missedCallsRecoveredCount,
     costPerLead,
     roiMultiple,
     weeklySummary,
