@@ -23,6 +23,28 @@ export const businesses = sqliteTable("businesses", {
   lastNpsDate: text("last_nps_date"),
   onboardingQaGrade: text("onboarding_qa_grade"), // A/B/C/D/F
   onboardingQaCompleteAt: text("onboarding_qa_complete_at"),
+  // Legal + Compliance
+  tosAcceptedVersion: text("tos_accepted_version"),
+  tosAcceptedAt: text("tos_accepted_at"),
+  privacyAcceptedVersion: text("privacy_accepted_version"),
+  privacyAcceptedAt: text("privacy_accepted_at"),
+  dpaAcceptedVersion: text("dpa_accepted_version"),
+  dpaAcceptedAt: text("dpa_accepted_at"),
+  dataDeletedAt: text("data_deleted_at"),
+  dataRetentionHoldUntil: text("data_retention_hold_until"),
+  // Financial Operations
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  stripeSubscriptionStatus: text("stripe_subscription_status"), // active, past_due, canceled, trialing
+  paymentStatus: text("payment_status").default("active"), // active, past_due, grace_period, suspended, canceled
+  lastPaymentAt: text("last_payment_at"),
+  lastPaymentAmount: integer("last_payment_amount"), // cents
+  nextBillingAt: text("next_billing_at"),
+  mrr: integer("mrr").default(49700), // cents ($497)
+  lifetimeRevenue: integer("lifetime_revenue").default(0), // cents
+  cardLast4: text("card_last4"),
+  cardExpMonth: integer("card_exp_month"),
+  cardExpYear: integer("card_exp_year"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -516,4 +538,237 @@ export const statusPageSubscribers = sqliteTable("status_page_subscribers", {
   verificationToken: text("verification_token"),
   subscribedAt: text("subscribed_at").notNull().default(sql`(datetime('now'))`),
   unsubscribedAt: text("unsubscribed_at"),
+});
+
+// ── Phase 9: Legal + Compliance ──
+
+export const consentRecords = sqliteTable("consent_records", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id"),
+  phoneNumber: text("phone_number"),
+  consentType: text("consent_type").notNull(), // tos, privacy_policy, dpa, sms_client, sms_caller, call_recording, marketing_email
+  documentVersion: text("document_version"),
+  status: text("status").notNull().default("active"), // active, revoked
+  consentedAt: text("consented_at").notNull(),
+  revokedAt: text("revoked_at"),
+  revokedMethod: text("revoked_method"), // sms_stop, email_request, dashboard, verbal, admin
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>(),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+export const legalDocuments = sqliteTable("legal_documents", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  documentType: text("document_type").notNull(), // tos, privacy_policy, dpa
+  version: text("version").notNull(),
+  title: text("title").notNull(),
+  titleEs: text("title_es"),
+  content: text("content").notNull(),
+  contentEs: text("content_es"),
+  effectiveDate: text("effective_date").notNull(),
+  supersededDate: text("superseded_date"),
+  isCurrentVersion: integer("is_current_version", { mode: "boolean" }).default(true),
+  changeSummary: text("change_summary"),
+  changeSummaryEs: text("change_summary_es"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+export const smsOptOuts = sqliteTable("sms_opt_outs", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  phoneNumber: text("phone_number").unique().notNull(),
+  optedOutAt: text("opted_out_at").notNull(),
+  optedOutMethod: text("opted_out_method").notNull(), // sms_stop, email_request, dashboard, admin
+  reoptedInAt: text("reopted_in_at"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+export const dataRetentionLog = sqliteTable("data_retention_log", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  dataType: text("data_type").notNull(),
+  recordsDeleted: integer("records_deleted").notNull(),
+  deletedAt: text("deleted_at").notNull(),
+  retentionPeriodDays: integer("retention_period_days").notNull(),
+  oldestRecordDate: text("oldest_record_date"),
+  newestRecordDate: text("newest_record_date"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+export const dataDeletionRequests = sqliteTable("data_deletion_requests", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  requestedBy: text("requested_by").notNull(),
+  requestType: text("request_type").notNull(), // gdpr, ccpa, manual, offboarding
+  status: text("status").default("received"), // received, verified, processing, completed, denied
+  dataDescription: text("data_description"),
+  verifiedAt: text("verified_at"),
+  processingStartedAt: text("processing_started_at"),
+  completedAt: text("completed_at"),
+  deletedRecords: text("deleted_records", { mode: "json" }).$type<Record<string, number>>(),
+  denialReason: text("denial_reason"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+export const subProcessors = sqliteTable("sub_processors", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  purpose: text("purpose").notNull(),
+  dataProcessed: text("data_processed", { mode: "json" }).$type<string[]>(),
+  location: text("location"),
+  dpaUrl: text("dpa_url"),
+  dpaStatus: text("dpa_status").default("active"), // active, pending, expired
+  lastReviewedAt: text("last_reviewed_at"),
+  addedAt: text("added_at").default(sql`(datetime('now'))`),
+});
+
+// ── Phase 10: Financial Operations ──
+
+export const paymentEvents = sqliteTable("payment_events", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").references(() => businesses.id),
+  stripeEventId: text("stripe_event_id"),
+  eventType: text("event_type").notNull(), // payment_succeeded, payment_failed, refund, etc.
+  amount: integer("amount"), // cents
+  currency: text("currency").default("usd"),
+  status: text("status").notNull(), // succeeded, failed, refunded
+  failureCode: text("failure_code"),
+  failureMessage: text("failure_message"),
+  invoiceId: text("invoice_id"),
+  metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>(),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const subscriptionEvents = sqliteTable("subscription_events", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").references(() => businesses.id),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  changeType: text("change_type").notNull(), // created, activated, past_due, recovered, canceled
+  previousStatus: text("previous_status"),
+  newStatus: text("new_status"),
+  mrr: integer("mrr"), // cents at time of event
+  metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>(),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const dunningState = sqliteTable("dunning_state", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  status: text("status").notNull().default("active"), // active, recovered, canceled
+  firstFailedAt: text("first_failed_at").notNull(),
+  attemptCount: integer("attempt_count").default(1),
+  lastFailureCode: text("last_failure_code"),
+  email1SentAt: text("email1_sent_at"),
+  email2SentAt: text("email2_sent_at"),
+  email3SentAt: text("email3_sent_at"),
+  smsSentAt: text("sms_sent_at"),
+  recoveredAt: text("recovered_at"),
+  canceledAt: text("canceled_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const clientCosts = sqliteTable("client_costs", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  month: text("month").notNull(), // YYYY-MM
+  callMinutes: real("call_minutes").default(0),
+  callCount: integer("call_count").default(0),
+  smsCount: integer("sms_count").default(0),
+  twilioCost: integer("twilio_cost").default(0), // cents
+  humeCost: integer("hume_cost").default(0),
+  anthropicCost: integer("anthropic_cost").default(0),
+  totalCost: integer("total_cost").default(0),
+  revenue: integer("revenue").default(49700), // $497
+  margin: integer("margin").default(0), // revenue - totalCost
+  marginPct: real("margin_pct").default(0),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+export const mrrSnapshots = sqliteTable("mrr_snapshots", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  date: text("date").notNull(),
+  mrr: integer("mrr").notNull(), // cents
+  arr: integer("arr"), // cents (mrr * 12)
+  activeClients: integer("active_clients").default(0),
+  pastDueClients: integer("past_due_clients").default(0),
+  newClients: integer("new_clients").default(0),
+  churnedClients: integer("churned_clients").default(0),
+  recoveredClients: integer("recovered_clients").default(0),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+export const processedStripeEvents = sqliteTable("processed_stripe_events", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  stripeEventId: text("stripe_event_id").unique().notNull(),
+  eventType: text("event_type").notNull(),
+  processedAt: text("processed_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Phase 11: Capacity Planning ──
+
+export const capacitySnapshots = sqliteTable("capacity_snapshots", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  date: text("date").notNull(),
+  currentTier: text("current_tier").notNull(), // seed, growth, scale, enterprise, hypergrowth
+  activeClients: integer("active_clients").default(0),
+  callsToday: integer("calls_today").default(0),
+  peakConcurrent: integer("peak_concurrent").default(0),
+  // Hume
+  humeMinutesMtd: real("hume_minutes_mtd").default(0),
+  humePlanMinutes: integer("hume_plan_minutes").default(1200),
+  humeConcurrentPeak: integer("hume_concurrent_peak").default(0),
+  humeConcurrentLimit: integer("hume_concurrent_limit").default(10),
+  // Anthropic
+  anthropicTokensMtd: integer("anthropic_tokens_mtd").default(0),
+  anthropicRpmPeak: integer("anthropic_rpm_peak").default(0),
+  anthropicSpendMtd: integer("anthropic_spend_mtd").default(0), // cents
+  // Turso
+  tursoRowReadsMtd: integer("turso_row_reads_mtd").default(0),
+  tursoRowWritesMtd: integer("turso_row_writes_mtd").default(0),
+  tursoStorageMb: real("turso_storage_mb").default(0),
+  // Twilio
+  twilioCallsToday: integer("twilio_calls_today").default(0),
+  twilioErrorCount: integer("twilio_error_count").default(0),
+  twilioSuccessRate: real("twilio_success_rate").default(100),
+  // Vercel
+  vercelFunctionInvocations: integer("vercel_function_invocations").default(0),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+export const capacityAlerts = sqliteTable("capacity_alerts", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  provider: text("provider").notNull(),
+  metric: text("metric").notNull(),
+  severity: text("severity").notNull(), // warning, critical, emergency
+  currentValue: real("current_value").notNull(),
+  limitValue: real("limit_value").notNull(),
+  pctUsed: real("pct_used").notNull(),
+  message: text("message").notNull(),
+  acknowledged: integer("acknowledged", { mode: "boolean" }).default(false),
+  acknowledgedAt: text("acknowledged_at"),
+  resolvedAt: text("resolved_at"),
+  incidentId: text("incident_id"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const scalingPlaybook = sqliteTable("scaling_playbook", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  tier: text("tier").notNull(), // seed, growth, scale, enterprise, hypergrowth
+  clientRange: text("client_range").notNull(),
+  provider: text("provider").notNull(),
+  action: text("action").notNull(),
+  planRequired: text("plan_required"),
+  estimatedMonthlyCost: text("estimated_monthly_cost"),
+  priority: text("priority").notNull().default("required"), // required, recommended
+  completed: integer("completed", { mode: "boolean" }).default(false),
+  completedAt: text("completed_at"),
+  notes: text("notes"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+export const activeCalls = sqliteTable("active_calls", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull(),
+  callSid: text("call_sid").unique().notNull(),
+  startedAt: text("started_at").default(sql`(datetime('now'))`),
+  provider: text("provider").default("twilio"),
 });
