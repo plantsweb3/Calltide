@@ -67,11 +67,13 @@ export async function checkThresholds(checks: ThresholdCheck[]): Promise<void> {
     if (match.severity === "critical" || match.severity === "emergency") {
       try {
         const { createIncident } = await import("@/lib/incidents/engine");
+        // Pass as HealthCheckResult shape
         await createIncident({
-          title: `Capacity alert: ${check.provider} ${check.metric} at ${pctUsed.toFixed(1)}%`,
-          severity: match.severity === "emergency" ? "critical" : "major",
-          affectedServices: [check.provider],
-          createdBy: "system",
+          name: check.provider,
+          statusCode: match.severity === "emergency" ? 0 : 500,
+          responseTimeMs: 0,
+          healthy: false,
+          error: `${check.metric} at ${pctUsed.toFixed(1)}% of limit`,
         });
       } catch {
         // Incident system may not be available

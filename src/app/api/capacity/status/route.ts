@@ -62,6 +62,7 @@ export async function GET() {
     const dayOfMonth = new Date().getDate();
     const breachProjections = [
       {
+        id: "hume-minutes",
         provider: "Hume",
         metric: "Monthly Minutes",
         current: latestSnapshot?.humeMinutesMtd ?? 0,
@@ -69,6 +70,7 @@ export async function GET() {
         breachDate: projectBreachDate(latestSnapshot?.humeMinutesMtd ?? 0, PROVIDER_LIMITS.hume.monthlyMinutes, dayOfMonth)?.toISOString() ?? null,
       },
       {
+        id: "anthropic-spend",
         provider: "Anthropic",
         metric: "Monthly Spend",
         current: latestSnapshot?.anthropicSpendMtd ?? 0,
@@ -76,6 +78,7 @@ export async function GET() {
         breachDate: projectBreachDate(latestSnapshot?.anthropicSpendMtd ?? 0, PROVIDER_LIMITS.anthropic.monthlySpendLimit, dayOfMonth)?.toISOString() ?? null,
       },
       {
+        id: "turso-reads",
         provider: "Turso",
         metric: "Row Reads",
         current: latestSnapshot?.tursoRowReadsMtd ?? 0,

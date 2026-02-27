@@ -181,9 +181,8 @@ async function getCosts() {
     avgCostPerClient: Math.round(avgCost),
     avgMarginPct: Math.round(avgMarginPct * 10) / 10,
     clients: monthCosts.map((c) => ({
-      businessId: c.cost.businessId,
-      businessName: c.businessName,
       ...c.cost,
+      businessName: c.businessName,
     })),
   };
 }

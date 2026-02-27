@@ -309,7 +309,7 @@ function CostsTab({ data }: { data: any }) {
     const v = clients <= 50 ? 0 : 2000;
     const total = h + a + t + tu + v;
     const revenue = clients * 49700;
-    return { clients, total, revenue, margin: revenue - total, marginPct: revenue > 0 ? ((revenue - total) / revenue * 100) : 0 };
+    return { id: String(clients), clients, total, revenue, margin: revenue - total, marginPct: revenue > 0 ? ((revenue - total) / revenue * 100) : 0 };
   });
 
   return (

@@ -137,13 +137,15 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
   const business = await findBusinessByCustomer(customerId);
   if (!business) return;
 
-  const charge = invoice.charge;
   let failureCode: string | undefined;
   let failureMessage: string | undefined;
 
-  if (typeof charge === "object" && charge !== null) {
-    failureCode = (charge as Stripe.Charge).failure_code ?? undefined;
-    failureMessage = (charge as Stripe.Charge).failure_message ?? undefined;
+  // Extract failure info from invoice metadata if available
+  const invoiceAny = invoice as unknown as Record<string, unknown>;
+  if (invoiceAny.charge && typeof invoiceAny.charge === "object") {
+    const charge = invoiceAny.charge as Record<string, unknown>;
+    failureCode = (charge.failure_code as string) ?? undefined;
+    failureMessage = (charge.failure_message as string) ?? undefined;
   }
 
   // Record payment event
@@ -233,8 +235,9 @@ async function handleSubscriptionUpdated(sub: Stripe.Subscription) {
     }
   }
 
-  if (sub.current_period_end) {
-    updates.nextBillingAt = new Date(sub.current_period_end * 1000).toISOString();
+  const subAny = sub as unknown as Record<string, unknown>;
+  if (subAny.current_period_end) {
+    updates.nextBillingAt = new Date(Number(subAny.current_period_end) * 1000).toISOString();
   }
 
   await db.update(businesses).set(updates).where(eq(businesses.id, business.id));

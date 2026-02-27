@@ -111,7 +111,7 @@ function RevenueTab() {
               <CartesianGrid strokeDasharray="3 3" stroke="var(--db-border)" />
               <XAxis dataKey="date" tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} tickFormatter={(v) => v.slice(5)} />
               <YAxis tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} tickFormatter={(v) => `$${v.toLocaleString()}`} />
-              <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, "MRR"]} contentStyle={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }} />
+              <Tooltip formatter={(v) => [`$${Number(v ?? 0).toLocaleString()}`, "MRR"]} contentStyle={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }} />
               <Area type="monotone" dataKey="mrr" stroke="#C59A27" fill="rgba(197,154,39,0.1)" strokeWidth={2} />
             </AreaChart>
           </ResponsiveContainer>
@@ -280,7 +280,7 @@ function ForecastTab() {
               <CartesianGrid strokeDasharray="3 3" stroke="var(--db-border)" />
               <XAxis dataKey="day" tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} />
               <YAxis tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} tickFormatter={(v) => `$${v.toLocaleString()}`} />
-              <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, ""]} contentStyle={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }} />
+              <Tooltip formatter={(v) => [`$${Number(v ?? 0).toLocaleString()}`, ""]} contentStyle={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }} />
               <Legend />
               <Line type="monotone" dataKey="optimistic" name="Optimistic" stroke="#4ade80" strokeDasharray="5 5" dot={false} />
               <Line type="monotone" dataKey="base" name="Base" stroke="#C59A27" strokeWidth={2} dot={false} />
