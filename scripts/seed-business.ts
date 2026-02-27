@@ -39,7 +39,10 @@ async function seed() {
     },
     timezone: "America/Chicago",
     defaultLanguage: "en",
-    greeting: null,
+    greeting: "Thank you for calling Rodriguez Plumbing & HVAC, this is María. How can I help you today?",
+    greetingEs: "Gracias por llamar a Rodriguez Plumbing & HVAC, habla María. ¿En qué le puedo ayudar hoy?",
+    serviceArea: "San Antonio and surrounding areas",
+    additionalInfo: "We offer same-day emergency service for plumbing and HVAC issues. Licensed and insured. Family-owned since 2005.",
     active: true,
   };
 

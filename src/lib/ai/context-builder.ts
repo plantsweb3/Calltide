@@ -15,18 +15,7 @@ export async function getBusinessByPhone(twilioNumber: string): Promise<Business
 
   if (!biz) return null;
 
-  return {
-    id: biz.id,
-    name: biz.name,
-    type: biz.type,
-    ownerName: biz.ownerName,
-    ownerPhone: biz.ownerPhone,
-    twilioNumber: biz.twilioNumber,
-    services: biz.services as string[],
-    businessHours: biz.businessHours as Record<string, { open: string; close: string }>,
-    language: biz.defaultLanguage as Language,
-    timezone: biz.timezone,
-  };
+  return toBizContext(biz);
 }
 
 /**
@@ -41,6 +30,10 @@ export async function getBusinessById(businessId: string): Promise<BusinessConte
 
   if (!biz) return null;
 
+  return toBizContext(biz);
+}
+
+function toBizContext(biz: typeof businesses.$inferSelect): BusinessContext {
   return {
     id: biz.id,
     name: biz.name,
@@ -52,6 +45,10 @@ export async function getBusinessById(businessId: string): Promise<BusinessConte
     businessHours: biz.businessHours as Record<string, { open: string; close: string }>,
     language: biz.defaultLanguage as Language,
     timezone: biz.timezone,
+    greeting: biz.greeting || undefined,
+    greetingEs: biz.greetingEs || undefined,
+    serviceArea: biz.serviceArea || undefined,
+    additionalInfo: biz.additionalInfo || undefined,
   };
 }
 

@@ -94,4 +94,8 @@ export interface BusinessContext {
   businessHours: Record<string, { open: string; close: string }>;
   language: Language;
   timezone: string;
+  greeting?: string;
+  greetingEs?: string;
+  serviceArea?: string;
+  additionalInfo?: string;
 }

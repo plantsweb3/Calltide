@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessByPhone, detectLanguage } from "@/lib/ai/context-builder";
 import { buildSystemPrompt } from "@/lib/ai/system-prompts";
+import { detectEmergency } from "@/lib/emergency";
 import { db } from "@/db";
 import { calls } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -100,9 +101,20 @@ export async function POST(req: NextRequest) {
     const lang = detectedLang;
 
     // Build the system prompt with business context
-    const systemPrompt = businessContext
+    let systemPrompt = businessContext
       ? buildSystemPrompt(businessContext, lang)
       : buildDefaultSystemPrompt(lang);
+
+    // Check latest user message for emergency keywords
+    if (lastUserMessage) {
+      const emergency = detectEmergency(lastUserMessage.content);
+      if (emergency.isEmergency) {
+        const emergencyInstruction = lang === "es"
+          ? `\n\n[ALERTA DE EMERGENCIA: El llamante describió una situación de emergencia ("${emergency.matchedPhrase}"). Sigue el Protocolo de Emergencia de inmediato. Mantén la calma, valida la urgencia, usa transfer_to_human con razón "[EMERGENCY]", y recuérdales llamar al 911 si hay peligro inmediato.]`
+          : `\n\n[EMERGENCY ALERT: The caller described an emergency situation ("${emergency.matchedPhrase}"). Follow the Emergency Protocol immediately. Stay calm, validate the urgency, use transfer_to_human with reason "[EMERGENCY]", and remind them to call 911 if there is immediate danger.]`;
+        systemPrompt += emergencyInstruction;
+      }
+    }
 
     // Convert messages to Anthropic format (filter out system messages — we inject our own)
     const anthropicMessages = messages
@@ -118,7 +130,7 @@ export async function POST(req: NextRequest) {
     // Stream from Claude
     const stream = anthropic!.messages.stream({
       model: CLAUDE_MODEL,
-      max_tokens: 150,
+      max_tokens: 200,
       system: systemPrompt,
       messages: cleanedMessages,
     });

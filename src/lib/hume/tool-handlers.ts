@@ -166,6 +166,7 @@ async function handleTakeMessage(
 
   const message = params.message as string;
   const callerName = params.caller_name as string | undefined;
+  const isEmergency = message?.startsWith("[EMERGENCY]") ?? false;
 
   if (!message) return { success: false, error: "Message is required" };
 
@@ -178,11 +179,12 @@ async function handleTakeMessage(
     }).where(eq(leads.id, ctx.leadId));
   }
 
-  // Notify business owner via SMS
+  // Notify business owner via SMS (urgent prefix for emergencies)
+  const prefix = isEmergency ? "EMERGENCY - " : "";
   await sendSMS({
     to: biz.ownerPhone,
     from: biz.twilioNumber,
-    body: getOwnerNotification({ businessName: biz.name, callerName, message }, "en"),
+    body: `${prefix}${getOwnerNotification({ businessName: biz.name, callerName, message }, "en")}`,
     businessId: ctx.businessId,
     leadId: ctx.leadId,
     callId: ctx.callId,
@@ -204,11 +206,13 @@ async function handleTransferToHuman(
   ctx: ToolCallContext
 ): Promise<ToolResult> {
   const reason = params.reason as string | undefined;
+  const isEmergency = reason?.startsWith("[EMERGENCY]") ?? false;
 
-  // Flag the call for transfer
+  // Flag the call for transfer (and emergency if applicable)
   if (ctx.callId) {
     await db.update(calls).set({
       transferRequested: true,
+      ...(isEmergency ? { status: "emergency" } : {}),
       updatedAt: new Date().toISOString(),
     }).where(eq(calls.id, ctx.callId));
   }
@@ -216,15 +220,28 @@ async function handleTransferToHuman(
   // Notify the business owner
   const biz = await getBusinessById(ctx.businessId);
   if (biz) {
+    const prefix = isEmergency ? "EMERGENCY - " : "";
+    const suffix = isEmergency ? " CALL THEM BACK IMMEDIATELY." : " Please call them back.";
     await sendSMS({
       to: biz.ownerPhone,
       from: biz.twilioNumber,
-      body: `Transfer requested from ${ctx.callerPhone || "unknown caller"}${reason ? `: ${reason}` : ""}. Please call them back.`,
+      body: `${prefix}Transfer requested from ${ctx.callerPhone || "unknown caller"}${reason ? `: ${reason}` : ""}.${suffix}`,
       businessId: ctx.businessId,
       leadId: ctx.leadId,
       callId: ctx.callId,
       templateType: "owner_notify",
     });
+  }
+
+  if (isEmergency) {
+    return {
+      success: true,
+      data: {
+        message: ctx.language === "es"
+          ? "He notificado al dueño con carácter de emergencia. Le llamarán de inmediato. Si hay peligro inmediato, por favor llame al 911."
+          : "I've notified the owner as an emergency. They'll call you back immediately. If there's immediate danger, please call 911.",
+      },
+    };
   }
 
   return {

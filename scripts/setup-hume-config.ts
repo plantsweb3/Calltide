@@ -38,19 +38,29 @@ async function setupConfig() {
       voice: {
         name: "KORA",
       },
+      timeouts: {
+        inactivity: {
+          enabled: true,
+          durationSecs: 30,
+        },
+        maxDuration: {
+          enabled: true,
+          durationSecs: 600, // 10-minute max call
+        },
+      },
       tools: toolIds,
       eventMessages: {
         onNewChat: {
-          enabled: true,
+          enabled: false,
           text: "",
         },
         onInactivityTimeout: {
           enabled: true,
-          text: "Are you still there? I'm here to help if you need anything.",
+          text: "Are you still there? I'm here if you need anything.",
         },
         onMaxDurationTimeout: {
           enabled: true,
-          text: "I've reached the maximum call duration. Please call back if you need more help. Goodbye!",
+          text: "We've reached the maximum call time. Please call back if you need more help. Goodbye!",
         },
       },
       languageModel: {
