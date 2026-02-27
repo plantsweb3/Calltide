@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, calls, churnRiskScores } from "@/db/schema";
-import { eq, sql, desc } from "drizzle-orm";
+import { businesses, calls, churnRiskScores, dunningState } from "@/db/schema";
+import { eq, and, sql, desc } from "drizzle-orm";
 import { runAgent, CHURN_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
 
 /**
@@ -47,6 +47,9 @@ HEALTH SIGNALS:
 - Last call date: ${signals.lastCallDate ?? "never"}
 - Current churn score: ${signals.currentScore ?? "unscored"}
 - Previous score factors: ${signals.previousFactors ?? "none"}
+- Payment status: ${signals.paymentStatus ?? "unknown"}
+- Dunning stage: ${signals.dunningStage ?? "none"}
+- Dunning attempt count: ${signals.dunningAttemptCount ?? 0}
 
 Based on these signals, update the churn risk score and take appropriate action (check-in email, escalation, or no action).`;
 
@@ -173,6 +176,19 @@ async function gatherClientSignals(businessId: string) {
     ? `${Math.round(((callsThisMonth - callsLastMonth) / callsLastMonth) * 100)}%`
     : "N/A (no last month data)";
 
+  // Payment status
+  const [business] = await db
+    .select({ paymentStatus: businesses.paymentStatus })
+    .from(businesses)
+    .where(eq(businesses.id, businessId))
+    .limit(1);
+
+  const [activeDunning] = await db
+    .select()
+    .from(dunningState)
+    .where(and(eq(dunningState.businessId, businessId), eq(dunningState.status, "active")))
+    .limit(1);
+
   return {
     callsThisMonth,
     callsLastMonth,
@@ -181,5 +197,8 @@ async function gatherClientSignals(businessId: string) {
     lastCallDate: lastCall?.createdAt ?? null,
     currentScore: score?.score ?? null,
     previousFactors: (score?.factors as string[])?.join("; ") ?? null,
+    paymentStatus: business?.paymentStatus ?? null,
+    dunningStage: activeDunning?.status ?? null,
+    dunningAttemptCount: activeDunning?.attemptCount ?? 0,
   };
 }

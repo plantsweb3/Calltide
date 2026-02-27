@@ -33,6 +33,11 @@ const envSchema = z.object({
   CRON_SECRET: z.string().min(16).optional(),             // Required in production for /api/cron/reminders
   RESEND_WEBHOOK_SECRET: z.string().min(1).optional(),    // SVIX secret for Resend webhook verification
 
+  // Stripe
+  STRIPE_SECRET_KEY: z.string().min(1).optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
+  STRIPE_PRICE_ID: z.string().min(1).optional(),
+
   // Phase 2: Outreach Engine (optional)
   GOOGLE_PLACES_API_KEY: z.string().min(1).optional(),
   RESEND_API_KEY: z.string().min(1).optional(),

@@ -1,0 +1,311 @@
+import { NextResponse } from "next/server";
+import Stripe from "stripe";
+import { db } from "@/db";
+import {
+  businesses,
+  paymentEvents,
+  subscriptionEvents,
+  processedStripeEvents,
+} from "@/db/schema";
+import { eq, sql } from "drizzle-orm";
+import { startDunning, clearDunning, cancelDunning } from "@/lib/financial/dunning";
+
+function getStripe(): Stripe {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
+  return new Stripe(key, { apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion });
+}
+
+export async function POST(request: Request) {
+  const body = await request.text();
+  const sig = request.headers.get("stripe-signature");
+
+  if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
+    return NextResponse.json({ error: "Missing signature or secret" }, { status: 400 });
+  }
+
+  let event: Stripe.Event;
+  try {
+    const stripe = getStripe();
+    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    console.error("[stripe] Webhook signature verification failed:", err);
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+
+  // Idempotency check
+  const [existing] = await db
+    .select({ id: processedStripeEvents.id })
+    .from(processedStripeEvents)
+    .where(eq(processedStripeEvents.stripeEventId, event.id))
+    .limit(1);
+
+  if (existing) {
+    return NextResponse.json({ received: true, duplicate: true });
+  }
+
+  // Mark as processed BEFORE handling (at-least-once → exactly-once)
+  await db.insert(processedStripeEvents).values({
+    stripeEventId: event.id,
+    eventType: event.type,
+  });
+
+  // Route event — fire-and-forget for side effects
+  try {
+    switch (event.type) {
+      case "invoice.payment_succeeded":
+        await handlePaymentSucceeded(event.data.object as Stripe.Invoice);
+        break;
+      case "invoice.payment_failed":
+        await handlePaymentFailed(event.data.object as Stripe.Invoice);
+        break;
+      case "customer.subscription.created":
+        await handleSubscriptionCreated(event.data.object as Stripe.Subscription);
+        break;
+      case "customer.subscription.updated":
+        await handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
+        break;
+      case "customer.subscription.deleted":
+        await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
+        break;
+      case "charge.refunded":
+        await handleChargeRefunded(event.data.object as Stripe.Charge);
+        break;
+      default:
+        break;
+    }
+  } catch (err) {
+    console.error(`[stripe] Error handling ${event.type}:`, err);
+    // Still return 200 — we've recorded the event, don't want Stripe to retry
+  }
+
+  return NextResponse.json({ received: true });
+}
+
+// ── Event Handlers ──
+
+async function findBusinessByCustomer(customerId: string) {
+  const [biz] = await db
+    .select()
+    .from(businesses)
+    .where(eq(businesses.stripeCustomerId, customerId))
+    .limit(1);
+  return biz;
+}
+
+async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
+  const customerId = typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id;
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  const amount = invoice.amount_paid ?? 0;
+
+  // Record payment event
+  await db.insert(paymentEvents).values({
+    businessId: business.id,
+    stripeEventId: invoice.id,
+    eventType: "payment_succeeded",
+    amount,
+    currency: invoice.currency ?? "usd",
+    status: "succeeded",
+    invoiceId: invoice.id,
+  });
+
+  // Update business
+  await db
+    .update(businesses)
+    .set({
+      paymentStatus: "active",
+      stripeSubscriptionStatus: "active",
+      lastPaymentAt: new Date().toISOString(),
+      lastPaymentAmount: amount,
+      lifetimeRevenue: sql`${businesses.lifetimeRevenue} + ${amount}`,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(businesses.id, business.id));
+
+  // Clear any active dunning
+  await clearDunning(business.id);
+}
+
+async function handlePaymentFailed(invoice: Stripe.Invoice) {
+  const customerId = typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id;
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  const charge = invoice.charge;
+  let failureCode: string | undefined;
+  let failureMessage: string | undefined;
+
+  if (typeof charge === "object" && charge !== null) {
+    failureCode = (charge as Stripe.Charge).failure_code ?? undefined;
+    failureMessage = (charge as Stripe.Charge).failure_message ?? undefined;
+  }
+
+  // Record payment event
+  await db.insert(paymentEvents).values({
+    businessId: business.id,
+    stripeEventId: invoice.id,
+    eventType: "payment_failed",
+    amount: invoice.amount_due ?? 0,
+    currency: invoice.currency ?? "usd",
+    status: "failed",
+    failureCode,
+    failureMessage,
+    invoiceId: invoice.id,
+  });
+
+  // Start or update dunning
+  await startDunning(business.id, failureCode);
+}
+
+async function handleSubscriptionCreated(sub: Stripe.Subscription) {
+  const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  await db.insert(subscriptionEvents).values({
+    businessId: business.id,
+    stripeSubscriptionId: sub.id,
+    changeType: "created",
+    newStatus: sub.status,
+    mrr: business.mrr ?? 49700,
+  });
+
+  await db
+    .update(businesses)
+    .set({
+      stripeSubscriptionId: sub.id,
+      stripeSubscriptionStatus: sub.status,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(businesses.id, business.id));
+}
+
+async function handleSubscriptionUpdated(sub: Stripe.Subscription) {
+  const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  const previousStatus = business.stripeSubscriptionStatus;
+  const newStatus = sub.status;
+
+  // Determine change type
+  let changeType = "updated";
+  if (previousStatus === "past_due" && newStatus === "active") {
+    changeType = "recovered";
+  } else if (newStatus === "past_due") {
+    changeType = "past_due";
+  } else if (newStatus === "canceled") {
+    changeType = "canceled";
+  }
+
+  await db.insert(subscriptionEvents).values({
+    businessId: business.id,
+    stripeSubscriptionId: sub.id,
+    changeType,
+    previousStatus,
+    newStatus,
+    mrr: business.mrr ?? 49700,
+  });
+
+  // Update card details if available
+  const pm = sub.default_payment_method;
+  const updates: Record<string, unknown> = {
+    stripeSubscriptionStatus: newStatus,
+    updatedAt: new Date().toISOString(),
+  };
+
+  if (typeof pm === "object" && pm !== null && "card" in pm) {
+    const card = (pm as Stripe.PaymentMethod).card;
+    if (card) {
+      updates.cardLast4 = card.last4;
+      updates.cardExpMonth = card.exp_month;
+      updates.cardExpYear = card.exp_year;
+    }
+  }
+
+  if (sub.current_period_end) {
+    updates.nextBillingAt = new Date(sub.current_period_end * 1000).toISOString();
+  }
+
+  await db.update(businesses).set(updates).where(eq(businesses.id, business.id));
+
+  // If recovered from past_due, clear dunning
+  if (changeType === "recovered") {
+    await clearDunning(business.id);
+  }
+}
+
+async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
+  const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  await db.insert(subscriptionEvents).values({
+    businessId: business.id,
+    stripeSubscriptionId: sub.id,
+    changeType: "canceled",
+    previousStatus: business.stripeSubscriptionStatus,
+    newStatus: "canceled",
+    mrr: business.mrr ?? 49700,
+  });
+
+  // Mark business as canceled, deactivate, set data retention hold (30 days)
+  const holdUntil = new Date();
+  holdUntil.setDate(holdUntil.getDate() + 30);
+
+  await db
+    .update(businesses)
+    .set({
+      stripeSubscriptionStatus: "canceled",
+      paymentStatus: "canceled",
+      active: false,
+      dataRetentionHoldUntil: holdUntil.toISOString(),
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(businesses.id, business.id));
+
+  // Cancel any active dunning
+  await cancelDunning(business.id);
+}
+
+async function handleChargeRefunded(charge: Stripe.Charge) {
+  const customerId = typeof charge.customer === "string" ? charge.customer : charge.customer?.id;
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  const refundedAmount = charge.amount_refunded ?? 0;
+
+  await db.insert(paymentEvents).values({
+    businessId: business.id,
+    stripeEventId: charge.id,
+    eventType: "refund",
+    amount: refundedAmount,
+    currency: charge.currency ?? "usd",
+    status: "refunded",
+  });
+
+  // Adjust lifetime revenue
+  if (refundedAmount > 0) {
+    await db
+      .update(businesses)
+      .set({
+        lifetimeRevenue: sql`MAX(0, ${businesses.lifetimeRevenue} - ${refundedAmount})`,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(businesses.id, business.id));
+  }
+}
