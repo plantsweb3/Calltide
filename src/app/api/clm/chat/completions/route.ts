@@ -6,7 +6,7 @@ import { detectEmergency } from "@/lib/emergency";
 import { db } from "@/db";
 import { calls } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import type { ChatCompletionRequest, SSEChunk } from "@/types";
+import type { ChatCompletionRequest, SSEChunk, BusinessContext, Language } from "@/types";
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
@@ -104,6 +104,14 @@ export async function POST(req: NextRequest) {
     let systemPrompt = businessContext
       ? buildSystemPrompt(businessContext, lang)
       : buildDefaultSystemPrompt(lang);
+
+    // Check if business is currently closed (after-hours)
+    if (businessContext) {
+      const afterHoursNotice = getAfterHoursNotice(businessContext, lang);
+      if (afterHoursNotice) {
+        systemPrompt += afterHoursNotice;
+      }
+    }
 
     // Check latest user message for emergency keywords
     if (lastUserMessage) {
@@ -269,6 +277,77 @@ async function saveTranscript(
       })
       .where(eq(calls.id, call.id));
   }
+}
+
+/**
+ * Check if the business is currently closed based on businessHours and timezone.
+ * Returns an instruction string to append to the system prompt, or null if open.
+ */
+function getAfterHoursNotice(biz: BusinessContext, lang: Language): string | null {
+  try {
+    const now = new Date();
+    // Get current day/time in the business timezone
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: biz.timezone,
+      weekday: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    const parts = formatter.formatToParts(now);
+    const weekday = parts.find((p) => p.type === "weekday")?.value; // Mon, Tue, etc.
+    const hour = parts.find((p) => p.type === "hour")?.value || "0";
+    const minute = parts.find((p) => p.type === "minute")?.value || "0";
+    const currentMinutes = parseInt(hour) * 60 + parseInt(minute);
+
+    if (!weekday) return null;
+
+    const hours = biz.businessHours[weekday];
+    if (!hours) {
+      // No hours entry for this day = closed
+      return buildAfterHoursPrompt(biz, lang);
+    }
+
+    // Check if explicitly closed
+    if ((hours as Record<string, unknown>).closed) {
+      return buildAfterHoursPrompt(biz, lang);
+    }
+
+    // Parse open/close times
+    const [openH, openM] = hours.open.split(":").map(Number);
+    const [closeH, closeM] = hours.close.split(":").map(Number);
+    const openMinutes = openH * 60 + openM;
+    const closeMinutes = closeH * 60 + closeM;
+
+    if (currentMinutes < openMinutes || currentMinutes >= closeMinutes) {
+      return buildAfterHoursPrompt(biz, lang);
+    }
+
+    return null;
+  } catch {
+    // If timezone parsing fails, don't inject anything
+    return null;
+  }
+}
+
+function buildAfterHoursPrompt(biz: BusinessContext, lang: Language): string {
+  const hoursDisplay = Object.entries(biz.businessHours)
+    .map(([day, h]) => {
+      if ((h as Record<string, unknown>).closed) return `${day}: Closed`;
+      return `${day}: ${h.open}-${h.close}`;
+    })
+    .join(", ");
+
+  const emergencyLine = biz.emergencyPhone
+    ? lang === "es"
+      ? ` Si es una emergencia, usa transfer_to_human con el número de emergencia.`
+      : ` If it's an emergency, still use transfer_to_human with the emergency phone.`
+    : "";
+
+  if (lang === "es") {
+    return `\n\n[FUERA DE HORARIO: El negocio está actualmente CERRADO. Horario: ${hoursDisplay}. Ofrece tomar un mensaje y dile al llamante que le contactarán durante el horario laboral.${emergencyLine}]`;
+  }
+  return `\n\n[AFTER HOURS: The business is currently CLOSED. Hours: ${hoursDisplay}. Offer to take a message and let the caller know someone will get back to them during business hours.${emergencyLine}]`;
 }
 
 /**

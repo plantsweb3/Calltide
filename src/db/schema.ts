@@ -18,6 +18,7 @@ export const businesses = sqliteTable("businesses", {
   greetingEs: text("greeting_es"), // Spanish greeting override
   serviceArea: text("service_area"), // e.g. "San Antonio and surrounding areas"
   additionalInfo: text("additional_info"), // extra context for AI prompt
+  emergencyPhone: text("emergency_phone"), // after-hours emergency transfer number
   avgJobValue: integer("avg_job_value").default(250), // average $ per appointment for revenue estimates
   active: integer("active", { mode: "boolean" }).notNull().default(true),
   referralCode: text("referral_code").unique(),

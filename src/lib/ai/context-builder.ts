@@ -49,6 +49,7 @@ function toBizContext(biz: typeof businesses.$inferSelect): BusinessContext {
     greetingEs: biz.greetingEs || undefined,
     serviceArea: biz.serviceArea || undefined,
     additionalInfo: biz.additionalInfo || undefined,
+    emergencyPhone: biz.emergencyPhone || undefined,
   };
 }
 

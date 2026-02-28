@@ -222,15 +222,29 @@ async function handleTransferToHuman(
   if (biz) {
     const prefix = isEmergency ? "EMERGENCY - " : "";
     const suffix = isEmergency ? " CALL THEM BACK IMMEDIATELY." : " Please call them back.";
+    const smsBody = `${prefix}Transfer requested from ${ctx.callerPhone || "unknown caller"}${reason ? `: ${reason}` : ""}.${suffix}`;
     await sendSMS({
       to: biz.ownerPhone,
       from: biz.twilioNumber,
-      body: `${prefix}Transfer requested from ${ctx.callerPhone || "unknown caller"}${reason ? `: ${reason}` : ""}.${suffix}`,
+      body: smsBody,
       businessId: ctx.businessId,
       leadId: ctx.leadId,
       callId: ctx.callId,
       templateType: "owner_notify",
     });
+
+    // Also SMS the emergency phone if set and this is an emergency transfer
+    if (isEmergency && biz.emergencyPhone) {
+      await sendSMS({
+        to: biz.emergencyPhone,
+        from: biz.twilioNumber,
+        body: smsBody,
+        businessId: ctx.businessId,
+        leadId: ctx.leadId,
+        callId: ctx.callId,
+        templateType: "owner_notify",
+      });
+    }
   }
 
   if (isEmergency) {
