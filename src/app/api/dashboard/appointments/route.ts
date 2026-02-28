@@ -7,6 +7,7 @@ import {
   DEMO_APPOINTMENTS_UPCOMING,
   DEMO_APPOINTMENTS_PAST,
 } from "../demo-data";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -21,30 +22,36 @@ export async function GET(req: NextRequest) {
       filter === "past" ? DEMO_APPOINTMENTS_PAST : DEMO_APPOINTMENTS_UPCOMING;
     return NextResponse.json({ appointments: data });
   }
-  const today = new Date().toISOString().slice(0, 10);
 
-  const dateCondition =
-    filter === "past"
-      ? lt(appointments.date, today)
-      : gte(appointments.date, today);
+  try {
+    const today = new Date().toISOString().slice(0, 10);
 
-  const rows = await db
-    .select({
-      id: appointments.id,
-      service: appointments.service,
-      date: appointments.date,
-      time: appointments.time,
-      duration: appointments.duration,
-      status: appointments.status,
-      notes: appointments.notes,
-      createdAt: appointments.createdAt,
-      leadName: leads.name,
-      leadPhone: leads.phone,
-    })
-    .from(appointments)
-    .leftJoin(leads, eq(appointments.leadId, leads.id))
-    .where(and(eq(appointments.businessId, businessId), dateCondition))
-    .orderBy(filter === "past" ? desc(appointments.date) : asc(appointments.date));
+    const dateCondition =
+      filter === "past"
+        ? lt(appointments.date, today)
+        : gte(appointments.date, today);
 
-  return NextResponse.json({ appointments: rows });
+    const rows = await db
+      .select({
+        id: appointments.id,
+        service: appointments.service,
+        date: appointments.date,
+        time: appointments.time,
+        duration: appointments.duration,
+        status: appointments.status,
+        notes: appointments.notes,
+        createdAt: appointments.createdAt,
+        leadName: leads.name,
+        leadPhone: leads.phone,
+      })
+      .from(appointments)
+      .leftJoin(leads, eq(appointments.leadId, leads.id))
+      .where(and(eq(appointments.businessId, businessId), dateCondition))
+      .orderBy(filter === "past" ? desc(appointments.date) : asc(appointments.date));
+
+    return NextResponse.json({ appointments: rows });
+  } catch (err) {
+    reportError("Failed to fetch appointments", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }
