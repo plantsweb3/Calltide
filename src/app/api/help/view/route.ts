@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { helpArticles } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
@@ -14,10 +15,11 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const { articleId } = body as { articleId: string };
-  if (!articleId) {
+  const parsed = z.object({ articleId: z.string().min(1).max(100) }).safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json({ error: "articleId required" }, { status: 400 });
   }
+  const { articleId } = parsed.data;
 
   await db
     .update(helpArticles)

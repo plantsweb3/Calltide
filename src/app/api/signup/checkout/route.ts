@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import Stripe from "stripe";
+import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
@@ -13,6 +14,8 @@ function getStripe(): Stripe {
 }
 
 export async function POST(req: NextRequest) {
+  const rl = rateLimit(`signup-checkout:${getClientIp(req)}`, { limit: 5, windowSeconds: 3600 });
+  if (!rl.success) return rateLimitResponse(rl);
   let body: unknown;
   try {
     body = await req.json();

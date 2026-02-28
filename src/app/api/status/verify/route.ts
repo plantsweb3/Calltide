@@ -3,8 +3,14 @@ import { db } from "@/db";
 import { statusPageSubscribers } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/lib/env";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
+  const rl = rateLimit(`status-verify:${getClientIp(req)}`, { limit: 10, windowSeconds: 900 });
+  if (!rl.success) {
+    return NextResponse.redirect(new URL("/status?verified=false", env.NEXT_PUBLIC_APP_URL));
+  }
+
   const token = req.nextUrl.searchParams.get("token");
 
   if (!token) {

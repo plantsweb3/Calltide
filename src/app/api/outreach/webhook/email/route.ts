@@ -37,9 +37,14 @@ export async function POST(req: NextRequest) {
   // Read raw body for signature verification
   const rawBody = await req.text();
 
-  // Validate webhook signature if Resend webhook secret is configured
+  // Validate webhook signature — require RESEND_WEBHOOK_SECRET in production
   const webhookSecret = process.env.RESEND_WEBHOOK_SECRET;
-  if (webhookSecret) {
+  if (!webhookSecret) {
+    reportWarning("RESEND_WEBHOOK_SECRET is not set — rejecting email webhook");
+    return NextResponse.json({ error: "Webhook auth not configured" }, { status: 500 });
+  }
+
+  {
     const svixId = req.headers.get("svix-id");
     const svixTimestamp = req.headers.get("svix-timestamp");
     const svixSignature = req.headers.get("svix-signature");

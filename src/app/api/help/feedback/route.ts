@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { helpArticleFeedback, helpArticles } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
@@ -14,15 +15,16 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const { articleId, helpful, sessionId } = body as {
-    articleId: string;
-    helpful: boolean;
-    sessionId?: string;
-  };
+  const parsed = z.object({
+    articleId: z.string().min(1).max(100),
+    helpful: z.boolean(),
+    sessionId: z.string().max(200).optional(),
+  }).safeParse(body);
 
-  if (!articleId || typeof helpful !== "boolean") {
+  if (!parsed.success) {
     return NextResponse.json({ error: "articleId and helpful required" }, { status: 400 });
   }
+  const { articleId, helpful, sessionId } = parsed.data;
 
   // Prevent duplicate from same session
   if (sessionId) {

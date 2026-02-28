@@ -3,12 +3,15 @@ import { z } from "zod";
 import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
 });
 
 export async function POST(req: NextRequest) {
+  const rl = rateLimit(`signup-start:${getClientIp(req)}`, { limit: 10, windowSeconds: 3600 });
+  if (!rl.success) return rateLimitResponse(rl);
   let body: unknown;
   try {
     body = await req.json();

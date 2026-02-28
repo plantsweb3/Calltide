@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, calls, clientCosts } from "@/db/schema";
+import { businesses, calls, clientCosts, smsMessages } from "@/db/schema";
 import { eq, and, gte, lt, sql } from "drizzle-orm";
 
 export async function POST(request: Request) {
   const auth = request.headers.get("authorization");
   const secret = process.env.CRON_SECRET;
-  if (secret && auth !== `Bearer ${secret}`) {
+  if (!secret) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
+  }
+  if (auth !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -45,8 +48,23 @@ export async function POST(request: Request) {
       const minutes = callData?.totalMinutes ?? 0;
       const callCount = callData?.callCount ?? 0;
 
+      // Query SMS count for the month
+      const [smsData] = await db
+        .select({
+          smsCount: sql<number>`COUNT(*)`,
+        })
+        .from(smsMessages)
+        .where(
+          and(
+            eq(smsMessages.businessId, biz.id),
+            gte(smsMessages.createdAt, monthStart),
+            lt(smsMessages.createdAt, nextMonthStart),
+          ),
+        );
+      const smsCount = smsData?.smsCount ?? 0;
+
       // Estimate costs (in cents)
-      const twilioCost = Math.round(minutes * 1.3); // $0.013/min = 1.3 cents
+      const twilioCost = Math.round(minutes * 1.3 + smsCount * 0.79); // $0.013/min + $0.0079/SMS
       const humeCost = Math.round(minutes * 5); // $0.05/min = 5 cents
       const anthropicCost = Math.round(callCount * 3); // $0.03/call = 3 cents
       const totalCost = twilioCost + humeCost + anthropicCost;
@@ -59,7 +77,7 @@ export async function POST(request: Request) {
         month: monthStr,
         callMinutes: minutes,
         callCount,
-        smsCount: 0, // TODO: query SMS count when SMS logging is available
+        smsCount,
         twilioCost,
         humeCost,
         anthropicCost,

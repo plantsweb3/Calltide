@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { z } from "zod";
 import { db } from "@/db";
 import { npsResponses } from "@/db/schema";
@@ -9,6 +10,7 @@ import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 const feedbackSchema = z.object({
   businessId: z.string().min(1, "businessId is required"),
   feedback: z.string().min(1, "Feedback is required").max(2000),
+  token: z.string().min(1, "token is required"),
 });
 
 export async function POST(request: NextRequest) {
@@ -26,7 +28,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { businessId, feedback } = parsed.data;
+    const { businessId, feedback, token } = parsed.data;
+
+    // Verify HMAC token to ensure the caller owns this businessId
+    const secret = process.env.CLIENT_AUTH_SECRET;
+    if (!secret) {
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
+    const expectedToken = crypto
+      .createHmac("sha256", secret)
+      .update(`feedback:${businessId}`)
+      .digest("hex");
+    if (token !== expectedToken) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 403 });
+    }
 
     // Find the most recent NPS response for this business within the last 24 hours
     const twentyFourHoursAgo = new Date(

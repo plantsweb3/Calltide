@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { helpArticles, helpCategories } from "@/db/schema";
 import { eq, and, or, desc, sql } from "drizzle-orm";
+import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 /**
  * GET /api/help/articles
@@ -9,6 +10,8 @@ import { eq, and, or, desc, sql } from "drizzle-orm";
  * Admin: full list (handled by /api/admin/help/articles instead)
  */
 export async function GET(req: NextRequest) {
+  const rl = rateLimit(`help-articles:${getClientIp(req)}`, { limit: 30, windowSeconds: 60 });
+  if (!rl.success) return rateLimitResponse(rl);
   const slugsParam = req.nextUrl.searchParams.get("slugs");
 
   if (slugsParam) {

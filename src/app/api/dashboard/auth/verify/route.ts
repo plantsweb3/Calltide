@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { env } from "@/lib/env";
 import { verifyMagicToken, signClientCookie } from "@/lib/client-auth";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 // Single-use token store: tracks consumed tokens until they'd expire naturally (15 min)
 const usedTokens = new Map<string, number>();
@@ -16,6 +17,11 @@ function cleanupUsedTokens() {
 }
 
 export async function GET(req: NextRequest) {
+  const rl = rateLimit(`auth-verify:${getClientIp(req)}`, { limit: 20, windowSeconds: 900 });
+  if (!rl.success) {
+    return NextResponse.redirect(new URL("/dashboard/login?error=rate_limited", req.url));
+  }
+
   const token = req.nextUrl.searchParams.get("token");
   const secret = env.CLIENT_AUTH_SECRET;
 
