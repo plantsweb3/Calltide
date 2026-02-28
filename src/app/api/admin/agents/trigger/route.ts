@@ -46,8 +46,9 @@ export async function POST(req: NextRequest) {
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
+    console.error("[agent trigger] Error:", err);
     return NextResponse.json(
-      { error: `Agent trigger failed: ${err instanceof Error ? err.message : String(err)}` },
+      { error: "Agent trigger failed" },
       { status: 500 },
     );
   }

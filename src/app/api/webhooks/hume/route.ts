@@ -171,7 +171,10 @@ async function handleToolCall(event: HumeWebhookEvent) {
   try {
     params = JSON.parse(data.parameters);
   } catch {
-    params = {};
+    return Response.json({
+      tool_call_id: data.tool_call_id,
+      content: JSON.stringify({ error: "Invalid parameters" }),
+    });
   }
 
   if (!call) {

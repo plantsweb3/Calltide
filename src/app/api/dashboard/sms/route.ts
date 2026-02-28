@@ -39,13 +39,14 @@ export async function GET(req: NextRequest) {
 
   try {
     const baseWhere = eq(smsMessages.businessId, businessId);
+    const escaped = search.replace(/[%_]/g, "\\$&");
     const whereClause = search
       ? and(
           baseWhere,
           or(
-            like(smsMessages.fromNumber, `%${search}%`),
-            like(smsMessages.toNumber, `%${search}%`),
-            like(smsMessages.body, `%${search}%`),
+            like(smsMessages.fromNumber, `%${escaped}%`),
+            like(smsMessages.toNumber, `%${escaped}%`),
+            like(smsMessages.body, `%${escaped}%`),
           ),
         )
       : baseWhere;

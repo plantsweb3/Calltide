@@ -49,36 +49,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ received: true, duplicate: true });
   }
 
-  // Route event — fire-and-forget for side effects
-  try {
-    switch (event.type) {
-      case "invoice.payment_succeeded":
-        await handlePaymentSucceeded(event.data.object as Stripe.Invoice);
-        break;
-      case "invoice.payment_failed":
-        await handlePaymentFailed(event.data.object as Stripe.Invoice);
-        break;
-      case "checkout.session.completed":
-        await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
-        break;
-      case "customer.subscription.created":
-        await handleSubscriptionCreated(event.data.object as Stripe.Subscription);
-        break;
-      case "customer.subscription.updated":
-        await handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
-        break;
-      case "customer.subscription.deleted":
-        await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
-        break;
-      case "charge.refunded":
-        await handleChargeRefunded(event.data.object as Stripe.Charge);
-        break;
-      default:
-        break;
+  // Route event — each handler isolated so one failure doesn't block others
+  const handlers: Record<string, () => Promise<void>> = {
+    "invoice.payment_succeeded": () => handlePaymentSucceeded(event.data.object as Stripe.Invoice),
+    "invoice.payment_failed": () => handlePaymentFailed(event.data.object as Stripe.Invoice),
+    "checkout.session.completed": () => handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session),
+    "customer.subscription.created": () => handleSubscriptionCreated(event.data.object as Stripe.Subscription),
+    "customer.subscription.updated": () => handleSubscriptionUpdated(event.data.object as Stripe.Subscription),
+    "customer.subscription.deleted": () => handleSubscriptionDeleted(event.data.object as Stripe.Subscription),
+    "charge.refunded": () => handleChargeRefunded(event.data.object as Stripe.Charge),
+  };
+  const handler = handlers[event.type];
+
+  if (handler) {
+    try {
+      await handler();
+    } catch (err) {
+      console.error(`[stripe] Error handling ${event.type}:`, err);
+      // Still return 200 — we've recorded the event, don't want Stripe to retry
     }
-  } catch (err) {
-    console.error(`[stripe] Error handling ${event.type}:`, err);
-    // Still return 200 — we've recorded the event, don't want Stripe to retry
   }
 
   return NextResponse.json({ received: true });

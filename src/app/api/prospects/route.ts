@@ -1,12 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { prospects } from "@/db/schema";
+import type { SQLiteColumn } from "drizzle-orm/sqlite-core";
 import { desc, asc, eq, like, sql, and } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
-const ALLOWED_SORT_COLUMNS = new Set([
-  "createdAt", "businessName", "leadScore", "rating", "reviewCount", "status", "city", "state", "vertical",
-]);
+const SORT_COLUMN_MAP: Record<string, SQLiteColumn> = {
+  createdAt: prospects.createdAt,
+  businessName: prospects.businessName,
+  leadScore: prospects.leadScore,
+  rating: prospects.rating,
+  reviewCount: prospects.reviewCount,
+  status: prospects.status,
+  city: prospects.city,
+  state: prospects.state,
+  vertical: prospects.vertical,
+};
 
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
@@ -17,7 +26,7 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(Math.max(1, parseInt(url.get("limit") ?? "50", 10)), 100);
   const offset = (page - 1) * limit;
   const sortByParam = url.get("sortBy") ?? "createdAt";
-  const sortBy = ALLOWED_SORT_COLUMNS.has(sortByParam) ? sortByParam : "createdAt";
+  const sortColumn = SORT_COLUMN_MAP[sortByParam] ?? prospects.createdAt;
   const sortOrder = url.get("sortOrder") === "asc" ? "asc" : "desc";
   const status = url.get("status");
   const vertical = url.get("vertical");
@@ -28,12 +37,13 @@ export async function GET(req: NextRequest) {
   if (status) conditions.push(eq(prospects.status, status));
   if (vertical) conditions.push(eq(prospects.vertical, vertical));
   if (city) conditions.push(eq(prospects.city, city));
-  if (search)
-    conditions.push(like(prospects.businessName, `%${search}%`));
+  if (search) {
+    const escaped = search.replace(/[%_]/g, "\\$&");
+    conditions.push(like(prospects.businessName, `%${escaped}%`));
+  }
 
   const where = conditions.length > 0 ? and(...conditions) : undefined;
 
-  const sortColumn = (prospects as unknown as Record<string, unknown>)[sortBy] ?? prospects.createdAt;
   const orderFn = sortOrder === "asc" ? asc : desc;
 
   const [rows, countResult] = await Promise.all([
@@ -41,7 +51,7 @@ export async function GET(req: NextRequest) {
       .select()
       .from(prospects)
       .where(where)
-      .orderBy(orderFn(sortColumn as typeof prospects.createdAt))
+      .orderBy(orderFn(sortColumn))
       .limit(limit)
       .offset(offset),
     db

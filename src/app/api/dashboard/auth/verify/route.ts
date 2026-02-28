@@ -2,18 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { env } from "@/lib/env";
 import { verifyMagicToken, signClientCookie } from "@/lib/client-auth";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { db } from "@/db";
+import { usedMagicTokens } from "@/db/schema";
+import { lte } from "drizzle-orm";
 
-// Single-use token store: tracks consumed tokens until they'd expire naturally (15 min)
-const usedTokens = new Map<string, number>();
-const TOKEN_TTL = 16 * 60 * 1000; // 16 min (slightly longer than token expiry)
-let lastTokenCleanup = Date.now();
-function cleanupUsedTokens() {
-  const now = Date.now();
-  if (now - lastTokenCleanup < 60_000) return;
-  lastTokenCleanup = now;
-  for (const [t, exp] of usedTokens) {
-    if (exp < now) usedTokens.delete(t);
-  }
+async function hashToken(token: string): Promise<string> {
+  const encoded = new TextEncoder().encode(token);
+  const hash = await crypto.subtle.digest("SHA-256", encoded);
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 export async function GET(req: NextRequest) {
@@ -29,20 +27,31 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard/login?error=invalid", req.url));
   }
 
-  cleanupUsedTokens();
-
-  // Check if token was already used
-  if (usedTokens.has(token)) {
-    return NextResponse.redirect(new URL("/dashboard/login?error=expired", req.url));
-  }
-
+  // Verify signature + expiry
   const result = await verifyMagicToken(token, secret);
   if (!result) {
     return NextResponse.redirect(new URL("/dashboard/login?error=invalid", req.url));
   }
 
-  // Mark token as used
-  usedTokens.set(token, Date.now() + TOKEN_TTL);
+  // Atomic single-use check: INSERT with unique constraint on token_hash
+  const tokenHash = await hashToken(token);
+  const expiresAt = new Date(Date.now() + 16 * 60 * 1000).toISOString();
+
+  const inserted = await db
+    .insert(usedMagicTokens)
+    .values({ tokenHash, expiresAt })
+    .onConflictDoNothing()
+    .returning({ id: usedMagicTokens.id });
+
+  if (inserted.length === 0) {
+    // Token was already used
+    return NextResponse.redirect(new URL("/dashboard/login?error=expired", req.url));
+  }
+
+  // Clean up expired tokens (fire-and-forget, non-blocking)
+  db.delete(usedMagicTokens)
+    .where(lte(usedMagicTokens.expiresAt, new Date().toISOString()))
+    .catch(() => {});
 
   const cookieValue = await signClientCookie(result.businessId, secret);
 

@@ -845,6 +845,13 @@ export const notifications = sqliteTable("notifications", {
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
+export const usedMagicTokens = sqliteTable("used_magic_tokens", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  tokenHash: text("token_hash").unique().notNull(),
+  expiresAt: text("expires_at").notNull(),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
 export const outreachLog = sqliteTable("outreach_log", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   businessId: text("business_id").notNull(),

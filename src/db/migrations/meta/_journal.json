@@ -120,6 +120,13 @@
       "when": 1772700000000,
       "tag": "0016_crm_estimates",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
+      "when": 1772800000000,
+      "tag": "0017_used_magic_tokens",
+      "breakpoints": true
     }
   ]
 }

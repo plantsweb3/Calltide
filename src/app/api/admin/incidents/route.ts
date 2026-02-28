@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   try {
     const status = req.nextUrl.searchParams.get("status");
     const severity = req.nextUrl.searchParams.get("severity");
-    const limit = parseInt(req.nextUrl.searchParams.get("limit") ?? "50");
+    const limit = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") ?? "50") || 50), 100);
 
     let query = db.select().from(incidents).orderBy(desc(incidents.startedAt)).limit(limit).$dynamic();
 
