@@ -9,6 +9,7 @@ interface NavItem {
   label: string;
   icon: React.ReactNode;
   badge?: number;
+  badgeColor?: string;
 }
 
 interface NavSection {
@@ -22,12 +23,25 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
   const pathname = usePathname();
   const router = useRouter();
   const [badgeCount, setBadgeCount] = useState(0);
+  const [liveCallCount, setLiveCallCount] = useState(0);
 
   useEffect(() => {
     fetch("/api/notifications/count")
       .then((r) => (r.ok ? r.json() : { count: 0 }))
       .then((d) => setBadgeCount(d.count))
       .catch(() => setBadgeCount(0));
+  }, []);
+
+  // Poll active call count every 10s for the sidebar badge
+  useEffect(() => {
+    const fetchLive = () =>
+      fetch("/api/admin/live")
+        .then((r) => (r.ok ? r.json() : { activeCount: 0 }))
+        .then((d) => setLiveCallCount(d.activeCount ?? 0))
+        .catch(() => setLiveCallCount(0));
+    fetchLive();
+    const t = setInterval(fetchLive, 10000);
+    return () => clearInterval(t);
   }, []);
 
   const handleLogout = async () => {
@@ -39,6 +53,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
     {
       items: [
         { href: "/admin", label: "Mission Control", icon: <svg {...ip}><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg> },
+        { href: "/admin/live", label: "Live Monitor", badge: liveCallCount, badgeColor: "#22c55e", icon: <svg {...ip}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" fill="currentColor" /><path d="M12 2v4M12 18v4M2 12h4M18 12h4" /></svg> },
       ],
     },
     {
@@ -118,7 +133,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
         {item.badge != null && item.badge > 0 && (
           <span
             className="rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none"
-            style={{ background: "#ef4444", color: "#fff", minWidth: 18, textAlign: "center" }}
+            style={{ background: item.badgeColor ?? "#ef4444", color: "#fff", minWidth: 18, textAlign: "center" }}
           >
             {item.badge > 99 ? "99+" : item.badge}
           </span>

@@ -161,6 +161,39 @@ export const seasonalServices = sqliteTable("seasonal_services", {
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
+// ── Live Call Monitoring ──
+
+export const activeCalls = sqliteTable("active_calls", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  businessName: text("business_name").notNull(),
+  callerPhone: text("caller_phone").notNull(),
+  customerName: text("customer_name"),
+  isReturningCaller: integer("is_returning_caller", { mode: "boolean" }).default(false),
+  direction: text("direction").default("inbound"),
+  callType: text("call_type"),
+  language: text("language").default("en"),
+  twilioCallSid: text("twilio_call_sid"),
+  humeSessionId: text("hume_session_id"),
+  startedAt: text("started_at").notNull().default(sql`(datetime('now'))`),
+  lastActivityAt: text("last_activity_at").notNull().default(sql`(datetime('now'))`),
+  status: text("status").default("ringing"),
+  currentIntent: text("current_intent"),
+  durationSeconds: integer("duration_seconds").default(0),
+  metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>(),
+});
+
+export const callPeaks = sqliteTable("call_peaks", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  date: text("date").notNull().unique(),
+  peakConcurrent: integer("peak_concurrent").default(0),
+  peakTime: text("peak_time"),
+  totalCalls: integer("total_calls").default(0),
+  avgDuration: integer("avg_duration").default(0),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
 export const appointments = sqliteTable("appointments", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   businessId: text("business_id").notNull().references(() => businesses.id),
@@ -885,14 +918,6 @@ export const scalingPlaybook = sqliteTable("scaling_playbook", {
   completedAt: text("completed_at"),
   notes: text("notes"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
-});
-
-export const activeCalls = sqliteTable("active_calls", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  businessId: text("business_id").notNull(),
-  callSid: text("call_sid").unique().notNull(),
-  startedAt: text("started_at").default(sql`(datetime('now'))`),
-  provider: text("provider").default("twilio"),
 });
 
 // ── Phase 12: Integration ──

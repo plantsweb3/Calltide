@@ -5,6 +5,7 @@ import { outboundCalls, businesses, customers, consentRecords } from "@/db/schem
 import { eq, and, sql, gte, lte } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 import { reportError } from "@/lib/error-reporting";
+import { trackCallStart, trackCallEnd } from "@/lib/monitoring/active-calls";
 
 /**
  * Check whether the business is within its configured outbound calling hours.
@@ -172,6 +173,16 @@ export async function initiateOutboundCall(
       detail: `Calling ${call.customerPhone} for business ${biz.name}`,
     });
 
+    // Track in active calls for live monitoring (fire-and-forget)
+    trackCallStart({
+      businessId: call.businessId,
+      callerPhone: call.customerPhone,
+      direction: "outbound",
+      twilioCallSid: twilioCall.sid,
+      callType: call.callType ?? undefined,
+      language: call.language ?? "en",
+    }).catch((err) => console.error("Outbound active call tracking failed:", err));
+
     return { success: true };
   } catch (error) {
     reportError("Outbound call initiation failed", error, {
@@ -254,6 +265,11 @@ export async function handleOutboundStatusCallback(
     .where(eq(outboundCalls.id, outboundCallId));
 
   if (terminalStatuses.includes(CallStatus)) {
+    // Remove from active calls (fire-and-forget)
+    trackCallEnd({ twilioCallSid: params.CallSid }).catch((err) =>
+      console.error("Outbound active call cleanup failed:", err),
+    );
+
     await logActivity({
       type: "outbound_call_result",
       entityType: "outbound_call",

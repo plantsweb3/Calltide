@@ -24,6 +24,15 @@ export async function GET(req: NextRequest) {
   // Run health checks against all services
   const checks = await runHealthChecks();
 
+  // Clean up stale active call records (>30 min old)
+  try {
+    const { cleanupStaleCalls } = await import("@/lib/monitoring/active-calls");
+    const staleCount = await cleanupStaleCalls();
+    if (staleCount > 0) console.log(`Cleaned up ${staleCount} stale active call(s)`);
+  } catch (err) {
+    console.error("Stale call cleanup error (non-fatal):", err);
+  }
+
   // Incident engine hooks — detect/resolve incidents automatically
   try {
     const { handleUnhealthyService, handleHealthyService } = await import("@/lib/incidents/engine");

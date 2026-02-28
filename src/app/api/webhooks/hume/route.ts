@@ -10,6 +10,7 @@ import { processCallSummary } from "@/lib/ai/call-summary";
 import type { HumeWebhookEvent, HumeChatStartedData, HumeChatEndedData, HumeToolCallData } from "@/types";
 import { reportError, reportWarning } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+import { trackCallStart, trackCallEnd, updateActiveCall } from "@/lib/monitoring/active-calls";
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -108,6 +109,14 @@ async function handleChatStarted(event: HumeWebhookEvent) {
     status: "in_progress",
   });
 
+  // Track active call for live monitoring (fire-and-forget)
+  trackCallStart({
+    businessId,
+    callerPhone: callerPhone || "unknown",
+    direction: "inbound",
+    humeSessionId: event.chat_id,
+  }).catch((err) => console.error("Active call tracking failed:", err));
+
   console.log("Call started:", { businessId, leadId, chatId: event.chat_id });
 }
 
@@ -153,6 +162,11 @@ async function handleChatEnded(event: HumeWebhookEvent) {
       });
     });
   }
+
+  // Remove from active calls (fire-and-forget)
+  trackCallEnd({ humeSessionId: event.chat_id }).catch((err) =>
+    console.error("Active call cleanup failed:", err),
+  );
 
   console.log("Call ended:", { chatId: event.chat_id });
 }

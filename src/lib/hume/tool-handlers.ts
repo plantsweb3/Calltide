@@ -5,6 +5,7 @@ import { checkAvailability, bookSlot } from "@/lib/calendar/availability";
 import { getBusinessById } from "@/lib/ai/context-builder";
 import { sendSMS } from "@/lib/twilio/sms";
 import { getAppointmentConfirmation, getOwnerNotification } from "@/lib/sms-templates";
+import { updateActiveCall } from "@/lib/monitoring/active-calls";
 import type { ToolResult, Language } from "@/types";
 
 interface ToolCallContext {
@@ -15,23 +16,51 @@ interface ToolCallContext {
   language: Language;
 }
 
+// Map tool names to intent labels for live monitoring
+const TOOL_INTENT_MAP: Record<string, string> = {
+  check_availability: "booking",
+  book_appointment: "booking",
+  take_message: "message",
+  transfer_to_human: "transfer",
+};
+
 export async function dispatchToolCall(
   toolName: string,
   params: Record<string, unknown>,
   ctx: ToolCallContext
 ): Promise<ToolResult> {
+  let result: ToolResult;
   switch (toolName) {
     case "check_availability":
-      return handleCheckAvailability(params, ctx);
+      result = await handleCheckAvailability(params, ctx);
+      break;
     case "book_appointment":
-      return handleBookAppointment(params, ctx);
+      result = await handleBookAppointment(params, ctx);
+      break;
     case "take_message":
-      return handleTakeMessage(params, ctx);
+      result = await handleTakeMessage(params, ctx);
+      break;
     case "transfer_to_human":
-      return handleTransferToHuman(params, ctx);
+      result = await handleTransferToHuman(params, ctx);
+      break;
     default:
       return { success: false, error: `Unknown tool: ${toolName}` };
   }
+
+  // Update active call intent for live monitoring (fire-and-forget, non-transfer tools only)
+  const intent = TOOL_INTENT_MAP[toolName];
+  if (intent && toolName !== "transfer_to_human" && ctx.callId) {
+    const [cr] = await db.select({ humeChitChatId: calls.humeChitChatId })
+      .from(calls).where(eq(calls.id, ctx.callId)).limit(1);
+    if (cr?.humeChitChatId) {
+      updateActiveCall({ humeSessionId: cr.humeChitChatId }, {
+        currentIntent: intent,
+        callType: intent,
+      }).catch(() => {});
+    }
+  }
+
+  return result;
 }
 
 async function handleCheckAvailability(
@@ -215,6 +244,20 @@ async function handleTransferToHuman(
       ...(isEmergency ? { status: "emergency" } : {}),
       updatedAt: new Date().toISOString(),
     }).where(eq(calls.id, ctx.callId));
+
+    // Update live monitoring — look up hume session from call record
+    const [callRecord] = await db.select({ humeChitChatId: calls.humeChitChatId })
+      .from(calls).where(eq(calls.id, ctx.callId)).limit(1);
+    if (callRecord?.humeChitChatId) {
+      updateActiveCall(
+        { humeSessionId: callRecord.humeChitChatId },
+        {
+          status: "transferring",
+          currentIntent: isEmergency ? "emergency" : "transfer",
+          callType: isEmergency ? "emergency" : "transfer",
+        },
+      ).catch(() => {});
+    }
   }
 
   // Notify the business owner
