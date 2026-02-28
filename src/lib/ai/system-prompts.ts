@@ -37,6 +37,7 @@ function buildEnglishPrompt(biz: BusinessContext): string {
   const greeting = biz.greeting || `Thank you for calling ${biz.name}, this is María. How can I help you today?`;
   const serviceAreaLine = biz.serviceArea ? `- Service Area: ${biz.serviceArea}` : "";
   const additionalInfoBlock = biz.additionalInfo ? `\n## Additional Business Context\n${biz.additionalInfo}` : "";
+  const personalityBlock = biz.personalityNotes ? `\n## Special Instructions from the Owner\n${biz.personalityNotes}` : "";
 
   return `You are María, the AI receptionist for ${biz.name}. You are warm, professional, and efficient. Your voice is calm and friendly — like a real receptionist who genuinely cares about helping callers.
 
@@ -59,7 +60,7 @@ ${serviceAreaLine}
 - Hours:
 ${formatHours(biz.businessHours)}
 - Timezone: ${biz.timezone}
-${additionalInfoBlock}
+${additionalInfoBlock}${personalityBlock}
 
 ## Call Flow
 1. Greet the caller (use the greeting above).
@@ -121,6 +122,7 @@ function buildSpanishPrompt(biz: BusinessContext): string {
   const greeting = biz.greetingEs || biz.greeting || `Gracias por llamar a ${biz.name}, habla María. ¿En qué le puedo ayudar hoy?`;
   const serviceAreaLine = biz.serviceArea ? `- Área de Servicio: ${biz.serviceArea}` : "";
   const additionalInfoBlock = biz.additionalInfo ? `\n## Contexto Adicional del Negocio\n${biz.additionalInfo}` : "";
+  const personalityBlock = biz.personalityNotes ? `\n## Instrucciones Especiales del Dueño\n${biz.personalityNotes}` : "";
 
   return `Eres María, la recepcionista de IA de ${biz.name}. Eres cálida, profesional y eficiente. Tu voz es tranquila y amigable — como una recepcionista real que genuinamente se preocupa por ayudar a los llamantes.
 
@@ -143,7 +145,7 @@ ${serviceAreaLine}
 - Horario:
 ${formatHoursEs(biz.businessHours)}
 - Zona Horaria: ${biz.timezone}
-${additionalInfoBlock}
+${additionalInfoBlock}${personalityBlock}
 
 ## Flujo de Llamada
 1. Saluda al llamante (usa el saludo de arriba).

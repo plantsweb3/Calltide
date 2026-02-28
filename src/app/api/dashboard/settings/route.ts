@@ -33,6 +33,7 @@ const settingsSchema = z.object({
   emergencyPhone: z.string().regex(/^\+?1?\d{10,11}$/).optional().or(z.literal("")),
   serviceArea: z.string().max(200).optional().or(z.literal("")),
   additionalInfo: z.string().max(1000).optional().or(z.literal("")),
+  personalityNotes: z.string().max(1000).optional().or(z.literal("")),
 });
 
 function stripHtml(str: string | undefined | null): string | undefined | null {
@@ -69,6 +70,7 @@ export async function GET(req: NextRequest) {
       defaultLanguage: "en",
       serviceArea: "San Antonio and surrounding areas",
       additionalInfo: "We offer same-day emergency service for plumbing and HVAC issues.",
+      personalityNotes: "Be extra friendly and casual. Always mention we offer military and senior discounts. If someone asks about pricing, mention we offer free estimates.",
       emergencyPhone: "+15125559999",
       timezone: "America/Chicago",
       active: true,
@@ -100,6 +102,7 @@ export async function GET(req: NextRequest) {
     defaultLanguage: biz.defaultLanguage,
     serviceArea: biz.serviceArea,
     additionalInfo: biz.additionalInfo,
+    personalityNotes: biz.personalityNotes,
     emergencyPhone: biz.emergencyPhone,
     timezone: biz.timezone,
     active: biz.active,
@@ -161,6 +164,7 @@ export async function PUT(req: NextRequest) {
     emergencyPhone: data.emergencyPhone || null,
     serviceArea: stripHtml(data.serviceArea) || null,
     additionalInfo: stripHtml(data.additionalInfo) || null,
+    personalityNotes: stripHtml(data.personalityNotes) || null,
     updatedAt: new Date().toISOString(),
   };
 
@@ -199,6 +203,7 @@ export async function PUT(req: NextRequest) {
     defaultLanguage: updated.defaultLanguage,
     serviceArea: updated.serviceArea,
     additionalInfo: updated.additionalInfo,
+    personalityNotes: updated.personalityNotes,
     emergencyPhone: updated.emergencyPhone,
     timezone: updated.timezone,
     active: updated.active,

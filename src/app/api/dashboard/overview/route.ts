@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { calls, appointments, smsMessages, businesses, leads } from "@/db/schema";
-import { eq, and, sql, gte, lte, count, desc, or, inArray } from "drizzle-orm";
+import { calls, appointments, smsMessages, businesses, leads, estimates, customers } from "@/db/schema";
+import { eq, and, sql, gte, lte, count, desc, or, inArray, isNull } from "drizzle-orm";
 import { DEMO_BUSINESS_ID, DEMO_OVERVIEW } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
 
@@ -421,6 +421,64 @@ export async function GET(req: NextRequest) {
     });
   }
 
+  // ── Estimate pipeline ──
+  const estimateRows = await db
+    .select({ status: estimates.status, amount: estimates.amount })
+    .from(estimates)
+    .where(eq(estimates.businessId, businessId));
+
+  const estimatePipeline: Record<string, { count: number; value: number }> = {
+    new: { count: 0, value: 0 },
+    sent: { count: 0, value: 0 },
+    follow_up: { count: 0, value: 0 },
+    won: { count: 0, value: 0 },
+    lost: { count: 0, value: 0 },
+  };
+  for (const e of estimateRows) {
+    if (estimatePipeline[e.status]) {
+      estimatePipeline[e.status].count++;
+      estimatePipeline[e.status].value += e.amount || 0;
+    }
+  }
+  const totalPipelineValue = estimatePipeline.new.value + estimatePipeline.sent.value + estimatePipeline.follow_up.value;
+
+  // Won this month
+  const [wonThisMonth] = await db
+    .select({ count: count(), value: sql<number>`COALESCE(SUM(${estimates.amount}), 0)` })
+    .from(estimates)
+    .where(and(eq(estimates.businessId, businessId), eq(estimates.status, "won"), gte(estimates.wonAt, monthStart)));
+
+  // ── Customer insights ──
+  const [totalCustomers] = await db
+    .select({ count: count() })
+    .from(customers)
+    .where(and(eq(customers.businessId, businessId), isNull(customers.deletedAt)));
+
+  const [repeatCallers] = await db
+    .select({ count: count() })
+    .from(customers)
+    .where(and(eq(customers.businessId, businessId), eq(customers.isRepeat, true), isNull(customers.deletedAt)));
+
+  const [newCustomersThisMonth] = await db
+    .select({ count: count() })
+    .from(customers)
+    .where(and(eq(customers.businessId, businessId), gte(customers.firstCallAt, monthStart), isNull(customers.deletedAt)));
+
+  const topCustomers = await db
+    .select({ name: customers.name, phone: customers.phone, totalCalls: customers.totalCalls })
+    .from(customers)
+    .where(and(eq(customers.businessId, businessId), isNull(customers.deletedAt)))
+    .orderBy(desc(customers.totalCalls))
+    .limit(3);
+
+  const customerInsights = {
+    totalCustomers: totalCustomers.count,
+    repeatCallers: repeatCallers.count,
+    repeatRate: totalCustomers.count > 0 ? Math.round((repeatCallers.count / totalCustomers.count) * 100) : 0,
+    newThisMonth: newCustomersThisMonth.count,
+    topByCallCount: topCustomers,
+  };
+
   return NextResponse.json({
     ...basicResponse,
     // Enhanced fields
@@ -435,6 +493,12 @@ export async function GET(req: NextRequest) {
     activityFeed,
     insights,
     bilingualStats,
+    estimatePipeline: {
+      ...estimatePipeline,
+      totalPipelineValue,
+      wonThisMonth: { count: wonThisMonth.count, value: wonThisMonth.value },
+    },
+    customerInsights,
   });
 
   } catch (err) {

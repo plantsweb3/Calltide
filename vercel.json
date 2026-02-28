@@ -12,6 +12,7 @@
     { "path": "/api/agents/churn", "schedule": "0 14 * * *" },
     { "path": "/api/capacity/weekly-report", "schedule": "0 14 * * 1" },
     { "path": "/api/agents/success", "schedule": "0 15 * * *" },
-    { "path": "/api/financial/dunning", "schedule": "30 16 * * *" }
+    { "path": "/api/financial/dunning", "schedule": "30 16 * * *" },
+    { "path": "/api/cron/estimate-followup", "schedule": "30 15 * * *" }
   ]
 }

@@ -12,9 +12,14 @@ interface TranscriptLine {
   text: string;
 }
 
+type CallOutcome = "appointment_booked" | "estimate_requested" | "message_taken" | "transfer" | "info_only" | "spam" | "unknown";
+
 interface SummaryResult {
   summary: string;
   sentiment: "positive" | "neutral" | "negative";
+  outcome: CallOutcome;
+  callerName: string | null;
+  serviceRequested: string | null;
   transcript: TranscriptLine[];
 }
 
@@ -46,7 +51,15 @@ async function fetchTranscript(chatId: string): Promise<TranscriptLine[]> {
 /**
  * Use Claude to generate a summary and sentiment from a call transcript.
  */
-async function generateSummary(transcript: TranscriptLine[]): Promise<{ summary: string; sentiment: "positive" | "neutral" | "negative" }> {
+interface GeneratedSummary {
+  summary: string;
+  sentiment: "positive" | "neutral" | "negative";
+  outcome: CallOutcome;
+  callerName: string | null;
+  serviceRequested: string | null;
+}
+
+async function generateSummary(transcript: TranscriptLine[]): Promise<GeneratedSummary> {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
   const transcriptText = transcript
@@ -55,17 +68,27 @@ async function generateSummary(transcript: TranscriptLine[]): Promise<{ summary:
 
   const response = await anthropic.messages.create({
     model: process.env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929",
-    max_tokens: 400,
+    max_tokens: 500,
     messages: [
       {
         role: "user",
-        content: `Analyze this phone call transcript between an AI receptionist and a caller. Provide:
+        content: `Analyze this phone call transcript between an AI receptionist and a caller. Extract:
 
-1. A concise 1-3 sentence summary of what happened in the call (what the caller needed, what was resolved).
+1. A concise 1-3 sentence summary of what happened.
 2. The overall caller sentiment: "positive", "neutral", or "negative".
+3. The call outcome — pick the best match:
+   - "appointment_booked" — caller scheduled an appointment
+   - "estimate_requested" — caller asked for a quote/estimate/pricing
+   - "message_taken" — AI took a message for the business owner
+   - "transfer" — caller was transferred to a human
+   - "info_only" — caller only wanted information (hours, location, etc.)
+   - "spam" — spam/robocall/wrong number
+   - "unknown" — none of the above
+4. The caller's name if mentioned (null if not).
+5. The service the caller asked about if mentioned (null if not).
 
 Respond in this exact JSON format only, no other text:
-{"summary": "...", "sentiment": "positive|neutral|negative"}
+{"summary":"...","sentiment":"positive|neutral|negative","outcome":"appointment_booked|estimate_requested|message_taken|transfer|info_only|spam|unknown","callerName":"string or null","serviceRequested":"string or null"}
 
 Transcript:
 ${transcriptText}`,
@@ -80,9 +103,17 @@ ${transcriptText}`,
     const sentiment = ["positive", "neutral", "negative"].includes(parsed.sentiment)
       ? parsed.sentiment
       : "neutral";
-    return { summary: parsed.summary || "Call completed.", sentiment };
+    const validOutcomes: CallOutcome[] = ["appointment_booked", "estimate_requested", "message_taken", "transfer", "info_only", "spam", "unknown"];
+    const outcome = validOutcomes.includes(parsed.outcome) ? parsed.outcome : "unknown";
+    return {
+      summary: parsed.summary || "Call completed.",
+      sentiment,
+      outcome,
+      callerName: parsed.callerName || null,
+      serviceRequested: parsed.serviceRequested || null,
+    };
   } catch {
-    return { summary: "Call completed.", sentiment: "neutral" };
+    return { summary: "Call completed.", sentiment: "neutral", outcome: "unknown", callerName: null, serviceRequested: null };
   }
 }
 
@@ -99,16 +130,17 @@ export async function processCallSummary(callId: string, chatId: string): Promis
       return null;
     }
 
-    const { summary, sentiment } = await generateSummary(transcript);
+    const { summary, sentiment, outcome, callerName, serviceRequested } = await generateSummary(transcript);
 
     await db.update(calls).set({
       summary,
       sentiment,
+      outcome,
       transcript,
       updatedAt: new Date().toISOString(),
     }).where(eq(calls.id, callId));
 
-    console.log("Call summary generated:", { callId, sentiment, lines: transcript.length });
+    console.log("Call summary generated:", { callId, sentiment, outcome, lines: transcript.length });
 
     // Trigger QA scoring (fire-and-forget)
     const [call] = await db.select().from(calls).where(eq(calls.id, callId)).limit(1);
@@ -124,7 +156,22 @@ export async function processCallSummary(callId: string, chatId: string): Promis
       }
     }
 
-    return { summary, sentiment, transcript };
+    // CRM pipeline: upsert customer + auto-create estimate (fire-and-forget)
+    import("@/lib/crm/customer-upsert").then(({ upsertCustomerFromCall }) => {
+      upsertCustomerFromCall(callId, { callerName, serviceRequested }).catch((err) => {
+        reportError("Customer upsert failed", err, { extra: { callId } });
+      });
+    });
+
+    if (outcome === "estimate_requested") {
+      import("@/lib/crm/estimate-auto-create").then(({ autoCreateEstimate }) => {
+        autoCreateEstimate(callId, serviceRequested).catch((err) => {
+          reportError("Auto-create estimate failed", err, { extra: { callId } });
+        });
+      });
+    }
+
+    return { summary, sentiment, outcome, callerName, serviceRequested, transcript };
   } catch (error) {
     reportError("Failed to generate call summary", error, {
       extra: { callId, chatId },

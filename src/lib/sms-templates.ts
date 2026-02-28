@@ -18,6 +18,13 @@ interface MissedCallInfo {
   callerPhone: string;
 }
 
+interface EstimateFollowUpInfo {
+  customerName: string;
+  service: string;
+  businessName: string;
+  businessPhone: string;
+}
+
 const templates = {
   appointment_confirm: {
     en: (info: AppointmentInfo) =>
@@ -46,6 +53,12 @@ const templates = {
     es: (info: AppointmentInfo) =>
       `Recordatorio: Tiene una cita con ${info.businessName} mañana.\n\nServicio: ${info.service}\nHora: ${info.time}\n\nResponda CANCELAR para cancelar.`,
   },
+  estimate_follow_up: {
+    en: (info: EstimateFollowUpInfo) =>
+      `Hi ${info.customerName}, following up on your ${info.service} inquiry with ${info.businessName}. Would you like to schedule? Reply YES or call ${info.businessPhone}.`,
+    es: (info: EstimateFollowUpInfo) =>
+      `Hola ${info.customerName}, dando seguimiento a su consulta de ${info.service} con ${info.businessName}. ¿Le gustaría agendar? Responda SÍ o llame al ${info.businessPhone}.`,
+  },
 } as const;
 
 export function getAppointmentConfirmation(info: AppointmentInfo, lang: Language): string {
@@ -62,4 +75,8 @@ export function getMissedCallNotification(info: MissedCallInfo, lang: Language):
 
 export function getReminderMessage(info: AppointmentInfo, lang: Language): string {
   return templates.reminder[lang](info);
+}
+
+export function getEstimateFollowUpMessage(info: EstimateFollowUpInfo, lang: Language): string {
+  return templates.estimate_follow_up[lang](info);
 }

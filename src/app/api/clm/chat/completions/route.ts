@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessByPhone, detectLanguage } from "@/lib/ai/context-builder";
+import { getReturningCallerContext } from "@/lib/crm/returning-caller";
 import { buildSystemPrompt } from "@/lib/ai/system-prompts";
 import { detectEmergency } from "@/lib/emergency";
 import { db } from "@/db";
@@ -110,6 +111,18 @@ export async function POST(req: NextRequest) {
     let systemPrompt = businessContext
       ? buildSystemPrompt(businessContext, lang)
       : buildDefaultSystemPrompt(lang);
+
+    // Returning caller detection — inject context for repeat customers
+    if (businessContext && metadata?.caller_phone) {
+      try {
+        const callerContext = await getReturningCallerContext(businessContext.id, metadata.caller_phone);
+        if (callerContext) {
+          systemPrompt += `\n\n${callerContext}`;
+        }
+      } catch {
+        // Non-critical — don't block the call
+      }
+    }
 
     // Check if business is currently closed (after-hours)
     if (businessContext) {

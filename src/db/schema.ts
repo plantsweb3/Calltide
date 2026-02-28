@@ -52,6 +52,9 @@ export const businesses = sqliteTable("businesses", {
   cardLast4: text("card_last4"),
   cardExpMonth: integer("card_exp_month"),
   cardExpYear: integer("card_exp_year"),
+  // CRM
+  personalityNotes: text("personality_notes"),
+  audioRetentionDays: integer("audio_retention_days").default(90),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -86,6 +89,10 @@ export const calls = sqliteTable("calls", {
   sentiment: text("sentiment"), // positive, neutral, negative
   transcript: text("transcript", { mode: "json" }).$type<Array<{ speaker: "ai" | "caller"; text: string }>>(),
   transferRequested: integer("transfer_requested", { mode: "boolean" }).default(false),
+  // CRM
+  outcome: text("outcome"), // appointment_booked, estimate_requested, message_taken, transfer, info_only, spam, unknown
+  audioUrl: text("audio_url"),
+  customerId: text("customer_id"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -143,6 +150,50 @@ export const campaignContacts = sqliteTable("campaign_contacts", {
   attempts: integer("attempts").default(0),
   lastAttemptAt: text("last_attempt_at"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Phase 9: CRM ──
+
+export const customers = sqliteTable("customers", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  phone: text("phone").notNull(),
+  name: text("name"),
+  email: text("email"),
+  address: text("address"),
+  language: text("language").default("en"),
+  tags: text("tags", { mode: "json" }).$type<string[]>().default([]),
+  notes: text("notes"),
+  source: text("source").default("inbound_call"),
+  totalCalls: integer("total_calls").default(0),
+  totalAppointments: integer("total_appointments").default(0),
+  totalEstimates: integer("total_estimates").default(0),
+  lastCallAt: text("last_call_at"),
+  firstCallAt: text("first_call_at"),
+  isRepeat: integer("is_repeat", { mode: "boolean" }).default(false),
+  deletedAt: text("deleted_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const estimates = sqliteTable("estimates", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  customerId: text("customer_id").notNull().references(() => customers.id),
+  callId: text("call_id").references(() => calls.id),
+  service: text("service"),
+  description: text("description"),
+  status: text("status").notNull().default("new"), // new, sent, follow_up, won, lost, expired
+  amount: real("amount"),
+  followUpCount: integer("follow_up_count").default(0),
+  lastFollowUpAt: text("last_follow_up_at"),
+  nextFollowUpAt: text("next_follow_up_at"),
+  wonAt: text("won_at"),
+  lostAt: text("lost_at"),
+  lostReason: text("lost_reason"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
 
 // ── Phase 2: Outreach Engine ──

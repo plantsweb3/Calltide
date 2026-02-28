@@ -69,6 +69,7 @@ export default function AdminDashboardPage() {
   const [billing, setBilling] = useState<BillingData | null>(null);
   const [ops, setOps] = useState<OpsData | null>(null);
   const [alerts, setAlerts] = useState<NotificationItem[]>([]);
+  const [crmStats, setCrmStats] = useState<{ totalCustomers: number; repeatRate: number; openEstimates: number; wonEstimateValue: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -92,6 +93,10 @@ export default function AdminDashboardPage() {
       .then((r) => r.json())
       .then((d) => setAlerts(d.items ?? []))
       .catch(() => setError("Failed to load notifications"));
+    fetch("/api/admin/crm-stats")
+      .then((r) => r.json())
+      .then(setCrmStats)
+      .catch(() => {});
   }, []);
 
   if (!data) {
@@ -170,6 +175,26 @@ export default function AdminDashboardPage() {
           changeType="positive"
         />
       </div>
+
+      {/* CRM Health */}
+      {crmStats && (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <MetricCard label="CRM Customers" value={crmStats.totalCustomers} />
+          <MetricCard
+            label="Repeat Rate"
+            value={crmStats.repeatRate}
+            suffix="%"
+            changeType={crmStats.repeatRate >= 30 ? "positive" : "neutral"}
+          />
+          <MetricCard label="Open Estimates" value={crmStats.openEstimates} />
+          <MetricCard
+            label="Won Estimates"
+            value={crmStats.wonEstimateValue}
+            prefix="$"
+            changeType="positive"
+          />
+        </div>
+      )}
 
       {/* System Health Grid */}
       {ops?.services && ops.services.length > 0 && (

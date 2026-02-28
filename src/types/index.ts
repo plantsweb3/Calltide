@@ -99,4 +99,5 @@ export interface BusinessContext {
   serviceArea?: string;
   additionalInfo?: string;
   emergencyPhone?: string;
+  personalityNotes?: string;
 }

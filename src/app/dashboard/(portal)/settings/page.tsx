@@ -24,6 +24,7 @@ interface SettingsData {
   defaultLanguage: string;
   serviceArea: string | null;
   additionalInfo: string | null;
+  personalityNotes: string | null;
   emergencyPhone: string | null;
   timezone: string;
   active: boolean;
@@ -182,6 +183,7 @@ export default function SettingsPage() {
         emergencyPhone: data.emergencyPhone ? phoneDigits(data.emergencyPhone) : "",
         serviceArea: data.serviceArea || "",
         additionalInfo: data.additionalInfo || "",
+        personalityNotes: data.personalityNotes || "",
       };
 
       const res = await fetch("/api/dashboard/settings", {
@@ -425,6 +427,32 @@ export default function SettingsPage() {
               </span>
             </div>
           </div>
+        </div>
+      </Card>
+
+      {/* ── Section: María's Personality ── */}
+      <Card title="María's Personality">
+        <p className="text-sm mb-3" style={{ color: "var(--db-text-muted)" }}>
+          Customize how María sounds on calls. These instructions shape her tone and behavior.
+        </p>
+        <textarea
+          value={data.personalityNotes || ""}
+          onChange={(e) => setField("personalityNotes", e.target.value || null)}
+          onBlur={() => handleBlur("personalityNotes", data.personalityNotes || "")}
+          rows={4}
+          maxLength={1000}
+          placeholder={"Examples:\n• Be extra friendly and casual\n• Always mention we offer military discounts\n• If someone asks about pricing, say we offer free estimates\n• Mention our satisfaction guarantee"}
+          className="w-full rounded-lg px-3 py-2 text-sm resize-none"
+          style={{
+            background: "var(--db-bg)",
+            border: `1px solid var(--db-border)`,
+            color: "var(--db-text)",
+          }}
+        />
+        <div className="flex justify-end mt-1">
+          <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            {(data.personalityNotes || "").length}/1000
+          </span>
         </div>
       </Card>
 

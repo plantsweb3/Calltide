@@ -50,6 +50,22 @@ interface Overview {
     totalCalls: number;
     percentage: number;
   };
+  estimatePipeline?: {
+    new: { count: number; value: number };
+    sent: { count: number; value: number };
+    follow_up: { count: number; value: number };
+    won: { count: number; value: number };
+    lost: { count: number; value: number };
+    totalPipelineValue: number;
+    wonThisMonth: { count: number; value: number };
+  };
+  customerInsights?: {
+    totalCustomers: number;
+    repeatCallers: number;
+    repeatRate: number;
+    newThisMonth: number;
+    topByCallCount: Array<{ name: string | null; phone: string; totalCalls: number }>;
+  };
 }
 
 function getGreeting(): string {
@@ -238,6 +254,85 @@ export default function OverviewPage() {
             {data.weeklySummary && <WeeklySummary data={data.weeklySummary} />}
           </div>
         </div>
+
+        {/* Estimate Pipeline + Customer Insights */}
+        {(data.estimatePipeline || data.customerInsights) && (
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {data.estimatePipeline && (
+              <div
+                className="rounded-xl p-5"
+                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", boxShadow: "var(--db-card-shadow)" }}
+              >
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+                  Estimate Pipeline
+                </h3>
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  {[
+                    { label: "Active Pipeline", value: `$${data.estimatePipeline.totalPipelineValue.toLocaleString()}`, color: "var(--db-accent)" },
+                    { label: "Won This Month", value: `$${data.estimatePipeline.wonThisMonth.value.toLocaleString()}`, color: "#4ade80" },
+                    { label: "Won Deals", value: String(data.estimatePipeline.wonThisMonth.count), color: "#4ade80" },
+                  ].map((s) => (
+                    <div key={s.label}>
+                      <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{s.label}</p>
+                      <p className="text-lg font-bold" style={{ color: s.color }}>{s.value}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  {(["new", "sent", "follow_up", "won", "lost"] as const).map((status) => {
+                    const d = data.estimatePipeline![status];
+                    const colors: Record<string, string> = { new: "#3b82f6", sent: "#6366f1", follow_up: "#f59e0b", won: "#22c55e", lost: "#ef4444" };
+                    return (
+                      <div key={status} className="flex-1 rounded-lg p-2 text-center" style={{ background: "var(--db-hover)" }}>
+                        <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{status.replace(/_/g, " ")}</p>
+                        <p className="text-sm font-bold" style={{ color: colors[status] }}>{d.count}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {data.customerInsights && (
+              <div
+                className="rounded-xl p-5"
+                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", boxShadow: "var(--db-card-shadow)" }}
+              >
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+                  Customer Insights
+                </h3>
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div>
+                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Total Customers</p>
+                    <p className="text-lg font-bold" style={{ color: "var(--db-text)" }}>{data.customerInsights.totalCustomers}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Repeat Rate</p>
+                    <p className="text-lg font-bold" style={{ color: "var(--db-accent)" }}>{data.customerInsights.repeatRate}%</p>
+                  </div>
+                  <div>
+                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Repeat Callers</p>
+                    <p className="text-lg font-bold" style={{ color: "var(--db-text)" }}>{data.customerInsights.repeatCallers}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>New This Month</p>
+                    <p className="text-lg font-bold" style={{ color: "#4ade80" }}>{data.customerInsights.newThisMonth}</p>
+                  </div>
+                </div>
+                {data.customerInsights.topByCallCount.length > 0 && (
+                  <div>
+                    <p className="text-xs mb-2" style={{ color: "var(--db-text-muted)" }}>Top Callers</p>
+                    {data.customerInsights.topByCallCount.map((c, i) => (
+                      <div key={i} className="flex items-center justify-between py-1">
+                        <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{c.name || c.phone}</span>
+                        <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{c.totalCalls} calls</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Insights + Bilingual */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">

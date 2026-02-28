@@ -4,7 +4,7 @@ import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import StatusBadge from "../../../_components/status-badge";
 
-type Tab = "calls" | "bookings" | "communications" | "ai" | "notes" | "qa" | "nps" | "referral" | "timeline";
+type Tab = "calls" | "bookings" | "communications" | "ai" | "notes" | "qa" | "nps" | "referral" | "timeline" | "customers";
 
 interface BusinessDetail {
   id: string;
@@ -91,6 +91,7 @@ export default function ClientDetailPage({
   const [npsHistory, setNpsHistory] = useState<Array<{ id: string; score: number; classification: string; feedback: string | null; createdAt: string }>>([]);
   const [referralData, setReferralData] = useState<{ code: string | null; referrals: Array<{ id: string; status: string; creditAmount: number; creditApplied: boolean; createdAt: string }> }>({ code: null, referrals: [] });
   const [timeline, setTimeline] = useState<Array<{ id: string; eventType: string; emailSentAt: string | null; createdAt: string; eventData: Record<string, unknown> | null }>>([]);
+  const [crmCustomers, setCrmCustomers] = useState<Array<{ id: string; phone: string; name: string | null; totalCalls: number; totalAppointments: number; lastCallAt: string | null; isRepeat: boolean; tags: string[] }>>([]);
 
   useEffect(() => {
     fetch(`/api/admin/clients/${id}`)
@@ -141,6 +142,11 @@ export default function ClientDetailPage({
       .then((r) => r.json())
       .then((d) => setTimeline(d.events || []))
       .catch(() => setError("Failed to load timeline data"));
+
+    fetch(`/api/admin/clients/${id}/customers?limit=50`)
+      .then((r) => r.json())
+      .then((d) => setCrmCustomers(d.customers || []))
+      .catch(() => {});
   }, [id]);
 
   async function addNote() {
@@ -212,6 +218,7 @@ export default function ClientDetailPage({
     { key: "qa", label: "QA", count: qaScores.length },
     { key: "nps", label: "NPS", count: npsHistory.length },
     { key: "referral", label: "Referral", count: referralData.referrals.length },
+    { key: "customers", label: "Customers", count: crmCustomers.length },
     { key: "timeline", label: "Timeline", count: timeline.length },
     { key: "notes", label: "Notes", count: notes.length },
   ];
@@ -682,6 +689,42 @@ export default function ClientDetailPage({
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Customers Tab */}
+        {tab === "customers" && (
+          <div className="space-y-2">
+            {crmCustomers.length === 0 && (
+              <p className="py-8 text-center text-xs" style={{ color: "var(--db-text-muted)" }}>No CRM customers yet</p>
+            )}
+            {crmCustomers.map((c) => (
+              <div
+                key={c.id}
+                className="flex items-center justify-between rounded-lg px-4 py-3 text-sm"
+                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+              >
+                <div>
+                  <span className="font-medium" style={{ color: "var(--db-text)" }}>{c.name || "Unknown"}</span>
+                  <span className="ml-2 text-xs" style={{ color: "var(--db-text-muted)" }}>{c.phone}</span>
+                  {c.isRepeat && (
+                    <span className="ml-2 rounded px-1.5 py-0.5 text-[10px] font-medium" style={{ background: "var(--db-accent)", color: "#fff" }}>
+                      REPEAT
+                    </span>
+                  )}
+                  {(c.tags || []).map((tag) => (
+                    <span key={tag} className="ml-1 rounded px-1.5 py-0.5 text-[10px]" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex items-center gap-4 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  <span>{c.totalCalls} calls</span>
+                  <span>{c.totalAppointments} appts</span>
+                  <span>{c.lastCallAt ? formatDate(c.lastCallAt) : "—"}</span>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
