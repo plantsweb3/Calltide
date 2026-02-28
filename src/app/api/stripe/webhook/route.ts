@@ -58,6 +58,9 @@ export async function POST(request: Request) {
       case "invoice.payment_failed":
         await handlePaymentFailed(event.data.object as Stripe.Invoice);
         break;
+      case "checkout.session.completed":
+        await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+        break;
       case "customer.subscription.created":
         await handleSubscriptionCreated(event.data.object as Stripe.Subscription);
         break;
@@ -90,6 +93,81 @@ async function findBusinessByCustomer(customerId: string) {
     .where(eq(businesses.stripeCustomerId, customerId))
     .limit(1);
   return biz;
+}
+
+async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+  const customerId = typeof session.customer === "string"
+    ? session.customer
+    : session.customer?.id;
+  const subscriptionId = typeof session.subscription === "string"
+    ? session.subscription
+    : (session.subscription as Stripe.Subscription | null)?.id;
+  const email = session.customer_email || session.metadata?.email;
+
+  if (!customerId || !email) return;
+
+  // Check if business already exists for this customer
+  const existing = await findBusinessByCustomer(customerId);
+  if (existing) return;
+
+  // Also check by email to prevent duplicates
+  const [existingByEmail] = await db
+    .select({ id: businesses.id })
+    .from(businesses)
+    .where(eq(businesses.ownerEmail, email))
+    .limit(1);
+  if (existingByEmail) {
+    // Link Stripe IDs to existing business
+    await db
+      .update(businesses)
+      .set({
+        stripeCustomerId: customerId,
+        stripeSubscriptionId: subscriptionId || undefined,
+        stripeSubscriptionStatus: "trialing",
+        paymentStatus: "active",
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(businesses.id, existingByEmail.id));
+    return;
+  }
+
+  // Create new business record from checkout
+  await db.insert(businesses).values({
+    name: "My Business", // Placeholder — updated during onboarding
+    type: "general",
+    ownerName: "",
+    ownerPhone: "",
+    ownerEmail: email,
+    twilioNumber: "", // Assigned during onboarding
+    services: [],
+    businessHours: {
+      Mon: { open: "08:00", close: "17:00" },
+      Tue: { open: "08:00", close: "17:00" },
+      Wed: { open: "08:00", close: "17:00" },
+      Thu: { open: "08:00", close: "17:00" },
+      Fri: { open: "08:00", close: "17:00" },
+    },
+    stripeCustomerId: customerId,
+    stripeSubscriptionId: subscriptionId || undefined,
+    stripeSubscriptionStatus: "trialing",
+    paymentStatus: "active",
+    active: false, // Activated after onboarding
+  });
+
+  await logActivity({
+    type: "signup_completed",
+    entityType: "business",
+    title: `New signup: ${email}`,
+    detail: `Checkout completed. Subscription: ${subscriptionId || "pending"}. Trial: 14 days.`,
+  });
+
+  await createNotification({
+    source: "financial",
+    severity: "info",
+    title: "New customer signup",
+    message: `${email} completed checkout. Onboarding pending.`,
+    actionUrl: "/admin/billing",
+  });
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {

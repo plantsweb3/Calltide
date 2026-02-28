@@ -9,13 +9,27 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Calltide — The Front Office for Your Business",
+  title: "Calltide — AI Receptionist for Home Service Businesses | Bilingual EN/ES",
   description:
-    "AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Texts you the details. Built for service businesses.",
+    "Maria answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. Built for HVAC, plumbing, and electrical businesses. $497/mo.",
+  keywords: [
+    "AI receptionist",
+    "virtual receptionist",
+    "bilingual receptionist",
+    "home service business",
+    "HVAC answering service",
+    "plumbing answering service",
+    "electrical answering service",
+    "Spanish answering service",
+    "24/7 phone answering",
+    "AI phone agent",
+    "missed call solution",
+    "appointment booking AI",
+  ],
   openGraph: {
     title: "Calltide — Every Call Answered. Every Job Booked.",
     description:
-      "AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Texts you the details. Less than $17/day.",
+      "Maria answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. Built for home service businesses. $497/mo.",
     url: "https://calltide.app",
     siteName: "Calltide",
     type: "website",
@@ -25,7 +39,7 @@ export const metadata: Metadata = {
         url: "https://calltide.app/images/og.png",
         width: 1200,
         height: 630,
-        alt: "Calltide — AI Receptionist for Service Businesses",
+        alt: "Calltide — AI Receptionist for Home Service Businesses",
       },
     ],
   },
@@ -33,7 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Calltide — Every Call Answered. Every Job Booked.",
     description:
-      "AI receptionist that answers your phone in English and Spanish, 24/7. Books appointments. Less than $17/day.",
+      "Maria answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. $497/mo.",
   },
 };
 
