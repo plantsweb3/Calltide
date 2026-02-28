@@ -58,6 +58,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
         { href: "/admin/financials", label: "Financials", icon: <svg {...ip}><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></svg> },
         { href: "/admin/capacity", label: "Capacity", icon: <svg {...ip}><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg> },
         { href: "/admin/ops", label: "Service Health", icon: <svg {...ip}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg> },
+        { href: "/admin/outbound", label: "Outbound Calls", icon: <svg {...ip}><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94" /><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" /></svg> },
       ],
     },
     {

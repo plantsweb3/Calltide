@@ -13,6 +13,10 @@
     { "path": "/api/capacity/weekly-report", "schedule": "0 14 * * 1" },
     { "path": "/api/agents/success", "schedule": "0 15 * * *" },
     { "path": "/api/financial/dunning", "schedule": "30 16 * * *" },
-    { "path": "/api/cron/estimate-followup", "schedule": "30 15 * * *" }
+    { "path": "/api/cron/estimate-followup", "schedule": "30 15 * * *" },
+    { "path": "/api/cron/outbound-reminders", "schedule": "0 0 * * *" },
+    { "path": "/api/cron/outbound-estimate-followup", "schedule": "0 16 * * *" },
+    { "path": "/api/cron/outbound-seasonal", "schedule": "0 17 1 * *" },
+    { "path": "/api/cron/outbound-dispatch", "schedule": "*/15 16-23 * * *" }
   ]
 }

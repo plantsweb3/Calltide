@@ -40,7 +40,34 @@ const statusColors: Record<string, { bg: string; text: string }> = {
   in_progress: { bg: "rgba(96,165,250,0.1)", text: "#60a5fa" },
 };
 
+interface OutboundCall {
+  id: string;
+  callType: string;
+  customerPhone: string;
+  status: string;
+  outcome: string | null;
+  scheduledFor: string;
+  duration: number | null;
+  createdAt?: string;
+}
+
+const outboundStatusColors: Record<string, { bg: string; text: string }> = {
+  scheduled: { bg: "rgba(96,165,250,0.1)", text: "#60a5fa" },
+  initiated: { bg: "rgba(251,191,36,0.1)", text: "#fbbf24" },
+  completed: { bg: "rgba(74,222,128,0.1)", text: "#4ade80" },
+  failed: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
+  retry: { bg: "rgba(251,191,36,0.1)", text: "#fbbf24" },
+  consent_blocked: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
+};
+
+const callTypeLabels: Record<string, string> = {
+  appointment_reminder: "Appointment Reminder",
+  estimate_followup: "Estimate Follow-up",
+  seasonal_reminder: "Seasonal Reminder",
+};
+
 export default function CallsPage() {
+  const [tab, setTab] = useState<"inbound" | "outbound">("inbound");
   const [calls, setCalls] = useState<Call[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -49,6 +76,8 @@ export default function CallsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCall, setSelectedCall] = useState<Call | null>(null);
+  const [outboundCalls, setOutboundCalls] = useState<OutboundCall[]>([]);
+  const [outboundLoading, setOutboundLoading] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const fetchCalls = useCallback(async () => {
@@ -77,6 +106,17 @@ export default function CallsPage() {
   useEffect(() => {
     fetchCalls();
   }, [fetchCalls]);
+
+  useEffect(() => {
+    if (tab === "outbound" && outboundCalls.length === 0) {
+      setOutboundLoading(true);
+      fetch("/api/dashboard/outbound")
+        .then((r) => r.json())
+        .then((d) => setOutboundCalls(d.recentCalls ?? []))
+        .catch(() => {})
+        .finally(() => setOutboundLoading(false));
+    }
+  }, [tab, outboundCalls.length]);
 
   function formatDuration(seconds: number | null): string {
     if (!seconds) return "-";
@@ -199,34 +239,110 @@ export default function CallsPage() {
   return (
     <div>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1
-          className="text-2xl font-semibold"
-          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
-        >
-          Calls
-        </h1>
-        <input
-          type="text"
-          placeholder="Search by phone or name..."
-          defaultValue={search}
-          onChange={(e) => {
-            const val = e.target.value;
-            clearTimeout(searchTimer.current);
-            searchTimer.current = setTimeout(() => {
-              setSearch(val);
-              setPage(1);
-            }, 300);
-          }}
-          className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-64"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            color: "var(--db-text)",
-          }}
-          onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-          onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
-        />
+        <div className="flex items-center gap-4">
+          <h1
+            className="text-2xl font-semibold"
+            style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+          >
+            Calls
+          </h1>
+          <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
+            {(["inbound", "outbound"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className="px-3 py-1.5 text-xs font-medium transition-colors"
+                style={{
+                  background: tab === t ? "var(--db-accent)" : "var(--db-card)",
+                  color: tab === t ? "#fff" : "var(--db-text-secondary)",
+                }}
+              >
+                {t === "inbound" ? "Inbound" : "Outbound"}
+              </button>
+            ))}
+          </div>
+        </div>
+        {tab === "inbound" && (
+          <input
+            type="text"
+            placeholder="Search by phone or name..."
+            defaultValue={search}
+            onChange={(e) => {
+              const val = e.target.value;
+              clearTimeout(searchTimer.current);
+              searchTimer.current = setTimeout(() => {
+                setSearch(val);
+                setPage(1);
+              }, 300);
+            }}
+            className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-64"
+            style={{
+              background: "var(--db-card)",
+              border: "1px solid var(--db-border)",
+              color: "var(--db-text)",
+            }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+          />
+        )}
       </div>
+
+      {tab === "outbound" && (
+        <div>
+          {outboundLoading ? (
+            <TableSkeleton rows={4} />
+          ) : outboundCalls.length === 0 ? (
+            <div
+              className="rounded-xl p-12 text-center"
+              style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+            >
+              <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>No outbound calls yet</p>
+              <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
+                Enable outbound calling in Settings to let María make appointment reminders, estimate follow-ups, and seasonal reminder calls.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {outboundCalls.map((c) => {
+                const sc = outboundStatusColors[c.status] ?? { bg: "var(--db-hover)", text: "var(--db-text-secondary)" };
+                return (
+                  <div
+                    key={c.id}
+                    className="flex items-center gap-3 rounded-xl px-4 py-3"
+                    style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+                  >
+                    <span
+                      className="rounded px-2 py-0.5 text-[10px] font-semibold shrink-0"
+                      style={{ background: sc.bg, color: sc.text }}
+                    >
+                      {callTypeLabels[c.callType] ?? c.callType}
+                    </span>
+                    <span className="flex-1 text-sm" style={{ color: "var(--db-text)" }}>
+                      {formatPhone(c.customerPhone)}
+                    </span>
+                    <span
+                      className="rounded-full px-2 py-0.5 text-xs font-medium"
+                      style={{ background: sc.bg, color: sc.text }}
+                    >
+                      {c.outcome ?? c.status}
+                    </span>
+                    {c.duration != null && (
+                      <span className="text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
+                        {formatDuration(c.duration)}
+                      </span>
+                    )}
+                    <span className="text-xs shrink-0" style={{ color: "var(--db-text-muted)" }}>
+                      {formatDate(c.scheduledFor)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === "inbound" && (<>
 
       {error && (
         <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
@@ -401,6 +517,7 @@ export default function CallsPage() {
           onClose={() => setSelectedCall(null)}
         />
       )}
+      </>)}
     </div>
   );
 }

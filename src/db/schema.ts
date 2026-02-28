@@ -60,6 +60,14 @@ export const businesses = sqliteTable("businesses", {
   annualConvertedAt: text("annual_converted_at"),
   annualPitchedAt: text("annual_pitched_at"),
   audioRetentionDays: integer("audio_retention_days").default(90),
+  // Outbound calling
+  outboundEnabled: integer("outbound_enabled", { mode: "boolean" }).default(false),
+  appointmentReminders: integer("appointment_reminders", { mode: "boolean" }).default(true),
+  estimateFollowups: integer("estimate_followups", { mode: "boolean" }).default(true),
+  seasonalReminders: integer("seasonal_reminders", { mode: "boolean" }).default(false),
+  outboundCallingHoursStart: text("outbound_calling_hours_start").default("09:00"),
+  outboundCallingHoursEnd: text("outbound_calling_hours_end").default("18:00"),
+  outboundMaxCallsPerDay: integer("outbound_max_calls_per_day").default(20),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -115,6 +123,42 @@ export const servicePricing = sqliteTable("service_pricing", {
   isActive: integer("is_active", { mode: "boolean" }).default(true),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const outboundCalls = sqliteTable("outbound_calls", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  customerId: text("customer_id"),
+  customerPhone: text("customer_phone").notNull(),
+  callType: text("call_type").notNull(), // appointment_reminder, estimate_followup, seasonal_reminder
+  referenceId: text("reference_id"), // FK → appointments.id or estimates.id
+  status: text("status").default("scheduled"), // scheduled, calling, completed, failed, no_answer, cancelled
+  scheduledFor: text("scheduled_for").notNull(),
+  attemptedAt: text("attempted_at"),
+  completedAt: text("completed_at"),
+  duration: integer("duration"), // seconds
+  outcome: text("outcome"), // confirmed, rescheduled, cancelled, interested, not_interested, voicemail, no_answer, no_consent
+  transcript: text("transcript"),
+  recordingUrl: text("recording_url"),
+  twilioCallSid: text("twilio_call_sid"),
+  retryCount: integer("retry_count").default(0),
+  maxRetries: integer("max_retries").default(2),
+  consentRecordId: text("consent_record_id"),
+  language: text("language").default("en"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const seasonalServices = sqliteTable("seasonal_services", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  serviceName: text("service_name").notNull(),
+  reminderIntervalMonths: integer("reminder_interval_months").notNull(),
+  reminderMessage: text("reminder_message"),
+  seasonStart: integer("season_start"), // month 1-12
+  seasonEnd: integer("season_end"), // month 1-12
+  isActive: integer("is_active", { mode: "boolean" }).default(true),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
 export const appointments = sqliteTable("appointments", {

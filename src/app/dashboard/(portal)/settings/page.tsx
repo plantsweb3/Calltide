@@ -1047,6 +1047,9 @@ export default function SettingsPage() {
         </p>
       </Card>
 
+      {/* ── Section: Outbound Calling ── */}
+      <OutboundSettingsSection />
+
       {/* Sticky Save Bar (mobile) */}
       {isDirty && (
         <div
@@ -1123,5 +1126,424 @@ function InputField({
       />
       {error && <p className="mt-1 text-xs" style={{ color: "#f87171" }}>{error}</p>}
     </div>
+  );
+}
+
+/* ── Outbound Settings Section ── */
+
+interface OutboundSettings {
+  outboundEnabled: boolean;
+  appointmentReminders: boolean;
+  estimateFollowups: boolean;
+  seasonalReminders: boolean;
+  outboundCallingHoursStart: string;
+  outboundCallingHoursEnd: string;
+  outboundMaxCallsPerDay: number;
+}
+
+interface OutboundCallItem {
+  id: string;
+  callType: string;
+  customerPhone: string;
+  status: string;
+  outcome: string | null;
+  scheduledFor: string;
+  duration: number | null;
+}
+
+interface SeasonalService {
+  id: string;
+  serviceName: string;
+  reminderIntervalMonths: number;
+  reminderMessage?: string | null;
+  seasonStart?: number | null;
+  seasonEnd?: number | null;
+  isActive: boolean;
+}
+
+const CALL_TYPE_LABELS: Record<string, string> = {
+  appointment_reminder: "Apt Reminder",
+  estimate_followup: "Estimate F/U",
+  seasonal_reminder: "Seasonal",
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  scheduled: "#3b82f6",
+  initiated: "#f59e0b",
+  completed: "#22c55e",
+  failed: "#ef4444",
+  retry: "#f59e0b",
+  consent_blocked: "#ef4444",
+};
+
+const MONTH_LABELS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function OutboundSettingsSection() {
+  const [settings, setSettings] = useState<OutboundSettings | null>(null);
+  const [calls, setCalls] = useState<OutboundCallItem[]>([]);
+  const [seasonal, setSeasonal] = useState<SeasonalService[]>([]);
+  const [stats, setStats] = useState<{ total: number; completed: number; answered: number; noAnswer: number; scheduled: number } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [showSeasonal, setShowSeasonal] = useState(false);
+  const [newService, setNewService] = useState({ serviceName: "", reminderIntervalMonths: "12", reminderMessage: "", seasonStart: "", seasonEnd: "" });
+  const [addingService, setAddingService] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/dashboard/outbound")
+      .then((r) => r.json())
+      .then((d) => {
+        setSettings(d.settings);
+        setCalls(d.recentCalls ?? []);
+        setStats(d.stats ?? null);
+      })
+      .catch(() => {});
+
+    fetch("/api/dashboard/seasonal-services")
+      .then((r) => r.json())
+      .then((d) => setSeasonal(d.items ?? []))
+      .catch(() => {});
+  }, []);
+
+  const updateSetting = async (key: string, value: unknown) => {
+    if (!settings) return;
+    const updated = { ...settings, [key]: value } as OutboundSettings;
+    setSettings(updated);
+    setSaving(true);
+    try {
+      await fetch("/api/dashboard/outbound", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [key]: value }),
+      });
+      toast.success("Setting updated");
+    } catch {
+      toast.error("Failed to save");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const addSeasonalService = async () => {
+    if (!newService.serviceName) return;
+    setAddingService(true);
+    try {
+      const res = await fetch("/api/dashboard/seasonal-services", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          serviceName: newService.serviceName,
+          reminderIntervalMonths: parseInt(newService.reminderIntervalMonths) || 12,
+          reminderMessage: newService.reminderMessage || undefined,
+          seasonStart: newService.seasonStart ? parseInt(newService.seasonStart) : undefined,
+          seasonEnd: newService.seasonEnd ? parseInt(newService.seasonEnd) : undefined,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSeasonal((prev) => [...prev, { ...newService, id: data.id, reminderIntervalMonths: parseInt(newService.reminderIntervalMonths) || 12, isActive: true, seasonStart: newService.seasonStart ? parseInt(newService.seasonStart) : null, seasonEnd: newService.seasonEnd ? parseInt(newService.seasonEnd) : null }]);
+        setNewService({ serviceName: "", reminderIntervalMonths: "12", reminderMessage: "", seasonStart: "", seasonEnd: "" });
+        toast.success("Service added");
+      }
+    } catch {
+      toast.error("Failed to add");
+    } finally {
+      setAddingService(false);
+    }
+  };
+
+  const deleteSeasonalService = async (id: string) => {
+    try {
+      await fetch(`/api/dashboard/seasonal-services/${id}`, { method: "DELETE" });
+      setSeasonal((prev) => prev.filter((s) => s.id !== id));
+      toast.success("Service removed");
+    } catch {
+      toast.error("Failed to remove");
+    }
+  };
+
+  if (!settings) return null;
+
+  return (
+    <Card title="Outbound Calling">
+      <div className="space-y-4">
+        {/* Master toggle */}
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+              Enable Outbound Calls
+            </p>
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+              Let María make calls on your behalf
+            </p>
+          </div>
+          <ToggleSwitch
+            checked={settings.outboundEnabled}
+            onChange={(v) => updateSetting("outboundEnabled", v)}
+          />
+        </div>
+
+        {settings.outboundEnabled && (
+          <>
+            {/* Call type toggles */}
+            <div className="space-y-3 pl-1">
+              <div className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Appointment Reminders</span>
+                <ToggleSwitch
+                  checked={settings.appointmentReminders}
+                  onChange={(v) => updateSetting("appointmentReminders", v)}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Estimate Follow-ups</span>
+                <ToggleSwitch
+                  checked={settings.estimateFollowups}
+                  onChange={(v) => updateSetting("estimateFollowups", v)}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Seasonal Reminders</span>
+                <ToggleSwitch
+                  checked={settings.seasonalReminders}
+                  onChange={(v) => updateSetting("seasonalReminders", v)}
+                />
+              </div>
+            </div>
+
+            {/* Calling hours */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                  Call Window Start
+                </label>
+                <select
+                  value={settings.outboundCallingHoursStart}
+                  onChange={(e) => updateSetting("outboundCallingHoursStart", e.target.value)}
+                  className="w-full rounded-lg px-3 py-2 text-sm"
+                  style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                >
+                  {Array.from({ length: 13 }, (_, i) => i + 7).map((h) => (
+                    <option key={h} value={`${h.toString().padStart(2, "0")}:00`}>
+                      {h > 12 ? `${h - 12}:00 PM` : h === 12 ? "12:00 PM" : `${h}:00 AM`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                  Call Window End
+                </label>
+                <select
+                  value={settings.outboundCallingHoursEnd}
+                  onChange={(e) => updateSetting("outboundCallingHoursEnd", e.target.value)}
+                  className="w-full rounded-lg px-3 py-2 text-sm"
+                  style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                >
+                  {Array.from({ length: 13 }, (_, i) => i + 12).map((h) => (
+                    <option key={h} value={`${h.toString().padStart(2, "0")}:00`}>
+                      {h > 12 ? `${h - 12}:00 PM` : `12:00 PM`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Max calls per day */}
+            <div>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                Max Calls Per Day
+              </label>
+              <input
+                type="number"
+                min={1}
+                max={100}
+                value={settings.outboundMaxCallsPerDay}
+                onChange={(e) => updateSetting("outboundMaxCallsPerDay", parseInt(e.target.value) || 20)}
+                className="w-24 rounded-lg px-3 py-2 text-sm"
+                style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+              />
+            </div>
+
+            {/* Seasonal services */}
+            {settings.seasonalReminders && (
+              <div className="pt-2">
+                <button
+                  onClick={() => setShowSeasonal(!showSeasonal)}
+                  className="text-sm font-medium transition-colors"
+                  style={{ color: "var(--db-accent)" }}
+                >
+                  {showSeasonal ? "Hide Seasonal Services" : "Manage Seasonal Services"} ({seasonal.length})
+                </button>
+
+                {showSeasonal && (
+                  <div className="mt-3 space-y-3">
+                    {seasonal.map((svc) => (
+                      <div
+                        key={svc.id}
+                        className="flex items-center justify-between rounded-lg p-3"
+                        style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)" }}
+                      >
+                        <div>
+                          <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                            {svc.serviceName}
+                          </p>
+                          <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                            Every {svc.reminderIntervalMonths} months
+                            {svc.seasonStart && svc.seasonEnd
+                              ? ` (${MONTH_LABELS[svc.seasonStart]}–${MONTH_LABELS[svc.seasonEnd]})`
+                              : ""}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => deleteSeasonalService(svc.id)}
+                          className="text-xs font-medium px-2 py-1 rounded"
+                          style={{ color: "#f87171" }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+
+                    {/* Add new */}
+                    <div
+                      className="rounded-lg p-3 space-y-2"
+                      style={{ background: "var(--db-bg)", border: "1px dashed var(--db-border)" }}
+                    >
+                      <input
+                        value={newService.serviceName}
+                        onChange={(e) => setNewService((p) => ({ ...p, serviceName: e.target.value }))}
+                        placeholder="Service name (e.g., AC Tune-Up)"
+                        className="w-full rounded px-2 py-1.5 text-sm"
+                        style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                      />
+                      <div className="grid grid-cols-3 gap-2">
+                        <select
+                          value={newService.reminderIntervalMonths}
+                          onChange={(e) => setNewService((p) => ({ ...p, reminderIntervalMonths: e.target.value }))}
+                          className="rounded px-2 py-1.5 text-xs"
+                          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                        >
+                          {[3, 6, 12, 18, 24].map((m) => (
+                            <option key={m} value={m}>Every {m} months</option>
+                          ))}
+                        </select>
+                        <select
+                          value={newService.seasonStart}
+                          onChange={(e) => setNewService((p) => ({ ...p, seasonStart: e.target.value }))}
+                          className="rounded px-2 py-1.5 text-xs"
+                          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                        >
+                          <option value="">Season start</option>
+                          {MONTH_LABELS.slice(1).map((m, i) => (
+                            <option key={i + 1} value={i + 1}>{m}</option>
+                          ))}
+                        </select>
+                        <select
+                          value={newService.seasonEnd}
+                          onChange={(e) => setNewService((p) => ({ ...p, seasonEnd: e.target.value }))}
+                          className="rounded px-2 py-1.5 text-xs"
+                          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                        >
+                          <option value="">Season end</option>
+                          {MONTH_LABELS.slice(1).map((m, i) => (
+                            <option key={i + 1} value={i + 1}>{m}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <input
+                        value={newService.reminderMessage}
+                        onChange={(e) => setNewService((p) => ({ ...p, reminderMessage: e.target.value }))}
+                        placeholder="Custom message (optional)"
+                        className="w-full rounded px-2 py-1.5 text-sm"
+                        style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                      />
+                      <button
+                        onClick={addSeasonalService}
+                        disabled={!newService.serviceName || addingService}
+                        className="rounded-lg px-3 py-1.5 text-xs font-medium"
+                        style={{
+                          background: newService.serviceName ? "var(--db-accent)" : "var(--db-border)",
+                          color: newService.serviceName ? "#fff" : "var(--db-text-muted)",
+                        }}
+                      >
+                        {addingService ? "Adding..." : "Add Service"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Recent outbound calls */}
+            {stats && stats.total > 0 && (
+              <div className="pt-2">
+                <div className="flex items-center gap-4 mb-3">
+                  <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
+                    Total: {stats.total}
+                  </span>
+                  <span className="text-xs" style={{ color: "#22c55e" }}>
+                    Answered: {stats.answered}
+                  </span>
+                  <span className="text-xs" style={{ color: "#f59e0b" }}>
+                    No Answer: {stats.noAnswer}
+                  </span>
+                  <span className="text-xs" style={{ color: "#3b82f6" }}>
+                    Scheduled: {stats.scheduled}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5">
+                  {calls.slice(0, 5).map((c) => (
+                    <div
+                      key={c.id}
+                      className="flex items-center gap-3 rounded-lg px-3 py-2"
+                      style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)" }}
+                    >
+                      <span
+                        className="rounded px-1.5 py-0.5 text-[10px] font-semibold"
+                        style={{ background: `${STATUS_COLORS[c.status] ?? "#94a3b8"}15`, color: STATUS_COLORS[c.status] ?? "#94a3b8" }}
+                      >
+                        {CALL_TYPE_LABELS[c.callType] ?? c.callType}
+                      </span>
+                      <span className="flex-1 truncate text-xs" style={{ color: "var(--db-text-secondary)" }}>
+                        {c.customerPhone}
+                      </span>
+                      <span className="text-[10px]" style={{ color: STATUS_COLORS[c.status] ?? "#94a3b8" }}>
+                        {c.outcome ?? c.status}
+                      </span>
+                      {c.duration != null && (
+                        <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                          {c.duration}s
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </Card>
+  );
+}
+
+/* ── Toggle Switch component ── */
+
+function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button
+      onClick={() => onChange(!checked)}
+      className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors"
+      style={{ background: checked ? "var(--db-accent)" : "var(--db-border)" }}
+    >
+      <span
+        className="inline-block h-5 w-5 rounded-full transition-transform"
+        style={{
+          background: "#fff",
+          transform: checked ? "translateX(22px)" : "translateX(2px)",
+          marginTop: "2px",
+        }}
+      />
+    </button>
   );
 }

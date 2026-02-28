@@ -16,7 +16,9 @@ export type ActionType =
   | "nps_sent"
   | "milestone"
   | "health_score_updated"
-  | "annual_nudge_sent";
+  | "annual_nudge_sent"
+  | "outbound_call_scheduled"
+  | "outbound_call_completed";
 
 export type TargetType = "client" | "prospect" | "system";
 

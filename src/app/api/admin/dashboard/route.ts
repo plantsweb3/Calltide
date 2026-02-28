@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { prospects, demos, calls, businesses, prospectAuditCalls, prospectOutreach, consentRecords, dataDeletionRequests } from "@/db/schema";
+import { prospects, demos, calls, businesses, prospectAuditCalls, prospectOutreach, consentRecords, dataDeletionRequests, outboundCalls } from "@/db/schema";
 import { sql, eq, gte } from "drizzle-orm";
 
 export async function GET() {
@@ -18,6 +18,7 @@ export async function GET() {
     consentCount,
     dsarStats,
     disclosureStats,
+    outboundStats,
   ] = await Promise.all([
     // Prospect counts by status
     db
@@ -91,6 +92,16 @@ export async function GET() {
       })
       .from(calls)
       .where(gte(calls.createdAt, thirtyDaysAgo)),
+
+    // Outbound call stats
+    db
+      .select({
+        total: sql<number>`count(*)`,
+        completed: sql<number>`sum(case when ${outboundCalls.status} = 'completed' then 1 else 0 end)`,
+        answered: sql<number>`sum(case when ${outboundCalls.outcome} = 'answered' then 1 else 0 end)`,
+        scheduled: sql<number>`sum(case when ${outboundCalls.status} in ('scheduled', 'retry') then 1 else 0 end)`,
+      })
+      .from(outboundCalls),
   ]);
 
   const prospectsByStatus: Record<string, number> = {};
@@ -117,6 +128,12 @@ export async function GET() {
       disclosureRate: disclosureStats[0]?.total
         ? Math.round(((disclosureStats[0]?.disclosed ?? 0) / disclosureStats[0].total) * 100)
         : 100,
+    },
+    outbound: {
+      total: outboundStats[0]?.total ?? 0,
+      completed: outboundStats[0]?.completed ?? 0,
+      answered: outboundStats[0]?.answered ?? 0,
+      scheduled: outboundStats[0]?.scheduled ?? 0,
     },
   });
 }

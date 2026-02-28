@@ -27,6 +27,7 @@ interface DashboardData {
   businesses: number;
   calls: { total: number; completed: number };
   compliance?: { totalConsents: number; dsarPending: number; dsarTotal: number; disclosureRate: number };
+  outbound?: { total: number; completed: number; answered: number; scheduled: number };
 }
 
 interface MetricsData {
@@ -277,6 +278,24 @@ export default function AdminDashboardPage() {
             changeType={data.compliance.disclosureRate >= 95 ? "positive" : "negative"}
           />
           <MetricCard label="Total DSARs" value={data.compliance.dsarTotal} />
+        </div>
+      )}
+
+      {/* Outbound Calls */}
+      {data.outbound && data.outbound.total > 0 && (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <MetricCard label="Outbound Total" value={data.outbound.total} />
+          <MetricCard
+            label="Answered"
+            value={data.outbound.answered}
+            changeType="positive"
+          />
+          <MetricCard label="Completed" value={data.outbound.completed} />
+          <MetricCard
+            label="Scheduled"
+            value={data.outbound.scheduled}
+            changeType="neutral"
+          />
         </div>
       )}
 
