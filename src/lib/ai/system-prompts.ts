@@ -28,13 +28,14 @@ function formatHoursEs(hours: Record<string, { open: string; close: string }>): 
     .join("\n");
 }
 
-export function buildSystemPrompt(biz: BusinessContext, lang: Language): string {
-  if (lang === "es") return buildSpanishPrompt(biz);
-  return buildEnglishPrompt(biz);
+export function buildSystemPrompt(biz: BusinessContext, lang: Language, pricingContext?: string | null): string {
+  if (lang === "es") return buildSpanishPrompt(biz, pricingContext);
+  return buildEnglishPrompt(biz, pricingContext);
 }
 
-function buildEnglishPrompt(biz: BusinessContext): string {
-  const greeting = biz.greeting || `Thank you for calling ${biz.name}, this is María. How can I help you today?`;
+function buildEnglishPrompt(biz: BusinessContext, pricingContext?: string | null): string {
+  const baseGreeting = biz.greeting || `Thank you for calling ${biz.name}, this is María. How can I help you today?`;
+  const greeting = `This call may be recorded for quality purposes. You are speaking with María, an AI assistant for ${biz.name}. ${baseGreeting}`;
   const serviceAreaLine = biz.serviceArea ? `- Service Area: ${biz.serviceArea}` : "";
   const additionalInfoBlock = biz.additionalInfo ? `\n## Additional Business Context\n${biz.additionalInfo}` : "";
   const personalityBlock = biz.personalityNotes ? `\n## Special Instructions from the Owner\n${biz.personalityNotes}` : "";
@@ -110,7 +111,9 @@ When you detect an emergency:
 - When confirming information back, be brief: "Got it, Tuesday at 10 AM for drain cleaning."
 
 ## Rules
-- NEVER discuss pricing, give quotes, or estimate costs.
+${pricingContext ? `- When asked about pricing, you may provide these BALLPARK ranges (always add "the final price may vary depending on the specifics of the job"):
+${pricingContext}
+- For services NOT listed above, say: "I don't have exact pricing for that, but ${biz.ownerName} can provide a detailed quote."` : `- NEVER discuss pricing, give quotes, or estimate costs. Say: "For pricing, ${biz.ownerName} can provide you with a detailed quote. Would you like me to have them reach out?"`}
 - NEVER guarantee availability — always check first.
 - NEVER make up information about the business, services, or hours.
 - NEVER promise things outside the listed services.
@@ -118,8 +121,9 @@ When you detect an emergency:
 - If you don't know something, say: "I don't have that information, but ${biz.ownerName} can help you with that. Would you like me to take a message?"`;
 }
 
-function buildSpanishPrompt(biz: BusinessContext): string {
-  const greeting = biz.greetingEs || biz.greeting || `Gracias por llamar a ${biz.name}, habla María. ¿En qué le puedo ayudar hoy?`;
+function buildSpanishPrompt(biz: BusinessContext, pricingContext?: string | null): string {
+  const baseGreeting = biz.greetingEs || biz.greeting || `Gracias por llamar a ${biz.name}, habla María. ¿En qué le puedo ayudar hoy?`;
+  const greeting = `Esta llamada puede ser grabada para fines de calidad. Está hablando con María, asistente de IA de ${biz.name}. ${baseGreeting}`;
   const serviceAreaLine = biz.serviceArea ? `- Área de Servicio: ${biz.serviceArea}` : "";
   const additionalInfoBlock = biz.additionalInfo ? `\n## Contexto Adicional del Negocio\n${biz.additionalInfo}` : "";
   const personalityBlock = biz.personalityNotes ? `\n## Instrucciones Especiales del Dueño\n${biz.personalityNotes}` : "";
@@ -195,7 +199,9 @@ Cuando detectes una emergencia:
 - Al confirmar información, sé breve: "Perfecto, martes a las 10 AM para limpieza de drenaje."
 
 ## Reglas
-- NUNCA discutas precios, des cotizaciones o estimes costos.
+${pricingContext ? `- Cuando pregunten por precios, puedes dar estos rangos APROXIMADOS (siempre agrega "el precio final puede variar según los detalles del trabajo"):
+${pricingContext}
+- Para servicios NO listados arriba, di: "No tengo el precio exacto para eso, pero ${biz.ownerName} le puede dar una cotización detallada."` : `- NUNCA discutas precios, des cotizaciones o estimes costos. Di: "Para precios, ${biz.ownerName} puede darle una cotización detallada. ¿Le gustaría que se comunique con usted?"`}
 - NUNCA garantices disponibilidad — siempre verifica primero.
 - NUNCA inventes información sobre el negocio, servicios u horarios.
 - NUNCA prometas cosas fuera de los servicios listados.

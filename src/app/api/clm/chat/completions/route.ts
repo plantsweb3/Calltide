@@ -3,6 +3,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessByPhone, detectLanguage } from "@/lib/ai/context-builder";
 import { getReturningCallerContext } from "@/lib/crm/returning-caller";
 import { buildSystemPrompt } from "@/lib/ai/system-prompts";
+import { buildPricingContext } from "@/lib/ai/pricing-context";
+import { recordCallDisclosures } from "@/lib/compliance/consent";
 import { detectEmergency } from "@/lib/emergency";
 import { db } from "@/db";
 import { calls } from "@/db/schema";
@@ -107,10 +109,30 @@ export async function POST(req: NextRequest) {
     // Use business default language if no strong signal, otherwise use detected
     const lang = detectedLang;
 
+    // Fetch pricing context if enabled
+    let pricingContext: string | null = null;
+    if (businessContext?.hasPricingEnabled) {
+      try {
+        pricingContext = await buildPricingContext(businessContext.id);
+      } catch {
+        // Non-critical — continue without pricing
+      }
+    }
+
     // Build the system prompt with business context
     let systemPrompt = businessContext
-      ? buildSystemPrompt(businessContext, lang)
+      ? buildSystemPrompt(businessContext, lang, pricingContext)
       : buildDefaultSystemPrompt(lang);
+
+    // Record TCPA disclosures on first message (fire-and-forget)
+    const isFirstMessage = messages.filter((m) => m.role === "user").length <= 1;
+    if (isFirstMessage && businessContext && metadata?.caller_phone) {
+      recordCallDisclosures(
+        metadata.chat_group_id || "",
+        businessContext.id,
+        metadata.caller_phone,
+      ).catch(() => { /* non-critical */ });
+    }
 
     // Returning caller detection — inject context for repeat customers
     if (businessContext && metadata?.caller_phone) {
@@ -292,6 +314,8 @@ async function saveTranscript(
       .set({
         transcript,
         language,
+        recordingDisclosed: true,
+        aiDisclosed: true,
         updatedAt: new Date().toISOString(),
       })
       .where(eq(calls.id, call.id));

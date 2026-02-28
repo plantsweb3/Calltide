@@ -100,4 +100,5 @@ export interface BusinessContext {
   additionalInfo?: string;
   emergencyPhone?: string;
   personalityNotes?: string;
+  hasPricingEnabled?: boolean;
 }

@@ -54,6 +54,7 @@ export const businesses = sqliteTable("businesses", {
   cardExpYear: integer("card_exp_year"),
   // CRM
   personalityNotes: text("personality_notes"),
+  hasPricingEnabled: integer("has_pricing_enabled", { mode: "boolean" }).default(false),
   audioRetentionDays: integer("audio_retention_days").default(90),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
@@ -93,6 +94,21 @@ export const calls = sqliteTable("calls", {
   outcome: text("outcome"), // appointment_booked, estimate_requested, message_taken, transfer, info_only, spam, unknown
   audioUrl: text("audio_url"),
   customerId: text("customer_id"),
+  recordingDisclosed: integer("recording_disclosed", { mode: "boolean" }).default(false),
+  aiDisclosed: integer("ai_disclosed", { mode: "boolean" }).default(false),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const servicePricing = sqliteTable("service_pricing", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  serviceName: text("service_name").notNull(),
+  priceMin: real("price_min"),
+  priceMax: real("price_max"),
+  unit: text("unit").default("per_job"), // per_job, per_hour, per_sqft, per_unit
+  description: text("description"),
+  isActive: integer("is_active", { mode: "boolean" }).default(true),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });

@@ -31,6 +31,16 @@ interface SettingsData {
   memberSince: string;
 }
 
+interface PricingEntry {
+  id: string;
+  serviceName: string;
+  priceMin: number | null;
+  priceMax: number | null;
+  unit: string;
+  description: string | null;
+  isActive: boolean;
+}
+
 const DAY_KEYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
 const DAY_LABELS: Record<string, string> = {
   Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday",
@@ -109,6 +119,13 @@ export default function SettingsPage() {
   const [newService, setNewService] = useState("");
   const [showGreetingPreview, setShowGreetingPreview] = useState(false);
 
+  // Pricing state
+  const [pricingEnabled, setPricingEnabled] = useState(false);
+  const [pricing, setPricing] = useState<PricingEntry[]>([]);
+  const [pricingLoading, setPricingLoading] = useState(true);
+  const [editingPriceId, setEditingPriceId] = useState<string | null>(null);
+  const [newPriceRow, setNewPriceRow] = useState<{ serviceName: string; priceMin: string; priceMax: string; unit: string } | null>(null);
+
   useEffect(() => {
     fetch("/api/dashboard/settings")
       .then((r) => {
@@ -120,6 +137,16 @@ export default function SettingsPage() {
         setInitialData(JSON.stringify(d));
       })
       .catch(() => setError("Failed to load settings"));
+
+    // Fetch pricing data
+    fetch("/api/dashboard/pricing")
+      .then((r) => r.ok ? r.json() : { pricing: [] })
+      .then((d) => {
+        setPricing(d.pricing || []);
+        setPricingEnabled(d.pricing?.length > 0);
+      })
+      .catch(() => setPricing([]))
+      .finally(() => setPricingLoading(false));
   }, []);
 
   const isDirty = data ? JSON.stringify(data) !== initialData : false;
@@ -601,6 +628,283 @@ export default function SettingsPage() {
         <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
           {data.services.length}/20 services
         </p>
+      </Card>
+
+      {/* ── Section: Service Pricing ── */}
+      <Card title="Service Pricing">
+        <div className="space-y-4">
+          {/* Master toggle */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                Enable María to discuss pricing
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
+                When enabled, María will quote ballpark prices with a &quot;final price may vary&quot; disclaimer
+              </p>
+            </div>
+            <button
+              onClick={async () => {
+                const newVal = !pricingEnabled;
+                setPricingEnabled(newVal);
+                try {
+                  await fetch("/api/dashboard/pricing/toggle", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ enabled: newVal }),
+                  });
+                  toast.success(newVal ? "Pricing quotes enabled" : "Pricing quotes disabled");
+                } catch {
+                  setPricingEnabled(!newVal);
+                  toast.error("Failed to toggle pricing");
+                }
+              }}
+              className={`relative w-11 h-6 rounded-full transition-colors ${pricingEnabled ? "" : ""}`}
+              style={{ background: pricingEnabled ? "var(--db-accent)" : "var(--db-border)" }}
+            >
+              <div
+                className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform"
+                style={{ transform: pricingEnabled ? "translateX(20px)" : "translateX(0)" }}
+              />
+            </button>
+          </div>
+
+          {pricingEnabled && (
+            <>
+              {/* Pricing table */}
+              {pricingLoading ? (
+                <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>Loading pricing...</p>
+              ) : (
+                <div className="space-y-2">
+                  {pricing.map((p) => (
+                    <div
+                      key={p.id}
+                      className="flex flex-wrap items-center gap-2 rounded-lg p-3"
+                      style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)" }}
+                    >
+                      {editingPriceId === p.id ? (
+                        <>
+                          <input
+                            type="text"
+                            defaultValue={p.serviceName}
+                            id={`edit-name-${p.id}`}
+                            className="flex-1 min-w-[120px] rounded px-2 py-1 text-sm"
+                            style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                          />
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
+                            <input
+                              type="number"
+                              defaultValue={p.priceMin ?? ""}
+                              id={`edit-min-${p.id}`}
+                              className="w-20 rounded px-2 py-1 text-sm"
+                              style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                              placeholder="Min"
+                            />
+                            <span style={{ color: "var(--db-text-muted)" }}>—</span>
+                            <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
+                            <input
+                              type="number"
+                              defaultValue={p.priceMax ?? ""}
+                              id={`edit-max-${p.id}`}
+                              className="w-20 rounded px-2 py-1 text-sm"
+                              style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                              placeholder="Max"
+                            />
+                          </div>
+                          <select
+                            defaultValue={p.unit}
+                            id={`edit-unit-${p.id}`}
+                            className="rounded px-2 py-1 text-xs"
+                            style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                          >
+                            <option value="per_job">per job</option>
+                            <option value="per_hour">per hour</option>
+                            <option value="per_sqft">per sq ft</option>
+                            <option value="per_unit">per unit</option>
+                          </select>
+                          <button
+                            onClick={async () => {
+                              const nameEl = document.getElementById(`edit-name-${p.id}`) as HTMLInputElement;
+                              const minEl = document.getElementById(`edit-min-${p.id}`) as HTMLInputElement;
+                              const maxEl = document.getElementById(`edit-max-${p.id}`) as HTMLInputElement;
+                              const unitEl = document.getElementById(`edit-unit-${p.id}`) as HTMLSelectElement;
+                              try {
+                                const res = await fetch(`/api/dashboard/pricing/${p.id}`, {
+                                  method: "PUT",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({
+                                    serviceName: nameEl.value,
+                                    priceMin: minEl.value ? parseFloat(minEl.value) : null,
+                                    priceMax: maxEl.value ? parseFloat(maxEl.value) : null,
+                                    unit: unitEl.value,
+                                  }),
+                                });
+                                if (res.ok) {
+                                  const { pricing: updated } = await res.json();
+                                  setPricing((prev) => prev.map((x) => x.id === p.id ? updated : x));
+                                  setEditingPriceId(null);
+                                  toast.success("Pricing updated");
+                                }
+                              } catch {
+                                toast.error("Failed to save");
+                              }
+                            }}
+                            className="rounded px-2 py-1 text-xs font-medium"
+                            style={{ background: "var(--db-accent)", color: "#fff" }}
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setEditingPriceId(null)}
+                            className="rounded px-2 py-1 text-xs"
+                            style={{ color: "var(--db-text-muted)" }}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <span className="flex-1 text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                            {p.serviceName}
+                          </span>
+                          <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
+                            {p.priceMin != null && p.priceMax != null
+                              ? `$${p.priceMin} – $${p.priceMax}`
+                              : p.priceMin != null
+                              ? `from $${p.priceMin}`
+                              : p.priceMax != null
+                              ? `up to $${p.priceMax}`
+                              : "—"}
+                          </span>
+                          <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                            {p.unit.replace("_", " ")}
+                          </span>
+                          <button
+                            onClick={() => setEditingPriceId(p.id)}
+                            className="text-xs font-medium"
+                            style={{ color: "var(--db-accent)" }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={async () => {
+                              try {
+                                await fetch(`/api/dashboard/pricing/${p.id}`, { method: "DELETE" });
+                                setPricing((prev) => prev.filter((x) => x.id !== p.id));
+                                toast.success("Pricing removed");
+                              } catch {
+                                toast.error("Failed to delete");
+                              }
+                            }}
+                            className="text-xs"
+                            style={{ color: "#f87171" }}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Add new pricing row */}
+              {newPriceRow ? (
+                <div
+                  className="flex flex-wrap items-center gap-2 rounded-lg p-3"
+                  style={{ background: "var(--db-bg)", border: "1px dashed var(--db-border)" }}
+                >
+                  <input
+                    type="text"
+                    value={newPriceRow.serviceName}
+                    onChange={(e) => setNewPriceRow({ ...newPriceRow, serviceName: e.target.value })}
+                    placeholder="Service name"
+                    className="flex-1 min-w-[120px] rounded px-2 py-1 text-sm"
+                    style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                  />
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
+                    <input
+                      type="number"
+                      value={newPriceRow.priceMin}
+                      onChange={(e) => setNewPriceRow({ ...newPriceRow, priceMin: e.target.value })}
+                      placeholder="Min"
+                      className="w-20 rounded px-2 py-1 text-sm"
+                      style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                    />
+                    <span style={{ color: "var(--db-text-muted)" }}>—</span>
+                    <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
+                    <input
+                      type="number"
+                      value={newPriceRow.priceMax}
+                      onChange={(e) => setNewPriceRow({ ...newPriceRow, priceMax: e.target.value })}
+                      placeholder="Max"
+                      className="w-20 rounded px-2 py-1 text-sm"
+                      style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                    />
+                  </div>
+                  <select
+                    value={newPriceRow.unit}
+                    onChange={(e) => setNewPriceRow({ ...newPriceRow, unit: e.target.value })}
+                    className="rounded px-2 py-1 text-xs"
+                    style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                  >
+                    <option value="per_job">per job</option>
+                    <option value="per_hour">per hour</option>
+                    <option value="per_sqft">per sq ft</option>
+                    <option value="per_unit">per unit</option>
+                  </select>
+                  <button
+                    onClick={async () => {
+                      if (!newPriceRow.serviceName.trim()) return;
+                      try {
+                        const res = await fetch("/api/dashboard/pricing", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            serviceName: newPriceRow.serviceName,
+                            priceMin: newPriceRow.priceMin ? parseFloat(newPriceRow.priceMin) : null,
+                            priceMax: newPriceRow.priceMax ? parseFloat(newPriceRow.priceMax) : null,
+                            unit: newPriceRow.unit,
+                          }),
+                        });
+                        if (res.ok) {
+                          const { pricing: created } = await res.json();
+                          if (created) setPricing((prev) => [...prev, created]);
+                          setNewPriceRow(null);
+                          toast.success("Pricing added");
+                        }
+                      } catch {
+                        toast.error("Failed to add pricing");
+                      }
+                    }}
+                    disabled={!newPriceRow.serviceName.trim()}
+                    className="rounded px-2 py-1 text-xs font-medium"
+                    style={{ background: "var(--db-accent)", color: "#fff", opacity: newPriceRow.serviceName.trim() ? 1 : 0.5 }}
+                  >
+                    Add
+                  </button>
+                  <button
+                    onClick={() => setNewPriceRow(null)}
+                    className="rounded px-2 py-1 text-xs"
+                    style={{ color: "var(--db-text-muted)" }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setNewPriceRow({ serviceName: "", priceMin: "", priceMax: "", unit: "per_job" })}
+                  className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                  style={{ background: "var(--db-hover)", color: "var(--db-text-secondary)", border: "1px dashed var(--db-border)" }}
+                >
+                  + Add Service Pricing
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </Card>
 
       {/* ── Section: María's Greeting ── */}

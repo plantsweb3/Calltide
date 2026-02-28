@@ -298,6 +298,11 @@ export default function OnboardingPage() {
   const [services, setServices] = useState<string[]>([]);
   const [newService, setNewService] = useState("");
 
+  // Step 3 - Pricing (optional)
+  const [showPricing, setShowPricing] = useState(false);
+  const [pricingEnabled, setPricingEnabled] = useState(false);
+  const [servicePricingData, setServicePricingData] = useState<Record<string, { min: string; max: string; unit: string }>>({});
+
   // Step 4 - Hours
   const [hours, setHours] = useState<Record<string, { open: string; close: string; closed?: boolean }>>({
     Mon: { open: "08:00", close: "17:00" },
@@ -472,6 +477,33 @@ export default function OnboardingPage() {
         serviceArea: bizAddress.trim(),
       });
       if (!ok) return;
+
+      // Save pricing data if any was entered
+      if (pricingEnabled) {
+        try {
+          await fetch("/api/dashboard/pricing/toggle", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ enabled: true }),
+          });
+          for (const [serviceName, pricing] of Object.entries(servicePricingData)) {
+            if (pricing.min || pricing.max) {
+              await fetch("/api/dashboard/pricing", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  serviceName,
+                  priceMin: pricing.min ? parseFloat(pricing.min) : null,
+                  priceMax: pricing.max ? parseFloat(pricing.max) : null,
+                  unit: pricing.unit || "per_job",
+                }),
+              });
+            }
+          }
+        } catch {
+          // Non-critical — pricing can be configured later in settings
+        }
+      }
     }
 
     if (step === 4) {
@@ -893,6 +925,112 @@ export default function OnboardingPage() {
                 </div>
               </div>
             )}
+
+            {/* ── Pricing sub-section (optional) ── */}
+            <div className="mt-8 rounded-xl border border-gray-200 overflow-hidden">
+              <button
+                onClick={() => setShowPricing(!showPricing)}
+                className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-gray-50"
+              >
+                <div>
+                  <span className="text-sm font-medium text-gray-700">
+                    {lang === "es" ? "Agregar Precios (Opcional)" : "Add Pricing (Optional)"}
+                  </span>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {lang === "es"
+                      ? "Permite que María dé precios aproximados a los llamantes"
+                      : "Let María quote ballpark prices to callers"}
+                  </p>
+                </div>
+                <svg
+                  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                  className={`transition-transform ${showPricing ? "rotate-180" : ""}`}
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+
+              {showPricing && (
+                <div className="border-t border-gray-100 px-4 py-4 space-y-4">
+                  {/* Enable toggle */}
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <div
+                      onClick={() => setPricingEnabled(!pricingEnabled)}
+                      className={`relative w-10 h-5 rounded-full transition-colors ${pricingEnabled ? "bg-amber-500" : "bg-gray-300"}`}
+                    >
+                      <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${pricingEnabled ? "translate-x-5" : ""}`} />
+                    </div>
+                    <span className="text-sm text-gray-600">
+                      {lang === "es" ? "Activar cotizaciones de precios" : "Enable pricing quotes"}
+                    </span>
+                  </label>
+
+                  {pricingEnabled && services.length > 0 && (
+                    <div className="space-y-3">
+                      <p className="text-xs text-gray-400">
+                        {lang === "es"
+                          ? "Ingresa rangos de precios para tus servicios. El precio final puede variar."
+                          : "Enter price ranges for your services. Final price may vary."}
+                      </p>
+                      {services.map((svc) => {
+                        const pricing = servicePricingData[svc] || { min: "", max: "", unit: "per_job" };
+                        return (
+                          <div key={svc} className="flex flex-wrap items-center gap-2">
+                            <span className="text-sm text-gray-700 w-full sm:w-auto sm:min-w-[140px] font-medium">{svc}</span>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-sm text-gray-400">$</span>
+                              <input
+                                type="number"
+                                min="0"
+                                placeholder="Min"
+                                value={pricing.min}
+                                onChange={(e) => setServicePricingData((prev) => ({
+                                  ...prev,
+                                  [svc]: { ...prev[svc] || { min: "", max: "", unit: "per_job" }, min: e.target.value },
+                                }))}
+                                className="input-field w-20 text-sm"
+                              />
+                              <span className="text-gray-400">—</span>
+                              <span className="text-sm text-gray-400">$</span>
+                              <input
+                                type="number"
+                                min="0"
+                                placeholder="Max"
+                                value={pricing.max}
+                                onChange={(e) => setServicePricingData((prev) => ({
+                                  ...prev,
+                                  [svc]: { ...prev[svc] || { min: "", max: "", unit: "per_job" }, max: e.target.value },
+                                }))}
+                                className="input-field w-20 text-sm"
+                              />
+                              <select
+                                value={pricing.unit}
+                                onChange={(e) => setServicePricingData((prev) => ({
+                                  ...prev,
+                                  [svc]: { ...prev[svc] || { min: "", max: "", unit: "per_job" }, unit: e.target.value },
+                                }))}
+                                className="input-field text-xs w-24"
+                              >
+                                <option value="per_job">{lang === "es" ? "por trabajo" : "per job"}</option>
+                                <option value="per_hour">{lang === "es" ? "por hora" : "per hour"}</option>
+                                <option value="per_sqft">{lang === "es" ? "por pie²" : "per sq ft"}</option>
+                                <option value="per_unit">{lang === "es" ? "por unidad" : "per unit"}</option>
+                              </select>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {pricingEnabled && services.length === 0 && (
+                    <p className="text-xs text-gray-400 italic">
+                      {lang === "es" ? "Agrega servicios arriba primero" : "Add services above first"}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
 
             {errors.save && <ErrorBanner message={errors.save} />}
             <StepNav onBack={goBack} onNext={goNext} saving={saving} t={t} />

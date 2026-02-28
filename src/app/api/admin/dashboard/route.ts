@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { prospects, demos, calls, businesses, prospectAuditCalls, prospectOutreach } from "@/db/schema";
+import { prospects, demos, calls, businesses, prospectAuditCalls, prospectOutreach, consentRecords, dataDeletionRequests } from "@/db/schema";
 import { sql, eq, gte } from "drizzle-orm";
 
 export async function GET() {
@@ -15,6 +15,9 @@ export async function GET() {
     demoStats,
     businessCount,
     callStats,
+    consentCount,
+    dsarStats,
+    disclosureStats,
   ] = await Promise.all([
     // Prospect counts by status
     db
@@ -67,6 +70,27 @@ export async function GET() {
       })
       .from(calls)
       .where(gte(calls.createdAt, thirtyDaysAgo)),
+
+    // Compliance stats
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(consentRecords),
+
+    db
+      .select({
+        total: sql<number>`count(*)`,
+        pending: sql<number>`sum(case when ${dataDeletionRequests.status} in ('received', 'verified', 'processing') then 1 else 0 end)`,
+      })
+      .from(dataDeletionRequests),
+
+    // Disclosure rate
+    db
+      .select({
+        total: sql<number>`count(*)`,
+        disclosed: sql<number>`sum(case when ${calls.recordingDisclosed} = 1 then 1 else 0 end)`,
+      })
+      .from(calls)
+      .where(gte(calls.createdAt, thirtyDaysAgo)),
   ]);
 
   const prospectsByStatus: Record<string, number> = {};
@@ -86,5 +110,13 @@ export async function GET() {
     demos: demoStats[0] ?? { total: 0, scheduled: 0, completed: 0, converted: 0 },
     businesses: businessCount[0]?.count ?? 0,
     calls: callStats[0] ?? { total: 0, completed: 0 },
+    compliance: {
+      totalConsents: consentCount[0]?.count ?? 0,
+      dsarPending: dsarStats[0]?.pending ?? 0,
+      dsarTotal: dsarStats[0]?.total ?? 0,
+      disclosureRate: disclosureStats[0]?.total
+        ? Math.round(((disclosureStats[0]?.disclosed ?? 0) / disclosureStats[0].total) * 100)
+        : 100,
+    },
   });
 }

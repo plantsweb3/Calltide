@@ -77,6 +77,36 @@ export async function revokeConsent(params: {
     .where(and(...conditions));
 }
 
+/**
+ * Record TCPA-required disclosures for a call.
+ * Creates consent records for call_recording and ai_interaction.
+ * Fire-and-forget — called at start of every call.
+ */
+export async function recordCallDisclosures(
+  callId: string,
+  businessId: string,
+  callerPhone: string,
+) {
+  const now = new Date().toISOString();
+
+  await Promise.all([
+    recordConsent({
+      businessId,
+      phoneNumber: callerPhone,
+      consentType: "call_recording",
+      documentVersion: "verbal_disclosure",
+      metadata: { callId, method: "verbal_disclosure", disclosedAt: now },
+    }),
+    recordConsent({
+      businessId,
+      phoneNumber: callerPhone,
+      consentType: "ai_interaction",
+      documentVersion: "verbal_disclosure",
+      metadata: { callId, method: "verbal_disclosure", disclosedAt: now },
+    }),
+  ]);
+}
+
 export async function hasActiveConsent(params: {
   businessId?: string;
   phoneNumber?: string;

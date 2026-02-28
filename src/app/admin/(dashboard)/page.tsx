@@ -26,6 +26,7 @@ interface DashboardData {
   demos: { total: number; scheduled: number; completed: number; converted: number };
   businesses: number;
   calls: { total: number; completed: number };
+  compliance?: { totalConsents: number; dsarPending: number; dsarTotal: number; disclosureRate: number };
 }
 
 interface MetricsData {
@@ -221,6 +222,25 @@ export default function AdminDashboardPage() {
             prefix="$"
             changeType="positive"
           />
+        </div>
+      )}
+
+      {/* Compliance */}
+      {data.compliance && (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <MetricCard label="Consent Records" value={data.compliance.totalConsents} />
+          <MetricCard
+            label="DSAR Pending"
+            value={data.compliance.dsarPending}
+            changeType={data.compliance.dsarPending > 0 ? "negative" : "positive"}
+          />
+          <MetricCard
+            label="Disclosure Rate"
+            value={data.compliance.disclosureRate}
+            suffix="%"
+            changeType={data.compliance.disclosureRate >= 95 ? "positive" : "negative"}
+          />
+          <MetricCard label="Total DSARs" value={data.compliance.dsarTotal} />
         </div>
       )}
 
