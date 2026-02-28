@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 
 interface ReferralData {
   referralCode: string | null;
@@ -40,6 +42,7 @@ export default function ReferralsPage() {
   function copyToClipboard(text: string, type: "code" | "link") {
     navigator.clipboard.writeText(text);
     setCopied(type);
+    toast.success(type === "code" ? "Referral code copied!" : "Share link copied!");
     setTimeout(() => setCopied(null), 2000);
   }
 
@@ -52,11 +55,7 @@ export default function ReferralsPage() {
   }
 
   if (!data) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <p style={{ color: "var(--db-text-muted)" }}>Loading...</p>
-      </div>
-    );
+    return <LoadingSpinner message="Loading referrals..." />;
   }
 
   return (

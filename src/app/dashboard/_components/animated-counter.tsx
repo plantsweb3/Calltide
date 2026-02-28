@@ -19,11 +19,14 @@ export default function AnimatedCounter({
 }: AnimatedCounterProps) {
   const [display, setDisplay] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
-  const hasAnimated = useRef(false);
+  const prevValue = useRef(0);
 
   useEffect(() => {
-    if (hasAnimated.current) return;
-    hasAnimated.current = true;
+    const from = prevValue.current;
+    const to = value;
+    prevValue.current = value;
+
+    if (from === to) return;
 
     const start = performance.now();
     function tick(now: number) {
@@ -31,7 +34,7 @@ export default function AnimatedCounter({
       const progress = Math.min(elapsed / duration, 1);
       // ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(eased * value);
+      setDisplay(from + eased * (to - from));
       if (progress < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);

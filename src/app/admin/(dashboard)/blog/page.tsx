@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import MetricCard from "../../_components/metric-card";
 import DataTable, { type Column } from "../../_components/data-table";
 import StatusBadge from "../../_components/status-badge";
@@ -135,6 +136,7 @@ function PostEditorModal({
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
 
   // Auto-generate slug from title when not manually overridden
   useEffect(() => {
@@ -184,13 +186,17 @@ function PostEditorModal({
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setError(data.error ?? `Request failed (${res.status})`);
+        const msg = data.error ?? `Request failed (${res.status})`;
+        setError(msg);
+        toast.error(msg);
       } else {
+        toast.success(isNew ? "Post created" : "Post saved");
         onSaved();
         onClose();
       }
     } catch {
       setError("Network error. Please try again.");
+      toast.error("Network error. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -332,21 +338,46 @@ function PostEditorModal({
             </div>
           </div>
 
-          {/* Body */}
+          {/* Body with preview */}
           <div>
-            <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
-              Body (HTML)
-            </label>
-            <textarea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              placeholder="<h2>Intro</h2><p>...</p>"
-              rows={12}
-              className="w-full rounded-lg px-3 py-2 text-sm outline-none font-mono resize-y"
-              style={{ ...inputStyle, lineHeight: "1.6" }}
-              onFocus={focusBorder}
-              onBlur={blurBorder}
-            />
+            <div className="mb-1 flex items-center justify-between">
+              <label className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
+                Body (HTML)
+              </label>
+              <label className="flex items-center gap-1.5 text-xs cursor-pointer" style={{ color: "var(--db-text-muted)" }}>
+                <input
+                  type="checkbox"
+                  checked={showPreview}
+                  onChange={(e) => setShowPreview(e.target.checked)}
+                  className="rounded"
+                />
+                Preview
+              </label>
+            </div>
+            <div className={showPreview ? "grid grid-cols-2 gap-3" : ""}>
+              <textarea
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                placeholder="<h2>Intro</h2><p>...</p>"
+                rows={12}
+                className="w-full rounded-lg px-3 py-2 text-sm outline-none font-mono resize-y"
+                style={{ ...inputStyle, lineHeight: "1.6" }}
+                onFocus={focusBorder}
+                onBlur={blurBorder}
+              />
+              {showPreview && (
+                <div
+                  className="rounded-lg px-4 py-3 text-sm overflow-y-auto prose-help"
+                  style={{
+                    ...inputStyle,
+                    maxHeight: "320px",
+                    lineHeight: "1.7",
+                    color: "var(--db-text-secondary)",
+                  }}
+                  dangerouslySetInnerHTML={{ __html: body }}
+                />
+              )}
+            </div>
           </div>
 
           {/* SEO section */}

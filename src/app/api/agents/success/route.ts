@@ -18,12 +18,11 @@ import { logAgentActivity } from "@/lib/agents";
 import { reportError } from "@/lib/error-reporting";
 import { canContactToday, logOutreach } from "@/lib/outreach";
 
+import { BRAND_COLOR, COMPANY_ADDRESS, MARKETING_URL } from "@/lib/constants";
+
 // ── Constants ──
 
-const BRAND_COLOR = "#22c55e";
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.calltide.app";
-const MARKETING_URL = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://calltide.app";
-const COMPANY_ADDRESS = "Calltide LLC, PO Box 1247, San Marcos, TX 78667";
 const FONT_STACK = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
 const CALL_MILESTONES = [50, 100, 250, 500, 1000];

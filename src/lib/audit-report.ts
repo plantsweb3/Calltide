@@ -4,9 +4,8 @@ import { auditRequests } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 
-const BRAND_COLOR = "#C59A27";
-const MARKETING_URL = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://calltide.app";
-const COMPANY_ADDRESS = "Calltide LLC, PO Box 1247, San Marcos, TX 78667";
+import { BRAND_COLOR, COMPANY_ADDRESS, MARKETING_URL } from "@/lib/constants";
+
 const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.com/calltide/onboarding";
 
 const REVENUE_PER_CALL: Record<string, number> = {

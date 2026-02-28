@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 
 interface BusinessHourEntry {
@@ -198,9 +199,12 @@ export default function SettingsPage() {
       setData(updated);
       setInitialData(JSON.stringify(updated));
       setSuccessMsg("Settings saved successfully");
+      toast.success("Settings saved — changes take effect on the next call");
       setFieldErrors([]);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save settings");
+      const msg = e instanceof Error ? e.message : "Failed to save settings";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSaving(false);
     }

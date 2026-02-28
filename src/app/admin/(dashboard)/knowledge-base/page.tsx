@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import Link from "next/link";
 
 type Tab = "articles" | "categories" | "analytics" | "generator";
@@ -75,6 +76,9 @@ export default function KnowledgeBasePage() {
   const [generated, setGenerated] = useState<GeneratedArticle | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Delete confirmation
+  const [deletingArticle, setDeletingArticle] = useState<Article | null>(null);
+
   // New category modal
   const [showCatModal, setShowCatModal] = useState(false);
   const [newCat, setNewCat] = useState({ slug: "", name: "", nameEs: "", description: "", descriptionEs: "", icon: "", sortOrder: 0 });
@@ -102,7 +106,9 @@ export default function KnowledgeBasePage() {
       });
       const data = await res.json();
       setGenerated(data);
-    } catch { /* */ }
+    } catch {
+      toast.error("Failed to generate article");
+    }
     setGenerating(false);
   }
 
@@ -141,6 +147,7 @@ export default function KnowledgeBasePage() {
     setGenKeyPoints("");
     setSaving(false);
     setTab("articles");
+    toast.success(publish ? "Article published" : "Article saved as draft");
   }
 
   async function toggleStatus(article: Article) {
@@ -151,6 +158,26 @@ export default function KnowledgeBasePage() {
       body: JSON.stringify({ status: newStatus }),
     });
     setArticles((prev) => prev.map((a) => a.id === article.id ? { ...a, status: newStatus } : a));
+    toast.success(newStatus === "published" ? "Article published" : "Article unpublished");
+  }
+
+  async function deleteArticle(article: Article) {
+    try {
+      const res = await fetch(`/api/admin/help/articles/${article.id}`, { method: "DELETE" });
+      if (res.ok) {
+        setArticles((prev) => prev.filter((a) => a.id !== article.id));
+        setDeletingArticle(null);
+        toast.success("Article deleted");
+      } else {
+        const data = await res.json().catch(() => ({}));
+        const msg = data.error ?? "Failed to delete article";
+        setError(msg);
+        toast.error(msg);
+      }
+    } catch {
+      setError("Network error while deleting");
+      toast.error("Network error while deleting");
+    }
   }
 
   async function createCategory() {
@@ -165,6 +192,7 @@ export default function KnowledgeBasePage() {
     setCategories(d.categories || []);
     setShowCatModal(false);
     setNewCat({ slug: "", name: "", nameEs: "", description: "", descriptionEs: "", icon: "", sortOrder: 0 });
+    toast.success("Category created");
   }
 
   const filteredArticles = articles.filter((a) => {
@@ -313,13 +341,24 @@ export default function KnowledgeBasePage() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <button
-                        onClick={() => toggleStatus(a)}
-                        className="rounded px-2 py-1 text-[10px] font-medium"
-                        style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
-                      >
-                        {a.status === "published" ? "Unpublish" : "Publish"}
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => toggleStatus(a)}
+                          className="rounded px-2 py-1 text-[10px] font-medium"
+                          style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
+                        >
+                          {a.status === "published" ? "Unpublish" : "Publish"}
+                        </button>
+                        {a.status !== "published" && (
+                          <button
+                            onClick={() => setDeletingArticle(a)}
+                            className="rounded px-2 py-1 text-[10px] font-medium"
+                            style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -581,6 +620,37 @@ export default function KnowledgeBasePage() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {/* Delete confirmation modal */}
+      {deletingArticle && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setDeletingArticle(null)}>
+          <div
+            className="mx-4 w-full max-w-sm rounded-xl p-6"
+            style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-base font-semibold" style={{ color: "var(--db-text)" }}>Delete Article</h3>
+            <p className="mt-2 text-sm" style={{ color: "var(--db-text-secondary)" }}>
+              Are you sure you want to delete &ldquo;{deletingArticle.title}&rdquo;? This cannot be undone.
+            </p>
+            <div className="mt-4 flex items-center justify-end gap-3">
+              <button
+                onClick={() => setDeletingArticle(null)}
+                className="rounded-lg px-4 py-2 text-sm"
+                style={{ color: "var(--db-text-muted)" }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => deleteArticle(deletingArticle)}
+                className="rounded-lg px-4 py-2 text-sm font-medium text-white"
+                style={{ background: "#ef4444" }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}

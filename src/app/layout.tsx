@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const inter = Inter({
@@ -62,6 +63,16 @@ export default function RootLayout({
         className={`${inter.variable} antialiased`}
       >
         {children}
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: "var(--db-card, #1e293b)",
+              border: "1px solid var(--db-border, #334155)",
+              color: "var(--db-text, #f1f5f9)",
+            },
+          }}
+        />
       </body>
     </html>
   );

@@ -28,7 +28,7 @@ export function reportWarning(
   message: string,
   extra?: Record<string, unknown>,
 ) {
-  console.error(message, extra);
+  console.warn(message, extra);
 
   Sentry.withScope((scope) => {
     if (extra) {

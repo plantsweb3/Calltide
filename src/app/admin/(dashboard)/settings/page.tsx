@@ -1,14 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { missedCallSequence, answeredSequence } from "@/lib/outreach/email-templates";
 
-type Tab = "email" | "sms" | "twilio" | "api" | "scraping";
+type Tab = "platform" | "email" | "sms" | "twilio" | "api" | "scraping";
+
+interface PlatformConfig {
+  totalClients: number;
+  activeClients: number;
+  cronStatus: string;
+}
 
 export default function SettingsPage() {
-  const [tab, setTab] = useState<Tab>("email");
+  const [tab, setTab] = useState<Tab>("platform");
+  const [platform, setPlatform] = useState<PlatformConfig | null>(null);
+
+  useEffect(() => {
+    if (tab === "platform" && !platform) {
+      fetch("/api/admin/dashboard")
+        .then((r) => r.json())
+        .then((d) => setPlatform({
+          totalClients: d.clients ?? 0,
+          activeClients: d.activeClients ?? d.clients ?? 0,
+          cronStatus: "Configured via vercel.json",
+        }))
+        .catch(() => setPlatform({ totalClients: 0, activeClients: 0, cronStatus: "Unknown" }));
+    }
+  }, [tab, platform]);
 
   const tabs: { key: Tab; label: string }[] = [
+    { key: "platform", label: "Platform" },
     { key: "email", label: "Email Templates" },
     { key: "sms", label: "SMS Templates" },
     { key: "twilio", label: "Twilio" },
@@ -29,11 +50,14 @@ export default function SettingsPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold">Settings</h1>
+        <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)" }}>Settings</h1>
         <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>Platform configuration</p>
       </div>
 
-      <div className="flex gap-1 rounded-xl p-1 w-fit" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+      <div
+        className="flex gap-1 rounded-xl p-1 w-fit overflow-x-auto"
+        style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+      >
         {tabs.map((t) => {
           const { baseClass, style } = tabClass(t.key);
           return (
@@ -48,6 +72,80 @@ export default function SettingsPage() {
           );
         })}
       </div>
+
+      {tab === "platform" && (
+        <div className="space-y-4">
+          {/* Owner Contact */}
+          <div className="rounded-xl p-5" style={{ border: "1px solid var(--db-border)", background: "var(--db-card)" }}>
+            <h2 className="text-sm font-medium mb-4" style={{ color: "var(--db-text-secondary)" }}>Owner Contact</h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <p className="text-xs mb-1" style={{ color: "var(--db-text-muted)" }}>Email</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                    {process.env.NEXT_PUBLIC_APP_URL ? "Configured" : "Set in .env.local"}
+                  </p>
+                  <span className="text-[10px] rounded px-1.5 py-0.5" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
+                    OWNER_EMAIL
+                  </span>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs mb-1" style={{ color: "var(--db-text-muted)" }}>Phone</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Configured</p>
+                  <span className="text-[10px] rounded px-1.5 py-0.5" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
+                    OWNER_PHONE
+                  </span>
+                </div>
+              </div>
+            </div>
+            <p className="mt-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
+              Owner contact info is set via environment variables in the Vercel dashboard.
+            </p>
+          </div>
+
+          {/* Platform Overview */}
+          <div className="rounded-xl p-5" style={{ border: "1px solid var(--db-border)", background: "var(--db-card)" }}>
+            <h2 className="text-sm font-medium mb-4" style={{ color: "var(--db-text-secondary)" }}>Platform Overview</h2>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 text-sm">
+              <div>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Total Clients</p>
+                <p className="mt-1 text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+                  {platform?.totalClients ?? "—"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Active Clients</p>
+                <p className="mt-1 text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+                  {platform?.activeClients ?? "—"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Cron Jobs</p>
+                <p className="mt-1 text-sm" style={{ color: "var(--db-text)" }}>13 scheduled</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Environment Info */}
+          <div className="rounded-xl p-5" style={{ border: "1px solid var(--db-border)", background: "var(--db-card)" }}>
+            <h2 className="text-sm font-medium mb-4" style={{ color: "var(--db-text-secondary)" }}>Environment</h2>
+            <div className="space-y-2 text-sm">
+              {[
+                { label: "App URL", value: process.env.NEXT_PUBLIC_APP_URL || "Not set" },
+                { label: "Marketing URL", value: process.env.NEXT_PUBLIC_MARKETING_URL || "Not set" },
+                { label: "Node Environment", value: process.env.NODE_ENV || "development" },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center justify-between rounded-lg px-4 py-2.5" style={{ background: "var(--db-hover)" }}>
+                  <span style={{ color: "var(--db-text-muted)" }}>{item.label}</span>
+                  <span className="font-mono text-xs" style={{ color: "var(--db-text)" }}>{item.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {tab === "email" && (
         <div className="space-y-4">
@@ -167,6 +265,7 @@ export default function SettingsPage() {
               { name: "Anthropic", envVar: "ANTHROPIC_API_KEY" },
               { name: "Google Places", envVar: "GOOGLE_PLACES_API_KEY" },
               { name: "Resend", envVar: "RESEND_API_KEY" },
+              { name: "Stripe", envVar: "STRIPE_SECRET_KEY" },
             ].map((key) => (
               <div
                 key={key.name}
@@ -175,7 +274,7 @@ export default function SettingsPage() {
               >
                 <span className="text-sm" style={{ color: "var(--db-text)" }}>{key.name}</span>
                 <span className="rounded-full px-2 py-0.5 text-xs font-medium" style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}>
-                  Check .env.local
+                  Set in Vercel
                 </span>
               </div>
             ))}

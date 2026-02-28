@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useMemo } from "react";
+
 interface Appointment {
   id: string;
   service: string;
@@ -25,12 +27,12 @@ function getServiceColor(service: string) {
   return SERVICE_COLORS[service] || { bg: "rgba(148,163,184,0.12)", text: "#94a3b8", border: "#94a3b8" };
 }
 
-function getWeekDays(): { label: string; short: string; date: string; isToday: boolean }[] {
+function getWeekDays(weekOffset: number): { label: string; short: string; date: string; isToday: boolean }[] {
   const today = new Date();
   const day = today.getDay();
   const diff = day === 0 ? 6 : day - 1;
   const monday = new Date(today);
-  monday.setDate(today.getDate() - diff);
+  monday.setDate(today.getDate() - diff + weekOffset * 7);
 
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(monday);
@@ -45,14 +47,44 @@ function getWeekDays(): { label: string; short: string; date: string; isToday: b
   });
 }
 
-const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+function getWeekLabel(weekOffset: number): string {
+  const today = new Date();
+  const day = today.getDay();
+  const diff = day === 0 ? 6 : day - 1;
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - diff + weekOffset * 7);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  const opts: Intl.DateTimeFormatOptions = { month: "short", day: "numeric" };
+  return `${monday.toLocaleDateString(undefined, opts)} – ${sunday.toLocaleDateString(undefined, opts)}`;
+}
 
 export default function AppointmentCalendar({
   appointments,
 }: {
   appointments: Appointment[];
 }) {
-  const weekDays = getWeekDays();
+  const [weekOffset, setWeekOffset] = useState(0);
+  const weekDays = getWeekDays(weekOffset);
+
+  // Compute visible hours from appointments, defaulting to 8-17
+  const hours = useMemo(() => {
+    const weekDates = new Set(weekDays.map((d) => d.date));
+    const apptHours = appointments
+      .filter((a) => weekDates.has(a.date))
+      .map((a) => parseInt(a.time.split(":")[0]));
+
+    if (apptHours.length === 0) {
+      return [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+    }
+
+    const minHour = Math.min(...apptHours, 8);
+    const maxHour = Math.max(...apptHours, 17);
+    const result: number[] = [];
+    for (let h = minHour; h <= maxHour; h++) result.push(h);
+    return result;
+  }, [appointments, weekDays]);
 
   function getAppointmentsForSlot(date: string, hour: number) {
     return appointments.filter((appt) => {
@@ -71,6 +103,45 @@ export default function AppointmentCalendar({
         boxShadow: "var(--db-card-shadow)",
       }}
     >
+      {/* Week navigation */}
+      <div
+        className="flex items-center justify-between px-4 py-3"
+        style={{ borderBottom: "1px solid var(--db-border)" }}
+      >
+        <button
+          onClick={() => setWeekOffset((o) => o - 1)}
+          className="rounded-lg px-3 py-1.5 text-sm transition-colors"
+          style={{ color: "var(--db-text-secondary)", border: "1px solid var(--db-border)" }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+        >
+          &larr; Previous
+        </button>
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+            {getWeekLabel(weekOffset)}
+          </span>
+          {weekOffset !== 0 && (
+            <button
+              onClick={() => setWeekOffset(0)}
+              className="rounded px-2 py-0.5 text-xs"
+              style={{ color: "var(--db-accent)", background: "rgba(197,154,39,0.1)" }}
+            >
+              Today
+            </button>
+          )}
+        </div>
+        <button
+          onClick={() => setWeekOffset((o) => o + 1)}
+          className="rounded-lg px-3 py-1.5 text-sm transition-colors"
+          style={{ color: "var(--db-text-secondary)", border: "1px solid var(--db-border)" }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+        >
+          Next &rarr;
+        </button>
+      </div>
+
       <div className="overflow-x-auto">
         <div className="min-w-[700px]">
           {/* Day headers */}
@@ -99,7 +170,7 @@ export default function AppointmentCalendar({
           </div>
 
           {/* Time slots */}
-          {HOURS.map((hour) => (
+          {hours.map((hour) => (
             <div
               key={hour}
               className="grid grid-cols-[60px_repeat(7,1fr)]"

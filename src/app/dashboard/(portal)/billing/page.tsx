@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 
 interface BillingData {
@@ -54,7 +55,7 @@ export default function BillingPage() {
         window.location.href = json.url;
       }
     } catch {
-      // silently fail
+      toast.error("Could not open billing portal");
     } finally {
       setPortalLoading(false);
     }
