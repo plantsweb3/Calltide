@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type Check
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+        env:
+          TURSO_DATABASE_URL: "file:test.db"
+          TURSO_AUTH_TOKEN: "test"
+          ADMIN_PASSWORD: "test"
+          ADMIN_PASSWORD_HASH: "test"
+          CRON_SECRET: "test-cron-secret-1234"
+          CLIENT_AUTH_SECRET: "test-client-secret"
+          NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+          STRIPE_SECRET_KEY: "sk_test_fake"
+          STRIPE_WEBHOOK_SECRET: "whsec_test_fake"
+          TWILIO_ACCOUNT_SID: "ACtest"
+          TWILIO_AUTH_TOKEN: "test"
+          TWILIO_PHONE_NUMBER: "+15125559999"
+          HUME_API_KEY: "test"
+          HUME_CONFIG_ID: "test"
+          ANTHROPIC_API_KEY: "test"
+          RESEND_API_KEY: "re_test"
+          GOOGLE_PLACES_API_KEY: "test"
