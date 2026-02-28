@@ -2,7 +2,19 @@ import { db } from "@/db";
 import { outreachLog } from "@/db/schema";
 import { eq, and, gte } from "drizzle-orm";
 
-export async function canContactToday(businessId: string): Promise<boolean> {
+interface ContactOptions {
+  /** If true, bypass the daily contact limit (used for agent handoffs) */
+  isHandoff?: boolean;
+  handoffId?: string;
+}
+
+export async function canContactToday(
+  businessId: string,
+  opts?: ContactOptions,
+): Promise<boolean> {
+  // Handoff overrides skip the daily contact gate
+  if (opts?.isHandoff) return true;
+
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
 

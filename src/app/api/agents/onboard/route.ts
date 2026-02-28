@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, calls, appointments } from "@/db/schema";
+import { businesses, calls, appointments, outreachLog } from "@/db/schema";
 import { eq, sql, and } from "drizzle-orm";
 import { runAgent, SUPPORT_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
 import { canContactToday, logOutreach } from "@/lib/outreach";
+import { createHandoff } from "@/lib/agents/handoffs";
 
 /**
  * GET /api/agents/onboard
@@ -88,6 +89,35 @@ Based on how many days since signup, current wizard step, and which milestones a
 
     // Log outreach to prevent same-day duplicate contacts
     await logOutreach(client.id, "nudge_agent", "email");
+
+    // Check total nudge attempts — if 3+ and still not onboarded, hand off to churn agent
+    const [nudgeCount] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(outreachLog)
+      .where(
+        and(
+          eq(outreachLog.businessId, client.id),
+          eq(outreachLog.source, "nudge_agent"),
+        ),
+      );
+
+    if ((nudgeCount?.count ?? 0) >= 3 && !milestones.hasFirstCall) {
+      await createHandoff({
+        fromAgent: "onboard",
+        toAgent: "churn",
+        businessId: client.id,
+        reason: "Stalled onboarding after 3+ nudge attempts — no first call received",
+        context: {
+          daysSinceSignup,
+          onboardingStep: client.onboardingStep,
+          nudgeAttempts: nudgeCount?.count ?? 0,
+          milestones,
+        },
+        priority: daysSinceSignup > 14 ? "high" : "normal",
+        ttlHours: 72,
+      });
+    }
+
     results.push({ businessId: client.id, name: client.name, daysSinceSignup, ...result });
   }
 

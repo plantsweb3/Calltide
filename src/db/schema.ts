@@ -89,6 +89,8 @@ export const businesses = sqliteTable("businesses", {
   locationName: text("location_name"),
   isPrimaryLocation: integer("is_primary_location", { mode: "boolean" }).default(true),
   locationOrder: integer("location_order").default(0),
+  // Disaster recovery
+  voicemailFallbackActive: integer("voicemail_fallback_active", { mode: "boolean" }).default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -681,6 +683,9 @@ export const incidents = sqliteTable("incidents", {
   postmortemScheduledFor: text("postmortem_scheduled_for"),
   createdBy: text("created_by").default("system"), // system or admin
   consecutiveUnhealthyChecks: integer("consecutive_unhealthy_checks").default(0),
+  autoMitigationApplied: text("auto_mitigation_applied"), // JSON description of auto-actions taken
+  acknowledgedAt: text("acknowledged_at"),
+  acknowledgedBy: text("acknowledged_by"),
   metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>(),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
@@ -968,4 +973,22 @@ export const outreachLog = sqliteTable("outreach_log", {
   source: text("source").notNull(), // dunning, churn_agent, success_agent, nudge_agent, incident
   channel: text("channel").notNull(), // email, sms
   sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Agent Handoffs ──
+
+export const agentHandoffs = sqliteTable("agent_handoffs", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  fromAgent: text("from_agent").notNull(), // churn, success, onboard, qa, health
+  toAgent: text("to_agent").notNull(),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  reason: text("reason").notNull(),
+  context: text("context", { mode: "json" }).$type<Record<string, unknown>>(),
+  priority: text("priority").notNull().default("normal"), // normal, high, urgent
+  status: text("status").notNull().default("pending"), // pending, in_progress, completed, expired
+  expiresAt: text("expires_at").notNull(),
+  completedAt: text("completed_at"),
+  completedNote: text("completed_note"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });

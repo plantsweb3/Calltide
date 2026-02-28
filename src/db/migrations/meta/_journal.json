@@ -162,6 +162,13 @@
       "when": 1773300000000,
       "tag": "0022_multi_location_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "6",
+      "when": 1773400000000,
+      "tag": "0023_agent_handoffs_disaster_recovery",
+      "breakpoints": true
     }
   ]
 }

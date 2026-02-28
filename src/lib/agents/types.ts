@@ -18,7 +18,11 @@ export type ActionType =
   | "health_score_updated"
   | "annual_nudge_sent"
   | "outbound_call_scheduled"
-  | "outbound_call_completed";
+  | "outbound_call_completed"
+  | "handoff_created"
+  | "handoff_processed"
+  | "churn_recovery_followup"
+  | "qa_handoff_processed";
 
 export type TargetType = "client" | "prospect" | "system";
 

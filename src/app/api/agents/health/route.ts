@@ -37,14 +37,35 @@ export async function GET(req: NextRequest) {
   try {
     const { handleUnhealthyService, handleHealthyService } = await import("@/lib/incidents/engine");
     const { checkAndGeneratePendingPostmortems } = await import("@/lib/incidents/postmortem");
+    const { executeAutoActions, deactivateVoicemailFallback, DISASTER_PLAYBOOK } = await import("@/lib/incidents/disaster-playbook");
 
     for (const check of checks) {
-      if (!check.healthy) await handleUnhealthyService(check);
-      else await handleHealthyService(check);
+      if (!check.healthy) {
+        const incidentId = await handleUnhealthyService(check);
+        // Trigger disaster playbook auto-actions for new/ongoing incidents
+        if (incidentId && DISASTER_PLAYBOOK[check.name]) {
+          await executeAutoActions(incidentId, check.name);
+        }
+      } else {
+        await handleHealthyService(check);
+        // If a service that triggered voicemail fallback recovers, deactivate it
+        if (check.name === "Hume" || check.name === "Turso") {
+          await deactivateVoicemailFallback();
+        }
+      }
     }
     await checkAndGeneratePendingPostmortems();
   } catch (err) {
     console.error("Incident engine error (non-fatal):", err);
+  }
+
+  // Expire stale agent handoffs
+  try {
+    const { expireHandoffs } = await import("@/lib/agents/handoffs");
+    const expiredCount = await expireHandoffs();
+    if (expiredCount > 0) console.log(`Expired ${expiredCount} stale agent handoff(s)`);
+  } catch (err) {
+    console.error("Handoff expiry error (non-fatal):", err);
   }
 
   // Log each result directly to systemHealthLogs — no Anthropic API call

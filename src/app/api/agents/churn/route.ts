@@ -4,6 +4,7 @@ import { businesses, calls, churnRiskScores, dunningState, callQaScores, npsResp
 import { eq, and, sql, desc } from "drizzle-orm";
 import { runAgent, CHURN_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
 import { canContactToday, logOutreach } from "@/lib/outreach";
+import { createHandoff, getHandoffsForAgent, completeHandoff } from "@/lib/agents/handoffs";
 
 /**
  * GET /api/agents/churn
@@ -29,6 +30,64 @@ export async function GET(req: NextRequest) {
     .where(eq(businesses.active, true));
 
   const results = [];
+
+  // Process incoming handoffs from onboard agent (stalled onboarding → churn watch)
+  const incomingHandoffs = await getHandoffsForAgent("churn");
+  for (const handoff of incomingHandoffs) {
+    const [client] = await db
+      .select()
+      .from(businesses)
+      .where(eq(businesses.id, handoff.businessId))
+      .limit(1);
+    if (!client) {
+      await completeHandoff(handoff.id, "Business not found");
+      continue;
+    }
+
+    const signals = await gatherClientSignals(client.id);
+    const handoffCtx = handoff.context as Record<string, unknown> | null;
+
+    const message = `HANDOFF from ${handoff.fromAgent} agent — ${handoff.reason}
+
+Handoff context: ${handoffCtx ? JSON.stringify(handoffCtx) : "none"}
+
+Analyze this client for churn risk and take appropriate action:
+
+Business: ${client.name} (${client.type})
+Owner: ${client.ownerName}
+Email: ${client.ownerEmail ?? "none"}
+Phone: ${client.ownerPhone}
+Active Since: ${client.createdAt}
+
+HEALTH SIGNALS:
+- Calls this month: ${signals.callsThisMonth}
+- Calls last month: ${signals.callsLastMonth}
+- Call volume change: ${signals.volumeChange}
+- Missed calls this month: ${signals.missedCallsThisMonth}
+- Last call date: ${signals.lastCallDate ?? "never"}
+- Current churn score: ${signals.currentScore ?? "unscored"}
+- Previous score factors: ${signals.previousFactors ?? "none"}
+- Payment status: ${signals.paymentStatus ?? "unknown"}
+- Dunning stage: ${signals.dunningStage ?? "none"}
+- Average QA score: ${signals.avgQaScore ?? "no data"}
+- Latest NPS score: ${signals.latestNpsScore ?? "no data"}
+
+This is a handoff — the client may need urgent attention.`;
+
+    const result = await runAgent({
+      agentName: "churn",
+      systemPrompt: AGENT_PROMPTS.churn,
+      userMessage: message,
+      tools: CHURN_TOOLS,
+      targetId: client.id,
+      targetType: "client",
+      inputSummary: `Churn handoff from ${handoff.fromAgent}: ${client.name}`,
+    });
+
+    await logOutreach(client.id, "churn_agent", "email");
+    await completeHandoff(handoff.id, `Processed churn analysis for ${client.name}`);
+    results.push({ businessId: client.id, name: client.name, handoff: true, ...result });
+  }
 
   for (const client of activeClients) {
     // Outreach conflict prevention — skip if already contacted today
@@ -73,6 +132,25 @@ Based on these signals, update the churn risk score and take appropriate action 
 
     // Log outreach to prevent same-day duplicate contacts
     await logOutreach(client.id, "churn_agent", "email");
+
+    // If high-risk (score >= 70), create handoff to success agent for recovery follow-up
+    if (signals.currentScore !== null && signals.currentScore >= 70) {
+      await createHandoff({
+        fromAgent: "churn",
+        toAgent: "success",
+        businessId: client.id,
+        reason: "High churn risk — needs success recovery follow-up",
+        context: {
+          churnScore: signals.currentScore,
+          factors: signals.previousFactors,
+          paymentStatus: signals.paymentStatus,
+          dunningStage: signals.dunningStage,
+        },
+        priority: signals.currentScore >= 85 ? "urgent" : "high",
+        ttlHours: 48,
+      });
+    }
+
     results.push({ businessId: client.id, name: client.name, ...result });
   }
 

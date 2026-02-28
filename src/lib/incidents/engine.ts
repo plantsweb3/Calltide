@@ -52,7 +52,7 @@ function cleanupStreakMaps() {
 
 // ── Public API ──
 
-export async function handleUnhealthyService(check: HealthCheckResult): Promise<void> {
+export async function handleUnhealthyService(check: HealthCheckResult): Promise<string | undefined> {
   cleanupStreakMaps();
   const service = check.name;
   lastSeen.set(service, Date.now());
@@ -65,11 +65,11 @@ export async function handleUnhealthyService(check: HealthCheckResult): Promise<
   unhealthyStreak.set(service, streak);
 
   // Flap prevention: need consecutive unhealthy checks
-  if (streak < UNHEALTHY_THRESHOLD) return;
+  if (streak < UNHEALTHY_THRESHOLD) return undefined;
 
   // Check cooldown
   const cooldownUntil = cooldowns.get(service) ?? 0;
-  if (Date.now() < cooldownUntil) return;
+  if (Date.now() < cooldownUntil) return undefined;
 
   // Check for existing open incident for this service
   const existing = await getOpenIncidentForService(service);
@@ -85,10 +85,12 @@ export async function handleUnhealthyService(check: HealthCheckResult): Promise<
         updatedAt: new Date().toISOString(),
       })
       .where(eq(incidents.id, existing.id));
+    return existing.id;
   } else {
     // Create new incident
-    await createIncident(check);
+    const incidentId = await createIncident(check);
     cooldowns.set(service, Date.now() + COOLDOWN_MS);
+    return incidentId;
   }
 }
 

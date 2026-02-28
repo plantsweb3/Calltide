@@ -17,6 +17,7 @@ import { eq, sql, desc, and, gte, lt, ne } from "drizzle-orm";
 import { logAgentActivity } from "@/lib/agents";
 import { reportError } from "@/lib/error-reporting";
 import { canContactToday, logOutreach } from "@/lib/outreach";
+import { getHandoffsForAgent, completeHandoff, claimHandoff } from "@/lib/agents/handoffs";
 
 import { BRAND_COLOR, COMPANY_ADDRESS, MARKETING_URL } from "@/lib/constants";
 
@@ -1073,6 +1074,116 @@ async function sendAnnualPlanNudge(business: Business, now: Date): Promise<strin
   return "annual_nudge_sent";
 }
 
+// ── Handoff processor ──
+
+async function processHandoff(
+  handoff: { id: string; fromAgent: string; businessId: string; reason: string; context: unknown; priority: string },
+  now: Date,
+): Promise<Record<string, unknown>> {
+  const [business] = await db
+    .select()
+    .from(businesses)
+    .where(eq(businesses.id, handoff.businessId))
+    .limit(1);
+
+  if (!business) return { handoffId: handoff.id, error: "Business not found" };
+
+  const result: Record<string, unknown> = {
+    businessId: business.id,
+    name: business.name,
+    handoff: true,
+    fromAgent: handoff.fromAgent,
+    reason: handoff.reason,
+  };
+
+  const ctx = handoff.context as Record<string, unknown> | null;
+
+  // Handoff from churn agent — high-risk recovery follow-up
+  if (handoff.fromAgent === "churn") {
+    const canContact = await canContactToday(business.id, { isHandoff: true, handoffId: handoff.id });
+    if (canContact && business.ownerEmail) {
+      const churnScore = (ctx?.churnScore as number) ?? 0;
+      const isEn = business.defaultLanguage !== "es";
+
+      const subject = isEn
+        ? `We're here for you, ${business.ownerName.split(" ")[0]} — let's make Calltide work better`
+        : `Estamos aquí para ayudarle, ${business.ownerName.split(" ")[0]}`;
+
+      const body = isEn
+        ? `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
+            <h2 style="color:#0f172a;margin:0 0 12px;">We Want to Help</h2>
+            <p style="color:#475569;font-size:15px;line-height:1.7;">
+              We noticed your usage of Calltide might not be where you'd like it to be. Our team wants to make sure
+              you're getting the most value from your AI receptionist.
+            </p>
+            <p style="color:#475569;font-size:15px;line-height:1.7;">
+              Would you be open to a quick call? We can review Maria's performance, adjust settings, or help with
+              any questions you have.
+            </p>
+            <a href="${BASE_URL}/dashboard" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:12px;">
+              View Your Dashboard
+            </a>
+          </div>`
+        : `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
+            <h2 style="color:#0f172a;margin:0 0 12px;">Queremos Ayudarle</h2>
+            <p style="color:#475569;font-size:15px;line-height:1.7;">
+              Notamos que su uso de Calltide podría no estar donde le gustaría. Nuestro equipo quiere asegurarse
+              de que está obteniendo el máximo valor de su recepcionista de IA.
+            </p>
+            <p style="color:#475569;font-size:15px;line-height:1.7;">
+              ¿Estaría abierto a una llamada rápida? Podemos revisar el rendimiento de María, ajustar la configuración,
+              o ayudar con cualquier pregunta que tenga.
+            </p>
+            <a href="${BASE_URL}/dashboard" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:12px;">
+              Ver Su Panel
+            </a>
+          </div>`;
+
+      try {
+        const resend = getResend();
+        await resend.emails.send({
+          from: "Calltide <success@calltide.app>",
+          to: business.ownerEmail,
+          subject,
+          html: emailWrapper(body, unsubUrl(business.ownerEmail)),
+        });
+        await logOutreach(business.id, "success_agent", "email");
+        result.recoveryEmail = "sent";
+      } catch (err) {
+        reportError(`Success handoff email failed for ${business.name}`, err, { businessId: business.id });
+        result.recoveryEmail = "failed";
+      }
+
+      await logAgentActivity({
+        agentName: "success",
+        actionType: "churn_recovery_followup",
+        targetId: business.id,
+        targetType: "client",
+        inputSummary: `Churn handoff recovery: ${business.name} (score: ${churnScore})`,
+        outputSummary: `Recovery email ${result.recoveryEmail}`,
+      });
+    }
+  }
+
+  // Handoff from QA agent — quality issues follow-up
+  if (handoff.fromAgent === "qa") {
+    const avgScore = (ctx?.avgScore as number) ?? 0;
+    result.qaFollowup = true;
+    result.avgScore = avgScore;
+
+    await logAgentActivity({
+      agentName: "success",
+      actionType: "qa_handoff_processed",
+      targetId: business.id,
+      targetType: "client",
+      inputSummary: `QA handoff: ${business.name} (avg score: ${avgScore})`,
+      outputSummary: `Flagged for quality review`,
+    });
+  }
+
+  return result;
+}
+
 // ── Main processor for a single business ──
 
 async function processBusinessSuccess(business: Business, now: Date): Promise<Record<string, unknown>> {
@@ -1177,6 +1288,19 @@ export async function GET(req: NextRequest) {
   for (const client of activeClients) {
     const clientResult = await processBusinessSuccess(client, now);
     results.push(clientResult);
+  }
+
+  // Process incoming handoffs (from churn agent, QA agent)
+  const handoffs = await getHandoffsForAgent("success");
+  for (const handoff of handoffs) {
+    try {
+      await claimHandoff(handoff.id);
+      const handoffResult = await processHandoff(handoff, now);
+      results.push(handoffResult);
+      await completeHandoff(handoff.id, `Processed: ${handoff.reason}`);
+    } catch (err) {
+      reportError(`Success handoff error for ${handoff.businessId}`, err, { businessId: handoff.businessId, extra: { handoffId: handoff.id } });
+    }
   }
 
   // Update agentConfig.lastRunAt
