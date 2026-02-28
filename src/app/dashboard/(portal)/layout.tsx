@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import ClientNav from "../_components/client-nav";
 import HelpWidget from "../_components/help-widget";
 import PaymentBanner from "../_components/payment-banner";
@@ -12,6 +13,51 @@ export default function PortalLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [onboardingChecked, setOnboardingChecked] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // Skip redirect check for settings page (allow access during onboarding)
+    if (pathname === "/dashboard/settings") {
+      setOnboardingChecked(true);
+      return;
+    }
+
+    let cancelled = false;
+    async function checkOnboarding() {
+      try {
+        const res = await fetch("/api/dashboard/onboarding");
+        if (!res.ok) {
+          setOnboardingChecked(true);
+          return;
+        }
+        const data = await res.json();
+        if (!cancelled && !data.onboardingCompletedAt) {
+          router.replace("/dashboard/onboarding");
+          return;
+        }
+      } catch {
+        // On error, allow access
+      }
+      if (!cancelled) setOnboardingChecked(true);
+    }
+    checkOnboarding();
+    return () => { cancelled = true; };
+  }, [router, pathname]);
+
+  if (!onboardingChecked) {
+    return (
+      <div className="flex min-h-screen items-center justify-center" style={{ background: "var(--db-bg)" }}>
+        <div className="flex flex-col items-center gap-3">
+          <div
+            className="h-8 w-8 rounded-full border-2 border-t-transparent animate-spin"
+            style={{ borderColor: "var(--db-border)", borderTopColor: "var(--db-accent)" }}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen">

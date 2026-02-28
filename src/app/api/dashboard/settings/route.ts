@@ -14,6 +14,7 @@ const dayEnum = z.enum([
 
 const settingsSchema = z.object({
   name: z.string().min(1).max(100),
+  type: z.string().min(1).max(50).optional(),
   ownerName: z.string().min(1).max(100),
   ownerEmail: z.string().email(),
   ownerPhone: z.string().regex(/^\+?1?\d{10,11}$/, "Invalid US phone number"),
@@ -146,8 +147,9 @@ export async function PUT(req: NextRequest) {
   }
 
   // Sanitize string inputs
-  const sanitized = {
+  const sanitized: Record<string, unknown> = {
     name: stripHtml(data.name)!,
+    ...(data.type ? { type: stripHtml(data.type)! } : {}),
     ownerName: stripHtml(data.ownerName)!,
     ownerEmail: data.ownerEmail,
     ownerPhone: data.ownerPhone,

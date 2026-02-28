@@ -31,8 +31,8 @@ export async function GET(req: NextRequest) {
     .from(businesses)
     .where(
       and(
-        eq(businesses.active, true),
         sql`${businesses.createdAt} >= ${cutoff}`,
+        sql`${businesses.onboardingCompletedAt} IS NULL`,
       ),
     );
 
@@ -48,6 +48,9 @@ export async function GET(req: NextRequest) {
       (Date.now() - new Date(client.createdAt).getTime()) / (1000 * 60 * 60 * 24),
     );
 
+    const onboardingStep = client.onboardingStep ?? 1;
+    const skippedSteps = (client.onboardingSkippedSteps as number[]) ?? [];
+
     const message = `Check onboarding progress for this new client and send appropriate nudges:
 
 Business: ${client.name} (${client.type})
@@ -56,6 +59,10 @@ Email: ${client.ownerEmail ?? "none"}
 Phone: ${client.ownerPhone}
 Signed Up: ${client.createdAt} (${daysSinceSignup} days ago)
 
+ONBOARDING WIZARD:
+- Current step: ${onboardingStep} of 8
+- Skipped steps: ${skippedSteps.length > 0 ? skippedSteps.join(", ") : "none"}
+
 ONBOARDING MILESTONES:
 - Has Hume config: ${milestones.hasHumeConfig ? "YES" : "NO"}
 - Has business hours set: ${milestones.hasBusinessHours ? "YES" : "NO"}
@@ -63,7 +70,7 @@ ONBOARDING MILESTONES:
 - Has first appointment booked: ${milestones.hasFirstAppointment ? "YES" : "NO"}
 - Total calls received: ${milestones.totalCalls}
 
-Based on how many days since signup and which milestones are incomplete, decide what nudge to send (email, SMS) or whether to escalate a stalled onboarding.`;
+Based on how many days since signup, current wizard step, and which milestones are incomplete, decide what nudge to send (email, SMS) or whether to escalate a stalled onboarding. If they skipped the test call (step 7), specifically recommend testing Maria.`;
 
     const result = await runAgent({
       agentName: "onboard",

@@ -25,6 +25,9 @@ export const businesses = sqliteTable("businesses", {
   healthScore: integer("health_score").default(50),
   lastNpsScore: integer("last_nps_score"),
   lastNpsDate: text("last_nps_date"),
+  onboardingStep: integer("onboarding_step").default(1),
+  onboardingCompletedAt: text("onboarding_completed_at"),
+  onboardingSkippedSteps: text("onboarding_skipped_steps", { mode: "json" }).$type<number[]>().default([]),
   onboardingQaGrade: text("onboarding_qa_grade"), // A/B/C/D/F
   onboardingQaCompleteAt: text("onboarding_qa_complete_at"),
   // Legal + Compliance
