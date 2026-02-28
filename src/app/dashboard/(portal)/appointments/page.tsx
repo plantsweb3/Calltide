@@ -23,13 +23,21 @@ export default function AppointmentsPage() {
   const [filter, setFilter] = useState<"upcoming" | "past">("upcoming");
   const [view, setView] = useState<"calendar" | "list">("calendar");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchAppointments = useCallback(async () => {
     setLoading(true);
-    const res = await fetch(`/api/dashboard/appointments?filter=${filter}`);
-    const data = await res.json();
-    setAppointments(data.appointments);
-    setLoading(false);
+    setError(null);
+    try {
+      const res = await fetch(`/api/dashboard/appointments?filter=${filter}`);
+      if (!res.ok) throw new Error("Failed to load appointments");
+      const data = await res.json();
+      setAppointments(data.appointments);
+    } catch {
+      setError("Failed to load appointments. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }, [filter]);
 
   useEffect(() => {
@@ -160,7 +168,13 @@ export default function AppointmentsPage() {
         </div>
       </div>
 
-      {loading && appointments.length === 0 && (
+      {error && (
+        <div className="rounded-xl p-4 mb-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        </div>
+      )}
+
+      {loading && appointments.length === 0 && !error && (
         <LoadingSpinner message="Loading appointments..." />
       )}
 

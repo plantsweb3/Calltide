@@ -22,22 +22,30 @@ export default function SmsPage() {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const fetchMessages = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams({
-      page: String(page),
-      limit: "20",
-    });
-    if (search) params.set("search", search);
+    setError(null);
+    try {
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: "20",
+      });
+      if (search) params.set("search", search);
 
-    const res = await fetch(`/api/dashboard/sms?${params}`);
-    const data = await res.json();
-    setMessages(data.messages);
-    setTotal(data.total);
-    setTotalPages(data.totalPages);
-    setLoading(false);
+      const res = await fetch(`/api/dashboard/sms?${params}`);
+      if (!res.ok) throw new Error("Failed to load messages");
+      const data = await res.json();
+      setMessages(data.messages);
+      setTotal(data.total);
+      setTotalPages(data.totalPages);
+    } catch {
+      setError("Failed to load SMS messages. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }, [page, search]);
 
   useEffect(() => {
@@ -161,7 +169,13 @@ export default function SmsPage() {
         />
       </div>
 
-      {loading && messages.length === 0 && (
+      {error && (
+        <div className="rounded-xl p-4 mb-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        </div>
+      )}
+
+      {loading && messages.length === 0 && !error && (
         <LoadingSpinner message="Loading messages..." />
       )}
 

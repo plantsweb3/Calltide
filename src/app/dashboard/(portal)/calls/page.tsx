@@ -47,23 +47,31 @@ export default function CallsPage() {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedCall, setSelectedCall] = useState<Call | null>(null);
   const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const fetchCalls = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams({
-      page: String(page),
-      limit: "20",
-    });
-    if (search) params.set("search", search);
+    setError(null);
+    try {
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: "20",
+      });
+      if (search) params.set("search", search);
 
-    const res = await fetch(`/api/dashboard/calls?${params}`);
-    const data = await res.json();
-    setCalls(data.calls);
-    setTotal(data.total);
-    setTotalPages(data.totalPages);
-    setLoading(false);
+      const res = await fetch(`/api/dashboard/calls?${params}`);
+      if (!res.ok) throw new Error("Failed to load calls");
+      const data = await res.json();
+      setCalls(data.calls);
+      setTotal(data.total);
+      setTotalPages(data.totalPages);
+    } catch {
+      setError("Failed to load call history. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }, [page, search]);
 
   useEffect(() => {
@@ -220,7 +228,13 @@ export default function CallsPage() {
         />
       </div>
 
-      {loading && calls.length === 0 && (
+      {error && (
+        <div className="rounded-xl p-4 mb-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        </div>
+      )}
+
+      {loading && calls.length === 0 && !error && (
         <LoadingSpinner message="Loading calls..." />
       )}
 

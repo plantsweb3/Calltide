@@ -28,7 +28,7 @@ const envSchema = z.object({
 
   // AI model
   CLAUDE_MODEL: z.string().min(1).optional(),             // defaults to claude-sonnet-4-5-20250929
-  CLM_API_KEY: z.string().min(16).optional(),             // Auth key for Hume EVI CLM endpoint
+  CLM_API_KEY: z.string().min(16),                         // Auth key for Hume EVI CLM endpoint (required)
 
   // Owner contact
   OWNER_EMAIL: z.string().email(),

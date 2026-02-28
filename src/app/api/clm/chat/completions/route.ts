@@ -51,9 +51,15 @@ export async function POST(req: NextRequest) {
   const rl = rateLimit(`clm:${ip}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
 
-  // Authenticate CLM requests when CLM_API_KEY is configured
+  // Authenticate CLM requests — CLM_API_KEY is required
   const clmKey = process.env.CLM_API_KEY;
-  if (clmKey) {
+  if (!clmKey) {
+    return Response.json(
+      { error: "CLM_API_KEY not configured" },
+      { status: 500, headers: getCorsHeaders(req) },
+    );
+  }
+  {
     const authHeader = req.headers.get("authorization");
     if (authHeader !== `Bearer ${clmKey}`) {
       return Response.json(

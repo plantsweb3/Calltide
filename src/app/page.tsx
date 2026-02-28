@@ -65,16 +65,15 @@ const T = {
       ],
     },
     social: {
-      label: "Trusted by Service Businesses",
-      /* placeholder testimonials — replace with real ones after first clients */
+      label: "Built for Service Businesses",
       testimonials: [
-        { quote: "Maria saved us 15 hours a week on the phone. My crew stays in the field now.", name: "Mike R.", biz: "R&R HVAC — Austin, TX" },
-        { quote: "Mis clientes hispanos love that Maria speaks their language. It changed our business.", name: "Carlos M.", biz: "Mendez Plumbing — San Antonio, TX" },
+        { quote: "Every missed call is a lost job. Maria makes sure that never happens — in English or Spanish.", name: "Why Calltide?", biz: "24/7 AI receptionist for Texas service businesses" },
+        { quote: "Your customers call once. If nobody answers, they call your competitor. Maria answers every time.", name: "Never Miss Again", biz: "Answers, books, follows up — automatically" },
       ],
       stats: [
-        { value: 12400, suffix: "+", label: "Calls Answered" },
-        { value: 4200, suffix: "+", label: "Appointments Booked" },
-        { value: 87, suffix: "", label: "Businesses Trust Maria" },
+        { value: 24, suffix: "/7", label: "Always Available" },
+        { value: 2, suffix: "", label: "Languages (EN + ES)" },
+        { value: 30, suffix: "s", label: "Avg Response Time" },
       ],
     },
     pricing: {
@@ -181,15 +180,15 @@ const T = {
       ],
     },
     social: {
-      label: "Negocios de Servicio Confían en Nosotros",
+      label: "Hecho para Negocios de Servicio",
       testimonials: [
-        { quote: "María nos ahorró 15 horas a la semana en el teléfono. Mi equipo ahora se queda en el campo.", name: "Mike R.", biz: "R&R HVAC — Austin, TX" },
-        { quote: "Mis clientes hispanos aman que María hable su idioma. Cambió nuestro negocio.", name: "Carlos M.", biz: "Mendez Plumbing — San Antonio, TX" },
+        { quote: "Cada llamada perdida es un trabajo perdido. María se asegura de que eso nunca pase — en inglés o español.", name: "¿Por qué Calltide?", biz: "Recepcionista IA 24/7 para negocios de servicio en Texas" },
+        { quote: "Tus clientes llaman una vez. Si nadie contesta, llaman a tu competencia. María contesta siempre.", name: "Nunca Pierdas Otra Llamada", biz: "Contesta, agenda, da seguimiento — automáticamente" },
       ],
       stats: [
-        { value: 12400, suffix: "+", label: "Llamadas Contestadas" },
-        { value: 4200, suffix: "+", label: "Citas Agendadas" },
-        { value: 87, suffix: "", label: "Negocios Confían en María" },
+        { value: 24, suffix: "/7", label: "Siempre Disponible" },
+        { value: 2, suffix: "", label: "Idiomas (EN + ES)" },
+        { value: 30, suffix: "s", label: "Tiempo de Respuesta" },
       ],
     },
     pricing: {
