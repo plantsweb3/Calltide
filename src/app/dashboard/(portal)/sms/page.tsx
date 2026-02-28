@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import DataTable, { type Column } from "@/components/data-table";
-import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import { TableSkeleton } from "@/components/skeleton";
 
 interface SmsMessage {
   id: string;
@@ -170,13 +170,20 @@ export default function SmsPage() {
       </div>
 
       {error && (
-        <div className="rounded-xl p-4 mb-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
           <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button
+            onClick={fetchMessages}
+            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+          >
+            Retry
+          </button>
         </div>
       )}
 
       {loading && messages.length === 0 && !error && (
-        <LoadingSpinner message="Loading messages..." />
+        <TableSkeleton rows={6} />
       )}
 
       {!loading && messages.length === 0 && !search && (
@@ -188,11 +195,14 @@ export default function SmsPage() {
             boxShadow: "var(--db-card-shadow)",
           }}
         >
+          <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
           <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
             No messages yet
           </p>
-          <p className="mt-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            SMS confirmations and reminders will show up here.
+          <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
+            SMS confirmations and reminders will show up here as María handles calls.
           </p>
         </div>
       )}

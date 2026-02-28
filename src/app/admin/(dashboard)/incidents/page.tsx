@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 import StatusBadge from "../../_components/status-badge";
 import MetricCard from "../../_components/metric-card";
 import DataTable, { type Column } from "../../_components/data-table";
+import { TableSkeleton } from "@/components/skeleton";
 
 // ── Types ──
 
@@ -103,13 +105,20 @@ export default function IncidentsPage() {
       </div>
 
       {error && (
-        <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+        <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
           <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button
+            onClick={() => { fetchIncidents(); fetchSubscribers(); }}
+            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+          >
+            Retry
+          </button>
         </div>
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 rounded-lg p-1" style={{ background: "var(--db-hover)" }}>
+      <div className="flex gap-1 rounded-lg p-1" style={{ background: "var(--db-surface)" }}>
         {tabs.map((t) => (
           <button
             key={t.key}
@@ -118,7 +127,7 @@ export default function IncidentsPage() {
             style={{
               background: tab === t.key ? "var(--db-card)" : "transparent",
               color: tab === t.key ? "var(--db-text)" : "var(--db-text-muted)",
-              boxShadow: tab === t.key ? "0 1px 2px rgba(0,0,0,0.05)" : undefined,
+              border: tab === t.key ? "1px solid var(--db-border)" : "1px solid transparent",
             }}
           >
             {t.label}
@@ -127,9 +136,7 @@ export default function IncidentsPage() {
       </div>
 
       {loading ? (
-        <div className="flex h-64 items-center justify-center">
-          <p style={{ color: "var(--db-text-muted)" }}>Loading incidents...</p>
-        </div>
+        <TableSkeleton rows={4} />
       ) : (
         <>
           {tab === "active" && (
@@ -155,24 +162,36 @@ function ActiveTab({ incidents, onRefresh }: { incidents: Incident[]; onRefresh:
   const [updateStatus, setUpdateStatus] = useState("investigating");
 
   const handleResolve = async (id: string) => {
-    await fetch(`/api/admin/incidents/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "resolved" }),
-    });
-    onRefresh();
+    try {
+      const res = await fetch(`/api/admin/incidents/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "resolved" }),
+      });
+      if (!res.ok) throw new Error("Failed to resolve");
+      toast.success("Incident resolved");
+      onRefresh();
+    } catch {
+      toast.error("Failed to resolve incident");
+    }
   };
 
   const handleAddUpdate = async (id: string) => {
     if (!updateMessage) return;
-    await fetch(`/api/admin/incidents/${id}/updates`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: updateStatus, message: updateMessage, notify: true }),
-    });
-    setAddingUpdate(null);
-    setUpdateMessage("");
-    onRefresh();
+    try {
+      const res = await fetch(`/api/admin/incidents/${id}/updates`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: updateStatus, message: updateMessage, notify: true }),
+      });
+      if (!res.ok) throw new Error("Failed to post update");
+      toast.success("Update posted and subscribers notified");
+      setAddingUpdate(null);
+      setUpdateMessage("");
+      onRefresh();
+    } catch {
+      toast.error("Failed to post update");
+    }
   };
 
   if (incidents.length === 0) {
@@ -292,18 +311,30 @@ function HistoryTab({ incidents, onRefresh }: { incidents: Incident[]; onRefresh
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const handlePublishPostmortem = async (id: string) => {
-    await fetch(`/api/admin/incidents/${id}/publish-postmortem`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ notify: true }),
-    });
-    onRefresh();
+    try {
+      const res = await fetch(`/api/admin/incidents/${id}/publish-postmortem`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notify: true }),
+      });
+      if (!res.ok) throw new Error("Failed to publish");
+      toast.success("Postmortem published and subscribers notified");
+      onRefresh();
+    } catch {
+      toast.error("Failed to publish postmortem");
+    }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this incident permanently?")) return;
-    await fetch(`/api/admin/incidents/${id}`, { method: "DELETE" });
-    onRefresh();
+    try {
+      const res = await fetch(`/api/admin/incidents/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete");
+      toast.success("Incident deleted");
+      onRefresh();
+    } catch {
+      toast.error("Failed to delete incident");
+    }
   };
 
   const columns: Column<Incident>[] = [
@@ -461,18 +492,23 @@ function CreateTab({ onCreated }: { onCreated: () => void }) {
       return;
     }
     setSaving(true);
-    const res = await fetch("/api/admin/incidents", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    if (res.ok) {
-      setMsg("Incident created");
-      setForm({ title: "", titleEs: "", severity: "minor", affectedServices: [], message: "", messageEs: "" });
-      onCreated();
-    } else {
-      const d = await res.json();
-      setMsg(d.error || "Failed to create");
+    try {
+      const res = await fetch("/api/admin/incidents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setMsg("");
+        toast.success("Incident created and subscribers notified");
+        setForm({ title: "", titleEs: "", severity: "minor", affectedServices: [], message: "", messageEs: "" });
+        onCreated();
+      } else {
+        const d = await res.json();
+        setMsg(d.error || "Failed to create");
+      }
+    } catch {
+      toast.error("Failed to create incident");
     }
     setSaving(false);
   };
@@ -580,8 +616,14 @@ function CreateTab({ onCreated }: { onCreated: () => void }) {
 
 function SubscribersTab({ subscribers, onRefresh }: { subscribers: Subscriber[]; onRefresh: () => void }) {
   const handleDelete = async (id: string) => {
-    await fetch(`/api/admin/incidents/subscribers?id=${id}`, { method: "DELETE" });
-    onRefresh();
+    try {
+      const res = await fetch(`/api/admin/incidents/subscribers?id=${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to remove subscriber");
+      toast.success("Subscriber removed");
+      onRefresh();
+    } catch {
+      toast.error("Failed to remove subscriber");
+    }
   };
 
   const columns: Column<Subscriber>[] = [

@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 import StatusBadge from "../../_components/status-badge";
 import DataTable, { type Column } from "../../_components/data-table";
+import { TableSkeleton } from "@/components/skeleton";
 
 // ── Types ──
 
@@ -59,20 +61,24 @@ export default function AgentsPage() {
   const [loading, setLoading] = useState(true);
   const [activityFilter, setActivityFilter] = useState<string>("all");
 
+  const [error, setError] = useState<string | null>(null);
+
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const [configRes, activityRes] = await Promise.all([
         fetch("/api/admin/agents/config"),
         fetch(`/api/admin/agents/activity${activityFilter !== "all" ? `?agent=${activityFilter}` : ""}`),
       ]);
+      if (!configRes.ok || !activityRes.ok) throw new Error("Failed to load agent data");
       const configData = await configRes.json();
       const activityData = await activityRes.json();
       setConfigs(Array.isArray(configData) ? configData : []);
       setActivities(activityData.activities ?? []);
       setStats(activityData.stats ?? { total: 0, escalated: 0, resolved: 0 });
     } catch {
-      // silent
+      setError("Failed to load agent data. Please try again.");
     }
     setLoading(false);
   }, [activityFilter]);
@@ -80,12 +86,18 @@ export default function AgentsPage() {
   useEffect(() => { fetchData(); }, [fetchData]);
 
   const toggleAgent = async (agentName: string, enabled: boolean) => {
-    await fetch("/api/admin/agents/config", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ agentName, enabled }),
-    });
-    fetchData();
+    try {
+      const res = await fetch("/api/admin/agents/config", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agentName, enabled }),
+      });
+      if (!res.ok) throw new Error("Failed to update agent");
+      toast.success(`${agentName} agent ${enabled ? "enabled" : "disabled"}`);
+      fetchData();
+    } catch {
+      toast.error("Failed to update agent configuration");
+    }
   };
 
   const tabs: { key: TabKey; label: string }[] = [
@@ -122,10 +134,21 @@ export default function AgentsPage() {
         ))}
       </div>
 
-      {loading ? (
-        <div className="flex h-40 items-center justify-center">
-          <p style={{ color: "var(--db-text-muted)" }}>Loading agent data...</p>
+      {error && (
+        <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button
+            onClick={fetchData}
+            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+          >
+            Retry
+          </button>
         </div>
+      )}
+
+      {loading ? (
+        <TableSkeleton rows={5} />
       ) : (
         <>
           {tab === "overview" && <OverviewTab configs={configs} stats={stats} />}
@@ -334,13 +357,19 @@ function ConfigTab({
   const [thresholdValue, setThresholdValue] = useState<number>(3);
 
   const saveThreshold = async (agentName: string) => {
-    await fetch("/api/admin/agents/config", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ agentName, escalationThreshold: thresholdValue }),
-    });
-    setEditingThreshold(null);
-    onRefresh();
+    try {
+      const res = await fetch("/api/admin/agents/config", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agentName, escalationThreshold: thresholdValue }),
+      });
+      if (!res.ok) throw new Error("Failed to save threshold");
+      toast.success("Escalation threshold updated");
+      setEditingThreshold(null);
+      onRefresh();
+    } catch {
+      toast.error("Failed to save threshold");
+    }
   };
 
   return (
@@ -472,17 +501,21 @@ function TriggersTab({ configs, onRefresh }: { configs: AgentConfig[]; onRefresh
       });
 
       const data = await res.json();
-      setResults((prev) => ({
-        ...prev,
-        [agentName]: res.ok
-          ? `Success: ${data.summary ?? JSON.stringify(data).slice(0, 200)}`
-          : `Error ${res.status}: ${data.error ?? "Unknown"}`,
-      }));
+      if (res.ok) {
+        const msg = `Success: ${data.summary ?? JSON.stringify(data).slice(0, 200)}`;
+        setResults((prev) => ({ ...prev, [agentName]: msg }));
+        toast.success(`${agentName} agent triggered successfully`);
+      } else {
+        const msg = `Error ${res.status}: ${data.error ?? "Unknown"}`;
+        setResults((prev) => ({ ...prev, [agentName]: msg }));
+        toast.error(`${agentName} agent failed`);
+      }
     } catch (err) {
       setResults((prev) => ({
         ...prev,
         [agentName]: `Failed: ${err instanceof Error ? err.message : String(err)}`,
       }));
+      toast.error(`Failed to trigger ${agentName} agent`);
     }
 
     setRunning(null);

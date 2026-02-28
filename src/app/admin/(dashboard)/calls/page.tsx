@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import MetricCard from "../../_components/metric-card";
 import DataTable, { type Column } from "../../_components/data-table";
+import { MetricCardSkeleton, TableSkeleton } from "@/components/skeleton";
 import {
   AreaChart,
   Area,
@@ -57,24 +58,44 @@ export default function CallAnalyticsPage() {
   const [data, setData] = useState<CallAnalytics | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
+    setError(null);
     fetch("/api/admin/calls")
       .then((r) => r.json())
       .then(setData)
       .catch(() => setError("Failed to load call analytics"));
   }, []);
 
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   if (!data) {
     return (
       <div className="space-y-4">
-        {error && (
-          <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+        {error ? (
+          <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
             <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+            <button
+              onClick={fetchData}
+              className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+              style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+            >
+              Retry
+            </button>
           </div>
-        )}
-        {!error && (
-          <div className="flex h-64 items-center justify-center">
-            <p style={{ color: "var(--db-text-muted)" }}>Loading call analytics...</p>
+        ) : (
+          <div className="space-y-6">
+            <div>
+              <div className="animate-pulse rounded h-7 w-48 mb-2" style={{ background: "var(--db-border)" }} />
+              <div className="animate-pulse rounded h-4 w-64" style={{ background: "var(--db-border)" }} />
+            </div>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <MetricCardSkeleton key={i} />
+              ))}
+            </div>
+            <TableSkeleton rows={5} />
           </div>
         )}
       </div>

@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { PageSkeleton } from "@/components/skeleton";
 
 interface Customer {
   id: string;
@@ -88,13 +90,17 @@ export default function CustomerDetailPage() {
   async function saveField(field: string, value: string) {
     setSaving(true);
     try {
-      await fetch(`/api/dashboard/customers/${id}`, {
+      const res = await fetch(`/api/dashboard/customers/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [field]: value }),
       });
+      if (!res.ok) throw new Error("Save failed");
       setCustomer((prev) => prev ? { ...prev, [field]: value || null } : prev);
-    } catch { /* ignore */ }
+      toast.success("Changes saved");
+    } catch {
+      toast.error("Failed to save changes");
+    }
     setSaving(false);
     setEditingField(null);
   }
@@ -109,11 +115,7 @@ export default function CustomerDetailPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" style={{ color: "var(--db-accent)" }} />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   if (!customer) return null;

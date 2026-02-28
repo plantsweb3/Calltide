@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 import Link from "next/link";
 import DataTable, { type Column } from "../../_components/data-table";
 import AddClientModal from "../../_components/add-client-modal";
+import { TableSkeleton } from "@/components/skeleton";
 
 interface Client {
   id: string;
@@ -26,15 +28,27 @@ const healthColors = {
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
   const fetchClients = useCallback(async () => {
-    const res = await fetch("/api/admin/clients");
-    const data = await res.json();
-    setClients(data);
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/clients");
+      if (!res.ok) throw new Error("Failed to load clients");
+      const data = await res.json();
+      setClients(data);
+    } catch {
+      setError("Failed to load clients. Please try again.");
+      setClients([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -177,12 +191,32 @@ export default function ClientsPage() {
         </select>
       </div>
 
-      <DataTable columns={columns} data={filteredClients} />
+      {error && (
+        <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button
+            onClick={fetchClients}
+            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {loading && clients.length === 0 && !error ? (
+        <TableSkeleton rows={6} />
+      ) : (
+        <DataTable columns={columns} data={filteredClients} />
+      )}
 
       {showAddModal && (
         <AddClientModal
           onClose={() => setShowAddModal(false)}
-          onComplete={fetchClients}
+          onComplete={() => {
+            toast.success("Client added successfully");
+            fetchClients();
+          }}
         />
       )}
     </div>

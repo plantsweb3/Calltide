@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
+import { TableSkeleton } from "@/components/skeleton";
 
 interface Estimate {
   id: string;
@@ -56,14 +58,17 @@ export default function EstimatesPage() {
 
   const fetchEstimates = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const params = new URLSearchParams();
       if (statusFilter) params.set("status", statusFilter);
       const res = await fetch(`/api/dashboard/estimates?${params}`);
+      if (!res.ok) throw new Error("Failed to load estimates");
       const data = await res.json();
       setEstimates(data.estimates || []);
       setPipeline(data.pipeline || {});
     } catch {
+      setError("Failed to load estimates. Please try again.");
       setEstimates([]);
     } finally {
       setLoading(false);
@@ -74,24 +79,33 @@ export default function EstimatesPage() {
     fetchEstimates();
   }, [fetchEstimates]);
 
+  const [error, setError] = useState<string | null>(null);
+
   async function updateEstimate(id: string, updates: Record<string, unknown>) {
     try {
-      await fetch(`/api/dashboard/estimates/${id}`, {
+      const res = await fetch(`/api/dashboard/estimates/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updates),
       });
+      if (!res.ok) throw new Error("Update failed");
+      const label = updates.status === "won" ? "Estimate marked as won" : updates.status === "lost" ? "Estimate marked as lost" : "Estimate updated";
+      toast.success(label);
       fetchEstimates();
-    } catch { /* ignore */ }
+    } catch {
+      toast.error("Failed to update estimate");
+    }
   }
 
   async function sendFollowUp(id: string) {
     try {
       const res = await fetch(`/api/dashboard/estimates/${id}/follow-up`, { method: "POST" });
-      if (res.ok) {
-        fetchEstimates();
-      }
-    } catch { /* ignore */ }
+      if (!res.ok) throw new Error("Follow-up failed");
+      toast.success("Follow-up SMS sent");
+      fetchEstimates();
+    } catch {
+      toast.error("Failed to send follow-up");
+    }
   }
 
   function formatDate(d: string | null) {
@@ -150,21 +164,36 @@ export default function EstimatesPage() {
         })}
       </div>
 
+      {error && (
+        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button
+            onClick={fetchEstimates}
+            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       {/* Table */}
+      {loading && estimates.length === 0 && !error ? (
+        <TableSkeleton rows={5} />
+      ) : (
       <div
         className="overflow-hidden rounded-xl border"
         style={{ borderColor: "var(--db-border)", background: "var(--db-surface)" }}
       >
-        {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" style={{ color: "var(--db-accent)" }} />
-          </div>
-        ) : estimates.length === 0 ? (
+        {estimates.length === 0 ? (
           <div className="py-16 text-center">
+            <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
             <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
               No estimates yet
             </p>
-            <p className="mt-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
+            <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
               Estimates are auto-created when callers request quotes through María.
             </p>
           </div>
@@ -293,6 +322,8 @@ export default function EstimatesPage() {
           </table>
         )}
       </div>
+
+      )}
 
       {/* Won Modal */}
       {showWonModal && (

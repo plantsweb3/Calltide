@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 import MetricCard from "../_components/metric-card";
 import ActivityFeed from "../_components/activity-feed";
 import QuickActions from "../_components/quick-actions";
 import StatusBadge from "../_components/status-badge";
+import { MetricCardSkeleton } from "@/components/skeleton";
 import {
   AreaChart,
   Area,
@@ -72,7 +74,8 @@ export default function AdminDashboardPage() {
   const [crmStats, setCrmStats] = useState<{ totalCustomers: number; repeatRate: number; openEstimates: number; wonEstimateValue: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchAll = useCallback(() => {
+    setError(null);
     fetch("/api/admin/dashboard")
       .then((r) => r.json())
       .then(setData)
@@ -99,17 +102,35 @@ export default function AdminDashboardPage() {
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    fetchAll();
+  }, [fetchAll]);
+
   if (!data) {
     return (
       <div className="space-y-4">
-        {error && (
-          <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+        {error ? (
+          <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
             <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+            <button
+              onClick={fetchAll}
+              className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+              style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+            >
+              Retry
+            </button>
           </div>
-        )}
-        {!error && (
-          <div className="flex h-64 items-center justify-center">
-            <p style={{ color: "var(--db-text-muted)" }}>Loading dashboard...</p>
+        ) : (
+          <div className="space-y-6">
+            <div>
+              <div className="animate-pulse rounded h-7 w-48 mb-2" style={{ background: "var(--db-border)" }} />
+              <div className="animate-pulse rounded h-4 w-64" style={{ background: "var(--db-border)" }} />
+            </div>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <MetricCardSkeleton key={i} />
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -136,8 +157,15 @@ export default function AdminDashboardPage() {
       </div>
 
       {error && (
-        <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+        <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
           <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button
+            onClick={fetchAll}
+            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+          >
+            Retry
+          </button>
         </div>
       )}
 

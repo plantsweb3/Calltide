@@ -797,6 +797,16 @@ export const DEMO_SMS = [
     status: "delivered",
     createdAt: daysAgo(5, 7, 35),
   },
+  {
+    id: "demo-sms-13",
+    direction: "outbound",
+    fromNumber: "+1 (512) 555-0100",
+    toNumber: "+1 (512) 555-1145",
+    body: "Hi! We missed your call. Book online at calltide.com/book or reply with a time. — Calltide",
+    templateType: "missed_call_followup",
+    status: "failed",
+    createdAt: daysAgo(2, 19, 46),
+  },
 ];
 
 // ── CRM: Customers ──
@@ -1016,7 +1026,13 @@ export const DEMO_CUSTOMERS = [
 
 // ── CRM: Estimates ──
 
-export const DEMO_ESTIMATES = [
+export const DEMO_ESTIMATES: Array<{
+  id: string; businessId: string; customerId: string; customerName: string; customerPhone: string;
+  callId: string | null; service: string; description: string; status: string; amount: number | null;
+  followUpCount: number; lastFollowUpAt: string | null; nextFollowUpAt: string | null;
+  wonAt: string | null; lostAt: string | null; lostReason: string | null; notes: string | null;
+  createdAt: string; updatedAt: string;
+}> = [
   {
     id: "demo-est-01",
     businessId: DEMO_BUSINESS_ID,
@@ -1121,6 +1137,27 @@ export const DEMO_ESTIMATES = [
     notes: "Chose a competitor with lower pricing.",
     createdAt: daysAgo(40),
     updatedAt: daysAgo(12),
+  },
+  {
+    id: "demo-est-06",
+    businessId: DEMO_BUSINESS_ID,
+    customerId: "demo-cust-09",
+    customerName: "Carlos Mendez",
+    customerPhone: "+1 (512) 555-0912",
+    callId: null,
+    service: "AC Maintenance Plan",
+    description: "Annual service package for AC system.",
+    status: "expired",
+    amount: 299,
+    followUpCount: 3,
+    lastFollowUpAt: daysAgo(32),
+    nextFollowUpAt: null,
+    wonAt: null,
+    lostAt: null,
+    lostReason: null,
+    notes: "No response after 3 follow-ups. Auto-expired.",
+    createdAt: daysAgo(45),
+    updatedAt: daysAgo(15),
   },
 ];
 

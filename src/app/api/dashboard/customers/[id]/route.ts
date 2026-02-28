@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { customers, calls, appointments, smsMessages, leads } from "@/db/schema";
 import { eq, and, desc, isNull } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
-import { DEMO_BUSINESS_ID, DEMO_CUSTOMERS } from "../../demo-data";
+import { DEMO_BUSINESS_ID, DEMO_CUSTOMERS, DEMO_CALLS, DEMO_APPOINTMENTS_UPCOMING, DEMO_APPOINTMENTS_PAST, DEMO_SMS } from "../../demo-data";
 
 export async function GET(
   req: NextRequest,
@@ -22,12 +22,18 @@ export async function GET(
     if (!customer) {
       return NextResponse.json({ error: "Customer not found" }, { status: 404 });
     }
-    return NextResponse.json({
-      customer,
-      recentCalls: [],
-      recentAppointments: [],
-      recentSms: [],
-    });
+    // Match demo calls, appointments, and SMS by customer phone
+    const recentCalls = DEMO_CALLS
+      .filter((c) => c.callerPhone === customer.phone)
+      .map((c) => ({ id: c.id, status: c.status, duration: c.duration, language: c.language, summary: c.summary, sentiment: c.sentiment, outcome: null, createdAt: c.createdAt }));
+    const recentAppointments = [...DEMO_APPOINTMENTS_UPCOMING, ...DEMO_APPOINTMENTS_PAST]
+      .filter((a) => a.leadPhone === customer.phone)
+      .map((a) => ({ id: a.id, service: a.service, date: a.date, time: a.time, status: a.status, notes: a.notes }));
+    const recentSms = DEMO_SMS
+      .filter((s) => s.toNumber === customer.phone || s.fromNumber === customer.phone)
+      .map((s) => ({ id: s.id, direction: s.direction, body: s.body, templateType: s.templateType, createdAt: s.createdAt }));
+
+    return NextResponse.json({ customer, recentCalls, recentAppointments, recentSms });
   }
 
   try {

@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
+import { toast } from "sonner";
 import Link from "next/link";
 import StatusBadge from "../../../_components/status-badge";
+import { PageSkeleton } from "@/components/skeleton";
 
 type Tab = "calls" | "bookings" | "communications" | "ai" | "notes" | "qa" | "nps" | "referral" | "timeline" | "customers";
 
@@ -151,15 +153,19 @@ export default function ClientDetailPage({
 
   async function addNote() {
     if (!newNote.trim()) return;
-    const res = await fetch(`/api/admin/clients/${id}/notes`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ noteText: newNote }),
-    });
-    if (res.ok) {
+    try {
+      const res = await fetch(`/api/admin/clients/${id}/notes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ noteText: newNote }),
+      });
+      if (!res.ok) throw new Error("Failed to add note");
       const note = await res.json();
       setNotes((prev) => [note, ...prev]);
       setNewNote("");
+      toast.success("Note added");
+    } catch {
+      toast.error("Failed to add note");
     }
   }
 
@@ -192,11 +198,7 @@ export default function ClientDetailPage({
   };
 
   if (loading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <p style={{ color: "var(--db-text-muted)" }}>Loading client...</p>
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   if (!business) {
@@ -242,8 +244,15 @@ export default function ClientDetailPage({
       </div>
 
       {error && (
-        <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+        <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
           <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+          >
+            Retry
+          </button>
         </div>
       )}
 

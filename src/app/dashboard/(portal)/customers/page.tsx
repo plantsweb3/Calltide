@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { TableSkeleton } from "@/components/skeleton";
 
 interface Customer {
   id: string;
@@ -28,17 +30,22 @@ export default function CustomersPage() {
   const [total, setTotal] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
 
+  const [error, setError] = useState<string | null>(null);
+
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (search) params.set("search", search);
       const res = await fetch(`/api/dashboard/customers?${params}`);
+      if (!res.ok) throw new Error("Failed to load customers");
       const data = await res.json();
       setCustomers(data.customers || []);
       setTotalPages(data.totalPages || 1);
       setTotal(data.total || 0);
     } catch {
+      setError("Failed to load customers. Please try again.");
       setCustomers([]);
     } finally {
       setLoading(false);
@@ -100,21 +107,36 @@ export default function CustomersPage() {
         />
       </div>
 
+      {error && (
+        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button
+            onClick={fetchCustomers}
+            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       {/* Table */}
+      {loading && customers.length === 0 && !error ? (
+        <TableSkeleton rows={6} />
+      ) : (
       <div
         className="overflow-hidden rounded-xl border"
         style={{ borderColor: "var(--db-border)", background: "var(--db-surface)" }}
       >
-        {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" style={{ color: "var(--db-accent)" }} />
-          </div>
-        ) : customers.length === 0 ? (
+        {customers.length === 0 ? (
           <div className="py-16 text-center">
+            <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
             <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
               {search ? "No customers match your search" : "No customers yet"}
             </p>
-            <p className="mt-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
+            <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
               {search
                 ? "Try a different search term."
                 : "Your customer list builds automatically as María takes calls."}
@@ -192,6 +214,8 @@ export default function CustomersPage() {
         )}
       </div>
 
+      )}
+
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="mt-4 flex items-center justify-between">
@@ -257,6 +281,7 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
         setError(data.error || "Failed to create customer");
         return;
       }
+      toast.success("Customer added successfully");
       onCreated();
     } catch {
       setError("Failed to create customer");
