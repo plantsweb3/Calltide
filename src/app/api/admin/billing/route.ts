@@ -60,6 +60,25 @@ export async function GET() {
       sixMonth: Math.round(currentMrr + avgGrowth * 180),
     };
 
+    // Plan mix metrics
+    const planMix = await db
+      .select({
+        planType: businesses.planType,
+        count: sql<number>`count(*)`,
+        totalMrr: sql<number>`sum(${businesses.mrr})`,
+      })
+      .from(businesses)
+      .where(eq(businesses.active, true))
+      .groupBy(businesses.planType);
+
+    const planMixData: Record<string, { count: number; mrr: number }> = {};
+    for (const row of planMix) {
+      planMixData[row.planType ?? "monthly"] = {
+        count: row.count,
+        mrr: row.totalMrr ?? 0,
+      };
+    }
+
     return NextResponse.json({
       current: {
         mrr: latest?.mrr ?? 0,
@@ -74,6 +93,7 @@ export async function GET() {
       },
       churnRisks,
       forecast,
+      planMix: planMixData,
     });
   } catch (error) {
     console.error("Error fetching billing data:", error);

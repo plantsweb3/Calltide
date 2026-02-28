@@ -55,6 +55,8 @@ export async function GET() {
         ownerName: biz.ownerName,
         ownerPhone: biz.ownerPhone,
         active: biz.active,
+        planType: biz.planType ?? "monthly",
+        mrr: biz.mrr ?? 49700,
         createdAt: biz.createdAt,
         calls: callStats ?? { totalCalls: 0, completedCalls: 0, missedCalls: 0 },
         appointments: aptStats ?? { totalAppointments: 0, confirmed: 0, completed: 0 },

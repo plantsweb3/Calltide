@@ -55,6 +55,10 @@ export const businesses = sqliteTable("businesses", {
   // CRM
   personalityNotes: text("personality_notes"),
   hasPricingEnabled: integer("has_pricing_enabled", { mode: "boolean" }).default(false),
+  // Plan
+  planType: text("plan_type").default("monthly"), // monthly, annual
+  annualConvertedAt: text("annual_converted_at"),
+  annualPitchedAt: text("annual_pitched_at"),
   audioRetentionDays: integer("audio_retention_days").default(90),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),

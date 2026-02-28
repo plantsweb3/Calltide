@@ -4,6 +4,7 @@ import { businesses, paymentEvents } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
+import { PLAN_DETAILS, type PlanType } from "@/lib/stripe-prices";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -14,6 +15,7 @@ export async function GET(req: NextRequest) {
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({
       plan: "Professional",
+      planType: "monthly" as PlanType,
       price: 49700,
       status: "active",
       stripeSubscriptionStatus: "active",
@@ -42,6 +44,9 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
+    const planType = (business.planType ?? "monthly") as PlanType;
+    const planInfo = PLAN_DETAILS[planType];
+
     // Get payment history (successful payments)
     const payments = await db
       .select()
@@ -56,8 +61,9 @@ export async function GET(req: NextRequest) {
       .limit(24);
 
     return NextResponse.json({
-      plan: "Professional",
-      price: 49700, // cents
+      plan: planInfo.name,
+      planType,
+      price: planInfo.monthlyRate,
       status: business.paymentStatus ?? "active",
       stripeSubscriptionStatus: business.stripeSubscriptionStatus,
       nextBillingAt: business.nextBillingAt,

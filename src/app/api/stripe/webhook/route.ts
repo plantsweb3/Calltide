@@ -11,6 +11,7 @@ import { eq, sql } from "drizzle-orm";
 import { startDunning, clearDunning, cancelDunning } from "@/lib/financial/dunning";
 import { createNotification } from "@/lib/notifications";
 import { logActivity } from "@/lib/activity";
+import { getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
 
 function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -95,6 +96,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   if (!customerId || !email) return;
 
+  // Detect plan from session metadata
+  const plan = (session.metadata?.plan === "annual" ? "annual" : "monthly") as PlanType;
+  const mrr = getMrrForPlan(plan);
+
   // Check if business already exists for this customer
   const existing = await findBusinessByCustomer(customerId);
   if (existing) return;
@@ -114,6 +119,9 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         stripeSubscriptionId: subscriptionId || undefined,
         stripeSubscriptionStatus: "trialing",
         paymentStatus: "active",
+        planType: plan,
+        mrr,
+        annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
         updatedAt: new Date().toISOString(),
       })
       .where(eq(businesses.id, existingByEmail.id));
@@ -140,6 +148,9 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     stripeSubscriptionId: subscriptionId || undefined,
     stripeSubscriptionStatus: "trialing",
     paymentStatus: "active",
+    planType: plan,
+    mrr,
+    annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
     active: false, // Activated after onboarding
   });
 

@@ -467,7 +467,7 @@ function FAQ({ lang }: { lang: Lang }) {
    SIGNUP FORM
    ═══════════════════════════════════════════════════════════════ */
 
-function SignupForm({ lang }: { lang: Lang }) {
+function SignupForm({ lang, plan = "monthly" }: { lang: Lang; plan?: "monthly" | "annual" }) {
   const t = T[lang].cta;
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -504,7 +504,7 @@ function SignupForm({ lang }: { lang: Lang }) {
       const checkoutRes = await fetch("/api/signup/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), plan }),
       });
 
       if (!checkoutRes.ok) {
@@ -634,6 +634,7 @@ export default function LandingPage() {
   const [showVoiceChat, setShowVoiceChat] = useState(false);
   const [lang, setLang] = useState<Lang>("en");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [planChoice, setPlanChoice] = useState<"monthly" | "annual">("annual");
   const scrolled = useScrolled();
   useScrollReveal();
 
@@ -938,10 +939,50 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div className="reveal mt-12 mx-auto max-w-lg">
+          {/* Plan Toggle */}
+          <div className="reveal mt-8 flex items-center justify-center gap-3">
+            <button
+              onClick={() => setPlanChoice("monthly")}
+              className="rounded-full px-5 py-2 text-sm font-semibold transition"
+              style={{
+                background: planChoice === "monthly" ? "#C8AA6E" : "transparent",
+                color: planChoice === "monthly" ? "#0f0f0f" : "#A0A3A8",
+                border: planChoice === "monthly" ? "1px solid #C8AA6E" : "1px solid rgba(255,255,255,0.15)",
+              }}
+            >
+              {lang === "en" ? "Monthly" : "Mensual"}
+            </button>
+            <button
+              onClick={() => setPlanChoice("annual")}
+              className="relative rounded-full px-5 py-2 text-sm font-semibold transition"
+              style={{
+                background: planChoice === "annual" ? "#C8AA6E" : "transparent",
+                color: planChoice === "annual" ? "#0f0f0f" : "#A0A3A8",
+                border: planChoice === "annual" ? "1px solid #C8AA6E" : "1px solid rgba(255,255,255,0.15)",
+              }}
+            >
+              {lang === "en" ? "Annual" : "Anual"}
+              <span className="absolute -top-2.5 -right-2 rounded-full bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
+                {lang === "en" ? "Save 20%" : "-20%"}
+              </span>
+            </button>
+          </div>
+
+          <div className="reveal mt-8 mx-auto max-w-lg">
             <div className="pricing-glow ambient-edge relative rounded-xl border-2 border-[#C8AA6E] bg-[#1A1D0F] p-10 text-center sm:p-14">
-              <p className="mt-2 text-[56px] font-extrabold tracking-tight text-[#E8E9EB]">{t.pricing.price}</p>
-              <p className="text-sm text-[#A0A3A8]">{t.pricing.period}</p>
+              <p className="mt-2 text-[56px] font-extrabold tracking-tight text-[#E8E9EB]">
+                {planChoice === "annual" ? "$397" : "$497"}
+              </p>
+              <p className="text-sm text-[#A0A3A8]">
+                {planChoice === "annual"
+                  ? (lang === "en" ? "/mo — billed annually at $4,764/yr" : "/mes — facturado anualmente a $4,764/año")
+                  : t.pricing.period}
+              </p>
+              {planChoice === "annual" && (
+                <p className="mt-2 text-sm font-semibold text-green-400">
+                  {lang === "en" ? "Save $1,200/year" : "Ahorra $1,200/año"}
+                </p>
+              )}
               <p className="mt-4 text-base text-[#A0A3A8]">{t.pricing.sub}</p>
 
               <ul className="mt-8 space-y-4 text-left text-sm text-[#E8E9EB]">
@@ -993,7 +1034,7 @@ export default function LandingPage() {
             {t.cta.h2}
           </h2>
 
-          <SignupForm lang={lang} />
+          <SignupForm lang={lang} plan={planChoice} />
 
           {/* Show "already have account" and error inline */}
           <SignupStatus lang={lang} />

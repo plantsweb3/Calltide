@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import Stripe from "stripe";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
+import { getPriceId, type PlanType } from "@/lib/stripe-prices";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
+  plan: z.enum(["monthly", "annual"]).default("monthly"),
 });
 
 function getStripe(): Stripe {
@@ -31,8 +33,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { email } = result.data;
-  const priceId = process.env.STRIPE_PRICE_ID;
+  const { email, plan } = result.data;
+  const priceId = getPriceId(plan as PlanType);
 
   if (!priceId) {
     return NextResponse.json(
@@ -52,9 +54,9 @@ export async function POST(req: NextRequest) {
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
         trial_period_days: 14,
-        metadata: { source: "landing_page" },
+        metadata: { source: "landing_page", plan },
       },
-      metadata: { email, source: "landing_page" },
+      metadata: { email, source: "landing_page", plan },
       success_url: `${appUrl}/dashboard/onboarding?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/?canceled=true`,
       allow_promotion_codes: true,

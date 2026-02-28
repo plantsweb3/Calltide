@@ -37,6 +37,7 @@ interface MetricsData {
 
 interface BillingData {
   current: { mrr: number; arr: number; customerCount: number };
+  planMix?: Record<string, { count: number; mrr: number }>;
 }
 
 interface OpsData {
@@ -220,6 +221,41 @@ export default function AdminDashboardPage() {
             label="Won Estimates"
             value={crmStats.wonEstimateValue}
             prefix="$"
+            changeType="positive"
+          />
+        </div>
+      )}
+
+      {/* Plan Mix */}
+      {billing?.planMix && (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <MetricCard
+            label="Monthly Clients"
+            value={billing.planMix.monthly?.count ?? 0}
+          />
+          <MetricCard
+            label="Annual Clients"
+            value={billing.planMix.annual?.count ?? 0}
+            changeType="positive"
+          />
+          <MetricCard
+            label="Annual MRR"
+            value={Math.round((billing.planMix.annual?.mrr ?? 0) / 100)}
+            prefix="$"
+            changeType="positive"
+          />
+          <MetricCard
+            label="Annual %"
+            value={
+              (billing.planMix.monthly?.count ?? 0) + (billing.planMix.annual?.count ?? 0) > 0
+                ? Math.round(
+                    ((billing.planMix.annual?.count ?? 0) /
+                      ((billing.planMix.monthly?.count ?? 0) + (billing.planMix.annual?.count ?? 0))) *
+                      100,
+                  )
+                : 0
+            }
+            suffix="%"
             changeType="positive"
           />
         </div>

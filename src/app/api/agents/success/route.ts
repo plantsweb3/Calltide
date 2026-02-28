@@ -908,6 +908,171 @@ async function checkMilestones(business: Business, now: Date): Promise<string[]>
   return results;
 }
 
+// ── 8. Annual Plan Nudge ──
+
+function shouldNudgeAnnualPlan(business: Business, now: Date): boolean {
+  // Only nudge monthly clients
+  if (business.planType !== "monthly") return false;
+
+  // Must be active 60+ days
+  const age = daysBetween(business.createdAt, now);
+  if (age < 60) return false;
+
+  // Must be healthy (score < 30 = healthy in our system)
+  const score = business.healthScore ?? 50;
+  if (score >= 30) return false;
+
+  // Must not have been pitched in the last 30 days
+  if (business.annualPitchedAt) {
+    const daysSincePitch = daysBetween(business.annualPitchedAt, now);
+    if (daysSincePitch < 30) return false;
+  }
+
+  return true;
+}
+
+async function sendAnnualPlanNudge(business: Business, now: Date): Promise<string> {
+  const email = business.ownerEmail;
+  if (!email) return "no_email";
+
+  const isEn = business.defaultLanguage !== "es";
+  const ownerFirst = (business.ownerName || "").split(" ")[0] || (isEn ? "there" : "");
+  const avgJobValue = business.avgJobValue ?? 250;
+
+  // Calculate their stats for personalization
+  const age = daysBetween(business.createdAt, now);
+  const [callCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(calls)
+    .where(eq(calls.businessId, business.id));
+  const totalCalls = callCount?.count ?? 0;
+
+  const [apptCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(appointments)
+    .where(eq(appointments.businessId, business.id));
+  const totalAppts = apptCount?.count ?? 0;
+  const estRevenue = totalAppts * avgJobValue;
+
+  const subject = isEn
+    ? `Save $1,200/year on Calltide — ${business.name}`
+    : `Ahorre $1,200/año en Calltide — ${business.name}`;
+
+  const body = isEn
+    ? `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
+        <h2 style="color:#0f172a;margin:0 0 16px;">Hey ${ownerFirst}, you've earned a better rate.</h2>
+        <p style="color:#475569;font-size:15px;line-height:1.7;">
+          You've been with Calltide for <strong>${age} days</strong>. In that time, Maria has handled
+          <strong>${totalCalls} calls</strong> and booked <strong>${totalAppts} appointments</strong>
+          worth an estimated <strong>${fmt$(estRevenue)}</strong>.
+        </p>
+        <p style="color:#475569;font-size:15px;line-height:1.7;margin-top:12px;">
+          Because you're one of our happiest clients, we'd like to offer you our annual plan:
+        </p>
+
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin:16px 0;">
+          <table style="width:100%;border-collapse:collapse;">
+            <tr>
+              <td style="padding:8px 0;color:#64748b;font-size:14px;">Current (Monthly)</td>
+              <td style="padding:8px 0;text-align:right;font-weight:700;color:#0f172a;">$497/mo ($5,964/yr)</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 0;color:#64748b;font-size:14px;">Annual Plan</td>
+              <td style="padding:8px 0;text-align:right;font-weight:700;color:${BRAND_COLOR};">$397/mo ($4,764/yr)</td>
+            </tr>
+            <tr style="border-top:2px solid #e2e8f0;">
+              <td style="padding:12px 0 0;color:#22c55e;font-weight:700;font-size:14px;">You Save</td>
+              <td style="padding:12px 0 0;text-align:right;font-weight:700;color:#22c55e;font-size:18px;">$1,200/year</td>
+            </tr>
+          </table>
+        </div>
+
+        <p style="color:#475569;font-size:14px;line-height:1.7;">
+          Same service, same features, same Maria — just $100 less per month. Switch from your billing page anytime.
+        </p>
+      </div>
+
+      <a href="${BASE_URL}/dashboard/billing" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px;">
+        Switch to Annual &rarr;
+      </a>`
+    : `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
+        <h2 style="color:#0f172a;margin:0 0 16px;">Hola ${ownerFirst}, se ha ganado una mejor tarifa.</h2>
+        <p style="color:#475569;font-size:15px;line-height:1.7;">
+          Lleva <strong>${age} días</strong> con Calltide. En ese tiempo, María ha manejado
+          <strong>${totalCalls} llamadas</strong> y agendado <strong>${totalAppts} citas</strong>
+          con un valor estimado de <strong>${fmt$(estRevenue)}</strong>.
+        </p>
+        <p style="color:#475569;font-size:15px;line-height:1.7;margin-top:12px;">
+          Como uno de nuestros clientes más satisfechos, le ofrecemos nuestro plan anual:
+        </p>
+
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin:16px 0;">
+          <table style="width:100%;border-collapse:collapse;">
+            <tr>
+              <td style="padding:8px 0;color:#64748b;font-size:14px;">Actual (Mensual)</td>
+              <td style="padding:8px 0;text-align:right;font-weight:700;color:#0f172a;">$497/mes ($5,964/año)</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 0;color:#64748b;font-size:14px;">Plan Anual</td>
+              <td style="padding:8px 0;text-align:right;font-weight:700;color:${BRAND_COLOR};">$397/mes ($4,764/año)</td>
+            </tr>
+            <tr style="border-top:2px solid #e2e8f0;">
+              <td style="padding:12px 0 0;color:#22c55e;font-weight:700;font-size:14px;">Usted Ahorra</td>
+              <td style="padding:12px 0 0;text-align:right;font-weight:700;color:#22c55e;font-size:18px;">$1,200/año</td>
+            </tr>
+          </table>
+        </div>
+
+        <p style="color:#475569;font-size:14px;line-height:1.7;">
+          El mismo servicio, las mismas funciones, la misma María — solo $100 menos al mes. Cambie desde su página de facturación.
+        </p>
+      </div>
+
+      <a href="${BASE_URL}/dashboard/billing" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px;">
+        Cambiar a Plan Anual &rarr;
+      </a>`;
+
+  const html = emailWrapper(body, unsubUrl(email));
+
+  try {
+    const resend = getResend();
+    await resend.emails.send({
+      from: "Calltide <success@calltide.app>",
+      to: email,
+      subject,
+      html,
+    });
+  } catch (error) {
+    reportError("Failed to send annual plan nudge", error, { businessId: business.id });
+    return "email_failed";
+  }
+
+  // Record pitch date
+  await db
+    .update(businesses)
+    .set({ annualPitchedAt: now.toISOString(), updatedAt: now.toISOString() })
+    .where(eq(businesses.id, business.id));
+
+  // Log to clientSuccessLog
+  await db.insert(clientSuccessLog).values({
+    businessId: business.id,
+    eventType: "annual_plan_nudge",
+    eventData: { totalCalls, totalAppts, estRevenue, age },
+    emailSentAt: now.toISOString(),
+  });
+
+  await logAgentActivity({
+    agentName: "success",
+    actionType: "annual_nudge_sent",
+    targetId: business.id,
+    targetType: "client",
+    inputSummary: `Annual plan nudge: ${business.name}`,
+    outputSummary: `Age: ${age}d, Calls: ${totalCalls}, Appts: ${totalAppts}, Est rev: ${fmt$(estRevenue)}`,
+  });
+
+  return "annual_nudge_sent";
+}
+
 // ── Main processor for a single business ──
 
 async function processBusinessSuccess(business: Business, now: Date): Promise<Record<string, unknown>> {
@@ -953,7 +1118,13 @@ async function processBusinessSuccess(business: Business, now: Date): Promise<Re
       }
     }
 
-    // f. HEALTH SCORE: Calculate for every client daily
+    // f. ANNUAL PLAN NUDGE: For eligible monthly clients
+    if (canContact && shouldNudgeAnnualPlan(business, now)) {
+      result.annualNudge = await sendAnnualPlanNudge(business, now);
+      await logOutreach(business.id, "success_agent", "email");
+    }
+
+    // g. HEALTH SCORE: Calculate for every client daily
     result.healthScore = await calculateHealthScore(business);
   } catch (error) {
     reportError(`Success agent error for ${business.name}`, error, { businessId: business.id });

@@ -6,6 +6,7 @@ import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 
 interface BillingData {
   plan: string;
+  planType: "monthly" | "annual";
   price: number;
   status: string;
   stripeSubscriptionStatus: string | null;
@@ -25,6 +26,7 @@ function fmt(cents: number): string {
 export default function BillingPage() {
   const [data, setData] = useState<BillingData | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [switchLoading, setSwitchLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,6 +47,7 @@ export default function BillingPage() {
   if (!data) return <LoadingSpinner message="Loading billing..." />;
 
   const isPastDue = ["past_due", "grace_period"].includes(data.status);
+  const isMonthly = data.planType === "monthly";
 
   async function openPortal() {
     setPortalLoading(true);
@@ -58,6 +61,28 @@ export default function BillingPage() {
       toast.error("Could not open billing portal");
     } finally {
       setPortalLoading(false);
+    }
+  }
+
+  async function switchToAnnual() {
+    setSwitchLoading(true);
+    try {
+      const res = await fetch("/api/dashboard/billing/switch-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: "annual" }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to switch plan");
+      toast.success("Switched to annual plan! You're saving $1,200/year.");
+      // Refresh billing data
+      const refreshRes = await fetch("/api/dashboard/billing");
+      const refreshData = await refreshRes.json();
+      setData(refreshData);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to switch plan");
+    } finally {
+      setSwitchLoading(false);
     }
   }
 
@@ -110,6 +135,50 @@ export default function BillingPage() {
         </div>
       )}
 
+      {/* Annual Upgrade Card — only for monthly clients */}
+      {isMonthly && !isPastDue && data.status === "active" && (
+        <div
+          className="rounded-xl p-5"
+          style={{
+            background: "linear-gradient(135deg, rgba(197,154,39,0.08), rgba(197,154,39,0.02))",
+            border: "1px solid rgba(197,154,39,0.3)",
+          }}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-semibold" style={{ color: "var(--db-accent)" }}>
+                  Save $1,200/year with Annual Billing
+                </h3>
+                <span
+                  className="rounded-full px-2 py-0.5 text-[10px] font-bold"
+                  style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80" }}
+                >
+                  SAVE 20%
+                </span>
+              </div>
+              <p className="mt-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
+                Switch from $497/mo to $397/mo billed annually at $4,764/year.
+                Same features, same service — just $100/mo less.
+              </p>
+              <div className="mt-3 flex items-center gap-4 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                <span>$497/mo &rarr; $397/mo</span>
+                <span>|</span>
+                <span>$5,964/yr &rarr; $4,764/yr</span>
+              </div>
+            </div>
+            <button
+              onClick={switchToAnnual}
+              disabled={switchLoading}
+              className="shrink-0 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
+              style={{ background: "var(--db-accent)" }}
+            >
+              {switchLoading ? "Switching..." : "Switch to Annual"}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Plan Card */}
       <div
         className="rounded-xl p-5"
@@ -127,11 +196,24 @@ export default function BillingPage() {
         </h3>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
-              {data.plan}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+                {data.plan}
+              </p>
+              {data.planType === "annual" && (
+                <span
+                  className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase"
+                  style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
+                >
+                  Annual
+                </span>
+              )}
+            </div>
             <p className="text-2xl font-bold mt-1" style={{ color: "var(--db-accent)" }}>
-              {fmt(data.price)}<span className="text-sm font-normal" style={{ color: "var(--db-text-muted)" }}>/month</span>
+              {fmt(data.price)}
+              <span className="text-sm font-normal" style={{ color: "var(--db-text-muted)" }}>
+                /month{data.planType === "annual" ? " (billed annually)" : ""}
+              </span>
             </p>
           </div>
           <StatusPill status={data.status} />

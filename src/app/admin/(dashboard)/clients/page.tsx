@@ -14,6 +14,8 @@ interface Client {
   ownerName: string;
   ownerPhone: string;
   active: boolean;
+  planType: string;
+  mrr: number;
   createdAt: string;
   calls: { totalCalls: number; completedCalls: number; missedCalls: number };
   appointments: { totalAppointments: number; confirmed: number; completed: number };
@@ -91,6 +93,22 @@ export default function ClientsPage() {
       ),
     },
     { key: "type", label: "Type", sortable: true },
+    {
+      key: "planType",
+      label: "Plan",
+      render: (row) => (
+        <span
+          className="rounded-full px-2 py-0.5 text-xs font-medium"
+          style={
+            row.planType === "annual"
+              ? { background: "rgba(74,222,128,0.1)", color: "#4ade80" }
+              : { background: "var(--db-hover)", color: "var(--db-text-muted)" }
+          }
+        >
+          {row.planType === "annual" ? "Annual" : "Monthly"}
+        </span>
+      ),
+    },
     { key: "ownerName", label: "Owner" },
     {
       key: "calls",
