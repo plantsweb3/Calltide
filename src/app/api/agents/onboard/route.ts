@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { businesses, calls, appointments } from "@/db/schema";
 import { eq, sql, and } from "drizzle-orm";
 import { runAgent, SUPPORT_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
+import { canContactToday, logOutreach } from "@/lib/outreach";
 
 /**
  * GET /api/agents/onboard
@@ -44,6 +45,9 @@ export async function GET(req: NextRequest) {
     // Skip clients who have completed all milestones
     if (milestones.allComplete) continue;
 
+    // Outreach conflict prevention — skip if already contacted today
+    if (!(await canContactToday(client.id))) continue;
+
     const daysSinceSignup = Math.floor(
       (Date.now() - new Date(client.createdAt).getTime()) / (1000 * 60 * 60 * 24),
     );
@@ -82,6 +86,8 @@ Based on how many days since signup, current wizard step, and which milestones a
       inputSummary: `Onboard check: ${client.name} (${daysSinceSignup}d)`,
     });
 
+    // Log outreach to prevent same-day duplicate contacts
+    await logOutreach(client.id, "nudge_agent", "email");
     results.push({ businessId: client.id, name: client.name, daysSinceSignup, ...result });
   }
 

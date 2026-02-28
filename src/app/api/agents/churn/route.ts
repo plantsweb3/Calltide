@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { businesses, calls, churnRiskScores, dunningState, callQaScores, npsResponses } from "@/db/schema";
 import { eq, and, sql, desc } from "drizzle-orm";
 import { runAgent, CHURN_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
+import { canContactToday, logOutreach } from "@/lib/outreach";
 
 /**
  * GET /api/agents/churn
@@ -30,6 +31,9 @@ export async function GET(req: NextRequest) {
   const results = [];
 
   for (const client of activeClients) {
+    // Outreach conflict prevention — skip if already contacted today
+    if (!(await canContactToday(client.id))) continue;
+
     // Gather health signals for this client
     const signals = await gatherClientSignals(client.id);
 
@@ -67,6 +71,8 @@ Based on these signals, update the churn risk score and take appropriate action 
       inputSummary: `Churn analysis: ${client.name}`,
     });
 
+    // Log outreach to prevent same-day duplicate contacts
+    await logOutreach(client.id, "churn_agent", "email");
     results.push({ businessId: client.id, name: client.name, ...result });
   }
 

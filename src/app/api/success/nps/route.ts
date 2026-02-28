@@ -12,6 +12,8 @@ import { eq, and, gte, sql } from "drizzle-orm";
 import { getTwilioClient } from "@/lib/twilio/client";
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
+import { createNotification } from "@/lib/notifications";
+import { canSendSms } from "@/lib/compliance/sms";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
@@ -249,13 +251,18 @@ async function handleDetractor(businessId: string, score: number) {
 
     if (!business) return;
 
-    // Send escalation SMS to business owner
-    const twilioClient = getTwilioClient();
-    await twilioClient.messages.create({
-      to: business.ownerPhone,
-      from: business.twilioNumber,
-      body: `[Calltide Alert] ${business.ownerName}, your business ${business.name} received an NPS score of ${score}/10. This indicates a risk of churn. Our team will reach out within 24 hours to address any concerns. Reply HELP for immediate support.`,
-    });
+    // Send escalation SMS to business owner (with TCPA compliance check)
+    let smsSent = false;
+    const smsCheck = await canSendSms(business.ownerPhone);
+    if (smsCheck.allowed) {
+      const twilioClient = getTwilioClient();
+      await twilioClient.messages.create({
+        to: business.ownerPhone,
+        from: business.twilioNumber,
+        body: `[Calltide Alert] ${business.ownerName}, your business ${business.name} received an NPS score of ${score}/10. This indicates a risk of churn. Our team will reach out within 24 hours to address any concerns. Reply HELP for immediate support.`,
+      });
+      smsSent = true;
+    }
 
     // Send escalation email
     if (business.ownerEmail) {
@@ -332,6 +339,15 @@ async function handleDetractor(businessId: string, score: number) {
         ),
       );
 
+    // Create admin notification for detractor alert
+    await createNotification({
+      source: "retention",
+      severity: "warning",
+      title: "NPS detractor alert",
+      message: `${business.name} — NPS score ${score}/10. Owner ${business.ownerName} has been notified.`,
+      actionUrl: "/admin/client-success",
+    });
+
     // Log in client success log
     await db.insert(clientSuccessLog).values({
       businessId,
@@ -340,7 +356,7 @@ async function handleDetractor(businessId: string, score: number) {
         classification: "detractor",
         score,
         escalated: true,
-        smsSent: true,
+        smsSent,
         emailSent: !!business.ownerEmail,
         churnRiskUpdated: 9,
       },

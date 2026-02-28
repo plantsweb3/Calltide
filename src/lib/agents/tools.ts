@@ -14,6 +14,7 @@ import {
 import { eq } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { createNotification } from "@/lib/notifications";
+import { canSendSms } from "@/lib/compliance/sms";
 import type { ToolDefinition, AgentName, ActionType, TargetType } from "./types";
 
 // ── Tool Definitions (Anthropic format) ──
@@ -163,7 +164,19 @@ async function toolSendSms(input: Record<string, unknown>): Promise<string> {
   const body = String(input.body).slice(0, 1600);
   const twilioNumber = env.TWILIO_PHONE_NUMBER;
 
-  // Check prospect SMS opt-out
+  // TCPA compliance check — legally required before every SMS
+  const smsCheck = await canSendSms(to);
+  if (!smsCheck.allowed) {
+    await createNotification({
+      source: "compliance",
+      severity: "info",
+      title: "SMS blocked",
+      message: `SMS to ${to.slice(-4)} blocked — ${smsCheck.reason}`,
+    });
+    return `SMS blocked — ${smsCheck.reason}`;
+  }
+
+  // Check prospect SMS opt-out (additional check for outreach recipients)
   const [prospect] = await db
     .select({ smsOptOut: prospects.smsOptOut })
     .from(prospects)

@@ -5,6 +5,7 @@ import { eq, and, gte, lt } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { logAgentActivity } from "./tools";
 import { reportError } from "@/lib/error-reporting";
+import { createNotification } from "@/lib/notifications";
 
 const CLAUDE_MODEL = env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929";
 
@@ -191,6 +192,15 @@ export async function triggerQaIfNewClient(
         lowScores.length >= 2
           ? `CRITICAL: ${lowScores.length} low QA scores in first week for ${businessRecord.name}`
           : `Low QA score (${qaResult.score}/100) on new client ${businessRecord.name}'s call`;
+
+      // Create notification for admin visibility
+      await createNotification({
+        source: "retention",
+        severity: lowScores.length >= 2 ? "critical" : "warning",
+        title: lowScores.length >= 2 ? "Multiple low QA scores" : "QA score dropped",
+        message: `${businessRecord.name} — score ${qaResult.score}/100. ${qaResult.fixRecommendation || qaResult.summary}`,
+        actionUrl: "/admin/ai",
+      });
 
       // Log escalation
       await logAgentActivity({
