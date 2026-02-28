@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { calls, customers, estimates } from "@/db/schema";
-import { eq, and, gte, sql } from "drizzle-orm";
+import { eq, and, gte, isNull } from "drizzle-orm";
 
 /**
  * Auto-create an estimate when a call outcome is "estimate_requested".
@@ -11,11 +11,11 @@ export async function autoCreateEstimate(callId: string, serviceRequested: strin
   if (!call || !call.callerPhone) return;
   if (call.outcome !== "estimate_requested") return;
 
-  // Find the customer record
+  // Find the customer record (skip soft-deleted)
   const [customer] = await db
     .select()
     .from(customers)
-    .where(and(eq(customers.businessId, call.businessId), eq(customers.phone, call.callerPhone)))
+    .where(and(eq(customers.businessId, call.businessId), eq(customers.phone, call.callerPhone), isNull(customers.deletedAt)))
     .limit(1);
 
   if (!customer) return;

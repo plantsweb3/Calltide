@@ -122,6 +122,18 @@ export async function POST(req: NextRequest) {
 
   try {
     const data = result.data;
+
+    // Verify customer belongs to this business (prevent IDOR)
+    const [customer] = await db
+      .select({ id: customers.id })
+      .from(customers)
+      .where(and(eq(customers.id, data.customerId), eq(customers.businessId, businessId)))
+      .limit(1);
+
+    if (!customer) {
+      return NextResponse.json({ error: "Customer not found" }, { status: 404 });
+    }
+
     const followUpAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
     const [created] = await db.insert(estimates).values({
       businessId,

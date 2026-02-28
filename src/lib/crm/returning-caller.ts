@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { customers, calls, appointments, estimates } from "@/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, isNull } from "drizzle-orm";
 
 /**
  * Query customer by (businessId, phone). Must be fast (<50ms) — uses indexed lookup.
@@ -15,7 +15,7 @@ export async function getReturningCallerContext(
   const [customer] = await db
     .select()
     .from(customers)
-    .where(and(eq(customers.businessId, businessId), eq(customers.phone, callerPhone)))
+    .where(and(eq(customers.businessId, businessId), eq(customers.phone, callerPhone), isNull(customers.deletedAt)))
     .limit(1);
 
   if (!customer || (customer.totalCalls || 0) <= 1) return null;

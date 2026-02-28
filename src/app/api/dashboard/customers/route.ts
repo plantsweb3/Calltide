@@ -42,10 +42,12 @@ export async function GET(req: NextRequest) {
     const conditions = [eq(customers.businessId, businessId), isNull(customers.deletedAt)];
 
     if (search) {
+      // Escape LIKE wildcards in user input
+      const escaped = search.replace(/[%_]/g, "\\$&");
       conditions.push(
         or(
-          like(customers.name, `%${search}%`),
-          like(customers.phone, `%${search}%`),
+          like(customers.name, `%${escaped}%`),
+          like(customers.phone, `%${escaped}%`),
         )!
       );
     }

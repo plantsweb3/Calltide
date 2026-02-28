@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { estimates, customers, businesses } from "@/db/schema";
-import { eq, and, lte, inArray, sql } from "drizzle-orm";
+import { eq, and, lte, lt, inArray, count } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { canSendSms } from "@/lib/compliance/sms";
 import { getEstimateFollowUpMessage } from "@/lib/sms-templates";
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
         and(
           lte(estimates.nextFollowUpAt, nowStr),
           inArray(estimates.status, ["new", "sent", "follow_up"]),
-          sql`${estimates.followUpCount} < 3`,
+          lt(estimates.followUpCount, 3),
         )
       );
 
@@ -82,15 +82,30 @@ export async function GET(req: NextRequest) {
 
     // Expire estimates >30 days old still in new/follow_up
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
-    const expiredResult = await db
-      .update(estimates)
-      .set({ status: "expired", nextFollowUpAt: null, updatedAt: nowStr })
+
+    // Count how many will be expired before updating
+    const [expiredCount] = await db
+      .select({ count: count() })
+      .from(estimates)
       .where(
         and(
           inArray(estimates.status, ["new", "follow_up"]),
           lte(estimates.createdAt, thirtyDaysAgo),
         )
       );
+    expired = expiredCount.count;
+
+    if (expired > 0) {
+      await db
+        .update(estimates)
+        .set({ status: "expired", nextFollowUpAt: null, updatedAt: nowStr })
+        .where(
+          and(
+            inArray(estimates.status, ["new", "follow_up"]),
+            lte(estimates.createdAt, thirtyDaysAgo),
+          )
+        );
+    }
 
     return NextResponse.json({
       success: true,

@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { calls, leads, customers } from "@/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 
 interface CallContext {
   callerName: string | null;
@@ -30,12 +30,17 @@ export async function upsertCustomerFromCall(callId: string, context: CallContex
   const now = new Date().toISOString();
   const phone = call.callerPhone;
 
-  // Check if customer exists
+  // Check if customer exists (include soft-deleted to avoid unique constraint violations)
   const [existing] = await db
     .select()
     .from(customers)
     .where(and(eq(customers.businessId, call.businessId), eq(customers.phone, phone)))
     .limit(1);
+
+  // Reactivate soft-deleted customer if needed
+  if (existing?.deletedAt) {
+    await db.update(customers).set({ deletedAt: null, updatedAt: now }).where(eq(customers.id, existing.id));
+  }
 
   let customerId: string;
 

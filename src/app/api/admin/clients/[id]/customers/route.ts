@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { customers } from "@/db/schema";
-import { eq, desc, count, isNull } from "drizzle-orm";
+import { and, eq, desc, count, isNull } from "drizzle-orm";
 
 export async function GET(
   req: NextRequest,
@@ -9,19 +9,21 @@ export async function GET(
 ) {
   const { id: businessId } = await params;
 
-  const page = Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1"));
-  const limit = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") || "20")), 100);
+  const page = Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1") || 1);
+  const limit = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") || "20") || 20), 100);
   const offset = (page - 1) * limit;
+
+  const where = and(eq(customers.businessId, businessId), isNull(customers.deletedAt));
 
   const [totalResult] = await db
     .select({ count: count() })
     .from(customers)
-    .where(eq(customers.businessId, businessId));
+    .where(where);
 
   const rows = await db
     .select()
     .from(customers)
-    .where(eq(customers.businessId, businessId))
+    .where(where)
     .orderBy(desc(customers.lastCallAt))
     .limit(limit)
     .offset(offset);

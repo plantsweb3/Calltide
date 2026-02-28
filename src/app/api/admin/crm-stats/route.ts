@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { customers, estimates } from "@/db/schema";
-import { count, eq, sql, gte, isNull } from "drizzle-orm";
+import { and, count, eq, sql, gte, isNull } from "drizzle-orm";
 
 export async function GET() {
   const now = new Date();
@@ -15,12 +15,12 @@ export async function GET() {
   const [repeatCustomers] = await db
     .select({ count: count() })
     .from(customers)
-    .where(eq(customers.isRepeat, true));
+    .where(and(eq(customers.isRepeat, true), isNull(customers.deletedAt)));
 
   const [newThisMonth] = await db
     .select({ count: count() })
     .from(customers)
-    .where(gte(customers.firstCallAt, monthStart));
+    .where(and(gte(customers.firstCallAt, monthStart), isNull(customers.deletedAt)));
 
   const [totalEstimates] = await db
     .select({ count: count() })

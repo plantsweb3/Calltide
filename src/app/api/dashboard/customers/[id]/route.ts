@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
 import { customers, calls, appointments, smsMessages, leads } from "@/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, isNull } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { DEMO_BUSINESS_ID, DEMO_CUSTOMERS } from "../../demo-data";
 
@@ -34,7 +34,7 @@ export async function GET(
     const [customer] = await db
       .select()
       .from(customers)
-      .where(and(eq(customers.id, id), eq(customers.businessId, businessId)))
+      .where(and(eq(customers.id, id), eq(customers.businessId, businessId), isNull(customers.deletedAt)))
       .limit(1);
 
     if (!customer) {
