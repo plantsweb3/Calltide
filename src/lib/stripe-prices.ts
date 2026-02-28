@@ -3,6 +3,8 @@
 export const STRIPE_PRICES = {
   monthly: process.env.STRIPE_PRICE_ID ?? "",
   annual: process.env.STRIPE_PRICE_ANNUAL ?? "",
+  additionalLocationMonthly: process.env.STRIPE_PRICE_ADDITIONAL_LOCATION ?? "",
+  additionalLocationAnnual: process.env.STRIPE_PRICE_ADDITIONAL_LOCATION_ANNUAL ?? "",
 } as const;
 
 export type PlanType = "monthly" | "annual";
@@ -33,10 +35,37 @@ export const PLAN_DETAILS: Record<PlanType, {
   },
 };
 
+export const LOCATION_PRICING: Record<PlanType, {
+  monthlyRate: number;
+  billingAmount: number;
+  label: string;
+}> = {
+  monthly: {
+    monthlyRate: 19700, // $197/mo
+    billingAmount: 19700,
+    label: "$197/mo per location",
+  },
+  annual: {
+    monthlyRate: 15700, // $157/mo effective
+    billingAmount: 188400, // $1,884/year
+    label: "$157/mo per location (billed annually)",
+  },
+};
+
 export function getPriceId(plan: PlanType): string {
   return STRIPE_PRICES[plan];
 }
 
+export function getLocationPriceId(plan: PlanType): string {
+  return plan === "annual"
+    ? STRIPE_PRICES.additionalLocationAnnual
+    : STRIPE_PRICES.additionalLocationMonthly;
+}
+
 export function getMrrForPlan(plan: PlanType): number {
   return PLAN_DETAILS[plan].monthlyRate;
+}
+
+export function getLocationMrr(plan: PlanType): number {
+  return LOCATION_PRICING[plan].monthlyRate;
 }

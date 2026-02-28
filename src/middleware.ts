@@ -23,14 +23,14 @@ async function verifyToken(token: string, secret: string): Promise<boolean> {
   return crypto.subtle.verify("HMAC", key, sigBytes, encoder.encode(payload));
 }
 
-function parseClientPayload(cookie: string): string | null {
+function parseClientPayload(cookie: string): { businessId: string; accountId?: string } | null {
   const lastDot = cookie.lastIndexOf(".");
   if (lastDot === -1) return null;
   try {
     const data = JSON.parse(atob(cookie.slice(0, lastDot)));
-    // Reject expired cookies
     if (data.exp && data.exp < Date.now()) return null;
-    return data.businessId ?? null;
+    if (!data.businessId) return null;
+    return { businessId: data.businessId, accountId: data.accountId };
   } catch {
     return null;
   }
@@ -145,13 +145,14 @@ export async function middleware(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const businessId = parseClientPayload(cookie);
-    if (!businessId) {
+    const clientPayload = parseClientPayload(cookie);
+    if (!clientPayload) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const headers = new Headers(req.headers);
-    headers.set("x-business-id", businessId);
+    headers.set("x-business-id", clientPayload.businessId);
+    if (clientPayload.accountId) headers.set("x-account-id", clientPayload.accountId);
     return NextResponse.next({ request: { headers } });
   }
 
@@ -174,13 +175,14 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/dashboard/login", req.url));
     }
 
-    const businessId = parseClientPayload(cookie);
-    if (!businessId) {
+    const clientPayload = parseClientPayload(cookie);
+    if (!clientPayload) {
       return NextResponse.redirect(new URL("/dashboard/login", req.url));
     }
 
     const headers = new Headers(req.headers);
-    headers.set("x-business-id", businessId);
+    headers.set("x-business-id", clientPayload.businessId);
+    if (clientPayload.accountId) headers.set("x-account-id", clientPayload.accountId);
     return NextResponse.next({ request: { headers } });
   }
 

@@ -101,4 +101,5 @@ export interface BusinessContext {
   emergencyPhone?: string;
   personalityNotes?: string;
   hasPricingEnabled?: boolean;
+  accountId?: string;
 }

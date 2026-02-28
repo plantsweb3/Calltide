@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { prospects, demos, calls, businesses, prospectAuditCalls, prospectOutreach, consentRecords, dataDeletionRequests, outboundCalls } from "@/db/schema";
-import { sql, eq, gte } from "drizzle-orm";
+import { accounts, prospects, demos, calls, businesses, prospectAuditCalls, prospectOutreach, consentRecords, dataDeletionRequests, outboundCalls } from "@/db/schema";
+import { sql, eq, gte, gt } from "drizzle-orm";
+import { getLocationMrr, type PlanType } from "@/lib/stripe-prices";
 
 export async function GET() {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
@@ -19,6 +20,8 @@ export async function GET() {
     dsarStats,
     disclosureStats,
     outboundStats,
+    accountStats,
+    multiLocationStats,
   ] = await Promise.all([
     // Prospect counts by status
     db
@@ -102,6 +105,20 @@ export async function GET() {
         scheduled: sql<number>`sum(case when ${outboundCalls.status} in ('scheduled', 'retry') then 1 else 0 end)`,
       })
       .from(outboundCalls),
+
+    // Account metrics
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(accounts),
+
+    // Multi-location accounts (more than 1 location)
+    db
+      .select({
+        count: sql<number>`count(*)`,
+        totalLocations: sql<number>`sum(${accounts.locationCount})`,
+      })
+      .from(accounts)
+      .where(gt(accounts.locationCount, 1)),
   ]);
 
   const prospectsByStatus: Record<string, number> = {};
@@ -110,6 +127,11 @@ export async function GET() {
   }
 
   const totalProspects = Object.values(prospectsByStatus).reduce((a, b) => a + b, 0);
+
+  // Calculate location MRR
+  const multiLocCount = multiLocationStats[0]?.count ?? 0;
+  const totalExtraLocations = (multiLocationStats[0]?.totalLocations ?? 0) - multiLocCount;
+  const locationMrr = totalExtraLocations * getLocationMrr("monthly"); // approximate
 
   return NextResponse.json({
     prospects: {
@@ -134,6 +156,12 @@ export async function GET() {
       completed: outboundStats[0]?.completed ?? 0,
       answered: outboundStats[0]?.answered ?? 0,
       scheduled: outboundStats[0]?.scheduled ?? 0,
+    },
+    accounts: {
+      total: accountStats[0]?.count ?? 0,
+      multiLocation: multiLocCount,
+      totalLocations: businessCount[0]?.count ?? 0,
+      locationMrr: Math.round(locationMrr / 100),
     },
   });
 }

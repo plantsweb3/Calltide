@@ -3,8 +3,8 @@ import { env } from "@/lib/env";
 import { verifyMagicToken, signClientCookie } from "@/lib/client-auth";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 import { db } from "@/db";
-import { usedMagicTokens } from "@/db/schema";
-import { lte } from "drizzle-orm";
+import { businesses, usedMagicTokens } from "@/db/schema";
+import { eq, lte } from "drizzle-orm";
 
 async function hashToken(token: string): Promise<string> {
   const encoded = new TextEncoder().encode(token);
@@ -53,7 +53,14 @@ export async function GET(req: NextRequest) {
     .where(lte(usedMagicTokens.expiresAt, new Date().toISOString()))
     .catch(() => {});
 
-  const cookieValue = await signClientCookie(result.businessId, secret);
+  // Look up accountId for multi-location support
+  const [biz] = await db
+    .select({ accountId: businesses.accountId })
+    .from(businesses)
+    .where(eq(businesses.id, result.businessId))
+    .limit(1);
+
+  const cookieValue = await signClientCookie(result.businessId, secret, biz?.accountId ?? undefined);
 
   const response = NextResponse.redirect(new URL("/dashboard", req.url));
   response.cookies.set("calltide_client", cookieValue, {

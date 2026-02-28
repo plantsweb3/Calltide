@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, paymentEvents } from "@/db/schema";
+import { accounts, businesses, paymentEvents } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
-import { PLAN_DETAILS, type PlanType } from "@/lib/stripe-prices";
+import { PLAN_DETAILS, LOCATION_PRICING, type PlanType } from "@/lib/stripe-prices";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -60,6 +60,26 @@ export async function GET(req: NextRequest) {
       .orderBy(desc(paymentEvents.createdAt))
       .limit(24);
 
+    // Get account-level location info
+    let locationCount = 1;
+    let additionalLocationPrice = 0;
+    let totalMonthly = planInfo.monthlyRate;
+
+    if (business.accountId) {
+      const [account] = await db
+        .select({ locationCount: accounts.locationCount, planType: accounts.planType })
+        .from(accounts)
+        .where(eq(accounts.id, business.accountId))
+        .limit(1);
+
+      if (account) {
+        locationCount = account.locationCount ?? 1;
+        const acctPlan = (account.planType ?? "monthly") as PlanType;
+        additionalLocationPrice = LOCATION_PRICING[acctPlan].monthlyRate;
+        totalMonthly = planInfo.monthlyRate + (locationCount - 1) * additionalLocationPrice;
+      }
+    }
+
     return NextResponse.json({
       plan: planInfo.name,
       planType,
@@ -72,6 +92,9 @@ export async function GET(req: NextRequest) {
       cardExpYear: business.cardExpYear,
       lifetimeRevenue: business.lifetimeRevenue ?? 0,
       hasStripeCustomer: !!business.stripeCustomerId,
+      locationCount,
+      additionalLocationPrice,
+      totalMonthly,
       invoices: payments.map((p) => ({
         id: p.id,
         amount: p.amount,

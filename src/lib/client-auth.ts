@@ -67,9 +67,11 @@ const COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 export async function signClientCookie(
   businessId: string,
   secret: string,
+  accountId?: string,
 ): Promise<string> {
   const payload = btoa(JSON.stringify({
     businessId,
+    accountId,
     iat: Date.now(),
     exp: Date.now() + COOKIE_MAX_AGE_MS,
   }));
@@ -80,7 +82,7 @@ export async function signClientCookie(
 export async function verifyClientCookie(
   cookie: string,
   secret: string,
-): Promise<string | null> {
+): Promise<{ businessId: string; accountId?: string } | null> {
   const lastDot = cookie.lastIndexOf(".");
   if (lastDot === -1) return null;
 
@@ -92,9 +94,9 @@ export async function verifyClientCookie(
 
   try {
     const data = JSON.parse(atob(payload));
-    // Reject expired cookies (tokens without exp are treated as expired)
     if (!data.exp || data.exp < Date.now()) return null;
-    return data.businessId ?? null;
+    if (!data.businessId) return null;
+    return { businessId: data.businessId, accountId: data.accountId };
   } catch {
     return null;
   }

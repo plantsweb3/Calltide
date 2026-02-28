@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { db } from "@/db";
-import { businesses } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { accounts, businesses } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { generateMagicLink } from "@/lib/client-auth";
 import { reportError } from "@/lib/error-reporting";
@@ -31,10 +31,33 @@ export async function POST(req: NextRequest) {
     // to prevent user enumeration attacks
     const genericResponse = { message: "If this email is registered, you'll receive a login link shortly" };
 
-    const [business] = await db
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // First check businesses directly
+    let [business] = await db
       .select({ id: businesses.id, name: businesses.name })
       .from(businesses)
-      .where(eq(businesses.ownerEmail, email.toLowerCase().trim()));
+      .where(eq(businesses.ownerEmail, normalizedEmail));
+
+    // If not found, check accounts table for multi-location owners
+    if (!business) {
+      const [account] = await db
+        .select({ id: accounts.id })
+        .from(accounts)
+        .where(eq(accounts.ownerEmail, normalizedEmail))
+        .limit(1);
+
+      if (account) {
+        // Find the primary location for this account
+        const [primaryBiz] = await db
+          .select({ id: businesses.id, name: businesses.name })
+          .from(businesses)
+          .where(and(eq(businesses.accountId, account.id), eq(businesses.isPrimaryLocation, true)))
+          .limit(1);
+
+        if (primaryBiz) business = primaryBiz;
+      }
+    }
 
     if (!business) {
       return NextResponse.json(genericResponse);

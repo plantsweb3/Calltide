@@ -28,6 +28,7 @@ interface DashboardData {
   calls: { total: number; completed: number };
   compliance?: { totalConsents: number; dsarPending: number; dsarTotal: number; disclosureRate: number };
   outbound?: { total: number; completed: number; answered: number; scheduled: number };
+  accounts?: { total: number; multiLocation: number; totalLocations: number; locationMrr: number };
 }
 
 interface MetricsData {
@@ -206,6 +207,25 @@ export default function AdminDashboardPage() {
           changeType="positive"
         />
       </div>
+
+      {/* Accounts & Locations */}
+      {data.accounts && data.accounts.total > 0 && (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <MetricCard label="Accounts" value={data.accounts.total} />
+          <MetricCard
+            label="Multi-Location"
+            value={data.accounts.multiLocation}
+            changeType={data.accounts.multiLocation > 0 ? "positive" : "neutral"}
+          />
+          <MetricCard label="Total Locations" value={data.accounts.totalLocations} />
+          <MetricCard
+            label="Location MRR"
+            value={data.accounts.locationMrr}
+            prefix="$"
+            changeType="positive"
+          />
+        </div>
+      )}
 
       {/* CRM Health */}
       {crmStats && (

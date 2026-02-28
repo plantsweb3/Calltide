@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
-import { businesses, calls, appointments } from "@/db/schema";
+import { accounts, businesses, calls, appointments } from "@/db/schema";
 import { sql, eq } from "drizzle-orm";
 import { assignReferralCode } from "@/lib/referral";
 
@@ -21,6 +21,9 @@ const createClientSchema = z.object({
 
 export async function GET() {
   const businessRows = await db.select().from(businesses);
+  const accountRows = await db.select().from(accounts);
+
+  const accountMap = new Map(accountRows.map((a) => [a.id, a]));
 
   const results = await Promise.all(
     businessRows.map(async (biz) => {
@@ -42,7 +45,6 @@ export async function GET() {
         .from(appointments)
         .where(eq(appointments.businessId, biz.id));
 
-      // Health: green if >50% calls completed, amber if 25-50%, red if <25%
       const total = callStats?.totalCalls ?? 0;
       const completed = callStats?.completedCalls ?? 0;
       const rate = total > 0 ? completed / total : 1;
@@ -58,6 +60,9 @@ export async function GET() {
         planType: biz.planType ?? "monthly",
         mrr: biz.mrr ?? 49700,
         createdAt: biz.createdAt,
+        accountId: biz.accountId,
+        locationName: biz.locationName,
+        isPrimaryLocation: biz.isPrimaryLocation,
         calls: callStats ?? { totalCalls: 0, completedCalls: 0, missedCalls: 0 },
         appointments: aptStats ?? { totalAppointments: 0, confirmed: 0, completed: 0 },
         health,
@@ -65,7 +70,42 @@ export async function GET() {
     }),
   );
 
-  return NextResponse.json(results);
+  // Group by accountId
+  const accountGroups: Record<string, {
+    account: { id: string; companyName: string | null; ownerName: string; ownerEmail: string; locationCount: number; planType: string };
+    locations: typeof results;
+  }> = {};
+
+  const ungrouped: typeof results = [];
+
+  for (const biz of results) {
+    if (biz.accountId && accountMap.has(biz.accountId)) {
+      if (!accountGroups[biz.accountId]) {
+        const acct = accountMap.get(biz.accountId)!;
+        accountGroups[biz.accountId] = {
+          account: {
+            id: acct.id,
+            companyName: acct.companyName,
+            ownerName: acct.ownerName,
+            ownerEmail: acct.ownerEmail,
+            locationCount: acct.locationCount ?? 1,
+            planType: acct.planType ?? "monthly",
+          },
+          locations: [],
+        };
+      }
+      accountGroups[biz.accountId].locations.push(biz);
+    } else {
+      ungrouped.push(biz);
+    }
+  }
+
+  return NextResponse.json({
+    accounts: Object.values(accountGroups),
+    ungrouped,
+    // Flat list for backward compatibility
+    businesses: results,
+  });
 }
 
 const DEFAULT_HOURS: Record<string, { open: string; close: string }> = {

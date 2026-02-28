@@ -1,6 +1,22 @@
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
 
+export const accounts = sqliteTable("accounts", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  ownerName: text("owner_name").notNull(),
+  ownerEmail: text("owner_email").notNull(),
+  ownerPhone: text("owner_phone").notNull(),
+  companyName: text("company_name"),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  stripeSubscriptionStatus: text("stripe_subscription_status"),
+  planType: text("plan_type").default("monthly"),
+  locationCount: integer("location_count").default(1),
+  maxLocations: integer("max_locations").default(10),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
 export const businesses = sqliteTable("businesses", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
@@ -68,6 +84,11 @@ export const businesses = sqliteTable("businesses", {
   outboundCallingHoursStart: text("outbound_calling_hours_start").default("09:00"),
   outboundCallingHoursEnd: text("outbound_calling_hours_end").default("18:00"),
   outboundMaxCallsPerDay: integer("outbound_max_calls_per_day").default(20),
+  // Multi-location
+  accountId: text("account_id").references(() => accounts.id),
+  locationName: text("location_name"),
+  isPrimaryLocation: integer("is_primary_location", { mode: "boolean" }).default(true),
+  locationOrder: integer("location_order").default(0),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });

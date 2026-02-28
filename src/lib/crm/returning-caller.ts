@@ -1,14 +1,17 @@
 import { db } from "@/db";
 import { customers, calls, appointments, estimates } from "@/db/schema";
 import { eq, and, desc, isNull } from "drizzle-orm";
+import { getCrossLocationCustomerContext } from "./cross-location-lookup";
 
 /**
  * Query customer by (businessId, phone). Must be fast (<50ms) — uses indexed lookup.
  * If the customer is a returning caller, builds a context string for the AI prompt.
+ * Optionally includes cross-location context when accountId is provided.
  */
 export async function getReturningCallerContext(
   businessId: string,
-  callerPhone: string
+  callerPhone: string,
+  accountId?: string,
 ): Promise<string | null> {
   if (!callerPhone) return null;
 
@@ -79,7 +82,15 @@ export async function getReturningCallerContext(
   }
 
   const name = customer.name || "the caller";
-  return `[RETURNING CALLER: This is ${name}, a repeat customer who has called ${customer.totalCalls} times before. Greet them by name and reference their history when relevant.
+  let context = `[RETURNING CALLER: This is ${name}, a repeat customer who has called ${customer.totalCalls} times before. Greet them by name and reference their history when relevant.
 
 ${parts.join("\n")}]`;
+
+  // Append cross-location context if available
+  if (accountId) {
+    const crossContext = await getCrossLocationCustomerContext(accountId, callerPhone);
+    if (crossContext) context += `\n\n${crossContext}`;
+  }
+
+  return context;
 }

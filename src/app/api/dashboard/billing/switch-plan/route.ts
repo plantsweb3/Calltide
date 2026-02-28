@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import Stripe from "stripe";
 import { db } from "@/db";
-import { businesses } from "@/db/schema";
+import { accounts, businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../../demo-data";
 import { reportError } from "@/lib/error-reporting";
-import { getPriceId, getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
+import { getPriceId, getLocationPriceId, getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
 import { logActivity } from "@/lib/activity";
 
 const schema = z.object({
@@ -77,9 +77,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No subscription items found" }, { status: 400 });
     }
 
-    // Update subscription to new price
+    // Build item updates — base plan + any location line items
+    const itemUpdates: Stripe.SubscriptionUpdateParams.Item[] = [
+      { id: currentItemId, price: newPriceId },
+    ];
+
+    // Switch additional location line items to new plan pricing
+    const newLocationPriceId = getLocationPriceId(plan as PlanType);
+    if (newLocationPriceId) {
+      for (const item of subscription.items.data.slice(1)) {
+        if (item.metadata?.type === "additional_location") {
+          itemUpdates.push({ id: item.id, price: newLocationPriceId });
+        }
+      }
+    }
+
     await stripe.subscriptions.update(business.stripeSubscriptionId, {
-      items: [{ id: currentItemId, price: newPriceId }],
+      items: itemUpdates,
       proration_behavior: "create_prorations",
       metadata: { plan },
     });
@@ -95,6 +109,14 @@ export async function POST(req: NextRequest) {
         updatedAt: new Date().toISOString(),
       })
       .where(eq(businesses.id, businessId));
+
+    // Update account plan type
+    if (business.accountId) {
+      await db
+        .update(accounts)
+        .set({ planType: plan, updatedAt: new Date().toISOString() })
+        .where(eq(accounts.id, business.accountId));
+    }
 
     await logActivity({
       type: "plan_switched",

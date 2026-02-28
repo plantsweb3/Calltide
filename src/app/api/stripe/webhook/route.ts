@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { db } from "@/db";
 import {
+  accounts,
   businesses,
   paymentEvents,
   subscriptionEvents,
@@ -125,10 +126,49 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         updatedAt: new Date().toISOString(),
       })
       .where(eq(businesses.id, existingByEmail.id));
+
+    // Create account if business doesn't have one yet
+    const [biz] = await db
+      .select({ accountId: businesses.accountId, ownerName: businesses.ownerName, ownerPhone: businesses.ownerPhone })
+      .from(businesses)
+      .where(eq(businesses.id, existingByEmail.id))
+      .limit(1);
+
+    if (biz && !biz.accountId) {
+      const newAccountId = crypto.randomUUID();
+      await db.insert(accounts).values({
+        id: newAccountId,
+        ownerName: biz.ownerName || "",
+        ownerEmail: email,
+        ownerPhone: biz.ownerPhone || "",
+        stripeCustomerId: customerId,
+        stripeSubscriptionId: subscriptionId || undefined,
+        stripeSubscriptionStatus: "trialing",
+        planType: plan,
+        locationCount: 1,
+      });
+      await db
+        .update(businesses)
+        .set({ accountId: newAccountId, locationName: "Main", isPrimaryLocation: true, locationOrder: 0 })
+        .where(eq(businesses.id, existingByEmail.id));
+    }
     return;
   }
 
-  // Create new business record from checkout
+  // Create account + business record from checkout
+  const accountId = crypto.randomUUID();
+  await db.insert(accounts).values({
+    id: accountId,
+    ownerName: "",
+    ownerEmail: email,
+    ownerPhone: "",
+    stripeCustomerId: customerId,
+    stripeSubscriptionId: subscriptionId || undefined,
+    stripeSubscriptionStatus: "trialing",
+    planType: plan,
+    locationCount: 1,
+  });
+
   await db.insert(businesses).values({
     name: "My Business", // Placeholder — updated during onboarding
     type: "general",
@@ -152,6 +192,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     mrr,
     annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
     active: false, // Activated after onboarding
+    accountId,
+    locationName: "Main",
+    isPrimaryLocation: true,
+    locationOrder: 0,
   });
 
   await logActivity({
@@ -327,6 +371,14 @@ async function handleSubscriptionUpdated(sub: Stripe.Subscription) {
   }
 
   await db.update(businesses).set(updates).where(eq(businesses.id, business.id));
+
+  // Sync status to account
+  if (business.accountId) {
+    await db
+      .update(accounts)
+      .set({ stripeSubscriptionStatus: newStatus, updatedAt: new Date().toISOString() })
+      .where(eq(accounts.id, business.accountId));
+  }
 
   // If recovered from past_due, clear dunning
   if (changeType === "recovered") {

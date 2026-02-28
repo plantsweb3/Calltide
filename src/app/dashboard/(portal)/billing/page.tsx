@@ -16,6 +16,9 @@ interface BillingData {
   cardExpYear: number | null;
   lifetimeRevenue: number;
   hasStripeCustomer: boolean;
+  locationCount?: number;
+  additionalLocationPrice?: number;
+  totalMonthly?: number;
   invoices: { id: string; amount: number; date: string; invoiceId: string | null }[];
 }
 
@@ -219,6 +222,45 @@ export default function BillingPage() {
           <StatusPill status={data.status} />
         </div>
       </div>
+
+      {/* Locations Breakdown */}
+      {(data.locationCount ?? 1) > 1 && (
+        <div
+          className="rounded-xl p-5"
+          style={{
+            background: "var(--db-card)",
+            border: "1px solid var(--db-border)",
+            boxShadow: "var(--db-card-shadow)",
+          }}
+        >
+          <h3
+            className="mb-4 text-sm font-semibold uppercase tracking-wider"
+            style={{ color: "var(--db-text-muted)" }}
+          >
+            Locations
+          </h3>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
+              <span className="text-sm" style={{ color: "var(--db-text)" }}>Base plan (1 location)</span>
+              <span className="text-sm font-medium font-mono" style={{ color: "var(--db-text)" }}>{fmt(data.price)}/mo</span>
+            </div>
+            <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
+              <span className="text-sm" style={{ color: "var(--db-text)" }}>
+                Additional locations ({(data.locationCount ?? 1) - 1} &times; {fmt(data.additionalLocationPrice ?? 0)}/mo)
+              </span>
+              <span className="text-sm font-medium font-mono" style={{ color: "var(--db-text)" }}>
+                {fmt(((data.locationCount ?? 1) - 1) * (data.additionalLocationPrice ?? 0))}/mo
+              </span>
+            </div>
+            <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ borderTop: "1px solid var(--db-border)" }}>
+              <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>Total</span>
+              <span className="text-sm font-bold font-mono" style={{ color: "var(--db-accent)" }}>
+                {fmt(data.totalMonthly ?? data.price)}/mo
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Payment Method */}
       <div
