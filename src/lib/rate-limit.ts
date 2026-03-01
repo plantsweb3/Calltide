@@ -112,4 +112,8 @@ export const RATE_LIMITS = {
   write: { limit: 20, windowSeconds: 60 },
   /** Webhooks: 200 per minute (service-to-service) */
   webhook: { limit: 200, windowSeconds: 60 },
+  /** Demo sessions: 1 per IP per hour */
+  demo: { limit: 1, windowSeconds: 3600 },
+  /** Demo daily cap: 5 per IP per 24 hours */
+  demoDaily: { limit: 5, windowSeconds: 86400 },
 } as const;

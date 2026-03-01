@@ -176,6 +176,13 @@
       "when": 1773500000000,
       "tag": "0024_receptionist_customization",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "6",
+      "when": 1773600000000,
+      "tag": "0025_demo_sessions",
+      "breakpoints": true
     }
   ]
 }

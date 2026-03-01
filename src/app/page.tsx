@@ -5,6 +5,7 @@ import { motion, useMotionValue, useSpring, useTransform, useInView } from "fram
 import dynamic from "next/dynamic";
 
 const VoiceChat = dynamic(() => import("@/components/voice-chat"), { ssr: false });
+const MariaDemoWidget = dynamic(() => import("@/components/marketing/MariaDemoWidget"), { ssr: false });
 
 const PHONE = process.env.NEXT_PUBLIC_PHONE ?? "(830) 521-7133";
 const PHONE_TEL = `tel:${process.env.NEXT_PUBLIC_PHONE_TEL ?? "+18305217133"}`;
@@ -29,6 +30,9 @@ const T = {
       audioDuration: "0:47",
       audioComing: "Demo coming soon",
       trustItems: ["24/7 Coverage", "Bilingual EN/ES", "$16/day", "Cancel Anytime", "No Setup Fee"],
+      demoSection: "Don't take our word for it",
+      demoSub: "Talk to Maria right now. No signup, no email. Just a conversation.",
+      demoDetail: "She'll learn about your business, show you the math on missed calls, then answer a call as YOUR receptionist. Takes 2 minutes.",
     },
     problem: {
       label: "The Problem",
@@ -145,6 +149,9 @@ const T = {
       audioDuration: "0:52",
       audioComing: "Demo próximamente",
       trustItems: ["24/7 Cobertura", "Bilingüe EN/ES", "$16/día", "Cancela Cuando Quieras", "Sin Cuota de Instalación"],
+      demoSection: "No nos creas a nosotros",
+      demoSub: "Habla con Maria ahora mismo. Sin registro, sin correo. Solo una conversación.",
+      demoDetail: "Ella aprenderá sobre tu negocio, te mostrará las matemáticas de llamadas perdidas, y contestará una llamada como TU recepcionista. Toma 2 minutos.",
     },
     problem: {
       label: "El Problema",
@@ -750,29 +757,6 @@ export default function LandingPage() {
                 </button>
               </div>
 
-              {/* Audio Demo Player */}
-              <div className="mt-10 ambient-edge rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(16px)" }}>
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => setShowVoiceChat(true)}
-                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-amber text-white transition hover:bg-amber-dark"
-                    aria-label={t.hero.audioLabel}
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21" /></svg>
-                  </button>
-                  <div className="flex-1 text-left">
-                    <p className="text-sm font-semibold text-white">{t.hero.audioLabel}</p>
-                    <p className="text-xs text-slate-400">{t.hero.audioSub}</p>
-                    <div className="mt-3 flex items-end gap-[3px] h-6">
-                      {[35, 60, 45, 80, 55, 70, 40, 85, 50, 75, 60, 35, 70, 45, 80, 55, 65, 40, 75, 50, 60, 45, 70, 55].map((h, i) => (
-                        <div key={i} className="waveform-bar w-[3px] rounded-full bg-amber/30" style={{ height: `${h}%`, animationDelay: `${i * 0.08}s` }} />
-                      ))}
-                    </div>
-                  </div>
-                  <span className="text-xs tabular-nums text-slate-500">{t.hero.audioDuration}</span>
-                </div>
-              </div>
-
               {/* Trust Bar */}
               <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2">
                 {t.hero.trustItems.map((item, i) => (
@@ -784,15 +768,23 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="md:col-span-2 relative hidden md:block">
+            {/* Demo Widget — replaces phone mockup */}
+            <div className="md:col-span-2 relative">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(212,145,10,0.15),transparent_70%)]" />
-              <div className="phone-mockup-premium phone-mockup-glow relative mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-slate-700 bg-black p-2">
-                <div role="img" aria-label="Calltide client portal" className="overflow-hidden rounded-[2rem]" style={{ aspectRatio: "600/1053" }}>
-                  <DashboardMockup />
-                </div>
+              <div className="relative rounded-2xl p-6" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(16px)" }}>
+                <MariaDemoWidget lang={lang} phoneTel={PHONE_TEL} />
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── DEMO CTA BANNER ── */}
+      <section className="bg-navy px-6 sm:px-8 py-16 sm:py-20 dark-section">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.hero.demoSection}</p>
+          <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{t.hero.demoSub}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">{t.hero.demoDetail}</p>
         </div>
       </section>
 

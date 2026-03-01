@@ -1008,3 +1008,22 @@ export const receptionistCustomResponses = sqliteTable("receptionist_custom_resp
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
+
+export const demoSessions = sqliteTable("demo_sessions", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  ipHash: text("ip_hash").notNull(),
+  startedAt: text("started_at").notNull().default(sql`(datetime('now'))`),
+  endedAt: text("ended_at"),
+  durationSeconds: integer("duration_seconds"),
+  businessType: text("business_type"),
+  businessName: text("business_name"),
+  businessSize: text("business_size"),
+  painPoint: text("pain_point"),
+  reachedROI: integer("reached_roi", { mode: "boolean" }).default(false),
+  reachedRoleplay: integer("reached_roleplay", { mode: "boolean" }).default(false),
+  reachedClose: integer("reached_close", { mode: "boolean" }).default(false),
+  convertedToSignup: integer("converted_to_signup", { mode: "boolean" }).default(false),
+  language: text("language").default("en"),
+  userAgent: text("user_agent"),
+  estimatedMonthlyLoss: integer("estimated_monthly_loss"),
+});
