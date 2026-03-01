@@ -13,7 +13,7 @@ const OPT_IN_KEYWORDS = ["start", "unstop", "subscribe", "opt in", "optin"];
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`twilio-sms:${ip}`, RATE_LIMITS.webhook);
+  const rl = await rateLimit(`twilio-sms:${ip}`, RATE_LIMITS.webhook);
   if (!rl.success) return rateLimitResponse(rl);
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   if (!authToken) {

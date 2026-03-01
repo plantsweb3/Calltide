@@ -14,7 +14,7 @@ const feedbackSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const rl = rateLimit(`nps-feedback:${getClientIp(request)}`, { limit: 10, windowSeconds: 3600 });
+  const rl = await rateLimit(`nps-feedback:${getClientIp(request)}`, { limit: 10, windowSeconds: 3600 });
   if (!rl.success) return rateLimitResponse(rl);
 
   try {

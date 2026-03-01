@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
 
   // Rate limit: 1 demo per IP per hour
-  const hourlyRl = rateLimit(`demo-hourly:${ip}`, RATE_LIMITS.demo);
+  const hourlyRl = await rateLimit(`demo-hourly:${ip}`, RATE_LIMITS.demo);
   if (!hourlyRl.success) {
     return NextResponse.json(
       { error: "You can start one demo per hour. Try again later." },
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Rate limit: 5 demos per IP per 24 hours
-  const dailyRl = rateLimit(`demo-daily:${ip}`, RATE_LIMITS.demoDaily);
+  const dailyRl = await rateLimit(`demo-daily:${ip}`, RATE_LIMITS.demoDaily);
   if (!dailyRl.success) {
     return NextResponse.json(
       { error: "You've reached the daily demo limit. Sign up for a free trial to talk to Maria anytime." },

@@ -16,7 +16,7 @@ function getStripe(): Stripe {
 }
 
 export async function POST(req: NextRequest) {
-  const rl = rateLimit(`signup-checkout:${getClientIp(req)}`, { limit: 5, windowSeconds: 3600 });
+  const rl = await rateLimit(`signup-checkout:${getClientIp(req)}`, { limit: 5, windowSeconds: 3600 });
   if (!rl.success) return rateLimitResponse(rl);
   let body: unknown;
   try {

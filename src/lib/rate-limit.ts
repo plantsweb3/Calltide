@@ -1,37 +1,29 @@
 /**
- * Simple in-memory rate limiter for API routes.
- * Uses a sliding window counter per IP address.
- *
- * For production at scale, swap for Redis/Upstash-based rate limiting.
+ * Persistent rate limiter backed by Turso/SQLite.
+ * Uses an in-memory cache to avoid redundant DB queries within the same process.
+ * On deploy, limits survive via DB persistence.
  */
+
+import { db } from "@/db";
+import { rateLimitEntries } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 interface RateLimitEntry {
   count: number;
   resetAt: number;
 }
 
-const store = new Map<string, RateLimitEntry>();
-const MAX_STORE_SIZE = 10_000;
+// L1 in-memory cache — avoids DB round-trip for repeated checks within same process
+const cache = new Map<string, RateLimitEntry>();
+const MAX_CACHE_SIZE = 10_000;
 
-// Clean up expired entries periodically (every 60s) or when store exceeds cap
 let lastCleanup = Date.now();
-function cleanup() {
+function cleanupCache() {
   const now = Date.now();
-  const overCap = store.size > MAX_STORE_SIZE;
-  if (!overCap && now - lastCleanup < 60_000) return;
+  if (cache.size <= MAX_CACHE_SIZE && now - lastCleanup < 60_000) return;
   lastCleanup = now;
-  for (const [key, entry] of store) {
-    if (entry.resetAt < now) store.delete(key);
-  }
-  // If still over cap after clearing expired, evict oldest entries
-  if (store.size > MAX_STORE_SIZE) {
-    const excess = store.size - MAX_STORE_SIZE;
-    let removed = 0;
-    for (const key of store.keys()) {
-      if (removed >= excess) break;
-      store.delete(key);
-      removed++;
-    }
+  for (const [key, entry] of cache) {
+    if (entry.resetAt < now) cache.delete(key);
   }
 }
 
@@ -42,37 +34,89 @@ interface RateLimitConfig {
   windowSeconds: number;
 }
 
-interface RateLimitResult {
+export interface RateLimitResult {
   success: boolean;
   limit: number;
   remaining: number;
   resetAt: number;
 }
 
-export function rateLimit(
+/**
+ * Rate limit check. Uses in-memory cache with DB write-through.
+ * First request per key: reads from DB (persists across deploys).
+ * Subsequent requests: served from in-memory cache (fast path).
+ */
+export async function rateLimit(
   identifier: string,
   config: RateLimitConfig,
-): RateLimitResult {
-  cleanup();
+): Promise<RateLimitResult> {
+  cleanupCache();
 
   const now = Date.now();
-  const key = identifier;
-  const entry = store.get(key);
+  let entry = cache.get(identifier);
 
-  if (!entry || entry.resetAt < now) {
-    // New window
-    store.set(key, { count: 1, resetAt: now + config.windowSeconds * 1000 });
-    return { success: true, limit: config.limit, remaining: config.limit - 1, resetAt: now + config.windowSeconds * 1000 };
+  // L1 cache hit — fast path
+  if (entry && entry.resetAt >= now) {
+    entry.count++;
+    const remaining = Math.max(0, config.limit - entry.count);
+
+    // Write-through to DB (fire-and-forget for performance)
+    persistEntry(identifier, entry).catch(() => {});
+
+    if (entry.count > config.limit) {
+      return { success: false, limit: config.limit, remaining: 0, resetAt: entry.resetAt };
+    }
+    return { success: true, limit: config.limit, remaining, resetAt: entry.resetAt };
   }
 
-  entry.count++;
-  const remaining = Math.max(0, config.limit - entry.count);
+  // L1 cache miss — check DB for persisted entry (survives deploys)
+  try {
+    const [dbEntry] = await db
+      .select()
+      .from(rateLimitEntries)
+      .where(eq(rateLimitEntries.key, identifier))
+      .limit(1);
 
-  if (entry.count > config.limit) {
-    return { success: false, limit: config.limit, remaining: 0, resetAt: entry.resetAt };
+    if (dbEntry) {
+      const windowEnd = new Date(dbEntry.windowEnd).getTime();
+      if (windowEnd >= now) {
+        // Active window found in DB — restore to cache
+        entry = { count: dbEntry.count + 1, resetAt: windowEnd };
+        cache.set(identifier, entry);
+        persistEntry(identifier, entry).catch(() => {});
+
+        const remaining = Math.max(0, config.limit - entry.count);
+        if (entry.count > config.limit) {
+          return { success: false, limit: config.limit, remaining: 0, resetAt: entry.resetAt };
+        }
+        return { success: true, limit: config.limit, remaining, resetAt: entry.resetAt };
+      }
+    }
+  } catch {
+    // DB unavailable — fall through to create new window in memory only
   }
 
-  return { success: true, limit: config.limit, remaining, resetAt: entry.resetAt };
+  // New window
+  const resetAt = now + config.windowSeconds * 1000;
+  entry = { count: 1, resetAt };
+  cache.set(identifier, entry);
+  persistEntry(identifier, entry).catch(() => {});
+
+  return { success: true, limit: config.limit, remaining: config.limit - 1, resetAt };
+}
+
+/** Persist rate limit entry to DB (upsert). */
+async function persistEntry(key: string, entry: RateLimitEntry): Promise<void> {
+  const windowEnd = new Date(entry.resetAt).toISOString();
+  const windowStart = new Date(entry.resetAt - 60_000).toISOString(); // approximate
+
+  await db
+    .insert(rateLimitEntries)
+    .values({ key, count: entry.count, windowStart, windowEnd })
+    .onConflictDoUpdate({
+      target: rateLimitEntries.key,
+      set: { count: entry.count, windowEnd },
+    });
 }
 
 /**
@@ -112,6 +156,8 @@ export const RATE_LIMITS = {
   write: { limit: 20, windowSeconds: 60 },
   /** Webhooks: 200 per minute (service-to-service) */
   webhook: { limit: 200, windowSeconds: 60 },
+  /** Admin API: 120 per minute */
+  admin: { limit: 120, windowSeconds: 60 },
   /** Demo sessions: 1 per IP per hour */
   demo: { limit: 1, windowSeconds: 3600 },
   /** Demo daily cap: 5 per IP per 24 hours */

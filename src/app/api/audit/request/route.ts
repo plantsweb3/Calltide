@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   // Rate limit
   const ip = getClientIp(req);
-  const rl = rateLimit(`audit-request:${ip}`, AUDIT_RATE_LIMIT);
+  const rl = await rateLimit(`audit-request:${ip}`, AUDIT_RATE_LIMIT);
   if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;

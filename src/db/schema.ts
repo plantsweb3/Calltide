@@ -1009,6 +1009,30 @@ export const receptionistCustomResponses = sqliteTable("receptionist_custom_resp
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
 
+export const rateLimitEntries = sqliteTable("rate_limit_entries", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  key: text("key").notNull().unique(),
+  count: integer("count").notNull().default(1),
+  windowStart: text("window_start").notNull().default(sql`(datetime('now'))`),
+  windowEnd: text("window_end").notNull(),
+});
+
+export const clientFeedback = sqliteTable("client_feedback", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull(),
+  type: text("type").notNull().default("feedback"), // feedback | feature_request | bug_report
+  category: text("category").notNull().default("general"), // general | calls | billing | appointments | sms | other
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  status: text("status").notNull().default("new"), // new | acknowledged | in_progress | resolved | declined
+  adminResponse: text("admin_response"),
+  adminRespondedAt: text("admin_responded_at"),
+  priority: text("priority").default("medium"), // low | medium | high | critical
+  votes: integer("votes").notNull().default(0),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
 export const demoSessions = sqliteTable("demo_sessions", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   ipHash: text("ip_hash").notNull(),

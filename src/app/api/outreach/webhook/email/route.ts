@@ -31,7 +31,7 @@ function verifySvixSignature(
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`email-webhook:${ip}`, RATE_LIMITS.webhook);
+  const rl = await rateLimit(`email-webhook:${ip}`, RATE_LIMITS.webhook);
   if (!rl.success) return rateLimitResponse(rl);
 
   // Read raw body for signature verification

@@ -10,7 +10,7 @@ import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
  * Admin: full list (handled by /api/admin/help/articles instead)
  */
 export async function GET(req: NextRequest) {
-  const rl = rateLimit(`help-articles:${getClientIp(req)}`, { limit: 30, windowSeconds: 60 });
+  const rl = await rateLimit(`help-articles:${getClientIp(req)}`, { limit: 30, windowSeconds: 60 });
   if (!rl.success) return rateLimitResponse(rl);
   const slugsParam = req.nextUrl.searchParams.get("slugs");
 

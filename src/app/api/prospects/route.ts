@@ -19,7 +19,7 @@ const SORT_COLUMN_MAP: Record<string, SQLiteColumn> = {
 
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`prospects:${ip}`, RATE_LIMITS.standard);
+  const rl = await rateLimit(`prospects:${ip}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
   const url = req.nextUrl.searchParams;
   const parsedPage = parseInt(url.get("page") ?? "1", 10);

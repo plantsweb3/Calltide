@@ -23,7 +23,7 @@ function getResend(): Resend {
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`status-subscribe:${ip}`, { limit: 3, windowSeconds: 3600 });
+  const rl = await rateLimit(`status-subscribe:${ip}`, { limit: 3, windowSeconds: 3600 });
   if (!rl.success) return rateLimitResponse(rl);
 
   try {
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
 
 // Handle unsubscribe via GET
 export async function GET(req: NextRequest) {
-  const rl = rateLimit(`status-unsub:${getClientIp(req)}`, { limit: 10, windowSeconds: 60 });
+  const rl = await rateLimit(`status-unsub:${getClientIp(req)}`, { limit: 10, windowSeconds: 60 });
   if (!rl.success) return rateLimitResponse(rl);
 
   const unsubId = req.nextUrl.searchParams.get("unsubscribe");

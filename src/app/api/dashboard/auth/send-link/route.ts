@@ -16,7 +16,7 @@ const sendLinkSchema = z.object({
 export async function POST(req: NextRequest) {
   // Rate limit: 5 attempts per minute per IP
   const ip = getClientIp(req);
-  const rl = rateLimit(`send-link:${ip}`, RATE_LIMITS.auth);
+  const rl = await rateLimit(`send-link:${ip}`, RATE_LIMITS.auth);
   if (!rl.success) return rateLimitResponse(rl);
 
   try {

@@ -6,7 +6,7 @@ import { eq, and, sql } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
-  const rl = rateLimit(`help-feedback:${getClientIp(req)}`, { limit: 20, windowSeconds: 60 });
+  const rl = await rateLimit(`help-feedback:${getClientIp(req)}`, { limit: 20, windowSeconds: 60 });
   if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;

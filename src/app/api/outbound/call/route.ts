@@ -26,7 +26,7 @@ const initiateSchema = z.object({
  */
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`outbound-call:${ip}`, RATE_LIMITS.write);
+  const rl = await rateLimit(`outbound-call:${ip}`, RATE_LIMITS.write);
   if (!rl.success) return rateLimitResponse(rl);
 
   // Auth: require cron secret or admin cookie

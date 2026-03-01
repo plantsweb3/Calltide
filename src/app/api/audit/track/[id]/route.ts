@@ -18,7 +18,7 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const rl = rateLimit(`audit-track:${getClientIp(_req)}`, { limit: 60, windowSeconds: 60 });
+  const rl = await rateLimit(`audit-track:${getClientIp(_req)}`, { limit: 60, windowSeconds: 60 });
   if (!rl.success) return new Response(PIXEL, { headers: { "Content-Type": "image/png" } });
 
   const { id } = await params;

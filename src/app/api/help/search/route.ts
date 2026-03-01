@@ -3,7 +3,7 @@ import { searchArticles } from "@/lib/help/search";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
-  const rl = rateLimit(`help-search:${getClientIp(req)}`, { limit: 30, windowSeconds: 60 });
+  const rl = await rateLimit(`help-search:${getClientIp(req)}`, { limit: 30, windowSeconds: 60 });
   if (!rl.success) return rateLimitResponse(rl);
 
   const q = req.nextUrl.searchParams.get("q");

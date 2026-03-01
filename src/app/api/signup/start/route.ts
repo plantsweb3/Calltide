@@ -10,7 +10,7 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const rl = rateLimit(`signup-start:${getClientIp(req)}`, { limit: 10, windowSeconds: 3600 });
+  const rl = await rateLimit(`signup-start:${getClientIp(req)}`, { limit: 10, windowSeconds: 3600 });
   if (!rl.success) return rateLimitResponse(rl);
   let body: unknown;
   try {

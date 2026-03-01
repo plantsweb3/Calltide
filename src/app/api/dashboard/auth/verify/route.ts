@@ -15,7 +15,7 @@ async function hashToken(token: string): Promise<string> {
 }
 
 export async function GET(req: NextRequest) {
-  const rl = rateLimit(`auth-verify:${getClientIp(req)}`, { limit: 20, windowSeconds: 900 });
+  const rl = await rateLimit(`auth-verify:${getClientIp(req)}`, { limit: 20, windowSeconds: 900 });
   if (!rl.success) {
     return NextResponse.redirect(new URL("/dashboard/login?error=rate_limited", req.url));
   }

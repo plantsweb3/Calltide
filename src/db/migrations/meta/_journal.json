@@ -183,6 +183,13 @@
       "when": 1773600000000,
       "tag": "0025_demo_sessions",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "6",
+      "when": 1773700000000,
+      "tag": "0026_infrastructure_hardening",
+      "breakpoints": true
     }
   ]
 }

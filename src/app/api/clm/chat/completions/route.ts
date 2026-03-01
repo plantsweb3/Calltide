@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`clm:${ip}`, RATE_LIMITS.standard);
+  const rl = await rateLimit(`clm:${ip}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
 
   // Authenticate CLM requests — CLM_API_KEY is required

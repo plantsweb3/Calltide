@@ -14,7 +14,7 @@ const createSchema = z.object({
 
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`dsar-list:${ip}`, RATE_LIMITS.standard);
+  const rl = await rateLimit(`dsar-list:${ip}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
 
   try {
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`dsar-create:${ip}`, RATE_LIMITS.write);
+  const rl = await rateLimit(`dsar-create:${ip}`, RATE_LIMITS.write);
   if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;

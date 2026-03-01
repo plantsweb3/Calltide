@@ -6,7 +6,7 @@ import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`status:${ip}`, { limit: 60, windowSeconds: 60 });
+  const rl = await rateLimit(`status:${ip}`, { limit: 60, windowSeconds: 60 });
   if (!rl.success) return rateLimitResponse(rl);
 
   try {

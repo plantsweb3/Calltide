@@ -16,7 +16,7 @@ const scrapeSchema = z.object({
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`scrape:${ip}`, RATE_LIMITS.write);
+  const rl = await rateLimit(`scrape:${ip}`, RATE_LIMITS.write);
   if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;

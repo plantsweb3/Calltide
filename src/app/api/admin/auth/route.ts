@@ -30,7 +30,7 @@ async function signToken(payload: string): Promise<string> {
 export async function POST(req: NextRequest) {
   // Rate limit: 5 attempts per minute per IP
   const ip = getClientIp(req);
-  const rl = rateLimit(`admin-auth:${ip}`, RATE_LIMITS.auth);
+  const rl = await rateLimit(`admin-auth:${ip}`, RATE_LIMITS.auth);
   if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;

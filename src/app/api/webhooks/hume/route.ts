@@ -14,7 +14,7 @@ import { trackCallStart, trackCallEnd, updateActiveCall } from "@/lib/monitoring
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`hume-webhook:${ip}`, RATE_LIMITS.webhook);
+  const rl = await rateLimit(`hume-webhook:${ip}`, RATE_LIMITS.webhook);
   if (!rl.success) return rateLimitResponse(rl);
 
   const rawBody = await req.text();

@@ -30,7 +30,7 @@ function timingSafeEqual(a: string, b: string): boolean {
 }
 
 export async function GET(request: NextRequest) {
-  const rl = rateLimit(`nps:${getClientIp(request)}`, { limit: 10, windowSeconds: 3600 });
+  const rl = await rateLimit(`nps:${getClientIp(request)}`, { limit: 10, windowSeconds: 3600 });
   if (!rl.success) return rateLimitResponse(rl);
 
   const { searchParams } = request.nextUrl;

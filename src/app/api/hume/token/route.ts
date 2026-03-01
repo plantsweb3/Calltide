@@ -4,7 +4,7 @@ import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/ra
 
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = rateLimit(`hume-token:${ip}`, RATE_LIMITS.auth);
+  const rl = await rateLimit(`hume-token:${ip}`, RATE_LIMITS.auth);
   if (!rl.success) return rateLimitResponse(rl);
 
   // Require either a dashboard session or admin session
