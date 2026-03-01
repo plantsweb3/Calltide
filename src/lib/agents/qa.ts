@@ -52,7 +52,7 @@ RESPOND WITH ONLY A JSON OBJECT — no markdown, no explanation:
 }
 
 Scoring guide:
-- 90-100: Excellent. Maria handled everything perfectly.
+- 90-100: Excellent. The receptionist handled everything perfectly.
 - 80-89: Good. Minor issues that didn't impact the caller's experience.
 - 70-79: Acceptable. Some issues but the caller's need was met.
 - 50-69: Poor. Caller likely had a bad experience. Needs attention.

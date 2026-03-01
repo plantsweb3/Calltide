@@ -34,6 +34,8 @@ const settingsSchema = z.object({
   serviceArea: z.string().max(200).optional().or(z.literal("")),
   additionalInfo: z.string().max(1000).optional().or(z.literal("")),
   personalityNotes: z.string().max(1000).optional().or(z.literal("")),
+  receptionistName: z.string().min(1).max(20).regex(/^[a-zA-ZáéíóúñÁÉÍÓÚÑüÜ\s]+$/).optional(),
+  personalityPreset: z.enum(["professional", "friendly", "warm"]).optional(),
 });
 
 function stripHtml(str: string | undefined | null): string | undefined | null {
@@ -107,6 +109,8 @@ export async function GET(req: NextRequest) {
     timezone: biz.timezone,
     active: biz.active,
     memberSince: biz.createdAt.slice(0, 10),
+    receptionistName: biz.receptionistName || "Maria",
+    personalityPreset: biz.personalityPreset || "friendly",
   });
 }
 
@@ -165,6 +169,8 @@ export async function PUT(req: NextRequest) {
     serviceArea: stripHtml(data.serviceArea) || null,
     additionalInfo: stripHtml(data.additionalInfo) || null,
     personalityNotes: stripHtml(data.personalityNotes) || null,
+    ...(data.receptionistName ? { receptionistName: stripHtml(data.receptionistName)! } : {}),
+    ...(data.personalityPreset ? { personalityPreset: data.personalityPreset } : {}),
     updatedAt: new Date().toISOString(),
   };
 
@@ -208,5 +214,7 @@ export async function PUT(req: NextRequest) {
     timezone: updated.timezone,
     active: updated.active,
     memberSince: updated.createdAt.slice(0, 10),
+    receptionistName: updated.receptionistName || "Maria",
+    personalityPreset: updated.personalityPreset || "friendly",
   });
 }

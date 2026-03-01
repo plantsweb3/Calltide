@@ -25,7 +25,8 @@ export function buildOutboundPrompt(params: OutboundPromptParams): string {
 }
 
 function buildEnglishOutbound(p: OutboundPromptParams): string {
-  const disclosure = `This call may be recorded for quality purposes. You are speaking with María, an AI assistant calling on behalf of ${p.biz.name}.`;
+  const name = p.biz.receptionistName || "Maria";
+  const disclosure = `This call may be recorded for quality purposes. You are speaking with ${name}, an AI assistant calling on behalf of ${p.biz.name}.`;
 
   let purposeBlock: string;
   switch (p.callType) {
@@ -74,10 +75,10 @@ ${p.seasonalService ? `- Service: ${p.seasonalService}` : ""}
       break;
   }
 
-  return `You are María, calling on behalf of ${p.biz.name}. You are warm, professional, and brief. This is an OUTBOUND call — you initiated it.
+  return `You are ${name}, calling on behalf of ${p.biz.name}. You are warm, professional, and brief. This is an OUTBOUND call — you initiated it.
 
 ## Identity
-- Name: María
+- Name: ${name}
 - Role: AI assistant for ${p.biz.name}
 - You are fully bilingual. Match the language the customer uses.
 
@@ -94,7 +95,8 @@ ${purposeBlock}
 }
 
 function buildSpanishOutbound(p: OutboundPromptParams): string {
-  const disclosure = `Esta llamada puede ser grabada para fines de calidad. Está hablando con María, asistente de IA llamando de parte de ${p.biz.name}.`;
+  const name = p.biz.receptionistName || "Maria";
+  const disclosure = `Esta llamada puede ser grabada para fines de calidad. Está hablando con ${name}, asistente de IA llamando de parte de ${p.biz.name}.`;
 
   let purposeBlock: string;
   switch (p.callType) {
@@ -143,10 +145,10 @@ ${p.seasonalService ? `- Servicio: ${p.seasonalService}` : ""}
       break;
   }
 
-  return `Eres María, llamando de parte de ${p.biz.name}. Eres cálida, profesional y breve. Esta es una llamada SALIENTE — tú la iniciaste.
+  return `Eres ${name}, llamando de parte de ${p.biz.name}. Eres cálida, profesional y breve. Esta es una llamada SALIENTE — tú la iniciaste.
 
 ## Identidad
-- Nombre: María
+- Nombre: ${name}
 - Rol: Asistente de IA de ${p.biz.name}
 - Eres completamente bilingüe. Usa el idioma que prefiera el cliente.
 

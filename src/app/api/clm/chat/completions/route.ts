@@ -4,6 +4,7 @@ import { getBusinessByPhone, detectLanguage } from "@/lib/ai/context-builder";
 import { getReturningCallerContext } from "@/lib/crm/returning-caller";
 import { buildSystemPrompt } from "@/lib/ai/system-prompts";
 import { buildPricingContext } from "@/lib/ai/pricing-context";
+import { getCustomResponsesForPrompt } from "@/lib/receptionist/custom-responses";
 import { recordCallDisclosures } from "@/lib/compliance/consent";
 import { detectEmergency } from "@/lib/emergency";
 import { db } from "@/db";
@@ -119,9 +120,19 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Fetch custom responses if available
+    let customResponsesBlock: string | null = null;
+    if (businessContext) {
+      try {
+        customResponsesBlock = await getCustomResponsesForPrompt(businessContext.id);
+      } catch {
+        // Non-critical — continue without custom responses
+      }
+    }
+
     // Build the system prompt with business context
     let systemPrompt = businessContext
-      ? buildSystemPrompt(businessContext, lang, pricingContext)
+      ? buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock)
       : buildDefaultSystemPrompt(lang);
 
     // Record TCPA disclosures on first message (fire-and-forget)

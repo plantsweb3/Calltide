@@ -17,18 +17,18 @@ type Lang = "en" | "es";
 
 const T = {
   en: {
-    nav: { login: "Log In", cta: "Start Free Trial" },
+    nav: { login: "Log In", cta: "Hire Your Receptionist" },
     hero: {
       badge: "AI Receptionist for Home Services",
-      h1a: "Maria answers your calls.",
-      h1b: "In English and Spanish. 24/7.",
-      sub: "The AI receptionist built for home service businesses. Never miss a call, never lose a customer.",
-      cta: "Try Maria Free for 14 Days",
-      audioLabel: "Hear Maria in action",
+      h1a: "Hire a Bilingual Receptionist",
+      h1b: "for $16/day.",
+      sub: "She answers every call. Books appointments. Speaks English and Spanish. Starts in 5 minutes.",
+      cta: "Hire Your Receptionist — 14 Days Free",
+      audioLabel: "Hear her in action",
       audioSub: "\"Hi, I need to schedule a plumber...\"",
       audioDuration: "0:47",
       audioComing: "Demo coming soon",
-      trustItems: ["24/7 Coverage", "Bilingual EN/ES", "$497/mo", "Cancel Anytime", "No Setup Fee"],
+      trustItems: ["24/7 Coverage", "Bilingual EN/ES", "$16/day", "Cancel Anytime", "No Setup Fee"],
     },
     problem: {
       label: "The Problem",
@@ -41,34 +41,34 @@ const T = {
       calcValue: "What's your average job value?",
       calcResult: "You're losing approximately",
       calcPerMonth: "per month in missed calls.",
-      calcCta: "Maria recovers that revenue for $497/mo",
+      calcCta: "Your receptionist recovers that revenue for $16/day",
     },
     howItWorks: {
       label: "How It Works",
       h2: "Three steps. Five minutes.",
       steps: [
-        { title: "Sign Up", desc: "Create your account in 5 minutes. No contracts." },
-        { title: "Forward Your Calls", desc: "Point your business line to Maria. Takes 2 minutes." },
-        { title: "Maria Handles Everything", desc: "She books appointments, takes messages, handles emergencies — in English and Spanish." },
+        { title: "Hire Her", desc: "Name her, pick her personality, and customize her greeting." },
+        { title: "Forward Your Calls", desc: "Point your business line to her number. Takes 2 minutes." },
+        { title: "She Handles Everything", desc: "She books appointments, takes messages, handles emergencies — in English and Spanish." },
       ],
     },
     features: {
       label: "Features",
       h2: "Everything you need. Nothing you don't.",
       cards: [
-        { title: "24/7 Availability", desc: "Maria never sleeps, never takes breaks, never calls in sick." },
+        { title: "24/7 Availability", desc: "Your receptionist never sleeps, never takes breaks, never calls in sick." },
         { title: "Truly Bilingual", desc: "Native English and Spanish. Not a translation — a real conversation." },
-        { title: "Appointment Booking", desc: "Maria checks your calendar and books appointments in real-time." },
+        { title: "Appointment Booking", desc: "She checks your calendar and books appointments in real-time." },
         { title: "SMS Confirmations", desc: "Callers get instant text confirmations with appointment details." },
-        { title: "Emergency Detection", desc: "Gas leak? Burst pipe? Maria detects emergencies and transfers immediately." },
+        { title: "Emergency Detection", desc: "Gas leak? Burst pipe? She detects emergencies and transfers immediately." },
         { title: "Full Dashboard", desc: "See every call, transcript, appointment, and message. Know exactly what's happening." },
       ],
     },
     social: {
       label: "Built for Service Businesses",
       testimonials: [
-        { quote: "Every missed call is a lost job. Maria makes sure that never happens — in English or Spanish.", name: "Why Calltide?", biz: "24/7 AI receptionist for Texas service businesses" },
-        { quote: "Your customers call once. If nobody answers, they call your competitor. Maria answers every time.", name: "Never Miss Again", biz: "Answers, books, follows up — automatically" },
+        { quote: "Every missed call is a lost job. Your receptionist makes sure that never happens — in English or Spanish.", name: "Why Calltide?", biz: "24/7 AI receptionist for Texas service businesses" },
+        { quote: "Your customers call once. If nobody answers, they call your competitor. She answers every time.", name: "Never Miss Again", biz: "Answers, books, follows up — automatically" },
       ],
       stats: [
         { value: 24, suffix: "/7", label: "Always Available" },
@@ -81,6 +81,7 @@ const T = {
       h2: "One price. Everything included.",
       price: "$497",
       period: "/month",
+      perDay: "$16/day",
       sub: "Everything included. No per-minute charges. No hidden fees.",
       features: [
         "Unlimited calls",
@@ -92,26 +93,26 @@ const T = {
         "7 AI agents working for your business",
       ],
       comparison: "vs. $3,000+/month for a bilingual receptionist",
-      cta: "Start Your Free Trial",
-      guarantee: "14-day free trial. Cancel anytime. No questions asked.",
+      cta: "Hire Your Receptionist",
+      guarantee: "Interview her yourself — free for 14 days. Cancel anytime.",
     },
     faq: {
       label: "Frequently Asked Questions",
       h2: "Got questions? We've got answers.",
       items: [
-        { q: "Will my callers know they're talking to AI?", a: "Maria is designed to sound natural and warm — like a receptionist who's worked at your business for years. Most callers don't notice." },
-        { q: "What happens if there's an emergency?", a: "Maria detects emergency keywords like 'gas leak', 'burst pipe', or 'flooding' and immediately transfers the call to your emergency contact number." },
-        { q: "Can I customize what Maria says?", a: "Yes! You set your own greeting, business hours, services, and preferences. Maria uses your information to give callers accurate answers." },
-        { q: "Do I need special equipment?", a: "No. Just forward your existing business phone number to Maria's number. Takes 2 minutes." },
+        { q: "Will my callers know they're talking to AI?", a: "Your receptionist is designed to sound natural and warm — like someone who's worked at your business for years. Most callers don't notice." },
+        { q: "What happens if there's an emergency?", a: "She detects emergency keywords like 'gas leak', 'burst pipe', or 'flooding' and immediately transfers the call to your emergency contact number." },
+        { q: "Can I customize what she says?", a: "Yes! You name her, pick her personality, set your greeting, business hours, services, and train her with custom responses." },
+        { q: "Do I need special equipment?", a: "No. Just forward your existing business phone number to her number. Takes 2 minutes." },
         { q: "What if I want to cancel?", a: "Cancel anytime from your dashboard. No contracts, no cancellation fees." },
         { q: "Is my data secure?", a: "Yes. We use encryption, comply with TCPA and data privacy regulations, and never share your data." },
-        { q: "Can Maria book appointments on my calendar?", a: "Yes. Maria connects to your calendar and books appointments in real-time based on your availability." },
+        { q: "Can she book appointments on my calendar?", a: "Yes. She connects to your calendar and books appointments in real-time based on your availability." },
       ],
     },
     cta: {
-      h2: "Stop losing calls. Start with Maria today.",
+      h2: "Stop losing calls. Hire your receptionist today.",
       placeholder: "Enter your business email",
-      button: "Start Free Trial",
+      button: "Hire Your Receptionist — 14 Days Free",
       sub: "Setup takes less than 10 minutes. No credit card required to start.",
       sending: "Starting...",
       existsError: "Looks like you already have an account.",
@@ -132,18 +133,18 @@ const T = {
     },
   },
   es: {
-    nav: { login: "Iniciar Sesión", cta: "Prueba Gratis" },
+    nav: { login: "Iniciar Sesión", cta: "Contrata Tu Recepcionista" },
     hero: {
       badge: "Recepcionista IA para Servicios del Hogar",
-      h1a: "María contesta tus llamadas.",
-      h1b: "En inglés y español. 24/7.",
-      sub: "La recepcionista IA creada para negocios de servicios del hogar. Nunca pierdas una llamada, nunca pierdas un cliente.",
-      cta: "Prueba María Gratis por 14 Días",
-      audioLabel: "Escucha a María en acción",
+      h1a: "Contrata una Recepcionista Bilingüe",
+      h1b: "por $16/día.",
+      sub: "Ella contesta cada llamada. Agenda citas. Habla inglés y español. Empieza en 5 minutos.",
+      cta: "Contrata Tu Recepcionista — 14 Días Gratis",
+      audioLabel: "Escúchala en acción",
       audioSub: "\"Hola, necesito programar un plomero...\"",
       audioDuration: "0:52",
       audioComing: "Demo próximamente",
-      trustItems: ["24/7 Cobertura", "Bilingüe EN/ES", "$497/mes", "Cancela Cuando Quieras", "Sin Cuota de Instalación"],
+      trustItems: ["24/7 Cobertura", "Bilingüe EN/ES", "$16/día", "Cancela Cuando Quieras", "Sin Cuota de Instalación"],
     },
     problem: {
       label: "El Problema",
@@ -156,34 +157,34 @@ const T = {
       calcValue: "¿Cuál es el valor promedio de un trabajo?",
       calcResult: "Estás perdiendo aproximadamente",
       calcPerMonth: "por mes en llamadas perdidas.",
-      calcCta: "María recupera esos ingresos por $497/mes",
+      calcCta: "Tu recepcionista recupera esos ingresos por $16/día",
     },
     howItWorks: {
       label: "Cómo Funciona",
       h2: "Tres pasos. Cinco minutos.",
       steps: [
-        { title: "Regístrate", desc: "Crea tu cuenta en 5 minutos. Sin contratos." },
-        { title: "Redirige tus Llamadas", desc: "Apunta tu línea de negocio a María. Toma 2 minutos." },
-        { title: "María se Encarga de Todo", desc: "Agenda citas, toma mensajes, maneja emergencias — en inglés y español." },
+        { title: "Contrátala", desc: "Ponle nombre, elige su personalidad y personaliza su saludo." },
+        { title: "Redirige tus Llamadas", desc: "Apunta tu línea de negocio a su número. Toma 2 minutos." },
+        { title: "Ella se Encarga de Todo", desc: "Agenda citas, toma mensajes, maneja emergencias — en inglés y español." },
       ],
     },
     features: {
       label: "Características",
       h2: "Todo lo que necesitas. Nada que no.",
       cards: [
-        { title: "Disponible 24/7", desc: "María nunca duerme, nunca toma descansos, nunca se enferma." },
+        { title: "Disponible 24/7", desc: "Tu recepcionista nunca duerme, nunca toma descansos, nunca se enferma." },
         { title: "Verdaderamente Bilingüe", desc: "Inglés y español nativo. No es una traducción — es una conversación real." },
-        { title: "Agenda de Citas", desc: "María revisa tu calendario y agenda citas en tiempo real." },
+        { title: "Agenda de Citas", desc: "Ella revisa tu calendario y agenda citas en tiempo real." },
         { title: "Confirmaciones por SMS", desc: "Los llamantes reciben confirmación por texto con los detalles de la cita." },
-        { title: "Detección de Emergencias", desc: "¿Fuga de gas? ¿Tubería rota? María detecta emergencias y transfiere inmediatamente." },
+        { title: "Detección de Emergencias", desc: "¿Fuga de gas? ¿Tubería rota? Ella detecta emergencias y transfiere inmediatamente." },
         { title: "Panel Completo", desc: "Ve cada llamada, transcripción, cita y mensaje. Sabe exactamente qué está pasando." },
       ],
     },
     social: {
       label: "Hecho para Negocios de Servicio",
       testimonials: [
-        { quote: "Cada llamada perdida es un trabajo perdido. María se asegura de que eso nunca pase — en inglés o español.", name: "¿Por qué Calltide?", biz: "Recepcionista IA 24/7 para negocios de servicio en Texas" },
-        { quote: "Tus clientes llaman una vez. Si nadie contesta, llaman a tu competencia. María contesta siempre.", name: "Nunca Pierdas Otra Llamada", biz: "Contesta, agenda, da seguimiento — automáticamente" },
+        { quote: "Cada llamada perdida es un trabajo perdido. Tu recepcionista se asegura de que eso nunca pase — en inglés o español.", name: "¿Por qué Calltide?", biz: "Recepcionista IA 24/7 para negocios de servicio en Texas" },
+        { quote: "Tus clientes llaman una vez. Si nadie contesta, llaman a tu competencia. Ella contesta siempre.", name: "Nunca Pierdas Otra Llamada", biz: "Contesta, agenda, da seguimiento — automáticamente" },
       ],
       stats: [
         { value: 24, suffix: "/7", label: "Siempre Disponible" },
@@ -196,6 +197,7 @@ const T = {
       h2: "Un precio. Todo incluido.",
       price: "$497",
       period: "/mes",
+      perDay: "$16/día",
       sub: "Todo incluido. Sin cargos por minuto. Sin costos ocultos.",
       features: [
         "Llamadas ilimitadas",
@@ -207,26 +209,26 @@ const T = {
         "7 agentes de IA trabajando para tu negocio",
       ],
       comparison: "vs. $3,000+/mes por una recepcionista bilingüe",
-      cta: "Comienza tu Prueba Gratis",
-      guarantee: "14 días de prueba gratis. Cancela cuando quieras. Sin preguntas.",
+      cta: "Contrata Tu Recepcionista",
+      guarantee: "Entrevístala tú mismo — gratis por 14 días. Cancela cuando quieras.",
     },
     faq: {
       label: "Preguntas Frecuentes",
       h2: "¿Tienes preguntas? Tenemos respuestas.",
       items: [
-        { q: "¿Sabrán mis clientes que están hablando con IA?", a: "María está diseñada para sonar natural y cálida — como una recepcionista que ha trabajado en tu negocio por años. La mayoría no lo nota." },
-        { q: "¿Qué pasa si hay una emergencia?", a: "María detecta palabras clave de emergencia como 'fuga de gas', 'tubería rota' o 'inundación' y transfiere la llamada inmediatamente a tu número de emergencia." },
-        { q: "¿Puedo personalizar lo que dice María?", a: "¡Sí! Tú configuras tu saludo, horarios, servicios y preferencias. María usa tu información para dar respuestas precisas." },
-        { q: "¿Necesito equipo especial?", a: "No. Solo redirige tu número de negocio existente al número de María. Toma 2 minutos." },
+        { q: "¿Sabrán mis clientes que están hablando con IA?", a: "Tu recepcionista está diseñada para sonar natural y cálida — como alguien que ha trabajado en tu negocio por años. La mayoría no lo nota." },
+        { q: "¿Qué pasa si hay una emergencia?", a: "Ella detecta palabras clave de emergencia como 'fuga de gas', 'tubería rota' o 'inundación' y transfiere la llamada inmediatamente a tu número de emergencia." },
+        { q: "¿Puedo personalizar lo que dice?", a: "¡Sí! Le pones nombre, eliges su personalidad, configuras tu saludo, horarios, servicios y la entrenas con respuestas personalizadas." },
+        { q: "¿Necesito equipo especial?", a: "No. Solo redirige tu número de negocio existente a su número. Toma 2 minutos." },
         { q: "¿Qué pasa si quiero cancelar?", a: "Cancela en cualquier momento desde tu panel. Sin contratos, sin cuotas de cancelación." },
         { q: "¿Mis datos están seguros?", a: "Sí. Usamos encriptación, cumplimos con TCPA y regulaciones de privacidad, y nunca compartimos tus datos." },
-        { q: "¿Puede María agendar citas en mi calendario?", a: "Sí. María se conecta a tu calendario y agenda citas en tiempo real basándose en tu disponibilidad." },
+        { q: "¿Puede agendar citas en mi calendario?", a: "Sí. Ella se conecta a tu calendario y agenda citas en tiempo real basándose en tu disponibilidad." },
       ],
     },
     cta: {
-      h2: "Deja de perder llamadas. Empieza con María hoy.",
+      h2: "Deja de perder llamadas. Contrata a tu recepcionista hoy.",
       placeholder: "Ingresa tu correo de negocio",
-      button: "Comienza tu Prueba Gratis",
+      button: "Contrata Tu Recepcionista — 14 Días Gratis",
       sub: "La configuración toma menos de 10 minutos. No se requiere tarjeta de crédito.",
       sending: "Iniciando...",
       existsError: "Parece que ya tienes una cuenta.",
@@ -978,6 +980,11 @@ export default function LandingPage() {
                   ? (lang === "en" ? "/mo — billed annually at $4,764/yr" : "/mes — facturado anualmente a $4,764/año")
                   : t.pricing.period}
               </p>
+              {planChoice !== "annual" && (
+                <p className="mt-1 text-xs text-[#C8AA6E]">
+                  {t.pricing.perDay}
+                </p>
+              )}
               {planChoice === "annual" && (
                 <p className="mt-2 text-sm font-semibold text-green-400">
                   {lang === "en" ? "Save $1,200/year" : "Ahorra $1,200/año"}

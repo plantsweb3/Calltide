@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 import { TableSkeleton } from "@/components/skeleton";
 
 interface Customer {
@@ -21,6 +22,7 @@ interface Customer {
 }
 
 export default function CustomersPage() {
+  const receptionistName = useReceptionistName();
   const router = useRouter();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -139,7 +141,7 @@ export default function CustomersPage() {
             <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
               {search
                 ? "Try a different search term."
-                : "Your customer list builds automatically as María takes calls."}
+                : `Your customer list builds automatically as ${receptionistName} takes calls.`}
             </p>
           </div>
         ) : (

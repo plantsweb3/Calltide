@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { TableSkeleton } from "@/components/skeleton";
+import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 
 interface Estimate {
   id: string;
@@ -46,6 +47,7 @@ const LOST_REASONS = [
 ];
 
 export default function EstimatesPage() {
+  const receptionistName = useReceptionistName();
   const [estimates, setEstimates] = useState<Estimate[]>([]);
   const [pipeline, setPipeline] = useState<Pipeline>({});
   const [loading, setLoading] = useState(true);
@@ -194,7 +196,7 @@ export default function EstimatesPage() {
               No estimates yet
             </p>
             <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
-              Estimates are auto-created when callers request quotes through María.
+              Estimates are auto-created when callers request quotes through {receptionistName}.
             </p>
           </div>
         ) : (

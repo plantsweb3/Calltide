@@ -75,7 +75,7 @@ ONBOARDING MILESTONES:
 - Has first appointment booked: ${milestones.hasFirstAppointment ? "YES" : "NO"}
 - Total calls received: ${milestones.totalCalls}
 
-Based on how many days since signup, current wizard step, and which milestones are incomplete, decide what nudge to send (email, SMS) or whether to escalate a stalled onboarding. If they skipped the test call (step 7), specifically recommend testing Maria.`;
+Based on how many days since signup, current wizard step, and which milestones are incomplete, decide what nudge to send (email, SMS) or whether to escalate a stalled onboarding. If they skipped the test call (step 7), specifically recommend testing their receptionist.`;
 
     const result = await runAgent({
       agentName: "onboard",

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import DataTable, { type Column } from "@/components/data-table";
 import { TableSkeleton } from "@/components/skeleton";
+import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 
 interface SmsMessage {
   id: string;
@@ -16,6 +17,7 @@ interface SmsMessage {
 }
 
 export default function SmsPage() {
+  const receptionistName = useReceptionistName();
   const [messages, setMessages] = useState<SmsMessage[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -202,7 +204,7 @@ export default function SmsPage() {
             No messages yet
           </p>
           <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
-            SMS confirmations and reminders will show up here as María handles calls.
+            SMS confirmations and reminders will show up here as {receptionistName} handles calls.
           </p>
         </div>
       )}

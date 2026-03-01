@@ -100,6 +100,8 @@ export interface BusinessContext {
   additionalInfo?: string;
   emergencyPhone?: string;
   personalityNotes?: string;
+  receptionistName?: string;
+  personalityPreset?: string;
   hasPricingEnabled?: boolean;
   accountId?: string;
 }

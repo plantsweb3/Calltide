@@ -185,8 +185,8 @@ async function generateFirstWeekReport(business: Business, now: Date): Promise<s
         </table>
 
         ${grade === "A" || grade === "B"
-          ? `<p style="color:#475569;font-size:14px;line-height:1.7;">Maria is performing well on your calls. We'll keep monitoring quality and send you a monthly report going forward.</p>`
-          : `<p style="color:#475569;font-size:14px;line-height:1.7;">We've identified some areas for improvement and are actively tuning Maria's responses. You'll see improvements reflected in your monthly reports.</p>`}
+          ? `<p style="color:#475569;font-size:14px;line-height:1.7;">${business.receptionistName || "Maria"} is performing well on your calls. We'll keep monitoring quality and send you a monthly report going forward.</p>`
+          : `<p style="color:#475569;font-size:14px;line-height:1.7;">We've identified some areas for improvement and are actively tuning ${business.receptionistName || "Maria"}'s responses. You'll see improvements reflected in your monthly reports.</p>`}
       </div>
 
       <a href="${BASE_URL}/dashboard" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px;">
@@ -222,8 +222,8 @@ async function generateFirstWeekReport(business: Business, now: Date): Promise<s
         </table>
 
         ${grade === "A" || grade === "B"
-          ? `<p style="color:#475569;font-size:14px;line-height:1.7;">Maria está funcionando bien en sus llamadas. Seguiremos monitoreando la calidad y le enviaremos un reporte mensual.</p>`
-          : `<p style="color:#475569;font-size:14px;line-height:1.7;">Hemos identificado áreas de mejora y estamos ajustando las respuestas de Maria. Verá mejoras reflejadas en sus reportes mensuales.</p>`}
+          ? `<p style="color:#475569;font-size:14px;line-height:1.7;">${business.receptionistName || "Maria"} está funcionando bien en sus llamadas. Seguiremos monitoreando la calidad y le enviaremos un reporte mensual.</p>`
+          : `<p style="color:#475569;font-size:14px;line-height:1.7;">Hemos identificado áreas de mejora y estamos ajustando las respuestas de ${business.receptionistName || "Maria"}. Verá mejoras reflejadas en sus reportes mensuales.</p>`}
       </div>
 
       <a href="${BASE_URL}/dashboard" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px;">
@@ -963,7 +963,7 @@ async function sendAnnualPlanNudge(business: Business, now: Date): Promise<strin
     ? `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
         <h2 style="color:#0f172a;margin:0 0 16px;">Hey ${ownerFirst}, you've earned a better rate.</h2>
         <p style="color:#475569;font-size:15px;line-height:1.7;">
-          You've been with Calltide for <strong>${age} days</strong>. In that time, Maria has handled
+          You've been with Calltide for <strong>${age} days</strong>. In that time, ${business.receptionistName || "Maria"} has handled
           <strong>${totalCalls} calls</strong> and booked <strong>${totalAppts} appointments</strong>
           worth an estimated <strong>${fmt$(estRevenue)}</strong>.
         </p>
@@ -989,7 +989,7 @@ async function sendAnnualPlanNudge(business: Business, now: Date): Promise<strin
         </div>
 
         <p style="color:#475569;font-size:14px;line-height:1.7;">
-          Same service, same features, same Maria — just $100 less per month. Switch from your billing page anytime.
+          Same service, same features, same ${business.receptionistName || "Maria"} — just $100 less per month. Switch from your billing page anytime.
         </p>
       </div>
 
@@ -999,7 +999,7 @@ async function sendAnnualPlanNudge(business: Business, now: Date): Promise<strin
     : `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
         <h2 style="color:#0f172a;margin:0 0 16px;">Hola ${ownerFirst}, se ha ganado una mejor tarifa.</h2>
         <p style="color:#475569;font-size:15px;line-height:1.7;">
-          Lleva <strong>${age} días</strong> con Calltide. En ese tiempo, María ha manejado
+          Lleva <strong>${age} días</strong> con Calltide. En ese tiempo, ${business.receptionistName || "Maria"} ha manejado
           <strong>${totalCalls} llamadas</strong> y agendado <strong>${totalAppts} citas</strong>
           con un valor estimado de <strong>${fmt$(estRevenue)}</strong>.
         </p>
@@ -1025,7 +1025,7 @@ async function sendAnnualPlanNudge(business: Business, now: Date): Promise<strin
         </div>
 
         <p style="color:#475569;font-size:14px;line-height:1.7;">
-          El mismo servicio, las mismas funciones, la misma María — solo $100 menos al mes. Cambie desde su página de facturación.
+          El mismo servicio, las mismas funciones, la misma ${business.receptionistName || "Maria"} — solo $100 menos al mes. Cambie desde su página de facturación.
         </p>
       </div>
 
@@ -1117,7 +1117,7 @@ async function processHandoff(
               you're getting the most value from your AI receptionist.
             </p>
             <p style="color:#475569;font-size:15px;line-height:1.7;">
-              Would you be open to a quick call? We can review Maria's performance, adjust settings, or help with
+              Would you be open to a quick call? We can review ${business.receptionistName || "Maria"}'s performance, adjust settings, or help with
               any questions you have.
             </p>
             <a href="${BASE_URL}/dashboard" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:12px;">
@@ -1131,7 +1131,7 @@ async function processHandoff(
               de que está obteniendo el máximo valor de su recepcionista de IA.
             </p>
             <p style="color:#475569;font-size:15px;line-height:1.7;">
-              ¿Estaría abierto a una llamada rápida? Podemos revisar el rendimiento de María, ajustar la configuración,
+              ¿Estaría abierto a una llamada rápida? Podemos revisar el rendimiento de ${business.receptionistName || "Maria"}, ajustar la configuración,
               o ayudar con cualquier pregunta que tenga.
             </p>
             <a href="${BASE_URL}/dashboard" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:12px;">

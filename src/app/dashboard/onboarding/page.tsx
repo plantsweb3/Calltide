@@ -36,16 +36,16 @@ interface CallRecord {
 const T = {
   en: {
     // Step 1
-    welcome: "Welcome to Calltide!",
-    welcomeSub: "Let's get Maria ready for your business.",
+    welcome: "Hire Your Receptionist",
+    welcomeSub: "You're about to bring someone onto your team who never misses a call.",
     bullet1: "We'll set up your business profile, services, and hours",
-    bullet2: "You'll customize how Maria greets your callers",
-    bullet3: "Then make a test call to hear Maria in action",
+    bullet2: "You'll name her, pick her personality, and customize her greeting",
+    bullet3: "Then interview her with a test call before she starts",
     timeNote: "This takes about 10 minutes. Your changes save automatically.",
     letsGo: "Let's Go",
     // Step 2
     bizInfoTitle: "Business Information",
-    bizInfoSub: "Tell us about your business so Maria knows how to help your callers.",
+    bizInfoSub: "Tell us about your business so your receptionist knows how to help your callers.",
     bizName: "Business Name",
     bizAddress: "Business Address / Service Area",
     bizAddressHint: "e.g. San Antonio and surrounding areas",
@@ -59,31 +59,40 @@ const T = {
     ownerPhoneHint: "Escalations and notifications go here",
     // Step 3
     servicesTitle: "Services You Offer",
-    servicesSub: "Select the services you offer, or add your own. Maria will mention these to callers.",
+    servicesSub: "Select the services you offer, or add your own. Your receptionist will mention these to callers.",
     addService: "Add",
     addServicePlaceholder: "Add a custom service...",
     // Step 4
     hoursTitle: "Business Hours",
-    hoursSub: "When is your business open? Outside these hours, Maria will take messages and handle emergencies.",
+    hoursSub: "When is your business open? Outside these hours, your receptionist will take messages and handle emergencies.",
     quickSet: "Quick set:",
     monFri85: "Mon–Fri 8–5",
     monSat86: "Mon–Sat 8–6",
     custom: "Custom",
     closed: "Closed",
     // Step 5
-    greetingTitle: "Maria's Greeting",
-    greetingSub: "Customize what Maria says when she answers the phone.",
+    greetingTitle: "Meet Your Receptionist",
+    greetingSub: "Name her, pick her personality, and customize her greeting.",
     greetingEn: "English Greeting",
     greetingEs: "Spanish Greeting",
     preview: "Preview",
-    previewLabel: "When someone calls, Maria will say:",
-    hearMaria: "Hear Maria",
+    previewLabel: "When someone calls, she will say:",
+    hearMaria: "Hear Her",
     comingSoon: "Coming soon",
     charCount: "characters",
+    nameLabel: "Her Name",
+    namePlaceholder: "Maria",
+    personalityLabel: "Her Personality",
+    personalityProfessional: "Professional",
+    personalityProfessionalDesc: "Polished and efficient. Gets straight to business.",
+    personalityFriendly: "Friendly",
+    personalityFriendlyDesc: "Warm and approachable. Makes every caller feel welcome.",
+    personalityWarm: "Warm & Caring",
+    personalityWarmDesc: "Extra empathetic. Perfect for sensitive clients.",
     // Step 6
-    phoneTitle: "Let's connect your phone to Maria",
-    phoneSub: "Forward your business calls to Maria's number. She'll answer them for you.",
-    mariasNumber: "Maria's Number",
+    phoneTitle: "Connect Your Phone",
+    phoneSub: "Forward your business calls to your receptionist's number. She'll answer them for you.",
+    mariasNumber: "Her Number",
     forwardingInstructions: "Call Forwarding Instructions",
     attTab: "AT&T",
     verizonTab: "Verizon",
@@ -98,25 +107,25 @@ const T = {
     needHelp: "I need help",
     noNumberYet: "Your phone number is being set up. We'll notify you when it's ready.",
     // Step 7
-    testTitle: "Let's test Maria!",
-    testSub: "Call your Twilio number now and have a quick conversation with Maria.",
+    testTitle: "Interview Her",
+    testSub: "Call now and see how she handles a real conversation.",
     callNow: "Call now:",
     tapToCall: "Tap to call",
     waiting: "Waiting for your call...",
-    connected: "Call connected! Maria is answering...",
-    callComplete: "Call complete! Here's what happened:",
+    connected: "Call connected! She's answering...",
+    callComplete: "Interview complete! Here's what happened:",
     duration: "Duration",
     seconds: "seconds",
     transcript: "Transcript",
-    handledIt: "Maria handled it perfectly!",
+    handledIt: "She nailed it!",
     skipTest: "Skip for now",
-    skipNudge: "We recommend testing before going live — it takes 2 minutes!",
+    skipNudge: "We recommend interviewing before she goes live — it takes 2 minutes!",
     // Step 8
-    doneTitle: "Maria is ready!",
-    doneSub: "She'll answer your next call.",
+    doneTitle: "Welcome Aboard!",
+    doneSub: "She's ready to answer your next call.",
     goToDashboard: "Go to Dashboard",
     viewCalls: "View Call History",
-    editSettings: "Edit Settings",
+    trainHer: "Train Her",
     redirecting: "Redirecting to your dashboard...",
     // Common
     next: "Next",
@@ -129,15 +138,15 @@ const T = {
     langToggle: "ES",
   },
   es: {
-    welcome: "¡Bienvenido a Calltide!",
-    welcomeSub: "Vamos a preparar a María para tu negocio.",
+    welcome: "Contrata a Tu Recepcionista",
+    welcomeSub: "Estás a punto de sumar a alguien a tu equipo que nunca pierde una llamada.",
     bullet1: "Configuraremos tu perfil de negocio, servicios y horarios",
-    bullet2: "Personalizarás cómo María saluda a tus llamantes",
-    bullet3: "Luego harás una llamada de prueba para escuchar a María en acción",
+    bullet2: "Le pondrás nombre, elegirás su personalidad y personalizarás su saludo",
+    bullet3: "Luego la entrevistarás con una llamada de prueba antes de que empiece",
     timeNote: "Esto toma unos 10 minutos. Tus cambios se guardan automáticamente.",
     letsGo: "¡Empezar!",
     bizInfoTitle: "Información del Negocio",
-    bizInfoSub: "Cuéntanos sobre tu negocio para que María sepa cómo ayudar a tus llamantes.",
+    bizInfoSub: "Cuéntanos sobre tu negocio para que tu recepcionista sepa cómo ayudar a tus llamantes.",
     bizName: "Nombre del Negocio",
     bizAddress: "Dirección / Área de Servicio",
     bizAddressHint: "ej. San Antonio y áreas cercanas",
@@ -150,28 +159,37 @@ const T = {
     ownerPhoneLabel: "Teléfono del Dueño",
     ownerPhoneHint: "Las escalaciones y notificaciones van aquí",
     servicesTitle: "Servicios que Ofreces",
-    servicesSub: "Selecciona los servicios que ofreces o agrega los tuyos. María los mencionará a los llamantes.",
+    servicesSub: "Selecciona los servicios que ofreces o agrega los tuyos. Tu recepcionista los mencionará a los llamantes.",
     addService: "Agregar",
     addServicePlaceholder: "Agregar servicio personalizado...",
     hoursTitle: "Horario de Atención",
-    hoursSub: "¿Cuándo está abierto tu negocio? Fuera de horario, María tomará mensajes y manejará emergencias.",
+    hoursSub: "¿Cuándo está abierto tu negocio? Fuera de horario, tu recepcionista tomará mensajes y manejará emergencias.",
     quickSet: "Configurar rápido:",
     monFri85: "Lun–Vie 8–5",
     monSat86: "Lun–Sáb 8–6",
     custom: "Personalizado",
     closed: "Cerrado",
-    greetingTitle: "El Saludo de María",
-    greetingSub: "Personaliza lo que María dice al contestar el teléfono.",
+    greetingTitle: "Conoce a Tu Recepcionista",
+    greetingSub: "Ponle nombre, elige su personalidad y personaliza su saludo.",
     greetingEn: "Saludo en Inglés",
     greetingEs: "Saludo en Español",
     preview: "Vista Previa",
-    previewLabel: "Cuando alguien llame, María dirá:",
-    hearMaria: "Escuchar a María",
+    previewLabel: "Cuando alguien llame, ella dirá:",
+    hearMaria: "Escúchala",
     comingSoon: "Próximamente",
     charCount: "caracteres",
-    phoneTitle: "Conectemos tu teléfono con María",
-    phoneSub: "Redirige las llamadas de tu negocio al número de María. Ella las contestará por ti.",
-    mariasNumber: "Número de María",
+    nameLabel: "Su Nombre",
+    namePlaceholder: "María",
+    personalityLabel: "Su Personalidad",
+    personalityProfessional: "Profesional",
+    personalityProfessionalDesc: "Pulida y eficiente. Va directo al grano.",
+    personalityFriendly: "Amigable",
+    personalityFriendlyDesc: "Cálida y accesible. Hace que todos se sientan bienvenidos.",
+    personalityWarm: "Cálida y Atenta",
+    personalityWarmDesc: "Extra empática. Perfecta para clientes sensibles.",
+    phoneTitle: "Conecta Tu Teléfono",
+    phoneSub: "Redirige las llamadas de tu negocio al número de tu recepcionista. Ella las contestará por ti.",
+    mariasNumber: "Su Número",
     forwardingInstructions: "Instrucciones de Desvío de Llamadas",
     attTab: "AT&T",
     verizonTab: "Verizon",
@@ -185,24 +203,24 @@ const T = {
     forwardingDone: "Ya configuré el desvío de llamadas",
     needHelp: "Necesito ayuda",
     noNumberYet: "Tu número está siendo configurado. Te notificaremos cuando esté listo.",
-    testTitle: "¡Probemos a María!",
-    testSub: "Llama a tu número Twilio ahora y ten una conversación rápida con María.",
+    testTitle: "Entrevístala",
+    testSub: "Llama ahora y mira cómo maneja una conversación real.",
     callNow: "Llama ahora:",
     tapToCall: "Toca para llamar",
     waiting: "Esperando tu llamada...",
-    connected: "¡Llamada conectada! María está contestando...",
-    callComplete: "¡Llamada completa! Esto es lo que pasó:",
+    connected: "¡Llamada conectada! Ella está contestando...",
+    callComplete: "¡Entrevista completa! Esto es lo que pasó:",
     duration: "Duración",
     seconds: "segundos",
     transcript: "Transcripción",
-    handledIt: "¡María lo manejó perfecto!",
+    handledIt: "¡Lo clavó!",
     skipTest: "Omitir por ahora",
-    skipNudge: "Recomendamos probar antes de activar — ¡toma solo 2 minutos!",
-    doneTitle: "¡María está lista!",
-    doneSub: "Ella contestará tu próxima llamada.",
+    skipNudge: "Recomendamos entrevistarla antes de activar — ¡toma solo 2 minutos!",
+    doneTitle: "¡Bienvenida a Bordo!",
+    doneSub: "Está lista para contestar tu próxima llamada.",
     goToDashboard: "Ir al Panel",
     viewCalls: "Ver Historial de Llamadas",
-    editSettings: "Editar Configuración",
+    trainHer: "Entrénala",
     redirecting: "Redirigiendo a tu panel...",
     next: "Siguiente",
     back: "Atrás",
@@ -314,7 +332,9 @@ export default function OnboardingPage() {
     Sun: { open: "00:00", close: "00:00", closed: true },
   });
 
-  // Step 5 - Greeting
+  // Step 5 - Greeting + Receptionist
+  const [receptionistName, setReceptionistName] = useState("Maria");
+  const [personalityPreset, setPersonalityPreset] = useState("friendly");
   const [greetingEn, setGreetingEn] = useState("");
   const [greetingEsp, setGreetingEsp] = useState("");
   const [showPreview, setShowPreview] = useState(false);
@@ -368,6 +388,8 @@ export default function OnboardingPage() {
           setGreetingEsp(biz.greetingEs || "");
           setDefaultLang(biz.defaultLanguage || "en");
           setTwilioNumber(biz.twilioNumber || "");
+          if (biz.receptionistName) setReceptionistName(biz.receptionistName);
+          if (biz.personalityPreset) setPersonalityPreset(biz.personalityPreset);
         }
       } catch {
         // Continue with defaults
@@ -534,13 +556,15 @@ export default function OnboardingPage() {
         greetingEs: greetingEsp || undefined,
         defaultLanguage: defaultLang,
         serviceArea: bizAddress.trim(),
+        receptionistName,
+        personalityPreset,
       });
       if (!ok) return;
     }
 
     await saveProgress(nextStep);
     setStep(nextStep);
-  }, [step, bizName, bizAddress, industry, ownerName, ownerEmail, ownerPhone, hours, services, greetingEn, greetingEsp, defaultLang, saveSettings, saveProgress, t]);
+  }, [step, bizName, bizAddress, industry, ownerName, ownerEmail, ownerPhone, hours, services, greetingEn, greetingEsp, defaultLang, receptionistName, personalityPreset, saveSettings, saveProgress, t]);
 
   const goBack = useCallback(() => {
     if (step > 1) setStep(step - 1);
@@ -656,8 +680,8 @@ export default function OnboardingPage() {
     return num;
   };
 
-  const defaultGreetingEn = `Thank you for calling ${bizName || "your business"}, this is Maria. How can I help you today?`;
-  const defaultGreetingEs = `Gracias por llamar a ${bizName || "su negocio"}, habla María. ¿En qué puedo ayudarle?`;
+  const defaultGreetingEn = `Thank you for calling ${bizName || "your business"}, this is ${receptionistName}. How can I help you today?`;
+  const defaultGreetingEs = `Gracias por llamar a ${bizName || "su negocio"}, habla ${receptionistName}. ¿En qué puedo ayudarle?`;
 
   if (loading) {
     return (
@@ -1124,13 +1148,68 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* ── STEP 5: Greeting ── */}
+        {/* ── STEP 5: Meet Your Receptionist ── */}
         {step === 5 && (
           <div>
             <h1 className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">{t.greetingTitle}</h1>
             <p className="mb-6 text-sm text-gray-500">{t.greetingSub}</p>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
+              {/* Name Input */}
+              <Field label={t.nameLabel}>
+                <input
+                  type="text"
+                  value={receptionistName}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑüÜ\s]/g, "");
+                    if (val.length <= 20) setReceptionistName(val);
+                  }}
+                  className="input-field"
+                  placeholder={t.namePlaceholder}
+                  maxLength={20}
+                />
+              </Field>
+
+              {/* Personality Cards */}
+              <div>
+                <p className="mb-3 text-sm font-medium text-gray-700">{t.personalityLabel}</p>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  {([
+                    { key: "professional", icon: "briefcase", label: t.personalityProfessional, desc: t.personalityProfessionalDesc, color: "#3B82F6" },
+                    { key: "friendly", icon: "smile", label: t.personalityFriendly, desc: t.personalityFriendlyDesc, color: "#10B981" },
+                    { key: "warm", icon: "heart", label: t.personalityWarm, desc: t.personalityWarmDesc, color: "#F59E0B" },
+                  ] as const).map((p) => (
+                    <button
+                      key={p.key}
+                      onClick={() => setPersonalityPreset(p.key)}
+                      className="flex flex-col items-center rounded-xl border-2 p-4 text-center transition-all hover:shadow-md"
+                      style={{
+                        borderColor: personalityPreset === p.key ? p.color : "#E5E7EB",
+                        background: personalityPreset === p.key ? `${p.color}08` : "#fff",
+                      }}
+                    >
+                      <div
+                        className="mb-2 flex h-10 w-10 items-center justify-center rounded-full"
+                        style={{ background: `${p.color}15` }}
+                      >
+                        {p.icon === "briefcase" && (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={p.color} strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>
+                        )}
+                        {p.icon === "smile" && (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={p.color} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" /></svg>
+                        )}
+                        {p.icon === "heart" && (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={p.color} strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
+                        )}
+                      </div>
+                      <p className="text-sm font-semibold text-gray-900">{p.label}</p>
+                      <p className="mt-1 text-xs text-gray-500">{p.desc}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Greeting Textareas */}
               <Field label={t.greetingEn}>
                 <textarea
                   value={greetingEn}
@@ -1374,7 +1453,7 @@ export default function OnboardingPage() {
                       <div className="space-y-2 max-h-48 overflow-y-auto">
                         {testCall.transcript.map((turn, i) => (
                           <div key={i} className={`text-sm ${turn.speaker === "ai" ? "text-amber-700" : "text-gray-700"}`}>
-                            <span className="font-medium">{turn.speaker === "ai" ? "Maria" : lang === "es" ? "Tú" : "You"}:</span>{" "}
+                            <span className="font-medium">{turn.speaker === "ai" ? receptionistName : lang === "es" ? "Tú" : "You"}:</span>{" "}
                             {turn.text}
                           </div>
                         ))}
@@ -1403,13 +1482,34 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* ── STEP 8: Done! ── */}
+        {/* ── STEP 8: Welcome Aboard! ── */}
         {step === 8 && (
           <div className="flex flex-1 flex-col items-center justify-center text-center">
             {/* Celebration */}
             <div className="mb-6 text-5xl">&#127881;</div>
-            <h1 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">{t.doneTitle}</h1>
-            <p className="mb-8 text-lg text-gray-500">{t.doneSub}</p>
+            <h1 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">
+              {lang === "es" ? `¡Bienvenida a Bordo, ${receptionistName}!` : `Welcome Aboard, ${receptionistName}!`}
+            </h1>
+            <p className="mb-6 text-lg text-gray-500">{t.doneSub}</p>
+
+            {/* Receptionist summary card */}
+            <div className="mb-8 w-full max-w-sm rounded-xl border-2 border-amber-200 bg-amber-50 p-6">
+              <div className="mb-3 flex h-14 w-14 mx-auto items-center justify-center rounded-full bg-amber-100">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="2" strokeLinecap="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <p className="text-lg font-bold text-gray-900">{receptionistName}</p>
+              <p className="text-sm text-gray-500 capitalize">{personalityPreset} {lang === "es" ? "personalidad" : "personality"}</p>
+              {twilioNumber && (
+                <p className="mt-2 text-sm text-gray-600">{formatPhone(twilioNumber)}</p>
+              )}
+              <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
+                <div className="h-2 w-2 rounded-full bg-green-500" />
+                {lang === "es" ? "Lista" : "Ready"}
+              </div>
+            </div>
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
@@ -1420,16 +1520,16 @@ export default function OnboardingPage() {
                 {t.goToDashboard}
               </button>
               <button
+                onClick={() => router.push("/dashboard/settings")}
+                className="rounded-lg border border-amber-300 bg-amber-50 px-6 py-3 text-sm font-semibold text-amber-700 transition-colors hover:bg-amber-100"
+              >
+                {lang === "es" ? `Entrenar a ${receptionistName}` : `Train ${receptionistName}`}
+              </button>
+              <button
                 onClick={() => router.push("/dashboard/calls")}
                 className="rounded-lg border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
               >
                 {t.viewCalls}
-              </button>
-              <button
-                onClick={() => router.push("/dashboard/settings")}
-                className="rounded-lg border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
-              >
-                {t.editSettings}
               </button>
             </div>
 

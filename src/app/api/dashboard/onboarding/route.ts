@@ -79,6 +79,8 @@ export async function GET(req: NextRequest) {
       defaultLanguage: biz.defaultLanguage,
       serviceArea: biz.serviceArea,
       emergencyPhone: biz.emergencyPhone,
+      receptionistName: biz.receptionistName || "Maria",
+      personalityPreset: biz.personalityPreset || "friendly",
     },
   });
 }

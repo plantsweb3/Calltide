@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import DataTable, { type Column } from "@/components/data-table";
 import CallTranscript from "@/app/dashboard/_components/call-transcript";
+import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 import { TableSkeleton } from "@/components/skeleton";
 
 interface TranscriptLine {
@@ -67,6 +68,7 @@ const callTypeLabels: Record<string, string> = {
 };
 
 export default function CallsPage() {
+  const receptionistName = useReceptionistName();
   const [tab, setTab] = useState<"inbound" | "outbound">("inbound");
   const [calls, setCalls] = useState<Call[]>([]);
   const [page, setPage] = useState(1);
@@ -298,7 +300,7 @@ export default function CallsPage() {
             >
               <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>No outbound calls yet</p>
               <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
-                Enable outbound calling in Settings to let María make appointment reminders, estimate follow-ups, and seasonal reminder calls.
+                Enable outbound calling in Settings to let {receptionistName} make appointment reminders, estimate follow-ups, and seasonal reminder calls.
               </p>
             </div>
           ) : (

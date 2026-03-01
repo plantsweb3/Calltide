@@ -29,7 +29,25 @@ interface SettingsData {
   timezone: string;
   active: boolean;
   memberSince: string;
+  receptionistName: string;
+  personalityPreset: string;
 }
+
+interface CustomResponse {
+  id: string;
+  businessId: string;
+  category: string;
+  triggerText: string;
+  responseText: string | null;
+  sortOrder: number;
+  active: boolean;
+}
+
+const PERSONALITY_OPTIONS = [
+  { key: "professional", label: "Professional", desc: "Polished and efficient. Gets straight to business.", color: "#3B82F6", icon: "briefcase" },
+  { key: "friendly", label: "Friendly", desc: "Warm and approachable. Makes every caller feel welcome.", color: "#10B981", icon: "smile" },
+  { key: "warm", label: "Warm & Caring", desc: "Extra empathetic. Perfect for sensitive clients.", color: "#F59E0B", icon: "heart" },
+] as const;
 
 interface PricingEntry {
   id: string;
@@ -119,6 +137,11 @@ export default function SettingsPage() {
   const [newService, setNewService] = useState("");
   const [showGreetingPreview, setShowGreetingPreview] = useState(false);
 
+  // Custom responses state
+  const [customResponses, setCustomResponses] = useState<Record<string, CustomResponse[]>>({ faq: [], off_limits: [], phrase: [], emergency_keyword: [] });
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [newResponse, setNewResponse] = useState<{ category: string; triggerText: string; responseText: string } | null>(null);
+
   // Pricing state
   const [pricingEnabled, setPricingEnabled] = useState(false);
   const [pricing, setPricing] = useState<PricingEntry[]>([]);
@@ -147,6 +170,12 @@ export default function SettingsPage() {
       })
       .catch(() => setPricing([]))
       .finally(() => setPricingLoading(false));
+
+    // Fetch custom responses
+    fetch("/api/receptionist/responses")
+      .then((r) => r.ok ? r.json() : { responses: {} })
+      .then((d) => setCustomResponses(d.responses || {}))
+      .catch(() => {});
   }, []);
 
   const isDirty = data ? JSON.stringify(data) !== initialData : false;
@@ -211,6 +240,8 @@ export default function SettingsPage() {
         serviceArea: data.serviceArea || "",
         additionalInfo: data.additionalInfo || "",
         personalityNotes: data.personalityNotes || "",
+        receptionistName: data.receptionistName || "Maria",
+        personalityPreset: data.personalityPreset || "friendly",
       };
 
       const res = await fetch("/api/dashboard/settings", {
@@ -286,7 +317,8 @@ export default function SettingsPage() {
 
   if (!data) return <LoadingSpinner message="Loading settings..." />;
 
-  const defaultGreeting = `Thank you for calling ${data.name}, this is María. How can I help you?`;
+  const rName = data.receptionistName || "Maria";
+  const defaultGreeting = `Thank you for calling ${data.name}, this is ${rName}. How can I help you?`;
 
   return (
     <div className="space-y-6 pb-8">
@@ -457,10 +489,46 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* ── Section: María's Personality ── */}
-      <Card title="María's Personality">
+      {/* ── Section: Your Receptionist ── */}
+      <Card title="Your Receptionist">
+        <div className="space-y-4">
+          <InputField
+            label="Name"
+            value={data.receptionistName || "Maria"}
+            onChange={(v) => {
+              const val = v.replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑüÜ\s]/g, "");
+              if (val.length <= 20) setField("receptionistName", val);
+            }}
+            placeholder="Maria"
+          />
+          <div>
+            <label className="block text-xs font-medium mb-2" style={{ color: "var(--db-text-muted)" }}>
+              Personality
+            </label>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              {PERSONALITY_OPTIONS.map((p) => (
+                <button
+                  key={p.key}
+                  onClick={() => setField("personalityPreset", p.key)}
+                  className="flex flex-col items-center rounded-lg p-3 text-center transition-all"
+                  style={{
+                    border: `2px solid ${data.personalityPreset === p.key ? p.color : "var(--db-border)"}`,
+                    background: data.personalityPreset === p.key ? `${p.color}08` : "var(--db-bg)",
+                  }}
+                >
+                  <p className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>{p.label}</p>
+                  <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>{p.desc}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* ── Section: Special Instructions ── */}
+      <Card title={`${rName}'s Special Instructions`}>
         <p className="text-sm mb-3" style={{ color: "var(--db-text-muted)" }}>
-          Customize how María sounds on calls. These instructions shape her tone and behavior.
+          Customize how {rName} sounds on calls. These instructions shape her tone and behavior.
         </p>
         <textarea
           value={data.personalityNotes || ""}
@@ -907,8 +975,8 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* ── Section: María's Greeting ── */}
-      <Card title="María's Greeting">
+      {/* ── Section: Greeting ── */}
+      <Card title={`${rName}'s Greeting`}>
         <div className="space-y-4">
           <div>
             <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
@@ -947,7 +1015,7 @@ export default function SettingsPage() {
               onBlur={() => handleBlur("greetingEs", data.greetingEs || "")}
               rows={3}
               maxLength={500}
-              placeholder={`Gracias por llamar a ${data.name}, habla María. ¿En qué le puedo ayudar?`}
+              placeholder={`Gracias por llamar a ${data.name}, habla ${rName}. ¿En qué le puedo ayudar?`}
               className="w-full rounded-lg px-3 py-2 text-sm resize-none"
               style={{
                 background: "var(--db-bg)",
@@ -980,7 +1048,7 @@ export default function SettingsPage() {
               }}
             >
               <p className="text-xs font-medium mb-2" style={{ color: "var(--db-text-muted)" }}>
-                When someone calls, María will say:
+                When someone calls, {rName} will say:
               </p>
               <p className="text-sm italic" style={{ color: "var(--db-text)" }}>
                 &ldquo;{data.greeting || defaultGreeting}&rdquo;
@@ -991,7 +1059,7 @@ export default function SettingsPage() {
                     For Spanish callers:
                   </p>
                   <p className="text-sm italic" style={{ color: "var(--db-text)" }}>
-                    &ldquo;{data.greetingEs || `Gracias por llamar a ${data.name}, habla María. ¿En qué le puedo ayudar?`}&rdquo;
+                    &ldquo;{data.greetingEs || `Gracias por llamar a ${data.name}, habla ${rName}. ¿En qué le puedo ayudar?`}&rdquo;
                   </p>
                 </>
               )}
@@ -1027,7 +1095,7 @@ export default function SettingsPage() {
           ))}
         </div>
         <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
-          María is bilingual and will switch languages automatically. This sets the default.
+          {rName} is bilingual and will switch languages automatically. This sets the default.
         </p>
       </Card>
 
@@ -1042,9 +1110,142 @@ export default function SettingsPage() {
           placeholder="+15125559999"
         />
         <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
-          If set, María will SMS this number in addition to the owner during emergency transfers.
+          If set, {rName} will SMS this number in addition to the owner during emergency transfers.
           Leave blank to only notify the owner phone.
         </p>
+      </Card>
+
+      {/* ── Section: Train Your Receptionist ── */}
+      <Card title={`Train ${rName}`}>
+        <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
+          Teach {rName} custom responses for common questions, off-limits topics, preferred phrases, and additional emergency triggers.
+        </p>
+        <div className="space-y-2">
+          {([
+            { key: "faq", label: "FAQ Responses", desc: "Custom answers to common questions", max: 20, hasResponse: true },
+            { key: "off_limits", label: "Off-Limits Topics", desc: "Topics to avoid, with optional redirect", max: 10, hasResponse: true },
+            { key: "phrase", label: "Preferred Phrases", desc: "Phrases to naturally weave in", max: 10, hasResponse: false },
+            { key: "emergency_keyword", label: "Emergency Keywords", desc: "Additional emergency triggers", max: 10, hasResponse: false },
+          ] as const).map((cat) => {
+            const items = customResponses[cat.key] || [];
+            const isExpanded = expandedCategory === cat.key;
+            return (
+              <div key={cat.key} className="rounded-lg" style={{ border: "1px solid var(--db-border)" }}>
+                <button
+                  onClick={() => setExpandedCategory(isExpanded ? null : cat.key)}
+                  className="flex w-full items-center justify-between px-4 py-3 text-left"
+                >
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{cat.label}</p>
+                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{cat.desc} ({items.length}/{cat.max})</p>
+                  </div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--db-text-muted)", transform: isExpanded ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+                {isExpanded && (
+                  <div className="border-t px-4 py-3 space-y-2" style={{ borderColor: "var(--db-border)" }}>
+                    {items.map((item) => (
+                      <div key={item.id} className="flex items-start gap-2 rounded-lg p-2" style={{ background: "var(--db-bg)" }}>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate" style={{ color: "var(--db-text)" }}>{item.triggerText}</p>
+                          {item.responseText && (
+                            <p className="text-xs truncate" style={{ color: "var(--db-text-muted)" }}>{item.responseText}</p>
+                          )}
+                        </div>
+                        <button
+                          onClick={async () => {
+                            await fetch(`/api/receptionist/responses/${item.id}`, { method: "DELETE" });
+                            setCustomResponses((prev) => ({
+                              ...prev,
+                              [cat.key]: prev[cat.key].filter((r) => r.id !== item.id),
+                            }));
+                            toast.success("Removed");
+                          }}
+                          className="shrink-0 p-1 rounded hover:bg-red-50"
+                          title="Delete"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                        </button>
+                      </div>
+                    ))}
+                    {newResponse?.category === cat.key ? (
+                      <div className="space-y-2 rounded-lg p-3" style={{ background: "var(--db-bg)", border: "1px dashed var(--db-border)" }}>
+                        <input
+                          type="text"
+                          value={newResponse.triggerText}
+                          onChange={(e) => setNewResponse({ ...newResponse, triggerText: e.target.value })}
+                          placeholder={cat.key === "faq" ? "Question or topic..." : cat.key === "off_limits" ? "Topic to avoid..." : cat.key === "phrase" ? "Phrase to use..." : "Emergency keyword..."}
+                          className="w-full rounded-lg px-3 py-1.5 text-sm"
+                          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                          maxLength={200}
+                        />
+                        {cat.hasResponse && (
+                          <input
+                            type="text"
+                            value={newResponse.responseText}
+                            onChange={(e) => setNewResponse({ ...newResponse, responseText: e.target.value })}
+                            placeholder={cat.key === "faq" ? "Answer..." : "Redirect message (optional)..."}
+                            className="w-full rounded-lg px-3 py-1.5 text-sm"
+                            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                            maxLength={500}
+                          />
+                        )}
+                        <div className="flex gap-2">
+                          <button
+                            onClick={async () => {
+                              if (!newResponse.triggerText.trim()) return;
+                              const res = await fetch("/api/receptionist/responses", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                  category: cat.key,
+                                  triggerText: newResponse.triggerText.trim(),
+                                  responseText: newResponse.responseText.trim() || undefined,
+                                }),
+                              });
+                              if (res.ok) {
+                                const created = await res.json();
+                                setCustomResponses((prev) => ({
+                                  ...prev,
+                                  [cat.key]: [...(prev[cat.key] || []), created],
+                                }));
+                                setNewResponse(null);
+                                toast.success("Added");
+                              } else {
+                                const err = await res.json().catch(() => null);
+                                toast.error(err?.error || "Failed to add");
+                              }
+                            }}
+                            className="rounded-lg px-3 py-1.5 text-xs font-medium text-white"
+                            style={{ background: "var(--db-accent)" }}
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setNewResponse(null)}
+                            className="rounded-lg px-3 py-1.5 text-xs font-medium"
+                            style={{ color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : items.length < cat.max && (
+                      <button
+                        onClick={() => setNewResponse({ category: cat.key, triggerText: "", responseText: "" })}
+                        className="w-full rounded-lg py-2 text-xs font-medium transition-colors"
+                        style={{ color: "var(--db-text-secondary)", border: "1px dashed var(--db-border)" }}
+                      >
+                        + Add {cat.label.replace(/s$/, "")}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </Card>
 
       {/* ── Section: Outbound Calling ── */}

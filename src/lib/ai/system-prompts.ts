@@ -1,4 +1,5 @@
 import type { BusinessContext, Language } from "@/types";
+import { PERSONALITY_PRESETS, type PersonalityPreset } from "@/lib/receptionist/personalities";
 
 function formatHours(hours: Record<string, { open: string; close: string }>): string {
   return Object.entries(hours)
@@ -28,26 +29,31 @@ function formatHoursEs(hours: Record<string, { open: string; close: string }>): 
     .join("\n");
 }
 
-export function buildSystemPrompt(biz: BusinessContext, lang: Language, pricingContext?: string | null): string {
-  if (lang === "es") return buildSpanishPrompt(biz, pricingContext);
-  return buildEnglishPrompt(biz, pricingContext);
+export function buildSystemPrompt(biz: BusinessContext, lang: Language, pricingContext?: string | null, customResponsesBlock?: string | null): string {
+  if (lang === "es") return buildSpanishPrompt(biz, pricingContext, customResponsesBlock);
+  return buildEnglishPrompt(biz, pricingContext, customResponsesBlock);
 }
 
-function buildEnglishPrompt(biz: BusinessContext, pricingContext?: string | null): string {
-  const baseGreeting = biz.greeting || `Thank you for calling ${biz.name}, this is María. How can I help you today?`;
-  const greeting = `This call may be recorded for quality purposes. You are speaking with María, an AI assistant for ${biz.name}. ${baseGreeting}`;
+function buildEnglishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null): string {
+  const name = biz.receptionistName || "Maria";
+  const presetKey = (biz.personalityPreset || "friendly") as PersonalityPreset;
+  const preset = PERSONALITY_PRESETS[presetKey] || PERSONALITY_PRESETS.friendly;
+
+  const baseGreeting = biz.greeting || `Thank you for calling ${biz.name}, this is ${name}. How can I help you today?`;
+  const greeting = `This call may be recorded for quality purposes. You are speaking with ${name}, an AI assistant for ${biz.name}. ${baseGreeting}`;
   const serviceAreaLine = biz.serviceArea ? `- Service Area: ${biz.serviceArea}` : "";
   const additionalInfoBlock = biz.additionalInfo ? `\n## Additional Business Context\n${biz.additionalInfo}` : "";
   const personalityBlock = biz.personalityNotes ? `\n## Special Instructions from the Owner\n${biz.personalityNotes}` : "";
+  const customBlock = customResponsesBlock ? `\n\n${customResponsesBlock}` : "";
 
-  return `You are María, the AI receptionist for ${biz.name}. You are warm, professional, and efficient. Your voice is calm and friendly — like a real receptionist who genuinely cares about helping callers.
+  return `You are ${name}, the AI receptionist for ${biz.name}. ${preset.systemPromptBlock.en}
 
 ## Identity
-- Name: María
+- Name: ${name}
 - Role: AI receptionist for ${biz.name} (a ${biz.type} business)
 - Owner: ${biz.ownerName}
 - You are fully bilingual (English and Spanish). Respond in whichever language the caller uses.
-- If asked directly whether you are human, say: "I'm María, ${biz.name}'s AI receptionist. I can help you schedule appointments, take messages, or connect you with ${biz.ownerName}."
+- If asked directly whether you are human, say: "I'm ${name}, ${biz.name}'s AI receptionist. I can help you schedule appointments, take messages, or connect you with ${biz.ownerName}."
 
 ## Greeting
 When the call starts, say: "${greeting}"
@@ -61,7 +67,7 @@ ${serviceAreaLine}
 - Hours:
 ${formatHours(biz.businessHours)}
 - Timezone: ${biz.timezone}
-${additionalInfoBlock}${personalityBlock}
+${additionalInfoBlock}${personalityBlock}${customBlock}
 
 ## Call Flow
 1. Greet the caller (use the greeting above).
@@ -121,21 +127,26 @@ ${pricingContext}
 - If you don't know something, say: "I don't have that information, but ${biz.ownerName} can help you with that. Would you like me to take a message?"`;
 }
 
-function buildSpanishPrompt(biz: BusinessContext, pricingContext?: string | null): string {
-  const baseGreeting = biz.greetingEs || biz.greeting || `Gracias por llamar a ${biz.name}, habla María. ¿En qué le puedo ayudar hoy?`;
-  const greeting = `Esta llamada puede ser grabada para fines de calidad. Está hablando con María, asistente de IA de ${biz.name}. ${baseGreeting}`;
+function buildSpanishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null): string {
+  const name = biz.receptionistName || "Maria";
+  const presetKey = (biz.personalityPreset || "friendly") as PersonalityPreset;
+  const preset = PERSONALITY_PRESETS[presetKey] || PERSONALITY_PRESETS.friendly;
+
+  const baseGreeting = biz.greetingEs || biz.greeting || `Gracias por llamar a ${biz.name}, habla ${name}. ¿En qué le puedo ayudar hoy?`;
+  const greeting = `Esta llamada puede ser grabada para fines de calidad. Está hablando con ${name}, asistente de IA de ${biz.name}. ${baseGreeting}`;
   const serviceAreaLine = biz.serviceArea ? `- Área de Servicio: ${biz.serviceArea}` : "";
   const additionalInfoBlock = biz.additionalInfo ? `\n## Contexto Adicional del Negocio\n${biz.additionalInfo}` : "";
   const personalityBlock = biz.personalityNotes ? `\n## Instrucciones Especiales del Dueño\n${biz.personalityNotes}` : "";
+  const customBlock = customResponsesBlock ? `\n\n${customResponsesBlock}` : "";
 
-  return `Eres María, la recepcionista de IA de ${biz.name}. Eres cálida, profesional y eficiente. Tu voz es tranquila y amigable — como una recepcionista real que genuinamente se preocupa por ayudar a los llamantes.
+  return `Eres ${name}, la recepcionista de IA de ${biz.name}. ${preset.systemPromptBlock.es}
 
 ## Identidad
-- Nombre: María
+- Nombre: ${name}
 - Rol: Recepcionista de IA de ${biz.name} (negocio de ${biz.type})
 - Dueño: ${biz.ownerName}
 - Eres completamente bilingüe (inglés y español). Responde en el idioma que use el llamante.
-- Si te preguntan directamente si eres humana, di: "Soy María, la recepcionista de IA de ${biz.name}. Puedo ayudarle a agendar citas, tomar mensajes o conectarle con ${biz.ownerName}."
+- Si te preguntan directamente si eres humana, di: "Soy ${name}, la recepcionista de IA de ${biz.name}. Puedo ayudarle a agendar citas, tomar mensajes o conectarle con ${biz.ownerName}."
 
 ## Saludo
 Cuando inicie la llamada, di: "${greeting}"
@@ -149,7 +160,7 @@ ${serviceAreaLine}
 - Horario:
 ${formatHoursEs(biz.businessHours)}
 - Zona Horaria: ${biz.timezone}
-${additionalInfoBlock}${personalityBlock}
+${additionalInfoBlock}${personalityBlock}${customBlock}
 
 ## Flujo de Llamada
 1. Saluda al llamante (usa el saludo de arriba).

@@ -169,6 +169,13 @@
       "when": 1773400000000,
       "tag": "0023_agent_handoffs_disaster_recovery",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "6",
+      "when": 1773500000000,
+      "tag": "0024_receptionist_customization",
+      "breakpoints": true
     }
   ]
 }

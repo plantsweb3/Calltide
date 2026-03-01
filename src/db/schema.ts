@@ -70,6 +70,8 @@ export const businesses = sqliteTable("businesses", {
   cardExpYear: integer("card_exp_year"),
   // CRM
   personalityNotes: text("personality_notes"),
+  receptionistName: text("receptionist_name").default("Maria"),
+  personalityPreset: text("personality_preset").default("friendly"),
   hasPricingEnabled: integer("has_pricing_enabled", { mode: "boolean" }).default(false),
   // Plan
   planType: text("plan_type").default("monthly"), // monthly, annual
@@ -989,6 +991,20 @@ export const agentHandoffs = sqliteTable("agent_handoffs", {
   expiresAt: text("expires_at").notNull(),
   completedAt: text("completed_at"),
   completedNote: text("completed_note"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Receptionist Custom Responses ──
+
+export const receptionistCustomResponses = sqliteTable("receptionist_custom_responses", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  category: text("category").notNull(), // faq, off_limits, phrase, emergency_keyword
+  triggerText: text("trigger_text").notNull(),
+  responseText: text("response_text"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 
 interface PrimaryLocationData {
   services: string[];
@@ -30,6 +31,7 @@ const DEFAULT_HOURS: Record<string, { open: string; close: string }> = {
 };
 
 export default function AddLocationPage() {
+  const receptionistName = useReceptionistName();
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -276,12 +278,12 @@ export default function AddLocationPage() {
         {step === 4 && (
           <div className="space-y-4">
             <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-              Customize how Maria greets callers at this location. Leave blank to use the default.
+              Customize how {receptionistName} greets callers at this location. Leave blank to use the default.
             </p>
             <textarea
               value={greeting}
               onChange={(e) => setGreeting(e.target.value)}
-              placeholder="e.g., Thank you for calling Joe's Plumbing San Antonio! This is Maria, how can I help you today?"
+              placeholder={`e.g., Thank you for calling Joe's Plumbing San Antonio! This is ${receptionistName}, how can I help you today?`}
               rows={4}
               className="w-full rounded-lg px-3 py-2 text-sm outline-none resize-none"
               style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
