@@ -8,13 +8,13 @@ import "./globals.css";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
   title: "Calltide — AI Receptionist for Home Service Businesses | Bilingual EN/ES",
   description:
-    "Maria answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. Built for HVAC, plumbing, and electrical businesses. $497/mo.",
+    "AI receptionist that answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. Built for HVAC, plumbing, and electrical businesses.",
   keywords: [
     "AI receptionist",
     "virtual receptionist",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Calltide — Every Call Answered. Every Job Booked.",
     description:
-      "Maria answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. Built for home service businesses. $497/mo.",
+      "AI receptionist that answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. Built for home service businesses.",
     url: "https://calltide.app",
     siteName: "Calltide",
     type: "website",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Calltide — Every Call Answered. Every Job Booked.",
     description:
-      "Maria answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. $497/mo.",
+      "AI receptionist that answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies.",
   },
 };
 
