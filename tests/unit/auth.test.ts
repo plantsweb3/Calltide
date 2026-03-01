@@ -78,9 +78,9 @@ describe("Client Auth — Magic Links", () => {
 describe("Client Auth — Session Cookies", () => {
   it("creates and verifies a valid session cookie", async () => {
     const cookie = await signClientCookie("biz_001", TEST_SECRET);
-    const businessId = await verifyClientCookie(cookie, TEST_SECRET);
+    const result = await verifyClientCookie(cookie, TEST_SECRET);
 
-    expect(businessId).toBe("biz_001");
+    expect(result).toEqual({ businessId: "biz_001", accountId: undefined });
   });
 
   it("rejects cookie with wrong secret", async () => {
@@ -118,8 +118,8 @@ describe("Client Auth — Session Cookies", () => {
 
   it("extracts correct businessId from cookie payload", async () => {
     const cookie = await signClientCookie("biz_specific_123", TEST_SECRET);
-    const businessId = await verifyClientCookie(cookie, TEST_SECRET);
+    const result = await verifyClientCookie(cookie, TEST_SECRET);
 
-    expect(businessId).toBe("biz_specific_123");
+    expect(result).toEqual({ businessId: "biz_specific_123", accountId: undefined });
   });
 });

@@ -1,6 +1,32 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 
-// Import fresh module for each test to reset the in-memory store
+// Mock the DB module before importing rate-limit
+vi.mock("@/db", () => ({
+  db: {
+    select: vi.fn().mockReturnValue({
+      from: vi.fn().mockReturnValue({
+        where: vi.fn().mockReturnValue({
+          limit: vi.fn().mockResolvedValue([]),
+        }),
+      }),
+    }),
+    insert: vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnValue({
+        onConflictDoUpdate: vi.fn().mockResolvedValue(undefined),
+      }),
+    }),
+  },
+}));
+
+vi.mock("@/db/schema", () => ({
+  rateLimitEntries: {
+    key: "key",
+    count: "count",
+    windowStart: "window_start",
+    windowEnd: "window_end",
+  },
+}));
+
 let rateLimit: typeof import("@/lib/rate-limit").rateLimit;
 let getClientIp: typeof import("@/lib/rate-limit").getClientIp;
 let rateLimitResponse: typeof import("@/lib/rate-limit").rateLimitResponse;
@@ -8,8 +34,32 @@ let RATE_LIMITS: typeof import("@/lib/rate-limit").RATE_LIMITS;
 
 describe("Rate Limiter", () => {
   beforeEach(async () => {
-    // Re-import module to get a fresh in-memory store
     vi.resetModules();
+    // Re-mock after resetModules
+    vi.doMock("@/db", () => ({
+      db: {
+        select: vi.fn().mockReturnValue({
+          from: vi.fn().mockReturnValue({
+            where: vi.fn().mockReturnValue({
+              limit: vi.fn().mockResolvedValue([]),
+            }),
+          }),
+        }),
+        insert: vi.fn().mockReturnValue({
+          values: vi.fn().mockReturnValue({
+            onConflictDoUpdate: vi.fn().mockResolvedValue(undefined),
+          }),
+        }),
+      },
+    }));
+    vi.doMock("@/db/schema", () => ({
+      rateLimitEntries: {
+        key: "key",
+        count: "count",
+        windowStart: "window_start",
+        windowEnd: "window_end",
+      },
+    }));
     const mod = await import("@/lib/rate-limit");
     rateLimit = mod.rateLimit;
     getClientIp = mod.getClientIp;
@@ -17,70 +67,66 @@ describe("Rate Limiter", () => {
     RATE_LIMITS = mod.RATE_LIMITS;
   });
 
-  it("allows requests under the limit", () => {
+  it("allows requests under the limit", async () => {
     const config = { limit: 5, windowSeconds: 60 };
 
-    const r1 = rateLimit("test-ip-1", config);
+    const r1 = await rateLimit("test-ip-1", config);
     expect(r1.success).toBe(true);
     expect(r1.remaining).toBe(4);
 
-    const r2 = rateLimit("test-ip-1", config);
+    const r2 = await rateLimit("test-ip-1", config);
     expect(r2.success).toBe(true);
     expect(r2.remaining).toBe(3);
   });
 
-  it("blocks requests over the limit", () => {
+  it("blocks requests over the limit", async () => {
     const config = { limit: 3, windowSeconds: 60 };
 
-    rateLimit("test-ip-2", config);
-    rateLimit("test-ip-2", config);
-    rateLimit("test-ip-2", config);
+    await rateLimit("test-ip-2", config);
+    await rateLimit("test-ip-2", config);
+    await rateLimit("test-ip-2", config);
 
-    const blocked = rateLimit("test-ip-2", config);
+    const blocked = await rateLimit("test-ip-2", config);
     expect(blocked.success).toBe(false);
     expect(blocked.remaining).toBe(0);
   });
 
-  it("resets after window expires", () => {
-    const config = { limit: 2, windowSeconds: 1 }; // 1-second window
+  it("resets after window expires", async () => {
+    const config = { limit: 2, windowSeconds: 1 };
 
-    rateLimit("test-ip-3", config);
-    rateLimit("test-ip-3", config);
+    await rateLimit("test-ip-3", config);
+    await rateLimit("test-ip-3", config);
 
-    // Should be blocked
-    const blocked = rateLimit("test-ip-3", config);
+    const blocked = await rateLimit("test-ip-3", config);
     expect(blocked.success).toBe(false);
 
-    // Advance time past the window
     const original = Date.now;
-    Date.now = () => original() + 2000; // 2 seconds later
+    Date.now = () => original() + 2000;
 
-    const allowed = rateLimit("test-ip-3", config);
+    const allowed = await rateLimit("test-ip-3", config);
     expect(allowed.success).toBe(true);
     expect(allowed.remaining).toBe(1);
 
     Date.now = original;
   });
 
-  it("tracks different keys independently", () => {
+  it("tracks different keys independently", async () => {
     const config = { limit: 2, windowSeconds: 60 };
 
-    rateLimit("ip-a", config);
-    rateLimit("ip-a", config);
+    await rateLimit("ip-a", config);
+    await rateLimit("ip-a", config);
 
-    // ip-a should be at limit
-    const blocked = rateLimit("ip-a", config);
+    const blocked = await rateLimit("ip-a", config);
     expect(blocked.success).toBe(false);
 
-    // ip-b should still be allowed
-    const allowed = rateLimit("ip-b", config);
+    const allowed = await rateLimit("ip-b", config);
     expect(allowed.success).toBe(true);
     expect(allowed.remaining).toBe(1);
   });
 
-  it("returns correct limit value in result", () => {
+  it("returns correct limit value in result", async () => {
     const config = { limit: 10, windowSeconds: 60 };
-    const result = rateLimit("test-ip-4", config);
+    const result = await rateLimit("test-ip-4", config);
 
     expect(result.limit).toBe(10);
     expect(result.remaining).toBe(9);
@@ -92,6 +138,9 @@ describe("Rate Limiter", () => {
     expect(RATE_LIMITS.standard).toEqual({ limit: 60, windowSeconds: 60 });
     expect(RATE_LIMITS.write).toEqual({ limit: 20, windowSeconds: 60 });
     expect(RATE_LIMITS.webhook).toEqual({ limit: 200, windowSeconds: 60 });
+    expect(RATE_LIMITS.admin).toEqual({ limit: 120, windowSeconds: 60 });
+    expect(RATE_LIMITS.demo).toEqual({ limit: 1, windowSeconds: 3600 });
+    expect(RATE_LIMITS.demoDaily).toEqual({ limit: 5, windowSeconds: 86400 });
   });
 });
 
