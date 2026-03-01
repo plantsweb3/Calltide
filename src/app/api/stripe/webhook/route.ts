@@ -13,6 +13,7 @@ import { startDunning, clearDunning, cancelDunning } from "@/lib/financial/dunni
 import { createNotification } from "@/lib/notifications";
 import { logActivity } from "@/lib/activity";
 import { getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
+import { reportError } from "@/lib/error-reporting";
 
 function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -67,7 +68,9 @@ export async function POST(request: Request) {
     try {
       await handler();
     } catch (err) {
-      console.error(`[stripe] Error handling ${event.type}:`, err);
+      reportError(`[stripe] Error handling ${event.type}`, err, {
+        extra: { eventId: event.id, eventType: event.type },
+      });
       // Still return 200 — we've recorded the event, don't want Stripe to retry
     }
   }

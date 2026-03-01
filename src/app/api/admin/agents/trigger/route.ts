@@ -1,4 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { reportError } from "@/lib/error-reporting";
+
+const triggerSchema = z.object({
+  agentName: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
+  method: z.enum(["GET", "POST", "PUT", "DELETE"]).optional(),
+  body: z.record(z.string(), z.unknown()).optional(),
+});
 
 /**
  * POST /api/admin/agents/trigger
@@ -13,15 +21,12 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const { agentName, method, body } = rawBody as {
-    agentName: string;
-    method?: string;
-    body?: Record<string, unknown>;
-  };
 
-  if (!agentName || typeof agentName !== "string") {
-    return NextResponse.json({ error: "agentName required" }, { status: 400 });
+  const parsed = triggerSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
+  const { agentName, method, body } = parsed.data;
 
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret) {
@@ -46,7 +51,7 @@ export async function POST(req: NextRequest) {
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
-    console.error("[agent trigger] Error:", err);
+    reportError("[agent trigger] Agent trigger failed", err, { extra: { agentName } });
     return NextResponse.json(
       { error: "Agent trigger failed" },
       { status: 500 },

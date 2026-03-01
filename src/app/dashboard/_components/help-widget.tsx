@@ -38,6 +38,7 @@ export default function HelpWidget() {
   const [searching, setSearching] = useState(false);
   const [feedbackGiven, setFeedbackGiven] = useState<Record<string, boolean>>({});
   const [sessionId] = useState(() => Math.random().toString(36).slice(2));
+  const [loadError, setLoadError] = useState(false);
 
   // Fetch context-based articles when panel opens
   useEffect(() => {
@@ -45,10 +46,11 @@ export default function HelpWidget() {
     const slugs = CONTEXT_MAP[pathname] ?? CONTEXT_MAP["/dashboard"] ?? [];
     if (slugs.length === 0) return;
 
+    setLoadError(false);
     fetch(`/api/help/articles?slugs=${slugs.join(",")}`)
       .then((r) => r.json())
       .then((d) => setArticles(d.articles || []))
-      .catch(() => setArticles([]));
+      .catch(() => { setArticles([]); setLoadError(true); });
   }, [open, pathname]);
 
   function handleSearch(value: string) {
@@ -66,7 +68,7 @@ export default function HelpWidget() {
           d.results?.map((r: Record<string, unknown>) => ({ ...r, content: "", contentEs: null })) || [],
         );
       })
-      .catch(() => {})
+      .catch(() => setSearchResults([]))
       .finally(() => setSearching(false));
   }
 
@@ -267,6 +269,11 @@ export default function HelpWidget() {
                 ) : (
                   /* Contextual articles */
                   <div className="px-4 space-y-4">
+                    {loadError && (
+                      <p className="py-4 text-center text-xs" style={{ color: "var(--db-text-muted)" }}>
+                        Unable to load help articles. Please try again later.
+                      </p>
+                    )}
                     {articles.length > 0 && (
                       <div>
                         <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--db-text-muted)" }}>

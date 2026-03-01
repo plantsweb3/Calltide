@@ -40,7 +40,8 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  console.log(`Hume webhook: ${event.type}`, { chatId: event.chat_id, chatGroupId: event.chat_group_id });
+  // Log event type without PII
+  console.log(`[hume] webhook: ${event.type} chatId=${event.chat_id}`);
 
   try {
     switch (event.type) {
@@ -80,11 +81,8 @@ async function handleChatStarted(event: HumeWebhookEvent) {
   }
 
   if (!businessId) {
-    console.warn("Unmatched incoming call — no business found", {
-      callerPhone,
-      calledPhone,
+    reportWarning("Unmatched incoming call — no business found", {
       chatId: event.chat_id,
-      timestamp: new Date().toISOString(),
     });
     // Do NOT create any DB records for unknown callers
     return;
@@ -115,9 +113,9 @@ async function handleChatStarted(event: HumeWebhookEvent) {
     callerPhone: callerPhone || "unknown",
     direction: "inbound",
     humeSessionId: event.chat_id,
-  }).catch((err) => console.error("Active call tracking failed:", err));
+  }).catch((err) => reportError("Active call tracking failed", err, { businessId }));
 
-  console.log("Call started:", { businessId, leadId, chatId: event.chat_id });
+  console.log(`[hume] call started: chatId=${event.chat_id} businessId=${businessId}`);
 }
 
 async function handleChatEnded(event: HumeWebhookEvent) {
@@ -165,10 +163,10 @@ async function handleChatEnded(event: HumeWebhookEvent) {
 
   // Remove from active calls (fire-and-forget)
   trackCallEnd({ humeSessionId: event.chat_id }).catch((err) =>
-    console.error("Active call cleanup failed:", err),
+    reportError("Active call cleanup failed", err),
   );
 
-  console.log("Call ended:", { chatId: event.chat_id });
+  console.log(`[hume] call ended: chatId=${event.chat_id}`);
 }
 
 async function handleToolCall(event: HumeWebhookEvent) {
@@ -185,6 +183,11 @@ async function handleToolCall(event: HumeWebhookEvent) {
   try {
     params = JSON.parse(data.parameters);
   } catch {
+    reportWarning("Hume tool call: invalid JSON parameters", {
+      toolName: data.name,
+      chatId: event.chat_id,
+      rawLength: data.parameters?.length ?? 0,
+    });
     return Response.json({
       tool_call_id: data.tool_call_id,
       content: JSON.stringify({ error: "Invalid parameters" }),

@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url });
   } catch (err) {
-    console.error("[stripe portal] Error:", err);
+    reportError("[stripe portal] Billing portal session creation failed", err);
     return NextResponse.json(
       { error: "Failed to create billing portal session" },
       { status: 500 },

@@ -22,11 +22,16 @@ export async function GET(req: NextRequest) {
   const rl = rateLimit(`prospects:${ip}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
   const url = req.nextUrl.searchParams;
-  const page = Math.max(1, parseInt(url.get("page") ?? "1", 10));
-  const limit = Math.min(Math.max(1, parseInt(url.get("limit") ?? "50", 10)), 100);
+  const parsedPage = parseInt(url.get("page") ?? "1", 10);
+  const parsedLimit = parseInt(url.get("limit") ?? "50", 10);
+  const page = Math.max(1, Number.isNaN(parsedPage) ? 1 : parsedPage);
+  const limit = Math.min(Math.max(1, Number.isNaN(parsedLimit) ? 50 : parsedLimit), 100);
   const offset = (page - 1) * limit;
   const sortByParam = url.get("sortBy") ?? "createdAt";
-  const sortColumn = SORT_COLUMN_MAP[sortByParam] ?? prospects.createdAt;
+  if (!(sortByParam in SORT_COLUMN_MAP)) {
+    return NextResponse.json({ error: "Invalid sortBy parameter" }, { status: 400 });
+  }
+  const sortColumn = SORT_COLUMN_MAP[sortByParam];
   const sortOrder = url.get("sortOrder") === "asc" ? "asc" : "desc";
   const status = url.get("status");
   const vertical = url.get("vertical");

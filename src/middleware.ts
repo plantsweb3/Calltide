@@ -3,6 +3,27 @@ import { NextRequest, NextResponse } from "next/server";
 const ADMIN_COOKIE = "calltide_admin";
 const CLIENT_COOKIE = "calltide_client";
 
+// ── Lightweight rate limiter for middleware (Edge-compatible) ──
+const adminRLStore = new Map<string, { count: number; resetAt: number }>();
+const ADMIN_RL_LIMIT = 120; // 120 requests per 60s
+const ADMIN_RL_WINDOW = 60_000;
+
+function adminRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = adminRLStore.get(ip);
+  if (!entry || entry.resetAt < now) {
+    adminRLStore.set(ip, { count: 1, resetAt: now + ADMIN_RL_WINDOW });
+    return true;
+  }
+  entry.count++;
+  if (entry.count > ADMIN_RL_LIMIT) return false;
+  return true;
+}
+
+function getIp(req: NextRequest): string {
+  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
+}
+
 async function verifyToken(token: string, secret: string): Promise<boolean> {
   const lastDot = token.lastIndexOf(".");
   if (lastDot === -1) return false;
@@ -111,6 +132,13 @@ export async function middleware(req: NextRequest) {
     // Allow auth endpoints through
     if (pathname === "/admin/login" || pathname === "/api/admin/auth" || pathname === "/api/admin/auth/logout") {
       return NextResponse.next();
+    }
+
+    // Rate limit admin API routes
+    if (pathname.startsWith("/api/admin")) {
+      if (!adminRateLimit(getIp(req))) {
+        return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      }
     }
 
     const error = await requireAdminAuth(req, pathname.startsWith("/api/"));
