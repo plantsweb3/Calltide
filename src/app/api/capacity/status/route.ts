@@ -10,6 +10,7 @@ import { desc, eq, sql, isNull, and } from "drizzle-orm";
 import { PROVIDER_LIMITS, determineTier } from "@/lib/capacity/config";
 import { getConcurrentCallCount } from "@/lib/capacity/providers";
 import { projectBreachDate, estimatePeakConcurrent, estimateMonthlyCost } from "@/lib/capacity/modeling";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET() {
   try {
@@ -109,7 +110,7 @@ export async function GET() {
       costEstimate,
     });
   } catch (err) {
-    console.error("[capacity status] Error:", err);
+    reportError("[capacity status] Error", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Status fetch failed" },
       { status: 500 },

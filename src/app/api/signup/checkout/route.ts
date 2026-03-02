@@ -3,6 +3,7 @@ import { z } from "zod";
 import Stripe from "stripe";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { getPriceId, type PlanType } from "@/lib/stripe-prices";
+import { reportError } from "@/lib/error-reporting";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
@@ -64,7 +65,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: session.url });
   } catch (err) {
-    console.error("[signup/checkout] Stripe error:", err);
+    reportError("[signup/checkout] Stripe error", err);
     const message = err instanceof Error ? err.message : "Failed to create checkout session";
     return NextResponse.json({ error: message }, { status: 500 });
   }

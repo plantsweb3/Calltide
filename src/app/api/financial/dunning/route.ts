@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { processDunning } from "@/lib/financial/dunning";
+import { reportError } from "@/lib/error-reporting";
 
 export async function POST(request: Request) {
   const auth = request.headers.get("authorization");
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
     const results = await processDunning();
     return NextResponse.json({ ok: true, ...results });
   } catch (err) {
-    console.error("[dunning cron] Error:", err);
+    reportError("[dunning cron] Error", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Dunning processing failed" },
       { status: 500 },

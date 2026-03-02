@@ -18,6 +18,7 @@ interface QaResult {
     actionTaken: number;
     accuracy: number;
     sentiment: number;
+    aiDisclosure: number;
   };
   flags: string[];
   fixRecommendation: string | null;
@@ -29,11 +30,12 @@ You receive the full call transcript, the business profile, the post-call summar
 
 Score the call 0-100 using these weighted criteria:
 - Greeting (15%): Did the AI identify itself and the business name correctly?
-- Language Match (15%): Did the AI respond in the caller's language? Check if the caller spoke Spanish but AI responded in English or vice versa.
+- Language Match (10%): Did the AI respond in the caller's language? Check if the caller spoke Spanish but AI responded in English or vice versa.
 - Need Capture (20%): Did the AI understand what the caller needed?
 - Action Taken (20%): Was the right action taken? (book appointment, take message, transfer, provide info)
 - Accuracy (15%): Did the AI say anything that contradicts the business profile? Wrong hours, non-existent services, wrong business name?
-- Caller Sentiment (15%): Was the post-call sentiment positive or neutral?
+- Caller Sentiment (10%): Was the post-call sentiment positive or neutral?
+- AI Disclosure (10%): Did the AI disclose that it is an AI assistant and that the call may be recorded? This is a legal/compliance requirement. Look for phrases like "AI assistant", "virtual receptionist", "call may be recorded", or similar disclosures in the greeting.
 
 RESPOND WITH ONLY A JSON OBJECT — no markdown, no explanation:
 {
@@ -44,7 +46,8 @@ RESPOND WITH ONLY A JSON OBJECT — no markdown, no explanation:
     "needCapture": <number 0-100>,
     "actionTaken": <number 0-100>,
     "accuracy": <number 0-100>,
-    "sentiment": <number 0-100>
+    "sentiment": <number 0-100>,
+    "aiDisclosure": <number 0-100>
   },
   "flags": [<string array of specific issues found, empty if none>],
   "fixRecommendation": <string or null — if score < 70, what should be changed in the system prompt or config>,

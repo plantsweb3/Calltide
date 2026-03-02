@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getConcurrentCallCount, cleanupStaleCalls } from "@/lib/capacity/providers";
 import { PROVIDER_LIMITS } from "@/lib/capacity/config";
 import { checkThresholds } from "@/lib/capacity/thresholds";
+import { reportError } from "@/lib/error-reporting";
 
 export async function POST(request: Request) {
   const auth = request.headers.get("authorization");
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
       staleRemoved,
     });
   } catch (err) {
-    console.error("[capacity real-time] Error:", err);
+    reportError("[capacity real-time] Error", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Real-time check failed" },
       { status: 500 },

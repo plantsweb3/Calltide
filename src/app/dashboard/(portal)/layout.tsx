@@ -6,6 +6,7 @@ import ClientNav from "../_components/client-nav";
 import HelpWidget from "../_components/help-widget";
 import PaymentBanner from "../_components/payment-banner";
 import ErrorBoundary from "@/components/error-boundary";
+import LegalReacceptanceModal from "../_components/legal-reacceptance";
 
 export default function PortalLayout({
   children,
@@ -97,6 +98,7 @@ export default function PortalLayout({
       </main>
 
       <HelpWidget />
+      <LegalReacceptanceModal />
     </div>
   );
 }

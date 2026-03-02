@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { legalDocuments, subProcessors } from "@/db/schema";
 import { sql } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 /**
  * POST /api/compliance/seed
@@ -74,7 +75,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, documents: docs.length, processors: processors.length });
   } catch (error) {
-    console.error("Compliance seed error:", error);
+    reportError("Compliance seed error", error);
     return NextResponse.json({ error: "Seed failed" }, { status: 500 });
   }
 }

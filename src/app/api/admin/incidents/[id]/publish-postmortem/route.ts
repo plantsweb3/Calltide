@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { incidents } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { notifyClients, notifySubscribers } from "@/lib/incidents/notifications";
+import { reportError } from "@/lib/error-reporting";
 
 export async function POST(
   req: NextRequest,
@@ -45,13 +46,13 @@ export async function POST(
         await notifyClients(incident, "resolved");
         await notifySubscribers(incident, "resolved");
       } catch (err) {
-        console.error("Postmortem notification error:", err);
+        reportError("Postmortem notification error", err);
       }
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Publish postmortem error:", error);
+    reportError("Publish postmortem error", error);
     return NextResponse.json({ error: "Failed to publish postmortem" }, { status: 500 });
   }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { helpArticles, helpArticleFeedback } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 /**
  * GET /api/admin/help/articles/[id]
@@ -26,7 +27,7 @@ export async function GET(
 
     return NextResponse.json(article);
   } catch (error) {
-    console.error("Error fetching help article:", error);
+    reportError("Error fetching help article", error);
     return NextResponse.json({ error: "Failed to fetch article" }, { status: 500 });
   }
 }
@@ -100,7 +101,7 @@ export async function PATCH(
 
     return NextResponse.json(updated);
   } catch (error) {
-    console.error("Error updating help article:", error);
+    reportError("Error updating help article", error);
     return NextResponse.json({ error: "Failed to update article" }, { status: 500 });
   }
 }
@@ -134,7 +135,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting help article:", error);
+    reportError("Error deleting help article", error);
     return NextResponse.json({ error: "Failed to delete article" }, { status: 500 });
   }
 }

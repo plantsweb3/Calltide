@@ -4,9 +4,10 @@ import { db } from "@/db";
 import { businesses, leads, smsMessages } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { findOrCreateLead } from "@/lib/ai/context-builder";
-import { reportWarning } from "@/lib/error-reporting";
+import { reportWarning, reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { handleProspectSmsKeyword } from "@/lib/outreach/sms-outreach";
+import { env } from "@/lib/env";
 
 const OPT_OUT_KEYWORDS = ["stop", "unsubscribe", "cancel", "quit", "end", "optout", "opt out"];
 const OPT_IN_KEYWORDS = ["start", "unstop", "subscribe", "opt in", "optin"];
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
   const body = params.Body || "";
   const messageSid = params.MessageSid || "";
 
-  console.log("Inbound SMS received:", { from, to, messageSid });
+  console.log("Inbound SMS received:", { messageSid });
 
   // Look up which business owns the To number
   const [biz] = await db
@@ -56,9 +57,7 @@ export async function POST(req: NextRequest) {
     .limit(1);
 
   if (!biz) {
-    console.warn("Inbound SMS to unrecognized number — no business found", {
-      from,
-      to,
+    reportWarning("Inbound SMS to unrecognized number — no business found", {
       messageSid,
       timestamp: new Date().toISOString(),
     });
@@ -80,8 +79,6 @@ export async function POST(req: NextRequest) {
     status: "received",
   });
 
-  console.log(`Inbound SMS for ${biz.name} from ${from}: "${body.slice(0, 80)}"`);
-
   // Handle SMS opt-out / opt-in
   const normalizedBody = body.trim().toLowerCase();
 
@@ -91,7 +88,7 @@ export async function POST(req: NextRequest) {
       updatedAt: new Date().toISOString(),
     }).where(eq(leads.id, lead.id));
 
-    console.log(`SMS opt-out recorded for lead ${lead.id} (${from})`);
+    console.log(`SMS opt-out recorded for lead ${lead.id}`);
     return twimlResponse("You have been unsubscribed and will no longer receive SMS messages from us. Reply START to re-subscribe.");
   }
 
@@ -101,7 +98,7 @@ export async function POST(req: NextRequest) {
       updatedAt: new Date().toISOString(),
     }).where(eq(leads.id, lead.id));
 
-    console.log(`SMS opt-in recorded for lead ${lead.id} (${from})`);
+    console.log(`SMS opt-in recorded for lead ${lead.id}`);
     return twimlResponse("You have been re-subscribed to SMS messages. Reply STOP to unsubscribe.");
   }
 
@@ -111,9 +108,11 @@ export async function POST(req: NextRequest) {
     console.log(`Prospect SMS ${prospectResult.action} processed`);
   }
 
-  // Flag for owner notification
+  // Notify business owner of inbound SMS (fire-and-forget)
   if (biz.ownerEmail) {
-    console.log(`[notify] Email notification pending for business ${biz.id ?? "unknown"} — inbound SMS`);
+    notifyOwnerOfSms(biz.id, biz.name, biz.ownerEmail, body).catch((err) =>
+      reportError("Failed to send inbound SMS notification email", err, { extra: { businessId: biz.id } })
+    );
   }
 
   return twimlResponse("");
@@ -137,4 +136,30 @@ function escapeXml(str: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
+}
+
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+async function notifyOwnerOfSms(businessId: string, businessName: string, ownerEmail: string, messageBody: string): Promise<void> {
+  if (!env.RESEND_API_KEY) return;
+  const { Resend } = await import("resend");
+  const resend = new Resend(env.RESEND_API_KEY);
+  const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+  const preview = escapeHtml(messageBody.slice(0, 200));
+
+  await resend.emails.send({
+    from,
+    to: ownerEmail,
+    subject: `New SMS received — ${escapeHtml(businessName)}`,
+    html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;">
+  <div style="margin-bottom:24px;"><span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span></div>
+  <p style="color:#475569;">You received a new text message for <strong>${escapeHtml(businessName)}</strong>:</p>
+  <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin:16px 0;">
+    <p style="color:#1e293b;margin:0;white-space:pre-wrap;">${preview}</p>
+  </div>
+  <a href="${env.NEXT_PUBLIC_APP_URL}/dashboard/messages" style="display:inline-block;background:#C59A27;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:500;">View in Dashboard</a>
+</div>`,
+  });
 }

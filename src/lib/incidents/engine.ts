@@ -9,6 +9,7 @@ import {
 import { eq, and, sql, desc, inArray } from "drizzle-orm";
 import { notifyOwner, notifyClients, notifySubscribers } from "./notifications";
 import { createNotification } from "@/lib/notifications";
+import { reportError } from "@/lib/error-reporting";
 
 // ── Types ──
 
@@ -166,7 +167,7 @@ export async function createIncident(check: HealthCheckResult): Promise<string> 
     }
     await notifySubscribers(incident, "created");
   } catch (err) {
-    console.error("Incident notification error:", err);
+    reportError("Incident notification error", err);
   }
 
   return incident.id;
@@ -211,7 +212,7 @@ export async function resolveIncident(incidentId: string): Promise<void> {
     }
     await notifySubscribers(updated, "resolved");
   } catch (err) {
-    console.error("Resolution notification error:", err);
+    reportError("Resolution notification error", err);
   }
 }
 
@@ -249,7 +250,7 @@ export async function escalateIncident(incidentId: string, check: HealthCheckRes
       await notifyClients(updated, "update");
       await notifySubscribers(updated, "update");
     } catch (err) {
-      console.error("Escalation notification error:", err);
+      reportError("Escalation notification error", err);
     }
   }
 }

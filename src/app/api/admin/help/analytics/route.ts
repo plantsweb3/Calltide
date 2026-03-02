@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { helpArticles, helpSearchMisses } from "@/db/schema";
 import { sql, desc, eq, gt, and } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 /**
  * GET /api/admin/help/analytics
@@ -89,7 +90,7 @@ export async function GET() {
       avgHelpfulRate,
     });
   } catch (error) {
-    console.error("Error fetching help analytics:", error);
+    reportError("Error fetching help analytics", error);
     return NextResponse.json({ error: "Failed to fetch analytics" }, { status: 500 });
   }
 }

@@ -3,6 +3,7 @@ import { env } from "@/lib/env";
 import { db } from "@/db";
 import { systemHealthLogs } from "@/db/schema";
 import { createNotification } from "@/lib/notifications";
+import { reportError } from "@/lib/error-reporting";
 
 /**
  * GET /api/agents/health
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
     const staleCount = await cleanupStaleCalls();
     if (staleCount > 0) console.log(`Cleaned up ${staleCount} stale active call(s)`);
   } catch (err) {
-    console.error("Stale call cleanup error (non-fatal):", err);
+    reportError("Stale call cleanup error (non-fatal)", err);
   }
 
   // Incident engine hooks — detect/resolve incidents automatically
@@ -56,7 +57,7 @@ export async function GET(req: NextRequest) {
     }
     await checkAndGeneratePendingPostmortems();
   } catch (err) {
-    console.error("Incident engine error (non-fatal):", err);
+    reportError("Incident engine error (non-fatal)", err);
   }
 
   // Expire stale agent handoffs
@@ -65,7 +66,7 @@ export async function GET(req: NextRequest) {
     const expiredCount = await expireHandoffs();
     if (expiredCount > 0) console.log(`Expired ${expiredCount} stale agent handoff(s)`);
   } catch (err) {
-    console.error("Handoff expiry error (non-fatal):", err);
+    reportError("Handoff expiry error (non-fatal)", err);
   }
 
   // Log each result directly to systemHealthLogs — no Anthropic API call

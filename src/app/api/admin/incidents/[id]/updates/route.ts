@@ -5,6 +5,7 @@ import { incidents } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { addIncidentUpdate } from "@/lib/incidents/engine";
 import { notifyOwner, notifyClients, notifySubscribers } from "@/lib/incidents/notifications";
+import { reportError } from "@/lib/error-reporting";
 
 const updateSchema = z.object({
   status: z.string().min(1),
@@ -58,14 +59,14 @@ export async function POST(
           }
           await notifySubscribers(incident, "update");
         } catch (err) {
-          console.error("Update notification error:", err);
+          reportError("Update notification error", err);
         }
       }
     }
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
-    console.error("Admin incident update POST error:", error);
+    reportError("Admin incident update POST error", error);
     return NextResponse.json({ error: "Failed to add update" }, { status: 500 });
   }
 }

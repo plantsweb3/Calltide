@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { calls, businesses } from "@/db/schema";
 import { sql, desc, eq } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET() {
   try {
@@ -94,7 +95,7 @@ export async function GET() {
       recentCalls,
     });
   } catch (error) {
-    console.error("Error fetching call analytics:", error);
+    reportError("Error fetching call analytics", error);
     return NextResponse.json({ error: "Failed to fetch call analytics" }, { status: 500 });
   }
 }

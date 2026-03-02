@@ -5,6 +5,7 @@ import { prospectAuditCalls, prospects, auditRequests } from "@/db/schema";
 import { eq, and, gte, sql } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 import { generateAndSendAuditReport } from "@/lib/audit-report";
+import { reportError } from "@/lib/error-reporting";
 
 const MAX_CALLS_PER_DAY = 50;
 const CALL_WINDOW_START = 9; // 9 AM CT
@@ -190,7 +191,7 @@ export async function handleAuditStatusCallback(params: {
         ringTime: auditCall.ringTime ?? undefined,
         answeredBy: AnsweredBy,
       }).catch((err) =>
-        console.error("Audit report generation failed:", err),
+        reportError("Audit report generation failed", err),
       );
     }
   }

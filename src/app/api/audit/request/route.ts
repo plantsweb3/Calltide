@@ -154,6 +154,11 @@ export async function POST(req: NextRequest) {
     estimatedCallTime = "next business day between 10am-3pm CT";
   }
 
+  // Trigger qualify agent for this prospect (fire-and-forget)
+  triggerQualifyAgent(prospectId).catch((err) =>
+    reportError("Failed to trigger qualify agent for audit prospect", err, { extra: { prospectId } })
+  );
+
   await logActivity({
     type: "audit_request",
     entityType: "prospect",
@@ -169,5 +174,20 @@ export async function POST(req: NextRequest) {
     phone,
     email,
     language,
+  });
+}
+
+async function triggerQualifyAgent(prospectId: string): Promise<void> {
+  const cronSecret = process.env.CRON_SECRET;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!cronSecret || !appUrl) return;
+
+  await fetch(`${appUrl}/api/agents/qualify`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${cronSecret}`,
+    },
+    body: JSON.stringify({ prospectId }),
   });
 }

@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { notifications } from "@/db/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 type Severity = "info" | "warning" | "critical" | "emergency";
 type Source = "capacity" | "incident" | "financial" | "retention" | "compliance" | "agents" | "knowledge";
@@ -20,7 +21,7 @@ export async function createNotification(params: {
   // Forward critical/emergency notifications to owner via SMS (throttled)
   if (params.severity === "critical" || params.severity === "emergency") {
     forwardToOwnerSms(params.severity, params.title, params.message).catch((e) => {
-      console.error("[notifications] SMS forward failed:", e);
+      reportError("[notifications] SMS forward failed", e);
     });
   }
 

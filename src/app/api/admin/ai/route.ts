@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { calls, escalations, businesses } from "@/db/schema";
 import { sql, desc, eq } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET() {
   try {
@@ -81,7 +82,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error fetching AI performance data:", error);
+    reportError("Error fetching AI performance data", error);
     return NextResponse.json({ error: "Failed to fetch AI performance data" }, { status: 500 });
   }
 }

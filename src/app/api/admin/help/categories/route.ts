@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { helpCategories, helpArticles } from "@/db/schema";
 import { sql, asc, eq } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 /**
  * GET /api/admin/help/categories
@@ -28,7 +29,7 @@ export async function GET() {
 
     return NextResponse.json(categories);
   } catch (error) {
-    console.error("Error fetching help categories:", error);
+    reportError("Error fetching help categories", error);
     return NextResponse.json({ error: "Failed to fetch categories" }, { status: 500 });
   }
 }
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(created, { status: 201 });
   } catch (error) {
-    console.error("Error creating help category:", error);
+    reportError("Error creating help category", error);
     return NextResponse.json({ error: "Failed to create category" }, { status: 500 });
   }
 }

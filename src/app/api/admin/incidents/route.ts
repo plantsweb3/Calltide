@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { incidents, incidentUpdates } from "@/db/schema";
 import { desc, sql, eq, inArray } from "drizzle-orm";
 import { addIncidentUpdate, formatDuration } from "@/lib/incidents/engine";
+import { reportError } from "@/lib/error-reporting";
 
 const createSchema = z.object({
   title: z.string().min(1),
@@ -45,7 +46,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ incidents: results });
   } catch (error) {
-    console.error("Admin incidents GET error:", error);
+    reportError("Admin incidents GET error", error);
     return NextResponse.json({ error: "Failed to fetch incidents" }, { status: 500 });
   }
 }
@@ -85,7 +86,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ incident }, { status: 201 });
   } catch (error) {
-    console.error("Admin incidents POST error:", error);
+    reportError("Admin incidents POST error", error);
     return NextResponse.json({ error: "Failed to create incident" }, { status: 500 });
   }
 }

@@ -15,6 +15,7 @@ import { logActivity } from "@/lib/activity";
 import { getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
 import { reportError } from "@/lib/error-reporting";
 import { provisionTwilioNumber } from "@/lib/twilio/provision";
+import { recordConsent } from "@/lib/compliance/consent";
 
 function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
     const stripe = getStripe();
     event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
-    console.error("[stripe] Webhook signature verification failed:", err);
+    reportError("[stripe] Webhook signature verification failed", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
@@ -158,6 +159,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         .where(eq(businesses.id, existingByEmail.id));
     }
 
+    // Record consent for existing business linking to Stripe
+    recordConsentForCheckout(existingByEmail.id).catch((err) =>
+      reportError("Failed to record consent (existing biz)", err, { extra: { businessId: existingByEmail.id } })
+    );
+
     // Provision Twilio number if the existing business doesn't have one
     const [bizForPhone] = await db
       .select({ id: businesses.id, twilioNumber: businesses.twilioNumber })
@@ -229,6 +235,18 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     message: `${email} completed checkout. Onboarding pending.`,
     actionUrl: "/admin/billing",
   });
+
+  // Record consent (TOS, privacy policy, DPA) — by completing checkout the user agreed
+  const [bizForConsent] = await db
+    .select({ id: businesses.id })
+    .from(businesses)
+    .where(eq(businesses.ownerEmail, email))
+    .limit(1);
+  if (bizForConsent) {
+    recordConsentForCheckout(bizForConsent.id).catch((err) =>
+      reportError("Failed to record consent at checkout", err, { extra: { businessId: bizForConsent.id } })
+    );
+  }
 
   // Auto-provision a Twilio phone number for this business
   const [newBiz] = await db
@@ -523,4 +541,19 @@ async function handleChargeRefunded(charge: Stripe.Charge) {
       })
       .where(eq(businesses.id, business.id));
   }
+}
+
+// ── Consent Recording ──
+
+async function recordConsentForCheckout(businessId: string): Promise<void> {
+  const consentTypes = ["tos", "privacy_policy", "dpa"];
+  await Promise.all(
+    consentTypes.map((consentType) =>
+      recordConsent({
+        businessId,
+        consentType,
+        metadata: { method: "stripe_checkout", acceptedAt: new Date().toISOString() },
+      }),
+    ),
+  );
 }

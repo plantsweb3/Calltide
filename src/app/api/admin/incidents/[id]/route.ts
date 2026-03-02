@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { incidents, incidentUpdates, incidentNotifications } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { resolveIncident, addIncidentUpdate } from "@/lib/incidents/engine";
+import { reportError } from "@/lib/error-reporting";
 
 const patchSchema = z.object({
   status: z.enum(["detected", "investigating", "identified", "monitoring", "resolved", "postmortem"]).optional(),
@@ -44,7 +45,7 @@ export async function GET(
 
     return NextResponse.json({ ...incident, updates, notifications });
   } catch (error) {
-    console.error("Admin incident GET error:", error);
+    reportError("Admin incident GET error", error);
     return NextResponse.json({ error: "Failed to fetch incident" }, { status: 500 });
   }
 }
@@ -84,7 +85,7 @@ export async function PATCH(
     await db.update(incidents).set(updates).where(eq(incidents.id, id));
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Admin incident PATCH error:", error);
+    reportError("Admin incident PATCH error", error);
     return NextResponse.json({ error: "Failed to update incident" }, { status: 500 });
   }
 }
@@ -101,7 +102,7 @@ export async function DELETE(
     await db.delete(incidents).where(eq(incidents.id, id));
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Admin incident DELETE error:", error);
+    reportError("Admin incident DELETE error", error);
     return NextResponse.json({ error: "Failed to delete incident" }, { status: 500 });
   }
 }

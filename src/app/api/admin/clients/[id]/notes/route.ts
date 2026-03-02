@@ -3,6 +3,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { customerNotes, businesses } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 const createNoteSchema = z.object({
   noteText: z.string().min(1, "noteText is required").max(5000),
@@ -24,7 +25,7 @@ export async function GET(
 
     return NextResponse.json({ notes });
   } catch (error) {
-    console.error("Error fetching notes:", error);
+    reportError("Error fetching notes", error);
     return NextResponse.json({ error: "Failed to fetch notes" }, { status: 500 });
   }
 }
@@ -68,7 +69,7 @@ export async function POST(
 
     return NextResponse.json(note, { status: 201 });
   } catch (error) {
-    console.error("Error creating note:", error);
+    reportError("Error creating note", error);
     return NextResponse.json({ error: "Failed to create note" }, { status: 500 });
   }
 }

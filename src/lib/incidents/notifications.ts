@@ -10,6 +10,8 @@ import {
 import { eq, and, sql } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { formatDuration } from "./engine";
+import { canSendSms } from "@/lib/compliance/sms";
+import { reportError } from "@/lib/error-reporting";
 
 // ── Types ──
 
@@ -38,17 +40,22 @@ export async function notifyOwner(incident: IncidentRow, event: NotificationEven
   const { subject, html } = getOwnerEmailContent(incident, event);
 
   if (OWNER_PHONE) {
-    try {
-      const client = getTwilioClient();
-      await client.messages.create({
-        to: OWNER_PHONE,
-        from: env.TWILIO_PHONE_NUMBER,
-        body: smsBody,
-      });
-      await logNotification(incident.id, "owner_sms", undefined, OWNER_PHONE, "sent");
-    } catch (err) {
-      console.error("Owner SMS failed:", err);
-      await logNotification(incident.id, "owner_sms", undefined, OWNER_PHONE, "failed");
+    const smsCheck = await canSendSms(OWNER_PHONE);
+    if (smsCheck.allowed) {
+      try {
+        const client = getTwilioClient();
+        await client.messages.create({
+          to: OWNER_PHONE,
+          from: env.TWILIO_PHONE_NUMBER,
+          body: smsBody,
+        });
+        await logNotification(incident.id, "owner_sms", undefined, OWNER_PHONE, "sent");
+      } catch (err) {
+        reportError("Owner SMS failed", err);
+        await logNotification(incident.id, "owner_sms", undefined, OWNER_PHONE, "failed");
+      }
+    } else {
+      await logNotification(incident.id, "owner_sms", undefined, OWNER_PHONE, `skipped:${smsCheck.reason}`);
     }
   }
 
@@ -58,7 +65,7 @@ export async function notifyOwner(incident: IncidentRow, event: NotificationEven
       await resend.emails.send({ from: FROM_EMAIL, to: OWNER_EMAIL, subject, html });
       await logNotification(incident.id, "owner_email", undefined, OWNER_EMAIL, "sent");
     } catch (err) {
-      console.error("Owner email failed:", err);
+      reportError("Owner email failed", err);
       await logNotification(incident.id, "owner_email", undefined, OWNER_EMAIL, "failed");
     }
   }
@@ -147,6 +154,11 @@ async function sendClientEmail(incidentId: string, clientId: string, email: stri
 }
 
 async function sendClientSms(incidentId: string, clientId: string, phone: string, body: string) {
+  const smsCheck = await canSendSms(phone);
+  if (!smsCheck.allowed) {
+    await logNotification(incidentId, "client_sms", clientId, phone, `skipped:${smsCheck.reason}`);
+    return;
+  }
   try {
     const client = getTwilioClient();
     await client.messages.create({ to: phone, from: env.TWILIO_PHONE_NUMBER, body });

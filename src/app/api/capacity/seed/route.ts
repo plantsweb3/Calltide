@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { scalingPlaybook } from "@/db/schema";
+import { reportError } from "@/lib/error-reporting";
 
 const playbook = [
   // SEED TIER
@@ -57,7 +58,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, count: playbook.length });
   } catch (err) {
-    console.error("[capacity seed] Error:", err);
+    reportError("[capacity seed] Error", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Seed failed" },
       { status: 500 },

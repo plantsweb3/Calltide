@@ -4,6 +4,7 @@ import { eq, and, isNull } from "drizzle-orm";
 import { Resend } from "resend";
 import { env } from "@/lib/env";
 import { createNotification } from "@/lib/notifications";
+import { reportError } from "@/lib/error-reporting";
 
 export type AlertSeverity = "warning" | "critical" | "emergency";
 
@@ -123,6 +124,6 @@ async function notifyAdmin(severity: AlertSeverity, message: string) {
 </div>`,
     });
   } catch (e) {
-    console.error("[capacity] Failed to send admin notification:", e);
+    reportError("[capacity] Failed to send admin notification", e);
   }
 }

@@ -6,6 +6,7 @@ import { Resend } from "resend";
 import { env } from "@/lib/env";
 import { PROVIDER_LIMITS, determineTier } from "@/lib/capacity/config";
 import { projectBreachDate, estimateMonthlyCost } from "@/lib/capacity/modeling";
+import { reportError } from "@/lib/error-reporting";
 
 export async function POST(request: Request) {
   const auth = request.headers.get("authorization");
@@ -160,7 +161,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, tier, activeClients, alertCount: alerts.length });
   } catch (err) {
-    console.error("[weekly report] Error:", err);
+    reportError("[weekly report] Error", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Report failed" },
       { status: 500 },

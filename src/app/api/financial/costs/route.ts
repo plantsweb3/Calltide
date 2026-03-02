@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { businesses, calls, clientCosts, smsMessages } from "@/db/schema";
 import { eq, and, gte, lt, sql } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 export async function POST(request: Request) {
   const auth = request.headers.get("authorization");
@@ -92,7 +93,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, month: monthStr, processed });
   } catch (err) {
-    console.error("[costs] Error:", err);
+    reportError("[costs] Error", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Cost calculation failed" },
       { status: 500 },

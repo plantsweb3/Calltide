@@ -11,6 +11,7 @@ import {
   getConcurrentCallCount,
 } from "@/lib/capacity/providers";
 import { checkThresholds } from "@/lib/capacity/thresholds";
+import { reportError } from "@/lib/error-reporting";
 
 export async function POST(request: Request) {
   const auth = request.headers.get("authorization");
@@ -105,7 +106,7 @@ export async function POST(request: Request) {
       concurrent,
     });
   } catch (err) {
-    console.error("[capacity snapshot] Error:", err);
+    reportError("[capacity snapshot] Error", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Snapshot failed" },
       { status: 500 },

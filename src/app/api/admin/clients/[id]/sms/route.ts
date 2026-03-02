@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { smsMessages, leads } from "@/db/schema";
 import { eq, desc, count } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET(
   req: NextRequest,
@@ -43,7 +44,7 @@ export async function GET(
 
     return NextResponse.json({ messages, total, page, totalPages });
   } catch (error) {
-    console.error("Error fetching SMS history:", error);
+    reportError("Error fetching SMS history", error);
     return NextResponse.json({ error: "Failed to fetch SMS history" }, { status: 500 });
   }
 }

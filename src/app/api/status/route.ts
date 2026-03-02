@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { incidents, incidentUpdates, systemHealthLogs } from "@/db/schema";
 import { sql, desc, eq, and, inArray } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
@@ -135,7 +136,7 @@ export async function GET(req: NextRequest) {
       dailyHealth: dailyByService,
     });
   } catch (error) {
-    console.error("Status API error:", error);
+    reportError("Status API error", error);
     return NextResponse.json({ error: "Failed to fetch status" }, { status: 500 });
   }
 }

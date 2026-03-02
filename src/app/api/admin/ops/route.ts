@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { systemHealthLogs, calls, businesses, appointments } from "@/db/schema";
 import { sql, desc } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET() {
   try {
@@ -59,7 +60,7 @@ export async function GET() {
       recentErrors,
     });
   } catch (error) {
-    console.error("Error fetching ops data:", error);
+    reportError("Error fetching ops data", error);
     return NextResponse.json({ error: "Failed to fetch ops data" }, { status: 500 });
   }
 }

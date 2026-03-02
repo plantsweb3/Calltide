@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runRetentionCleanup } from "@/lib/compliance/retention";
+import { reportError } from "@/lib/error-reporting";
 
 /**
  * POST /api/compliance/retention
@@ -20,7 +21,7 @@ export async function POST(req: NextRequest) {
     const results = await runRetentionCleanup();
     return NextResponse.json({ ok: true, results });
   } catch (error) {
-    console.error("Retention cleanup error:", error);
+    reportError("Retention cleanup error", error);
     return NextResponse.json({ error: "Retention cleanup failed" }, { status: 500 });
   }
 }

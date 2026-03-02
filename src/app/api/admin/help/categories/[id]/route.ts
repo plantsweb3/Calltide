@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { helpCategories, helpArticles } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 /**
  * PATCH /api/admin/help/categories/[id]
@@ -51,7 +52,7 @@ export async function PATCH(
 
     return NextResponse.json(updated);
   } catch (error) {
-    console.error("Error updating help category:", error);
+    reportError("Error updating help category", error);
     return NextResponse.json({ error: "Failed to update category" }, { status: 500 });
   }
 }
@@ -94,7 +95,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting help category:", error);
+    reportError("Error deleting help category", error);
     return NextResponse.json({ error: "Failed to delete category" }, { status: 500 });
   }
 }

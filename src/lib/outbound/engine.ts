@@ -181,7 +181,7 @@ export async function initiateOutboundCall(
       twilioCallSid: twilioCall.sid,
       callType: call.callType ?? undefined,
       language: call.language ?? "en",
-    }).catch((err) => console.error("Outbound active call tracking failed:", err));
+    }).catch((err) => reportError("Outbound active call tracking failed", err));
 
     return { success: true };
   } catch (error) {
@@ -267,7 +267,7 @@ export async function handleOutboundStatusCallback(
   if (terminalStatuses.includes(CallStatus)) {
     // Remove from active calls (fire-and-forget)
     trackCallEnd({ twilioCallSid: params.CallSid }).catch((err) =>
-      console.error("Outbound active call cleanup failed:", err),
+      reportError("Outbound active call cleanup failed", err),
     );
 
     await logActivity({

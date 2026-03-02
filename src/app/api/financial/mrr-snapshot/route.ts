@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { businesses, mrrSnapshots, subscriptionEvents } from "@/db/schema";
 import { eq, sql, and, gte, inArray } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 export async function POST(request: Request) {
   const auth = request.headers.get("authorization");
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
       pastDueClients: mrrResult?.pastDueCount ?? 0,
     });
   } catch (err) {
-    console.error("[mrr-snapshot] Error:", err);
+    reportError("[mrr-snapshot] Error", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "MRR snapshot failed" },
       { status: 500 },

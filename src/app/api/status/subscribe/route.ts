@@ -6,6 +6,7 @@ import { statusPageSubscribers } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
+import { reportError } from "@/lib/error-reporting";
 
 const subscribeSchema = z.object({
   email: z.string().email("Valid email required"),
@@ -91,7 +92,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: isEs ? "Correo de verificación enviado" : "Verification email sent" });
   } catch (error) {
-    console.error("Subscribe error:", error);
+    reportError("Subscribe error", error);
     return NextResponse.json({ error: "Failed to process subscription" }, { status: 500 });
   }
 }

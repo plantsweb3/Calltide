@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { activeCalls, callPeaks, calls } from "@/db/schema";
 import { eq, desc, count, gte } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 /**
  * GET /api/admin/live
@@ -67,7 +68,7 @@ export async function GET() {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("Live monitoring API error:", error);
+    reportError("Live monitoring API error", error);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

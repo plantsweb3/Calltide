@@ -10,6 +10,7 @@ import {
   businesses,
 } from "@/db/schema";
 import { desc, sql, eq, and } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET(req: NextRequest) {
   const tab = req.nextUrl.searchParams.get("tab") ?? "consent";
@@ -112,7 +113,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ error: "Invalid tab" }, { status: 400 });
   } catch (error) {
-    console.error("Compliance API error:", error);
+    reportError("Compliance API error", error);
     return NextResponse.json({ error: "Failed to fetch compliance data" }, { status: 500 });
   }
 }

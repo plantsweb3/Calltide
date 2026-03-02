@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { businesses, calls, appointments, smsMessages, churnRiskScores } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET(
   _req: NextRequest,
@@ -82,7 +83,7 @@ export async function GET(
         : null,
     });
   } catch (error) {
-    console.error("Error fetching client detail:", error);
+    reportError("Error fetching client detail", error);
     return NextResponse.json({ error: "Failed to fetch client" }, { status: 500 });
   }
 }

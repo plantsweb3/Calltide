@@ -38,6 +38,7 @@ function LegalPageLayout({ doc, type }: { doc: typeof legalDocuments.$inferSelec
             <Link href="/legal/privacy" className="font-medium hover:underline">Privacy</Link>
             <Link href="/legal/dpa" className="font-medium hover:underline">DPA</Link>
             <Link href="/legal/sub-processors" className="font-medium hover:underline">Sub-Processors</Link>
+            <Link href="/es/legal/terms" className="text-xs hover:underline" style={{ color: "#94A3B8" }}>ES</Link>
           </div>
         </div>
       </header>

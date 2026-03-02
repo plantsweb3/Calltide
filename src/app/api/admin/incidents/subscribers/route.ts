@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { statusPageSubscribers } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 export async function GET() {
   try {
@@ -12,7 +13,7 @@ export async function GET() {
 
     return NextResponse.json({ subscribers: subs });
   } catch (error) {
-    console.error("Subscribers GET error:", error);
+    reportError("Subscribers GET error", error);
     return NextResponse.json({ error: "Failed to fetch subscribers" }, { status: 500 });
   }
 }
@@ -27,7 +28,7 @@ export async function DELETE(req: NextRequest) {
     await db.delete(statusPageSubscribers).where(eq(statusPageSubscribers.id, id));
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Subscriber DELETE error:", error);
+    reportError("Subscriber DELETE error", error);
     return NextResponse.json({ error: "Failed to delete subscriber" }, { status: 500 });
   }
 }
