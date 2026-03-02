@@ -95,6 +95,11 @@ Keep it professional, factual, and under 500 words.`;
       .map((block) => block.text)
       .join("\n");
 
+    if (!postmortem.trim()) {
+      reportError(`Postmortem generation returned empty content for incident ${incidentId}`, null);
+      return;
+    }
+
     // Generate Spanish version
     const esResponse = await client.messages.create({
       model: CLAUDE_MODEL,

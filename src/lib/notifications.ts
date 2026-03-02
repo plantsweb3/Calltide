@@ -17,21 +17,32 @@ export async function createNotification(params: {
     acknowledged: false,
   });
 
-  // Forward critical/emergency notifications to owner via SMS
+  // Forward critical/emergency notifications to owner via SMS (throttled)
   if (params.severity === "critical" || params.severity === "emergency") {
-    forwardToOwnerSms(params.severity, params.title, params.message).catch(() => {});
+    forwardToOwnerSms(params.severity, params.title, params.message).catch((e) => {
+      console.error("[notifications] SMS forward failed:", e);
+    });
   }
 
   return result;
 }
 
+/** Throttle: max 1 SMS per 5 minutes to avoid flooding the admin */
+let lastSmsSentAt = 0;
+const SMS_THROTTLE_MS = 5 * 60 * 1000;
+
 /** Send an SMS to OWNER_PHONE for critical/emergency alerts */
 async function forwardToOwnerSms(severity: string, title: string, message: string) {
+  const now = Date.now();
+  if (now - lastSmsSentAt < SMS_THROTTLE_MS) return;
+
   const ownerPhone = process.env.OWNER_PHONE;
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioToken = process.env.TWILIO_AUTH_TOKEN;
   const twilioFrom = process.env.TWILIO_PHONE_NUMBER;
   if (!ownerPhone || !twilioSid || !twilioToken || !twilioFrom) return;
+
+  lastSmsSentAt = now;
 
   const twilio = (await import("twilio")).default;
   const client = twilio(twilioSid, twilioToken);

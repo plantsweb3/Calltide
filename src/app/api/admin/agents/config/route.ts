@@ -32,14 +32,19 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "agentName is required" }, { status: 400 });
   }
 
-  const [existing] = await db
+  let [existing] = await db
     .select({ id: agentConfig.id })
     .from(agentConfig)
     .where(eq(agentConfig.agentName, agentName))
     .limit(1);
 
+  // Auto-create config row if it doesn't exist (e.g., first toggle from dashboard)
   if (!existing) {
-    return NextResponse.json({ error: `Agent "${agentName}" not found` }, { status: 404 });
+    const [created] = await db
+      .insert(agentConfig)
+      .values({ agentName })
+      .returning({ id: agentConfig.id });
+    existing = created;
   }
 
   const allowedFields: Record<string, unknown> = {};

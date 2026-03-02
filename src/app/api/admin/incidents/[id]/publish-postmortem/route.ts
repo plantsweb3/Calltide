@@ -27,6 +27,11 @@ export async function POST(
       return NextResponse.json({ error: "No postmortem to publish" }, { status: 400 });
     }
 
+    // Skip if already published (prevents duplicate notifications)
+    if (incident.postmortemPublished) {
+      return NextResponse.json({ success: true, alreadyPublished: true });
+    }
+
     await db
       .update(incidents)
       .set({

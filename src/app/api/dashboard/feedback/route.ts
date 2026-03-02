@@ -82,6 +82,10 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ item: created }, { status: 201 });
 }
 
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
 /** Send an auto-acknowledge email so the client knows we received their feedback */
 async function sendFeedbackAck(businessId: string, feedbackTitle: string) {
   const [biz] = await db
@@ -103,13 +107,13 @@ async function sendFeedbackAck(businessId: string, feedbackTitle: string) {
     ? {
         subject: "Recibimos tu mensaje — Calltide",
         heading: "Recibimos tu mensaje",
-        body: `Hola ${biz.ownerName || ""},<br><br>Recibimos tu comentario sobre "<strong>${feedbackTitle}</strong>". Nuestro equipo lo revisará y te responderá dentro de 48 horas.<br><br>Gracias por ayudarnos a mejorar Calltide.`,
+        body: `Hola ${escapeHtml(biz.ownerName || "")},<br><br>Recibimos tu comentario sobre "<strong>${escapeHtml(feedbackTitle)}</strong>". Nuestro equipo lo revisará y te responderá dentro de 48 horas.<br><br>Gracias por ayudarnos a mejorar Calltide.`,
         footer: "¿Urgente? Responde a este correo.",
       }
     : {
         subject: "We got your feedback — Calltide",
         heading: "We received your feedback",
-        body: `Hey ${biz.ownerName || "there"},<br><br>We received your feedback about "<strong>${feedbackTitle}</strong>". Our team will review it and get back to you within 48 hours.<br><br>Thanks for helping us improve Calltide.`,
+        body: `Hey ${escapeHtml(biz.ownerName || "there")},<br><br>We received your feedback about "<strong>${escapeHtml(feedbackTitle)}</strong>". Our team will review it and get back to you within 48 hours.<br><br>Thanks for helping us improve Calltide.`,
         footer: "Urgent? Reply to this email.",
       };
 

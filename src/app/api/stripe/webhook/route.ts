@@ -157,6 +157,18 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         .set({ accountId: newAccountId, locationName: "Main", isPrimaryLocation: true, locationOrder: 0 })
         .where(eq(businesses.id, existingByEmail.id));
     }
+
+    // Provision Twilio number if the existing business doesn't have one
+    const [bizForPhone] = await db
+      .select({ id: businesses.id, twilioNumber: businesses.twilioNumber })
+      .from(businesses)
+      .where(eq(businesses.id, existingByEmail.id))
+      .limit(1);
+    if (bizForPhone && !bizForPhone.twilioNumber) {
+      provisionTwilioNumber(bizForPhone.id).catch((err) =>
+        reportError("Failed to auto-provision Twilio number (existing biz)", err, { extra: { businessId: bizForPhone.id } })
+      );
+    }
     return;
   }
 
