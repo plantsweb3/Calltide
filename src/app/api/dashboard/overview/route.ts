@@ -78,11 +78,60 @@ export async function GET(req: NextRequest) {
     .from(calls)
     .where(eq(calls.businessId, businessId));
 
+  // Detect first call — show celebration when totalCalls is 1-3 (fresh milestone)
+  let firstCallCelebration: {
+    show: boolean;
+    callId?: string;
+    callerName?: string;
+    duration?: number;
+    service?: string;
+  } | undefined;
+
+  if (totalCallsResult.count >= 1 && totalCallsResult.count <= 3) {
+    const [firstCall] = await db
+      .select({
+        id: calls.id,
+        duration: calls.duration,
+        createdAt: calls.createdAt,
+        leadId: calls.leadId,
+      })
+      .from(calls)
+      .where(and(eq(calls.businessId, businessId), eq(calls.status, "completed")))
+      .orderBy(calls.createdAt)
+      .limit(1);
+
+    if (firstCall) {
+      let callerName: string | undefined;
+      if (firstCall.leadId) {
+        const [lead] = await db
+          .select({ name: leads.name })
+          .from(leads)
+          .where(eq(leads.id, firstCall.leadId))
+          .limit(1);
+        callerName = lead?.name || undefined;
+      }
+
+      // Check if call was within last 7 days (show celebration for a week)
+      const callAge = Date.now() - new Date(firstCall.createdAt).getTime();
+      const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+      if (callAge < sevenDays) {
+        firstCallCelebration = {
+          show: true,
+          callId: firstCall.id,
+          callerName,
+          duration: firstCall.duration || undefined,
+        };
+      }
+    }
+  }
+
   const basicResponse = {
     callsToday: callsToday.count,
     appointmentsThisWeek: appointmentsThisWeekResult.count,
     missedCallsSaved: missedCallsSaved.count,
     totalCalls: totalCallsResult.count,
+    firstCallCelebration,
   };
 
   // ── Enhanced metrics (wrapped so basic always returns) ──

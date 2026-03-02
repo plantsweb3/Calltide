@@ -1033,6 +1033,22 @@ export const clientFeedback = sqliteTable("client_feedback", {
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
 
+export const testimonials = sqliteTable("testimonials", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  ownerName: text("owner_name").notNull(),
+  businessName: text("business_name").notNull(),
+  businessType: text("business_type"),
+  quote: text("quote").notNull(),
+  rating: integer("rating"), // 1-5 stars
+  npsScore: integer("nps_score"), // original NPS score that triggered the request
+  approved: integer("approved", { mode: "boolean" }).default(false),
+  featured: integer("featured", { mode: "boolean" }).default(false),
+  submittedAt: text("submitted_at").notNull().default(sql`(datetime('now'))`),
+  approvedAt: text("approved_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
 export const demoSessions = sqliteTable("demo_sessions", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   ipHash: text("ip_hash").notNull(),

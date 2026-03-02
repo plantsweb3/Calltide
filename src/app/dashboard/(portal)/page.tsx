@@ -13,6 +13,14 @@ interface Overview {
   appointmentsThisWeek: number;
   missedCallsSaved: number;
   totalCalls: number;
+  // First call celebration
+  firstCallCelebration?: {
+    show: boolean;
+    callId?: string;
+    callerName?: string;
+    duration?: number;
+    service?: string;
+  };
   // Enhanced
   revenueThisMonth?: number;
   revenueChange?: number;
@@ -78,6 +86,7 @@ function getGreeting(): string {
 export default function OverviewPage() {
   const [data, setData] = useState<Overview | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     fetch("/api/dashboard/overview")
@@ -99,6 +108,8 @@ export default function OverviewPage() {
   }
 
   const isEnhanced = !!data.revenueThisMonth;
+
+  const showCelebration = data.firstCallCelebration?.show && !dismissed;
 
   if (
     !isEnhanced &&
@@ -150,6 +161,9 @@ export default function OverviewPage() {
             Here&apos;s how your AI receptionist is performing
           </p>
         </div>
+
+        {/* First Call Celebration */}
+        {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} />}
 
         {/* Revenue Hero Banner */}
         <div
@@ -402,6 +416,9 @@ export default function OverviewPage() {
         </p>
       </div>
 
+      {/* First Call Celebration */}
+      {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} />}
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard label="Calls Today" value={data.callsToday} />
         <MetricCard label="Appointments This Week" value={data.appointmentsThisWeek} />
@@ -437,6 +454,57 @@ export default function OverviewPage() {
           bilingualStats={data.bilingualStats}
         />
       )}
+    </div>
+  );
+}
+
+function FirstCallBanner({
+  celebration,
+  onDismiss,
+}: {
+  celebration: NonNullable<Overview["firstCallCelebration"]>;
+  onDismiss: () => void;
+}) {
+  const durationMin = celebration.duration ? Math.round(celebration.duration / 60) : null;
+
+  return (
+    <div
+      className="relative overflow-hidden rounded-xl p-6"
+      style={{
+        background: "linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(74,222,128,0.06) 100%)",
+        border: "1px solid rgba(34,197,94,0.3)",
+      }}
+    >
+      <button
+        onClick={onDismiss}
+        className="absolute right-3 top-3 text-sm"
+        style={{ color: "var(--db-text-muted)" }}
+        aria-label="Dismiss"
+      >
+        &times;
+      </button>
+      <div className="flex items-start gap-4">
+        <div
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl"
+          style={{ background: "rgba(34,197,94,0.15)" }}
+        >
+          <span role="img" aria-label="celebration">&#127881;</span>
+        </div>
+        <div>
+          <h3
+            className="text-lg font-bold"
+            style={{ color: "#22c55e" }}
+          >
+            Your first call was handled!
+          </h3>
+          <p className="mt-1 text-sm" style={{ color: "var(--db-text-secondary)" }}>
+            Your AI receptionist just handled its first call
+            {celebration.callerName ? ` from ${celebration.callerName}` : ""}
+            {durationMin ? ` (${durationMin} min)` : ""}.
+            This is just the beginning — every call from here is revenue you&apos;re no longer missing.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

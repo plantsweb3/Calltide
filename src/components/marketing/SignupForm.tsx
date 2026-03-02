@@ -6,6 +6,7 @@ import { T, type Lang } from "@/lib/marketing/translations";
 export function SignupForm({ lang, plan = "monthly" }: { lang: Lang; plan?: "monthly" | "annual" }) {
   const t = T[lang].cta;
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [exists, setExists] = useState(false);
@@ -18,10 +19,18 @@ export function SignupForm({ lang, plan = "monthly" }: { lang: Lang; plan?: "mon
     setLoading(true);
 
     try {
+      const payload: { email: string; phone?: string } = { email: email.trim() };
+      if (phone.trim()) {
+        // Normalize phone: add +1 if just 10 digits
+        let normalized = phone.trim().replace(/[\s()-]/g, "");
+        if (/^\d{10}$/.test(normalized)) normalized = "+1" + normalized;
+        payload.phone = normalized;
+      }
+
       const startRes = await fetch("/api/signup/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify(payload),
       });
 
       if (startRes.status === 409) {
@@ -60,22 +69,31 @@ export function SignupForm({ lang, plan = "monthly" }: { lang: Lang; plan?: "mon
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row">
+      <form onSubmit={handleSubmit} className="mx-auto mt-10 flex max-w-md flex-col gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); setExists(false); setError(null); }}
+            placeholder={t.placeholder}
+            className="flex-1 rounded-lg border border-white/20 bg-white/10 px-5 py-4 text-base text-white placeholder-white/40 backdrop-blur-sm focus:border-amber focus:outline-none focus:ring-1 focus:ring-amber"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="cta-gold cta-shimmer shrink-0 rounded-lg px-8 py-4 text-base font-semibold text-white disabled:opacity-50"
+          >
+            {loading ? t.sending : t.button}
+          </button>
+        </div>
         <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => { setEmail(e.target.value); setExists(false); setError(null); }}
-          placeholder={t.placeholder}
-          className="flex-1 rounded-lg border border-white/20 bg-white/10 px-5 py-4 text-base text-white placeholder-white/40 backdrop-blur-sm focus:border-amber focus:outline-none focus:ring-1 focus:ring-amber"
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder={lang === "es" ? "Teléfono (opcional — recibe el link por SMS)" : "Phone (optional — get signup link via text)"}
+          className="rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm text-white placeholder-white/30 backdrop-blur-sm focus:border-amber focus:outline-none focus:ring-1 focus:ring-amber"
         />
-        <button
-          type="submit"
-          disabled={loading}
-          className="cta-gold cta-shimmer shrink-0 rounded-lg px-8 py-4 text-base font-semibold text-white disabled:opacity-50"
-        >
-          {loading ? t.sending : t.button}
-        </button>
       </form>
       {exists && (
         <p className="mt-3 text-sm text-amber">

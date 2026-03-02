@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// ── PROMOTER (9-10): Send referral prompt email ──
+// ── PROMOTER (9-10): Send referral prompt + testimonial request email ──
 async function handlePromoter(businessId: string) {
   try {
     const [business] = await db
@@ -156,6 +156,7 @@ async function handlePromoter(businessId: string) {
     }
 
     const shareLink = `${BASE_URL}/r/${business.referralCode}`;
+    const testimonialLink = `${BASE_URL}/api/testimonial/submit?businessId=${businessId}`;
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     await resend.emails.send({
@@ -174,6 +175,18 @@ async function handlePromoter(businessId: string) {
             ${business.ownerName}, your rating means the world to us. We're thrilled
             that Calltide is making a real difference for ${business.name}.
           </p>
+
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin: 24px 0;">
+            <p style="font-size: 15px; font-weight: 600; color: #166534; margin-bottom: 8px;">
+              Would you share a quick testimonial?
+            </p>
+            <p style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 12px;">
+              A sentence or two about your experience helps other business owners discover Calltide. It takes 30 seconds.
+            </p>
+            <a href="${testimonialLink}" style="display:inline-block;background:#16a34a;color:#ffffff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
+              Leave a Testimonial
+            </a>
+          </div>
 
           <p style="font-size: 16px; color: #555; line-height: 1.7;">
             Know another business owner who's tired of missing calls? Share your

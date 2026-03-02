@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { accounts, prospects, demos, calls, businesses, prospectAuditCalls, prospectOutreach, consentRecords, dataDeletionRequests, outboundCalls } from "@/db/schema";
-import { sql, eq, gte, gt } from "drizzle-orm";
+import { sql, eq, gte, gt, and, isNull } from "drizzle-orm";
 import { getLocationMrr, type PlanType } from "@/lib/stripe-prices";
 
 export async function GET() {
@@ -22,6 +22,7 @@ export async function GET() {
     outboundStats,
     accountStats,
     multiLocationStats,
+    onboardingFunnel,
   ] = await Promise.all([
     // Prospect counts by status
     db
@@ -119,6 +120,16 @@ export async function GET() {
       })
       .from(accounts)
       .where(gt(accounts.locationCount, 1)),
+
+    // Onboarding funnel — businesses that haven't completed onboarding
+    db
+      .select({
+        step: businesses.onboardingStep,
+        count: sql<number>`count(*)`,
+      })
+      .from(businesses)
+      .where(isNull(businesses.onboardingCompletedAt))
+      .groupBy(businesses.onboardingStep),
   ]);
 
   const prospectsByStatus: Record<string, number> = {};
@@ -162,6 +173,12 @@ export async function GET() {
       multiLocation: multiLocCount,
       totalLocations: businessCount[0]?.count ?? 0,
       locationMrr: Math.round(locationMrr / 100),
+    },
+    onboarding: {
+      stuckByStep: Object.fromEntries(
+        onboardingFunnel.map((row) => [String(row.step ?? 1), row.count]),
+      ),
+      totalIncomplete: onboardingFunnel.reduce((sum, row) => sum + row.count, 0),
     },
   });
 }

@@ -3,6 +3,7 @@ import { dunningState, businesses } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { Resend } from "resend";
 import Twilio from "twilio";
+import Stripe from "stripe";
 import { env } from "@/lib/env";
 import { canSendSms } from "@/lib/compliance/sms";
 import { createNotification } from "@/lib/notifications";
@@ -210,6 +211,53 @@ export async function processDunning() {
       });
     }
 
+    // Day 14+: Auto-cancel subscription after grace period expires
+    if (state.email3SentAt && daysSinceFailure >= 14) {
+      try {
+        // Cancel via Stripe API if subscription exists
+        if (business.stripeSubscriptionId) {
+          const stripe = getStripe();
+          await stripe.subscriptions.cancel(business.stripeSubscriptionId);
+        }
+
+        // Update dunning state to canceled
+        await db
+          .update(dunningState)
+          .set({
+            status: "canceled",
+            canceledAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+          .where(eq(dunningState.id, state.id));
+
+        // Deactivate business + set data retention hold (30 days)
+        const holdUntil = new Date();
+        holdUntil.setDate(holdUntil.getDate() + 30);
+        await db
+          .update(businesses)
+          .set({
+            active: false,
+            paymentStatus: "canceled",
+            dataRetentionHoldUntil: holdUntil.toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+          .where(eq(businesses.id, state.businessId));
+
+        // Send farewell email
+        await sendFarewellEmail(business, lang);
+
+        await createNotification({
+          source: "financial",
+          severity: "critical",
+          title: "Auto-canceled after grace period",
+          message: `${business.name} — subscription auto-canceled after 14 days unpaid. Data retained for 30 days.`,
+          actionUrl: "/admin/billing",
+        });
+      } catch (e) {
+        console.error(`[dunning] Auto-cancel failed for ${business.name}:`, e);
+      }
+    }
+
     results.processed++;
   }
 
@@ -302,6 +350,59 @@ async function sendDunningEmail(
   }
 }
 
+// ── Trial Ending Email ──
+
+export async function sendTrialEndingEmail(
+  business: { ownerEmail: string | null; ownerName: string; name: string; defaultLanguage: string },
+) {
+  if (!business.ownerEmail) return;
+  const lang = business.defaultLanguage === "es" ? "es" : "en";
+  const portalUrl = `${env.NEXT_PUBLIC_APP_URL}/dashboard/billing`;
+
+  const t = lang === "es"
+    ? {
+        subject: `Tu prueba gratis de Calltide termina en 3 días — ${business.name}`,
+        heading: "Tu prueba gratis está por terminar",
+        body: `Hola ${business.ownerName || ""},<br><br>Tu prueba gratuita de 14 días de Calltide para <strong>${business.name}</strong> termina en 3 días. Para que tu recepcionista IA siga respondiendo llamadas sin interrupción, asegúrate de tener un método de pago registrado.<br><br>Si ya lo configuraste, ¡no tienes que hacer nada! Tu servicio continuará automáticamente.`,
+        cta: "Revisar Facturación",
+        footer: "¿Preguntas? Responde a este correo — estamos aquí para ayudar.",
+      }
+    : {
+        subject: `Your Calltide free trial ends in 3 days — ${business.name}`,
+        heading: "Your free trial is ending soon",
+        body: `Hey ${business.ownerName || "there"},<br><br>Your 14-day free trial of Calltide for <strong>${business.name}</strong> ends in 3 days. To keep your AI receptionist answering calls without interruption, make sure you have a payment method on file.<br><br>If you've already set one up, you're all good — your service will continue automatically.`,
+        cta: "Review Billing",
+        footer: "Questions? Reply to this email — we're here to help.",
+      };
+
+  const html = `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;background:#ffffff;">
+  <div style="margin-bottom:24px;">
+    <span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span>
+  </div>
+  <h2 style="color:#1A1D24;margin-bottom:8px;">${t.heading}</h2>
+  <p style="color:#475569;line-height:1.7;margin-bottom:24px;">${t.body}</p>
+  <a href="${portalUrl}" style="display:inline-block;background:#C59A27;color:#ffffff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
+    ${t.cta}
+  </a>
+  <p style="color:#94A3B8;font-size:13px;margin-top:32px;line-height:1.6;">${t.footer}</p>
+  <hr style="border:none;border-top:1px solid #E2E8F0;margin:32px 0 16px;" />
+  <p style="color:#94A3B8;font-size:11px;">Calltide Inc. &middot; San Antonio, TX</p>
+</div>`;
+
+  try {
+    const r = getResend();
+    await r.emails.send({
+      from: FROM_EMAIL,
+      to: business.ownerEmail,
+      subject: t.subject,
+      html,
+    });
+  } catch (e) {
+    console.error("[dunning] Failed to send trial-ending email:", e);
+  }
+}
+
 async function sendDunningSms(
   business: { ownerPhone: string; name: string; defaultLanguage: string },
   lang: "en" | "es",
@@ -321,5 +422,66 @@ async function sendDunningSms(
     });
   } catch (e) {
     console.error("[dunning] Failed to send SMS:", e);
+  }
+}
+
+// ── Stripe helper ──
+
+function getStripe(): Stripe {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
+  return new Stripe(key, { apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion });
+}
+
+// ── Farewell Email ──
+
+async function sendFarewellEmail(
+  business: { ownerEmail: string | null; name: string; defaultLanguage: string },
+  lang: "en" | "es",
+) {
+  if (!business.ownerEmail) return;
+  const reactivateUrl = `${env.NEXT_PUBLIC_APP_URL}/dashboard/billing`;
+
+  const t = lang === "es"
+    ? {
+        subject: `Tu cuenta de Calltide ha sido desactivada — ${business.name}`,
+        heading: "Tu cuenta ha sido desactivada",
+        body: `Lamentamos informarte que tu cuenta de Calltide para <strong>${business.name}</strong> ha sido desactivada porque no se pudo procesar el pago después de múltiples intentos.<br><br>Tu recepcionista IA ya no está respondiendo llamadas. Tus datos se conservarán por 30 días.<br><br>Si deseas reactivar tu servicio, simplemente actualiza tu método de pago.`,
+        cta: "Reactivar Mi Cuenta",
+        footer: "¿Necesita ayuda? Responda a este correo.",
+      }
+    : {
+        subject: `Your Calltide account has been deactivated — ${business.name}`,
+        heading: "Your account has been deactivated",
+        body: `We're sorry to let you know that your Calltide account for <strong>${business.name}</strong> has been deactivated because we couldn't process your payment after multiple attempts.<br><br>Your AI receptionist is no longer answering calls. Your data will be retained for 30 days.<br><br>If you'd like to reactivate your service, simply update your payment method.`,
+        cta: "Reactivate My Account",
+        footer: "Need help? Reply to this email.",
+      };
+
+  const html = `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;background:#ffffff;">
+  <div style="margin-bottom:24px;">
+    <span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span>
+  </div>
+  <h2 style="color:#1A1D24;margin-bottom:8px;">${t.heading}</h2>
+  <p style="color:#475569;line-height:1.7;margin-bottom:24px;">${t.body}</p>
+  <a href="${reactivateUrl}" style="display:inline-block;background:#C59A27;color:#ffffff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
+    ${t.cta}
+  </a>
+  <p style="color:#94A3B8;font-size:13px;margin-top:32px;line-height:1.6;">${t.footer}</p>
+  <hr style="border:none;border-top:1px solid #E2E8F0;margin:32px 0 16px;" />
+  <p style="color:#94A3B8;font-size:11px;">Calltide Inc. &middot; San Antonio, TX</p>
+</div>`;
+
+  try {
+    const r = getResend();
+    await r.emails.send({
+      from: FROM_EMAIL,
+      to: business.ownerEmail,
+      subject: t.subject,
+      html,
+    });
+  } catch (e) {
+    console.error("[dunning] Failed to send farewell email:", e);
   }
 }
