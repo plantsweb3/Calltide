@@ -14,6 +14,7 @@ import { createNotification } from "@/lib/notifications";
 import { logActivity } from "@/lib/activity";
 import { getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
 import { reportError } from "@/lib/error-reporting";
+import { provisionTwilioNumber } from "@/lib/twilio/provision";
 
 function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -216,6 +217,18 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     message: `${email} completed checkout. Onboarding pending.`,
     actionUrl: "/admin/billing",
   });
+
+  // Auto-provision a Twilio phone number for this business
+  const [newBiz] = await db
+    .select({ id: businesses.id })
+    .from(businesses)
+    .where(eq(businesses.ownerEmail, email))
+    .limit(1);
+  if (newBiz) {
+    provisionTwilioNumber(newBiz.id).catch((err) =>
+      reportError("Failed to auto-provision Twilio number", err, { extra: { businessId: newBiz.id } })
+    );
+  }
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
-import { clientFeedback } from "@/db/schema";
+import { clientFeedback, businesses } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+import { reportError } from "@/lib/error-reporting";
 
 const createSchema = z.object({
   type: z.enum(["feedback", "feature_request", "bug_report"]),
@@ -73,5 +74,59 @@ export async function POST(req: NextRequest) {
     })
     .returning();
 
+  // Fire-and-forget auto-acknowledge email
+  sendFeedbackAck(businessId, parsed.data.title).catch((err) =>
+    reportError("Failed to send feedback ack email", err)
+  );
+
   return NextResponse.json({ item: created }, { status: 201 });
+}
+
+/** Send an auto-acknowledge email so the client knows we received their feedback */
+async function sendFeedbackAck(businessId: string, feedbackTitle: string) {
+  const [biz] = await db
+    .select({ ownerEmail: businesses.ownerEmail, ownerName: businesses.ownerName, defaultLanguage: businesses.defaultLanguage })
+    .from(businesses)
+    .where(eq(businesses.id, businessId))
+    .limit(1);
+
+  if (!biz?.ownerEmail) return;
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(apiKey);
+  const lang = biz.defaultLanguage === "es" ? "es" : "en";
+
+  const t = lang === "es"
+    ? {
+        subject: "Recibimos tu mensaje — Calltide",
+        heading: "Recibimos tu mensaje",
+        body: `Hola ${biz.ownerName || ""},<br><br>Recibimos tu comentario sobre "<strong>${feedbackTitle}</strong>". Nuestro equipo lo revisará y te responderá dentro de 48 horas.<br><br>Gracias por ayudarnos a mejorar Calltide.`,
+        footer: "¿Urgente? Responde a este correo.",
+      }
+    : {
+        subject: "We got your feedback — Calltide",
+        heading: "We received your feedback",
+        body: `Hey ${biz.ownerName || "there"},<br><br>We received your feedback about "<strong>${feedbackTitle}</strong>". Our team will review it and get back to you within 48 hours.<br><br>Thanks for helping us improve Calltide.`,
+        footer: "Urgent? Reply to this email.",
+      };
+
+  await resend.emails.send({
+    from: "Calltide <hello@contact.calltide.app>",
+    to: biz.ownerEmail,
+    subject: t.subject,
+    html: `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;background:#ffffff;">
+  <div style="margin-bottom:24px;">
+    <span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span>
+  </div>
+  <h2 style="color:#1A1D24;margin-bottom:8px;">${t.heading}</h2>
+  <p style="color:#475569;line-height:1.7;margin-bottom:24px;">${t.body}</p>
+  <p style="color:#94A3B8;font-size:13px;margin-top:32px;line-height:1.6;">${t.footer}</p>
+  <hr style="border:none;border-top:1px solid #E2E8F0;margin:32px 0 16px;" />
+  <p style="color:#94A3B8;font-size:11px;">Calltide Inc. &middot; San Antonio, TX</p>
+</div>`,
+  });
 }

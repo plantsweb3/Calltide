@@ -12,10 +12,32 @@ export async function createNotification(params: {
   message: string;
   actionUrl?: string;
 }) {
-  return db.insert(notifications).values({
+  const result = await db.insert(notifications).values({
     ...params,
     acknowledged: false,
   });
+
+  // Forward critical/emergency notifications to owner via SMS
+  if (params.severity === "critical" || params.severity === "emergency") {
+    forwardToOwnerSms(params.severity, params.title, params.message).catch(() => {});
+  }
+
+  return result;
+}
+
+/** Send an SMS to OWNER_PHONE for critical/emergency alerts */
+async function forwardToOwnerSms(severity: string, title: string, message: string) {
+  const ownerPhone = process.env.OWNER_PHONE;
+  const twilioSid = process.env.TWILIO_ACCOUNT_SID;
+  const twilioToken = process.env.TWILIO_AUTH_TOKEN;
+  const twilioFrom = process.env.TWILIO_PHONE_NUMBER;
+  if (!ownerPhone || !twilioSid || !twilioToken || !twilioFrom) return;
+
+  const twilio = (await import("twilio")).default;
+  const client = twilio(twilioSid, twilioToken);
+  const body = `[${severity.toUpperCase()}] ${title}\n${message}`.slice(0, 1500);
+
+  await client.messages.create({ to: ownerPhone, from: twilioFrom, body });
 }
 
 export async function getUnacknowledgedCount(): Promise<number> {

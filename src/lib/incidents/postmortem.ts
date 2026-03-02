@@ -4,6 +4,8 @@ import { incidents, incidentUpdates, systemHealthLogs } from "@/db/schema";
 import { eq, and, sql, desc, lte } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { formatDuration } from "./engine";
+import { notifyClients, notifySubscribers } from "./notifications";
+import { reportError } from "@/lib/error-reporting";
 
 const CLAUDE_MODEL = env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929";
 
@@ -112,12 +114,28 @@ Keep it professional, factual, and under 500 words.`;
       .set({
         postmortem,
         postmortemEs,
+        postmortemPublished: true,
         status: "postmortem",
         updatedAt: new Date().toISOString(),
       })
       .where(eq(incidents.id, incidentId));
+
+    // Auto-publish: notify affected clients and status page subscribers
+    const [updated] = await db
+      .select()
+      .from(incidents)
+      .where(eq(incidents.id, incidentId))
+      .limit(1);
+    if (updated) {
+      await notifyClients(updated, "resolved").catch((e) =>
+        reportError("Postmortem client notification failed", e, { extra: { incidentId } })
+      );
+      await notifySubscribers(updated, "resolved").catch((e) =>
+        reportError("Postmortem subscriber notification failed", e, { extra: { incidentId } })
+      );
+    }
   } catch (err) {
-    console.error(`Postmortem generation failed for incident ${incidentId}:`, err);
+    reportError(`Postmortem generation failed for incident ${incidentId}`, err);
   }
 }
 

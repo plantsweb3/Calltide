@@ -77,6 +77,8 @@ export default function AdminDashboardPage() {
   const [alerts, setAlerts] = useState<NotificationItem[]>([]);
   const [crmStats, setCrmStats] = useState<{ totalCustomers: number; repeatRate: number; openEstimates: number; wonEstimateValue: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [outreachPaused, setOutreachPaused] = useState<boolean | null>(null);
+  const [outreachToggling, setOutreachToggling] = useState(false);
 
   const fetchAll = useCallback(() => {
     setError(null);
@@ -103,6 +105,13 @@ export default function AdminDashboardPage() {
     fetch("/api/admin/crm-stats")
       .then((r) => r.json())
       .then(setCrmStats)
+      .catch(() => {});
+    fetch("/api/admin/agents/config")
+      .then((r) => r.json())
+      .then((configs: Array<{ agentName: string; enabled: boolean }>) => {
+        const qualify = configs.find((c) => c.agentName === "qualify");
+        setOutreachPaused(qualify ? !qualify.enabled : false);
+      })
       .catch(() => {});
   }, []);
 
@@ -175,6 +184,76 @@ export default function AdminDashboardPage() {
 
       {/* Quick Actions */}
       <QuickActions />
+
+      {/* Prospect Outreach Toggle */}
+      {outreachPaused !== null && (
+        <div
+          className="flex items-center justify-between rounded-xl p-4"
+          style={{
+            background: outreachPaused
+              ? "rgba(239,68,68,0.06)"
+              : "rgba(34,197,94,0.06)",
+            border: `1px solid ${outreachPaused ? "rgba(239,68,68,0.2)" : "rgba(34,197,94,0.2)"}`,
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <span
+              className="flex h-8 w-8 items-center justify-center rounded-full text-sm"
+              style={{
+                background: outreachPaused ? "rgba(239,68,68,0.12)" : "rgba(34,197,94,0.12)",
+                color: outreachPaused ? "#ef4444" : "#22c55e",
+              }}
+            >
+              {outreachPaused ? "\u23F8" : "\u25B6"}
+            </span>
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                Prospect Outreach
+              </p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                {outreachPaused
+                  ? "Paused — the qualify agent is not sending outreach or booking demos"
+                  : "Active — the qualify agent is running daily, sending outreach and booking demos"}
+              </p>
+            </div>
+          </div>
+          <button
+            disabled={outreachToggling}
+            onClick={async () => {
+              setOutreachToggling(true);
+              try {
+                const res = await fetch("/api/admin/agents/config", {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ agentName: "qualify", enabled: outreachPaused }),
+                });
+                if (res.ok) {
+                  setOutreachPaused(!outreachPaused);
+                  toast.success(outreachPaused ? "Prospect outreach resumed" : "Prospect outreach paused");
+                } else {
+                  toast.error("Failed to update outreach status");
+                }
+              } catch {
+                toast.error("Failed to update outreach status");
+              } finally {
+                setOutreachToggling(false);
+              }
+            }}
+            className="shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-all"
+            style={{
+              background: outreachPaused ? "#22c55e" : "#ef4444",
+              color: "#fff",
+              opacity: outreachToggling ? 0.6 : 1,
+            }}
+          >
+            {outreachToggling
+              ? "Updating..."
+              : outreachPaused
+                ? "Resume Outreach"
+                : "Pause Outreach"}
+          </button>
+        </div>
+      )}
 
       {/* Revenue + Core Metric cards */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
