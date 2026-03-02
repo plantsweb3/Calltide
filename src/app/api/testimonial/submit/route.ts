@@ -6,8 +6,18 @@ import { eq, and, gte } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { createNotification } from "@/lib/notifications";
 
+/** Escape HTML special characters to prevent XSS in server-rendered HTML */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 const submitSchema = z.object({
-  businessId: z.string().min(1),
+  businessId: z.string().uuid("Invalid business ID"),
   quote: z.string().min(10, "Please write at least a sentence").max(1000),
   rating: z.number().int().min(1).max(5).optional(),
 });
@@ -59,9 +69,9 @@ export async function GET(req: NextRequest) {
 <body>
   <div class="card" id="form-card">
     <h1>Share Your Experience</h1>
-    <p class="sub">Hey ${biz.ownerName || "there"}, we'd love to hear how Calltide has helped ${biz.name}. A sentence or two goes a long way!</p>
+    <p class="sub">Hey ${escapeHtml(biz.ownerName || "there")}, we'd love to hear how Calltide has helped ${escapeHtml(biz.name)}. A sentence or two goes a long way!</p>
     <form id="testimonial-form">
-      <input type="hidden" name="businessId" value="${businessId}" />
+      <input type="hidden" name="businessId" value="${escapeHtml(businessId)}" />
       <label>Rating</label>
       <div class="stars" id="stars">
         ${[1, 2, 3, 4, 5].map((n) => `<button type="button" class="star" data-value="${n}">&#9733;</button>`).join("")}
@@ -83,7 +93,7 @@ export async function GET(req: NextRequest) {
       const res = await fetch('/api/testimonial/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ businessId: '${businessId}', quote, rating }),
+        body: JSON.stringify({ businessId: document.querySelector('input[name="businessId"]').value, quote, rating }),
       });
       if (res.ok) {
         document.getElementById('form-card').innerHTML = '<div class="success"><h2>Thank you!</h2><p>Your testimonial has been submitted. We really appreciate it.</p></div>';

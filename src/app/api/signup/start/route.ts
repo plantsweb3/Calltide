@@ -47,12 +47,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // If phone provided, send checkout link via SMS after checkout session is created
-  // We pass phone back so the checkout step can handle SMS delivery
+  // If phone provided, send checkout link via SMS
+  // Separate per-phone rate limit to prevent SMS bombing arbitrary numbers
   if (phone) {
-    sendCheckoutSms(phone, email).catch((err) =>
-      reportError("Failed to send signup SMS", err)
-    );
+    const smsRl = await rateLimit(`signup-sms:${phone}`, { limit: 2, windowSeconds: 3600 });
+    if (smsRl.success) {
+      sendCheckoutSms(phone, email).catch((err) =>
+        reportError("Failed to send signup SMS", err)
+      );
+    }
   }
 
   return NextResponse.json({ ok: true, email, phone: phone || undefined });

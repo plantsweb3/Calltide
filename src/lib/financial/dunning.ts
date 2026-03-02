@@ -8,6 +8,7 @@ import { env } from "@/lib/env";
 import { canSendSms } from "@/lib/compliance/sms";
 import { createNotification } from "@/lib/notifications";
 import { canContactToday, logOutreach } from "@/lib/outreach";
+import { reportError } from "@/lib/error-reporting";
 
 const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
 
@@ -254,7 +255,7 @@ export async function processDunning() {
           actionUrl: "/admin/billing",
         });
       } catch (e) {
-        console.error(`[dunning] Auto-cancel failed for ${business.name}:`, e);
+        reportError(`[dunning] Auto-cancel failed for ${business.name}`, e, { businessId: state.businessId });
       }
     }
 
@@ -346,7 +347,7 @@ async function sendDunningEmail(
       html,
     });
   } catch (e) {
-    console.error(`[dunning] Failed to send ${stage} email:`, e);
+    reportError(`[dunning] Failed to send ${stage} email`, e);
   }
 }
 
@@ -399,7 +400,7 @@ export async function sendTrialEndingEmail(
       html,
     });
   } catch (e) {
-    console.error("[dunning] Failed to send trial-ending email:", e);
+    reportError("[dunning] Failed to send trial-ending email", e);
   }
 }
 
@@ -421,7 +422,7 @@ async function sendDunningSms(
       to: business.ownerPhone,
     });
   } catch (e) {
-    console.error("[dunning] Failed to send SMS:", e);
+    reportError("[dunning] Failed to send SMS", e);
   }
 }
 
@@ -482,6 +483,6 @@ async function sendFarewellEmail(
       html,
     });
   } catch (e) {
-    console.error("[dunning] Failed to send farewell email:", e);
+    reportError("[dunning] Failed to send farewell email", e);
   }
 }
