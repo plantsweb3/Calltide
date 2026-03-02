@@ -18,8 +18,10 @@ export async function GET(req: NextRequest) {
   if (!rl.success) return rateLimitResponse(rl);
 
   try {
-    const page = parseInt(req.nextUrl.searchParams.get("page") || "1");
-    const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") || "20"), 50);
+    const parsedPage = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
+    const page = Math.max(1, Number.isNaN(parsedPage) ? 1 : parsedPage);
+    const parsedLimit = parseInt(req.nextUrl.searchParams.get("limit") || "20", 10);
+    const limit = Math.min(Math.max(1, Number.isNaN(parsedLimit) ? 20 : parsedLimit), 50);
     const offset = (page - 1) * limit;
 
     const rows = await db

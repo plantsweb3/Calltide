@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { accounts, businesses, calls, appointments } from "@/db/schema";
 import { sql, eq } from "drizzle-orm";
 import { assignReferralCode } from "@/lib/referral";
+import { reportError } from "@/lib/error-reporting";
 
 const createClientSchema = z.object({
   name: z.string().min(1).max(200),
@@ -153,7 +154,9 @@ export async function POST(req: NextRequest) {
     .returning();
 
   // Generate referral code for the new business
-  assignReferralCode(created.id, created.name).catch(() => {});
+  assignReferralCode(created.id, created.name).catch((err) =>
+    reportError("Failed to assign referral code", err)
+  );
 
   return NextResponse.json(created, { status: 201 });
 }

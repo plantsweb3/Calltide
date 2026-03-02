@@ -37,8 +37,10 @@ export async function POST(req: NextRequest) {
     .limit(1);
 
   if (existing) {
+    // Rate limiting (10/hr per IP) prevents enumeration at scale.
+    // Return 409 so the form can direct users to login instead.
     return NextResponse.json(
-      { error: "exists", message: "An account with this email already exists." },
+      { error: "exists" },
       { status: 409 }
     );
   }

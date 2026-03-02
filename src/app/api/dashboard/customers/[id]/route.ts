@@ -148,7 +148,7 @@ export async function PUT(
       })
       .where(and(eq(customers.id, id), eq(customers.businessId, businessId)));
 
-    const [updated] = await db.select().from(customers).where(eq(customers.id, id)).limit(1);
+    const [updated] = await db.select().from(customers).where(and(eq(customers.id, id), eq(customers.businessId, businessId))).limit(1);
     return NextResponse.json(updated);
   } catch (error) {
     reportError("Failed to update customer", error, { businessId });

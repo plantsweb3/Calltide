@@ -13,7 +13,10 @@ const addLocationSchema = z.object({
   type: z.string().min(1).max(100),
   serviceArea: z.string().max(500).optional(),
   services: z.array(z.string()).optional(),
-  businessHours: z.record(z.string(), z.object({ open: z.string(), close: z.string() })).optional(),
+  businessHours: z.record(z.string(), z.object({
+    open: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Time must be HH:MM (24h)"),
+    close: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Time must be HH:MM (24h)"),
+  })).optional(),
   greeting: z.string().max(500).optional(),
 });
 

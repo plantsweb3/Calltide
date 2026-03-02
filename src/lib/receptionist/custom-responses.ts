@@ -2,6 +2,16 @@ import { db } from "@/db";
 import { receptionistCustomResponses } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 
+/** Strip prompt-injection patterns from user-provided custom response text */
+function sanitize(text: string, max = 256): string {
+  return text
+    .slice(0, max)
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^(you are|ignore|disregard|forget|override|system:|assistant:|user:).*/gim, "")
+    .replace(/<[^>]*>/g, "")
+    .trim();
+}
+
 interface GroupedResponses {
   faq: Array<{ trigger: string; response: string }>;
   off_limits: Array<{ trigger: string; response: string | null }>;
@@ -33,16 +43,16 @@ export async function getCustomResponsesForPrompt(businessId: string): Promise<s
   for (const row of rows) {
     switch (row.category) {
       case "faq":
-        grouped.faq.push({ trigger: row.triggerText, response: row.responseText || "" });
+        grouped.faq.push({ trigger: sanitize(row.triggerText), response: sanitize(row.responseText || "", 2048) });
         break;
       case "off_limits":
-        grouped.off_limits.push({ trigger: row.triggerText, response: row.responseText });
+        grouped.off_limits.push({ trigger: sanitize(row.triggerText), response: row.responseText ? sanitize(row.responseText) : null });
         break;
       case "phrase":
-        grouped.phrase.push({ trigger: row.triggerText });
+        grouped.phrase.push({ trigger: sanitize(row.triggerText) });
         break;
       case "emergency_keyword":
-        grouped.emergency_keyword.push({ trigger: row.triggerText });
+        grouped.emergency_keyword.push({ trigger: sanitize(row.triggerText, 100) });
         break;
     }
   }

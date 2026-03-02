@@ -6,6 +6,7 @@ import { eq, sql, and, gte } from "drizzle-orm";
 import { scheduleAuditCall } from "@/lib/outreach/audit";
 import { logActivity } from "@/lib/activity";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
+import { reportError } from "@/lib/error-reporting";
 
 const AUDIT_RATE_LIMIT = { limit: 5, windowSeconds: 3600 }; // 5 per IP per hour
 
@@ -148,7 +149,7 @@ export async function POST(req: NextRequest) {
           auditCallStatus: "calling",
         }).where(eq(auditRequests.id, auditReq.id));
       }
-    }).catch(() => {});
+    }).catch((err) => reportError("Failed to schedule audit call", err));
   } else {
     estimatedCallTime = "next business day between 10am-3pm CT";
   }

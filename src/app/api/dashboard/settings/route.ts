@@ -21,8 +21,8 @@ const settingsSchema = z.object({
   businessHours: z.record(
     dayEnum,
     z.object({
-      open: z.string(),
-      close: z.string(),
+      open: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Time must be HH:MM (24h)"),
+      close: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Time must be HH:MM (24h)"),
       closed: z.boolean().optional(),
     })
   ),

@@ -9,12 +9,15 @@ export async function GET(req: NextRequest) {
   }
 
   const url = req.nextUrl.searchParams;
-  const status = url.get("status");
+  const statusParam = url.get("status");
   const parsedLimit = parseInt(url.get("limit") ?? "50", 10);
   const limit = Math.min(Math.max(1, Number.isNaN(parsedLimit) ? 50 : parsedLimit), 200);
 
+  const validStatuses = ["new", "in_progress", "resolved", "declined"] as const;
   const conditions = [];
-  if (status) conditions.push(eq(clientFeedback.status, status));
+  if (statusParam && validStatuses.includes(statusParam as (typeof validStatuses)[number])) {
+    conditions.push(eq(clientFeedback.status, statusParam));
+  }
 
   const items = await db
     .select({

@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
 
 const createCustomerSchema = z.object({
   name: z.string().min(1).max(100),
-  phone: z.string().min(10).max(20),
+  phone: z.string().regex(/^\+?1?\d{10,15}$/, "Invalid phone number"),
   email: z.string().email().optional().or(z.literal("")),
   address: z.string().max(200).optional().or(z.literal("")),
   notes: z.string().max(1000).optional().or(z.literal("")),

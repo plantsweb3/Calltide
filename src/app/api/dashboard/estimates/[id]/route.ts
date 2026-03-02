@@ -108,7 +108,7 @@ export async function PUT(
       .set(updates)
       .where(and(eq(estimates.id, id), eq(estimates.businessId, businessId)));
 
-    const [updated] = await db.select().from(estimates).where(eq(estimates.id, id)).limit(1);
+    const [updated] = await db.select().from(estimates).where(and(eq(estimates.id, id), eq(estimates.businessId, businessId))).limit(1);
     return NextResponse.json(updated);
   } catch (error) {
     reportError("Failed to update estimate", error, { businessId });

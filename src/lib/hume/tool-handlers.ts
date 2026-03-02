@@ -6,6 +6,7 @@ import { getBusinessById } from "@/lib/ai/context-builder";
 import { sendSMS } from "@/lib/twilio/sms";
 import { getAppointmentConfirmation, getOwnerNotification } from "@/lib/sms-templates";
 import { updateActiveCall } from "@/lib/monitoring/active-calls";
+import { reportError } from "@/lib/error-reporting";
 import type { ToolResult, Language } from "@/types";
 
 interface ToolCallContext {
@@ -56,7 +57,7 @@ export async function dispatchToolCall(
       updateActiveCall({ humeSessionId: cr.humeChitChatId }, {
         currentIntent: intent,
         callType: intent,
-      }).catch(() => {});
+      }).catch((err) => reportError("Failed to update active call intent", err));
     }
   }
 
@@ -256,7 +257,7 @@ async function handleTransferToHuman(
           currentIntent: isEmergency ? "emergency" : "transfer",
           callType: isEmergency ? "emergency" : "transfer",
         },
-      ).catch(() => {});
+      ).catch((err) => reportError("Failed to update active call for transfer", err));
     }
   }
 

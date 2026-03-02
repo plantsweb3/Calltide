@@ -44,9 +44,24 @@ export async function PATCH(req: NextRequest) {
 
   const allowedFields: Record<string, unknown> = {};
   if (typeof updates.enabled === "boolean") allowedFields.enabled = updates.enabled;
-  if (typeof updates.cronExpression === "string") allowedFields.cronExpression = updates.cronExpression;
-  if (typeof updates.escalationThreshold === "number") allowedFields.escalationThreshold = updates.escalationThreshold;
+  if (typeof updates.cronExpression === "string") {
+    // Validate cron format: 5 or 6 space-separated fields (min hr dom mon dow [yr])
+    const cronParts = updates.cronExpression.trim().split(/\s+/);
+    if (cronParts.length < 5 || cronParts.length > 6 || !/^[0-9*,\-\/]+$/.test(cronParts.join(""))) {
+      return NextResponse.json({ error: "Invalid cron expression" }, { status: 400 });
+    }
+    allowedFields.cronExpression = updates.cronExpression.trim();
+  }
+  if (typeof updates.escalationThreshold === "number") {
+    if (updates.escalationThreshold < 0 || updates.escalationThreshold > 100) {
+      return NextResponse.json({ error: "escalationThreshold must be 0-100" }, { status: 400 });
+    }
+    allowedFields.escalationThreshold = updates.escalationThreshold;
+  }
   if (typeof updates.systemPromptOverride === "string" || updates.systemPromptOverride === null) {
+    if (typeof updates.systemPromptOverride === "string" && updates.systemPromptOverride.length > 2000) {
+      return NextResponse.json({ error: "systemPromptOverride max 2000 characters" }, { status: 400 });
+    }
     allowedFields.systemPromptOverride = updates.systemPromptOverride;
   }
 

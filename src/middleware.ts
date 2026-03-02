@@ -4,21 +4,24 @@ const ADMIN_COOKIE = "calltide_admin";
 const CLIENT_COOKIE = "calltide_client";
 
 // ── Lightweight rate limiter for middleware (Edge-compatible) ──
-const adminRLStore = new Map<string, { count: number; resetAt: number }>();
-const ADMIN_RL_LIMIT = 120; // 120 requests per 60s
-const ADMIN_RL_WINDOW = 60_000;
+const rlStore = new Map<string, { count: number; resetAt: number }>();
+const RL_WINDOW = 60_000;
 
-function adminRateLimit(ip: string): boolean {
+function rateLimit(ip: string, prefix: string, limit: number): boolean {
+  const key = `${prefix}:${ip}`;
   const now = Date.now();
-  const entry = adminRLStore.get(ip);
+  const entry = rlStore.get(key);
   if (!entry || entry.resetAt < now) {
-    adminRLStore.set(ip, { count: 1, resetAt: now + ADMIN_RL_WINDOW });
+    rlStore.set(key, { count: 1, resetAt: now + RL_WINDOW });
     return true;
   }
   entry.count++;
-  if (entry.count > ADMIN_RL_LIMIT) return false;
+  if (entry.count > limit) return false;
   return true;
 }
+
+const ADMIN_RL_LIMIT = 120;
+const DASHBOARD_RL_LIMIT = 200; // higher — dashboards make many parallel fetches
 
 function getIp(req: NextRequest): string {
   return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
@@ -136,7 +139,7 @@ export async function middleware(req: NextRequest) {
 
     // Rate limit admin API routes
     if (pathname.startsWith("/api/admin")) {
-      if (!adminRateLimit(getIp(req))) {
+      if (!rateLimit(getIp(req), "admin", ADMIN_RL_LIMIT)) {
         return NextResponse.json({ error: "Too many requests" }, { status: 429 });
       }
     }
@@ -157,6 +160,11 @@ export async function middleware(req: NextRequest) {
   if (pathname.startsWith("/api/dashboard")) {
     // Allow auth endpoints through without cookie
     if (pathname.startsWith("/api/dashboard/auth")) return NextResponse.next();
+
+    // Rate limit dashboard API routes
+    if (!rateLimit(getIp(req), "dashboard", DASHBOARD_RL_LIMIT)) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
 
     const secret = process.env.CLIENT_AUTH_SECRET;
     if (!secret) {
