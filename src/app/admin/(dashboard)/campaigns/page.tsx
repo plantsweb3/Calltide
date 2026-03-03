@@ -15,25 +15,56 @@ interface Campaign {
   totalContacts: number;
   contactsReached: number;
   createdAt: string;
+  businessName?: string;
 }
 
 export default function CampaignsPage() {
   const [tab, setTab] = useState<"sales" | "client">("sales");
   const [outreachStats, setOutreachStats] = useState<OutreachStats[]>([]);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/admin/dashboard")
-      .then((r) => r.json())
-      .then((data) => {
-        const statuses = data.prospects?.byStatus ?? {};
-        setOutreachStats(
-          Object.entries(statuses).map(([status, count]) => ({
-            status,
-            count: count as number,
-          })),
-        );
-      });
+    setError(null);
+    Promise.all([
+      fetch("/api/admin/dashboard")
+        .then((r) => r.json())
+        .then((data) => {
+          const statuses = data.prospects?.byStatus ?? {};
+          setOutreachStats(
+            Object.entries(statuses).map(([status, count]) => ({
+              status,
+              count: count as number,
+            })),
+          );
+        }),
+      fetch("/api/admin/outbound")
+        .then((r) => r.json())
+        .then((data) => {
+          // Group outbound calls by type as pseudo-campaigns
+          const types: Record<string, { total: number; completed: number }> = {};
+          for (const call of data.calls ?? []) {
+            const t = call.callType || "general";
+            if (!types[t]) types[t] = { total: 0, completed: 0 };
+            types[t].total++;
+            if (call.status === "completed") types[t].completed++;
+          }
+          setCampaigns(
+            Object.entries(types).map(([type, stats]) => ({
+              id: type,
+              name: type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+              type: "outbound",
+              status: "active",
+              totalContacts: stats.total,
+              contactsReached: stats.completed,
+              createdAt: new Date().toISOString(),
+            })),
+          );
+        }),
+    ])
+      .catch(() => setError("Failed to load campaign data"))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -46,6 +77,13 @@ export default function CampaignsPage() {
           Sales and client outreach
         </p>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button onClick={() => window.location.reload()} className="rounded-lg px-3 py-1.5 text-xs font-medium" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}>Retry</button>
+        </div>
+      )}
 
       <div
         className="flex gap-1 rounded-xl p-1 w-fit"

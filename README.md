@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Calltide
+
+AI-powered bilingual virtual receptionist for home service businesses. Answers calls 24/7 in English and Spanish, books appointments, takes messages, detects emergencies, and provides a full client + admin portal.
+
+## Tech Stack
+
+- **Framework:** Next.js 15 (App Router), TypeScript
+- **Database:** Drizzle ORM + SQLite/Turso (libsql)
+- **Voice AI:** Hume EVI (WebSocket-based voice conversations)
+- **LLM:** Anthropic Claude (call summaries, QA scoring, content generation)
+- **SMS/Calls:** Twilio
+- **Email:** Resend
+- **Payments:** Stripe (checkout, webhooks, billing portal)
+- **Error Reporting:** Sentry
+- **Testing:** Vitest + React Testing Library
+- **Styling:** Tailwind CSS + CSS custom properties
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Copy environment variables
+cp .env.example .env.local
+
+# Generate database migrations
+npm run db:generate
+
+# Apply migrations
+npm run db:migrate
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm run test` | Run test suite |
+| `npm run test:watch` | Tests in watch mode |
+| `npm run test:coverage` | Tests with coverage report |
+| `npm run lint` | Run ESLint |
+| `npm run typecheck` | TypeScript type checking |
+| `npm run db:generate` | Generate Drizzle migrations |
+| `npm run db:migrate` | Apply database migrations |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+src/
+├── app/
+│   ├── admin/          # Admin portal (cookie auth, HMAC-SHA256)
+│   ├── dashboard/      # Client portal (magic link auth)
+│   ├── api/
+│   │   ├── admin/      # Admin API routes
+│   │   ├── dashboard/  # Client API routes
+│   │   ├── agents/     # AI agent cron routes (6 agents)
+│   │   ├── cron/       # Scheduled task routes
+│   │   ├── webhooks/   # Hume + Twilio webhooks
+│   │   ├── stripe/     # Stripe webhook + portal
+│   │   └── ...
+│   ├── (marketing)/    # Public marketing pages
+│   ├── es/             # Spanish language pages
+│   └── blog/           # Blog (EN/ES)
+├── components/         # Shared UI components
+├── db/
+│   ├── schema.ts       # Drizzle schema (65 tables)
+│   └── migrations/     # SQL migrations
+├── lib/
+│   ├── ai/             # System prompts, context builder, call summary
+│   ├── agents/         # Agent runtime, tools, prompts
+│   ├── hume/           # Tool handlers, webhook verification
+│   ├── capacity/       # Provider metrics, modeling, thresholds
+│   ├── compliance/     # GDPR/CCPA consent, SMS opt-out, retention
+│   ├── financial/      # Dunning, cost tracking
+│   ├── incidents/      # Incident engine, notifications, postmortem
+│   └── ...
+└── middleware.ts       # Auth, CSRF, rate limiting
+tests/
+├── unit/               # Unit tests
+├── integration/        # Integration tests
+├── fixtures/           # Test data
+└── helpers/            # Test utilities
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Authentication
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Admin:** Cookie-based with HMAC-SHA256 signed tokens
+- **Client:** Magic link via email → signed token → cookie
+- **Crons:** Bearer token via `CRON_SECRET`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment Variables
 
-## Deploy on Vercel
+Required environment variables (see `.env.example` for full list):
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Variable | Description |
+|----------|-------------|
+| `TURSO_DATABASE_URL` | Turso/libsql database URL |
+| `ADMIN_PASSWORD` | Admin portal password |
+| `CLIENT_AUTH_SECRET` | Client cookie signing secret |
+| `CRON_SECRET` | Cron job authorization |
+| `STRIPE_SECRET_KEY` | Stripe API key |
+| `TWILIO_ACCOUNT_SID` | Twilio account SID |
+| `HUME_API_KEY` | Hume EVI API key |
+| `ANTHROPIC_API_KEY` | Anthropic Claude API key |
+| `RESEND_API_KEY` | Resend email API key |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+Deployed on Vercel with 18 scheduled cron jobs for agents, capacity monitoring, financial tracking, and outbound campaigns. See `vercel.json` for the full schedule.
