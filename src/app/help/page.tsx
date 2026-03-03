@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCategoriesWithCounts, getPopularArticles } from "@/lib/help/search";
 import HelpSearch from "./_components/help-search";
+import HelpLangToggle from "./_components/help-lang-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -33,9 +34,7 @@ export default async function HelpCenterPage() {
             Calltide
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/es/help" className="text-sm font-medium" style={{ color: "#475569" }}>
-              Español
-            </Link>
+            <HelpLangToggle lang="en" autoRedirect />
             <Link href="/audit" className="rounded-lg px-4 py-2 text-sm font-medium text-white" style={{ background: "#C59A27" }}>
               Free Audit
             </Link>

@@ -4,6 +4,7 @@ import { helpArticles, helpCategories } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { getCategoriesWithCounts } from "@/lib/help/search";
+import HelpLangToggle from "../../../help/_components/help-lang-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -11,9 +12,20 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category: slug } = await params;
   const [cat] = await db.select().from(helpCategories).where(eq(helpCategories.slug, slug)).limit(1);
   if (!cat) return { title: "Categoría No Encontrada — Calltide" };
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
   return {
     title: `${cat.nameEs || cat.name} — Centro de Ayuda Calltide`,
     description: cat.descriptionEs || cat.description,
+    openGraph: {
+      title: `${cat.nameEs || cat.name} — Centro de Ayuda Calltide`,
+      description: (cat.descriptionEs || cat.description) ?? undefined,
+      url: `${appUrl}/es/help/${slug}`,
+    },
+    alternates: {
+      canonical: `${appUrl}/es/help/${slug}`,
+      languages: { en: `${appUrl}/help/${slug}`, es: `${appUrl}/es/help/${slug}` },
+    },
   };
 }
 
@@ -46,7 +58,7 @@ export default async function HelpCategoryEsPage({ params }: { params: Promise<{
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <Link href="/" className="text-xl font-bold" style={{ color: "#C59A27" }}>Calltide</Link>
           <div className="flex items-center gap-4">
-            <Link href={`/help/${slug}`} className="text-sm font-medium" style={{ color: "#475569" }}>English</Link>
+            <HelpLangToggle lang="es" />
             <Link href="/es/help" className="text-sm font-medium" style={{ color: "#475569" }}>Centro de Ayuda</Link>
           </div>
         </div>

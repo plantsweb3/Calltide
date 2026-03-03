@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCategoriesWithCounts, getPopularArticles } from "@/lib/help/search";
 import HelpSearch from "../../help/_components/help-search";
+import HelpLangToggle from "../../help/_components/help-lang-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,7 @@ export default async function HelpCenterEsPage() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <Link href="/" className="text-xl font-bold" style={{ color: "#C59A27" }}>Calltide</Link>
           <div className="flex items-center gap-4">
-            <Link href="/help" className="text-sm font-medium" style={{ color: "#475569" }}>English</Link>
+            <HelpLangToggle lang="es" autoRedirect />
             <Link href="/audit" className="rounded-lg px-4 py-2 text-sm font-medium text-white" style={{ background: "#C59A27" }}>
               Auditoría Gratis
             </Link>

@@ -4,6 +4,7 @@ import { helpArticles, helpCategories } from "@/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import ArticleBody from "../../_components/article-body";
+import HelpLangToggle from "../../_components/help-lang-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +37,7 @@ async function getArticle(categorySlug: string, articleSlug: string) {
       })
       .from(helpArticles)
       .leftJoin(helpCategories, eq(helpArticles.categoryId, helpCategories.id))
-      .where(and(eq(helpArticles.status, "published"), or(...relatedIds.map((id) => eq(helpArticles.id, id)))))
+      .where(and(eq(helpArticles.status, "published"), or(...relatedIds.map((s) => eq(helpArticles.slug, s)))))
       .limit(3);
   }
 
@@ -47,9 +48,28 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category, slug } = await params;
   const data = await getArticle(category, slug);
   if (!data) return { title: "Article Not Found — Calltide Help" };
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
+  const title = data.article.metaTitle || `${data.article.title} — Calltide Help`;
+  const description = data.article.metaDescription || data.article.excerpt || undefined;
+  const url = `${appUrl}/help/${category}/${slug}`;
+
   return {
-    title: data.article.metaTitle || `${data.article.title} — Calltide Help`,
-    description: data.article.metaDescription || data.article.excerpt,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "article",
+    },
+    alternates: {
+      canonical: url,
+      languages: {
+        en: url,
+        es: `${appUrl}/es/help/${category}/${slug}`,
+      },
+    },
   };
 }
 
@@ -59,14 +79,34 @@ export default async function HelpArticlePage({ params }: { params: Promise<{ ca
   if (!data) notFound();
 
   const { article, category, related } = data;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
 
   return (
     <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
+      {/* JSON-LD for prospect articles */}
+      {catSlug === "for-prospects" && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Article",
+              headline: article.title,
+              description: article.metaDescription || article.excerpt,
+              author: { "@type": "Organization", name: "Calltide" },
+              publisher: { "@type": "Organization", name: "Calltide", url: appUrl },
+              datePublished: article.publishedAt,
+              dateModified: article.updatedAt,
+              mainEntityOfPage: `${appUrl}/help/${catSlug}/${slug}`,
+            }),
+          }}
+        />
+      )}
       <header className="border-b" style={{ borderColor: "#E2E8F0" }}>
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <Link href="/" className="text-xl font-bold" style={{ color: "#C59A27" }}>Calltide</Link>
           <div className="flex items-center gap-4">
-            <Link href={`/es/help/${catSlug}/${slug}`} className="text-sm font-medium" style={{ color: "#475569" }}>Español</Link>
+            <HelpLangToggle lang="en" />
             <Link href="/help" className="text-sm font-medium" style={{ color: "#475569" }}>Help Center</Link>
           </div>
         </div>
@@ -120,6 +160,23 @@ export default async function HelpArticlePage({ params }: { params: Promise<{ ca
                 </Link>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Prospect CTA */}
+        {catSlug === "for-prospects" && (
+          <div className="mt-12 rounded-xl p-8 text-center" style={{ background: "#111827" }}>
+            <p className="text-lg font-bold text-white">Ready to stop missing calls?</p>
+            <p className="mt-1 text-sm" style={{ color: "#94A3B8" }}>
+              See exactly what your callers experience with a free phone audit.
+            </p>
+            <Link
+              href="/audit?utm_source=help&utm_medium=prospect-cta"
+              className="mt-4 inline-block rounded-lg px-6 py-2.5 text-sm font-semibold text-white"
+              style={{ background: "#C59A27" }}
+            >
+              Get Your Free Audit &rarr;
+            </Link>
           </div>
         )}
 

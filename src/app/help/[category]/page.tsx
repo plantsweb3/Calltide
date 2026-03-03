@@ -4,6 +4,7 @@ import { helpArticles, helpCategories } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { getCategoriesWithCounts } from "@/lib/help/search";
+import HelpLangToggle from "../_components/help-lang-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -11,9 +12,20 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category: slug } = await params;
   const [cat] = await db.select().from(helpCategories).where(eq(helpCategories.slug, slug)).limit(1);
   if (!cat) return { title: "Category Not Found — Calltide Help" };
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
   return {
     title: `${cat.name} — Calltide Help Center`,
     description: cat.description,
+    openGraph: {
+      title: `${cat.name} — Calltide Help Center`,
+      description: cat.description ?? undefined,
+      url: `${appUrl}/help/${slug}`,
+    },
+    alternates: {
+      canonical: `${appUrl}/help/${slug}`,
+      languages: { en: `${appUrl}/help/${slug}`, es: `${appUrl}/es/help/${slug}` },
+    },
   };
 }
 
@@ -44,7 +56,7 @@ export default async function HelpCategoryPage({ params }: { params: Promise<{ c
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <Link href="/" className="text-xl font-bold" style={{ color: "#C59A27" }}>Calltide</Link>
           <div className="flex items-center gap-4">
-            <Link href={`/es/help/${slug}`} className="text-sm font-medium" style={{ color: "#475569" }}>Español</Link>
+            <HelpLangToggle lang="en" />
             <Link href="/help" className="text-sm font-medium" style={{ color: "#475569" }}>Help Center</Link>
           </div>
         </div>
