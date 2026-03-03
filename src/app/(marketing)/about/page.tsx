@@ -18,6 +18,9 @@ export const metadata: Metadata = {
     title: "About — Calltide",
     description: "Built in Texas. AI receptionist for home service businesses.",
   },
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 export default function Page() {

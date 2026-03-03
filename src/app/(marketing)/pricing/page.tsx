@@ -18,6 +18,9 @@ export const metadata: Metadata = {
     title: "Pricing — Calltide",
     description: "One plan, everything included. Free for 14 days.",
   },
+  alternates: {
+    canonical: "/pricing",
+  },
 };
 
 export default function Page() {

@@ -25,6 +25,10 @@ export const metadata = {
     description: "Tips, data, and insights on missed calls, AI receptionists, and growing your service business.",
     url: "https://calltide.app/blog",
   },
+  alternates: {
+    canonical: "/blog",
+    languages: { en: "/blog", es: "/es/blog" },
+  },
 };
 
 export default async function BlogIndexPage({

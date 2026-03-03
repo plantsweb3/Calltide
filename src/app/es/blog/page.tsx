@@ -18,6 +18,10 @@ export const metadata = {
     description: "Consejos, datos e ideas sobre llamadas perdidas, recepcionistas IA y cómo hacer crecer su negocio.",
     url: "https://calltide.app/es/blog",
   },
+  alternates: {
+    canonical: "/es/blog",
+    languages: { en: "/blog", es: "/es/blog" },
+  },
 };
 
 export default async function BlogEsIndexPage({

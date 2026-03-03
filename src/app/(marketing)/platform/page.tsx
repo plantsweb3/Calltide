@@ -18,6 +18,9 @@ export const metadata: Metadata = {
     title: "Platform — Calltide",
     description: "24/7 AI receptionist with bilingual support, appointment booking, emergency detection, and more.",
   },
+  alternates: {
+    canonical: "/platform",
+  },
 };
 
 export default function Page() {

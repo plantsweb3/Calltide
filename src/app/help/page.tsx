@@ -12,6 +12,10 @@ export const metadata = {
     description: "Find answers about your Calltide AI receptionist.",
     url: "https://calltide.app/help",
   },
+  alternates: {
+    canonical: "/help",
+    languages: { en: "/help", es: "/es/help" },
+  },
 };
 
 export default async function HelpCenterPage() {
