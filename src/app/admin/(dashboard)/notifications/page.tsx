@@ -49,8 +49,11 @@ export default function NotificationsPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
 
+  const [error, setError] = useState<string | null>(null);
+
   const load = useCallback(async () => {
     setLoading(true);
+    setError(null);
     const params = new URLSearchParams();
     if (source !== "all") params.set("source", source);
     if (severity !== "all") params.set("severity", severity);
@@ -61,8 +64,12 @@ export default function NotificationsPage() {
       if (r.ok) {
         const data = await r.json();
         setItems(data.items ?? []);
+      } else {
+        setError("Failed to load notifications");
       }
-    } catch {}
+    } catch {
+      setError("Failed to load notifications");
+    }
     setLoading(false);
   }, [source, severity, page]);
 
@@ -126,6 +133,13 @@ export default function NotificationsPage() {
           <option value="info">Info</option>
         </select>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button onClick={load} className="rounded-lg px-3 py-1.5 text-xs font-medium" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}>Retry</button>
+        </div>
+      )}
 
       {/* Notification list */}
       {loading ? (

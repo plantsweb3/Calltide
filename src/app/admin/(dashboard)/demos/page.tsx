@@ -76,11 +76,13 @@ export default function AdminDemosPage() {
   const [metrics, setMetrics] = useState<DemoMetrics | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     fetch("/api/admin/demos")
       .then((r) => r.json())
       .then(setMetrics)
-      .catch(() => {})
+      .catch(() => setError("Failed to load demo analytics"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -93,7 +95,12 @@ export default function AdminDemosPage() {
   }
 
   if (!metrics) {
-    return <p className="py-20 text-center" style={{ color: "var(--db-text-muted)" }}>Failed to load demo analytics.</p>;
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-20">
+        <p style={{ color: "var(--db-text-muted)" }}>{error || "Failed to load demo analytics."}</p>
+        <button onClick={() => window.location.reload()} className="rounded-lg px-3 py-1.5 text-xs font-medium" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}>Retry</button>
+      </div>
+    );
   }
 
   const f = metrics.phaseFunnel;

@@ -53,7 +53,10 @@ export default function AdminFeedbackPage() {
   const [responseText, setResponseText] = useState("");
   const [saving, setSaving] = useState(false);
 
+  const [error, setError] = useState<string | null>(null);
+
   function fetchFeedback() {
+    setError(null);
     const url = filter ? `/api/admin/feedback?status=${filter}` : "/api/admin/feedback";
     fetch(url)
       .then((r) => r.json())
@@ -61,7 +64,7 @@ export default function AdminFeedbackPage() {
         setItems(d.items || []);
         setStats(d.stats || { total: 0, new: 0, inProgress: 0, resolved: 0 });
       })
-      .catch(() => {})
+      .catch(() => setError("Failed to load feedback"))
       .finally(() => setLoading(false));
   }
 
@@ -87,7 +90,7 @@ export default function AdminFeedbackPage() {
         }
       }
     } catch {
-      // handled silently
+      setError("Failed to update feedback");
     } finally {
       setSaving(false);
     }
@@ -109,6 +112,13 @@ export default function AdminFeedbackPage() {
           Review and respond to client feedback, feature requests, and bug reports.
         </p>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button onClick={() => { setError(null); setLoading(true); fetchFeedback(); }} className="rounded-lg px-3 py-1.5 text-xs font-medium" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}>Retry</button>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">

@@ -61,8 +61,11 @@ export default function AdminOutboundPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState<string | null>(null);
+
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch(`/api/admin/outbound?page=${page}&limit=25`);
       const data = await res.json();
@@ -71,7 +74,7 @@ export default function AdminOutboundPage() {
       setTotal(data.total ?? 0);
       setTotalPages(data.totalPages ?? 1);
     } catch {
-      // silently fail
+      setError("Failed to load outbound calls");
     } finally {
       setLoading(false);
     }
@@ -201,6 +204,13 @@ export default function AdminOutboundPage() {
           María&apos;s outbound calling activity across all clients
         </p>
       </div>
+
+      {error && (
+        <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <button onClick={fetchData} className="rounded-lg px-3 py-1.5 text-xs font-medium" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}>Retry</button>
+        </div>
+      )}
 
       {/* Stats */}
       {stats ? (

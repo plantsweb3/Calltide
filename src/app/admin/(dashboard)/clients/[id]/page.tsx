@@ -148,7 +148,7 @@ export default function ClientDetailPage({
     fetch(`/api/admin/clients/${id}/customers?limit=50`)
       .then((r) => r.json())
       .then((d) => setCrmCustomers(d.customers || []))
-      .catch(() => {});
+      .catch(() => setError("Failed to load customer data"));
   }, [id]);
 
   async function addNote() {

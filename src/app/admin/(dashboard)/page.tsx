@@ -105,14 +105,14 @@ export default function AdminDashboardPage() {
     fetch("/api/admin/crm-stats")
       .then((r) => r.json())
       .then(setCrmStats)
-      .catch(() => {});
+      .catch(() => setError("Failed to load CRM stats"));
     fetch("/api/admin/agents/config")
       .then((r) => r.json())
       .then((configs: Array<{ agentName: string; enabled: boolean }>) => {
         const qualify = configs.find((c) => c.agentName === "qualify");
         setOutreachPaused(qualify ? !qualify.enabled : false);
       })
-      .catch(() => {});
+      .catch(() => setError("Failed to load agent config"));
   }, []);
 
   useEffect(() => {
