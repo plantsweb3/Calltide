@@ -5,17 +5,18 @@ import { eq, sql } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 /**
- * POST /api/blog/posts/[id]/track-cta (public)
+ * POST /api/blog/posts/[slug]/track-cta (public)
  * Increment auditCtaClicks counter for a blog post.
+ * NOTE: The caller (audit-cta component) passes the post ID as the slug param.
  */
 export async function POST(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   const rl = await rateLimit(`blog-cta:${getClientIp(_req)}`, { limit: 30, windowSeconds: 60 });
   if (!rl.success) return rateLimitResponse(rl);
 
-  const { id } = await params;
+  const { slug: id } = await params;
 
   await db
     .update(blogPosts)
