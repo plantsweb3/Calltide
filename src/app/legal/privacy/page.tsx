@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { legalDocuments } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import Link from "next/link";
+import { legalMarkdown } from "@/lib/legal-markdown";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Privacy Policy — Calltide" };
@@ -33,7 +34,7 @@ export default async function PrivacyPage() {
             <div className="mb-8 rounded-lg border p-4" style={{ background: "#F8FAFC", borderColor: "#E2E8F0" }}>
               <p className="text-xs" style={{ color: "#94A3B8" }}>Version {doc.version} &middot; Effective {new Date(doc.effectiveDate).toLocaleDateString("en", { month: "long", day: "numeric", year: "numeric" })}</p>
             </div>
-            <article className="prose prose-slate max-w-none" style={{ color: "#1A1D24", lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: simpleMarkdown(doc.content) }} />
+            <article className="prose prose-slate max-w-none" style={{ color: "#1A1D24", lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: legalMarkdown(doc.content) }} />
           </>
         ) : (
           <p style={{ color: "#94A3B8" }}>Document not found. Run the compliance seed endpoint first.</p>
@@ -46,23 +47,3 @@ export default async function PrivacyPage() {
   );
 }
 
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function simpleMarkdown(md: string): string {
-  return escapeHtml(md)
-    .replace(/^### (.+)$/gm, '<h3 style="font-size:1.1rem;font-weight:600;margin:24px 0 8px;color:#1A1D24;">$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2 style="font-size:1.25rem;font-weight:600;margin:32px 0 12px;color:#1A1D24;">$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1 style="font-size:1.75rem;font-weight:700;margin:0 0 16px;color:#1A1D24;">$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/\n- /g, "<br>• ")
-    .replace(/\n\n/g, "<br><br>")
-    .replace(/\n/g, "<br>");
-}

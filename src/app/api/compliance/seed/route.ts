@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { legalDocuments, subProcessors } from "@/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 
 /**
@@ -516,18 +516,22 @@ This policy applies to: (a) business owners and employees who subscribe to and u
 
 ### 1.1 Information from Clients (Business Owners)
 
-- **Account Information:** Name, email address, phone number, business name, business address — for account creation, authentication, and communication.
-- **Business Configuration:** Business hours, service types, pricing catalog, employee schedules, custom AI greetings — for configuring the AI receptionist.
-- **Payment Information:** Credit/debit card details (processed and stored by Stripe, Inc. — we do not store card numbers) — for billing and subscription management.
-- **Usage Data:** Dashboard activity, feature usage, login timestamps, IP addresses — for service improvement, security, and analytics.
-- **Support Communications:** Emails, feedback submissions, support tickets — for customer support and product improvement.
+| Category | Examples | Purpose |
+|----------|---------|---------|
+| Account Information | Name, email address, phone number, business name, business address | Account creation, authentication, communication |
+| Business Configuration | Business hours, service types, pricing catalog, employee schedules, custom AI greetings | Configuring the AI receptionist |
+| Payment Information | Credit/debit card details (processed and stored by Stripe, Inc. — we do not store card numbers) | Billing and subscription management |
+| Usage Data | Dashboard activity, feature usage, login timestamps, IP addresses | Service improvement, security, analytics |
+| Support Communications | Emails, feedback submissions, support tickets | Customer support, product improvement |
 
 ### 1.2 Information from Callers
 
-- **Call Audio:** Voice recordings of calls with the AI receptionist — for providing the AI receptionist service and generating transcripts.
-- **Call Transcripts:** AI-generated text transcriptions of calls — for call summaries, sentiment analysis, and quality assurance.
-- **Caller Information:** Phone number, name (if provided), service requested, appointment details — for booking appointments, message delivery, and CRM.
-- **SMS Data:** Text messages sent to/from the business phone number, opt-in/opt-out status — for appointment confirmations, notifications, and compliance.
+| Category | Examples | Purpose |
+|----------|---------|---------|
+| Call Audio | Voice recordings of calls with the AI receptionist | Providing the AI receptionist service, generating transcripts |
+| Call Transcripts | AI-generated text transcriptions of calls | Call summaries, sentiment analysis, quality assurance |
+| Caller Information | Phone number, name (if provided), service requested, appointment details | Booking appointments, message delivery, CRM |
+| SMS Data | Text messages sent to/from the business phone number, opt-in/opt-out status | Appointment confirmations, notifications, compliance |
 
 ### 1.3 Information Collected Automatically
 
@@ -552,7 +556,19 @@ We use personal information for the following purposes:
 We share personal information only in the following circumstances:
 
 ### 3.1 Service Providers (Sub-Processors)
+
 We use third-party service providers to operate the platform. Each processes data only as necessary to provide their service. See our [Sub-Processor List](/legal/sub-processors) for the current list.
+
+| Provider | Purpose | Data Accessed |
+|----------|---------|--------------|
+| Twilio | Phone call routing, SMS delivery | Phone numbers, call metadata, SMS content |
+| Hume AI | Voice AI processing | Call audio, voice data |
+| Anthropic (Claude) | Call summaries, AI agents | Transcript text, conversation context |
+| Turso | Database hosting | All structured data |
+| Vercel | Application hosting | Request logs, IP addresses |
+| Resend | Email delivery | Email addresses, email content |
+| Stripe | Payment processing | Payment details, billing information |
+| Sentry | Error monitoring | Error logs (no PII by design) |
 
 ### 3.2 To Your Business (Client-Caller Relationship)
 Call recordings, transcripts, caller information, and booking details are made available to the Client whose business number was called. The Client is the data controller for their customers' data; Calltide acts as a data processor.
@@ -567,18 +583,21 @@ We do **not** sell personal information. We do **not** share personal informatio
 
 ## 4. Data Retention
 
-- **Call recordings and transcripts:** 12 months from call date.
-- **Call metadata (duration, outcome, sentiment):** 24 months from call date.
-- **SMS content:** 6 months from message date.
-- **Consent records (TCPA, TOS acceptance):** 7 years.
-- **Account and billing data:** Duration of account + 30 days.
-- **Server logs:** 90 days.
+| Data Type | Retention Period | Basis |
+|-----------|-----------------|-------|
+| Call recordings and transcripts | 12 months from call date | Service delivery, quality assurance |
+| Call metadata (duration, outcome, sentiment) | 24 months from call date | Analytics, service improvement |
+| SMS content | 6 months from message date | Compliance, dispute resolution |
+| Consent records (TCPA, TOS acceptance) | 7 years | Legal compliance |
+| Account and billing data | Duration of account + 30 days | Service delivery, billing |
+| Server logs | 90 days | Security, debugging |
 
 After the retention period expires, data is automatically and permanently deleted. Upon account cancellation, we retain data for 30 days to allow for data export, then delete it permanently.
 
 ## 5. Your Rights
 
 ### 5.1 All Users
+
 You have the right to:
 - **Access** the personal information we hold about you.
 - **Correct** inaccurate personal information.
@@ -587,6 +606,7 @@ You have the right to:
 - **Opt out** of SMS communications by texting STOP to any Calltide number.
 
 ### 5.2 California Residents (CCPA/CPRA)
+
 In addition to the rights above, California residents have the right to:
 - **Know** what personal information is collected, used, shared, or sold.
 - **Opt out** of the sale or sharing of personal information. (Note: Calltide does not sell personal information.)
@@ -594,6 +614,7 @@ In addition to the rights above, California residents have the right to:
 - **Non-discrimination** for exercising your privacy rights.
 
 ### 5.3 EU/EEA Residents (GDPR)
+
 If you are located in the EU/EEA, you have additional rights including:
 - **Right to restriction** of processing.
 - **Right to object** to processing based on legitimate interests.
@@ -603,6 +624,7 @@ If you are located in the EU/EEA, you have additional rights including:
 Our lawful bases for processing include: performance of a contract (providing the Service), legitimate interests (security, product improvement), consent (marketing communications), and legal obligations (compliance, record-keeping).
 
 ### 5.4 How to Exercise Your Rights
+
 Submit a data subject access request by emailing privacy@calltide.app or through the compliance section of your dashboard. We will verify your identity and respond within 30 days (GDPR) or 45 days (CCPA). Clients can also submit requests on behalf of their callers through the admin portal's DSAR handling system.
 
 ## 6. Security
@@ -663,18 +685,22 @@ Esta política se aplica a: (a) propietarios de negocios y empleados que se susc
 
 ### 1.1 Información de Clientes (Propietarios de Negocios)
 
-- **Información de Cuenta:** Nombre, dirección de correo electrónico, número de teléfono, nombre del negocio, dirección del negocio — para creación de cuenta, autenticación y comunicación.
-- **Configuración del Negocio:** Horario comercial, tipos de servicios, catálogo de precios, horarios de empleados, saludos de IA personalizados — para configuración del recepcionista de IA.
-- **Información de Pago:** Detalles de tarjeta de crédito/débito (procesados y almacenados por Stripe, Inc. — no almacenamos números de tarjeta) — para facturación y gestión de suscripción.
-- **Datos de Uso:** Actividad del panel de control, uso de características, marcas de tiempo de inicio de sesión, direcciones IP — para mejora del servicio, seguridad y análisis.
-- **Comunicaciones de Soporte:** Correos electrónicos, envíos de comentarios, tickets de soporte — para soporte al cliente y mejora del producto.
+| Categoría | Ejemplos | Propósito |
+|-----------|----------|-----------|
+| Información de Cuenta | Nombre, dirección de correo electrónico, número de teléfono, nombre del negocio, dirección del negocio | Creación de cuenta, autenticación, comunicación |
+| Configuración del Negocio | Horario comercial, tipos de servicios, catálogo de precios, horarios de empleados, saludos de IA personalizados | Configuración del recepcionista de IA |
+| Información de Pago | Detalles de tarjeta de crédito/débito (procesados y almacenados por Stripe, Inc. — no almacenamos números de tarjeta) | Facturación y gestión de suscripción |
+| Datos de Uso | Actividad del panel de control, uso de características, marcas de tiempo de inicio de sesión, direcciones IP | Mejora del servicio, seguridad, análisis |
+| Comunicaciones de Soporte | Correos electrónicos, envíos de comentarios, tickets de soporte | Soporte al cliente, mejora del producto |
 
 ### 1.2 Información de Llamadores
 
-- **Audio de Llamadas:** Grabaciones de voz de llamadas con el recepcionista de IA — para proporcionar el servicio de recepcionista de IA y generar transcripciones.
-- **Transcripciones de Llamadas:** Transcripciones de texto generadas por IA de llamadas — para resúmenes de llamadas, análisis de sentimiento y control de calidad.
-- **Información del Llamador:** Número de teléfono, nombre (si se proporciona), servicio solicitado, detalles de cita — para reserva de citas, entrega de mensajes y CRM.
-- **Datos de SMS:** Mensajes de texto enviados a/desde el número de teléfono del negocio, estado de opción de participación/exclusión — para confirmaciones de citas, notificaciones y cumplimiento normativo.
+| Categoría | Ejemplos | Propósito |
+|-----------|----------|-----------|
+| Audio de Llamadas | Grabaciones de voz de llamadas con el recepcionista de IA | Proporcionar el servicio de recepcionista de IA, generar transcripciones |
+| Transcripciones de Llamadas | Transcripciones de texto generadas por IA de llamadas | Resúmenes de llamadas, análisis de sentimiento, control de calidad |
+| Información del Llamador | Número de teléfono, nombre (si se proporciona), servicio solicitado, detalles de cita | Reserva de citas, entrega de mensajes, CRM |
+| Datos de SMS | Mensajes de texto enviados a/desde el número de teléfono del negocio, estado de opción de participación/exclusión | Confirmaciones de citas, notificaciones, cumplimiento normativo |
 
 ### 1.3 Información Recopilada Automáticamente
 
@@ -699,33 +725,51 @@ Utilizamos información personal para los siguientes propósitos:
 Compartimos información personal solo en las siguientes circunstancias:
 
 ### 3.1 Proveedores de Servicios (Subprocesadores)
-Utilizamos proveedores de servicios de terceros para operar la plataforma. Cada uno procesa datos solo según sea necesario para proporcionar su servicio. Consulte nuestra [Lista de Sub-Procesadores](/legal/sub-processors) para la lista actual.
+
+Utilizamos proveedores de servicios de terceros para operar la plataforma. Cada uno procesa datos solo según sea necesario para proporcionar su servicio. Consulte nuestro [Sub-Processor List](/legal/sub-processors) para la lista actual.
+
+| Proveedor | Propósito | Datos Accedidos |
+|-----------|-----------|-----------------|
+| Twilio | Enrutamiento de llamadas telefónicas, entrega de SMS | Números de teléfono, metadatos de llamadas, contenido de SMS |
+| Hume AI | Procesamiento de IA de voz | Audio de llamadas, datos de voz |
+| Anthropic (Claude) | Resúmenes de llamadas, agentes de IA | Texto de transcripción, contexto de conversación |
+| Turso | Alojamiento de base de datos | Todos los datos estructurados |
+| Vercel | Alojamiento de aplicaciones | Registros de solicitudes, direcciones IP |
+| Resend | Entrega de correo electrónico | Direcciones de correo electrónico, contenido de correo electrónico |
+| Stripe | Procesamiento de pagos | Detalles de pago, información de facturación |
+| Sentry | Monitoreo de errores | Registros de errores (sin PII por diseño) |
 
 ### 3.2 A Su Negocio (Relación Cliente-Llamador)
+
 Grabaciones de llamadas, transcripciones, información del llamador y detalles de reserva se ponen a disposición del Cliente cuyo número de negocio fue llamado. El Cliente es el controlador de datos para los datos de sus clientes; Calltide actúa como procesador de datos.
 
 ### 3.3 Requisitos Legales
+
 Podemos divulgar información cuando sea requerido por ley, citación, orden judicial o solicitud gubernamental, o cuando sea necesario para proteger nuestros derechos, seguridad o propiedad.
 
 ### 3.4 Transferencias de Negocio
+
 En caso de una fusión, adquisición o venta de activos, la información personal puede ser transferida a la entidad adquirente.
 
 **No** vendemos información personal. **No** compartimos información personal con terceros para sus propósitos de marketing.
 
 ## 4. Retención de Datos
 
-- **Grabaciones de llamadas y transcripciones:** 12 meses desde la fecha de llamada.
-- **Metadatos de llamadas (duración, resultado, sentimiento):** 24 meses desde la fecha de llamada.
-- **Contenido de SMS:** 6 meses desde la fecha del mensaje.
-- **Registros de consentimiento (aceptación de TCPA, TOS):** 7 años.
-- **Datos de cuenta y facturación:** Duración de la cuenta + 30 días.
-- **Registros del servidor:** 90 días.
+| Tipo de Datos | Período de Retención | Base |
+|---------------|----------------------|------|
+| Grabaciones de llamadas y transcripciones | 12 meses desde la fecha de llamada | Entrega de servicio, control de calidad |
+| Metadatos de llamadas (duración, resultado, sentimiento) | 24 meses desde la fecha de llamada | Análisis, mejora del servicio |
+| Contenido de SMS | 6 meses desde la fecha del mensaje | Cumplimiento normativo, resolución de disputas |
+| Registros de consentimiento (aceptación de TCPA, TOS) | 7 años | Cumplimiento legal |
+| Datos de cuenta y facturación | Duración de la cuenta + 30 días | Entrega de servicio, facturación |
+| Registros del servidor | 90 días | Seguridad, depuración |
 
 Después de que expire el período de retención, los datos se eliminan automática y permanentemente. Al cancelar la cuenta, conservamos datos durante 30 días para permitir la exportación de datos y luego los eliminamos permanentemente.
 
 ## 5. Sus Derechos
 
 ### 5.1 Todos los Usuarios
+
 Usted tiene derecho a:
 - **Acceder** a la información personal que mantenemos sobre usted.
 - **Corregir** información personal inexacta.
@@ -734,6 +778,7 @@ Usted tiene derecho a:
 - **Optar por no participar** en comunicaciones por SMS escribiendo STOP a cualquier número de Calltide.
 
 ### 5.2 Residentes de California (CCPA/CPRA)
+
 Además de los derechos anteriores, los residentes de California tienen derecho a:
 - **Saber** qué información personal se recopila, utiliza, comparte o vende.
 - **Optar por no participar** en la venta o intercambio de información personal. (Nota: Calltide no vende información personal.)
@@ -741,6 +786,7 @@ Además de los derechos anteriores, los residentes de California tienen derecho 
 - **No discriminación** por ejercer sus derechos de privacidad.
 
 ### 5.3 Residentes de UE/EEA (GDPR)
+
 Si se encuentra en la UE/EEA, tiene derechos adicionales incluyendo:
 - **Derecho a la restricción** del procesamiento.
 - **Derecho a objetar** el procesamiento basado en intereses legítimos.
@@ -750,6 +796,7 @@ Si se encuentra en la UE/EEA, tiene derechos adicionales incluyendo:
 Nuestras bases legales para el procesamiento incluyen: cumplimiento de un contrato (proporcionar el Servicio), intereses legítimos (seguridad, mejora del producto), consentimiento (comunicaciones de marketing) y obligaciones legales (cumplimiento normativo, mantenimiento de registros).
 
 ### 5.4 Cómo Ejercer Sus Derechos
+
 Envíe una solicitud de acceso de sujeto de datos por correo electrónico a privacy@calltide.app o a través de la sección de cumplimiento de su panel de control. Verificaremos su identidad y responderemos dentro de 30 días (GDPR) o 45 días (CCPA). Los Clientes también pueden enviar solicitudes en nombre de sus llamadores a través del sistema de manejo de DSAR del portal de administrador.
 
 ## 6. Seguridad
@@ -821,12 +868,14 @@ The Client acts as the **Controller** of the Personal Data of its customers (cal
 
 ### 2.2 Processing Details
 
-- **Subject Matter:** Provision of AI-powered virtual receptionist services.
-- **Duration:** For the term of the Client's subscription, plus any applicable retention periods.
-- **Nature of Processing:** Automated voice call handling, speech-to-text transcription, AI-powered call summarization, appointment booking, SMS notifications, CRM record creation.
-- **Purpose:** Answering inbound phone calls, booking appointments, sending notifications, generating call analytics, and related services as described in the Terms of Service.
-- **Categories of Personal Data:** Phone numbers, caller names, voice recordings, call transcripts, appointment details, service requests, SMS content, email addresses.
-- **Categories of Data Subjects:** Callers to the Client's business phone number, Client employees and representatives.
+| Element | Description |
+|---------|-------------|
+| **Subject Matter** | Provision of AI-powered virtual receptionist services |
+| **Duration** | For the term of the Client's subscription, plus any applicable retention periods |
+| **Nature of Processing** | Automated voice call handling, speech-to-text transcription, AI-powered call summarization, appointment booking, SMS notifications, CRM record creation |
+| **Purpose** | Answering inbound phone calls, booking appointments, sending notifications, generating call analytics, and related services as described in the Terms of Service |
+| **Categories of Personal Data** | Phone numbers, caller names, voice recordings, call transcripts, appointment details, service requests, SMS content, email addresses |
+| **Categories of Data Subjects** | Callers to the Client's business phone number, Client employees and representatives |
 
 ## 3. Processor Obligations
 
@@ -855,7 +904,7 @@ Calltide uses the Sub-Processors listed at [/legal/sub-processors](/legal/sub-pr
 
 - Impose data protection obligations on each Sub-Processor that are no less protective than those in this DPA.
 - Remain fully liable for the acts and omissions of its Sub-Processors.
-- Notify the Controller at least 30 days before adding or replacing a Sub-Processor, providing the Controller with an opportunity to object.
+- Notify the Controller at least 30 days before adding or replacing a Sub-Processor, providing the Controller with an opportunity to object. If the Controller objects on reasonable grounds, the parties will work in good faith to resolve the concern. If no resolution is reached, the Controller may terminate the affected service.
 
 ### 3.5 Data Subject Rights
 Calltide shall assist the Controller in responding to Data Subject requests (access, rectification, erasure, portability, restriction, or objection) by:
@@ -872,20 +921,30 @@ In the event of a Security Incident involving Personal Data, Calltide shall:
 - Cooperate with the Controller's investigation and remediation efforts.
 - Document the incident, including its effects and the corrective actions taken.
 
+Notification shall include: (a) the nature of the incident; (b) the categories and approximate number of Data Subjects affected; (c) the likely consequences; and (d) the measures taken or proposed to address the incident.
+
 ### 3.7 Data Protection Impact Assessments
 Calltide shall provide reasonable assistance to the Controller in conducting data protection impact assessments and prior consultations with supervisory authorities, where required under applicable law.
 
 ### 3.8 Audit Rights
-Upon the Controller's written request (no more than once per 12-month period), Calltide shall make available information necessary to demonstrate compliance with this DPA.
+Upon the Controller's written request (no more than once per 12-month period), Calltide shall make available information necessary to demonstrate compliance with this DPA. This may be satisfied through:
+
+- Provision of a current SOC 2 Type II report or equivalent third-party audit report, if available.
+- Written responses to the Controller's reasonable audit questionnaire.
+- In the absence of the above, a remote or on-site audit conducted by the Controller or a mutually agreed-upon third-party auditor, at the Controller's expense, with at least 30 days' written notice.
 
 ## 4. Data Retention and Deletion
 
 ### 4.1 Retention Periods
-- **Call recordings and transcripts:** 12 months from call date.
-- **Call metadata:** 24 months from call date.
-- **SMS content:** 6 months from message date.
-- **Consent records:** 7 years.
-- **Account data:** Duration of subscription + 30 days.
+Calltide retains Personal Data according to the following schedule:
+
+| Data Type | Retention Period |
+|-----------|-----------------|
+| Call recordings and transcripts | 12 months from call date |
+| Call metadata | 24 months from call date |
+| SMS content | 6 months from message date |
+| Consent records | 7 years |
+| Account data | Duration of subscription + 30 days |
 
 ### 4.2 Deletion on Termination
 Upon termination of the Client's subscription:
@@ -894,6 +953,7 @@ Upon termination of the Client's subscription:
 - After the 30-day period, Calltide will permanently delete all Client Personal Data from active systems within 30 days.
 - Backup copies will be deleted within 90 days of termination.
 - Calltide may retain anonymized, aggregated data that does not identify individuals.
+- Data subject to legal retention requirements (e.g., consent records, billing records) will be retained for the required period and then deleted.
 
 ### 4.3 Return of Data
 Upon written request prior to deletion, Calltide will provide the Controller with a copy of its Personal Data in a structured, commonly used, machine-readable format (JSON or CSV).
@@ -904,10 +964,15 @@ Upon written request prior to deletion, Calltide will provide the Controller wit
 All Personal Data is processed and stored within the United States. Calltide's Sub-Processors are all U.S.-based entities.
 
 ### 5.2 Transfer Mechanisms
-For transfers of Personal Data from the EU/EEA to the United States, Calltide relies on the EU-U.S. Data Privacy Framework where applicable, and Standard Contractual Clauses (SCCs) — Module Two (Controller to Processor).
+For transfers of Personal Data from the EU/EEA to the United States, Calltide relies on the EU-U.S. Data Privacy Framework where applicable, and Standard Contractual Clauses (SCCs) — Module Two (Controller to Processor) — as adopted by the European Commission in June 2021.
 
 ### 5.3 Supplementary Measures
-Calltide implements supplementary technical measures to protect transferred data including end-to-end encryption, encryption at rest, access controls, and prompt deletion per retention schedules.
+Calltide implements the following supplementary technical measures to protect transferred data:
+
+- End-to-end encryption for data in transit
+- Encryption at rest for all stored data
+- Access controls limiting data access to authorized personnel
+- Prompt deletion of data in accordance with retention schedules
 
 ## 6. CCPA/CPRA Specific Provisions
 
@@ -915,7 +980,7 @@ For purposes of the CCPA/CPRA:
 
 - Calltide is a **Service Provider** as defined under the CCPA.
 - Calltide shall not sell or share Personal Information received from the Controller.
-- Calltide shall not retain, use, or disclose Personal Information for any purpose other than providing the Service.
+- Calltide shall not retain, use, or disclose Personal Information for any purpose other than providing the Service, or as otherwise permitted by the CCPA.
 - Calltide shall not combine Personal Information received from the Controller with Personal Information received from or on behalf of another person, except as permitted by the CCPA.
 
 ## 7. Liability
@@ -958,22 +1023,24 @@ El Cliente actúa como el **Responsable del Tratamiento** de los Datos Personale
 
 ### 2.2 Detalles del Procesamiento
 
-- **Asunto:** Prestación de servicios de recepcionista virtual impulsado por inteligencia artificial.
-- **Duración:** Para el período de la suscripción del Cliente, más los períodos de retención aplicables.
-- **Naturaleza del Procesamiento:** Gestión automatizada de llamadas telefónicas, transcripción de voz a texto, resumen de llamadas impulsado por inteligencia artificial, reserva de citas, notificaciones por SMS, creación de registros en CRM.
-- **Propósito:** Responder llamadas telefónicas entrantes, reservar citas, enviar notificaciones, generar análisis de llamadas, y servicios relacionados conforme se describe en los Términos de Servicio.
-- **Categorías de Datos Personales:** Números de teléfono, nombres de llamantes, grabaciones de voz, transcripciones de llamadas, detalles de citas, solicitudes de servicio, contenido de SMS, direcciones de correo electrónico.
-- **Categorías de Sujetos de Datos:** Llamantes al número de teléfono del negocio del Cliente, empleados y representantes del Cliente.
+| Elemento | Descripción |
+|---------|-------------|
+| **Asunto** | Prestación de servicios de recepcionista virtual impulsado por inteligencia artificial |
+| **Duración** | Para el período de la suscripción del Cliente, más los períodos de retención aplicables |
+| **Naturaleza del Procesamiento** | Gestión automatizada de llamadas telefónicas, transcripción de voz a texto, resumen de llamadas impulsado por inteligencia artificial, reserva de citas, notificaciones por SMS, creación de registros en CRM |
+| **Propósito** | Responder llamadas telefónicas entrantes, reservar citas, enviar notificaciones, generar análisis de llamadas, y servicios relacionados conforme se describe en los Términos de Servicio |
+| **Categorías de Datos Personales** | Números de teléfono, nombres de llamantes, grabaciones de voz, transcripciones de llamadas, detalles de citas, solicitudes de servicio, contenido de SMS, direcciones de correo electrónico |
+| **Categorías de Sujetos de Datos** | Llamantes al número de teléfono del negocio del Cliente, empleados y representantes del Cliente |
 
 ## 3. Obligaciones del Encargado del Tratamiento
 
 Calltide deberá:
 
 ### 3.1 Procesamiento Lícito
-Procesar Datos Personales únicamente conforme a instrucciones documentadas del Responsable del Tratamiento, a menos que sea requerido hacerlo por ley aplicable.
+Procesar Datos Personales únicamente conforme a instrucciones documentadas del Responsable del Tratamiento (conforme se establece en este DPA y en los Términos de Servicio), a menos que sea requerido hacerlo por ley aplicable. En tal caso, Calltide informará al Responsable del Tratamiento de ese requisito legal antes de procesar, a menos que esté prohibido por ley.
 
 ### 3.2 Confidencialidad
-Asegurar que todo el personal autorizado para procesar Datos Personales haya asumido obligaciones de confidencialidad.
+Asegurar que todo el personal autorizado para procesar Datos Personales haya asumido obligaciones de confidencialidad o esté sujeto a una obligación estatutaria apropiada de confidencialidad.
 
 ### 3.3 Medidas de Seguridad
 Implementar y mantener medidas de seguridad técnicas y organizacionales apropiadas, incluyendo:
@@ -981,8 +1048,8 @@ Implementar y mantener medidas de seguridad técnicas y organizacionales apropia
 - Encriptación de Datos Personales en tránsito (TLS 1.2+) y en reposo
 - Autenticación sin contraseña (enlaces mágicos) para acceso del Cliente
 - Controles de acceso basados en roles con separación entre funciones del Cliente y administrador
-- Limitación de velocidad en todos los puntos finales de API
-- Validación de entrada y sanitización en todas las entradas del usuario
+- Limitación de velocidad en todos los puntos finales de API (200 solicitudes por 60 segundos en rutas del panel de control)
+- Validación de entrada y sanitización en todas las entradas del usuario, incluyendo protección contra inyección de solicitudes
 - Monitoreo de errores automatizado y alertas
 - Auditorías de seguridad regulares y evaluaciones de vulnerabilidades
 - Sistema de respuesta de buzón de voz para continuidad comercial
@@ -992,59 +1059,75 @@ Calltide utiliza los Sub-Encargados del Tratamiento enumerados en [/legal/sub-pr
 
 - Imponer obligaciones de protección de datos en cada Sub-Encargado del Tratamiento que no sean menos protectoras que las de este DPA.
 - Permanecer completamente responsable por los actos y omisiones de sus Sub-Encargados del Tratamiento.
-- Notificar al Responsable del Tratamiento al menos 30 días antes de agregar o reemplazar un Sub-Encargado del Tratamiento.
+- Notificar al Responsable del Tratamiento al menos 30 días antes de agregar o reemplazar un Sub-Encargado del Tratamiento, proporcionando al Responsable del Tratamiento la oportunidad de objetar. Si el Responsable del Tratamiento objeta con fundamentos razonables, las partes trabajarán de buena fe para resolver la preocupación. Si no se llega a una resolución, el Responsable del Tratamiento podrá rescindir el servicio afectado.
 
 ### 3.5 Derechos de Sujetos de Datos
-Calltide deberá asistir al Responsable del Tratamiento en responder solicitudes de Sujetos de Datos mediante:
+Calltide deberá asistir al Responsable del Tratamiento en responder solicitudes de Sujetos de Datos (acceso, rectificación, borrado, portabilidad, restricción u objeción) mediante:
 
-- Proporcionar un sistema de manejo de DSAR accesible a través del panel de control del administrador.
-- Responder a solicitudes dentro de 10 días hábiles.
-- Apoyar la eliminación por lotes atómica en todas las tablas de bases de datos.
+- Proporcionar un sistema de manejo de DSAR (Solicitud de Acceso de Sujeto de Datos) accesible a través del panel de control del administrador.
+- Responder a solicitudes de cumplimiento de sujeto de datos del Responsable del Tratamiento dentro de 10 días hábiles.
+- Apoyar la eliminación por lotes atómica en todas las tablas de bases de datos al procesar solicitudes de borrado.
 
 ### 3.6 Notificación de Incidentes de Seguridad
 En caso de un Incidente de Seguridad que implique Datos Personales, Calltide deberá:
 
 - Notificar al Responsable del Tratamiento sin demora indebida y no más tarde de **48 horas** después de tener conocimiento del incidente.
-- Proporcionar información suficiente para permitir que el Responsable del Tratamiento cumpla con sus obligaciones de notificación de brechas.
-- Cooperar con la investigación y los esfuerzos de remediación.
+- Proporcionar información suficiente para permitir que el Responsable del Tratamiento cumpla con sus obligaciones de notificación de brechas (dentro de 72 horas conforme al GDPR).
+- Cooperar con la investigación y los esfuerzos de remediación del Responsable del Tratamiento.
 - Documentar el incidente, incluyendo sus efectos y las acciones correctivas tomadas.
 
+La notificación deberá incluir: (a) la naturaleza del incidente; (b) las categorías y el número aproximado de Sujetos de Datos afectados; (c) las consecuencias probables; y (d) las medidas tomadas o propuestas para abordar el incidente.
+
 ### 3.7 Evaluaciones de Impacto de Protección de Datos
-Calltide deberá proporcionar asistencia razonable al Responsable del Tratamiento en la realización de evaluaciones de impacto de protección de datos, cuando sea requerido por ley aplicable.
+Calltide deberá proporcionar asistencia razonable al Responsable del Tratamiento en la realización de evaluaciones de impacto de protección de datos y consultas previas con autoridades de supervisión, cuando sea requerido por ley aplicable.
 
 ### 3.8 Derechos de Auditoría
-Previa solicitud escrita del Responsable del Tratamiento (no más de una vez por período de 12 meses), Calltide deberá poner a disposición la información necesaria para demostrar cumplimiento con este DPA.
+Previa solicitud escrita del Responsable del Tratamiento (no más de una vez por período de 12 meses), Calltide deberá poner a disposición la información necesaria para demostrar cumplimiento con este DPA. Esto puede satisfacerse mediante:
+
+- Provisión de un informe actual de SOC 2 Tipo II u informe de auditoría de tercero equivalente, si está disponible.
+- Respuestas escritas al cuestionario de auditoría razonable del Responsable del Tratamiento.
+- En ausencia de lo anterior, una auditoría remota u presencial realizada por el Responsable del Tratamiento o un auditor de tercero mutuamente acordado, a expensas del Responsable del Tratamiento, con al menos 30 días de notificación escrita.
 
 ## 4. Retención y Eliminación de Datos
 
 ### 4.1 Períodos de Retención
-- **Grabaciones y transcripciones de llamadas:** 12 meses desde la fecha de la llamada.
-- **Metadatos de llamadas:** 24 meses desde la fecha de la llamada.
-- **Contenido de SMS:** 6 meses desde la fecha del mensaje.
-- **Registros de consentimiento:** 7 años.
-- **Datos de cuenta:** Duración de la suscripción + 30 días.
+Calltide retiene Datos Personales conforme al siguiente cronograma:
+
+| Tipo de Datos | Período de Retención |
+|-----------|-----------------|
+| Grabaciones y transcripciones de llamadas | 12 meses desde la fecha de la llamada |
+| Metadatos de llamadas | 24 meses desde la fecha de la llamada |
+| Contenido de SMS | 6 meses desde la fecha del mensaje |
+| Registros de consentimiento | 7 años |
+| Datos de cuenta | Duración de la suscripción + 30 días |
 
 ### 4.2 Eliminación en Caso de Terminación
 Previa la terminación de la suscripción del Cliente:
 
 - Calltide retendrá Datos del Cliente durante 30 días para permitir la exportación de datos.
-- Después del período de 30 días, Calltide eliminará permanentemente todos los Datos Personales del Cliente.
+- Después del período de 30 días, Calltide eliminará permanentemente todos los Datos Personales del Cliente de sistemas activos dentro de 30 días.
 - Las copias de seguridad serán eliminadas dentro de 90 días de la terminación.
 - Calltide podrá retener datos anonimizados y agregados que no identifiquen individuos.
+- Los datos sujetos a requisitos de retención legal (por ejemplo, registros de consentimiento, registros de facturación) serán retenidos durante el período requerido y luego eliminados.
 
 ### 4.3 Devolución de Datos
-Previa solicitud escrita antes de la eliminación, Calltide proporcionará al Responsable del Tratamiento una copia de sus Datos Personales en formato JSON o CSV.
+Previa solicitud escrita antes de la eliminación, Calltide proporcionará al Responsable del Tratamiento una copia de sus Datos Personales en un formato estructurado, comúnmente utilizado y legible por máquina (JSON o CSV).
 
 ## 5. Transferencias Internacionales de Datos
 
 ### 5.1 Ubicaciones de Procesamiento
-Todos los Datos Personales se procesan y almacenan dentro de los Estados Unidos.
+Todos los Datos Personales se procesan y almacenan dentro de los Estados Unidos. Los Sub-Encargados del Tratamiento de Calltide son todas entidades con sede en EE.UU.
 
 ### 5.2 Mecanismos de Transferencia
-Para transferencias de Datos Personales de la UE/EEA a los Estados Unidos, Calltide se basa en el Marco de Privacidad de Datos UE-EE.UU. cuando es aplicable, y Cláusulas Contractuales Estándar (SCCs) — Módulo Dos (Responsable del Tratamiento a Encargado del Tratamiento).
+Para transferencias de Datos Personales de la UE/EEA a los Estados Unidos, Calltide se basa en el Marco de Privacidad de Datos UE-EE.UU. cuando es aplicable, y Cláusulas Contractuales Estándar (SCCs) — Módulo Dos (Responsable del Tratamiento a Encargado del Tratamiento) — conforme adoptadas por la Comisión Europea en junio de 2021.
 
 ### 5.3 Medidas Complementarias
-Calltide implementa medidas técnicas complementarias incluyendo encriptación de extremo a extremo, encriptación en reposo, controles de acceso y eliminación oportuna de datos.
+Calltide implementa las siguientes medidas técnicas complementarias para proteger datos transferidos:
+
+- Encriptación de extremo a extremo para datos en tránsito
+- Encriptación en reposo para todos los datos almacenados
+- Controles de acceso que limitan el acceso a datos únicamente a personal autorizado
+- Eliminación oportuna de datos conforme a cronogramas de retención
 
 ## 6. Disposiciones Específicas CCPA/CPRA
 
@@ -1052,8 +1135,8 @@ Para propósitos de CCPA/CPRA:
 
 - Calltide es un **Proveedor de Servicios** conforme se define conforme a la CCPA.
 - Calltide no deberá vender ni compartir Información Personal recibida del Responsable del Tratamiento.
-- Calltide no deberá retener, usar, o divulgar Información Personal para ningún propósito que no sea proporcionar el Servicio.
-- Calltide no deberá combinar Información Personal de diferentes fuentes excepto conforme sea permitido por la CCPA.
+- Calltide no deberá retener, usar, o divulgar Información Personal para ningún propósito que no sea proporcionar el Servicio, o conforme sea permitido de otra manera por la CCPA.
+- Calltide no deberá combinar Información Personal recibida del Responsable del Tratamiento con Información Personal recibida de o en nombre de otra persona, excepto conforme sea permitido por la CCPA.
 
 ## 7. Responsabilidad
 
