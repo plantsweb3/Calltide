@@ -2,7 +2,13 @@ import Link from "next/link";
 import { db } from "@/db";
 import { blogPosts } from "@/db/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
-import { CATEGORY_LABELS } from "@/app/blog/page";
+const CATEGORY_LABELS_ES: Record<string, string> = {
+  pillar: "Guía",
+  "data-driven": "Datos",
+  comparison: "Comparación",
+  "city-specific": "Local",
+  "problem-solution": "Solución",
+};
 import { StaticNav } from "@/components/marketing/StaticNav";
 import { StaticFooter } from "@/components/marketing/StaticFooter";
 
@@ -73,7 +79,7 @@ export default async function BlogEsIndexPage({
           >
             Todos
           </Link>
-          {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+          {Object.entries(CATEGORY_LABELS_ES).map(([key, label]) => (
             <Link
               key={key}
               href={`/es/blog?category=${key}`}
@@ -110,7 +116,7 @@ export default async function BlogEsIndexPage({
                   <div className="flex items-center gap-2">
                     {post.category && (
                       <span className="rounded-full bg-amber/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber">
-                        {CATEGORY_LABELS[post.category] ?? post.category}
+                        {CATEGORY_LABELS_ES[post.category] ?? post.category}
                       </span>
                     )}
                     {post.readingTimeMin && <span className="text-xs text-charcoal-light">{post.readingTimeMin} min</span>}

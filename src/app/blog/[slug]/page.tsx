@@ -25,6 +25,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
 
+  // Resolve paired post slug for hreflang
+  let esAlternate: string | undefined;
+  if (post.pairedPostId) {
+    const [paired] = await db
+      .select({ slug: blogPosts.slug })
+      .from(blogPosts)
+      .where(eq(blogPosts.id, post.pairedPostId))
+      .limit(1);
+    if (paired) esAlternate = `${appUrl}/es/blog/${paired.slug}`;
+  }
+
   return {
     title: post.metaTitle ?? `${post.title} — Calltide Blog`,
     description: post.metaDescription ?? undefined,
@@ -37,6 +48,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     alternates: {
       canonical: `${appUrl}/blog/${post.slug}`,
+      languages: {
+        en: `${appUrl}/blog/${post.slug}`,
+        ...(esAlternate ? { es: esAlternate } : {}),
+      },
     },
   };
 }
@@ -47,7 +62,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   const [post] = await db
     .select()
     .from(blogPosts)
-    .where(and(eq(blogPosts.slug, slug), eq(blogPosts.published, true)))
+    .where(and(eq(blogPosts.slug, slug), eq(blogPosts.published, true), eq(blogPosts.language, "en")))
     .limit(1);
 
   if (!post) notFound();

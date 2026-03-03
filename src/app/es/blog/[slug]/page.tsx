@@ -3,7 +3,13 @@ import Link from "next/link";
 import { db } from "@/db";
 import { blogPosts } from "@/db/schema";
 import { eq, and, inArray } from "drizzle-orm";
-import { CATEGORY_LABELS } from "@/app/blog/page";
+const CATEGORY_LABELS_ES: Record<string, string> = {
+  pillar: "Guía",
+  "data-driven": "Datos",
+  comparison: "Comparación",
+  "city-specific": "Local",
+  "problem-solution": "Solución",
+};
 import { StaticNav } from "@/components/marketing/StaticNav";
 import { StaticFooter } from "@/components/marketing/StaticFooter";
 import AuditCTA from "@/components/audit-cta";
@@ -24,6 +30,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!post) return { title: "Publicación No Encontrada — Calltide" };
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
 
+  // Resolve paired post slug for hreflang
+  let enAlternate: string | undefined;
+  if (post.pairedPostId) {
+    const [paired] = await db
+      .select({ slug: blogPosts.slug })
+      .from(blogPosts)
+      .where(eq(blogPosts.id, post.pairedPostId))
+      .limit(1);
+    if (paired) enAlternate = `${appUrl}/blog/${paired.slug}`;
+  }
+
   return {
     title: post.metaTitle ?? `${post.title} — Calltide Blog`,
     description: post.metaDescription ?? undefined,
@@ -34,7 +51,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: "article",
       images: post.ogImage ? [{ url: post.ogImage }] : undefined,
     },
-    alternates: { canonical: `${appUrl}/es/blog/${post.slug}` },
+    alternates: {
+      canonical: `${appUrl}/es/blog/${post.slug}`,
+      languages: {
+        es: `${appUrl}/es/blog/${post.slug}`,
+        ...(enAlternate ? { en: enAlternate } : {}),
+      },
+    },
   };
 }
 
@@ -101,7 +124,7 @@ export default async function BlogPostEsPage({ params }: PageProps) {
           <div className="flex items-center gap-3 text-sm">
             {post.category && (
               <span className="rounded-full bg-amber/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber">
-                {CATEGORY_LABELS[post.category] ?? post.category}
+                {CATEGORY_LABELS_ES[post.category] ?? post.category}
               </span>
             )}
             {post.readingTimeMin && <span className="text-charcoal-light">{post.readingTimeMin} min</span>}
@@ -117,7 +140,7 @@ export default async function BlogPostEsPage({ params }: PageProps) {
               href={pairedPost.language === "en" ? `/blog/${pairedPost.slug}` : `/es/blog/${pairedPost.slug}`}
               className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-amber hover:underline"
             >
-              Read in English &rarr;
+              Leer en Inglés &rarr;
             </Link>
           )}
         </div>
