@@ -48,7 +48,7 @@ function ThankYouContent() {
   return (
     <div className="min-h-screen bg-[#FBFBFC]" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
       {/* Nav */}
-      <nav className="border-b border-[#e8e5dd] bg-white px-6 py-3">
+      <nav className="border-b border-[#E2E8F0] bg-white px-6 py-3">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link href="/">
             <img src="/images/logo.webp" alt="Calltide" className="h-6 w-auto" />
@@ -58,7 +58,7 @@ function ThankYouContent() {
 
       <main className="mx-auto max-w-lg px-6 py-16 sm:py-24">
         <div
-          className="rounded-xl border border-[#e8e5dd] bg-white p-8 sm:p-10"
+          className="rounded-xl border border-[#E2E8F0] bg-white p-8 sm:p-10"
           style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04)" }}
         >
           {/* Checkmark */}
@@ -117,16 +117,16 @@ function ThankYouContent() {
                 placeholder="Tell us what's on your mind..."
                 className="w-full rounded-lg border px-4 py-3 text-sm transition-colors focus:outline-none focus:ring-2"
                 style={{
-                  borderColor: "#e8e5dd",
+                  borderColor: "#E2E8F0",
                   color: "#1a1a2e",
                   resize: "vertical",
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = "#c8a951";
+                  e.target.style.borderColor = "#C59A27";
                   e.target.style.boxShadow = "0 0 0 2px rgba(200,169,81,0.15)";
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = "#e8e5dd";
+                  e.target.style.borderColor = "#E2E8F0";
                   e.target.style.boxShadow = "none";
                 }}
               />
@@ -141,7 +141,7 @@ function ThankYouContent() {
                 type="submit"
                 disabled={submitting || !feedback.trim()}
                 className="mt-4 w-full rounded-lg px-6 py-3 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
-                style={{ backgroundColor: "#c8a951" }}
+                style={{ backgroundColor: "#C59A27" }}
               >
                 {submitting ? "Submitting..." : "Submit Feedback"}
               </button>
@@ -160,7 +160,7 @@ function ThankYouContent() {
           <Link
             href="/"
             className="text-sm font-semibold transition-colors hover:underline"
-            style={{ color: "#c8a951" }}
+            style={{ color: "#C59A27" }}
           >
             Back to Calltide
           </Link>

@@ -165,7 +165,11 @@ export default function CustomersPage() {
                   key={c.id}
                   className="cursor-pointer transition-colors"
                   style={{ borderBottom: "1px solid var(--db-border)" }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`View customer ${c.name || "Unknown"}`}
                   onClick={() => router.push(`/dashboard/customers/${c.id}`)}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); router.push(`/dashboard/customers/${c.id}`); } }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "var(--db-hover)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >

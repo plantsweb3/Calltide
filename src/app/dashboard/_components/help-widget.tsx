@@ -20,12 +20,16 @@ interface Article {
 }
 
 const CONTEXT_MAP: Record<string, string[]> = {
-  "/dashboard": ["understanding-dashboard", "how-maria-handles-calls", "monthly-report"],
+  "/dashboard": ["what-is-calltide", "how-maria-handles-calls", "monthly-report"],
   "/dashboard/calls": ["understanding-call-logs", "how-maria-handles-calls", "when-calls-transfer"],
-  "/dashboard/settings": ["update-business-hours", "language-settings", "update-payment-method"],
+  "/dashboard/settings": ["improve-maria-responses", "tips-best-results", "update-payment-method"],
   "/dashboard/sms": ["viewing-messages", "not-receiving-notifications"],
   "/dashboard/appointments": ["appointments-booked-tracked", "how-maria-handles-calls"],
-  "/dashboard/referrals": ["referral-program", "using-referral-code"],
+  "/dashboard/referrals": ["referral-program", "understanding-subscription"],
+  "/dashboard/billing": ["understanding-subscription", "billing-and-charges", "update-payment-method"],
+  "/dashboard/customers": ["how-maria-handles-calls", "understanding-call-logs"],
+  "/dashboard/estimates": ["how-maria-handles-calls", "tips-best-results"],
+  "/dashboard/feedback": ["nps-health-score", "improve-maria-responses"],
 };
 
 export default function HelpWidget() {

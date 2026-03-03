@@ -81,16 +81,20 @@ export async function POST(req: NextRequest) {
       to: email,
       subject: "Your Calltide login link",
       html: `
-        <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
-          <h2 style="color: #f1f5f9; margin-bottom: 8px;">Sign in to Calltide</h2>
-          <p style="color: #94a3b8; margin-bottom: 24px;">
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
+          <h2 style="color: #1A1D24; margin-bottom: 8px;">Sign in to Calltide</h2>
+          <p style="color: #475569; margin-bottom: 24px;">
             Click the button below to access your ${business.name} dashboard. This link expires in 15 minutes.
           </p>
-          <a href="${link}" style="display: inline-block; background: #16a34a; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500;">
-            Sign In
+          <a href="${link}" style="display: inline-block; background: #C59A27; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+            Sign In to Dashboard
           </a>
-          <p style="color: #64748b; font-size: 13px; margin-top: 32px;">
+          <p style="color: #94A3B8; font-size: 13px; margin-top: 32px;">
             If you didn't request this link, you can safely ignore this email.
+          </p>
+          <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 24px 0;" />
+          <p style="color: #94A3B8; font-size: 12px;">
+            &copy; Calltide &mdash; AI Receptionist for Home Services
           </p>
         </div>
       `,

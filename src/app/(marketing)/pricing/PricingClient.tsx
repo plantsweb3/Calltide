@@ -115,9 +115,9 @@ export default function PricingPage() {
               onClick={() => setPlanChoice("monthly")}
               className="rounded-full px-5 py-2 text-sm font-semibold transition"
               style={{
-                background: planChoice === "monthly" ? "#C8AA6E" : "transparent",
+                background: planChoice === "monthly" ? "#C59A27" : "transparent",
                 color: planChoice === "monthly" ? "#0f0f0f" : "#64748b",
-                border: planChoice === "monthly" ? "1px solid #C8AA6E" : "1px solid #e2e8f0",
+                border: planChoice === "monthly" ? "1px solid #C59A27" : "1px solid #e2e8f0",
               }}
             >
               {lang === "en" ? "Monthly" : "Mensual"}
@@ -126,9 +126,9 @@ export default function PricingPage() {
               onClick={() => setPlanChoice("annual")}
               className="relative rounded-full px-5 py-2 text-sm font-semibold transition"
               style={{
-                background: planChoice === "annual" ? "#C8AA6E" : "transparent",
+                background: planChoice === "annual" ? "#C59A27" : "transparent",
                 color: planChoice === "annual" ? "#0f0f0f" : "#64748b",
-                border: planChoice === "annual" ? "1px solid #C8AA6E" : "1px solid #e2e8f0",
+                border: planChoice === "annual" ? "1px solid #C59A27" : "1px solid #e2e8f0",
               }}
             >
               {lang === "en" ? "Annual" : "Anual"}

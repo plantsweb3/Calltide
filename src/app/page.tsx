@@ -294,9 +294,9 @@ export default function LandingPage() {
               onClick={() => setPlanChoice("monthly")}
               className="rounded-full px-5 py-2 text-sm font-semibold transition"
               style={{
-                background: planChoice === "monthly" ? "#C8AA6E" : "transparent",
+                background: planChoice === "monthly" ? "#C59A27" : "transparent",
                 color: planChoice === "monthly" ? "#0f0f0f" : "#A0A3A8",
-                border: planChoice === "monthly" ? "1px solid #C8AA6E" : "1px solid rgba(255,255,255,0.15)",
+                border: planChoice === "monthly" ? "1px solid #C59A27" : "1px solid rgba(255,255,255,0.15)",
               }}
             >
               {lang === "en" ? "Monthly" : "Mensual"}
@@ -305,9 +305,9 @@ export default function LandingPage() {
               onClick={() => setPlanChoice("annual")}
               className="relative rounded-full px-5 py-2 text-sm font-semibold transition"
               style={{
-                background: planChoice === "annual" ? "#C8AA6E" : "transparent",
+                background: planChoice === "annual" ? "#C59A27" : "transparent",
                 color: planChoice === "annual" ? "#0f0f0f" : "#A0A3A8",
-                border: planChoice === "annual" ? "1px solid #C8AA6E" : "1px solid rgba(255,255,255,0.15)",
+                border: planChoice === "annual" ? "1px solid #C59A27" : "1px solid rgba(255,255,255,0.15)",
               }}
             >
               {lang === "en" ? "Annual" : "Anual"}
@@ -318,7 +318,7 @@ export default function LandingPage() {
           </div>
 
           <div className="reveal mt-8 mx-auto max-w-lg">
-            <div className="pricing-glow ambient-edge relative rounded-xl border-2 border-[#C8AA6E] bg-[#1A1D0F] p-10 text-center sm:p-14">
+            <div className="pricing-glow ambient-edge relative rounded-xl border-2 border-[#C59A27] bg-[#1A1D0F] p-10 text-center sm:p-14">
               <p className="mt-2 text-[56px] font-extrabold tracking-tight text-[#E8E9EB]">
                 {planChoice === "annual" ? "$397" : "$497"}
               </p>
@@ -337,7 +337,7 @@ export default function LandingPage() {
               <ul className="mt-8 space-y-4 text-left text-sm text-[#E8E9EB]">
                 {t.pricing.features.map((f, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <span className="mt-0.5 text-[#C8AA6E]">&#10003;</span>
+                    <span className="mt-0.5 text-[#C59A27]">&#10003;</span>
                     {f}
                   </li>
                 ))}

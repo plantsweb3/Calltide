@@ -144,6 +144,8 @@ export default function EstimatesPage() {
             <button
               key={card.key}
               onClick={() => setStatusFilter(isActive ? null : card.key)}
+              aria-label={`Filter by ${card.label}: ${data.count} estimates${data.value > 0 ? `, ${formatCurrency(data.value)} total` : ""}`}
+              aria-pressed={isActive}
               className="rounded-xl border p-4 text-left transition-all"
               style={{
                 background: isActive ? colors.bg : "var(--db-surface)",
@@ -225,7 +227,12 @@ export default function EstimatesPage() {
                       <div
                         className="grid cursor-pointer transition-colors px-4 py-3"
                         style={{ gridTemplateColumns: "1fr 1fr 0.7fr 0.7fr 0.7fr 0.8fr", borderBottom: "1px solid var(--db-border)" }}
+                        role="button"
+                        tabIndex={0}
+                        aria-expanded={isExpanded}
+                        aria-label={`${isExpanded ? "Collapse" : "Expand"} estimate for ${est.customerName || "Unknown"}`}
                         onClick={() => setExpandedId(isExpanded ? null : est.id)}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpandedId(isExpanded ? null : est.id); } }}
                         onMouseEnter={(e) => (e.currentTarget.style.background = "var(--db-hover)")}
                         onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                       >

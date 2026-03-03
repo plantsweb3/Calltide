@@ -268,23 +268,23 @@ export default function EsHomepage() {
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-[#E8E9EB] sm:text-[44px]">{t.pricing.h2}</h2>
           </div>
           <div className="reveal mt-8 flex items-center justify-center gap-3">
-            <button onClick={() => setPlanChoice("monthly")} className="rounded-full px-5 py-2 text-sm font-semibold transition" style={{ background: planChoice === "monthly" ? "#C8AA6E" : "transparent", color: planChoice === "monthly" ? "#0f0f0f" : "#A0A3A8", border: planChoice === "monthly" ? "1px solid #C8AA6E" : "1px solid rgba(255,255,255,0.15)" }}>
+            <button onClick={() => setPlanChoice("monthly")} className="rounded-full px-5 py-2 text-sm font-semibold transition" style={{ background: planChoice === "monthly" ? "#C59A27" : "transparent", color: planChoice === "monthly" ? "#0f0f0f" : "#A0A3A8", border: planChoice === "monthly" ? "1px solid #C59A27" : "1px solid rgba(255,255,255,0.15)" }}>
               Mensual
             </button>
-            <button onClick={() => setPlanChoice("annual")} className="relative rounded-full px-5 py-2 text-sm font-semibold transition" style={{ background: planChoice === "annual" ? "#C8AA6E" : "transparent", color: planChoice === "annual" ? "#0f0f0f" : "#A0A3A8", border: planChoice === "annual" ? "1px solid #C8AA6E" : "1px solid rgba(255,255,255,0.15)" }}>
+            <button onClick={() => setPlanChoice("annual")} className="relative rounded-full px-5 py-2 text-sm font-semibold transition" style={{ background: planChoice === "annual" ? "#C59A27" : "transparent", color: planChoice === "annual" ? "#0f0f0f" : "#A0A3A8", border: planChoice === "annual" ? "1px solid #C59A27" : "1px solid rgba(255,255,255,0.15)" }}>
               Anual
               <span className="absolute -top-2.5 -right-2 rounded-full bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">-20%</span>
             </button>
           </div>
           <div className="reveal mt-8 mx-auto max-w-lg">
-            <div className="pricing-glow ambient-edge relative rounded-xl border-2 border-[#C8AA6E] bg-[#1A1D0F] p-10 text-center sm:p-14">
+            <div className="pricing-glow ambient-edge relative rounded-xl border-2 border-[#C59A27] bg-[#1A1D0F] p-10 text-center sm:p-14">
               <p className="mt-2 text-[56px] font-extrabold tracking-tight text-[#E8E9EB]">{planChoice === "annual" ? "$397" : "$497"}</p>
               <p className="text-sm text-[#A0A3A8]">{planChoice === "annual" ? "/mes — facturado anualmente a $4,764/año" : t.pricing.period}</p>
               {planChoice === "annual" && <p className="mt-2 text-sm font-semibold text-green-400">Ahorra $1,200/año</p>}
               <p className="mt-4 text-base text-[#A0A3A8]">{t.pricing.sub}</p>
               <ul className="mt-8 space-y-4 text-left text-sm text-[#E8E9EB]">
                 {t.pricing.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2"><span className="mt-0.5 text-[#C8AA6E]">&#10003;</span>{f}</li>
+                  <li key={i} className="flex items-start gap-2"><span className="mt-0.5 text-[#C59A27]">&#10003;</span>{f}</li>
                 ))}
               </ul>
               <p className="mt-8 text-sm italic text-[#A0A3A8]">{t.pricing.comparison}</p>

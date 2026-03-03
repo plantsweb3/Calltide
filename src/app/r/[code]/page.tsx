@@ -36,7 +36,7 @@ export default async function ReferralPage({
       style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}
     >
       <div
-        className="w-full max-w-md rounded-xl border border-[#e8e5dd] bg-white p-8 text-center sm:p-10"
+        className="w-full max-w-md rounded-xl border border-[#E2E8F0] bg-white p-8 text-center sm:p-10"
         style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04)" }}
       >
         <div
@@ -75,7 +75,7 @@ export default async function ReferralPage({
           <Link
             href="/audit"
             className="rounded-lg px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ backgroundColor: "#c8a951" }}
+            style={{ backgroundColor: "#C59A27" }}
           >
             Get a Free Audit
           </Link>

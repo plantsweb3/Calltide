@@ -12,8 +12,13 @@ function LoginForm() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (searchParams.get("error") === "invalid") {
+    const errParam = searchParams.get("error");
+    if (errParam === "invalid") {
       setError("Login link expired or invalid. Please try again.");
+    } else if (errParam === "expired") {
+      setError("This login link has already been used. Please request a new one.");
+    } else if (errParam === "rate_limited") {
+      setError("Too many login attempts. Please wait a few minutes and try again.");
     }
   }, [searchParams]);
 
@@ -136,6 +141,13 @@ function LoginForm() {
         <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
           Explore the portal with sample data
         </p>
+        <Link
+          href="/help"
+          className="mt-3 inline-block text-xs transition-colors"
+          style={{ color: "var(--db-text-muted)" }}
+        >
+          Need help? Visit our Help Center
+        </Link>
       </div>
     </div>
   );

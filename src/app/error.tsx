@@ -32,22 +32,38 @@ export default function RootError({
         <p style={{ marginTop: "0.5rem", color: "#94a3b8", fontSize: "0.875rem" }}>
           {error.message || "An unexpected error occurred"}
         </p>
-        <button
-          onClick={reset}
-          style={{
-            marginTop: "1.5rem",
-            padding: "0.625rem 1.5rem",
-            borderRadius: "0.5rem",
-            border: "none",
-            background: "#C59A27",
-            color: "#fff",
-            fontSize: "0.875rem",
-            fontWeight: 500,
-            cursor: "pointer",
-          }}
-        >
-          Try Again
-        </button>
+        <div style={{ marginTop: "1.5rem", display: "flex", gap: "0.75rem", justifyContent: "center" }}>
+          <button
+            onClick={reset}
+            style={{
+              padding: "0.625rem 1.5rem",
+              borderRadius: "0.5rem",
+              border: "none",
+              background: "#C59A27",
+              color: "#fff",
+              fontSize: "0.875rem",
+              fontWeight: 500,
+              cursor: "pointer",
+            }}
+          >
+            Try Again
+          </button>
+          <a
+            href="/"
+            style={{
+              padding: "0.625rem 1.5rem",
+              borderRadius: "0.5rem",
+              border: "1px solid rgba(255,255,255,0.15)",
+              background: "transparent",
+              color: "#94a3b8",
+              fontSize: "0.875rem",
+              fontWeight: 500,
+              textDecoration: "none",
+            }}
+          >
+            Go Home
+          </a>
+        </div>
       </div>
     </div>
   );

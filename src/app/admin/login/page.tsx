@@ -30,14 +30,15 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center" style={{ background: "#111827" }}>
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm space-y-6 rounded-xl border border-slate-800 bg-slate-900 p-8"
+        className="w-full max-w-sm space-y-6 rounded-xl border p-8"
+        style={{ background: "#1A1D24", borderColor: "#2D3748" }}
       >
         <div>
-          <h1 className="text-2xl font-semibold text-slate-100">Calltide Admin</h1>
-          <p className="mt-1 text-sm text-slate-400">Enter your password to continue</p>
+          <h1 className="text-2xl font-semibold text-white">Calltide Admin</h1>
+          <p className="mt-1 text-sm" style={{ color: "#94A3B8" }}>Enter your password to continue</p>
         </div>
 
         {error && (
@@ -47,7 +48,7 @@ export default function AdminLoginPage() {
         )}
 
         <div>
-          <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-slate-300">
+          <label htmlFor="password" className="mb-1.5 block text-sm font-medium" style={{ color: "#CBD5E1" }}>
             Password
           </label>
           <input
@@ -55,7 +56,10 @@ export default function AdminLoginPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+            className="w-full rounded-lg border px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition-colors"
+            style={{ background: "#111827", borderColor: "#2D3748" }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = "#C59A27"; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = "#2D3748"; }}
             placeholder="Enter password"
             autoFocus
           />
@@ -64,7 +68,10 @@ export default function AdminLoginPage() {
         <button
           type="submit"
           disabled={loading || !password}
-          className="w-full rounded-lg bg-green-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full rounded-lg px-4 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          style={{ background: "#C59A27" }}
+          onMouseOver={(e) => { if (!loading) e.currentTarget.style.background = "#D6A846"; }}
+          onMouseOut={(e) => { e.currentTarget.style.background = "#C59A27"; }}
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
