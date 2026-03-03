@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 
-import { T, PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
+import { T, PHONE, PHONE_TEL, BOOKING_URL, type Lang } from "@/lib/marketing/translations";
 import { useScrolled, useScrollReveal } from "@/lib/marketing/hooks";
 import { FEATURE_ICONS, STEP_ICONS } from "@/components/marketing/icons";
 import { SpotlightCard } from "@/components/marketing/SpotlightCard";
@@ -34,6 +34,7 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
           <a href="/platform" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Plataforma</a>
           <a href="/pricing" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Precios</a>
           <a href="/about" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Nosotros</a>
+          <a href="/es/blog" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Blog</a>
           <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{PHONE}</a>
         </div>
         <div className="flex items-center gap-3">
@@ -57,6 +58,7 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
             <a href="/platform" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Plataforma</a>
             <a href="/pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Precios</a>
             <a href="/about" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Nosotros</a>
+            <a href="/es/blog" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Blog</a>
             <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted">{PHONE}</a>
             <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">Iniciar Sesión</a>
             <a href="#signup" onClick={() => setMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white">Obtén Calltide</a>
@@ -168,6 +170,14 @@ export default function EsHomepage() {
           <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.hero.demoSection}</p>
           <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{t.hero.demoSub}</h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">{t.hero.demoDetail}</p>
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <a href={BOOKING_URL} className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+              Reservar Demo &rarr;
+            </a>
+            <a href="/audit" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:border-white/40">
+              Auditoría Gratis
+            </a>
+          </div>
         </div>
       </section>
 
@@ -239,16 +249,11 @@ export default function EsHomepage() {
             ))}
           </div>
           <div className="reveal mt-12 grid gap-8 sm:grid-cols-2">
-            {t.social.testimonials.map((test, i) => (
+            {t.social.highlights.map((item, i) => (
               <div key={i} className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-10">
-                <p className="text-lg leading-[1.7] text-charcoal-muted italic">&ldquo;{test.quote}&rdquo;</p>
-                <div className="mt-6 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber/10 text-sm font-bold text-amber">{test.name.split(" ").map((n) => n[0]).join("")}</div>
-                  <div>
-                    <p className="text-sm font-semibold text-charcoal">{test.name}</p>
-                    <p className="text-sm text-charcoal-muted">{test.biz}</p>
-                  </div>
-                </div>
+                <h3 className="text-lg font-extrabold tracking-tight text-charcoal">{item.title}</h3>
+                <p className="mt-3 text-base leading-[1.7] text-charcoal-muted">{item.text}</p>
+                <p className="mt-4 text-sm font-medium text-amber">{item.sub}</p>
               </div>
             ))}
           </div>

@@ -2,6 +2,7 @@ export type Lang = "en" | "es";
 
 export const PHONE = process.env.NEXT_PUBLIC_PHONE ?? "(830) 521-7133";
 export const PHONE_TEL = `tel:${process.env.NEXT_PUBLIC_PHONE_TEL ?? "+18305217133"}`;
+export const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.com/calltide/onboarding";
 
 export const T = {
   en: {
@@ -57,9 +58,9 @@ export const T = {
     },
     social: {
       label: "Built for Service Businesses",
-      testimonials: [
-        { quote: "Every missed call is a lost job. Your receptionist makes sure that never happens — in English or Spanish.", name: "Why Calltide?", biz: "24/7 AI receptionist for Texas service businesses" },
-        { quote: "Your customers call once. If nobody answers, they call your competitor. She answers every time.", name: "Never Miss Again", biz: "Answers, books, follows up — automatically" },
+      highlights: [
+        { title: "Why Calltide?", text: "Every missed call is a lost job. Your receptionist makes sure that never happens — in English or Spanish.", sub: "24/7 AI receptionist for Texas service businesses" },
+        { title: "Never Miss Again", text: "Your customers call once. If nobody answers, they call your competitor. She answers every time.", sub: "Answers, books, follows up — automatically" },
       ],
       stats: [
         { value: 24, suffix: "/7", label: "Always Available" },
@@ -103,7 +104,7 @@ export const T = {
       h2: "Stop losing calls. Get Calltide today.",
       placeholder: "Enter your business email",
       button: "Get Calltide — Free for 14 Days",
-      sub: "Setup takes less than 10 minutes. No credit card required to start.",
+      sub: "Setup takes less than 10 minutes. Free 14-day trial, cancel anytime.",
       sending: "Starting...",
       existsError: "Looks like you already have an account.",
       loginLink: "Log in instead →",
@@ -176,9 +177,9 @@ export const T = {
     },
     social: {
       label: "Hecho para Negocios de Servicio",
-      testimonials: [
-        { quote: "Cada llamada perdida es un trabajo perdido. Tu recepcionista se asegura de que eso nunca pase — en inglés o español.", name: "¿Por qué Calltide?", biz: "Recepcionista IA 24/7 para negocios de servicio en Texas" },
-        { quote: "Tus clientes llaman una vez. Si nadie contesta, llaman a tu competencia. Ella contesta siempre.", name: "Nunca Pierdas Otra Llamada", biz: "Contesta, agenda, da seguimiento — automáticamente" },
+      highlights: [
+        { title: "¿Por qué Calltide?", text: "Cada llamada perdida es un trabajo perdido. Tu recepcionista se asegura de que eso nunca pase — en inglés o español.", sub: "Recepcionista IA 24/7 para negocios de servicio en Texas" },
+        { title: "Nunca Pierdas Otra Llamada", text: "Tus clientes llaman una vez. Si nadie contesta, llaman a tu competencia. Ella contesta siempre.", sub: "Contesta, agenda, da seguimiento — automáticamente" },
       ],
       stats: [
         { value: 24, suffix: "/7", label: "Siempre Disponible" },
@@ -222,7 +223,7 @@ export const T = {
       h2: "Deja de perder llamadas. Obtén Calltide hoy.",
       placeholder: "Ingresa tu correo de negocio",
       button: "Obtén Calltide — Gratis por 14 Días",
-      sub: "La configuración toma menos de 10 minutos. No se requiere tarjeta de crédito.",
+      sub: "La configuración toma menos de 10 minutos. Prueba gratis por 14 días, cancela cuando quieras.",
       sending: "Iniciando...",
       existsError: "Parece que ya tienes una cuenta.",
       loginLink: "Inicia sesión →",

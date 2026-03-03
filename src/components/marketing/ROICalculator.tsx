@@ -41,6 +41,13 @@ export function ROICalculator({ lang }: { lang: Lang }) {
             ${monthlyLoss.toLocaleString()}
           </p>
           <p className="text-sm text-slate-400">{t.calcPerMonth}</p>
+          {monthlyLoss > 497 && (
+            <p className="mt-3 text-sm font-semibold text-emerald-400">
+              {lang === "en"
+                ? `Calltide pays for itself ${Math.floor(monthlyLoss / 497)}x over at $497/mo`
+                : `Calltide se paga solo ${Math.floor(monthlyLoss / 497)}x a $497/mes`}
+            </p>
+          )}
         </div>
 
         <a
