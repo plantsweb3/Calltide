@@ -81,19 +81,49 @@ export async function getAnthropicMetrics(): Promise<AnthropicMetrics> {
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
-  const [callCount] = await db
-    .select({ count: sql<number>`COUNT(*)` })
+  const [callData] = await db
+    .select({
+      count: sql<number>`COUNT(*)`,
+      totalMinutes: sql<number>`COALESCE(SUM(${calls.duration}), 0) / 60.0`,
+    })
     .from(calls)
     .where(gte(calls.createdAt, monthStart));
 
-  const count = callCount?.count ?? 0;
-  // Estimate: ~1000 tokens per call, blended cost ~$0.0015/1K tokens
-  const estimatedTokens = count * 1000;
-  const estimatedSpend = Math.round((estimatedTokens / 1_000_000) * 1.5 * 100); // cents
+  const count = callData?.count ?? 0;
+  const minutes = callData?.totalMinutes ?? 0;
+
+  // Estimate tokens from call duration + summary generation:
+  // - System prompt: ~800 tokens per call
+  // - Transcript context: ~100 tokens/minute of call audio
+  // - Summary generation: ~500 tokens output per call
+  // Blended cost: ~$3/MTok input, ~$15/MTok output (Sonnet)
+  const inputTokens = count * 800 + minutes * 100;
+  const outputTokens = count * 500;
+  const estimatedTokens = inputTokens + outputTokens;
+  const estimatedSpend = Math.round(
+    (inputTokens / 1_000_000) * 3 * 100 + (outputTokens / 1_000_000) * 15 * 100,
+  ); // cents
+
+  // RPM peak estimation: peak hourly calls / 60 (rough proxy, no real tracking yet)
+  const [peakHour] = await db
+    .select({
+      maxCalls: sql<number>`MAX(hourly_count)`,
+    })
+    .from(
+      db
+        .select({
+          hourly_count: sql<number>`COUNT(*)`.as("hourly_count"),
+        })
+        .from(calls)
+        .where(gte(calls.createdAt, monthStart))
+        .groupBy(sql`strftime('%Y-%m-%d %H', ${calls.createdAt})`)
+        .as("hourly"),
+    );
+  const estimatedRpmPeak = Math.ceil((peakHour?.maxCalls ?? 0) / 60) * 2; // 2 API calls per call (context + summary)
 
   return {
     tokensUsedMtd: estimatedTokens,
-    rpmPeak: 0, // Would need to track from API response headers
+    rpmPeak: estimatedRpmPeak,
     monthlySpend: estimatedSpend,
     spendLimit: PROVIDER_LIMITS.anthropic.monthlySpendLimit,
   };
@@ -108,12 +138,26 @@ export async function getTursoMetrics(): Promise<TursoMetrics> {
     .from(calls)
     .where(gte(calls.createdAt, monthStart));
 
-  const count = callCount?.count ?? 0;
+  const [bizCount] = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(businesses)
+    .where(eq(businesses.active, true));
+
+  const callsThisMonth = callCount?.count ?? 0;
+  const activeClients = bizCount?.count ?? 0;
+
+  // Better estimates based on actual operations per call:
+  // Per call: ~8 reads (lead lookup, business config, availability, etc.) + ~4 writes (call record, lead upsert, SMS, etc.)
+  // Per client/day: ~20 reads (dashboard loads, cron checks) + ~5 writes (health checks, snapshots)
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const dayOfMonth = now.getDate();
+  const clientReads = activeClients * dayOfMonth * 20;
+  const clientWrites = activeClients * dayOfMonth * 5;
 
   return {
-    rowReadsEstimate: count * 5,
+    rowReadsEstimate: callsThisMonth * 8 + clientReads,
     rowReadLimit: PROVIDER_LIMITS.turso.rowReadLimit,
-    rowWritesEstimate: count * 3,
+    rowWritesEstimate: callsThisMonth * 4 + clientWrites,
     rowWriteLimit: PROVIDER_LIMITS.turso.rowWriteLimit,
     storageLimitMb: PROVIDER_LIMITS.turso.storageLimitMb,
   };
