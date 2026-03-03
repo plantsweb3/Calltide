@@ -262,15 +262,16 @@ button:focus-visible {
 
 /* Glassmorphic feature cards */
 .glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .glass-card:hover {
   border-color: rgba(212, 145, 10, 0.3);
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
 }
 
 /* Step circle glow */
@@ -410,18 +411,33 @@ button:focus-visible {
 }
 
 /* ── V4: Status Indicator Pulse ── */
-@keyframes status-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+@keyframes status-ping {
+  0% { transform: scale(1); opacity: 0.75; }
+  100% { transform: scale(2); opacity: 0; }
 }
 .status-dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  position: relative;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #4ade80;
-  animation: status-blink 2s ease-in-out infinite;
   box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+}
+.status-dot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: status-ping 2s ease-in-out infinite;
+}
+.status-dot--down {
+  background: #f87171;
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.6);
+}
+.status-dot--down::before {
+  background: #f87171;
 }
 
 /* ── V4: Ambient Edge Lighting (dark cards) ── */
@@ -434,8 +450,8 @@ button:focus-visible {
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(212, 168, 70, 0.4) 50%, transparent 100%);
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 168, 70, 0.6) 50%, transparent 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -532,6 +548,38 @@ button:focus-visible {
 
 .animate-slide-in-right {
   animation: slide-in-right 0.3s ease-out;
+}
+
+/* ── Section Fade Utilities ── */
+.section-fade-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, #0f172a);
+  pointer-events: none;
+  z-index: 2;
+}
+.section-fade-top-dark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, #111317, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── Hero Glass Container ── */
+.hero-glass {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 1rem;
 }
 
 /* ── Help Center Article Prose ── */

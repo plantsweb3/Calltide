@@ -86,36 +86,39 @@ export default function LandingPage() {
       <section className="relative overflow-hidden grain-overlay">
         <img src="/images/grit-hvac.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-center" fetchPriority="high" />
         <div className="hero-bg-overlay absolute inset-0" />
+        <div className="section-fade-bottom" />
         <div className="relative z-10 mx-auto max-w-6xl px-6 sm:px-8 py-24 sm:py-32">
           <div className="grid items-center gap-16 md:grid-cols-5">
             <div className="md:col-span-3">
-              <div className="flex items-center gap-2 mb-6">
-                <span className="status-dot" />
-                <span className="text-xs font-medium tracking-wide text-slate-400">{lang === "en" ? "Answering calls right now" : "Contestando llamadas ahora"}</span>
-              </div>
-              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-amber">{t.hero.badge}</p>
-              <h1 className="mt-6 text-[clamp(40px,5.5vw,72px)] font-black leading-[1.05] tracking-tight text-white">
-                {t.hero.h1}
-              </h1>
-              <p className="mt-6 max-w-xl text-xl font-medium leading-[1.7] text-slate-300">{t.hero.sub}</p>
-
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-                <a href="#signup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-                  {t.hero.cta} &rarr;
+              <div className="hero-glass">
+                <a href="/status" className="group inline-flex items-center gap-2 mb-6">
+                  <span className="status-dot" />
+                  <span className="text-xs font-medium tracking-wide text-slate-400 transition group-hover:text-white">{lang === "en" ? "Answering calls right now" : "Contestando llamadas ahora"}</span>
                 </a>
-                <button onClick={() => setShowVoiceChat(true)} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
-                  {lang === "en" ? "Or hear it live" : "O escúchala en vivo"} &rarr;
-                </button>
-              </div>
+                <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-amber">{t.hero.badge}</p>
+                <h1 className="mt-6 text-[clamp(40px,5.5vw,72px)] font-black leading-[1.05] tracking-tight text-white">
+                  {t.hero.h1}
+                </h1>
+                <p className="mt-6 max-w-xl text-xl font-medium leading-[1.7] text-slate-300">{t.hero.sub}</p>
 
-              {/* Trust Bar */}
-              <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2">
-                {t.hero.trustItems.map((item, i) => (
-                  <span key={i} className="flex items-center gap-2 text-sm text-slate-400">
-                    {i > 0 && <span className="hidden sm:inline text-slate-600">&bull;</span>}
-                    {item}
-                  </span>
-                ))}
+                <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <a href="#signup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+                    {t.hero.cta} &rarr;
+                  </a>
+                  <button onClick={() => setShowVoiceChat(true)} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
+                    {lang === "en" ? "Or hear it live" : "O escúchala en vivo"} &rarr;
+                  </button>
+                </div>
+
+                {/* Trust Bar */}
+                <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2">
+                  {t.hero.trustItems.map((item, i) => (
+                    <span key={i} className="flex items-center gap-2 text-sm text-slate-400">
+                      {i > 0 && <span className="hidden sm:inline text-slate-600">&bull;</span>}
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -147,7 +150,12 @@ export default function LandingPage() {
             </div>
             <div className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-10 text-center">
               <p className="gold-gradient-text text-[48px] font-extrabold">80%</p>
-              <p className="mt-3 text-base leading-[1.7] text-charcoal-muted">{t.problem.stat2}</p>
+              <p className="mt-3 text-base leading-[1.7] text-charcoal-muted">
+                {lang === "en"
+                  ? <>80% of callers won&apos;t leave a <span className="italic font-semibold text-amber">voicemail</span> — they call your competitor</>
+                  : <>El 80% de las personas no dejan <span className="italic font-semibold text-amber">mensaje de voz</span> — llaman a tu competencia</>
+                }
+              </p>
             </div>
           </div>
         </div>
@@ -252,7 +260,7 @@ export default function LandingPage() {
             {t.social.stats.map((stat, i) => (
               <motion.div
                 key={stat.label}
-                className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-10 text-center"
+                className={`card-shadow card-hover rounded-xl border border-cream-border bg-white text-center ${i === 2 ? "p-8 sm:col-span-1" : "p-10"}`}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
@@ -262,6 +270,9 @@ export default function LandingPage() {
                   <Counter value={stat.value} suffix={stat.suffix} />
                 </p>
                 <p className="mt-2 text-sm font-semibold text-charcoal">{stat.label}</p>
+                {"body" in stat && stat.body && (
+                  <p className="mt-3 text-sm leading-relaxed text-charcoal-muted">{stat.body}</p>
+                )}
               </motion.div>
             ))}
           </div>
@@ -350,6 +361,14 @@ export default function LandingPage() {
               </a>
 
               <p className="mt-4 text-xs text-[#A0A3A8]">{t.pricing.guarantee}</p>
+
+              <div className="mt-6 flex flex-col items-center gap-2">
+                {t.pricing.crossLinks.map((link, i) => (
+                  <a key={i} href={link.href} className="text-xs text-[#A0A3A8] underline underline-offset-4 transition hover:text-amber">
+                    {link.label}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -373,10 +392,51 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── RESOURCES ── */}
+      <section className="bg-[#FBFBFC] px-6 sm:px-8 pb-24 sm:pb-32">
+        <div className="mx-auto max-w-5xl">
+          <div className="reveal text-center">
+            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">{t.resources.label}</p>
+            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-tight text-charcoal sm:text-[44px] max-w-3xl mx-auto">
+              {t.resources.h2}
+            </h2>
+            <p className="mt-4 text-base text-charcoal-muted">{t.resources.sub}</p>
+          </div>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {t.resources.cards.map((card, i) => (
+              <motion.a
+                key={card.slug}
+                href={`${lang === "en" ? "" : "/es"}/help/${card.slug}`}
+                className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-8 block group"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <span className="inline-block rounded-full bg-amber/10 px-3 py-1 text-xs font-semibold text-amber">{card.tag}</span>
+                <h3 className="mt-4 text-lg font-bold leading-snug tracking-tight text-charcoal group-hover:text-amber transition">{card.title}</h3>
+                <span className="mt-4 inline-flex items-center text-sm font-medium text-amber">
+                  {lang === "en" ? "Read article" : "Leer artículo"} &rarr;
+                </span>
+              </motion.a>
+            ))}
+          </div>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
+            <a href={lang === "en" ? "/blog" : "/es/blog"} className="text-sm font-semibold text-charcoal-muted underline underline-offset-4 transition hover:text-amber">
+              {t.resources.blogCta} &rarr;
+            </a>
+            <a href={lang === "en" ? "/help" : "/es/help"} className="text-sm font-semibold text-charcoal-muted underline underline-offset-4 transition hover:text-amber">
+              {t.resources.helpCta} &rarr;
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ── 10. FINAL CTA + SIGNUP ── */}
       <section id="signup" className="relative px-6 sm:px-8 py-24 sm:py-32 overflow-hidden dark-section grain-overlay">
         <img src="/images/grit-texture.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-center" loading="lazy" />
         <div className="grit-overlay-cta absolute inset-0" />
+        <div className="section-fade-top-dark" />
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <h2 className="reveal text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[40px] lg:text-[48px]">
             {t.cta.h2}

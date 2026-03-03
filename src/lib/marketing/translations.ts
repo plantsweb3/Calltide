@@ -6,7 +6,7 @@ export const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.c
 
 export const T = {
   en: {
-    nav: { login: "Log In", cta: "Get Calltide" },
+    nav: { login: "Log In", cta: "Get Calltide", help: "Help" },
     hero: {
       badge: "AI Receptionist for Home Services",
       h1: "Every Call Answered. Every Job Booked.",
@@ -46,7 +46,7 @@ export const T = {
     },
     features: {
       label: "Features",
-      h2: "Everything you need. Nothing you don't.",
+      h2: "The Complete AI Front Office.",
       cards: [
         { title: "24/7 Availability", desc: "Your receptionist never sleeps, never takes breaks, never calls in sick." },
         { title: "Truly Bilingual", desc: "Native English and Spanish. Not a translation — a real conversation." },
@@ -65,8 +65,20 @@ export const T = {
       stats: [
         { value: 24, suffix: "/7", label: "Always Available" },
         { value: 30, suffix: "s", label: "Average Pickup" },
-        { value: 100, suffix: "%", label: "Calls Answered" },
+        { value: 100, suffix: "%", label: "Shift Coverage", body: "Nights, weekends, holidays, and 2 AM emergencies. Your front office never closes." },
       ],
+    },
+    resources: {
+      label: "Resources",
+      h2: "Learn how AI receptionists grow your business.",
+      sub: "Practical guides for home service business owners.",
+      cards: [
+        { slug: "missed-calls-cost-money", title: "Why Missed Calls Cost Your Business Real Money", tag: "Revenue" },
+        { slug: "calltide-vs-receptionist", title: "Calltide vs Hiring a Human Receptionist", tag: "Comparison" },
+        { slug: "how-ai-receptionists-work", title: "How AI Receptionists Work", tag: "Education" },
+      ],
+      blogCta: "Read the blog",
+      helpCta: "Browse help center",
     },
     pricing: {
       label: "Pricing",
@@ -86,6 +98,10 @@ export const T = {
       comparison: "vs. $3,000+/month for a bilingual receptionist",
       cta: "Get Calltide",
       guarantee: "Free for 14 days. Cancel anytime. No contracts.",
+      crossLinks: [
+        { label: "Why missed calls cost real money", href: "/help/missed-calls-cost-money" },
+        { label: "Calltide vs hiring a receptionist", href: "/help/calltide-vs-receptionist" },
+      ],
     },
     faq: {
       label: "Frequently Asked Questions",
@@ -125,7 +141,7 @@ export const T = {
     },
   },
   es: {
-    nav: { login: "Iniciar Sesión", cta: "Obtén Calltide" },
+    nav: { login: "Iniciar Sesión", cta: "Obtén Calltide", help: "Ayuda" },
     hero: {
       badge: "Recepcionista IA para Servicios del Hogar",
       h1: "Cada Llamada Contestada. Cada Trabajo Agendado.",
@@ -165,7 +181,7 @@ export const T = {
     },
     features: {
       label: "Características",
-      h2: "Todo lo que necesitas. Nada que no.",
+      h2: "La Oficina de Recepción IA Completa.",
       cards: [
         { title: "Disponible 24/7", desc: "Tu recepcionista nunca duerme, nunca toma descansos, nunca se enferma." },
         { title: "Verdaderamente Bilingüe", desc: "Inglés y español nativo. No es una traducción — es una conversación real." },
@@ -184,8 +200,20 @@ export const T = {
       stats: [
         { value: 24, suffix: "/7", label: "Siempre Disponible" },
         { value: 30, suffix: "s", label: "Tiempo de Respuesta" },
-        { value: 100, suffix: "%", label: "Llamadas Contestadas" },
+        { value: 100, suffix: "%", label: "Cobertura Total", body: "Noches, fines de semana, días festivos y emergencias a las 2 AM. Tu oficina nunca cierra." },
       ],
+    },
+    resources: {
+      label: "Recursos",
+      h2: "Aprende cómo las recepcionistas IA hacen crecer tu negocio.",
+      sub: "Guías prácticas para dueños de negocios de servicios del hogar.",
+      cards: [
+        { slug: "missed-calls-cost-money", title: "Por Qué las Llamadas Perdidas le Cuestan Dinero Real a tu Negocio", tag: "Ingresos" },
+        { slug: "calltide-vs-receptionist", title: "Calltide vs Contratar una Recepcionista Humana", tag: "Comparación" },
+        { slug: "how-ai-receptionists-work", title: "Cómo Funcionan las Recepcionistas IA", tag: "Educación" },
+      ],
+      blogCta: "Leer el blog",
+      helpCta: "Ver centro de ayuda",
     },
     pricing: {
       label: "Precios",
@@ -205,6 +233,10 @@ export const T = {
       comparison: "vs. $3,000+/mes por una recepcionista bilingüe",
       cta: "Obtén Calltide",
       guarantee: "Gratis por 14 días. Cancela cuando quieras. Sin contratos.",
+      crossLinks: [
+        { label: "Por qué las llamadas perdidas cuestan dinero real", href: "/es/help/missed-calls-cost-money" },
+        { label: "Calltide vs contratar una recepcionista", href: "/es/help/calltide-vs-receptionist" },
+      ],
     },
     faq: {
       label: "Preguntas Frecuentes",
