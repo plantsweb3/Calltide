@@ -21,5 +21,25 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <AboutPage />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Calltide LLC",
+            url: "https://calltide.app",
+            description: "AI-powered bilingual virtual receptionist for home service businesses.",
+            email: "hello@calltide.app",
+            telephone: "+18305217133",
+            areaServed: "US",
+            sameAs: ["https://calltide.app"],
+          }),
+        }}
+      />
+      <AboutPage />
+    </>
+  );
 }

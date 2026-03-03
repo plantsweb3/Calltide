@@ -21,5 +21,28 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <PricingPage />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: "Calltide AI Receptionist",
+            description: "AI-powered bilingual virtual receptionist for home service businesses. Answers calls 24/7 in English and Spanish.",
+            brand: { "@type": "Brand", name: "Calltide" },
+            offers: {
+              "@type": "AggregateOffer",
+              lowPrice: "397",
+              highPrice: "497",
+              priceCurrency: "USD",
+              offerCount: "2",
+            },
+          }),
+        }}
+      />
+      <PricingPage />
+    </>
+  );
 }

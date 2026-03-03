@@ -3,7 +3,9 @@ import Link from "next/link";
 import { db } from "@/db";
 import { blogPosts } from "@/db/schema";
 import { eq, and, inArray } from "drizzle-orm";
-import { BlogNav, BlogFooter, CATEGORY_LABELS } from "@/app/blog/page";
+import { CATEGORY_LABELS } from "@/app/blog/page";
+import { StaticNav } from "@/components/marketing/StaticNav";
+import { StaticFooter } from "@/components/marketing/StaticFooter";
 import AuditCTA from "@/components/audit-cta";
 import type { Metadata } from "next";
 
@@ -75,7 +77,7 @@ export default async function BlogPostEsPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-[#FBFBFC]">
-      <BlogNav lang="es" />
+      <StaticNav lang="es" langHref="/blog" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -94,7 +96,7 @@ export default async function BlogPostEsPage({ params }: PageProps) {
         }}
       />
 
-      <main className="mx-auto max-w-3xl px-6 pt-28 pb-20">
+      <main className="mx-auto max-w-3xl px-6 pt-12 pb-20">
         <div className="mb-10">
           <div className="flex items-center gap-3 text-sm">
             {post.category && (
@@ -145,7 +147,7 @@ export default async function BlogPostEsPage({ params }: PageProps) {
         )}
       </main>
 
-      <BlogFooter lang="es" />
+      <StaticFooter lang="es" />
     </div>
   );
 }

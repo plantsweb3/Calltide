@@ -2,7 +2,9 @@ import Link from "next/link";
 import { db } from "@/db";
 import { blogPosts } from "@/db/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
-import { BlogNav, BlogFooter, CATEGORY_LABELS } from "@/app/blog/page";
+import { CATEGORY_LABELS } from "@/app/blog/page";
+import { StaticNav } from "@/components/marketing/StaticNav";
+import { StaticFooter } from "@/components/marketing/StaticFooter";
 
 export const dynamic = "force-dynamic";
 
@@ -48,9 +50,9 @@ export default async function BlogEsIndexPage({
 
   return (
     <div className="min-h-screen bg-[#FBFBFC]">
-      <BlogNav lang="es" />
+      <StaticNav lang="es" langHref="/blog" />
 
-      <main className="mx-auto max-w-5xl px-6 pt-28 pb-20">
+      <main className="mx-auto max-w-5xl px-6 pt-12 pb-20">
         <div className="text-center">
           <h1 className="text-[36px] font-extrabold tracking-tight text-charcoal sm:text-[48px]">Blog</h1>
           <p className="mt-3 text-lg text-charcoal-muted">
@@ -141,7 +143,7 @@ export default async function BlogEsIndexPage({
         )}
       </main>
 
-      <BlogFooter lang="es" />
+      <StaticFooter lang="es" />
     </div>
   );
 }

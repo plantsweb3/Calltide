@@ -2,6 +2,8 @@ import Link from "next/link";
 import { db } from "@/db";
 import { blogPosts } from "@/db/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
+import { StaticNav } from "@/components/marketing/StaticNav";
+import { StaticFooter } from "@/components/marketing/StaticFooter";
 
 export const dynamic = "force-dynamic";
 
@@ -55,9 +57,9 @@ export default async function BlogIndexPage({
 
   return (
     <div className="min-h-screen bg-[#FBFBFC]">
-      <BlogNav lang="en" />
+      <StaticNav lang="en" langHref="/es/blog" />
 
-      <main className="mx-auto max-w-5xl px-6 pt-28 pb-20">
+      <main className="mx-auto max-w-5xl px-6 pt-12 pb-20">
         <div className="text-center">
           <h1 className="text-[36px] font-extrabold tracking-tight text-charcoal sm:text-[48px]">Blog</h1>
           <p className="mt-3 text-lg text-charcoal-muted">
@@ -155,46 +157,9 @@ export default async function BlogIndexPage({
         )}
       </main>
 
-      <BlogFooter lang="en" />
+      <StaticFooter lang="en" />
     </div>
   );
 }
 
-function BlogNav({ lang }: { lang: "en" | "es" }) {
-  const otherLang = lang === "en" ? "/es/blog" : "/blog";
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-cream-border bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
-        <Link href="/">
-          <img src="/images/logo.webp" alt="Calltide" className="h-6 w-auto" />
-        </Link>
-        <div className="flex items-center gap-4 text-sm">
-          <Link href={otherLang} className="rounded-full border border-cream-border px-3 py-1 text-xs font-semibold text-charcoal-muted hover:border-amber hover:text-amber transition-colors">
-            {lang === "en" ? "ES" : "EN"}
-          </Link>
-          <Link href="/audit" className="text-charcoal-muted hover:text-charcoal transition-colors">Free Audit</Link>
-          <Link href={lang === "en" ? "/blog" : "/es/blog"} className="font-semibold text-charcoal">Blog</Link>
-        </div>
-      </div>
-    </nav>
-  );
-}
-
-function BlogFooter({ lang }: { lang: "en" | "es" }) {
-  return (
-    <footer className="bg-charcoal px-6 py-12">
-      <div className="mx-auto max-w-5xl flex flex-col items-center gap-4 text-center">
-        <img src="/images/logo.webp" alt="Calltide" className="h-6 w-auto brightness-0 invert opacity-70" />
-        <p className="text-sm text-white/40">Every call answered. Every job booked.</p>
-        <div className="flex gap-6 text-sm">
-          <Link href="/" className="text-white/40 hover:text-white/60 transition-colors">Home</Link>
-          <Link href="/audit" className="text-white/40 hover:text-white/60 transition-colors">Free Audit</Link>
-          <Link href={lang === "en" ? "/blog" : "/es/blog"} className="text-white/40 hover:text-white/60 transition-colors">Blog</Link>
-        </div>
-        <p className="text-xs text-white/30">&copy; {new Date().getFullYear()} Calltide. All rights reserved.</p>
-      </div>
-    </footer>
-  );
-}
-
-export { BlogNav, BlogFooter, CATEGORY_LABELS };
+export { CATEGORY_LABELS };

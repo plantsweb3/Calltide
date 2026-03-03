@@ -11,11 +11,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     { url: appUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
+    { url: `${appUrl}/es`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${appUrl}/pricing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${appUrl}/platform`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${appUrl}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${appUrl}/audit`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${appUrl}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     { url: `${appUrl}/es/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     { url: `${appUrl}/help`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
     { url: `${appUrl}/es/help`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
+    { url: `${appUrl}/status`, lastModified: new Date(), changeFrequency: "daily", priority: 0.5 },
+    { url: `${appUrl}/es/status`, lastModified: new Date(), changeFrequency: "daily", priority: 0.5 },
+    { url: `${appUrl}/legal/terms`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${appUrl}/legal/privacy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${appUrl}/legal/dpa`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${appUrl}/legal/sub-processors`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${appUrl}/es/legal/terms`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${appUrl}/es/legal/privacy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${appUrl}/es/legal/dpa`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${appUrl}/es/legal/sub-processors`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
   ];
 
   // Published blog posts
