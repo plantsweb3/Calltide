@@ -107,7 +107,7 @@ export default function OverviewPage() {
     return <LoadingSpinner />;
   }
 
-  const isEnhanced = !!data.revenueThisMonth;
+  const isEnhanced = data.revenueThisMonth != null;
 
   const showCelebration = data.firstCallCelebration?.show && !dismissed;
 
@@ -117,29 +117,60 @@ export default function OverviewPage() {
     data.callsToday === 0 &&
     data.appointmentsThisWeek === 0
   ) {
+    const steps = [
+      { label: "Forward your business number", desc: "Set up call forwarding from your existing phone number to your Calltide receptionist number.", href: "/dashboard/settings", icon: "📞" },
+      { label: "Customize your receptionist", desc: "Set her name, greeting, personality, and the services you offer.", href: "/dashboard/settings", icon: "✨" },
+      { label: "Set your business hours", desc: "Tell her when you're available so she books appointments at the right times.", href: "/dashboard/settings", icon: "🕐" },
+      { label: "Make a test call", desc: "Call your Calltide number to hear how she handles a real conversation.", icon: "🎯" },
+    ];
+
     return (
-      <div>
-        <h1
-          className="mb-6 text-2xl font-semibold"
-          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
-        >
-          Overview
-        </h1>
+      <div className="space-y-6">
+        <div>
+          <h1
+            className="text-2xl font-semibold"
+            style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+          >
+            {getGreeting()}, welcome to Calltide
+          </h1>
+          <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
+            Let&apos;s get your AI receptionist answering calls in the next 10 minutes.
+          </p>
+        </div>
+
         <div
-          className="rounded-xl p-12 text-center"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            boxShadow: "var(--db-card-shadow)",
-          }}
+          className="rounded-xl p-6"
+          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", boxShadow: "var(--db-card-shadow)" }}
         >
-          <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
-            Welcome to Calltide
-          </p>
-          <p className="mt-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Your AI receptionist is ready. Once calls start coming in,
-            you&apos;ll see your metrics here.
-          </p>
+          <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+            Quick Setup
+          </h2>
+          <div className="mt-4 space-y-4">
+            {steps.map((step, i) => (
+              <div key={i} className="flex items-start gap-4">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-lg" style={{ background: "var(--db-hover)" }}>
+                  {step.icon}
+                </span>
+                <div className="flex-1">
+                  {step.href ? (
+                    <a href={step.href} className="text-sm font-semibold hover:underline" style={{ color: "var(--db-accent)" }}>
+                      {step.label} &rarr;
+                    </a>
+                  ) : (
+                    <p className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>{step.label}</p>
+                  )}
+                  <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <MetricCard label="Calls Today" value={0} />
+          <MetricCard label="This Week" value={0} change="Appointments" changeType="neutral" />
+          <MetricCard label="Missed Saved" value={0} />
+          <MetricCard label="Total Calls" value={0} />
         </div>
       </div>
     );
