@@ -91,8 +91,8 @@ export default function AdminDashboardPage() {
       .then(setMetrics)
       .catch(() => setError("Failed to load metrics"));
     fetch("/api/admin/billing")
-      .then((r) => r.json())
-      .then(setBilling)
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((d) => { if (d.current) setBilling(d); })
       .catch(() => setError("Failed to load billing data"));
     fetch("/api/admin/ops")
       .then((r) => r.json())
@@ -259,12 +259,12 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <MetricCard
           label="MRR"
-          value={billing?.current.mrr ?? 0}
+          value={billing?.current?.mrr ?? 0}
           prefix="$"
         />
         <MetricCard
           label="ARR"
-          value={billing?.current.arr ?? 0}
+          value={billing?.current?.arr ?? 0}
           prefix="$"
         />
         <MetricCard label="Active Clients" value={data.businesses} />
