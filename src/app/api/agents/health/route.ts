@@ -4,13 +4,20 @@ import { db } from "@/db";
 import { systemHealthLogs } from "@/db/schema";
 import { createNotification } from "@/lib/notifications";
 import { reportError } from "@/lib/error-reporting";
+import { sql } from "drizzle-orm";
 
 /**
  * GET /api/agents/health
  *
  * Cron-triggered health check.
- * Pings all external services and logs results directly — no LLM call needed.
+ * Pings external services and logs results directly — no LLM call needed.
  * Schedule: every 15 minutes
+ *
+ * Cost optimization:
+ * - Turso: verified via SELECT 1 (free, no HTTP round-trip)
+ * - Twilio: free authenticated GET (always checked)
+ * - Resend: env var presence check; API call every run
+ * - Anthropic & Hume: only checked every 4 hours (expensive API calls)
  */
 export async function GET(req: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
@@ -108,16 +115,56 @@ interface HealthCheck {
   error?: string;
 }
 
+const EXPENSIVE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours
+
+/**
+ * Check if a service was recently checked (within the last 4 hours)
+ * by querying the systemHealthLogs table. If the last check was healthy
+ * and recent, we skip the expensive API call.
+ */
+async function wasRecentlyCheckedHealthy(serviceName: string): Promise<boolean> {
+  try {
+    const cutoff = new Date(Date.now() - EXPENSIVE_CHECK_INTERVAL_MS).toISOString();
+    const rows = await db
+      .select({ status: systemHealthLogs.status })
+      .from(systemHealthLogs)
+      .where(
+        sql`${systemHealthLogs.serviceName} = ${serviceName} AND ${systemHealthLogs.checkedAt} > ${cutoff}`
+      )
+      .orderBy(sql`${systemHealthLogs.checkedAt} DESC`)
+      .limit(1);
+
+    return rows.length > 0 && rows[0].status === "operational";
+  } catch {
+    // If we can't check, run the expensive check
+    return false;
+  }
+}
+
 async function runHealthChecks(): Promise<HealthCheck[]> {
-  const checks: Promise<HealthCheck>[] = [
+  // Always run: Turso (SELECT 1, free), Twilio (free API), Resend
+  const alwaysChecks: Promise<HealthCheck>[] = [
     checkTwilio(),
-    checkHume(),
-    checkAnthropic(),
     checkTurso(),
     checkResend(),
   ];
 
-  return Promise.all(checks);
+  // Expensive checks: only run if last healthy check was >4 hours ago
+  const [anthropicRecent, humeRecent] = await Promise.all([
+    wasRecentlyCheckedHealthy("Anthropic"),
+    wasRecentlyCheckedHealthy("Hume"),
+  ]);
+
+  const expensiveChecks: Promise<HealthCheck>[] = [];
+
+  if (!anthropicRecent) {
+    expensiveChecks.push(checkAnthropic());
+  }
+  if (!humeRecent) {
+    expensiveChecks.push(checkHume());
+  }
+
+  return Promise.all([...alwaysChecks, ...expensiveChecks]);
 }
 
 async function checkTwilio(): Promise<HealthCheck> {
@@ -148,6 +195,9 @@ async function checkTwilio(): Promise<HealthCheck> {
 
 async function checkHume(): Promise<HealthCheck> {
   const start = Date.now();
+  if (!env.HUME_API_KEY) {
+    return { name: "Hume", statusCode: 0, responseTimeMs: 0, healthy: false, error: "HUME_API_KEY not set" };
+  }
   try {
     const resp = await fetch("https://api.hume.ai/v0/evi/chats", {
       method: "GET",
@@ -173,6 +223,9 @@ async function checkHume(): Promise<HealthCheck> {
 
 async function checkAnthropic(): Promise<HealthCheck> {
   const start = Date.now();
+  if (!env.ANTHROPIC_API_KEY) {
+    return { name: "Anthropic", statusCode: 0, responseTimeMs: 0, healthy: false, error: "ANTHROPIC_API_KEY not set" };
+  }
   try {
     const resp = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -208,17 +261,13 @@ async function checkAnthropic(): Promise<HealthCheck> {
 async function checkTurso(): Promise<HealthCheck> {
   const start = Date.now();
   try {
-    const url = new URL(env.TURSO_DATABASE_URL);
-    // Hit the health endpoint of the Turso HTTP API
-    const healthUrl = `https://${url.hostname}/health`;
-    const resp = await fetch(healthUrl, {
-      signal: AbortSignal.timeout(10000),
-    });
+    // Use a simple SELECT 1 query via Drizzle — no HTTP round-trip needed
+    await db.run(sql`SELECT 1`);
     return {
       name: "Turso",
-      statusCode: resp.status,
+      statusCode: 200,
       responseTimeMs: Date.now() - start,
-      healthy: resp.ok,
+      healthy: true,
     };
   } catch (error) {
     return {
