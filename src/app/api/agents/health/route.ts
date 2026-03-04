@@ -16,7 +16,8 @@ import { sql } from "drizzle-orm";
  * Cost optimization:
  * - Turso: verified via SELECT 1 (free, no HTTP round-trip)
  * - Twilio: free authenticated GET (always checked)
- * - Resend: env var presence check; API call every run
+ * - Resend: env var presence check only (no API call)
+ * - Env vars: validates all required env vars are present
  * - Anthropic & Hume: only checked every 4 hours (expensive API calls)
  */
 export async function GET(req: NextRequest) {
@@ -142,11 +143,12 @@ async function wasRecentlyCheckedHealthy(serviceName: string): Promise<boolean> 
 }
 
 async function runHealthChecks(): Promise<HealthCheck[]> {
-  // Always run: Turso (SELECT 1, free), Twilio (free API), Resend
+  // Always run: Turso (SELECT 1, free), Twilio (free API), Resend (env only), Env vars
   const alwaysChecks: Promise<HealthCheck>[] = [
-    checkTwilio(),
     checkTurso(),
+    checkTwilio(),
     checkResend(),
+    checkEnvVars(),
   ];
 
   // Expensive checks: only run if last healthy check was >4 hours ago
@@ -281,29 +283,37 @@ async function checkTurso(): Promise<HealthCheck> {
 }
 
 async function checkResend(): Promise<HealthCheck> {
-  const start = Date.now();
+  // Env var presence check only — no API call needed every 5-15 min
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    return { name: "Resend", statusCode: 0, responseTimeMs: 0, healthy: false, error: "RESEND_API_KEY not set" };
-  }
-  try {
-    const resp = await fetch("https://api.resend.com/domains", {
-      headers: { Authorization: `Bearer ${apiKey}` },
-      signal: AbortSignal.timeout(10000),
-    });
-    return {
-      name: "Resend",
-      statusCode: resp.status,
-      responseTimeMs: Date.now() - start,
-      healthy: resp.ok,
-    };
-  } catch (error) {
-    return {
-      name: "Resend",
-      statusCode: 0,
-      responseTimeMs: Date.now() - start,
-      healthy: false,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
+  return {
+    name: "Resend",
+    statusCode: apiKey ? 200 : 0,
+    responseTimeMs: 0,
+    healthy: !!apiKey,
+    error: apiKey ? undefined : "RESEND_API_KEY not set",
+  };
+}
+
+const REQUIRED_ENV_VARS = [
+  "CRON_SECRET",
+  "CLIENT_AUTH_SECRET",
+  "ADMIN_PASSWORD",
+  "TWILIO_ACCOUNT_SID",
+  "TWILIO_AUTH_TOKEN",
+  "TWILIO_PHONE_NUMBER",
+  "HUME_API_KEY",
+  "STRIPE_SECRET_KEY",
+  "STRIPE_WEBHOOK_SECRET",
+  "NEXT_PUBLIC_APP_URL",
+];
+
+async function checkEnvVars(): Promise<HealthCheck> {
+  const missing = REQUIRED_ENV_VARS.filter((v) => !process.env[v]);
+  return {
+    name: "Env Vars",
+    statusCode: missing.length === 0 ? 200 : 0,
+    responseTimeMs: 0,
+    healthy: missing.length === 0,
+    error: missing.length > 0 ? `Missing: ${missing.join(", ")}` : undefined,
+  };
 }
