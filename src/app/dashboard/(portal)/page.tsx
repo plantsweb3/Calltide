@@ -7,6 +7,7 @@ import ActivityFeed from "@/app/dashboard/_components/activity-feed";
 import WeeklySummary from "@/app/dashboard/_components/weekly-summary";
 import BusinessInsights from "@/app/dashboard/_components/business-insights";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import SetupChecklist from "@/app/dashboard/_components/setup-checklist";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 
 interface Overview {
@@ -75,6 +76,12 @@ interface Overview {
     newThisMonth: number;
     topByCallCount: Array<{ name: string | null; phone: string; totalCalls: number }>;
   };
+  // Setup checklist data
+  businessHours?: Record<string, { open?: string; close?: string; closed?: boolean }> | null;
+  greeting?: string | null;
+  hasPricing?: boolean;
+  setupChecklistDismissed?: boolean;
+  createdAt?: string;
 }
 
 function getGreeting(): string {
@@ -442,7 +449,7 @@ export default function OverviewPage() {
           className="text-2xl font-semibold"
           style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
         >
-          {getGreeting()}
+          {getGreeting()}, {data.businessName || "there"}!
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
           Here&apos;s how {receptionistName} is doing today
@@ -451,6 +458,18 @@ export default function OverviewPage() {
 
       {/* First Call Celebration */}
       {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} receptionistName={receptionistName} />}
+
+      {/* Setup Checklist */}
+      {data.createdAt && (
+        <SetupChecklist
+          businessHours={data.businessHours || null}
+          greeting={data.greeting || null}
+          hasPricing={data.hasPricing || false}
+          totalCalls={data.totalCalls}
+          setupChecklistDismissed={data.setupChecklistDismissed || false}
+          createdAt={data.createdAt}
+        />
+      )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard label={`${receptionistName}'s Calls Today`} value={data.callsToday} />

@@ -6,6 +6,7 @@ import { reportError } from "@/lib/error-reporting";
 import { sendSMS } from "@/lib/twilio/sms";
 import { canSendSms } from "@/lib/compliance/sms";
 import { env } from "@/lib/env";
+import { getBusinessDateRange } from "@/lib/timezone";
 
 /**
  * GET /api/cron/review-requests
@@ -22,11 +23,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Yesterday's date (appointments that were scheduled yesterday)
   const now = new Date();
-  const yesterday = new Date(now);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayDate = yesterday.toISOString().slice(0, 10);
 
   // 90-day lookback window for rate limiting
   const ninetyDaysAgo = new Date(now);
@@ -52,6 +49,10 @@ export async function GET(req: NextRequest) {
 
     for (const biz of activeBiz) {
       try {
+        // Compute "yesterday" in the business's timezone
+        const tz = biz.timezone || "America/Chicago";
+        const { dateStr: yesterdayDate } = getBusinessDateRange(tz, -1);
+
         // Find yesterday's confirmed/completed appointments for this business
         const yesterdayAppts = await db
           .select({
@@ -90,7 +91,7 @@ export async function GET(req: NextRequest) {
 
             // Check TCPA compliance (opt-outs + quiet hours)
             try {
-              const smsCheck = await canSendSms(lead.phone);
+              const smsCheck = await canSendSms(lead.phone, tz);
               if (!smsCheck.allowed) {
                 skipped++;
                 continue;

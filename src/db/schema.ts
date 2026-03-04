@@ -114,6 +114,12 @@ export const businesses = sqliteTable("businesses", {
   enableReviewRequests: integer("enable_review_requests", { mode: "boolean" }).default(true),
   // Missed call recovery
   enableMissedCallRecovery: integer("enable_missed_call_recovery", { mode: "boolean" }).default(true),
+  // Notification preferences
+  notifyOnEveryCall: integer("notify_on_every_call", { mode: "boolean" }).default(false),
+  notifyOnMissedOnly: integer("notify_on_missed_only", { mode: "boolean" }).default(true),
+  ownerQuietHoursStart: text("owner_quiet_hours_start").default("21:00"),
+  ownerQuietHoursEnd: text("owner_quiet_hours_end").default("08:00"),
+  setupChecklistDismissed: integer("setup_checklist_dismissed", { mode: "boolean" }).default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });

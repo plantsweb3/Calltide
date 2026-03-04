@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 import { TableSkeleton } from "@/components/skeleton";
+import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 
 interface Customer {
   id: string;
@@ -84,13 +85,28 @@ export default function CustomersPage() {
             {total} total customers
           </p>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
-          style={{ background: "var(--db-accent)" }}
-        >
-          + Add Customer
-        </button>
+        <div className="flex items-center gap-2">
+          <ExportCsvButton
+            data={customers}
+            columns={[
+              { header: "Name", accessor: (r) => r.name },
+              { header: "Phone", accessor: (r) => r.phone },
+              { header: "Email", accessor: (r) => r.email },
+              { header: "Calls", accessor: (r) => r.totalCalls },
+              { header: "Appointments", accessor: (r) => r.totalAppointments },
+              { header: "Last Call", accessor: (r) => r.lastCallAt },
+              { header: "Tags", accessor: (r) => r.tags.join("; ") },
+            ]}
+            filename="customers"
+          />
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
+            style={{ background: "var(--db-accent)" }}
+          >
+            + Add Customer
+          </button>
+        </div>
       </div>
 
       {/* Search */}
@@ -143,6 +159,16 @@ export default function CustomersPage() {
                 ? "Try a different search term."
                 : `Your customer list builds automatically as ${receptionistName} takes calls.`}
             </p>
+            {!search && (
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                style={{ background: "var(--db-accent)", color: "#fff", cursor: "pointer", border: "none" }}
+              >
+                Add Customer Manually
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              </button>
+            )}
           </div>
         ) : (
           <table className="w-full">

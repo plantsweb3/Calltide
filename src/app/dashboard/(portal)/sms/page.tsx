@@ -206,6 +206,14 @@ export default function SmsPage() {
           <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
             SMS confirmations and reminders will show up here as {receptionistName} handles calls.
           </p>
+          <a
+            href="/dashboard/settings#notifications"
+            className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            style={{ background: "var(--db-accent)", color: "#fff" }}
+          >
+            View SMS Settings
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
         </div>
       )}
 

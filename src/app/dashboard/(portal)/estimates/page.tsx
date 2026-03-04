@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { TableSkeleton } from "@/components/skeleton";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 
 interface Estimate {
   id: string;
@@ -130,9 +131,23 @@ export default function EstimatesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6" style={{ color: "var(--db-text)" }}>
-        Estimates Pipeline
-      </h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>
+          Estimates Pipeline
+        </h1>
+        <ExportCsvButton
+          data={estimates}
+          columns={[
+            { header: "Customer", accessor: (r) => r.customerName || r.customerPhone },
+            { header: "Service", accessor: (r) => r.service },
+            { header: "Amount", accessor: (r) => r.amount },
+            { header: "Status", accessor: (r) => r.status },
+            { header: "Created", accessor: (r) => r.createdAt },
+            { header: "Notes", accessor: (r) => r.notes },
+          ]}
+          filename="estimates"
+        />
+      </div>
 
       {/* Pipeline Summary Cards */}
       <div className="grid grid-cols-2 gap-3 mb-6 sm:grid-cols-5">
@@ -200,6 +215,14 @@ export default function EstimatesPage() {
             <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
               Estimates are auto-created when callers request quotes through {receptionistName}.
             </p>
+            <a
+              href="/dashboard/help/estimates"
+              className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+              style={{ background: "var(--db-accent)", color: "#fff" }}
+            >
+              Learn How Estimates Work
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
           </div>
         ) : (
           <table className="w-full">

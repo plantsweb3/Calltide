@@ -37,7 +37,15 @@ export async function GET(req: NextRequest) {
 
   // ── Get business info (for avgJobValue and name) ──
   const [biz] = await db
-    .select({ name: businesses.name, avgJobValue: businesses.avgJobValue })
+    .select({
+      name: businesses.name,
+      avgJobValue: businesses.avgJobValue,
+      businessHours: businesses.businessHours,
+      greeting: businesses.greeting,
+      hasPricingEnabled: businesses.hasPricingEnabled,
+      setupChecklistDismissed: businesses.setupChecklistDismissed,
+      createdAt: businesses.createdAt,
+    })
     .from(businesses)
     .where(eq(businesses.id, businessId))
     .limit(1);
@@ -132,6 +140,12 @@ export async function GET(req: NextRequest) {
     missedCallsSaved: missedCallsSaved.count,
     totalCalls: totalCallsResult.count,
     firstCallCelebration,
+    businessName: biz?.name,
+    businessHours: biz?.businessHours,
+    greeting: biz?.greeting,
+    hasPricing: biz?.hasPricingEnabled ?? false,
+    setupChecklistDismissed: biz?.setupChecklistDismissed ?? false,
+    createdAt: biz?.createdAt,
   };
 
   // ── Enhanced metrics (wrapped so basic always returns) ──

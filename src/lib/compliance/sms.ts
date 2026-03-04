@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { smsOptOuts, consentRecords, businesses } from "@/db/schema";
 import { eq, and, isNull, inArray, sql } from "drizzle-orm";
+import { getBusinessHour } from "@/lib/timezone";
 
 export function normalizePhone(phone: string): string {
   return phone.replace(/\D/g, "").replace(/^1(\d{10})$/, "$1");
@@ -8,9 +9,11 @@ export function normalizePhone(phone: string): string {
 
 /**
  * TCPA-compliant pre-check. Must be called BEFORE every SMS send.
+ * @param timezone - Business timezone for quiet hours check. Defaults to America/Chicago.
  */
 export async function canSendSms(
   phoneNumber: string,
+  timezone?: string,
 ): Promise<{ allowed: boolean; reason?: string }> {
   const normalized = normalizePhone(phoneNumber);
 
@@ -28,9 +31,10 @@ export async function canSendSms(
 
   if (optOut) return { allowed: false, reason: "opted_out" };
 
-  // 2. Check quiet hours (8 AM - 9 PM CT — conservative default)
-  const ctHour = getCurrentCTHour();
-  if (ctHour < 8 || ctHour >= 21) {
+  // 2. Check quiet hours (8 AM - 9 PM in business timezone — conservative default)
+  const tz = timezone || "America/Chicago";
+  const currentHour = getBusinessHour(tz);
+  if (currentHour < 8 || currentHour >= 21) {
     return { allowed: false, reason: "quiet_hours" };
   }
 
@@ -68,12 +72,4 @@ export async function canSendSms(
   // No consent found — still allow for owner notifications (system SMS)
   // The caller should decide based on context whether to proceed
   return { allowed: true };
-}
-
-function getCurrentCTHour(): number {
-  const now = new Date();
-  const ct = new Date(
-    now.toLocaleString("en-US", { timeZone: "America/Chicago" }),
-  );
-  return ct.getHours();
 }

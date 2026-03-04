@@ -148,9 +148,10 @@ export async function GET(req: NextRequest) {
           }
         }
 
-        // TCPA compliance check
+        // TCPA compliance check (use business timezone for quiet hours)
+        const tz = biz.timezone || "America/Chicago";
         try {
-          const smsCheck = await canSendSms(call.callerPhone);
+          const smsCheck = await canSendSms(call.callerPhone, tz);
           if (!smsCheck.allowed) {
             skipped++;
             continue;

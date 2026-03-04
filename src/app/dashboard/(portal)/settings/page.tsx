@@ -37,7 +37,22 @@ interface SettingsData {
   googleReviewUrl: string;
   enableReviewRequests: boolean;
   enableMissedCallRecovery: boolean;
+  notifyOnEveryCall: boolean;
+  notifyOnMissedOnly: boolean;
+  ownerQuietHoursStart: string;
+  ownerQuietHoursEnd: string;
+  setupChecklistDismissed: boolean;
 }
+
+type SettingsTab = "general" | "receptionist" | "responses" | "notifications" | "automations";
+
+const SETTINGS_TABS: { key: SettingsTab; label: string }[] = [
+  { key: "general", label: "General" },
+  { key: "receptionist", label: "Receptionist" },
+  { key: "responses", label: "Custom Responses" },
+  { key: "notifications", label: "Notifications" },
+  { key: "automations", label: "Automations" },
+];
 
 interface CustomResponse {
   id: string;
@@ -134,6 +149,13 @@ function validateField(field: string, value: string): string | null {
 }
 
 export default function SettingsPage() {
+  const [activeTab, setActiveTab] = useState<SettingsTab>(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash.replace("#", "") as SettingsTab;
+      if (SETTINGS_TABS.some((t) => t.key === hash)) return hash;
+    }
+    return "general";
+  });
   const [data, setData] = useState<SettingsData | null>(null);
   const [initialData, setInitialData] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -182,6 +204,21 @@ export default function SettingsPage() {
       .then((r) => r.ok ? r.json() : { responses: {} })
       .then((d) => setCustomResponses(d.responses || {}))
       .catch(() => {});
+  }, []);
+
+  // Sync tab with URL hash
+  useEffect(() => {
+    const onHashChange = () => {
+      const hash = window.location.hash.replace("#", "") as SettingsTab;
+      if (SETTINGS_TABS.some((t) => t.key === hash)) setActiveTab(hash);
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  const switchTab = useCallback((tab: SettingsTab) => {
+    setActiveTab(tab);
+    window.location.hash = tab;
   }, []);
 
   const isDirty = data ? JSON.stringify(data) !== initialData : false;
@@ -254,6 +291,11 @@ export default function SettingsPage() {
         googleReviewUrl: data.googleReviewUrl || "",
         enableReviewRequests: data.enableReviewRequests,
         enableMissedCallRecovery: data.enableMissedCallRecovery,
+        notifyOnEveryCall: data.notifyOnEveryCall,
+        notifyOnMissedOnly: data.notifyOnMissedOnly,
+        ownerQuietHoursStart: data.ownerQuietHoursStart,
+        ownerQuietHoursEnd: data.ownerQuietHoursEnd,
+        setupChecklistDismissed: data.setupChecklistDismissed,
       };
 
       const res = await fetch("/api/dashboard/settings", {
@@ -420,6 +462,30 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* Tab Navigation */}
+      <div
+        className="flex gap-1 overflow-x-auto rounded-xl p-1"
+        style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
+      >
+        {SETTINGS_TABS.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => switchTab(tab.key)}
+            className="whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all"
+            style={{
+              background: activeTab === tab.key ? "var(--db-accent)" : "transparent",
+              color: activeTab === tab.key ? "#fff" : "var(--db-text-muted)",
+              cursor: "pointer",
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ═══ GENERAL TAB ═══ */}
+      {activeTab === "general" && <>
+
       {/* ── Section: Business Information ── */}
       <Card title="Business Information">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -501,6 +567,11 @@ export default function SettingsPage() {
         </div>
       </Card>
 
+      </>}
+
+      {/* ═══ RECEPTIONIST TAB ═══ */}
+      {activeTab === "receptionist" && <>
+
       {/* ── Section: Your Receptionist ── */}
       <Card title="Your Receptionist">
         <div className="space-y-4">
@@ -563,6 +634,11 @@ export default function SettingsPage() {
         </div>
       </Card>
 
+      </>}
+
+      {/* ═══ GENERAL TAB (Owner Contact + Security) ═══ */}
+      {activeTab === "general" && <>
+
       {/* ── Section: Owner Contact ── */}
       <Card title="Owner Contact">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -597,6 +673,11 @@ export default function SettingsPage() {
 
       {/* ── Section: Security ── */}
       <SecuritySection />
+
+      </>}
+
+      {/* ═══ NOTIFICATIONS TAB ═══ */}
+      {activeTab === "notifications" && <>
 
       {/* ── Section: Weekly Digest ── */}
       <Card title="Weekly Digest">
@@ -685,6 +766,64 @@ export default function SettingsPage() {
         </div>
       </Card>
 
+      {/* ── Section: Notification Preferences ── */}
+      <Card title="Notification Preferences">
+        <div className="space-y-4">
+          <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            Control when and how you receive notifications about calls.
+          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Notify on every call</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Get an SMS after every answered call</p>
+            </div>
+            <ToggleSwitch checked={data.notifyOnEveryCall} onChange={(v) => setField("notifyOnEveryCall", v)} />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Notify on missed calls only</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Only get notified when a call is missed or abandoned</p>
+            </div>
+            <ToggleSwitch checked={data.notifyOnMissedOnly} onChange={(v) => setField("notifyOnMissedOnly", v)} />
+          </div>
+          <div className="border-t pt-4" style={{ borderColor: "var(--db-border)" }}>
+            <p className="text-sm font-medium mb-3" style={{ color: "var(--db-text)" }}>Owner Quiet Hours</p>
+            <p className="text-xs mb-3" style={{ color: "var(--db-text-muted)" }}>
+              No owner notifications will be sent during these hours (except emergencies).
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>Start</label>
+                <select
+                  value={data.ownerQuietHoursStart}
+                  onChange={(e) => setField("ownerQuietHoursStart", e.target.value)}
+                  className="w-full rounded-lg px-3 py-2 text-sm"
+                  style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                >
+                  {TIME_OPTIONS.map((t) => <option key={t} value={t}>{formatTime12(t)}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>End</label>
+                <select
+                  value={data.ownerQuietHoursEnd}
+                  onChange={(e) => setField("ownerQuietHoursEnd", e.target.value)}
+                  className="w-full rounded-lg px-3 py-2 text-sm"
+                  style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                >
+                  {TIME_OPTIONS.map((t) => <option key={t} value={t}>{formatTime12(t)}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      </>}
+
+      {/* ═══ AUTOMATIONS TAB ═══ */}
+      {activeTab === "automations" && <>
+
       {/* ── Section: Google Review Requests ── */}
       <Card title="Google Review Requests">
         <div className="space-y-4">
@@ -764,6 +903,11 @@ export default function SettingsPage() {
           </div>
         </div>
       </Card>
+
+      </>}
+
+      {/* ═══ GENERAL TAB (Business Hours + Services) ═══ */}
+      {activeTab === "general" && <>
 
       {/* ── Section: Business Hours ── */}
       <Card title="Business Hours">
@@ -879,6 +1023,11 @@ export default function SettingsPage() {
           {data.services.length}/20 services
         </p>
       </Card>
+
+      </>}
+
+      {/* ═══ AUTOMATIONS TAB (Service Pricing) ═══ */}
+      {activeTab === "automations" && <>
 
       {/* ── Section: Service Pricing ── */}
       <Card title="Service Pricing">
@@ -1157,6 +1306,11 @@ export default function SettingsPage() {
         </div>
       </Card>
 
+      </>}
+
+      {/* ═══ RECEPTIONIST TAB (Greeting + Language + Emergency) ═══ */}
+      {activeTab === "receptionist" && <>
+
       {/* ── Section: Greeting ── */}
       <Card title={`${rName}'s Greeting`}>
         <div className="space-y-4">
@@ -1297,6 +1451,11 @@ export default function SettingsPage() {
         </p>
       </Card>
 
+      </>}
+
+      {/* ═══ CUSTOM RESPONSES TAB ═══ */}
+      {activeTab === "responses" && <>
+
       {/* ── Section: Train Your Receptionist ── */}
       <Card title={`Train ${rName}`}>
         <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
@@ -1430,8 +1589,15 @@ export default function SettingsPage() {
         </div>
       </Card>
 
+      </>}
+
+      {/* ═══ AUTOMATIONS TAB (Outbound Calling) ═══ */}
+      {activeTab === "automations" && <>
+
       {/* ── Section: Outbound Calling ── */}
       <OutboundSettingsSection />
+
+      </>}
 
       {/* Sticky Save Bar (mobile) */}
       {isDirty && (

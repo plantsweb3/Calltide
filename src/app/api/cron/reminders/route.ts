@@ -4,6 +4,7 @@ import { appointments, leads, businesses } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { getReminderMessage } from "@/lib/sms-templates";
+import { getBusinessDateRange } from "@/lib/timezone";
 import type { Language } from "@/types";
 
 /**
@@ -27,25 +28,28 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Calculate tomorrow's date in UTC (good enough for daily reminders)
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = tomorrow.toISOString().split("T")[0]; // YYYY-MM-DD
+  // Query a wide window of upcoming appointments (next 2 days UTC) then filter per business timezone
+  const wideTomorrow = new Date();
+  wideTomorrow.setDate(wideTomorrow.getDate() + 2);
+  const wideStart = new Date().toISOString().split("T")[0];
+  const wideEnd = wideTomorrow.toISOString().split("T")[0];
 
-  // Find confirmed appointments for tomorrow that haven't had reminders sent
+  // Find confirmed appointments in the wide window that haven't had reminders sent
   const upcoming = await db
     .select({
       appointmentId: appointments.id,
       service: appointments.service,
       date: appointments.date,
       time: appointments.time,
+      status: appointments.status,
       leadId: appointments.leadId,
       businessId: appointments.businessId,
     })
     .from(appointments)
     .where(
       and(
-        eq(appointments.date, tomorrowStr),
+        sql`${appointments.date} >= ${wideStart}`,
+        sql`${appointments.date} <= ${wideEnd}`,
         eq(appointments.status, "confirmed"),
         eq(appointments.reminderSent, false)
       )
@@ -53,22 +57,57 @@ export async function GET(req: NextRequest) {
 
   let sent = 0;
   let failed = 0;
+  let skipped = 0;
+
+  // Cache business lookups
+  const bizCache = new Map<string, typeof businesses.$inferSelect | null>();
 
   for (const apt of upcoming) {
-    // Look up lead phone and business info
+    // Look up business (cached)
+    let biz = bizCache.get(apt.businessId);
+    if (biz === undefined) {
+      const [result] = await db
+        .select()
+        .from(businesses)
+        .where(eq(businesses.id, apt.businessId))
+        .limit(1);
+      biz = result ?? null;
+      bizCache.set(apt.businessId, biz);
+    }
+
+    if (!biz) {
+      failed++;
+      continue;
+    }
+
+    // Check if this appointment's date is actually "tomorrow" in the business's timezone
+    const tz = biz.timezone || "America/Chicago";
+    const { dateStr: tomorrowStr } = getBusinessDateRange(tz, 1);
+    if (apt.date !== tomorrowStr) {
+      skipped++;
+      continue;
+    }
+
+    // Re-check appointment status (may have been cancelled since query)
+    const [freshApt] = await db
+      .select({ status: appointments.status, reminderSent: appointments.reminderSent })
+      .from(appointments)
+      .where(eq(appointments.id, apt.appointmentId))
+      .limit(1);
+
+    if (!freshApt || freshApt.status !== "confirmed" || freshApt.reminderSent) {
+      skipped++;
+      continue;
+    }
+
+    // Look up lead phone
     const [lead] = await db
       .select({ phone: leads.phone, name: leads.name, language: leads.language })
       .from(leads)
       .where(eq(leads.id, apt.leadId))
       .limit(1);
 
-    const [biz] = await db
-      .select({ name: businesses.name, twilioNumber: businesses.twilioNumber })
-      .from(businesses)
-      .where(eq(businesses.id, apt.businessId))
-      .limit(1);
-
-    if (!lead?.phone || !biz) {
+    if (!lead?.phone) {
       failed++;
       continue;
     }
@@ -106,9 +145,9 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json({
-    date: tomorrowStr,
     total: upcoming.length,
     sent,
     failed,
+    skipped,
   });
 }

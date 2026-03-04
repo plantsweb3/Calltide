@@ -13,6 +13,16 @@ import { logActivity } from "@/lib/activity";
 
 const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
 
+/**
+ * Get the display amount string based on the business's plan type.
+ */
+function getPlanAmount(planType?: string | null): { display: string; displayEs: string } {
+  if (planType === "annual") {
+    return { display: "$4,970/yr", displayEs: "$4,970/año" };
+  }
+  return { display: "$497/mo", displayEs: "$497/mes" };
+}
+
 let resend: Resend | null = null;
 function getResend(): Resend {
   if (!resend) {
@@ -279,52 +289,56 @@ export async function processDunning() {
 
 type DunningStage = "email1" | "email2" | "email3";
 
-const templates: Record<DunningStage, { en: { subject: string; heading: string; body: string }; es: { subject: string; heading: string; body: string } }> = {
-  email1: {
-    en: {
-      subject: "Action needed: Payment update required",
-      heading: "Your recent payment didn't go through",
-      body: "We tried to process your monthly payment of <strong>$497</strong>, but it was declined. This is usually caused by an expired card or insufficient funds. Please update your payment method to keep your AI receptionist running smoothly.",
+function getDunningTemplates(planType?: string | null): Record<DunningStage, { en: { subject: string; heading: string; body: string }; es: { subject: string; heading: string; body: string } }> {
+  const { display, displayEs } = getPlanAmount(planType);
+  return {
+    email1: {
+      en: {
+        subject: "Action needed: Payment update required",
+        heading: "Your recent payment didn't go through",
+        body: `We tried to process your payment of <strong>${display}</strong>, but it was declined. This is usually caused by an expired card or insufficient funds. Please update your payment method to keep your AI receptionist running smoothly.`,
+      },
+      es: {
+        subject: "Acción requerida: Actualización de pago necesaria",
+        heading: "Su pago reciente no fue procesado",
+        body: `Intentamos procesar su pago de <strong>${displayEs}</strong>, pero fue rechazado. Esto generalmente se debe a una tarjeta vencida o fondos insuficientes. Por favor actualice su método de pago para mantener su recepcionista IA funcionando sin problemas.`,
+      },
     },
-    es: {
-      subject: "Acción requerida: Actualización de pago necesaria",
-      heading: "Su pago reciente no fue procesado",
-      body: "Intentamos procesar su pago mensual de <strong>$497</strong>, pero fue rechazado. Esto generalmente se debe a una tarjeta vencida o fondos insuficientes. Por favor actualice su método de pago para mantener su recepcionista IA funcionando sin problemas.",
+    email2: {
+      en: {
+        subject: "Reminder: Your payment needs attention",
+        heading: "Your payment is still pending",
+        body: `We still haven't been able to process your <strong>${display}</strong> payment. If your payment method isn't updated soon, your AI receptionist service may be interrupted. We'd hate for your callers to go unanswered.`,
+      },
+      es: {
+        subject: "Recordatorio: Su pago necesita atención",
+        heading: "Su pago aún está pendiente",
+        body: `Aún no hemos podido procesar su pago de <strong>${displayEs}</strong>. Si su método de pago no se actualiza pronto, su servicio de recepcionista IA podría ser interrumpido. No queremos que sus llamadas queden sin responder.`,
+      },
     },
-  },
-  email2: {
-    en: {
-      subject: "Reminder: Your payment needs attention",
-      heading: "Your payment is still pending",
-      body: "We still haven't been able to process your <strong>$497</strong> monthly payment. If your payment method isn't updated soon, your AI receptionist service may be interrupted. We'd hate for your callers to go unanswered.",
+    email3: {
+      en: {
+        subject: "Final notice: Service will be deactivated",
+        heading: "Last chance to update your payment",
+        body: `This is a final reminder about your overdue <strong>${display}</strong> payment. If we don't receive payment within the next 7 days, your AI receptionist will be deactivated and calls will no longer be answered. Please update your payment method now to avoid any interruption.`,
+      },
+      es: {
+        subject: "Aviso final: El servicio será desactivado",
+        heading: "Última oportunidad para actualizar su pago",
+        body: `Este es un recordatorio final sobre su pago pendiente de <strong>${displayEs}</strong>. Si no recibimos el pago en los próximos 7 días, su recepcionista IA será desactivado y las llamadas ya no serán atendidas. Por favor actualice su método de pago ahora para evitar interrupciones.`,
+      },
     },
-    es: {
-      subject: "Recordatorio: Su pago necesita atención",
-      heading: "Su pago aún está pendiente",
-      body: "Aún no hemos podido procesar su pago mensual de <strong>$497</strong>. Si su método de pago no se actualiza pronto, su servicio de recepcionista IA podría ser interrumpido. No queremos que sus llamadas queden sin responder.",
-    },
-  },
-  email3: {
-    en: {
-      subject: "Final notice: Service will be deactivated",
-      heading: "Last chance to update your payment",
-      body: "This is a final reminder about your overdue <strong>$497</strong> payment. If we don't receive payment within the next 7 days, your AI receptionist will be deactivated and calls will no longer be answered. Please update your payment method now to avoid any interruption.",
-    },
-    es: {
-      subject: "Aviso final: El servicio será desactivado",
-      heading: "Última oportunidad para actualizar su pago",
-      body: "Este es un recordatorio final sobre su pago pendiente de <strong>$497</strong>. Si no recibimos el pago en los próximos 7 días, su recepcionista IA será desactivado y las llamadas ya no serán atendidas. Por favor actualice su método de pago ahora para evitar interrupciones.",
-    },
-  },
-};
+  };
+}
 
 async function sendDunningEmail(
-  business: { ownerEmail: string | null; name: string; defaultLanguage: string },
+  business: { ownerEmail: string | null; name: string; defaultLanguage: string; planType?: string | null },
   lang: "en" | "es",
   stage: DunningStage,
   portalUrl: string,
 ) {
   if (!business.ownerEmail) return;
+  const templates = getDunningTemplates(business.planType);
   const t = templates[stage][lang];
   const ctaLabel = lang === "es" ? "Actualizar Pago" : "Update Payment";
 
@@ -436,14 +450,16 @@ export async function sendTrialEndingEmail(
 }
 
 async function sendDunningSms(
-  business: { ownerPhone: string; name: string; defaultLanguage: string },
+  business: { ownerPhone: string; name: string; defaultLanguage: string; planType?: string | null },
   lang: "en" | "es",
   portalUrl: string,
 ) {
+  const { display, displayEs } = getPlanAmount(business.planType);
+  const amount = lang === "es" ? displayEs : display;
   const body =
     lang === "es"
-      ? `Calltide: Su pago de $497 está pendiente. Actualice su método de pago para evitar interrupciones del servicio: ${portalUrl}`
-      : `Calltide: Your $497 payment is past due. Update your payment method to avoid service interruption: ${portalUrl}`;
+      ? `Calltide: Su pago de ${amount} está pendiente. Actualice su método de pago para evitar interrupciones del servicio: ${portalUrl}`
+      : `Calltide: Your ${amount} payment is past due. Update your payment method to avoid service interruption: ${portalUrl}`;
 
   try {
     const tw = getTwilio();

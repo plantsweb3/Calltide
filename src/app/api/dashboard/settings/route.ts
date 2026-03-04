@@ -42,6 +42,12 @@ const settingsSchema = z.object({
   googleReviewUrl: z.string().url().max(500).optional().or(z.literal("")),
   enableReviewRequests: z.boolean().optional(),
   enableMissedCallRecovery: z.boolean().optional(),
+  // Notification preferences
+  notifyOnEveryCall: z.boolean().optional(),
+  notifyOnMissedOnly: z.boolean().optional(),
+  ownerQuietHoursStart: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Time must be HH:MM (24h)").optional(),
+  ownerQuietHoursEnd: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Time must be HH:MM (24h)").optional(),
+  setupChecklistDismissed: z.boolean().optional(),
 });
 
 function stripHtml(str: string | undefined | null): string | undefined | null {
@@ -91,6 +97,11 @@ export async function GET(req: NextRequest) {
       googleReviewUrl: "https://g.page/r/garcia-plumbing/review",
       enableReviewRequests: true,
       enableMissedCallRecovery: true,
+      notifyOnEveryCall: false,
+      notifyOnMissedOnly: true,
+      ownerQuietHoursStart: "21:00",
+      ownerQuietHoursEnd: "08:00",
+      setupChecklistDismissed: false,
     });
   }
 
@@ -131,6 +142,11 @@ export async function GET(req: NextRequest) {
     googleReviewUrl: biz.googleReviewUrl || "",
     enableReviewRequests: biz.enableReviewRequests ?? true,
     enableMissedCallRecovery: biz.enableMissedCallRecovery ?? true,
+    notifyOnEveryCall: biz.notifyOnEveryCall ?? false,
+    notifyOnMissedOnly: biz.notifyOnMissedOnly ?? true,
+    ownerQuietHoursStart: biz.ownerQuietHoursStart || "21:00",
+    ownerQuietHoursEnd: biz.ownerQuietHoursEnd || "08:00",
+    setupChecklistDismissed: biz.setupChecklistDismissed ?? false,
   });
 }
 
@@ -197,6 +213,11 @@ export async function PUT(req: NextRequest) {
     ...(data.googleReviewUrl !== undefined ? { googleReviewUrl: data.googleReviewUrl || null } : {}),
     ...(data.enableReviewRequests !== undefined ? { enableReviewRequests: data.enableReviewRequests } : {}),
     ...(data.enableMissedCallRecovery !== undefined ? { enableMissedCallRecovery: data.enableMissedCallRecovery } : {}),
+    ...(data.notifyOnEveryCall !== undefined ? { notifyOnEveryCall: data.notifyOnEveryCall } : {}),
+    ...(data.notifyOnMissedOnly !== undefined ? { notifyOnMissedOnly: data.notifyOnMissedOnly } : {}),
+    ...(data.ownerQuietHoursStart ? { ownerQuietHoursStart: data.ownerQuietHoursStart } : {}),
+    ...(data.ownerQuietHoursEnd ? { ownerQuietHoursEnd: data.ownerQuietHoursEnd } : {}),
+    ...(data.setupChecklistDismissed !== undefined ? { setupChecklistDismissed: data.setupChecklistDismissed } : {}),
     updatedAt: new Date().toISOString(),
   };
 
@@ -248,5 +269,10 @@ export async function PUT(req: NextRequest) {
     googleReviewUrl: updated.googleReviewUrl || "",
     enableReviewRequests: updated.enableReviewRequests ?? true,
     enableMissedCallRecovery: updated.enableMissedCallRecovery ?? true,
+    notifyOnEveryCall: updated.notifyOnEveryCall ?? false,
+    notifyOnMissedOnly: updated.notifyOnMissedOnly ?? true,
+    ownerQuietHoursStart: updated.ownerQuietHoursStart || "21:00",
+    ownerQuietHoursEnd: updated.ownerQuietHoursEnd || "08:00",
+    setupChecklistDismissed: updated.setupChecklistDismissed ?? false,
   });
 }

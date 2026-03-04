@@ -200,11 +200,21 @@ async function handleTakeMessage(
 
   if (!message) return { success: false, error: "Message is required" };
 
-  // Update lead name and notes
+  // Update lead name and append notes (preserve previous messages)
   if (ctx.leadId) {
+    const [existingLead] = await db
+      .select({ notes: leads.notes })
+      .from(leads)
+      .where(eq(leads.id, ctx.leadId))
+      .limit(1);
+
+    const updatedNotes = existingLead?.notes
+      ? `${existingLead.notes}\n---\n${message}`
+      : message;
+
     await db.update(leads).set({
       name: callerName || undefined,
-      notes: message,
+      notes: updatedNotes,
       updatedAt: new Date().toISOString(),
     }).where(eq(leads.id, ctx.leadId));
   }

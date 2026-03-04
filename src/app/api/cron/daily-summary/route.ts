@@ -5,6 +5,7 @@ import { eq, and, gte, lt, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { sendSMS } from "@/lib/twilio/sms";
 import { env } from "@/lib/env";
+import { getBusinessDateRange } from "@/lib/timezone";
 
 /**
  * GET /api/cron/daily-summary
@@ -19,18 +20,6 @@ export async function GET(req: NextRequest) {
   if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  // Today's date range (UTC-based, but queries use ISO timestamps)
-  const now = new Date();
-  const todayStart = new Date(now);
-  todayStart.setHours(0, 0, 0, 0);
-  const todayEnd = new Date(now);
-  todayEnd.setHours(23, 59, 59, 999);
-
-  // Tomorrow's date for appointment lookup
-  const tomorrowStart = new Date(todayStart);
-  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
-  const tomorrowDate = tomorrowStart.toISOString().slice(0, 10);
 
   let sent = 0;
   let skipped = 0;
@@ -58,6 +47,11 @@ export async function GET(req: NextRequest) {
 
         const receptionistName = biz.receptionistName || "Maria";
 
+        // Compute date ranges in the business's timezone
+        const tz = biz.timezone || "America/Chicago";
+        const todayRange = getBusinessDateRange(tz, 0);
+        const tomorrowRange = getBusinessDateRange(tz, 1);
+
         // Count calls today
         const [callResult] = await db
           .select({ count: sql<number>`COUNT(*)` })
@@ -65,8 +59,8 @@ export async function GET(req: NextRequest) {
           .where(
             and(
               eq(calls.businessId, biz.id),
-              gte(calls.createdAt, todayStart.toISOString()),
-              lt(calls.createdAt, new Date(todayEnd.getTime() + 1).toISOString()),
+              gte(calls.createdAt, todayRange.start),
+              lt(calls.createdAt, todayRange.end),
             ),
           );
         const totalCalls = callResult?.count ?? 0;
@@ -78,8 +72,8 @@ export async function GET(req: NextRequest) {
           .where(
             and(
               eq(appointments.businessId, biz.id),
-              gte(appointments.createdAt, todayStart.toISOString()),
-              lt(appointments.createdAt, new Date(todayEnd.getTime() + 1).toISOString()),
+              gte(appointments.createdAt, todayRange.start),
+              lt(appointments.createdAt, todayRange.end),
             ),
           );
         const apptsBooked = apptResult?.count ?? 0;
@@ -92,8 +86,8 @@ export async function GET(req: NextRequest) {
             and(
               eq(calls.businessId, biz.id),
               eq(calls.transferRequested, true),
-              gte(calls.createdAt, todayStart.toISOString()),
-              lt(calls.createdAt, new Date(todayEnd.getTime() + 1).toISOString()),
+              gte(calls.createdAt, todayRange.start),
+              lt(calls.createdAt, todayRange.end),
             ),
           );
         const emergencyCalls = emergResult?.count ?? 0;
@@ -105,7 +99,7 @@ export async function GET(req: NextRequest) {
           .where(
             and(
               eq(appointments.businessId, biz.id),
-              eq(appointments.date, tomorrowDate),
+              eq(appointments.date, tomorrowRange.dateStr),
               sql`${appointments.status} != 'cancelled'`,
             ),
           );

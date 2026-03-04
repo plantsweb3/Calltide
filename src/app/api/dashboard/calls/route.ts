@@ -72,6 +72,8 @@ export async function GET(req: NextRequest) {
         summary: calls.summary,
         sentiment: calls.sentiment,
         transcript: calls.transcript,
+        outcome: calls.outcome,
+        audioUrl: calls.audioUrl,
         createdAt: calls.createdAt,
         leadId: calls.leadId,
         leadName: leads.name,

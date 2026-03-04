@@ -32,7 +32,12 @@ export default function RootError({
         <p style={{ marginTop: "0.5rem", color: "#94a3b8", fontSize: "0.875rem" }}>
           {error.message || "An unexpected error occurred"}
         </p>
-        <div style={{ marginTop: "1.5rem", display: "flex", gap: "0.75rem", justifyContent: "center" }}>
+        {error.digest && (
+          <p style={{ marginTop: "0.375rem", color: "#64748b", fontSize: "0.75rem", fontFamily: "monospace" }}>
+            Error ID: {error.digest}
+          </p>
+        )}
+        <div style={{ marginTop: "1.5rem", display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
           <button
             onClick={reset}
             style={{
@@ -62,6 +67,21 @@ export default function RootError({
             }}
           >
             Go Home
+          </a>
+          <a
+            href="mailto:hello@calltide.app?subject=Error Report&body=Error ID: ${error.digest || 'N/A'}"
+            style={{
+              padding: "0.625rem 1.5rem",
+              borderRadius: "0.5rem",
+              border: "1px solid rgba(255,255,255,0.15)",
+              background: "transparent",
+              color: "#94a3b8",
+              fontSize: "0.875rem",
+              fontWeight: 500,
+              textDecoration: "none",
+            }}
+          >
+            Contact Support
           </a>
         </div>
       </div>

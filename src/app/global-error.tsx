@@ -43,26 +43,63 @@ export default function GlobalError({
             style={{
               color: "#94a3b8",
               fontSize: "0.95rem",
-              marginBottom: "1.5rem",
+              marginBottom: "0.5rem",
             }}
           >
             An unexpected error occurred. Our team has been notified.
           </p>
-          <button
-            onClick={reset}
-            style={{
-              backgroundColor: "#C59A27",
-              color: "#fff",
-              border: "none",
-              borderRadius: "0.5rem",
-              padding: "0.75rem 1.5rem",
-              fontSize: "0.9rem",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Try Again
-          </button>
+          {error.digest && (
+            <p style={{ color: "#64748b", fontSize: "0.75rem", fontFamily: "monospace", marginBottom: "1.5rem" }}>
+              Error ID: {error.digest}
+            </p>
+          )}
+          <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
+            <button
+              onClick={reset}
+              style={{
+                backgroundColor: "#C59A27",
+                color: "#fff",
+                border: "none",
+                borderRadius: "0.5rem",
+                padding: "0.75rem 1.5rem",
+                fontSize: "0.9rem",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Try Again
+            </button>
+            <a
+              href="/"
+              style={{
+                padding: "0.75rem 1.5rem",
+                borderRadius: "0.5rem",
+                border: "1px solid rgba(255,255,255,0.15)",
+                background: "transparent",
+                color: "#94a3b8",
+                fontSize: "0.9rem",
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              Go Home
+            </a>
+            <a
+              href="mailto:hello@calltide.app?subject=Error Report"
+              style={{
+                padding: "0.75rem 1.5rem",
+                borderRadius: "0.5rem",
+                border: "1px solid rgba(255,255,255,0.15)",
+                background: "transparent",
+                color: "#94a3b8",
+                fontSize: "0.9rem",
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              Contact Support
+            </a>
+          </div>
         </div>
       </body>
     </html>

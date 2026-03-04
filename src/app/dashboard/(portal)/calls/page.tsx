@@ -5,6 +5,8 @@ import DataTable, { type Column } from "@/components/data-table";
 import CallTranscript from "@/app/dashboard/_components/call-transcript";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 import { TableSkeleton } from "@/components/skeleton";
+import AudioPlayer from "@/app/dashboard/_components/audio-player";
+import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 
 interface TranscriptLine {
   speaker: "ai" | "caller";
@@ -28,6 +30,8 @@ interface Call {
   language: string | null;
   summary: string | null;
   sentiment: string | null;
+  outcome: string | null;
+  audioUrl: string | null;
   createdAt: string;
   leadName: string | null;
   transcript?: TranscriptLine[] | null;
@@ -265,27 +269,41 @@ export default function CallsPage() {
           </div>
         </div>
         {tab === "inbound" && (
-          <input
-            type="text"
-            placeholder="Search by phone or name..."
-            defaultValue={search}
-            onChange={(e) => {
-              const val = e.target.value;
-              clearTimeout(searchTimer.current);
-              searchTimer.current = setTimeout(() => {
-                setSearch(val);
-                setPage(1);
-              }, 300);
-            }}
-            className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-64"
-            style={{
-              background: "var(--db-card)",
-              border: "1px solid var(--db-border)",
-              color: "var(--db-text)",
-            }}
-            onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-            onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
-          />
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Search by phone or name..."
+              defaultValue={search}
+              onChange={(e) => {
+                const val = e.target.value;
+                clearTimeout(searchTimer.current);
+                searchTimer.current = setTimeout(() => {
+                  setSearch(val);
+                  setPage(1);
+                }, 300);
+              }}
+              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-64"
+              style={{
+                background: "var(--db-card)",
+                border: "1px solid var(--db-border)",
+                color: "var(--db-text)",
+              }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+            />
+            <ExportCsvButton
+              data={calls}
+              columns={[
+                { header: "Date", accessor: (r) => r.createdAt },
+                { header: "Caller", accessor: (r) => r.leadName || r.callerPhone },
+                { header: "Duration (s)", accessor: (r) => r.duration },
+                { header: "Status", accessor: (r) => r.status },
+                { header: "Sentiment", accessor: (r) => r.sentiment },
+                { header: "Summary", accessor: (r) => r.summary },
+              ]}
+              filename="calls"
+            />
+          </div>
         )}
       </div>
 
@@ -382,6 +400,14 @@ export default function CallsPage() {
             When your AI receptionist handles calls, they&apos;ll show up here
             with full transcripts and summaries.
           </p>
+          <a
+            href="/dashboard/help/call-forwarding"
+            className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            style={{ background: "var(--db-accent)", color: "#fff" }}
+          >
+            Set Up Call Forwarding
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
         </div>
       )}
 
@@ -411,6 +437,48 @@ export default function CallsPage() {
           }}
           expandedContent={(row) => (
             <div className="space-y-4">
+              {/* Call Insights Badges */}
+              <div className="flex flex-wrap items-center gap-2">
+                {row.sentiment && (
+                  <span
+                    className="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                    style={{
+                      background: row.sentiment === "positive" ? "rgba(74,222,128,0.1)"
+                        : row.sentiment === "negative" ? "rgba(248,113,113,0.1)"
+                        : "rgba(148,163,184,0.1)",
+                      color: row.sentiment === "positive" ? "#4ade80"
+                        : row.sentiment === "negative" ? "#f87171"
+                        : "#94a3b8",
+                    }}
+                  >
+                    {row.sentiment === "positive" ? "Positive" : row.sentiment === "negative" ? "Negative" : "Neutral"}
+                  </span>
+                )}
+                {row.outcome && (
+                  <span
+                    className="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                    style={{
+                      background: row.outcome === "appointment_booked" ? "rgba(96,165,250,0.1)"
+                        : row.outcome === "message_taken" ? "rgba(251,191,36,0.1)"
+                        : row.outcome === "transfer" ? "rgba(168,85,247,0.1)"
+                        : "rgba(148,163,184,0.1)",
+                      color: row.outcome === "appointment_booked" ? "#60a5fa"
+                        : row.outcome === "message_taken" ? "#fbbf24"
+                        : row.outcome === "transfer" ? "#a855f7"
+                        : "#94a3b8",
+                    }}
+                  >
+                    {row.outcome.replace(/_/g, " ")}
+                  </span>
+                )}
+                {row.duration != null && (
+                  <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                    {formatDuration(row.duration)} call
+                    {row.duration < 60 ? " — quick" : row.duration < 300 ? " — typical" : " — detailed"}
+                  </span>
+                )}
+              </div>
+
               {/* Summary */}
               {row.summary && (
                 <div className="space-y-1">
@@ -426,6 +494,19 @@ export default function CallsPage() {
                   >
                     {row.summary}
                   </p>
+                </div>
+              )}
+
+              {/* Audio recording */}
+              {row.audioUrl && (
+                <div className="space-y-1">
+                  <p
+                    className="text-xs font-medium uppercase tracking-wider"
+                    style={{ color: "var(--db-text-muted)" }}
+                  >
+                    Recording
+                  </p>
+                  <AudioPlayer src={row.audioUrl} />
                 </div>
               )}
 

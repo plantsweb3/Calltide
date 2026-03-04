@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import DataTable, { type Column } from "@/components/data-table";
 import AppointmentCalendar from "@/app/dashboard/_components/appointment-calendar";
 import { TableSkeleton } from "@/components/skeleton";
+import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 
 interface Appointment {
   id: string;
@@ -104,6 +105,18 @@ export default function AppointmentsPage() {
           Appointments
         </h1>
         <div className="flex items-center gap-3">
+          <ExportCsvButton
+            data={appointments}
+            columns={[
+              { header: "Date", accessor: (r) => r.date },
+              { header: "Time", accessor: (r) => r.time },
+              { header: "Service", accessor: (r) => r.service },
+              { header: "Customer", accessor: (r) => r.leadName || r.leadPhone },
+              { header: "Status", accessor: (r) => r.status },
+              { header: "Notes", accessor: (r) => r.notes },
+            ]}
+            filename="appointments"
+          />
           {/* View toggle */}
           {filter === "upcoming" && (
             <div
@@ -203,6 +216,14 @@ export default function AppointmentsPage() {
           <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
             When your AI receptionist books appointments, they&apos;ll appear here.
           </p>
+          <a
+            href="/dashboard/settings#receptionist"
+            className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            style={{ background: "var(--db-accent)", color: "#fff" }}
+          >
+            Customize Scheduling
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
         </div>
       )}
 

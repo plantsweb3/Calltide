@@ -19,6 +19,7 @@ import {
   calculateSavedEstimate,
   type DigestStats,
 } from "@/lib/emails/weekly-digest";
+import { getBusinessWeekRange } from "@/lib/timezone";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -64,28 +65,6 @@ export async function GET(req: NextRequest) {
   }
   const resend = new Resend(env.RESEND_API_KEY);
 
-  // Calculate date range: last 7 days (Mon–Sun of previous week)
-  const now = new Date();
-  const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon
-  // Last Monday = today - (dayOfWeek + 6) % 7 - 7
-  const lastMonday = new Date(now);
-  lastMonday.setDate(now.getDate() - ((dayOfWeek + 6) % 7) - 7);
-  lastMonday.setHours(0, 0, 0, 0);
-
-  const lastSunday = new Date(lastMonday);
-  lastSunday.setDate(lastMonday.getDate() + 6);
-  lastSunday.setHours(23, 59, 59, 999);
-
-  const weekStartDate = lastMonday.toISOString().slice(0, 10);
-  const weekEndDate = lastSunday.toISOString().slice(0, 10);
-
-  // Previous week (for WoW comparison)
-  const prevMonday = new Date(lastMonday);
-  prevMonday.setDate(lastMonday.getDate() - 7);
-  const prevSunday = new Date(lastMonday);
-  prevSunday.setDate(lastMonday.getDate() - 1);
-  prevSunday.setHours(23, 59, 59, 999);
-
   let sent = 0;
   let skipped = 0;
   let errors = 0;
@@ -106,6 +85,23 @@ export async function GET(req: NextRequest) {
 
     for (const biz of activeBiz) {
       try {
+        // No email = can't send
+        if (!biz.ownerEmail) {
+          skipped++;
+          continue;
+        }
+
+        const delivery = biz.digestDeliveryMethod ?? "both";
+        const receptionistName = biz.receptionistName || "Maria";
+        const bizHours = (biz.businessHours ?? {}) as Record<string, { open: string; close: string; closed?: boolean }>;
+        const tz = biz.timezone || "America/Chicago";
+
+        // Compute week boundaries in the business's timezone
+        const lastWeek = getBusinessWeekRange(tz, 1);
+        const prevWeekRange = getBusinessWeekRange(tz, 2);
+        const weekStartDate = lastWeek.startDate;
+        const weekEndDate = lastWeek.endDate;
+
         // Check if digest already sent for this week
         const [existing] = await db
           .select({ id: weeklyDigests.id })
@@ -123,17 +119,6 @@ export async function GET(req: NextRequest) {
           continue;
         }
 
-        // No email = can't send
-        if (!biz.ownerEmail) {
-          skipped++;
-          continue;
-        }
-
-        const delivery = biz.digestDeliveryMethod ?? "both";
-        const receptionistName = biz.receptionistName || "Maria";
-        const bizHours = (biz.businessHours ?? {}) as Record<string, { open: string; close: string; closed?: boolean }>;
-        const tz = biz.timezone || "America/Chicago";
-
         // ── Aggregate metrics for this week ──
 
         // All calls this week
@@ -143,8 +128,8 @@ export async function GET(req: NextRequest) {
           .where(
             and(
               eq(calls.businessId, biz.id),
-              gte(calls.createdAt, lastMonday.toISOString()),
-              lt(calls.createdAt, new Date(lastSunday.getTime() + 1).toISOString()),
+              gte(calls.createdAt, lastWeek.start),
+              lt(calls.createdAt, lastWeek.end),
             ),
           );
 
@@ -167,8 +152,8 @@ export async function GET(req: NextRequest) {
           .where(
             and(
               eq(appointments.businessId, biz.id),
-              gte(appointments.createdAt, lastMonday.toISOString()),
-              lt(appointments.createdAt, new Date(lastSunday.getTime() + 1).toISOString()),
+              gte(appointments.createdAt, lastWeek.start),
+              lt(appointments.createdAt, lastWeek.end),
             ),
           );
         const appointmentsBooked = apptResult?.count ?? 0;
@@ -180,8 +165,8 @@ export async function GET(req: NextRequest) {
           .where(
             and(
               eq(customers.businessId, biz.id),
-              gte(customers.createdAt, lastMonday.toISOString()),
-              lt(customers.createdAt, new Date(lastSunday.getTime() + 1).toISOString()),
+              gte(customers.createdAt, lastWeek.start),
+              lt(customers.createdAt, lastWeek.end),
               sql`${customers.deletedAt} IS NULL`,
             ),
           );
@@ -214,8 +199,8 @@ export async function GET(req: NextRequest) {
           .where(
             and(
               eq(calls.businessId, biz.id),
-              gte(calls.createdAt, prevMonday.toISOString()),
-              lt(calls.createdAt, lastMonday.toISOString()),
+              gte(calls.createdAt, prevWeekRange.start),
+              lt(calls.createdAt, prevWeekRange.end),
             ),
           );
         const prevWeekCalls = prevResult?.count ?? 0;
@@ -314,8 +299,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      weekStartDate,
-      weekEndDate,
       total: activeBiz.length,
       sent,
       skipped,
