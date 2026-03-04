@@ -7,8 +7,9 @@ import { logActivity } from "@/lib/activity";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 
 const progressSchema = z.object({
-  step: z.number().int().min(1).max(9),
-  skippedStep: z.number().int().min(1).max(9).optional(),
+  step: z.number().int().min(1).max(8),
+  skippedStep: z.number().int().min(1).max(8).optional(),
+  status: z.enum(["not_started", "in_progress", "paywall_reached", "completed", "abandoned"]).optional(),
 });
 
 /**
@@ -23,7 +24,8 @@ export async function GET(req: NextRequest) {
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({
-      onboardingStep: 9,
+      onboardingStep: 8,
+      onboardingStatus: "completed",
       onboardingCompletedAt: "2025-01-15T10:00:00.000Z",
       onboardingSkippedSteps: [],
       businessData: {
@@ -47,6 +49,9 @@ export async function GET(req: NextRequest) {
         greetingEs: "Gracias por llamar a Garcia Plumbing & HVAC, habla María.",
         defaultLanguage: "en",
         serviceArea: "San Antonio and surrounding areas",
+        emergencyPhone: "+15125550000",
+        receptionistName: "Maria",
+        personalityPreset: "friendly",
       },
     });
   }
@@ -63,7 +68,10 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     onboardingStep: biz.onboardingStep ?? 1,
+    onboardingStatus: biz.onboardingStatus ?? "not_started",
     onboardingCompletedAt: biz.onboardingCompletedAt ?? null,
+    onboardingStartedAt: biz.onboardingStartedAt ?? null,
+    onboardingPaywallReachedAt: biz.onboardingPaywallReachedAt ?? null,
     onboardingSkippedSteps: biz.onboardingSkippedSteps ?? [],
     businessData: {
       name: biz.name,
@@ -81,6 +89,8 @@ export async function GET(req: NextRequest) {
       emergencyPhone: biz.emergencyPhone,
       receptionistName: biz.receptionistName || "Maria",
       personalityPreset: biz.personalityPreset || "friendly",
+      stripeSubscriptionStatus: biz.stripeSubscriptionStatus,
+      paymentStatus: biz.paymentStatus,
     },
   });
 }
@@ -114,13 +124,14 @@ export async function PUT(req: NextRequest) {
     );
   }
 
-  const { step, skippedStep } = result.data;
+  const { step, skippedStep, status } = result.data;
 
   const [biz] = await db
     .select({
       id: businesses.id,
       name: businesses.name,
       onboardingSkippedSteps: businesses.onboardingSkippedSteps,
+      onboardingStatus: businesses.onboardingStatus,
     })
     .from(businesses)
     .where(eq(businesses.id, businessId))
@@ -141,10 +152,34 @@ export async function PUT(req: NextRequest) {
     updatedAt: new Date().toISOString(),
   };
 
-  // Mark completion when reaching final step (9)
-  if (step === 9) {
+  // Handle status transitions
+  if (status) {
+    updates.onboardingStatus = status;
+  }
+
+  // Auto-set status based on step if not explicitly provided
+  if (!status) {
+    if (step === 1 && (!biz.onboardingStatus || biz.onboardingStatus === "not_started")) {
+      updates.onboardingStatus = "in_progress";
+      updates.onboardingStartedAt = new Date().toISOString();
+    }
+    if (step >= 2 && biz.onboardingStatus === "not_started") {
+      updates.onboardingStatus = "in_progress";
+      updates.onboardingStartedAt = new Date().toISOString();
+    }
+  }
+
+  // Step 6 = paywall reached
+  if (step === 6 && biz.onboardingStatus !== "paywall_reached" && biz.onboardingStatus !== "completed") {
+    updates.onboardingStatus = "paywall_reached";
+    updates.onboardingPaywallReachedAt = new Date().toISOString();
+  }
+
+  // Mark completion when reaching final step (8)
+  if (step === 8) {
     updates.onboardingCompletedAt = new Date().toISOString();
-    updates.active = true; // Activate the business
+    updates.onboardingStatus = "completed";
+    updates.active = true;
 
     await logActivity({
       type: "onboarding_completed",
@@ -165,7 +200,7 @@ export async function PUT(req: NextRequest) {
   return NextResponse.json({
     success: true,
     step,
-    completed: step === 9,
+    completed: step === 8,
     skippedSteps: skipped,
   });
 }

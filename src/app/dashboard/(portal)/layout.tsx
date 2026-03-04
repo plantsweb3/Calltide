@@ -55,8 +55,10 @@ export default function PortalLayout({
           return;
         }
         const data = await res.json();
-        if (!cancelled && !data.onboardingCompletedAt) {
-          router.replace("/dashboard/onboarding");
+        // Redirect to onboarding if not completed (handles all non-completed statuses)
+        if (!cancelled && data.onboardingStatus !== "completed" && !data.onboardingCompletedAt) {
+          const resumeStep = data.onboardingStep ?? 1;
+          router.replace(`/dashboard/onboarding?step=${resumeStep}`);
           return;
         }
       } catch {

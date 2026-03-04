@@ -48,6 +48,9 @@ export const businesses = sqliteTable("businesses", {
   lastNpsScore: integer("last_nps_score"),
   lastNpsDate: text("last_nps_date"),
   onboardingStep: integer("onboarding_step").default(1),
+  onboardingStatus: text("onboarding_status").default("not_started"), // not_started, in_progress, paywall_reached, completed, abandoned
+  onboardingStartedAt: text("onboarding_started_at"),
+  onboardingPaywallReachedAt: text("onboarding_paywall_reached_at"),
   onboardingCompletedAt: text("onboarding_completed_at"),
   onboardingSkippedSteps: text("onboarding_skipped_steps", { mode: "json" }).$type<number[]>().default([]),
   onboardingQaGrade: text("onboarding_qa_grade"), // A/B/C/D/F

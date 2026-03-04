@@ -225,6 +225,13 @@
       "when": 1774200000000,
       "tag": "0031_password_auth",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "6",
+      "when": 1774300000000,
+      "tag": "0032_onboarding_restructure",
+      "breakpoints": true
     }
   ]
 }
