@@ -36,6 +36,7 @@ interface SettingsData {
   enableDailySummary: boolean;
   googleReviewUrl: string;
   enableReviewRequests: boolean;
+  enableMissedCallRecovery: boolean;
 }
 
 interface CustomResponse {
@@ -252,6 +253,7 @@ export default function SettingsPage() {
         enableDailySummary: data.enableDailySummary,
         googleReviewUrl: data.googleReviewUrl || "",
         enableReviewRequests: data.enableReviewRequests,
+        enableMissedCallRecovery: data.enableMissedCallRecovery,
       };
 
       const res = await fetch("/api/dashboard/settings", {
@@ -731,6 +733,35 @@ export default function SettingsPage() {
               </p>
             </div>
           )}
+        </div>
+      </Card>
+
+      {/* ── Section: Missed Call Recovery ── */}
+      <Card title="Missed Call Recovery">
+        <div className="space-y-4">
+          <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            If a caller hangs up within 15 seconds, automatically text them to recover the lead. They can reply YES to request a callback.
+          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                Enable Missed Call Recovery
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setData({ ...data, enableMissedCallRecovery: !data.enableMissedCallRecovery });
+              }}
+              className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+              style={{ background: data.enableMissedCallRecovery ? "var(--db-accent)" : "var(--db-border)" }}
+            >
+              <span
+                className="inline-block h-4 w-4 rounded-full bg-white transition-transform"
+                style={{ transform: data.enableMissedCallRecovery ? "translateX(22px)" : "translateX(4px)" }}
+              />
+            </button>
+          </div>
         </div>
       </Card>
 

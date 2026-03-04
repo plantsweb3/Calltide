@@ -1,12 +1,14 @@
 import { NextRequest } from "next/server";
 import twilio from "twilio";
 import { db } from "@/db";
-import { businesses, leads, smsMessages } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { businesses, leads, calls, smsMessages } from "@/db/schema";
+import { eq, and, desc } from "drizzle-orm";
 import { findOrCreateLead } from "@/lib/ai/context-builder";
 import { reportWarning, reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { handleProspectSmsKeyword } from "@/lib/outreach/sms-outreach";
+import { logActivity } from "@/lib/activity";
+import { sendSMS } from "@/lib/twilio/sms";
 import { env } from "@/lib/env";
 
 const OPT_OUT_KEYWORDS = ["stop", "unsubscribe", "cancel", "quit", "end", "optout", "opt out"];
@@ -102,6 +104,15 @@ export async function POST(req: NextRequest) {
     return twimlResponse("You have been re-subscribed to SMS messages. Reply STOP to unsubscribe.");
   }
 
+  // Handle missed call recovery YES/SÍ replies
+  const CALLBACK_KEYWORDS = ["yes", "si", "sí", "yeah", "yep", "please", "por favor"];
+  if (CALLBACK_KEYWORDS.some((kw) => normalizedBody === kw || normalizedBody === kw + "!")) {
+    const recoveryHandled = await handleCallbackRequest(biz, lead, from);
+    if (recoveryHandled) {
+      return twimlResponse("Great! We'll have someone reach out to you shortly. Thank you!");
+    }
+  }
+
   // Also check prospect opt-out/opt-in (outreach targets)
   const prospectResult = await handleProspectSmsKeyword(from, body);
   if (prospectResult.handled) {
@@ -140,6 +151,69 @@ function escapeXml(str: string): string {
 
 function escapeHtml(str: string): string {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+async function handleCallbackRequest(
+  biz: { id: string; name: string; ownerPhone: string; twilioNumber: string; receptionistName: string | null },
+  lead: { id: string },
+  callerPhone: string,
+): Promise<boolean> {
+  try {
+    // Find the most recent abandoned call from this caller to this business with recovery SMS sent
+    const [abandonedCall] = await db
+      .select()
+      .from(calls)
+      .where(
+        and(
+          eq(calls.businessId, biz.id),
+          eq(calls.callerPhone, callerPhone),
+          eq(calls.isAbandoned, true),
+          eq(calls.recoveryStatus, "sms_sent"),
+        ),
+      )
+      .orderBy(desc(calls.createdAt))
+      .limit(1);
+
+    if (!abandonedCall) return false;
+
+    const receptionistName = biz.receptionistName || "Maria";
+    const callTime = new Date(abandonedCall.createdAt);
+    const timeStr = callTime.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: "America/Chicago",
+    });
+
+    // Update call recovery status
+    await db.update(calls).set({
+      recoveryStatus: "callback_requested",
+      updatedAt: new Date().toISOString(),
+    }).where(eq(calls.id, abandonedCall.id));
+
+    // Alert business owner
+    await sendSMS({
+      to: biz.ownerPhone,
+      from: biz.twilioNumber,
+      body: `Missed call recovery: ${callerPhone} wants a callback. They called at ${timeStr} and hung up after ${abandonedCall.duration || 0} seconds. — ${receptionistName}`,
+      businessId: biz.id,
+      leadId: lead.id,
+      templateType: "owner_notify",
+    });
+
+    // Log activity
+    await logActivity({
+      type: "missed_call_recovery",
+      entityType: "call",
+      entityId: abandonedCall.id,
+      title: `Callback requested from abandoned call`,
+      detail: `Caller ${callerPhone} replied YES to recovery SMS. Owner notified.`,
+    });
+
+    return true;
+  } catch (err) {
+    reportError("handleCallbackRequest failed", err, { extra: { businessId: biz.id } });
+    return false;
+  }
 }
 
 async function notifyOwnerOfSms(businessId: string, businessName: string, ownerEmail: string, messageBody: string): Promise<void> {

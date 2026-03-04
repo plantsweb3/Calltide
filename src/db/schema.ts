@@ -112,6 +112,8 @@ export const businesses = sqliteTable("businesses", {
   // Google review requests
   googleReviewUrl: text("google_review_url"),
   enableReviewRequests: integer("enable_review_requests", { mode: "boolean" }).default(true),
+  // Missed call recovery
+  enableMissedCallRecovery: integer("enable_missed_call_recovery", { mode: "boolean" }).default(true),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -152,6 +154,10 @@ export const calls = sqliteTable("calls", {
   customerId: text("customer_id"),
   recordingDisclosed: integer("recording_disclosed", { mode: "boolean" }).default(false),
   aiDisclosed: integer("ai_disclosed", { mode: "boolean" }).default(false),
+  // Missed call recovery
+  isAbandoned: integer("is_abandoned", { mode: "boolean" }).default(false),
+  recoverySmsSentAt: text("recovery_sms_sent_at"),
+  recoveryStatus: text("recovery_status"), // null, sms_sent, callback_requested, callback_completed
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });

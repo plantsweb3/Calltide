@@ -202,6 +202,50 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Abandoned call recovery stats (SMS recovery for < 15s calls)
+  const [abandonedTotal] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, businessId),
+        eq(calls.isAbandoned, true),
+      ),
+    );
+
+  const [abandonedRecovered] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, businessId),
+        eq(calls.isAbandoned, true),
+        eq(calls.recoveryStatus, "callback_requested"),
+      ),
+    );
+
+  const abandonedCallRecovery = {
+    total: abandonedTotal.count,
+    smsSent: 0,
+    callbackRequested: abandonedRecovered.count,
+    conversionRate: abandonedTotal.count > 0
+      ? Math.round((abandonedRecovered.count / abandonedTotal.count) * 100)
+      : 0,
+  };
+
+  // Count SMS sent separately
+  const [abandonedSmsSent] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, businessId),
+        eq(calls.isAbandoned, true),
+        sql`${calls.recoveryStatus} IS NOT NULL`,
+      ),
+    );
+  abandonedCallRecovery.smsSent = abandonedSmsSent.count;
+
   const monthlyPlanCost = 497;
   const roiMultiple = monthlyPlanCost > 0
     ? Math.round((revenueThisMonth / monthlyPlanCost) * 10) / 10
@@ -548,6 +592,7 @@ export async function GET(req: NextRequest) {
       wonThisMonth: { count: wonThisMonth.count, value: wonThisMonth.value },
     },
     customerInsights,
+    abandonedCallRecovery,
   });
 
   } catch (err) {
