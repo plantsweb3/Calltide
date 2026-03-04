@@ -243,9 +243,9 @@ export default function LandingPage() {
       </section>
 
       {/* ── 6. ROI CALCULATOR ── */}
-      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
-        <div className="mx-auto max-w-5xl">
-          <ROICalculator lang={lang} />
+      <section className="relative px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#0f1729" }}>
+        <div className="relative z-10 mx-auto max-w-5xl">
+          <ROICalculator />
         </div>
       </section>
 
