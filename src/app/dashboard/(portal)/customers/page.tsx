@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { toast } from "sonner";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 import { TableSkeleton } from "@/components/skeleton";
@@ -86,6 +87,22 @@ export default function CustomersPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href="/dashboard/import?type=customers"
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+            style={{
+              background: "var(--db-surface)",
+              border: "1px solid var(--db-border)",
+              color: "var(--db-text-muted)",
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Import CSV
+          </Link>
           <ExportCsvButton
             data={customers}
             columns={[

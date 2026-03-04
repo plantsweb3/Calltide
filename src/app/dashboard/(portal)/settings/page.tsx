@@ -1306,6 +1306,27 @@ export default function SettingsPage() {
         </div>
       </Card>
 
+      {/* ── Import Data ── */}
+      <Card title="Import Your Data">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm" style={{ color: "var(--db-text)" }}>
+              Switching from another system? Import your customers, appointments, and estimates from a CSV file.
+            </p>
+            <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
+              Supports exports from Jobber, ServiceTitan, Housecall Pro, and more.
+            </p>
+          </div>
+          <a
+            href="/dashboard/import"
+            className="shrink-0 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
+            style={{ background: "var(--db-accent)" }}
+          >
+            Import Data
+          </a>
+        </div>
+      </Card>
+
       </>}
 
       {/* ═══ RECEPTIONIST TAB (Greeting + Language + Emergency) ═══ */}
