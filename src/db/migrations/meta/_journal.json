@@ -204,6 +204,13 @@
       "when": 1773900000000,
       "tag": "0028_fix_active_calls_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "6",
+      "when": 1774000000000,
+      "tag": "0029_fk_indexes",
+      "breakpoints": true
     }
   ]
 }
