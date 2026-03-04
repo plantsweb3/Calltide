@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import AboutPage from "./AboutClient";
 
 export const metadata: Metadata = {
-  title: "About — Calltide | Built in Texas for Service Businesses",
+  title: "About — Calltide | Built in San Antonio for Service Businesses",
   description:
     "Calltide was built because too many great service businesses lose jobs when nobody answers the phone. AI receptionist, bilingual, 24/7.",
   openGraph: {
-    title: "About — Calltide | Our Mission",
+    title: "About — Calltide | Built in San Antonio. Built for You.",
     description:
-      "Every service business deserves a professional front office. Built in Texas for home service businesses everywhere.",
+      "Every service business deserves a professional front office. Built in San Antonio for home service businesses everywhere.",
     url: "https://calltide.app/about",
     siteName: "Calltide",
     type: "website",
