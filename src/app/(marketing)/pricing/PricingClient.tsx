@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PHONE, PHONE_TEL, BOOKING_URL } from "@/lib/marketing/translations";
 import { useScrollReveal } from "@/lib/marketing/hooks";
 import { SignupForm } from "@/components/marketing/SignupForm";
+import { trackViewContent } from "@/lib/tracking";
 
 const FEATURES_COL1 = [
   "Unlimited calls, EN/ES auto-detection",
@@ -97,6 +98,10 @@ function FAQAccordion() {
 export default function PricingClient() {
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   useScrollReveal();
+
+  useEffect(() => {
+    trackViewContent("pricing");
+  }, []);
 
   const isAnnual = billing === "annual";
 

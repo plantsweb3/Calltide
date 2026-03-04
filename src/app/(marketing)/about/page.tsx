@@ -42,6 +42,37 @@ export default function Page() {
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            name: "Calltide",
+            description:
+              "AI-powered bilingual receptionist platform for home service businesses.",
+            url: "https://calltide.app",
+            telephone: "+1-830-521-7133",
+            email: "hello@calltide.app",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "San Antonio",
+              addressRegion: "TX",
+              addressCountry: "US",
+            },
+            founder: {
+              "@type": "Person",
+              name: "Ulysses Munoz",
+            },
+            priceRange: "$497/mo",
+            openingHours: "Mo-Su 00:00-23:59",
+            areaServed: {
+              "@type": "Country",
+              name: "United States",
+            },
+          }),
+        }}
+      />
       <AboutPage />
     </>
   );

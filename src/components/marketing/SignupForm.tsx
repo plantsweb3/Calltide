@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { T, type Lang } from "@/lib/marketing/translations";
+import { trackLead } from "@/lib/tracking";
 
 export function SignupForm({ lang, plan = "monthly" }: { lang: Lang; plan?: "monthly" | "annual" }) {
   const t = T[lang].cta;
@@ -57,6 +58,7 @@ export function SignupForm({ lang, plan = "monthly" }: { lang: Lang; plan?: "mon
 
       const { url } = await checkoutRes.json();
       if (url) {
+        trackLead("signup-form");
         window.location.href = url;
       } else {
         throw new Error("No checkout URL returned");

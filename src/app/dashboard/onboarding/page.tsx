@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { trackCompleteRegistration, trackPurchase } from "@/lib/tracking";
 
 // ── Types ──
 
@@ -471,6 +472,13 @@ export default function OnboardingPage() {
     if (stored === "en" || stored === "es") setLang(stored);
   }, []);
 
+  // ── Track purchase from Stripe redirect ──
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.search.includes("session_id=")) {
+      trackPurchase();
+    }
+  }, []);
+
   // ── Cleanup polling on unmount ──
   useEffect(() => {
     return () => {
@@ -768,6 +776,7 @@ export default function OnboardingPage() {
   // ── Step 9: Auto-redirect ──
   useEffect(() => {
     if (step === 9) {
+      trackCompleteRegistration();
       redirectTimerRef.current = setTimeout(() => {
         router.push("/dashboard");
       }, 5000);

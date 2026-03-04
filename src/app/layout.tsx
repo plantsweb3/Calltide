@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
+import { TrackingScripts } from "@/components/tracking/TrackingScripts";
 import "./globals.css";
 
 const inter = Inter({
@@ -59,12 +60,41 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Calltide",
+              url: "https://calltide.app",
+              logo: "https://calltide.app/icon.png",
+              description:
+                "AI-powered bilingual receptionist platform for home service businesses. Answers calls 24/7 in English and Spanish.",
+              foundingDate: "2025",
+              founder: {
+                "@type": "Person",
+                name: "Ulysses Munoz",
+              },
+              contactPoint: {
+                "@type": "ContactPoint",
+                telephone: "+1-830-521-7133",
+                contactType: "sales",
+                availableLanguage: ["English", "Spanish"],
+              },
+              sameAs: [],
+            }),
+          }}
+        />
+      </head>
       <body
         className={`${inter.variable} antialiased`}
       >
         {children}
         <Analytics />
         <SpeedInsights />
+        <TrackingScripts />
         <Toaster
           position="bottom-right"
           toastOptions={{
