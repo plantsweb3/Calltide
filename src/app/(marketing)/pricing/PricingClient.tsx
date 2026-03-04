@@ -1,229 +1,318 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { T, PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
+import { PHONE, PHONE_TEL, BOOKING_URL } from "@/lib/marketing/translations";
 import { useScrollReveal } from "@/lib/marketing/hooks";
-import { FAQ } from "@/components/marketing/FAQ";
 import { SignupForm } from "@/components/marketing/SignupForm";
 
-function PricingComparison({ lang }: { lang: Lang }) {
-  const rows = lang === "en" ? [
-    { feature: "Monthly Cost", calltide: "$497/mo", receptionist: "$3,000+/mo", service: "$800–1,500/mo" },
-    { feature: "Availability", calltide: "24/7/365", receptionist: "Business hours", service: "Limited hours" },
-    { feature: "Languages", calltide: "English + Spanish", receptionist: "Usually one", service: "Usually one" },
-    { feature: "Appointment Booking", calltide: "Automatic", receptionist: "Manual", service: "Extra cost" },
-    { feature: "Emergency Detection", calltide: "Built-in", receptionist: "Trained", service: "Not included" },
-    { feature: "Full Dashboard", calltide: "Included", receptionist: "Not included", service: "Basic" },
-    { feature: "Setup Time", calltide: "5 minutes", receptionist: "2–4 weeks", service: "1–2 weeks" },
-  ] : [
-    { feature: "Costo Mensual", calltide: "$497/mes", receptionist: "$3,000+/mes", service: "$800–1,500/mes" },
-    { feature: "Disponibilidad", calltide: "24/7/365", receptionist: "Horario laboral", service: "Horas limitadas" },
-    { feature: "Idiomas", calltide: "Inglés + Español", receptionist: "Usualmente uno", service: "Usualmente uno" },
-    { feature: "Citas", calltide: "Automáticas", receptionist: "Manual", service: "Costo extra" },
-    { feature: "Emergencias", calltide: "Incluido", receptionist: "Entrenada", service: "No incluido" },
-    { feature: "Panel Completo", calltide: "Incluido", receptionist: "No incluido", service: "Básico" },
-    { feature: "Tiempo de Configuración", calltide: "5 minutos", receptionist: "2–4 semanas", service: "1–2 semanas" },
-  ];
+const FEATURES_COL1 = [
+  "Unlimited calls, EN/ES auto-detection",
+  "Appointment booking (Google Calendar)",
+  "SMS confirmations + notifications",
+  "Emergency detection + live transfer",
+  "After-hours intelligent routing",
+  "Returning caller recognition",
+  "Auto-populated customer database",
+  "Estimate pipeline (Kanban board)",
+  "Call recordings + transcripts",
+  "AI-powered call summaries",
+];
 
+const FEATURES_COL2 = [
+  "Call QA scoring + sentiment analysis",
+  "Personality customization",
+  "NPS surveys with auto-actions",
+  "Referral program ($497 credit)",
+  "Full client dashboard + analytics",
+  "Bilingual help center",
+  "Status page + incident engine",
+  "Payment recovery (dunning)",
+  "Passwordless login (magic link)",
+  "GDPR/CCPA/TCPA compliant",
+];
+
+const FAQS = [
+  {
+    q: "Is there a contract?",
+    a: "No. Month-to-month. Cancel anytime. Annual plan available at $4,970/year (save $994).",
+  },
+  {
+    q: "Are there any extra fees?",
+    a: "No. Unlimited calls, unlimited features. $497/month covers everything.",
+  },
+  {
+    q: "What if I need help setting up?",
+    a: "We walk you through everything. Most businesses are live in 24 hours.",
+  },
+];
+
+function Check() {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-cream-border">
-            <th className="py-4 pr-4 text-left font-semibold text-charcoal"></th>
-            <th className="py-4 px-4 text-center font-bold text-amber">Calltide</th>
-            <th className="py-4 px-4 text-center font-semibold text-charcoal-muted">
-              {lang === "en" ? "Receptionist" : "Recepcionista"}
-            </th>
-            <th className="py-4 pl-4 text-center font-semibold text-charcoal-muted">
-              {lang === "en" ? "Answering Service" : "Servicio Telefónico"}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={i} className="border-b border-cream-border/50">
-              <td className="py-4 pr-4 font-medium text-charcoal">{row.feature}</td>
-              <td className="py-4 px-4 text-center font-semibold text-charcoal">{row.calltide}</td>
-              <td className="py-4 px-4 text-center text-charcoal-muted">{row.receptionist}</td>
-              <td className="py-4 pl-4 text-center text-charcoal-muted">{row.service}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" className="shrink-0 mt-0.5">
+      <path d="M5 10.5L8.5 14L15 6.5" stroke="#d4a843" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function FAQAccordion() {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <div className="space-y-3">
+      {FAQS.map((faq, i) => (
+        <div
+          key={i}
+          className="rounded-xl border transition-colors"
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            borderColor: open === i ? "rgba(212,168,67,0.3)" : "rgba(255,255,255,0.08)",
+          }}
+        >
+          <button
+            onClick={() => setOpen(open === i ? null : i)}
+            className="flex w-full items-center justify-between px-6 py-5 text-left"
+          >
+            <span className="text-[15px] font-semibold text-white">{faq.q}</span>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              className="shrink-0 transition-transform duration-200"
+              style={{ transform: open === i ? "rotate(180deg)" : "rotate(0)" }}
+            >
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          {open === i && (
+            <div className="px-6 pb-5">
+              <p className="text-[15px] leading-relaxed text-slate-400">{faq.a}</p>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
 
-export default function PricingPage() {
-  const [lang] = useState<Lang>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("calltide-lang");
-      if (saved === "en" || saved === "es") return saved;
-    }
-    return "en";
-  });
-  const [planChoice, setPlanChoice] = useState<"monthly" | "annual">("annual");
+export default function PricingClient() {
+  const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   useScrollReveal();
 
-  const t = T[lang];
-
-  const allFeatures = lang === "en" ? [
-    "Unlimited inbound calls",
-    "Bilingual — English and Spanish",
-    "Real-time appointment booking",
-    "SMS confirmations to callers",
-    "Emergency detection and transfer",
-    "Full call dashboard with transcripts",
-    "7 AI agents (onboarding, QA, retention, and more)",
-    "Custom receptionist name and personality",
-    "Custom response training (FAQs, off-limits topics)",
-    "Email notifications for every call",
-  ] : [
-    "Llamadas entrantes ilimitadas",
-    "Bilingüe — Inglés y Español",
-    "Agenda de citas en tiempo real",
-    "Confirmaciones SMS a llamantes",
-    "Detección y transferencia de emergencias",
-    "Panel completo con transcripciones",
-    "7 agentes IA (onboarding, QA, retención, y más)",
-    "Nombre y personalidad personalizados",
-    "Entrenamiento de respuestas personalizadas",
-    "Notificaciones por email de cada llamada",
-  ];
+  const isAnnual = billing === "annual";
 
   return (
     <>
       {/* Hero */}
-      <section className="bg-navy px-6 sm:px-8 py-20 sm:py-28 dark-section grain-overlay">
+      <section className="relative px-6 sm:px-8 pt-24 pb-8 sm:pt-32 sm:pb-12" style={{ background: "#0f1729" }}>
         <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.pricing.label}</p>
-          <h1 className="mt-4 text-[36px] font-black leading-[1.1] tracking-tight text-white sm:text-[52px]">
-            {t.pricing.h2}
+          <h1 className="text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[52px]" style={{ fontFamily: "Inter, sans-serif" }}>
+            One Plan. Everything Included.
           </h1>
-          <p className="mt-6 text-lg text-slate-300">{t.pricing.sub}</p>
-        </div>
-      </section>
-
-      {/* Pricing Card */}
-      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
-        <div className="mx-auto max-w-lg">
-          {/* Plan Toggle */}
-          <div className="reveal flex items-center justify-center gap-3 mb-8">
-            <button
-              onClick={() => setPlanChoice("monthly")}
-              className="rounded-full px-5 py-2 text-sm font-semibold transition"
-              style={{
-                background: planChoice === "monthly" ? "#C59A27" : "transparent",
-                color: planChoice === "monthly" ? "#0f0f0f" : "#64748b",
-                border: planChoice === "monthly" ? "1px solid #C59A27" : "1px solid #e2e8f0",
-              }}
-            >
-              {lang === "en" ? "Monthly" : "Mensual"}
-            </button>
-            <button
-              onClick={() => setPlanChoice("annual")}
-              className="relative rounded-full px-5 py-2 text-sm font-semibold transition"
-              style={{
-                background: planChoice === "annual" ? "#C59A27" : "transparent",
-                color: planChoice === "annual" ? "#0f0f0f" : "#64748b",
-                border: planChoice === "annual" ? "1px solid #C59A27" : "1px solid #e2e8f0",
-              }}
-            >
-              {lang === "en" ? "Annual" : "Anual"}
-              <span className="absolute -top-2.5 -right-2 rounded-full bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
-                {lang === "en" ? "Save 20%" : "-20%"}
-              </span>
-            </button>
-          </div>
-
-          <div className="reveal card-shadow rounded-2xl border-2 border-amber bg-white p-10 sm:p-14 text-center">
-            <p className="text-[56px] font-extrabold tracking-tight text-charcoal">
-              {planChoice === "annual" ? "$397" : "$497"}
-            </p>
-            <p className="text-sm text-charcoal-muted">
-              {planChoice === "annual"
-                ? (lang === "en" ? "/mo — billed annually at $4,764/yr" : "/mes — facturado anualmente a $4,764/año")
-                : t.pricing.period}
-            </p>
-            {planChoice === "annual" && (
-              <p className="mt-2 text-sm font-semibold text-green-600">
-                {lang === "en" ? "Save $1,200/year" : "Ahorra $1,200/año"}
-              </p>
-            )}
-
-            <ul className="mt-8 space-y-3 text-left text-sm text-charcoal">
-              {allFeatures.map((f, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="mt-0.5 text-amber">&#10003;</span>
-                  {f}
-                </li>
-              ))}
-            </ul>
-
-            <a href="#signup" className="cta-gold cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg px-8 py-4 text-lg font-semibold text-white">
-              {t.pricing.cta} &rarr;
-            </a>
-
-            <p className="mt-4 text-xs text-charcoal-muted">{t.pricing.guarantee}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison */}
-      <section className="bg-[#FBFBFC] px-6 sm:px-8 pb-24 sm:pb-32">
-        <div className="reveal mx-auto max-w-3xl">
-          <h2 className="text-center text-2xl font-extrabold tracking-tight text-charcoal sm:text-3xl mb-10">
-            {lang === "en" ? "How Calltide Compares" : "Cómo se Compara Calltide"}
-          </h2>
-          <div className="card-shadow rounded-xl border border-cream-border bg-white p-6 sm:p-10">
-            <PricingComparison lang={lang} />
-          </div>
-        </div>
-      </section>
-
-      {/* Risk Reversal */}
-      <section className="bg-navy px-6 sm:px-8 py-16 sm:py-20 dark-section">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-            {lang === "en" ? "Zero Risk. Full Confidence." : "Cero Riesgo. Confianza Total."}
-          </h2>
-          <p className="mt-4 text-base text-slate-300">
-            {lang === "en"
-              ? "Try Calltide free for 14 days. No credit card required. Cancel anytime — no contracts, no cancellation fees."
-              : "Prueba Calltide gratis por 14 días. Sin tarjeta de crédito. Cancela cuando quieras — sin contratos, sin cuotas de cancelación."}
+          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-400">
+            No tiers. No upsells. No hidden fees. Just Maria, answering your phone.
           </p>
         </div>
       </section>
 
-      {/* Pricing FAQ */}
-      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
+      {/* Pricing Card */}
+      <section className="relative px-6 sm:px-8 pt-8 pb-24 sm:pt-12 sm:pb-32" style={{ background: "#0f1729" }}>
         <div className="mx-auto max-w-3xl">
-          <div className="reveal text-center">
-            <h2 className="text-[32px] font-extrabold leading-[1.1] tracking-tight text-charcoal sm:text-[40px]">
-              {t.faq.h2}
-            </h2>
+          {/* Monthly / Annual toggle */}
+          <div className="reveal flex items-center justify-center gap-3 mb-10">
+            <span className={`text-sm font-medium transition-colors ${!isAnnual ? "text-white" : "text-slate-500"}`}>Monthly</span>
+            <button
+              onClick={() => setBilling(isAnnual ? "monthly" : "annual")}
+              className="relative h-7 w-[52px] rounded-full transition-colors"
+              style={{ background: isAnnual ? "#d4a843" : "rgba(255,255,255,0.15)" }}
+              aria-label="Toggle annual billing"
+            >
+              <span
+                className="absolute top-[3px] h-[22px] w-[22px] rounded-full bg-white shadow transition-transform duration-200"
+                style={{ left: isAnnual ? "27px" : "3px" }}
+              />
+            </button>
+            <span className={`text-sm font-medium transition-colors ${isAnnual ? "text-white" : "text-slate-500"}`}>Annual</span>
+            {isAnnual && (
+              <span className="rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80" }}>
+                Save $994/year
+              </span>
+            )}
           </div>
-          <div className="reveal mt-14">
-            <FAQ lang={lang} />
+
+          {/* The card */}
+          <div
+            className="reveal pricing-card relative mx-auto max-w-2xl rounded-2xl p-8 sm:p-12"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              boxShadow: "0 0 60px rgba(212,168,67,0.06), 0 16px 48px rgba(0,0,0,0.4)",
+            }}
+          >
+            {/* Price */}
+            <div className="text-center">
+              {isAnnual ? (
+                <>
+                  <div className="flex items-baseline justify-center gap-3">
+                    <span className="text-2xl font-bold text-slate-500 line-through">$497</span>
+                    <span className="text-[64px] font-extrabold tracking-tight text-white sm:text-[72px]">$414</span>
+                    <span className="text-xl text-slate-400">/mo</span>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-500">Billed annually at $4,970</p>
+                </>
+              ) : (
+                <div className="flex items-baseline justify-center gap-2">
+                  <span className="text-[64px] font-extrabold tracking-tight text-white sm:text-[72px]">$497</span>
+                  <span className="text-xl text-slate-400">/month</span>
+                </div>
+              )}
+
+              <p className="mt-4 text-base text-slate-400">
+                Your 24/7 bilingual AI receptionist — fully loaded
+              </p>
+            </div>
+
+            {/* CTA */}
+            <div className="mt-8 text-center">
+              <a
+                href={BOOKING_URL}
+                className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white"
+              >
+                Get Calltide &rarr;
+              </a>
+            </div>
+
+            {/* Divider */}
+            <div className="my-10" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }} />
+
+            {/* Feature grid */}
+            <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+              <div className="space-y-3">
+                {FEATURES_COL1.map((f, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <Check />
+                    <span className="text-[14px] leading-snug text-slate-300">{f}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-3 mt-3 sm:mt-0">
+                {FEATURES_COL2.map((f, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <Check />
+                    <span className="text-[14px] leading-snug text-slate-300">{f}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Card hover glow effect via CSS */}
+            <style jsx>{`
+              .pricing-card {
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+              }
+              .pricing-card:hover {
+                border-color: rgba(212, 168, 67, 0.25);
+                box-shadow: 0 0 80px rgba(212, 168, 67, 0.1), 0 16px 48px rgba(0, 0, 0, 0.4);
+              }
+            `}</style>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section id="signup" className="relative px-6 sm:px-8 py-24 sm:py-32 overflow-hidden dark-section grain-overlay">
-        <img src="/images/grit-texture.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-center" loading="lazy" />
-        <div className="grit-overlay-cta absolute inset-0" />
+      {/* Price Anchoring */}
+      <section className="px-6 sm:px-8 py-20 sm:py-28" style={{ background: "#0f1729" }}>
+        <div className="reveal mx-auto max-w-2xl text-center space-y-5">
+          <p className="text-lg text-slate-400">
+            A bilingual receptionist costs <span className="font-semibold text-white">$3,000–$4,000/month</span>.
+          </p>
+          <p className="text-lg text-slate-400">
+            An answering service costs <span className="font-semibold text-white">$700–$1,600/month</span>.
+          </p>
+          <p className="text-lg text-slate-400">
+            Maria costs <span className="font-semibold text-white">$497/month</span>. And she never calls in sick.
+          </p>
+        </div>
+      </section>
+
+      {/* ROI Statement */}
+      <section className="px-6 sm:px-8 py-16 sm:py-20" style={{ background: "#111a2e" }}>
+        <div className="reveal mx-auto max-w-2xl text-center">
+          <p className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+            Maria pays for herself after just 2 answered calls.
+          </p>
+          <p className="mt-5 text-base text-slate-400">
+            Or call her yourself:{" "}
+            <a href={PHONE_TEL} className="font-semibold transition hover:underline" style={{ color: "#d4a843" }}>
+              {PHONE}
+            </a>
+          </p>
+        </div>
+      </section>
+
+      {/* Guarantee */}
+      <section className="px-6 sm:px-8 py-20 sm:py-28" style={{ background: "#0f1729" }}>
+        <div className="reveal mx-auto max-w-2xl text-center">
+          <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+            30-Day Money-Back Guarantee
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-slate-400">
+            If Maria doesn&apos;t pay for herself in missed-call revenue within 30 days, you pay nothing.
+          </p>
+
+          {/* Trust icons */}
+          <div className="mt-10 flex items-center justify-center gap-10">
+            {/* Lock — Secure */}
+            <div className="flex flex-col items-center gap-2">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <span className="text-xs text-slate-500">Secure</span>
+            </div>
+            {/* Shield — Compliant */}
+            <div className="flex flex-col items-center gap-2">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+              <span className="text-xs text-slate-500">Compliant</span>
+            </div>
+            {/* Clock — 24/7 */}
+            <div className="flex flex-col items-center gap-2">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span className="text-xs text-slate-500">24/7</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="px-6 sm:px-8 py-20 sm:py-28" style={{ background: "#0f1729" }}>
+        <div className="mx-auto max-w-2xl">
+          <h2 className="reveal text-center text-2xl font-extrabold tracking-tight text-white sm:text-3xl mb-10">
+            Frequently Asked Questions
+          </h2>
+          <div className="reveal">
+            <FAQAccordion />
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section id="signup" className="relative px-6 sm:px-8 py-24 sm:py-32 overflow-hidden" style={{ background: "#111a2e" }}>
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <h2 className="reveal text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[40px]">
-            {t.cta.h2}
+            Stop missing calls. Start today.
           </h2>
-          <SignupForm lang={lang} plan={planChoice} />
-          <p className="mt-6 text-sm text-slate-400">{t.cta.sub}</p>
+          <SignupForm lang="en" plan={billing} />
+          <p className="mt-6 text-sm text-slate-500">Free for 14 days. Cancel anytime. No contracts.</p>
           <p className="mt-4 text-sm text-slate-500">
-            {lang === "en" ? "Or call us:" : "O llámanos:"}{" "}
-            <a href={PHONE_TEL} className="font-semibold text-amber hover:underline">{PHONE}</a>
+            Or call us:{" "}
+            <a href={PHONE_TEL} className="font-semibold transition hover:underline" style={{ color: "#d4a843" }}>
+              {PHONE}
+            </a>
           </p>
         </div>
       </section>
