@@ -1,6 +1,6 @@
 import { db } from "@/db";
-import { dunningState, businesses } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { dunningState, businesses, calls } from "@/db/schema";
+import { eq, and, sql } from "drizzle-orm";
 import { Resend } from "resend";
 import Twilio from "twilio";
 import Stripe from "stripe";
@@ -9,6 +9,7 @@ import { canSendSms } from "@/lib/compliance/sms";
 import { createNotification } from "@/lib/notifications";
 import { canContactToday, logOutreach } from "@/lib/outreach";
 import { reportError } from "@/lib/error-reporting";
+import { logActivity } from "@/lib/activity";
 
 const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
 
@@ -212,8 +213,9 @@ export async function processDunning() {
       });
     }
 
-    // Day 14+: Auto-cancel subscription after grace period expires
-    if (state.email3SentAt && daysSinceFailure >= 14) {
+    // Auto-cancel after grace period: 14 days for monthly, 30 days for annual
+    const graceDays = business.planType === "annual" ? 30 : 14;
+    if (state.email3SentAt && daysSinceFailure >= graceDays) {
       try {
         // Cancel via Stripe API if subscription exists
         if (business.stripeSubscriptionId) {
@@ -251,8 +253,16 @@ export async function processDunning() {
           source: "financial",
           severity: "critical",
           title: "Auto-canceled after grace period",
-          message: `${business.name} — subscription auto-canceled after 14 days unpaid. Data retained for 30 days.`,
+          message: `${business.name} — subscription auto-canceled after ${graceDays} days unpaid. Data retained for 30 days.`,
           actionUrl: "/admin/billing",
+        });
+
+        await logActivity({
+          type: "dunning_auto_cancel",
+          entityType: "business",
+          entityId: state.businessId,
+          title: `${business.name} auto-canceled after ${graceDays}-day grace period`,
+          detail: `Plan: ${business.planType || "monthly"}. Farewell email sent. Data retained for 30 days.`,
         });
       } catch (e) {
         reportError(`[dunning] Auto-cancel failed for ${business.name}`, e, { businessId: state.businessId });
@@ -354,24 +364,45 @@ async function sendDunningEmail(
 // ── Trial Ending Email ──
 
 export async function sendTrialEndingEmail(
-  business: { ownerEmail: string | null; ownerName: string; name: string; defaultLanguage: string },
+  business: { id?: string; ownerEmail: string | null; ownerName: string; name: string; defaultLanguage: string; receptionistName?: string | null },
 ) {
   if (!business.ownerEmail) return;
   const lang = business.defaultLanguage === "es" ? "es" : "en";
   const portalUrl = `${env.NEXT_PUBLIC_APP_URL}/dashboard/billing`;
+  const aiName = business.receptionistName || "Maria";
+
+  // Get call count during trial period
+  let callCount = 0;
+  if (business.id) {
+    try {
+      const [result] = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(calls)
+        .where(eq(calls.businessId, business.id));
+      callCount = result?.count ?? 0;
+    } catch {
+      // Non-fatal — proceed without call count
+    }
+  }
+
+  const callLine = callCount > 0
+    ? lang === "es"
+      ? `<strong>${aiName} ha respondido ${callCount} llamada${callCount === 1 ? "" : "s"}</strong> durante tu prueba.`
+      : `<strong>${aiName} has answered ${callCount} call${callCount === 1 ? "" : "s"}</strong> during your trial.`
+    : "";
 
   const t = lang === "es"
     ? {
         subject: `Tu prueba gratis de Calltide termina en 3 días — ${business.name}`,
         heading: "Tu prueba gratis está por terminar",
-        body: `Hola ${business.ownerName || ""},<br><br>Tu prueba gratuita de 14 días de Calltide para <strong>${business.name}</strong> termina en 3 días. Para que tu recepcionista IA siga respondiendo llamadas sin interrupción, asegúrate de tener un método de pago registrado.<br><br>Si ya lo configuraste, ¡no tienes que hacer nada! Tu servicio continuará automáticamente.`,
+        body: `Hola ${business.ownerName || ""},<br><br>${callLine ? callLine + "<br><br>" : ""}Tu prueba gratuita de 14 días de Calltide para <strong>${business.name}</strong> termina en 3 días. Para que tu recepcionista IA siga respondiendo llamadas sin interrupción, asegúrate de tener un método de pago registrado.<br><br>Si ya lo configuraste, ¡no tienes que hacer nada! Tu servicio continuará automáticamente.`,
         cta: "Revisar Facturación",
         footer: "¿Preguntas? Responde a este correo — estamos aquí para ayudar.",
       }
     : {
         subject: `Your Calltide free trial ends in 3 days — ${business.name}`,
         heading: "Your free trial is ending soon",
-        body: `Hey ${business.ownerName || "there"},<br><br>Your 14-day free trial of Calltide for <strong>${business.name}</strong> ends in 3 days. To keep your AI receptionist answering calls without interruption, make sure you have a payment method on file.<br><br>If you've already set one up, you're all good — your service will continue automatically.`,
+        body: `Hey ${business.ownerName || "there"},<br><br>${callLine ? callLine + "<br><br>" : ""}Your 14-day free trial of Calltide for <strong>${business.name}</strong> ends in 3 days. To keep your AI receptionist answering calls without interruption, make sure you have a payment method on file.<br><br>If you've already set one up, you're all good — your service will continue automatically.`,
         cta: "Review Billing",
         footer: "Questions? Reply to this email — we're here to help.",
       };

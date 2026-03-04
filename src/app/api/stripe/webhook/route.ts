@@ -493,8 +493,17 @@ async function handleTrialWillEnd(sub: Stripe.Subscription) {
   const business = await findBusinessByCustomer(customerId);
   if (!business) return;
 
-  // Send trial-ending email (3 days before trial expires)
+  // Skip if already notified (avoid duplicate emails)
+  if (business.trialEndingNotified) return;
+
+  // Send trial-ending email (3 days before trial expires) with call count
   await sendTrialEndingEmail(business);
+
+  // Mark as notified
+  await db
+    .update(businesses)
+    .set({ trialEndingNotified: true, updatedAt: new Date().toISOString() })
+    .where(eq(businesses.id, business.id));
 
   await createNotification({
     source: "financial",
@@ -509,7 +518,7 @@ async function handleTrialWillEnd(sub: Stripe.Subscription) {
     entityType: "business",
     entityId: business.id,
     title: `${business.name} trial ending soon`,
-    detail: "Trial-ending email sent. Payment method required to continue service.",
+    detail: "Trial-ending email sent with call count. Payment method required to continue service.",
   });
 }
 
