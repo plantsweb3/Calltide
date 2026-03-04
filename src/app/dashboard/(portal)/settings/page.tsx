@@ -583,6 +583,9 @@ export default function SettingsPage() {
         </div>
       </Card>
 
+      {/* ── Section: Security ── */}
+      <SecuritySection />
+
       {/* ── Section: Business Hours ── */}
       <Card title="Business Hours">
         <div className="space-y-3">
@@ -1722,6 +1725,237 @@ function OutboundSettingsSection() {
               </div>
             )}
           </>
+        )}
+      </div>
+    </Card>
+  );
+}
+
+/* ── Security Section ── */
+
+function getStrength(pw: string): "weak" | "fair" | "strong" {
+  if (pw.length < 8 || !/[a-zA-Z]/.test(pw) || !/[0-9]/.test(pw)) return "weak";
+  if (pw.length >= 12 && /[^a-zA-Z0-9]/.test(pw)) return "strong";
+  return "fair";
+}
+
+const STRENGTH_CONFIG = {
+  weak: { color: "#f87171", label: "Weak", width: "33%" },
+  fair: { color: "#facc15", label: "Fair", width: "66%" },
+  strong: { color: "#4ade80", label: "Strong", width: "100%" },
+} as const;
+
+function SecuritySection() {
+  const [hasPassword, setHasPassword] = useState(false);
+  const [passwordChangedAt, setPasswordChangedAt] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [secError, setSecError] = useState("");
+  const [secSuccess, setSecSuccess] = useState("");
+
+  useEffect(() => {
+    fetch("/api/dashboard/settings/password")
+      .then((r) => r.json())
+      .then((d) => {
+        setHasPassword(d.hasPassword);
+        setPasswordChangedAt(d.passwordChangedAt);
+      })
+      .catch(() => {});
+  }, []);
+
+  const strength = getStrength(newPassword);
+  const strengthCfg = STRENGTH_CONFIG[strength];
+  const passwordsMatch = confirmPassword === newPassword;
+  const isValid = newPassword.length >= 8 && /[a-zA-Z]/.test(newPassword) && /[0-9]/.test(newPassword) && passwordsMatch && (!hasPassword || currentPassword.length > 0);
+
+  async function handleSave() {
+    if (!isValid) return;
+    setSaving(true);
+    setSecError("");
+    setSecSuccess("");
+
+    try {
+      const res = await fetch("/api/dashboard/settings/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword: hasPassword ? currentPassword : undefined,
+          newPassword,
+        }),
+      });
+
+      if (res.ok) {
+        setSecSuccess(hasPassword ? "Password updated" : "Password set successfully");
+        setHasPassword(true);
+        setPasswordChangedAt(new Date().toISOString());
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setExpanded(false);
+        toast.success(hasPassword ? "Password updated" : "Password set");
+      } else {
+        const data = await res.json();
+        setSecError(data.error || "Something went wrong");
+      }
+    } catch {
+      setSecError("Something went wrong");
+    }
+    setSaving(false);
+  }
+
+  return (
+    <Card title="Security">
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+              Password
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
+              {hasPassword
+                ? passwordChangedAt
+                  ? `Last changed ${new Date(passwordChangedAt).toLocaleDateString()}`
+                  : "Password is set"
+                : "No password set — using magic link only"}
+            </p>
+          </div>
+          <button
+            onClick={() => { setExpanded(!expanded); setSecError(""); setSecSuccess(""); }}
+            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+            style={{
+              background: "var(--db-surface)",
+              border: "1px solid var(--db-border)",
+              color: "var(--db-text)",
+            }}
+          >
+            {expanded ? "Cancel" : hasPassword ? "Change" : "Set Password"}
+          </button>
+        </div>
+
+        {secSuccess && !expanded && (
+          <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}>
+            {secSuccess}
+          </div>
+        )}
+
+        {expanded && (
+          <div className="space-y-3 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
+            {secError && (
+              <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}>
+                {secError}
+              </div>
+            )}
+
+            {hasPassword && (
+              <div>
+                <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                  Current Password
+                </label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  className="w-full rounded-lg px-3 py-2 text-sm"
+                  style={{
+                    background: "var(--db-bg)",
+                    border: "1px solid var(--db-border)",
+                    color: "var(--db-text)",
+                  }}
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                New Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full rounded-lg px-3 py-2 pr-9 text-sm"
+                  style={{
+                    background: "var(--db-bg)",
+                    border: "1px solid var(--db-border)",
+                    color: "var(--db-text)",
+                  }}
+                  placeholder="Min 8 characters"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2"
+                  style={{ color: "var(--db-text-muted)" }}
+                  tabIndex={-1}
+                >
+                  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    {showPassword ? (
+                      <path d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" strokeLinecap="round" strokeLinejoin="round" />
+                    ) : (
+                      <>
+                        <path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round" />
+                      </>
+                    )}
+                  </svg>
+                </button>
+              </div>
+              {newPassword && (
+                <div className="mt-1.5 space-y-1">
+                  <div className="h-1 rounded-full overflow-hidden" style={{ background: "var(--db-border)" }}>
+                    <div
+                      className="h-full rounded-full transition-all duration-300"
+                      style={{ background: strengthCfg.color, width: strengthCfg.width }}
+                    />
+                  </div>
+                  <span className="text-xs" style={{ color: strengthCfg.color }}>{strengthCfg.label}</span>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                Confirm New Password
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full rounded-lg px-3 py-2 text-sm"
+                style={{
+                  background: "var(--db-bg)",
+                  border: `1px solid ${confirmPassword && !passwordsMatch ? "#f87171" : "var(--db-border)"}`,
+                  color: "var(--db-text)",
+                }}
+              />
+              {confirmPassword && !passwordsMatch && (
+                <p className="mt-0.5 text-xs" style={{ color: "#f87171" }}>Passwords don&apos;t match</p>
+              )}
+            </div>
+
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={handleSave}
+                disabled={saving || !isValid}
+                className="rounded-lg px-4 py-2 text-sm font-medium text-white disabled:opacity-50 transition-colors"
+                style={{ background: "var(--db-accent)" }}
+              >
+                {saving ? "Saving..." : hasPassword ? "Update Password" : "Set Password"}
+              </button>
+              <button
+                onClick={() => { setExpanded(false); setSecError(""); }}
+                className="rounded-lg px-4 py-2 text-sm transition-colors"
+                style={{ color: "var(--db-text-muted)" }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </Card>

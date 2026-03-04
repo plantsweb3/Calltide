@@ -218,6 +218,13 @@
       "when": 1774100000000,
       "tag": "0030_trial_ending_notified",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "6",
+      "when": 1774200000000,
+      "tag": "0031_password_auth",
+      "breakpoints": true
     }
   ]
 }

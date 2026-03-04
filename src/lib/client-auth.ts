@@ -68,12 +68,14 @@ export async function signClientCookie(
   businessId: string,
   secret: string,
   accountId?: string,
+  maxAgeMs?: number,
 ): Promise<string> {
+  const ttl = maxAgeMs ?? COOKIE_MAX_AGE_MS;
   const payload = btoa(JSON.stringify({
     businessId,
     accountId,
     iat: Date.now(),
-    exp: Date.now() + COOKIE_MAX_AGE_MS,
+    exp: Date.now() + ttl,
   }));
   const signature = await hmacSign(payload, secret);
   return `${payload}.${signature}`;
@@ -82,7 +84,7 @@ export async function signClientCookie(
 export async function verifyClientCookie(
   cookie: string,
   secret: string,
-): Promise<{ businessId: string; accountId?: string } | null> {
+): Promise<{ businessId: string; accountId?: string; iat?: number } | null> {
   const lastDot = cookie.lastIndexOf(".");
   if (lastDot === -1) return null;
 
@@ -96,7 +98,7 @@ export async function verifyClientCookie(
     const data = JSON.parse(atob(payload));
     if (!data.exp || data.exp < Date.now()) return null;
     if (!data.businessId) return null;
-    return { businessId: data.businessId, accountId: data.accountId };
+    return { businessId: data.businessId, accountId: data.accountId, iat: data.iat };
   } catch {
     return null;
   }

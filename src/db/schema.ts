@@ -13,6 +13,12 @@ export const accounts = sqliteTable("accounts", {
   planType: text("plan_type").default("monthly"),
   locationCount: integer("location_count").default(1),
   maxLocations: integer("max_locations").default(10),
+  passwordHash: text("password_hash"),
+  passwordResetToken: text("password_reset_token"),
+  passwordResetExpiry: text("password_reset_expiry"),
+  passwordChangedAt: text("password_changed_at"),
+  failedLoginAttempts: integer("failed_login_attempts").default(0),
+  lockedUntil: text("locked_until"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });

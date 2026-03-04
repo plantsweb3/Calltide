@@ -194,7 +194,11 @@ export async function middleware(req: NextRequest) {
 
   // ── Dashboard pages ──
   if (pathname.startsWith("/dashboard")) {
-    if (pathname === "/dashboard/login") return NextResponse.next();
+    if (
+      pathname === "/dashboard/login" ||
+      pathname === "/dashboard/forgot-password" ||
+      pathname === "/dashboard/reset-password"
+    ) return NextResponse.next();
 
     const secret = process.env.CLIENT_AUTH_SECRET;
     if (!secret) {

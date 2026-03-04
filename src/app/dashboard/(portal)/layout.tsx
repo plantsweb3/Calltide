@@ -19,6 +19,27 @@ export default function PortalLayout({
   const pathname = usePathname();
 
   useEffect(() => {
+    // Check session validity (password change invalidation)
+    let cancelled = false;
+    async function checkSession() {
+      try {
+        const res = await fetch("/api/dashboard/session");
+        if (res.ok) {
+          const data = await res.json();
+          if (!cancelled && !data.valid && data.reason === "password_changed") {
+            router.replace("/dashboard/login?error=session_expired");
+            return;
+          }
+        }
+      } catch {
+        // On error, allow access
+      }
+    }
+    checkSession();
+    return () => { cancelled = true; };
+  }, [router]);
+
+  useEffect(() => {
     // Skip redirect check for settings page (allow access during onboarding)
     if (pathname === "/dashboard/settings") {
       setOnboardingChecked(true);
