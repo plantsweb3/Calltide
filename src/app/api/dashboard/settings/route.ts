@@ -39,6 +39,8 @@ const settingsSchema = z.object({
   enableWeeklyDigest: z.boolean().optional(),
   digestDeliveryMethod: z.enum(["email", "sms", "both"]).optional(),
   enableDailySummary: z.boolean().optional(),
+  googleReviewUrl: z.string().url().max(500).optional().or(z.literal("")),
+  enableReviewRequests: z.boolean().optional(),
 });
 
 function stripHtml(str: string | undefined | null): string | undefined | null {
@@ -85,6 +87,8 @@ export async function GET(req: NextRequest) {
       enableWeeklyDigest: true,
       digestDeliveryMethod: "both",
       enableDailySummary: true,
+      googleReviewUrl: "https://g.page/r/garcia-plumbing/review",
+      enableReviewRequests: true,
     });
   }
 
@@ -122,6 +126,8 @@ export async function GET(req: NextRequest) {
     enableWeeklyDigest: biz.enableWeeklyDigest ?? true,
     digestDeliveryMethod: biz.digestDeliveryMethod ?? "both",
     enableDailySummary: biz.enableDailySummary ?? true,
+    googleReviewUrl: biz.googleReviewUrl || "",
+    enableReviewRequests: biz.enableReviewRequests ?? true,
   });
 }
 
@@ -185,6 +191,8 @@ export async function PUT(req: NextRequest) {
     ...(data.enableWeeklyDigest !== undefined ? { enableWeeklyDigest: data.enableWeeklyDigest } : {}),
     ...(data.digestDeliveryMethod ? { digestDeliveryMethod: data.digestDeliveryMethod } : {}),
     ...(data.enableDailySummary !== undefined ? { enableDailySummary: data.enableDailySummary } : {}),
+    ...(data.googleReviewUrl !== undefined ? { googleReviewUrl: data.googleReviewUrl || null } : {}),
+    ...(data.enableReviewRequests !== undefined ? { enableReviewRequests: data.enableReviewRequests } : {}),
     updatedAt: new Date().toISOString(),
   };
 
@@ -233,5 +241,7 @@ export async function PUT(req: NextRequest) {
     enableWeeklyDigest: updated.enableWeeklyDigest ?? true,
     digestDeliveryMethod: updated.digestDeliveryMethod ?? "both",
     enableDailySummary: updated.enableDailySummary ?? true,
+    googleReviewUrl: updated.googleReviewUrl || "",
+    enableReviewRequests: updated.enableReviewRequests ?? true,
   });
 }

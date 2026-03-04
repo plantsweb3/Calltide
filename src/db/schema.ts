@@ -109,6 +109,9 @@ export const businesses = sqliteTable("businesses", {
   digestDeliveryMethod: text("digest_delivery_method").default("both"), // email, sms, both
   // Daily summary text
   enableDailySummary: integer("enable_daily_summary", { mode: "boolean" }).default(true),
+  // Google review requests
+  googleReviewUrl: text("google_review_url"),
+  enableReviewRequests: integer("enable_review_requests", { mode: "boolean" }).default(true),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -1104,6 +1107,21 @@ export const testimonials = sqliteTable("testimonials", {
   featured: integer("featured", { mode: "boolean" }).default(false),
   submittedAt: text("submitted_at").notNull().default(sql`(datetime('now'))`),
   approvedAt: text("approved_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Google Review Requests ──
+
+export const reviewRequests = sqliteTable("review_requests", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  appointmentId: text("appointment_id").notNull().references(() => appointments.id),
+  leadId: text("lead_id").notNull().references(() => leads.id),
+  customerPhone: text("customer_phone").notNull(),
+  language: text("language").notNull().default("en"), // en, es
+  status: text("status").notNull().default("sent"), // sent, failed, opted_out
+  twilioSid: text("twilio_sid"),
+  sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 

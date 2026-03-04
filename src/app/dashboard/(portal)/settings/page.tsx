@@ -34,6 +34,8 @@ interface SettingsData {
   enableWeeklyDigest: boolean;
   digestDeliveryMethod: string;
   enableDailySummary: boolean;
+  googleReviewUrl: string;
+  enableReviewRequests: boolean;
 }
 
 interface CustomResponse {
@@ -248,6 +250,8 @@ export default function SettingsPage() {
         enableWeeklyDigest: data.enableWeeklyDigest,
         digestDeliveryMethod: data.digestDeliveryMethod,
         enableDailySummary: data.enableDailySummary,
+        googleReviewUrl: data.googleReviewUrl || "",
+        enableReviewRequests: data.enableReviewRequests,
       };
 
       const res = await fetch("/api/dashboard/settings", {
@@ -676,6 +680,57 @@ export default function SettingsPage() {
               />
             </button>
           </div>
+        </div>
+      </Card>
+
+      {/* ── Section: Google Review Requests ── */}
+      <Card title="Google Review Requests">
+        <div className="space-y-4">
+          <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            Automatically text customers 24 hours after their appointment asking for a Google review. Bilingual EN/ES, max once per customer every 90 days.
+          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                Enable Review Requests
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setData({ ...data, enableReviewRequests: !data.enableReviewRequests });
+              }}
+              className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+              style={{ background: data.enableReviewRequests ? "var(--db-accent)" : "var(--db-border)" }}
+            >
+              <span
+                className="inline-block h-4 w-4 rounded-full bg-white transition-transform"
+                style={{ transform: data.enableReviewRequests ? "translateX(22px)" : "translateX(4px)" }}
+              />
+            </button>
+          </div>
+          {data.enableReviewRequests && (
+            <div>
+              <label className="block text-sm font-medium mb-1" style={{ color: "var(--db-text)" }}>
+                Google Review URL
+              </label>
+              <input
+                type="url"
+                value={data.googleReviewUrl || ""}
+                onChange={(e) => setData({ ...data, googleReviewUrl: e.target.value })}
+                placeholder="https://g.page/r/your-business/review"
+                className="w-full rounded-lg px-3 py-2 text-sm"
+                style={{
+                  background: "var(--db-surface)",
+                  border: "1px solid var(--db-border)",
+                  color: "var(--db-text)",
+                }}
+              />
+              <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
+                Find your link in Google Business Profile → Share review form
+              </p>
+            </div>
+          )}
         </div>
       </Card>
 
