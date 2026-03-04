@@ -95,7 +95,7 @@ export async function POST(request: Request) {
   } catch (err) {
     reportError("[costs] Error", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Cost calculation failed" },
+      { error: "Cost calculation failed" },
       { status: 500 },
     );
   }

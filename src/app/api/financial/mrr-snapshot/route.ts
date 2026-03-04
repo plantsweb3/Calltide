@@ -64,7 +64,7 @@ export async function POST(request: Request) {
   } catch (err) {
     reportError("[mrr-snapshot] Error", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "MRR snapshot failed" },
+      { error: "MRR snapshot failed" },
       { status: 500 },
     );
   }

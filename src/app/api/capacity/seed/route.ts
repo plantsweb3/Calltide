@@ -60,7 +60,7 @@ export async function POST(request: Request) {
   } catch (err) {
     reportError("[capacity seed] Error", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Seed failed" },
+      { error: "Seed failed" },
       { status: 500 },
     );
   }

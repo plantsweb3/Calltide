@@ -40,7 +40,7 @@ export async function POST(request: Request) {
   } catch (err) {
     reportError("[capacity real-time] Error", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Real-time check failed" },
+      { error: "Real-time check failed" },
       { status: 500 },
     );
   }

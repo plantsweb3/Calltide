@@ -112,7 +112,7 @@ export async function GET() {
   } catch (err) {
     reportError("[capacity status] Error", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Status fetch failed" },
+      { error: "Status fetch failed" },
       { status: 500 },
     );
   }

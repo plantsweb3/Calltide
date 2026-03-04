@@ -163,7 +163,7 @@ export async function POST(request: Request) {
   } catch (err) {
     reportError("[weekly report] Error", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Report failed" },
+      { error: "Report failed" },
       { status: 500 },
     );
   }

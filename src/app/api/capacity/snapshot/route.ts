@@ -108,7 +108,7 @@ export async function POST(request: Request) {
   } catch (err) {
     reportError("[capacity snapshot] Error", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Snapshot failed" },
+      { error: "Snapshot failed" },
       { status: 500 },
     );
   }

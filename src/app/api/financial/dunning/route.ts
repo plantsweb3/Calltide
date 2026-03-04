@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   } catch (err) {
     reportError("[dunning cron] Error", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Dunning processing failed" },
+      { error: "Dunning processing failed" },
       { status: 500 },
     );
   }

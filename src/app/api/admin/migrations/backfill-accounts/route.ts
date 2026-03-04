@@ -9,7 +9,7 @@ export async function POST() {
   } catch (err) {
     reportError("[backfill-accounts] Error", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Backfill failed" },
+      { error: "Backfill failed" },
       { status: 500 },
     );
   }
