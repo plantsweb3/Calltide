@@ -38,6 +38,7 @@ const settingsSchema = z.object({
   personalityPreset: z.enum(["professional", "friendly", "warm"]).optional(),
   enableWeeklyDigest: z.boolean().optional(),
   digestDeliveryMethod: z.enum(["email", "sms", "both"]).optional(),
+  enableDailySummary: z.boolean().optional(),
 });
 
 function stripHtml(str: string | undefined | null): string | undefined | null {
@@ -83,6 +84,7 @@ export async function GET(req: NextRequest) {
       personalityPreset: "friendly",
       enableWeeklyDigest: true,
       digestDeliveryMethod: "both",
+      enableDailySummary: true,
     });
   }
 
@@ -119,6 +121,7 @@ export async function GET(req: NextRequest) {
     personalityPreset: biz.personalityPreset || "friendly",
     enableWeeklyDigest: biz.enableWeeklyDigest ?? true,
     digestDeliveryMethod: biz.digestDeliveryMethod ?? "both",
+    enableDailySummary: biz.enableDailySummary ?? true,
   });
 }
 
@@ -181,6 +184,7 @@ export async function PUT(req: NextRequest) {
     ...(data.personalityPreset ? { personalityPreset: data.personalityPreset } : {}),
     ...(data.enableWeeklyDigest !== undefined ? { enableWeeklyDigest: data.enableWeeklyDigest } : {}),
     ...(data.digestDeliveryMethod ? { digestDeliveryMethod: data.digestDeliveryMethod } : {}),
+    ...(data.enableDailySummary !== undefined ? { enableDailySummary: data.enableDailySummary } : {}),
     updatedAt: new Date().toISOString(),
   };
 
@@ -228,5 +232,6 @@ export async function PUT(req: NextRequest) {
     personalityPreset: updated.personalityPreset || "friendly",
     enableWeeklyDigest: updated.enableWeeklyDigest ?? true,
     digestDeliveryMethod: updated.digestDeliveryMethod ?? "both",
+    enableDailySummary: updated.enableDailySummary ?? true,
   });
 }

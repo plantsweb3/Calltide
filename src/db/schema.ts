@@ -107,6 +107,8 @@ export const businesses = sqliteTable("businesses", {
   // Weekly digest preferences
   enableWeeklyDigest: integer("enable_weekly_digest", { mode: "boolean" }).default(true),
   digestDeliveryMethod: text("digest_delivery_method").default("both"), // email, sms, both
+  // Daily summary text
+  enableDailySummary: integer("enable_daily_summary", { mode: "boolean" }).default(true),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });

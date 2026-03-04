@@ -18,6 +18,7 @@
     { "path": "/api/cron/outbound-estimate-followup", "schedule": "0 16 * * *" },
     { "path": "/api/cron/outbound-seasonal", "schedule": "0 17 1 * *" },
     { "path": "/api/cron/outbound-dispatch", "schedule": "*/15 16-23 * * *" },
-    { "path": "/api/cron/weekly-digest", "schedule": "0 14 * * 1" }
+    { "path": "/api/cron/weekly-digest", "schedule": "0 14 * * 1" },
+    { "path": "/api/cron/daily-summary", "schedule": "0 23 * * *" }
   ]
 }

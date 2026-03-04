@@ -33,6 +33,7 @@ interface SettingsData {
   personalityPreset: string;
   enableWeeklyDigest: boolean;
   digestDeliveryMethod: string;
+  enableDailySummary: boolean;
 }
 
 interface CustomResponse {
@@ -246,6 +247,7 @@ export default function SettingsPage() {
         personalityPreset: data.personalityPreset || "friendly",
         enableWeeklyDigest: data.enableWeeklyDigest,
         digestDeliveryMethod: data.digestDeliveryMethod,
+        enableDailySummary: data.enableDailySummary,
       };
 
       const res = await fetch("/api/dashboard/settings", {
@@ -645,6 +647,35 @@ export default function SettingsPage() {
               </div>
             </div>
           )}
+        </div>
+      </Card>
+
+      {/* ── Section: Daily Summary Text ── */}
+      <Card title="Daily Summary Text">
+        <div className="space-y-4">
+          <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            Get a daily SMS recap at 6 PM — calls answered, appointments booked, emergencies, and tomorrow's schedule.
+          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                Enable Daily Summary
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setData({ ...data, enableDailySummary: !data.enableDailySummary });
+              }}
+              className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+              style={{ background: data.enableDailySummary ? "var(--db-accent)" : "var(--db-border)" }}
+            >
+              <span
+                className="inline-block h-4 w-4 rounded-full bg-white transition-transform"
+                style={{ transform: data.enableDailySummary ? "translateX(22px)" : "translateX(4px)" }}
+              />
+            </button>
+          </div>
         </div>
       </Card>
 
