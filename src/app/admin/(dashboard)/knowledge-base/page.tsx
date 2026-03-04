@@ -167,16 +167,16 @@ export default function KnowledgeBasePage() {
       if (res.ok) {
         setArticles((prev) => prev.filter((a) => a.id !== article.id));
         setDeletingArticle(null);
-        toast.success("Article deleted");
+        toast.success("Article archived");
       } else {
         const data = await res.json().catch(() => ({}));
-        const msg = data.error ?? "Failed to delete article";
+        const msg = data.error ?? "Failed to archive article";
         setError(msg);
         toast.error(msg);
       }
     } catch {
-      setError("Network error while deleting");
-      toast.error("Network error while deleting");
+      setError("Network error while archiving");
+      toast.error("Network error while archiving");
     }
   }
 
@@ -355,7 +355,7 @@ export default function KnowledgeBasePage() {
                             className="rounded px-2 py-1 text-[10px] font-medium"
                             style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
                           >
-                            Delete
+                            Archive
                           </button>
                         )}
                       </div>
@@ -623,7 +623,7 @@ export default function KnowledgeBasePage() {
           </div>
         </div>
       )}
-      {/* Delete confirmation modal */}
+      {/* Archive confirmation modal */}
       {deletingArticle && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setDeletingArticle(null)}>
           <div
@@ -631,9 +631,9 @@ export default function KnowledgeBasePage() {
             style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-base font-semibold" style={{ color: "var(--db-text)" }}>Delete Article</h3>
+            <h3 className="text-base font-semibold" style={{ color: "var(--db-text)" }}>Archive Article</h3>
             <p className="mt-2 text-sm" style={{ color: "var(--db-text-secondary)" }}>
-              Are you sure you want to delete &ldquo;{deletingArticle.title}&rdquo;? This cannot be undone.
+              Are you sure you want to archive &ldquo;{deletingArticle.title}&rdquo;? The article will be hidden but can be restored later.
             </p>
             <div className="mt-4 flex items-center justify-end gap-3">
               <button
@@ -648,7 +648,7 @@ export default function KnowledgeBasePage() {
                 className="rounded-lg px-4 py-2 text-sm font-medium text-white"
                 style={{ background: "#ef4444" }}
               >
-                Delete
+                Archive
               </button>
             </div>
           </div>

@@ -108,7 +108,8 @@ export async function PATCH(
 
 /**
  * DELETE /api/admin/help/articles/[id]
- * Delete an article and its related feedback entries.
+ * Soft-delete an article by setting status to "archived".
+ * Data and feedback are preserved for potential recovery.
  */
 export async function DELETE(
   _req: NextRequest,
@@ -127,15 +128,15 @@ export async function DELETE(
       return NextResponse.json({ error: "Article not found" }, { status: 404 });
     }
 
-    // Delete related feedback entries first
-    await db.delete(helpArticleFeedback).where(eq(helpArticleFeedback.articleId, id));
-
-    // Delete the article
-    await db.delete(helpArticles).where(eq(helpArticles.id, id));
+    // Soft delete — set status to archived instead of removing data
+    await db
+      .update(helpArticles)
+      .set({ status: "archived", updatedAt: new Date().toISOString() })
+      .where(eq(helpArticles.id, id));
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    reportError("Error deleting help article", error);
-    return NextResponse.json({ error: "Failed to delete article" }, { status: 500 });
+    reportError("Error archiving help article", error);
+    return NextResponse.json({ error: "Failed to archive article" }, { status: 500 });
   }
 }

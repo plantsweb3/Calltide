@@ -338,7 +338,7 @@ function PostEditorModal({
             </div>
           </div>
 
-          {/* Body with preview */}
+          {/* Body with formatting toolbar + preview */}
           <div>
             <div className="mb-1 flex items-center justify-between">
               <label className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
@@ -354,11 +354,41 @@ function PostEditorModal({
                 Preview
               </label>
             </div>
+            {/* Formatting toolbar */}
+            <div className="flex items-center gap-1 mb-1.5 flex-wrap">
+              {[
+                { label: "B", tag: "strong", title: "Bold" },
+                { label: "I", tag: "em", title: "Italic" },
+                { label: "H2", tag: "h2", title: "Heading 2" },
+                { label: "H3", tag: "h3", title: "Heading 3" },
+                { label: "P", tag: "p", title: "Paragraph" },
+                { label: "UL", tag: "ul", title: "Unordered List" },
+                { label: "A", tag: "a", title: "Link" },
+              ].map(({ label, tag, title }) => (
+                <button
+                  key={tag}
+                  type="button"
+                  title={title}
+                  onClick={() => {
+                    const snippet = tag === "ul"
+                      ? "<ul>\n  <li></li>\n</ul>"
+                      : tag === "a"
+                        ? `<a href="">${""}</a>`
+                        : `<${tag}></${tag}>`;
+                    setBody((prev) => prev + snippet);
+                  }}
+                  className="rounded px-2 py-1 text-xs font-mono font-semibold transition-colors"
+                  style={{ background: "var(--db-hover)", color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             <div className={showPreview ? "grid grid-cols-2 gap-3" : ""}>
               <textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                placeholder="<h2>Intro</h2><p>...</p>"
+                placeholder="<h2>Intro</h2><p>Your content here...</p>"
                 rows={12}
                 className="w-full rounded-lg px-3 py-2 text-sm outline-none font-mono resize-y"
                 style={{ ...inputStyle, lineHeight: "1.6" }}

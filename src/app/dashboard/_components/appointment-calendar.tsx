@@ -65,6 +65,7 @@ export default function AppointmentCalendar({
 }: {
   appointments: Appointment[];
 }) {
+  const MAX_WEEK_OFFSET = 13; // ±3 months
   const [weekOffset, setWeekOffset] = useState(0);
   const weekDays = getWeekDays(weekOffset);
 
@@ -109,10 +110,11 @@ export default function AppointmentCalendar({
         style={{ borderBottom: "1px solid var(--db-border)" }}
       >
         <button
-          onClick={() => setWeekOffset((o) => o - 1)}
-          className="rounded-lg px-3 py-1.5 text-sm transition-colors"
+          onClick={() => setWeekOffset((o) => Math.max(-MAX_WEEK_OFFSET, o - 1))}
+          disabled={weekOffset <= -MAX_WEEK_OFFSET}
+          className="rounded-lg px-3 py-1.5 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           style={{ color: "var(--db-text-secondary)", border: "1px solid var(--db-border)" }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+          onMouseEnter={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.background = "var(--db-hover)"; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
         >
           &larr; Previous
@@ -132,10 +134,11 @@ export default function AppointmentCalendar({
           )}
         </div>
         <button
-          onClick={() => setWeekOffset((o) => o + 1)}
-          className="rounded-lg px-3 py-1.5 text-sm transition-colors"
+          onClick={() => setWeekOffset((o) => Math.min(MAX_WEEK_OFFSET, o + 1))}
+          disabled={weekOffset >= MAX_WEEK_OFFSET}
+          className="rounded-lg px-3 py-1.5 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           style={{ color: "var(--db-text-secondary)", border: "1px solid var(--db-border)" }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+          onMouseEnter={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.background = "var(--db-hover)"; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
         >
           Next &rarr;

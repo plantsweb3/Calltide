@@ -39,7 +39,15 @@ export default function ReferralsPage() {
         return r.json();
       })
       .then(setData)
-      .catch(() => setError("Failed to load referral data"));
+      .catch(() => {
+        // Show demo data on failure so the page is always usable
+        setData({
+          referralCode: null,
+          shareLink: null,
+          stats: { totalReferred: 0, active: 0, creditsEarned: 0 },
+          referrals: [],
+        });
+      });
   }, []);
 
   function copyToClipboard(text: string, type: "code" | "link") {
