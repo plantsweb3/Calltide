@@ -85,6 +85,74 @@ function toSlug(title: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// Markdown → HTML converter (lightweight, no dependencies)
+// ---------------------------------------------------------------------------
+
+function markdownToHtml(md: string): string {
+  let html = md;
+
+  // Escape HTML entities in content (but not our generated tags)
+  // We process markdown syntax first, then let the browser handle it
+
+  // Headings (must come before bold to avoid conflicts)
+  html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>");
+  html = html.replace(/^## (.+)$/gm, "<h2>$1</h2>");
+  html = html.replace(/^# (.+)$/gm, "<h1>$1</h1>");
+
+  // Horizontal rule
+  html = html.replace(/^---$/gm, "<hr />");
+
+  // Bold + italic
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>");
+  // Bold
+  html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  // Italic
+  html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
+
+  // Links [text](url)
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+  // Unordered lists: consecutive lines starting with "- "
+  html = html.replace(/(?:^- .+\n?)+/gm, (match) => {
+    const items = match
+      .trim()
+      .split("\n")
+      .map((line) => `  <li>${line.replace(/^- /, "")}</li>`)
+      .join("\n");
+    return `<ul>\n${items}\n</ul>`;
+  });
+
+  // Ordered lists: consecutive lines starting with "1. ", "2. ", etc.
+  html = html.replace(/(?:^\d+\. .+\n?)+/gm, (match) => {
+    const items = match
+      .trim()
+      .split("\n")
+      .map((line) => `  <li>${line.replace(/^\d+\. /, "")}</li>`)
+      .join("\n");
+    return `<ol>\n${items}\n</ol>`;
+  });
+
+  // Paragraphs: wrap remaining non-empty, non-tag lines
+  html = html
+    .split("\n\n")
+    .map((block) => {
+      const trimmed = block.trim();
+      if (!trimmed) return "";
+      // Don't wrap blocks that are already HTML elements
+      if (/^<(h[1-6]|ul|ol|li|hr|p|div|blockquote|table)/i.test(trimmed)) return trimmed;
+      return `<p>${trimmed.replace(/\n/g, "<br />")}</p>`;
+    })
+    .join("\n\n");
+
+  return html;
+}
+
+/** Detect if content is already HTML (has tags) vs markdown */
+function isHtmlContent(content: string): boolean {
+  return /<(h[1-6]|p|ul|ol|div|strong|em|a |table|blockquote)\b/i.test(content);
+}
+
+// ---------------------------------------------------------------------------
 // Empty editor state
 // ---------------------------------------------------------------------------
 
@@ -137,6 +205,8 @@ function PostEditorModal({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  // Detect if existing content is HTML; new posts default to markdown
+  const [useMarkdown, setUseMarkdown] = useState(isNew || !isHtmlContent(post?.body ?? ""));
 
   // Auto-generate slug from title when not manually overridden
   useEffect(() => {
@@ -160,7 +230,7 @@ function PostEditorModal({
     const payload = {
       title,
       slug,
-      body,
+      body: useMarkdown ? markdownToHtml(body) : body,
       language,
       category,
       published,
@@ -342,53 +412,93 @@ function PostEditorModal({
           <div>
             <div className="mb-1 flex items-center justify-between">
               <label className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
-                Body (HTML)
+                Body ({useMarkdown ? "Markdown" : "HTML"})
               </label>
-              <label className="flex items-center gap-1.5 text-xs cursor-pointer" style={{ color: "var(--db-text-muted)" }}>
-                <input
-                  type="checkbox"
-                  checked={showPreview}
-                  onChange={(e) => setShowPreview(e.target.checked)}
-                  className="rounded"
-                />
-                Preview
-              </label>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setUseMarkdown((m) => !m)}
+                  className="text-xs font-medium px-2 py-0.5 rounded"
+                  style={{ background: "var(--db-hover)", color: "var(--db-accent)", border: "1px solid var(--db-border)" }}
+                >
+                  Switch to {useMarkdown ? "HTML" : "Markdown"}
+                </button>
+                <label className="flex items-center gap-1.5 text-xs cursor-pointer" style={{ color: "var(--db-text-muted)" }}>
+                  <input
+                    type="checkbox"
+                    checked={showPreview}
+                    onChange={(e) => setShowPreview(e.target.checked)}
+                    className="rounded"
+                  />
+                  Preview
+                </label>
+              </div>
             </div>
             {/* Formatting toolbar */}
             <div className="flex items-center gap-1 mb-1.5 flex-wrap">
-              {[
-                { label: "B", tag: "strong", title: "Bold" },
-                { label: "I", tag: "em", title: "Italic" },
-                { label: "H2", tag: "h2", title: "Heading 2" },
-                { label: "H3", tag: "h3", title: "Heading 3" },
-                { label: "P", tag: "p", title: "Paragraph" },
-                { label: "UL", tag: "ul", title: "Unordered List" },
-                { label: "A", tag: "a", title: "Link" },
-              ].map(({ label, tag, title }) => (
-                <button
-                  key={tag}
-                  type="button"
-                  title={title}
-                  onClick={() => {
-                    const snippet = tag === "ul"
-                      ? "<ul>\n  <li></li>\n</ul>"
-                      : tag === "a"
-                        ? `<a href="">${""}</a>`
-                        : `<${tag}></${tag}>`;
-                    setBody((prev) => prev + snippet);
-                  }}
-                  className="rounded px-2 py-1 text-xs font-mono font-semibold transition-colors"
-                  style={{ background: "var(--db-hover)", color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }}
-                >
-                  {label}
-                </button>
-              ))}
+              {useMarkdown ? (
+                <>
+                  {[
+                    { label: "H2", snippet: "## ", title: "Heading 2" },
+                    { label: "H3", snippet: "### ", title: "Heading 3" },
+                    { label: "B", snippet: "**bold**", title: "Bold" },
+                    { label: "I", snippet: "*italic*", title: "Italic" },
+                    { label: "Link", snippet: "[text](url)", title: "Link" },
+                    { label: "List", snippet: "- ", title: "Bullet list" },
+                    { label: "OL", snippet: "1. ", title: "Numbered list" },
+                    { label: "HR", snippet: "\n---\n", title: "Horizontal rule" },
+                  ].map(({ label, snippet, title }) => (
+                    <button
+                      key={label}
+                      type="button"
+                      title={title}
+                      onClick={() => setBody((prev) => prev + (prev.endsWith("\n") || !prev ? "" : "\n") + snippet)}
+                      className="rounded px-2 py-1 text-xs font-mono font-semibold transition-colors"
+                      style={{ background: "var(--db-hover)", color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {[
+                    { label: "B", tag: "strong", title: "Bold" },
+                    { label: "I", tag: "em", title: "Italic" },
+                    { label: "H2", tag: "h2", title: "Heading 2" },
+                    { label: "H3", tag: "h3", title: "Heading 3" },
+                    { label: "P", tag: "p", title: "Paragraph" },
+                    { label: "UL", tag: "ul", title: "Unordered List" },
+                    { label: "A", tag: "a", title: "Link" },
+                  ].map(({ label, tag, title }) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      title={title}
+                      onClick={() => {
+                        const snippet = tag === "ul"
+                          ? "<ul>\n  <li></li>\n</ul>"
+                          : tag === "a"
+                            ? `<a href="">${""}</a>`
+                            : `<${tag}></${tag}>`;
+                        setBody((prev) => prev + snippet);
+                      }}
+                      className="rounded px-2 py-1 text-xs font-mono font-semibold transition-colors"
+                      style={{ background: "var(--db-hover)", color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </>
+              )}
             </div>
             <div className={showPreview ? "grid grid-cols-2 gap-3" : ""}>
               <textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                placeholder="<h2>Intro</h2><p>Your content here...</p>"
+                placeholder={useMarkdown
+                  ? "## Introduction\n\nYour content here...\n\n- Bullet point\n- Another point\n\n**Bold text** and *italic text*"
+                  : "<h2>Intro</h2><p>Your content here...</p>"}
                 rows={12}
                 className="w-full rounded-lg px-3 py-2 text-sm outline-none font-mono resize-y"
                 style={{ ...inputStyle, lineHeight: "1.6" }}
@@ -404,7 +514,7 @@ function PostEditorModal({
                     lineHeight: "1.7",
                     color: "var(--db-text-secondary)",
                   }}
-                  dangerouslySetInnerHTML={{ __html: body }}
+                  dangerouslySetInnerHTML={{ __html: useMarkdown ? markdownToHtml(body) : body }}
                 />
               )}
             </div>
