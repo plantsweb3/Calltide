@@ -104,6 +104,9 @@ export const businesses = sqliteTable("businesses", {
   locationOrder: integer("location_order").default(0),
   // Disaster recovery
   voicemailFallbackActive: integer("voicemail_fallback_active", { mode: "boolean" }).default(false),
+  // Weekly digest preferences
+  enableWeeklyDigest: integer("enable_weekly_digest", { mode: "boolean" }).default(true),
+  digestDeliveryMethod: text("digest_delivery_method").default("both"), // email, sms, both
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -1001,6 +1004,32 @@ export const paywallEmails = sqliteTable("paywall_emails", {
   sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
   openedAt: text("opened_at"),
   clickedAt: text("clicked_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Weekly Digests ──
+
+export const weeklyDigests = sqliteTable("weekly_digests", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  weekStartDate: text("week_start_date").notNull(),
+  weekEndDate: text("week_end_date").notNull(),
+  stats: text("stats", { mode: "json" }).notNull().$type<{
+    totalCalls: number;
+    afterHoursCalls: number;
+    appointmentsBooked: number;
+    estimatedRevenue: number;
+    emergencyCalls: number;
+    newCustomers: number;
+    busiestDay: string;
+    busiestDayCount: number;
+    prevWeekCalls: number;
+    wowChangePercent: number;
+    savedEstimate: number;
+  }>(),
+  emailSentAt: text("email_sent_at"),
+  smsSentAt: text("sms_sent_at"),
+  resendId: text("resend_id"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 

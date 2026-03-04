@@ -36,6 +36,8 @@ const settingsSchema = z.object({
   personalityNotes: z.string().max(1000).optional().or(z.literal("")),
   receptionistName: z.string().min(1).max(20).regex(/^[a-zA-ZáéíóúñÁÉÍÓÚÑüÜ\s]+$/).optional(),
   personalityPreset: z.enum(["professional", "friendly", "warm"]).optional(),
+  enableWeeklyDigest: z.boolean().optional(),
+  digestDeliveryMethod: z.enum(["email", "sms", "both"]).optional(),
 });
 
 function stripHtml(str: string | undefined | null): string | undefined | null {
@@ -79,6 +81,8 @@ export async function GET(req: NextRequest) {
       memberSince: "2025-01-15",
       receptionistName: "María",
       personalityPreset: "friendly",
+      enableWeeklyDigest: true,
+      digestDeliveryMethod: "both",
     });
   }
 
@@ -113,6 +117,8 @@ export async function GET(req: NextRequest) {
     memberSince: biz.createdAt.slice(0, 10),
     receptionistName: biz.receptionistName || "Maria",
     personalityPreset: biz.personalityPreset || "friendly",
+    enableWeeklyDigest: biz.enableWeeklyDigest ?? true,
+    digestDeliveryMethod: biz.digestDeliveryMethod ?? "both",
   });
 }
 
@@ -173,6 +179,8 @@ export async function PUT(req: NextRequest) {
     personalityNotes: stripHtml(data.personalityNotes) || null,
     ...(data.receptionistName ? { receptionistName: stripHtml(data.receptionistName)! } : {}),
     ...(data.personalityPreset ? { personalityPreset: data.personalityPreset } : {}),
+    ...(data.enableWeeklyDigest !== undefined ? { enableWeeklyDigest: data.enableWeeklyDigest } : {}),
+    ...(data.digestDeliveryMethod ? { digestDeliveryMethod: data.digestDeliveryMethod } : {}),
     updatedAt: new Date().toISOString(),
   };
 
@@ -218,5 +226,7 @@ export async function PUT(req: NextRequest) {
     memberSince: updated.createdAt.slice(0, 10),
     receptionistName: updated.receptionistName || "Maria",
     personalityPreset: updated.personalityPreset || "friendly",
+    enableWeeklyDigest: updated.enableWeeklyDigest ?? true,
+    digestDeliveryMethod: updated.digestDeliveryMethod ?? "both",
   });
 }

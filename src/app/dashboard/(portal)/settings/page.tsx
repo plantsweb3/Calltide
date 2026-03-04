@@ -31,6 +31,8 @@ interface SettingsData {
   memberSince: string;
   receptionistName: string;
   personalityPreset: string;
+  enableWeeklyDigest: boolean;
+  digestDeliveryMethod: string;
 }
 
 interface CustomResponse {
@@ -242,6 +244,8 @@ export default function SettingsPage() {
         personalityNotes: data.personalityNotes || "",
         receptionistName: data.receptionistName || "Maria",
         personalityPreset: data.personalityPreset || "friendly",
+        enableWeeklyDigest: data.enableWeeklyDigest,
+        digestDeliveryMethod: data.digestDeliveryMethod,
       };
 
       const res = await fetch("/api/dashboard/settings", {
@@ -585,6 +589,64 @@ export default function SettingsPage() {
 
       {/* ── Section: Security ── */}
       <SecuritySection />
+
+      {/* ── Section: Weekly Digest ── */}
+      <Card title="Weekly Digest">
+        <div className="space-y-4">
+          <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            Get a weekly performance report every Monday — calls answered, appointments booked, revenue estimates, and more.
+          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                Enable Weekly Digest
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const next = !data.enableWeeklyDigest;
+                setData({ ...data, enableWeeklyDigest: next });
+              }}
+              className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+              style={{ background: data.enableWeeklyDigest ? "var(--db-accent)" : "var(--db-border)" }}
+            >
+              <span
+                className="inline-block h-4 w-4 rounded-full bg-white transition-transform"
+                style={{ transform: data.enableWeeklyDigest ? "translateX(22px)" : "translateX(4px)" }}
+              />
+            </button>
+          </div>
+          {data.enableWeeklyDigest && (
+            <div>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                Delivery Method
+              </label>
+              <div className="flex gap-2">
+                {[
+                  { value: "both", label: "Email + SMS" },
+                  { value: "email", label: "Email Only" },
+                  { value: "sms", label: "SMS Only" },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setData({ ...data, digestDeliveryMethod: opt.value })}
+                    className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+                    style={
+                      data.digestDeliveryMethod === opt.value
+                        ? { background: "rgba(212,168,67,0.15)", color: "var(--db-accent)", border: "1px solid rgba(212,168,67,0.3)" }
+                        : { background: "var(--db-hover)", color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }
+                    }
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </Card>
 
       {/* ── Section: Business Hours ── */}
       <Card title="Business Hours">
