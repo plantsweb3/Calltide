@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import { env } from "@/lib/env";
 import { db } from "@/db";
-import { prospectOutreach } from "@/db/schema";
+import { prospectOutreach, paywallEmails } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 
@@ -116,6 +116,57 @@ export async function handleEmailWebhook(event: {
         .update(prospectOutreach)
         .set({ status: "bounced" })
         .where(eq(prospectOutreach.id, outreach.id));
+      break;
+  }
+
+  // Also check paywall retarget emails
+  await handlePaywallEmailWebhook(event);
+}
+
+async function handlePaywallEmailWebhook(event: {
+  type: string;
+  data: { email_id: string };
+}) {
+  const { type, data } = event;
+
+  const [pe] = await db
+    .select()
+    .from(paywallEmails)
+    .where(eq(paywallEmails.resendId, data.email_id));
+
+  if (!pe) return;
+
+  const now = new Date().toISOString();
+
+  switch (type) {
+    case "email.opened":
+      if (!pe.openedAt) {
+        await db
+          .update(paywallEmails)
+          .set({ status: "opened", openedAt: now })
+          .where(eq(paywallEmails.id, pe.id));
+      }
+      break;
+
+    case "email.clicked":
+      await db
+        .update(paywallEmails)
+        .set({ status: "clicked", clickedAt: now })
+        .where(eq(paywallEmails.id, pe.id));
+      await logActivity({
+        type: "email_clicked",
+        entityType: "business",
+        entityId: pe.businessId,
+        title: `Paywall email ${pe.emailNumber} clicked`,
+        detail: pe.templateKey,
+      });
+      break;
+
+    case "email.bounced":
+      await db
+        .update(paywallEmails)
+        .set({ status: "bounced" })
+        .where(eq(paywallEmails.id, pe.id));
       break;
   }
 }

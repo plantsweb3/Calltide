@@ -81,6 +81,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
     {
       title: "Growth",
       items: [
+        { href: "/admin/retargeting", label: "Retargeting", icon: <svg {...ip}><path d="M21 12a9 9 0 1 1-9-9" /><path d="M21 3v6h-6" /><path d="M21 3l-9 9" /></svg> },
         { href: "/admin/demos", label: "Demo Analytics", icon: <svg {...ip}><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" x2="12" y1="19" y2="22" /></svg> },
         { href: "/admin/prospects", label: "Prospects", icon: <svg {...ip}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg> },
         { href: "/admin/campaigns", label: "Campaigns", icon: <svg {...ip}><polygon points="5 3 19 12 5 21 5 3" /></svg> },

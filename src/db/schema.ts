@@ -51,6 +51,7 @@ export const businesses = sqliteTable("businesses", {
   onboardingStatus: text("onboarding_status").default("not_started"), // not_started, in_progress, paywall_reached, completed, abandoned
   onboardingStartedAt: text("onboarding_started_at"),
   onboardingPaywallReachedAt: text("onboarding_paywall_reached_at"),
+  paywallUnsubscribed: integer("paywall_unsubscribed", { mode: "boolean" }).default(false),
   onboardingCompletedAt: text("onboarding_completed_at"),
   onboardingSkippedSteps: text("onboarding_skipped_steps", { mode: "json" }).$type<number[]>().default([]),
   onboardingQaGrade: text("onboarding_qa_grade"), // A/B/C/D/F
@@ -985,6 +986,22 @@ export const outreachLog = sqliteTable("outreach_log", {
   source: text("source").notNull(), // dunning, churn_agent, success_agent, nudge_agent, incident
   channel: text("channel").notNull(), // email, sms
   sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Paywall Retargeting Emails ──
+
+export const paywallEmails = sqliteTable("paywall_emails", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  emailNumber: integer("email_number").notNull(), // 1-4
+  templateKey: text("template_key").notNull(), // paywall_1, paywall_2, paywall_3, paywall_4
+  status: text("status").notNull().default("sent"), // sent, delivered, opened, clicked, bounced, failed
+  resendId: text("resend_id"), // Resend email ID for webhook matching
+  language: text("language").notNull().default("en"), // en, es
+  sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
+  openedAt: text("opened_at"),
+  clickedAt: text("clicked_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
 // ── Agent Handoffs ──

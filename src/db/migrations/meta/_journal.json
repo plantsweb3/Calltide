@@ -232,6 +232,13 @@
       "when": 1774300000000,
       "tag": "0032_onboarding_restructure",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "6",
+      "when": 1774400000000,
+      "tag": "0033_paywall_retargeting",
+      "breakpoints": true
     }
   ]
 }
