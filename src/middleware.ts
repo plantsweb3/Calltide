@@ -20,7 +20,7 @@ function rateLimit(ip: string, prefix: string, limit: number): boolean {
   return true;
 }
 
-const ADMIN_RL_LIMIT = 120;
+const ADMIN_RL_LIMIT = 200;
 const DASHBOARD_RL_LIMIT = 200; // higher — dashboards make many parallel fetches
 
 function getIp(req: NextRequest): string {

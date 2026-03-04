@@ -28,10 +28,7 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(Math.max(1, Number.isNaN(parsedLimit) ? 50 : parsedLimit), 100);
   const offset = (page - 1) * limit;
   const sortByParam = url.get("sortBy") ?? "createdAt";
-  if (!(sortByParam in SORT_COLUMN_MAP)) {
-    return NextResponse.json({ error: "Invalid sortBy parameter" }, { status: 400 });
-  }
-  const sortColumn = SORT_COLUMN_MAP[sortByParam];
+  const sortColumn = SORT_COLUMN_MAP[sortByParam] ?? SORT_COLUMN_MAP.createdAt;
   const sortOrder = url.get("sortOrder") === "asc" ? "asc" : "desc";
   const status = url.get("status");
   const vertical = url.get("vertical");

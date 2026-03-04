@@ -187,6 +187,7 @@ async function handleToolCall(event: HumeWebhookEvent) {
       toolName: data.name,
       chatId: event.chat_id,
       rawLength: data.parameters?.length ?? 0,
+      rawPreview: data.parameters?.slice(0, 200) ?? "",
     });
     return Response.json({
       tool_call_id: data.tool_call_id,
