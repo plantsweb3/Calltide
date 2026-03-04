@@ -7,8 +7,8 @@ import { logActivity } from "@/lib/activity";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 
 const progressSchema = z.object({
-  step: z.number().int().min(1).max(8),
-  skippedStep: z.number().int().min(1).max(8).optional(),
+  step: z.number().int().min(1).max(9),
+  skippedStep: z.number().int().min(1).max(9).optional(),
 });
 
 /**
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({
-      onboardingStep: 8,
+      onboardingStep: 9,
       onboardingCompletedAt: "2025-01-15T10:00:00.000Z",
       onboardingSkippedSteps: [],
       businessData: {
@@ -141,8 +141,8 @@ export async function PUT(req: NextRequest) {
     updatedAt: new Date().toISOString(),
   };
 
-  // Mark completion when reaching step 8
-  if (step === 8) {
+  // Mark completion when reaching final step (9)
+  if (step === 9) {
     updates.onboardingCompletedAt = new Date().toISOString();
     updates.active = true; // Activate the business
 
@@ -165,7 +165,7 @@ export async function PUT(req: NextRequest) {
   return NextResponse.json({
     success: true,
     step,
-    completed: step === 8,
+    completed: step === 9,
     skippedSteps: skipped,
   });
 }

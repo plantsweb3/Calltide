@@ -332,7 +332,7 @@ export default function SettingsPage() {
             Settings
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Configure your AI receptionist and business information
+            Customize {rName} and your business information
           </p>
         </div>
         <button
@@ -400,10 +400,10 @@ export default function SettingsPage() {
         </span>
         <div>
           <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-            AI Receptionist {data.active ? "Active" : "Inactive"}
+            {rName} — {data.active ? "Active" : "Inactive"}
           </p>
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            {data.active ? "Your AI is answering calls 24/7" : "Contact support to reactivate"}
+            {data.active ? `${rName} is answering calls 24/7` : "Contact support to reactivate"}
           </p>
         </div>
       </div>
@@ -639,7 +639,7 @@ export default function SettingsPage() {
           })}
         </div>
         <p className="mt-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
-          Your AI receptionist answers calls 24/7, but appointments are only scheduled during business hours.
+          {rName} answers calls 24/7, but appointments are only scheduled during business hours.
         </p>
       </Card>
 
@@ -705,10 +705,10 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Enable María to discuss pricing
+                Enable {rName} to discuss pricing
               </p>
               <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
-                When enabled, María will quote ballpark prices with a &quot;final price may vary&quot; disclaimer
+                When enabled, {rName} will quote ballpark prices with a &quot;final price may vary&quot; disclaimer
               </p>
             </div>
             <button

@@ -418,7 +418,7 @@ export default function CallsPage() {
                     className="text-xs font-medium uppercase tracking-wider"
                     style={{ color: "var(--db-text-muted)" }}
                   >
-                    AI Summary
+                    {receptionistName}&apos;s Summary
                   </p>
                   <p
                     className="whitespace-pre-wrap text-sm"

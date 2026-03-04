@@ -7,6 +7,7 @@ import ActivityFeed from "@/app/dashboard/_components/activity-feed";
 import WeeklySummary from "@/app/dashboard/_components/weekly-summary";
 import BusinessInsights from "@/app/dashboard/_components/business-insights";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 
 interface Overview {
   callsToday: number;
@@ -84,6 +85,7 @@ function getGreeting(): string {
 }
 
 export default function OverviewPage() {
+  const receptionistName = useReceptionistName();
   const [data, setData] = useState<Overview | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
@@ -134,7 +136,7 @@ export default function OverviewPage() {
             {getGreeting()}, welcome to Calltide
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Let&apos;s get your AI receptionist answering calls in the next 10 minutes.
+            Let&apos;s get {receptionistName} answering calls in the next 10 minutes.
           </p>
         </div>
 
@@ -189,12 +191,12 @@ export default function OverviewPage() {
             {getGreeting()}, {data.businessName?.split(" ")[0] || "there"}
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Here&apos;s how your AI receptionist is performing
+            Here&apos;s how {receptionistName} is performing
           </p>
         </div>
 
         {/* First Call Celebration */}
-        {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} />}
+        {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} receptionistName={receptionistName} />}
 
         {/* Revenue Hero Banner */}
         <div
@@ -207,7 +209,7 @@ export default function OverviewPage() {
         >
           <div className="relative z-10">
             <p className="text-sm font-medium" style={{ color: "var(--db-text-muted)" }}>
-              This month, Calltide earned you
+              This month, {receptionistName} earned you
             </p>
             <p
               className="mt-1 text-4xl font-bold tracking-tight"
@@ -443,15 +445,15 @@ export default function OverviewPage() {
           {getGreeting()}
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Here&apos;s your AI receptionist summary
+          Here&apos;s how {receptionistName} is doing today
         </p>
       </div>
 
       {/* First Call Celebration */}
-      {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} />}
+      {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} receptionistName={receptionistName} />}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <MetricCard label="Calls Today" value={data.callsToday} />
+        <MetricCard label={`${receptionistName}'s Calls Today`} value={data.callsToday} />
         <MetricCard label="Appointments This Week" value={data.appointmentsThisWeek} />
         <MetricCard
           label="Missed Calls Saved"
@@ -492,9 +494,11 @@ export default function OverviewPage() {
 function FirstCallBanner({
   celebration,
   onDismiss,
+  receptionistName,
 }: {
   celebration: NonNullable<Overview["firstCallCelebration"]>;
   onDismiss: () => void;
+  receptionistName: string;
 }) {
   const durationMin = celebration.duration ? Math.round(celebration.duration / 60) : null;
 
@@ -526,10 +530,10 @@ function FirstCallBanner({
             className="text-lg font-bold"
             style={{ color: "#22c55e" }}
           >
-            Your first call was handled!
+            {receptionistName} handled her first call!
           </h3>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-secondary)" }}>
-            Your AI receptionist just handled its first call
+            {receptionistName} just handled her first call
             {celebration.callerName ? ` from ${celebration.callerName}` : ""}
             {durationMin ? ` (${durationMin} min)` : ""}.
             This is just the beginning — every call from here is revenue you&apos;re no longer missing.

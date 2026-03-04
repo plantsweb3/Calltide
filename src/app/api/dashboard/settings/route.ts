@@ -77,6 +77,8 @@ export async function GET(req: NextRequest) {
       timezone: "America/Chicago",
       active: true,
       memberSince: "2025-01-15",
+      receptionistName: "María",
+      personalityPreset: "friendly",
     });
   }
 

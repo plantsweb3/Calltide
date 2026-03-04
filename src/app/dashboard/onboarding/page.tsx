@@ -82,14 +82,42 @@ const T = {
     charCount: "characters",
     nameLabel: "Her Name",
     namePlaceholder: "Maria",
+    nameCustom: "Custom Name",
+    nameRecommended: "Recommended",
     personalityLabel: "Her Personality",
     personalityProfessional: "Professional",
     personalityProfessionalDesc: "Polished and efficient. Gets straight to business.",
+    personalityProfessionalSample: "Thank you for calling. How may I assist you today?",
     personalityFriendly: "Friendly",
     personalityFriendlyDesc: "Warm and approachable. Makes every caller feel welcome.",
+    personalityFriendlySample: "Hi there! Thanks for calling. What can I help you with today?",
     personalityWarm: "Warm & Caring",
     personalityWarmDesc: "Extra empathetic. Perfect for sensitive clients.",
-    // Step 6
+    personalityWarmSample: "Hello, thank you so much for calling. I'm here to help — what's going on?",
+    // Step 6 - Teach Her
+    teachTitle: "Teach Her Your Business",
+    teachSub: "Help your receptionist answer common questions and stay on-brand.",
+    faqLabel: "Common Questions",
+    faqSub: "When callers ask these questions, she'll use your answers.",
+    faqHoursQ: "What are your hours?",
+    faqHoursPlaceholder: "We're open Monday through Friday, 8 AM to 5 PM...",
+    faqAreaQ: "What's your service area?",
+    faqAreaPlaceholder: "We serve San Antonio and all surrounding areas...",
+    faqEstimatesQ: "Do you offer free estimates?",
+    faqEstimatesPlaceholder: "Yes, we offer free estimates for all services...",
+    faqEmergencyQ: "What's your emergency number?",
+    faqEmergencyPlaceholder: "For emergencies, call us at...",
+    faqServicesQ: "What services do you offer?",
+    faqServicesPlaceholder: "We offer a full range of services including...",
+    offLimitsLabel: "Off-Limits Topics",
+    offLimitsSub: "She will politely redirect if callers ask about these.",
+    offLimitsPricing: "Specific pricing or quotes",
+    offLimitsCompetitors: "Competitor comparisons",
+    offLimitsTiming: "Exact timing promises",
+    phrasesLabel: "Preferred Phrases",
+    phrasesSub: "Words or phrases she should naturally weave into conversations.",
+    phrasesPlaceholder: "e.g. \"We offer a satisfaction guarantee\"\n\"Same-day service available\"\n\"Military and senior discounts\"",
+    // Step 7
     phoneTitle: "Connect Your Phone",
     phoneSub: "Forward your business calls to your receptionist's number. She'll answer them for you.",
     mariasNumber: "Her Number",
@@ -180,13 +208,40 @@ const T = {
     charCount: "caracteres",
     nameLabel: "Su Nombre",
     namePlaceholder: "María",
+    nameCustom: "Nombre Personalizado",
+    nameRecommended: "Recomendado",
     personalityLabel: "Su Personalidad",
     personalityProfessional: "Profesional",
     personalityProfessionalDesc: "Pulida y eficiente. Va directo al grano.",
+    personalityProfessionalSample: "Gracias por llamar. ¿En qué le puedo ayudar hoy?",
     personalityFriendly: "Amigable",
     personalityFriendlyDesc: "Cálida y accesible. Hace que todos se sientan bienvenidos.",
+    personalityFriendlySample: "¡Hola! Gracias por llamar. ¿En qué le puedo ayudar hoy?",
     personalityWarm: "Cálida y Atenta",
     personalityWarmDesc: "Extra empática. Perfecta para clientes sensibles.",
+    personalityWarmSample: "Hola, muchas gracias por llamar. Estoy aquí para ayudarle — ¿qué necesita?",
+    teachTitle: "Enséñale Tu Negocio",
+    teachSub: "Ayuda a tu recepcionista a responder preguntas comunes y mantenerse fiel a tu marca.",
+    faqLabel: "Preguntas Comunes",
+    faqSub: "Cuando los llamantes hagan estas preguntas, ella usará tus respuestas.",
+    faqHoursQ: "¿Cuál es su horario?",
+    faqHoursPlaceholder: "Estamos abiertos de lunes a viernes, de 8 AM a 5 PM...",
+    faqAreaQ: "¿Cuál es su área de servicio?",
+    faqAreaPlaceholder: "Servimos San Antonio y todas las áreas cercanas...",
+    faqEstimatesQ: "¿Ofrecen estimados gratis?",
+    faqEstimatesPlaceholder: "Sí, ofrecemos estimados gratis para todos los servicios...",
+    faqEmergencyQ: "¿Cuál es su número de emergencia?",
+    faqEmergencyPlaceholder: "Para emergencias, llámenos al...",
+    faqServicesQ: "¿Qué servicios ofrecen?",
+    faqServicesPlaceholder: "Ofrecemos una gama completa de servicios incluyendo...",
+    offLimitsLabel: "Temas Prohibidos",
+    offLimitsSub: "Ella redirigirá cortésmente si los llamantes preguntan sobre estos.",
+    offLimitsPricing: "Precios o cotizaciones específicas",
+    offLimitsCompetitors: "Comparaciones con competidores",
+    offLimitsTiming: "Promesas de tiempo exactas",
+    phrasesLabel: "Frases Preferidas",
+    phrasesSub: "Palabras o frases que ella debe usar naturalmente en las conversaciones.",
+    phrasesPlaceholder: "ej. \"Ofrecemos garantía de satisfacción\"\n\"Servicio el mismo día disponible\"\n\"Descuentos militares y para personas mayores\"",
     phoneTitle: "Conecta Tu Teléfono",
     phoneSub: "Redirige las llamadas de tu negocio al número de tu recepcionista. Ella las contestará por ti.",
     mariasNumber: "Su Número",
@@ -339,19 +394,29 @@ export default function OnboardingPage() {
   const [greetingEsp, setGreetingEsp] = useState("");
   const [showPreview, setShowPreview] = useState(false);
   const [defaultLang, setDefaultLang] = useState<"en" | "es">("en");
+  const [useCustomName, setUseCustomName] = useState(false);
 
-  // Step 6 - Phone
+  // Step 6 - Teach Her Your Business
+  const [faqAnswers, setFaqAnswers] = useState<Record<string, string>>({});
+  const [offLimits, setOffLimits] = useState<Record<string, boolean>>({
+    pricing: false,
+    competitors: false,
+    timing: false,
+  });
+  const [preferredPhrases, setPreferredPhrases] = useState("");
+
+  // Step 7 - Phone
   const [twilioNumber, setTwilioNumber] = useState("");
   const [carrierTab, setCarrierTab] = useState<typeof CARRIER_TABS[number]>("att");
   const [forwardingDone, setForwardingDone] = useState(false);
 
-  // Step 7 - Test Call
+  // Step 8 - Test Call
   const [testCallStatus, setTestCallStatus] = useState<"waiting" | "connected" | "complete">("waiting");
   const [testCall, setTestCall] = useState<CallRecord | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const initialCallCountRef = useRef<number | null>(null);
 
-  // Step 8 - Done
+  // Step 9 - Done
   const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const t = T[lang];
@@ -562,9 +627,83 @@ export default function OnboardingPage() {
       if (!ok) return;
     }
 
+    if (step === 6) {
+      // Save FAQ answers, off-limits, and preferred phrases as custom responses
+      try {
+        // Save FAQ answers
+        for (const [key, answer] of Object.entries(faqAnswers)) {
+          if (!answer.trim()) continue;
+          const questionMap: Record<string, string> = {
+            hours: t.faqHoursQ,
+            area: t.faqAreaQ,
+            estimates: t.faqEstimatesQ,
+            emergency: t.faqEmergencyQ,
+            services: t.faqServicesQ,
+          };
+          await fetch("/api/receptionist/responses", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              category: "faq",
+              triggerText: questionMap[key] || key,
+              responseText: answer.trim(),
+            }),
+          });
+        }
+
+        // Save off-limits topics
+        const offLimitsMap: Record<string, { trigger: string; redirect: string }> = {
+          pricing: {
+            trigger: lang === "es" ? "Precios o cotizaciones específicas" : "Specific pricing or quotes",
+            redirect: lang === "es" ? `${ownerName || "El dueño"} puede darle una cotización detallada.` : `${ownerName || "The owner"} can provide a detailed quote.`,
+          },
+          competitors: {
+            trigger: lang === "es" ? "Comparaciones con competidores" : "Competitor comparisons",
+            redirect: lang === "es" ? "Me enfoco en cómo podemos ayudarle a usted." : "I focus on how we can help you.",
+          },
+          timing: {
+            trigger: lang === "es" ? "Promesas de tiempo exactas" : "Exact timing promises",
+            redirect: lang === "es" ? `${ownerName || "El dueño"} puede confirmar los tiempos específicos.` : `${ownerName || "The owner"} can confirm specific timing.`,
+          },
+        };
+        for (const [key, checked] of Object.entries(offLimits)) {
+          if (!checked) continue;
+          const item = offLimitsMap[key];
+          if (!item) continue;
+          await fetch("/api/receptionist/responses", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              category: "off_limits",
+              triggerText: item.trigger,
+              responseText: item.redirect,
+            }),
+          });
+        }
+
+        // Save preferred phrases
+        const phrases = preferredPhrases
+          .split("\n")
+          .map((p) => p.replace(/^["']|["']$/g, "").trim())
+          .filter(Boolean);
+        for (const phrase of phrases.slice(0, 10)) {
+          await fetch("/api/receptionist/responses", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              category: "phrase",
+              triggerText: phrase,
+            }),
+          });
+        }
+      } catch {
+        // Non-critical — can be configured later in settings
+      }
+    }
+
     await saveProgress(nextStep);
     setStep(nextStep);
-  }, [step, bizName, bizAddress, industry, ownerName, ownerEmail, ownerPhone, hours, services, greetingEn, greetingEsp, defaultLang, receptionistName, personalityPreset, saveSettings, saveProgress, t]);
+  }, [step, bizName, bizAddress, industry, ownerName, ownerEmail, ownerPhone, hours, services, greetingEn, greetingEsp, defaultLang, receptionistName, personalityPreset, faqAnswers, offLimits, preferredPhrases, lang, saveSettings, saveProgress, t]);
 
   const goBack = useCallback(() => {
     if (step > 1) setStep(step - 1);
@@ -615,20 +754,20 @@ export default function OnboardingPage() {
   }, []);
 
   useEffect(() => {
-    if (step === 7) {
+    if (step === 8) {
       startPolling();
     }
     return () => {
-      if (step !== 7 && pollRef.current) {
+      if (step !== 8 && pollRef.current) {
         clearInterval(pollRef.current);
         pollRef.current = null;
       }
     };
   }, [step, startPolling]);
 
-  // ── Step 8: Auto-redirect ──
+  // ── Step 9: Auto-redirect ──
   useEffect(() => {
-    if (step === 8) {
+    if (step === 9) {
       redirectTimerRef.current = setTimeout(() => {
         router.push("/dashboard");
       }, 5000);
@@ -725,12 +864,12 @@ export default function OnboardingPage() {
       <div className="border-b border-gray-100 bg-white px-4 py-2 sm:px-6">
         <div className="mx-auto max-w-3xl">
           <div className="flex items-center justify-between text-xs text-gray-400 mb-1.5">
-            <span>{t.step} {step} {t.of} 8</span>
+            <span>{t.step} {step} {t.of} 9</span>
             {saveStatus === "saving" && <span className="text-amber-500">{t.saving}</span>}
             {saveStatus === "saved" && <span className="text-green-500">{t.saved}</span>}
           </div>
           <div className="flex gap-1">
-            {Array.from({ length: 8 }, (_, i) => (
+            {Array.from({ length: 9 }, (_, i) => (
               <div
                 key={i}
                 className="h-1.5 flex-1 rounded-full transition-all duration-300"
@@ -1155,29 +1294,93 @@ export default function OnboardingPage() {
             <p className="mb-6 text-sm text-gray-500">{t.greetingSub}</p>
 
             <div className="space-y-6">
-              {/* Name Input */}
-              <Field label={t.nameLabel}>
-                <input
-                  type="text"
-                  value={receptionistName}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑüÜ\s]/g, "");
-                    if (val.length <= 20) setReceptionistName(val);
-                  }}
-                  className="input-field"
-                  placeholder={t.namePlaceholder}
-                  maxLength={20}
-                />
-              </Field>
+              {/* Name Suggestions */}
+              <div>
+                <p className="mb-3 text-sm font-medium text-gray-700">{t.nameLabel}</p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {([
+                    { name: "Maria", recommended: true },
+                    { name: "Sofia", recommended: false },
+                    { name: "Isabella", recommended: false },
+                  ] as const).map((opt) => (
+                    <button
+                      key={opt.name}
+                      onClick={() => { setReceptionistName(opt.name); setUseCustomName(false); }}
+                      className="relative flex flex-col items-center rounded-xl border-2 p-3 text-center transition-all hover:shadow-md"
+                      style={{
+                        borderColor: !useCustomName && receptionistName === opt.name ? "#C59A27" : "#E5E7EB",
+                        background: !useCustomName && receptionistName === opt.name ? "rgba(197,154,39,0.05)" : "#fff",
+                      }}
+                    >
+                      <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 text-lg font-bold text-amber-600">
+                        {opt.name[0]}
+                      </div>
+                      <p className="text-sm font-semibold text-gray-900">{opt.name}</p>
+                      {opt.recommended && (
+                        <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-amber-500">{t.nameRecommended}</span>
+                      )}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => { setUseCustomName(true); if (["Maria", "Sofia", "Isabella"].includes(receptionistName)) setReceptionistName(""); }}
+                    className="flex flex-col items-center rounded-xl border-2 border-dashed p-3 text-center transition-all hover:shadow-md"
+                    style={{
+                      borderColor: useCustomName ? "#C59A27" : "#D1D5DB",
+                      background: useCustomName ? "rgba(197,154,39,0.05)" : "#fff",
+                    }}
+                  >
+                    <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-lg text-gray-400">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                    </div>
+                    <p className="text-sm font-semibold text-gray-700">{t.nameCustom}</p>
+                  </button>
+                </div>
+                {useCustomName && (
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      value={receptionistName}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑüÜ\s]/g, "");
+                        if (val.length <= 20) setReceptionistName(val);
+                      }}
+                      className="input-field"
+                      placeholder={t.namePlaceholder}
+                      maxLength={20}
+                      autoFocus
+                    />
+                  </div>
+                )}
+              </div>
 
-              {/* Personality Cards */}
+              {/* Live Preview Bubble */}
+              {receptionistName && (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-amber-200 text-sm font-bold text-amber-700">
+                      {receptionistName[0]}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-amber-700">{receptionistName}</p>
+                      <p className="mt-0.5 text-sm text-gray-700 italic">
+                        &ldquo;{lang === "es"
+                          ? `¡Hola! Soy ${receptionistName}. Contestaré sus llamadas.`
+                          : `Hi, I'm ${receptionistName}! I'll be answering your phones.`
+                        }&rdquo;
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Personality Cards with Sample Greetings */}
               <div>
                 <p className="mb-3 text-sm font-medium text-gray-700">{t.personalityLabel}</p>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                   {([
-                    { key: "professional", icon: "briefcase", label: t.personalityProfessional, desc: t.personalityProfessionalDesc, color: "#3B82F6" },
-                    { key: "friendly", icon: "smile", label: t.personalityFriendly, desc: t.personalityFriendlyDesc, color: "#10B981" },
-                    { key: "warm", icon: "heart", label: t.personalityWarm, desc: t.personalityWarmDesc, color: "#F59E0B" },
+                    { key: "professional", icon: "briefcase", label: t.personalityProfessional, desc: t.personalityProfessionalDesc, sample: t.personalityProfessionalSample, color: "#3B82F6" },
+                    { key: "friendly", icon: "smile", label: t.personalityFriendly, desc: t.personalityFriendlyDesc, sample: t.personalityFriendlySample, color: "#10B981" },
+                    { key: "warm", icon: "heart", label: t.personalityWarm, desc: t.personalityWarmDesc, sample: t.personalityWarmSample, color: "#F59E0B" },
                   ] as const).map((p) => (
                     <button
                       key={p.key}
@@ -1204,6 +1407,11 @@ export default function OnboardingPage() {
                       </div>
                       <p className="text-sm font-semibold text-gray-900">{p.label}</p>
                       <p className="mt-1 text-xs text-gray-500">{p.desc}</p>
+                      {personalityPreset === p.key && (
+                        <p className="mt-2 text-xs text-gray-600 italic border-t border-gray-100 pt-2 w-full">
+                          &ldquo;{p.sample}&rdquo;
+                        </p>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -1260,20 +1468,13 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              {/* Preview */}
+              {/* Full Preview */}
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowPreview(!showPreview)}
                   className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
                 >
                   {t.preview}
-                </button>
-                <button
-                  className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-400 cursor-not-allowed"
-                  disabled
-                  title={t.comingSoon}
-                >
-                  {t.hearMaria} <span className="text-xs">({t.comingSoon})</span>
                 </button>
               </div>
 
@@ -1299,8 +1500,85 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* ── STEP 6: Phone Setup ── */}
+        {/* ── STEP 6: Teach Her Your Business ── */}
         {step === 6 && (
+          <div>
+            <h1 className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">{t.teachTitle}</h1>
+            <p className="mb-6 text-sm text-gray-500">{t.teachSub}</p>
+
+            <div className="space-y-8">
+              {/* FAQ Builder */}
+              <div>
+                <p className="mb-1 text-sm font-semibold text-gray-800">{t.faqLabel}</p>
+                <p className="mb-4 text-xs text-gray-400">{t.faqSub}</p>
+                <div className="space-y-3">
+                  {([
+                    { key: "hours", q: t.faqHoursQ, placeholder: t.faqHoursPlaceholder },
+                    { key: "area", q: t.faqAreaQ, placeholder: t.faqAreaPlaceholder },
+                    { key: "estimates", q: t.faqEstimatesQ, placeholder: t.faqEstimatesPlaceholder },
+                    { key: "emergency", q: t.faqEmergencyQ, placeholder: t.faqEmergencyPlaceholder },
+                    { key: "services", q: t.faqServicesQ, placeholder: t.faqServicesPlaceholder },
+                  ] as const).map((faq) => (
+                    <div key={faq.key} className="rounded-lg border border-gray-100 bg-white p-3">
+                      <p className="mb-1.5 text-sm font-medium text-gray-700">&ldquo;{faq.q}&rdquo;</p>
+                      <textarea
+                        value={faqAnswers[faq.key] || ""}
+                        onChange={(e) => setFaqAnswers((prev) => ({ ...prev, [faq.key]: e.target.value }))}
+                        className="input-field min-h-[60px] resize-y"
+                        placeholder={faq.placeholder}
+                        maxLength={500}
+                        rows={2}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Off-Limits */}
+              <div>
+                <p className="mb-1 text-sm font-semibold text-gray-800">{t.offLimitsLabel}</p>
+                <p className="mb-3 text-xs text-gray-400">{t.offLimitsSub}</p>
+                <div className="space-y-2">
+                  {([
+                    { key: "pricing", label: t.offLimitsPricing },
+                    { key: "competitors", label: t.offLimitsCompetitors },
+                    { key: "timing", label: t.offLimitsTiming },
+                  ] as const).map((item) => (
+                    <label key={item.key} className="flex items-center gap-3 rounded-lg border border-gray-100 bg-white p-3 cursor-pointer hover:bg-gray-50 transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={offLimits[item.key] || false}
+                        onChange={(e) => setOffLimits((prev) => ({ ...prev, [item.key]: e.target.checked }))}
+                        className="h-4 w-4 accent-amber-500"
+                      />
+                      <span className="text-sm text-gray-700">{item.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Preferred Phrases */}
+              <div>
+                <p className="mb-1 text-sm font-semibold text-gray-800">{t.phrasesLabel}</p>
+                <p className="mb-3 text-xs text-gray-400">{t.phrasesSub}</p>
+                <textarea
+                  value={preferredPhrases}
+                  onChange={(e) => setPreferredPhrases(e.target.value)}
+                  className="input-field min-h-[100px] resize-y"
+                  placeholder={t.phrasesPlaceholder}
+                  maxLength={1000}
+                  rows={4}
+                />
+              </div>
+            </div>
+
+            {errors.save && <ErrorBanner message={errors.save} />}
+            <StepNav onBack={goBack} onNext={goNext} saving={saving} t={t} showSkip onSkip={() => skipStep(6)} />
+          </div>
+        )}
+
+        {/* ── STEP 7: Phone Setup ── */}
+        {step === 7 && (
           <div>
             <h1 className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">{t.phoneTitle}</h1>
             <p className="mb-6 text-sm text-gray-500">{t.phoneSub}</p>
@@ -1380,20 +1658,20 @@ export default function OnboardingPage() {
             <StepNav
               onBack={goBack}
               onNext={async () => {
-                await saveProgress(7);
-                setStep(7);
+                await saveProgress(8);
+                setStep(8);
               }}
               saving={saving}
               t={t}
               nextDisabled={twilioNumber ? !forwardingDone : false}
               showSkip
-              onSkip={() => skipStep(6)}
+              onSkip={() => skipStep(7)}
             />
           </div>
         )}
 
-        {/* ── STEP 7: Test Call ── */}
-        {step === 7 && (
+        {/* ── STEP 8: Test Call ── */}
+        {step === 8 && (
           <div className="flex flex-1 flex-col">
             <h1 className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">{t.testTitle}</h1>
             <p className="mb-6 text-sm text-gray-500">{t.testSub}</p>
@@ -1467,23 +1745,23 @@ export default function OnboardingPage() {
             <StepNav
               onBack={goBack}
               onNext={async () => {
-                await saveProgress(8);
-                setStep(8);
+                await saveProgress(9);
+                setStep(9);
               }}
               saving={saving}
               t={t}
               nextLabel={testCallStatus === "complete" ? t.handledIt : undefined}
               nextDisabled={testCallStatus !== "complete"}
               showSkip
-              onSkip={() => skipStep(7)}
+              onSkip={() => skipStep(8)}
               skipLabel={t.skipTest}
               skipNudge={t.skipNudge}
             />
           </div>
         )}
 
-        {/* ── STEP 8: Welcome Aboard! ── */}
-        {step === 8 && (
+        {/* ── STEP 9: Welcome Aboard! ── */}
+        {step === 9 && (
           <div className="flex flex-1 flex-col items-center justify-center text-center">
             {/* Celebration */}
             <div className="mb-6 text-5xl">&#127881;</div>
