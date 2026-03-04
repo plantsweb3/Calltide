@@ -29,12 +29,11 @@ export async function POST(req: NextRequest) {
   const rl = await rateLimit(`outbound-call:${ip}`, RATE_LIMITS.write);
   if (!rl.success) return rateLimitResponse(rl);
 
-  // Auth: require cron secret or admin cookie
+  // Auth: require cron secret or valid session (middleware verifies cookie signatures)
   const cronSecret = req.headers.get("x-cron-secret") || req.headers.get("authorization")?.replace("Bearer ", "");
-  const hasAdminCookie = req.cookies.has("calltide_admin");
-  const hasClientCookie = req.cookies.has("calltide_client");
+  const businessId = req.headers.get("x-business-id");
 
-  if (cronSecret !== process.env.CRON_SECRET && !hasAdminCookie && !hasClientCookie) {
+  if (cronSecret !== process.env.CRON_SECRET && !businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

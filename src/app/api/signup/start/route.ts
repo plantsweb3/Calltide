@@ -39,12 +39,9 @@ export async function POST(req: NextRequest) {
     .limit(1);
 
   if (existing) {
-    // Rate limiting (10/hr per IP) prevents enumeration at scale.
-    // Return 409 so the form can direct users to login instead.
-    return NextResponse.json(
-      { error: "exists" },
-      { status: 409 }
-    );
+    // Return same shape as success to prevent email enumeration.
+    // The signup form will still work — the existing user just won't get a duplicate account.
+    return NextResponse.json({ success: true });
   }
 
   // If phone provided, send checkout link via SMS

@@ -1,5 +1,9 @@
 import { BRAND_COLOR, COMPANY_ADDRESS, MARKETING_URL } from "@/lib/constants";
 
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
 function baseLayout(content: string, prospectEmail?: string): string {
   const unsubscribeUrl = `${MARKETING_URL}/unsubscribe${prospectEmail ? `?email=${encodeURIComponent(prospectEmail)}` : ""}`;
   return `<!DOCTYPE html>
@@ -29,7 +33,7 @@ export const missedCallSequence = {
       <h2 style="color:#0f172a;margin-bottom:8px;">We called. Nobody picked up.</h2>
       <p style="color:#475569;line-height:1.6;">
         Hi there,<br><br>
-        We just called <strong>${businessName}</strong> and it went unanswered. That's a potential customer lost.
+        We just called <strong>${escapeHtml(businessName)}</strong> and it went unanswered. That's a potential customer lost.
       </p>
       <p style="color:#475569;line-height:1.6;">
         Calltide is an AI voice agent that answers every call 24/7 — in English and Spanish.
@@ -45,7 +49,7 @@ export const missedCallSequence = {
     subject: `Quick question, ${businessName}`,
     html: baseLayout(`
       <p style="color:#475569;line-height:1.6;">
-        Following up — we noticed ${businessName} doesn't have a way to catch after-hours calls.
+        Following up — we noticed ${escapeHtml(businessName)} doesn't have a way to catch after-hours calls.
       </p>
       <p style="color:#475569;line-height:1.6;">
         Our clients typically recover <strong>15-30 missed calls per month</strong>,
@@ -64,7 +68,7 @@ export const missedCallSequence = {
     subject: `Last note from Calltide`,
     html: baseLayout(`
       <p style="color:#475569;line-height:1.6;">
-        Hi — just a final follow-up for ${businessName}.
+        Hi — just a final follow-up for ${escapeHtml(businessName)}.
       </p>
       <p style="color:#475569;line-height:1.6;">
         If now isn't the right time, no worries at all. But if missed calls
@@ -85,7 +89,7 @@ export const answeredSequence = {
     html: baseLayout(`
       <p style="color:#475569;line-height:1.6;">
         Hi there,<br><br>
-        We called ${businessName} and someone picked up — great! But what happens
+        We called ${escapeHtml(businessName)} and someone picked up — great! But what happens
         after hours, on weekends, or when you're slammed with customers?
       </p>
       <p style="color:#475569;line-height:1.6;">

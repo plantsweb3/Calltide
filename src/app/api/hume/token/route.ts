@@ -7,10 +7,10 @@ export async function GET(req: NextRequest) {
   const rl = await rateLimit(`hume-token:${ip}`, RATE_LIMITS.auth);
   if (!rl.success) return rateLimitResponse(rl);
 
-  // Require either a dashboard session or admin session
-  const hasClientCookie = req.cookies.has("calltide_client");
+  // Require a valid dashboard or admin session (middleware now verifies signatures)
+  const businessId = req.headers.get("x-business-id");
   const hasAdminCookie = req.cookies.has("calltide_admin");
-  if (!hasClientCookie && !hasAdminCookie) {
+  if (!businessId && !hasAdminCookie) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

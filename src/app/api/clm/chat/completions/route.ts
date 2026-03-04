@@ -273,9 +273,8 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     reportError("CLM endpoint error", error);
-    const message = error instanceof Error ? error.message : "Internal server error";
     return Response.json(
-      { error: message },
+      { error: "Internal server error" },
       { status: 500, headers: getCorsHeaders(req) }
     );
   }

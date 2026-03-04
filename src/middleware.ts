@@ -83,6 +83,21 @@ async function requireAdminAuth(req: NextRequest, isApi: boolean): Promise<NextR
       : NextResponse.redirect(new URL("/admin/login", req.url));
   }
 
+  // Check admin token expiration (if present — backwards compatible with old tokens)
+  try {
+    const lastDot = cookie.lastIndexOf(".");
+    if (lastDot !== -1) {
+      const data = JSON.parse(atob(cookie.slice(0, lastDot)));
+      if (data.exp && data.exp < Date.now()) {
+        return isApi
+          ? NextResponse.json({ error: "Session expired" }, { status: 401 })
+          : NextResponse.redirect(new URL("/admin/login", req.url));
+      }
+    }
+  } catch {
+    // Non-fatal: if payload parsing fails, token is still HMAC-verified
+  }
+
   return null;
 }
 
@@ -154,6 +169,92 @@ export async function middleware(req: NextRequest) {
     const error = await requireAdminAuth(req, true);
     if (error) return error;
     return NextResponse.next();
+  }
+
+  // ── Outbound call route (cron secret OR valid session) ──
+  if (pathname === "/api/outbound/call") {
+    // Allow cron secret through
+    const cronSecret = req.headers.get("x-cron-secret") || req.headers.get("authorization")?.replace("Bearer ", "");
+    if (cronSecret === process.env.CRON_SECRET) return NextResponse.next();
+    // Otherwise require valid admin or client session
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminCookie = req.cookies.get(ADMIN_COOKIE)?.value;
+    if (adminCookie && adminPassword && await verifyToken(adminCookie, adminPassword)) {
+      return NextResponse.next();
+    }
+    const secret = process.env.CLIENT_AUTH_SECRET;
+    if (!secret) return NextResponse.json({ error: "Auth not configured" }, { status: 500 });
+    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
+    if (!cookie) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const valid = await verifyToken(cookie, secret);
+    if (!valid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const clientPayload = parseClientPayload(cookie);
+    if (!clientPayload) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const headers = new Headers(req.headers);
+    headers.set("x-business-id", clientPayload.businessId);
+    return NextResponse.next({ request: { headers } });
+  }
+
+  // ── Compliance SMS opt-out webhook (needs Twilio signature verification in route) ──
+  if (pathname === "/api/compliance/sms-optout") {
+    // Rate limit to prevent abuse
+    if (!rateLimit(getIp(req), "sms-optout", 50)) {
+      return new Response("Too many requests", { status: 429 });
+    }
+    return NextResponse.next();
+  }
+
+  // ── Receptionist API routes (client-facing, need dashboard auth) ──
+  if (pathname.startsWith("/api/receptionist")) {
+    const secret = process.env.CLIENT_AUTH_SECRET;
+    if (!secret) return NextResponse.json({ error: "Auth not configured" }, { status: 500 });
+    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
+    if (!cookie) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const valid = await verifyToken(cookie, secret);
+    if (!valid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const clientPayload = parseClientPayload(cookie);
+    if (!clientPayload) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const headers = new Headers(req.headers);
+    headers.set("x-business-id", clientPayload.businessId);
+    if (clientPayload.accountId) headers.set("x-account-id", clientPayload.accountId);
+    return NextResponse.next({ request: { headers } });
+  }
+
+  // ── Hume token route (requires valid session — client or admin) ──
+  if (pathname === "/api/hume/token") {
+    // Accept either admin or client cookie
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminCookie = req.cookies.get(ADMIN_COOKIE)?.value;
+    if (adminCookie && adminPassword && await verifyToken(adminCookie, adminPassword)) {
+      return NextResponse.next();
+    }
+    const secret = process.env.CLIENT_AUTH_SECRET;
+    if (!secret) return NextResponse.json({ error: "Auth not configured" }, { status: 500 });
+    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
+    if (!cookie) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const valid = await verifyToken(cookie, secret);
+    if (!valid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const clientPayload = parseClientPayload(cookie);
+    if (!clientPayload) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const headers = new Headers(req.headers);
+    headers.set("x-business-id", clientPayload.businessId);
+    return NextResponse.next({ request: { headers } });
+  }
+
+  // ── Stripe portal route (client-facing, needs dashboard auth) ──
+  if (pathname === "/api/stripe/portal") {
+    const secret = process.env.CLIENT_AUTH_SECRET;
+    if (!secret) return NextResponse.json({ error: "Auth not configured" }, { status: 500 });
+    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
+    if (!cookie) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const valid = await verifyToken(cookie, secret);
+    if (!valid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const clientPayload = parseClientPayload(cookie);
+    if (!clientPayload) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const headers = new Headers(req.headers);
+    headers.set("x-business-id", clientPayload.businessId);
+    if (clientPayload.accountId) headers.set("x-account-id", clientPayload.accountId);
+    return NextResponse.next({ request: { headers } });
   }
 
   // ── Dashboard API routes ──
@@ -249,5 +350,10 @@ export const config = {
     "/api/content-queue/:path*",
     "/api/notifications",
     "/api/notifications/:path*",
+    "/api/receptionist/:path*",
+    "/api/stripe/portal",
+    "/api/hume/token",
+    "/api/outbound/call",
+    "/api/compliance/sms-optout",
   ],
 };

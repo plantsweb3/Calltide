@@ -31,6 +31,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
   }
 
+  // Limit file size to 5MB to prevent memory exhaustion
+  if (file.size > 5 * 1024 * 1024) {
+    return NextResponse.json({ error: "File too large. Maximum 5MB." }, { status: 400 });
+  }
+
   const text = await file.text();
   const lines = text.split("\n").filter((l) => l.trim());
   if (lines.length < 2) {

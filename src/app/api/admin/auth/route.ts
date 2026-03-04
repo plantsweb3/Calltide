@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 
-  const payload = JSON.stringify({ role: "admin", iat: Date.now() });
+  const payload = JSON.stringify({ role: "admin", iat: Date.now(), exp: Date.now() + COOKIE_MAX_AGE * 1000 });
   const token = await signToken(payload);
 
   const res = NextResponse.json({ success: true });

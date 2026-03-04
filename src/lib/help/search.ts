@@ -23,7 +23,8 @@ export async function searchArticles(query: string, options?: SearchOptions) {
 
   // Build LIKE conditions across all searchable fields
   const conditions = searchTerms.flatMap((term) => {
-    const pat = `%${term}%`;
+    const escaped = term.replace(/[%_]/g, "\\$&");
+    const pat = `%${escaped}%`;
     return [
       like(helpArticles.title, pat),
       like(helpArticles.titleEs, pat),
