@@ -83,11 +83,11 @@ export default function AdminDashboardPage() {
   const fetchAll = useCallback(() => {
     setError(null);
     fetch("/api/admin/dashboard")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => setError("Failed to load dashboard data"));
     fetch("/api/admin/metrics?days=30")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setMetrics)
       .catch(() => setError("Failed to load metrics"));
     fetch("/api/admin/billing")
@@ -95,19 +95,19 @@ export default function AdminDashboardPage() {
       .then((d) => { if (d.current) setBilling(d); })
       .catch(() => setError("Failed to load billing data"));
     fetch("/api/admin/ops")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setOps)
       .catch(() => setError("Failed to load ops data"));
     fetch("/api/notifications?unacknowledged=true&limit=10")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setAlerts(d.items ?? []))
       .catch(() => setError("Failed to load notifications"));
     fetch("/api/admin/crm-stats")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setCrmStats)
       .catch(() => setError("Failed to load CRM stats"));
     fetch("/api/admin/agents/config")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((configs: Array<{ agentName: string; enabled: boolean }>) => {
         const qualify = configs.find((c) => c.agentName === "qualify");
         setOutreachPaused(qualify ? !qualify.enabled : false);

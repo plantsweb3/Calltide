@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { appointments, calls, leads } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { checkAvailability, bookSlot } from "@/lib/calendar/availability";
 import { getBusinessById } from "@/lib/ai/context-builder";
 import { sendSMS } from "@/lib/twilio/sms";
@@ -132,6 +132,24 @@ async function handleBookAppointment(
   // Update lead name if provided
   if (callerName && ctx.leadId) {
     await db.update(leads).set({ name: callerName }).where(eq(leads.id, ctx.leadId));
+  }
+
+  // Double-check for conflicts right before insert to minimize race window
+  const existing = await db
+    .select({ id: appointments.id })
+    .from(appointments)
+    .where(
+      and(
+        eq(appointments.businessId, ctx.businessId),
+        eq(appointments.date, date),
+        eq(appointments.time, time),
+        eq(appointments.status, "confirmed")
+      )
+    )
+    .limit(1);
+
+  if (existing.length > 0) {
+    return { success: false, error: "That time slot was just booked. Please choose another time." };
   }
 
   // Create appointment record

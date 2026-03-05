@@ -63,25 +63,51 @@ const IMPORT_TYPES: {
 ];
 
 function parseCsvPreview(text: string): PreviewData {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim());
+  // Quote-aware line splitting (matches backend splitCsvLines)
+  const lines: string[] = [];
+  let current = "";
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (char === '"') {
+      current += char;
+      if (inQuotes && text[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if ((char === "\n" || (char === "\r" && text[i + 1] === "\n")) && !inQuotes) {
+      if (current.trim()) lines.push(current);
+      current = "";
+      if (char === "\r") i++;
+    } else {
+      current += char;
+    }
+  }
+  if (current.trim()) lines.push(current);
+
   if (lines.length === 0) return { headers: [], rows: [], totalRows: 0 };
 
-  // Simple parse for preview (doesn't need full quote handling)
+  // Parse a CSV row handling quoted fields and escaped quotes (matches backend parseCsvLine)
   const parseRow = (line: string) => {
     const result: string[] = [];
-    let current = "";
-    let inQuotes = false;
-    for (const char of line) {
-      if (char === '"') { inQuotes = !inQuotes; }
-      else if (char === "," && !inQuotes) { result.push(current.trim()); current = ""; }
-      else { current += char; }
+    let field = "";
+    let q = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (q && line[i + 1] === '"') { field += '"'; i++; }
+        else { q = !q; }
+      } else if (ch === "," && !q) { result.push(field.trim()); field = ""; }
+      else { field += ch; }
     }
-    result.push(current.trim());
+    result.push(field.trim());
     return result;
   };
 
   const headers = parseRow(lines[0]);
-  const rows = lines.slice(1, 11).map(parseRow); // First 10 rows
+  const rows = lines.slice(1, 11).map(parseRow);
   return { headers, rows, totalRows: lines.length - 1 };
 }
 

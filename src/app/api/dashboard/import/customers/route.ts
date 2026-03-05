@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
       }
 
       const normalizedPhone = normalizePhone(data.phone!);
-      if (!normalizedPhone || normalizedPhone.length < 10) {
+      if (!normalizedPhone || normalizedPhone.length < 10 || normalizedPhone.length > 15) {
         result.errors.push({ row: rowNum, reason: "Invalid phone number" });
         continue;
       }

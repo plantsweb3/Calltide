@@ -66,14 +66,25 @@ const VALID_STATUSES = new Set(["confirmed", "cancelled", "completed", "no_show"
 /**
  * Parse date strings in common formats to ISO date (YYYY-MM-DD).
  */
+function isValidDate(year: number, month: number, day: number): boolean {
+  const d = new Date(year, month - 1, day);
+  return d.getFullYear() === year && d.getMonth() === month - 1 && d.getDate() === day;
+}
+
 function parseDate(val: string): string | null {
   // YYYY-MM-DD
-  if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
+  const isoMatch = val.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoMatch) {
+    const [, y, m, d] = isoMatch;
+    if (!isValidDate(parseInt(y), parseInt(m), parseInt(d))) return null;
+    return val;
+  }
 
   // MM/DD/YYYY
   const mdyFull = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   if (mdyFull) {
     const [, m, d, y] = mdyFull;
+    if (!isValidDate(parseInt(y), parseInt(m), parseInt(d))) return null;
     return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
   }
 
@@ -81,7 +92,8 @@ function parseDate(val: string): string | null {
   const mdyShort = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2})$/);
   if (mdyShort) {
     const [, m, d, y] = mdyShort;
-    const fullYear = parseInt(y) > 50 ? `19${y}` : `20${y}`;
+    const fullYear = parseInt(y) > 50 ? 1900 + parseInt(y) : 2000 + parseInt(y);
+    if (!isValidDate(fullYear, parseInt(m), parseInt(d))) return null;
     return `${fullYear}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
   }
 
@@ -93,19 +105,24 @@ function parseDate(val: string): string | null {
  */
 function parseTime(val: string): string | null {
   // Already 24h: 14:00
-  if (/^\d{1,2}:\d{2}$/.test(val)) {
-    const [h, m] = val.split(":");
-    return `${h.padStart(2, "0")}:${m}`;
+  const match24 = val.match(/^(\d{1,2}):(\d{2})$/);
+  if (match24) {
+    const hour = parseInt(match24[1]);
+    const min = parseInt(match24[2]);
+    if (hour > 23 || min > 59) return null;
+    return `${String(hour).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
   }
 
   // 12h: 2:00 PM
   const match12 = val.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
   if (match12) {
-    let [, h, m, period] = match12;
+    const [, h, m, period] = match12;
     let hour = parseInt(h);
+    const min = parseInt(m);
+    if (hour < 1 || hour > 12 || min > 59) return null;
     if (period.toLowerCase() === "pm" && hour !== 12) hour += 12;
     if (period.toLowerCase() === "am" && hour === 12) hour = 0;
-    return `${String(hour).padStart(2, "0")}:${m}`;
+    return `${String(hour).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
   }
 
   return null;
@@ -215,7 +232,8 @@ export async function POST(req: NextRequest) {
         ? data.status.toLowerCase()
         : "confirmed";
 
-      const duration = data.duration ? parseInt(data.duration, 10) : 60;
+      const rawDuration = data.duration ? parseInt(data.duration, 10) : 60;
+      const duration = isNaN(rawDuration) || rawDuration < 5 || rawDuration > 1440 ? 60 : rawDuration;
 
       try {
         await db.insert(appointments).values({
@@ -224,7 +242,7 @@ export async function POST(req: NextRequest) {
           service: data.service!,
           date: parsedDate,
           time: parsedTime,
-          duration: isNaN(duration) ? 60 : duration,
+          duration,
           status,
           notes: data.notes || null,
         });

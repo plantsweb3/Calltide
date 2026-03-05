@@ -21,55 +21,54 @@ const createClientSchema = z.object({
 });
 
 export async function GET() {
-  const businessRows = await db.select().from(businesses);
-  const accountRows = await db.select().from(accounts);
+  const [businessRows, accountRows, callStatsRows, aptStatsRows] = await Promise.all([
+    db.select().from(businesses),
+    db.select().from(accounts),
+    db.select({
+      businessId: calls.businessId,
+      totalCalls: sql<number>`count(*)`,
+      completedCalls: sql<number>`sum(case when ${calls.status} = 'completed' then 1 else 0 end)`,
+      missedCalls: sql<number>`sum(case when ${calls.status} = 'missed' then 1 else 0 end)`,
+    }).from(calls).groupBy(calls.businessId),
+    db.select({
+      businessId: appointments.businessId,
+      totalAppointments: sql<number>`count(*)`,
+      confirmed: sql<number>`sum(case when ${appointments.status} = 'confirmed' then 1 else 0 end)`,
+      completed: sql<number>`sum(case when ${appointments.status} = 'completed' then 1 else 0 end)`,
+    }).from(appointments).groupBy(appointments.businessId),
+  ]);
 
   const accountMap = new Map(accountRows.map((a) => [a.id, a]));
+  const callStatsMap = new Map(callStatsRows.map((c) => [c.businessId, c]));
+  const aptStatsMap = new Map(aptStatsRows.map((a) => [a.businessId, a]));
 
-  const results = await Promise.all(
-    businessRows.map(async (biz) => {
-      const [callStats] = await db
-        .select({
-          totalCalls: sql<number>`count(*)`,
-          completedCalls: sql<number>`sum(case when ${calls.status} = 'completed' then 1 else 0 end)`,
-          missedCalls: sql<number>`sum(case when ${calls.status} = 'missed' then 1 else 0 end)`,
-        })
-        .from(calls)
-        .where(eq(calls.businessId, biz.id));
+  const results = businessRows.map((biz) => {
+    const callStats = callStatsMap.get(biz.id);
+    const aptStats = aptStatsMap.get(biz.id);
 
-      const [aptStats] = await db
-        .select({
-          totalAppointments: sql<number>`count(*)`,
-          confirmed: sql<number>`sum(case when ${appointments.status} = 'confirmed' then 1 else 0 end)`,
-          completed: sql<number>`sum(case when ${appointments.status} = 'completed' then 1 else 0 end)`,
-        })
-        .from(appointments)
-        .where(eq(appointments.businessId, biz.id));
+    const total = callStats?.totalCalls ?? 0;
+    const completed = callStats?.completedCalls ?? 0;
+    const rate = total > 0 ? completed / total : 1;
+    const health = rate > 0.5 ? "green" : rate > 0.25 ? "amber" : "red";
 
-      const total = callStats?.totalCalls ?? 0;
-      const completed = callStats?.completedCalls ?? 0;
-      const rate = total > 0 ? completed / total : 1;
-      const health = rate > 0.5 ? "green" : rate > 0.25 ? "amber" : "red";
-
-      return {
-        id: biz.id,
-        name: biz.name,
-        type: biz.type,
-        ownerName: biz.ownerName,
-        ownerPhone: biz.ownerPhone,
-        active: biz.active,
-        planType: biz.planType ?? "monthly",
-        mrr: biz.mrr ?? 49700,
-        createdAt: biz.createdAt,
-        accountId: biz.accountId,
-        locationName: biz.locationName,
-        isPrimaryLocation: biz.isPrimaryLocation,
-        calls: callStats ?? { totalCalls: 0, completedCalls: 0, missedCalls: 0 },
-        appointments: aptStats ?? { totalAppointments: 0, confirmed: 0, completed: 0 },
-        health,
-      };
-    }),
-  );
+    return {
+      id: biz.id,
+      name: biz.name,
+      type: biz.type,
+      ownerName: biz.ownerName,
+      ownerPhone: biz.ownerPhone,
+      active: biz.active,
+      planType: biz.planType ?? "monthly",
+      mrr: biz.mrr ?? 49700,
+      createdAt: biz.createdAt,
+      accountId: biz.accountId,
+      locationName: biz.locationName,
+      isPrimaryLocation: biz.isPrimaryLocation,
+      calls: callStats ?? { totalCalls: 0, completedCalls: 0, missedCalls: 0 },
+      appointments: aptStats ?? { totalAppointments: 0, confirmed: 0, completed: 0 },
+      health,
+    };
+  });
 
   // Group by accountId
   const accountGroups: Record<string, {

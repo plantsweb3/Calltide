@@ -51,10 +51,40 @@ export function parseCsvLine(line: string): string[] {
 }
 
 /**
+ * Split CSV text into logical lines, respecting quoted fields that may contain newlines.
+ */
+function splitCsvLines(text: string): string[] {
+  const lines: string[] = [];
+  let current = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (char === '"') {
+      current += char;
+      if (inQuotes && text[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if ((char === "\n" || (char === "\r" && text[i + 1] === "\n")) && !inQuotes) {
+      if (current.trim()) lines.push(current);
+      current = "";
+      if (char === "\r") i++;
+    } else {
+      current += char;
+    }
+  }
+  if (current.trim()) lines.push(current);
+  return lines;
+}
+
+/**
  * Parse full CSV text into headers and rows.
  */
 export function parseCsv(text: string): ParsedCsv {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim());
+  const lines = splitCsvLines(text);
   if (lines.length === 0) {
     return { headers: [], rows: [] };
   }
@@ -106,15 +136,3 @@ export function mapColumns<T>(
 
 /** Max file size for imports: 5MB */
 export const MAX_IMPORT_FILE_SIZE = 5 * 1024 * 1024;
-
-/** Validate an uploaded CSV file. Returns the text content or an error message. */
-export function validateCsvFile(file: File | null): { text?: never; error: string } | { text: string; error?: never } {
-  if (!file) {
-    return { error: "No file uploaded" };
-  }
-  if (file.size > MAX_IMPORT_FILE_SIZE) {
-    return { error: "File too large. Maximum 5MB." };
-  }
-  // We can't check text synchronously, so return a marker to proceed
-  return { text: "" }; // caller uses file.text() separately
-}

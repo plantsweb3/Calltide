@@ -1,8 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { helpArticles, helpCategories } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+
+const createArticleSchema = z.object({
+  categoryId: z.string().min(1),
+  slug: z.string().min(1).max(200),
+  title: z.string().min(1).max(300),
+  titleEs: z.string().max(300).nullish(),
+  excerpt: z.string().max(500).nullish(),
+  excerptEs: z.string().max(500).nullish(),
+  content: z.string().min(1),
+  contentEs: z.string().nullish(),
+  metaTitle: z.string().max(200).nullish(),
+  metaTitleEs: z.string().max(200).nullish(),
+  metaDescription: z.string().max(500).nullish(),
+  metaDescriptionEs: z.string().max(500).nullish(),
+  searchKeywords: z.string().max(500).nullish(),
+  searchKeywordsEs: z.string().max(500).nullish(),
+  relatedArticles: z.array(z.string()).nullish(),
+  dashboardContextRoutes: z.array(z.string()).nullish(),
+  status: z.enum(["draft", "published"]).default("draft"),
+  sortOrder: z.number().int().min(0).default(0),
+});
 
 /**
  * GET /api/admin/help/articles
@@ -60,20 +82,22 @@ export async function GET() {
  */
 export async function POST(req: NextRequest) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let body: any;
+    let raw: unknown;
     try {
-      body = await req.json();
+      raw = await req.json();
     } catch {
       return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
     }
 
-    if (!body.categoryId || !body.slug || !body.title || !body.content) {
+    const parsed = createArticleSchema.safeParse(raw);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "categoryId, slug, title, and content are required" },
+        { error: parsed.error.issues.map((i) => i.message).join(", ") },
         { status: 400 },
       );
     }
+
+    const body = parsed.data;
 
     // Verify category exists
     const [category] = await db
@@ -109,8 +133,8 @@ export async function POST(req: NextRequest) {
         searchKeywordsEs: body.searchKeywordsEs ?? null,
         relatedArticles: body.relatedArticles ?? null,
         dashboardContextRoutes: body.dashboardContextRoutes ?? null,
-        status: body.status ?? "draft",
-        sortOrder: body.sortOrder ?? 0,
+        status: body.status,
+        sortOrder: body.sortOrder,
         readingTimeMinutes,
         publishedAt: body.status === "published" ? new Date().toISOString() : null,
       })

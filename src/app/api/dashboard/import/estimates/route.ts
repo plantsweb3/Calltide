@@ -57,7 +57,8 @@ const VALID_STATUSES = new Set(["new", "sent", "follow_up", "won", "lost", "expi
 function parseAmount(val: string): number | null {
   const cleaned = val.replace(/[$,\s]/g, "");
   const num = parseFloat(cleaned);
-  return isNaN(num) || num < 0 ? null : num;
+  if (isNaN(num) || num < 0 || num > 10_000_000) return null;
+  return Math.round(num * 100) / 100; // round to cents
 }
 
 export async function POST(req: NextRequest) {

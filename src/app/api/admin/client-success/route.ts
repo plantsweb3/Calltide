@@ -86,117 +86,104 @@ export async function GET() {
     .where(eq(businesses.active, true))
     .orderBy(desc(businesses.createdAt));
 
-  const clients = await Promise.all(
-    activeBusinesses.map(async (biz) => {
-      // Call volume: last 7 days
-      const [last7] = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(calls)
-        .where(
-          and(
-            eq(calls.businessId, biz.id),
-            gte(calls.createdAt, sevenDaysAgo)
-          )
-        );
+  // Batch: call volume last 7 days per business
+  const last7Rows = await db
+    .select({ businessId: calls.businessId, count: sql<number>`count(*)` })
+    .from(calls)
+    .where(gte(calls.createdAt, sevenDaysAgo))
+    .groupBy(calls.businessId);
+  const last7Map = new Map(last7Rows.map((r) => [r.businessId, r.count]));
 
-      // Call volume: prior 7 days (8-14 days ago)
-      const [prior7] = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(calls)
-        .where(
-          and(
-            eq(calls.businessId, biz.id),
-            gte(calls.createdAt, fourteenDaysAgo),
-            sql`${calls.createdAt} < ${sevenDaysAgo}`
-          )
-        );
+  // Batch: call volume prior 7 days (8-14 days ago) per business
+  const prior7Rows = await db
+    .select({ businessId: calls.businessId, count: sql<number>`count(*)` })
+    .from(calls)
+    .where(and(gte(calls.createdAt, fourteenDaysAgo), sql`${calls.createdAt} < ${sevenDaysAgo}`))
+    .groupBy(calls.businessId);
+  const prior7Map = new Map(prior7Rows.map((r) => [r.businessId, r.count]));
 
-      const recentCalls = last7?.count ?? 0;
-      const priorCalls = prior7?.count ?? 0;
+  // Batch: avg QA score for first week per business
+  const avgQaRows = await db
+    .select({ businessId: callQaScores.businessId, avg: sql<number>`avg(${callQaScores.score})` })
+    .from(callQaScores)
+    .where(eq(callQaScores.isFirstWeek, true))
+    .groupBy(callQaScores.businessId);
+  const avgQaMap = new Map(avgQaRows.map((r) => [r.businessId, r.avg]));
 
-      let callVolumeTrend = "\u2014"; // em dash
-      if (priorCalls > 0) {
-        const pctChange = Math.round(
-          ((recentCalls - priorCalls) / priorCalls) * 100
-        );
-        if (pctChange > 0) callVolumeTrend = `\u2191${pctChange}%`;
-        else if (pctChange < 0)
-          callVolumeTrend = `\u2193${Math.abs(pctChange)}%`;
-      } else if (recentCalls > 0) {
-        callVolumeTrend = `\u2191100%`;
-      }
+  // Batch: QA flags (score < 70) per business
+  const qaFlagRows = await db
+    .select({ businessId: callQaScores.businessId, count: sql<number>`count(*)` })
+    .from(callQaScores)
+    .where(sql`${callQaScores.score} < 70`)
+    .groupBy(callQaScores.businessId);
+  const qaFlagMap = new Map(qaFlagRows.map((r) => [r.businessId, r.count]));
 
-      const createdDate = new Date(biz.createdAt);
-      const daysIn = Math.floor(
-        (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24)
-      );
-      const isNewClient = createdDate.toISOString() >= thirtyDaysAgo.replace(" ", "T");
-
-      // New client metrics
-      let callCount: number | undefined;
-      let avgQaScore: number | undefined;
-      let qaFlags: number | undefined;
-
-      if (isNewClient) {
-        callCount = recentCalls;
-
-        const [avgQaResult] = await db
-          .select({ avg: sql<number>`avg(${callQaScores.score})` })
-          .from(callQaScores)
-          .where(
-            and(
-              eq(callQaScores.businessId, biz.id),
-              eq(callQaScores.isFirstWeek, true)
-            )
-          );
-        avgQaScore =
-          avgQaResult?.avg != null ? Math.round(avgQaResult.avg) : undefined;
-
-        const [qaFlagResult] = await db
-          .select({ count: sql<number>`count(*)` })
-          .from(callQaScores)
-          .where(
-            and(
-              eq(callQaScores.businessId, biz.id),
-              sql`${callQaScores.score} < 70`
-            )
-          );
-        qaFlags = qaFlagResult?.count ?? 0;
-      }
-
-      // Recent QA scores
-      const qaScores = await db
-        .select({
-          callId: callQaScores.callId,
-          score: callQaScores.score,
-          flags: callQaScores.flags,
-          fixRecommendation: callQaScores.fixRecommendation,
-          summary: callQaScores.summary,
-          createdAt: callQaScores.createdAt,
-        })
-        .from(callQaScores)
-        .where(eq(callQaScores.businessId, biz.id))
-        .orderBy(desc(callQaScores.createdAt))
-        .limit(20);
-
-      return {
-        id: biz.id,
-        name: biz.name,
-        healthScore: biz.healthScore,
-        lastNpsScore: biz.lastNpsScore,
-        qaGrade: biz.onboardingQaGrade,
-        callVolumeTrend,
-        active: biz.active,
-        createdAt: biz.createdAt,
-        isNewClient,
-        ...(isNewClient
-          ? { callCount, avgQaScore, qaFlags }
-          : {}),
-        daysIn,
-        qaScores,
-      };
+  // Batch: recent QA scores per business (all, then group in-memory)
+  const allQaScores = await db
+    .select({
+      businessId: callQaScores.businessId,
+      callId: callQaScores.callId,
+      score: callQaScores.score,
+      flags: callQaScores.flags,
+      fixRecommendation: callQaScores.fixRecommendation,
+      summary: callQaScores.summary,
+      createdAt: callQaScores.createdAt,
     })
-  );
+    .from(callQaScores)
+    .orderBy(desc(callQaScores.createdAt));
+
+  const qaScoresMap = new Map<string, typeof allQaScores>();
+  for (const qa of allQaScores) {
+    const list = qaScoresMap.get(qa.businessId) ?? [];
+    if (list.length < 20) list.push(qa);
+    qaScoresMap.set(qa.businessId, list);
+  }
+
+  const clients = activeBusinesses.map((biz) => {
+    const recentCalls = last7Map.get(biz.id) ?? 0;
+    const priorCalls = prior7Map.get(biz.id) ?? 0;
+
+    let callVolumeTrend = "\u2014";
+    if (priorCalls > 0) {
+      const pctChange = Math.round(((recentCalls - priorCalls) / priorCalls) * 100);
+      if (pctChange > 0) callVolumeTrend = `\u2191${pctChange}%`;
+      else if (pctChange < 0) callVolumeTrend = `\u2193${Math.abs(pctChange)}%`;
+    } else if (recentCalls > 0) {
+      callVolumeTrend = `\u2191100%`;
+    }
+
+    const createdDate = new Date(biz.createdAt);
+    const daysIn = Math.floor((now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+    const isNewClient = createdDate.toISOString() >= thirtyDaysAgo.replace(" ", "T");
+
+    let callCount: number | undefined;
+    let avgQaScore: number | undefined;
+    let qaFlags: number | undefined;
+
+    if (isNewClient) {
+      callCount = recentCalls;
+      const rawAvg = avgQaMap.get(biz.id);
+      avgQaScore = rawAvg != null ? Math.round(rawAvg) : undefined;
+      qaFlags = qaFlagMap.get(biz.id) ?? 0;
+    }
+
+    const qaScores = qaScoresMap.get(biz.id) ?? [];
+
+    return {
+      id: biz.id,
+      name: biz.name,
+      healthScore: biz.healthScore,
+      lastNpsScore: biz.lastNpsScore,
+      qaGrade: biz.onboardingQaGrade,
+      callVolumeTrend,
+      active: biz.active,
+      createdAt: biz.createdAt,
+      isNewClient,
+      ...(isNewClient ? { callCount, avgQaScore, qaFlags } : {}),
+      daysIn,
+      qaScores,
+    };
+  });
 
   // ── NPS Responses ──
 

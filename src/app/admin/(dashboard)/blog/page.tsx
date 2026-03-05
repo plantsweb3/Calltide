@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import MetricCard from "../../_components/metric-card";
 import DataTable, { type Column } from "../../_components/data-table";
 import StatusBadge from "../../_components/status-badge";
+import { sanitizeHtml } from "@/lib/sanitize-html";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -204,6 +205,15 @@ function PostEditorModal({
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  // Warn about unsaved changes when navigating away
+  useEffect(() => {
+    const hasChanges = title !== (post?.title ?? "") || body !== (post?.body ?? "") || slug !== (post?.slug ?? "");
+    if (!hasChanges) return;
+    const handler = (e: BeforeUnloadEvent) => { e.preventDefault(); };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [title, body, slug, post]);
   const [showPreview, setShowPreview] = useState(false);
   // Detect if existing content is HTML; new posts default to markdown
   const [useMarkdown, setUseMarkdown] = useState(isNew || !isHtmlContent(post?.body ?? ""));
@@ -514,7 +524,7 @@ function PostEditorModal({
                     lineHeight: "1.7",
                     color: "var(--db-text-secondary)",
                   }}
-                  dangerouslySetInnerHTML={{ __html: useMarkdown ? markdownToHtml(body) : body }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(useMarkdown ? markdownToHtml(body) : body) }}
                 />
               )}
             </div>

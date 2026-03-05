@@ -73,8 +73,10 @@ export async function PATCH(
     if (body.content !== undefined) {
       updates.content = body.content;
       // Recalculate reading time when content changes
-      const wordCount = body.content.trim().split(/\s+/).length;
-      updates.readingTimeMinutes = Math.max(1, Math.ceil(wordCount / 200));
+      if (typeof body.content === "string" && body.content.trim()) {
+        const wordCount = body.content.trim().split(/\s+/).length;
+        updates.readingTimeMinutes = Math.max(1, Math.ceil(wordCount / 200));
+      }
     }
     if (body.contentEs !== undefined) updates.contentEs = body.contentEs;
     if (body.metaTitle !== undefined) updates.metaTitle = body.metaTitle;

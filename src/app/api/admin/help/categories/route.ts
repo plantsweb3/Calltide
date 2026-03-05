@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { helpCategories, helpArticles } from "@/db/schema";
 import { sql, asc, eq } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+
+const createCategorySchema = z.object({
+  slug: z.string().min(1).max(100),
+  name: z.string().min(1).max(200),
+  nameEs: z.string().max(200).nullish(),
+  description: z.string().max(500).nullish(),
+  descriptionEs: z.string().max(500).nullish(),
+  icon: z.string().max(50).nullish(),
+  sortOrder: z.number().int().min(0).default(0),
+});
 
 /**
  * GET /api/admin/help/categories
@@ -40,20 +51,22 @@ export async function GET() {
  */
 export async function POST(req: NextRequest) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let body: any;
+    let raw: unknown;
     try {
-      body = await req.json();
+      raw = await req.json();
     } catch {
       return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
     }
 
-    if (!body.slug || !body.name) {
+    const parsed = createCategorySchema.safeParse(raw);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "slug and name are required" },
+        { error: parsed.error.issues.map((i) => i.message).join(", ") },
         { status: 400 },
       );
     }
+
+    const body = parsed.data;
 
     // Check for duplicate slug
     const [existing] = await db
@@ -75,7 +88,7 @@ export async function POST(req: NextRequest) {
         description: body.description ?? null,
         descriptionEs: body.descriptionEs ?? null,
         icon: body.icon ?? null,
-        sortOrder: body.sortOrder ?? 0,
+        sortOrder: body.sortOrder,
       })
       .returning();
 
