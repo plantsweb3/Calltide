@@ -52,7 +52,7 @@ export default function HelpWidget() {
 
     setLoadError(false);
     fetch(`/api/help/articles?slugs=${slugs.join(",")}`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setArticles(d.articles || []))
       .catch(() => { setArticles([]); setLoadError(true); });
   }, [open, pathname]);
@@ -65,7 +65,7 @@ export default function HelpWidget() {
     }
     setSearching(true);
     fetch(`/api/help/search?q=${encodeURIComponent(value)}&limit=6`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => {
         // Search only returns partial data; fetch full content for selected
         setSearchResults(
@@ -102,7 +102,7 @@ export default function HelpWidget() {
     }
     // Fetch full article content
     fetch(`/api/help/articles?slugs=${article.slug}`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => {
         const full = d.articles?.[0];
         if (full) {

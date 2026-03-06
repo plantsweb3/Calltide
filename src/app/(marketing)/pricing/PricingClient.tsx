@@ -35,7 +35,7 @@ const FEATURES_COL2 = [
 const FAQS = [
   {
     q: "Is there a contract?",
-    a: "No. Month-to-month. Cancel anytime. Annual plan available at $4,970/year (save $994).",
+    a: "No. Month-to-month. Cancel anytime. Annual plan available at $4,764/year (save $1,200).",
   },
   {
     q: "Are there any extra fees?",
@@ -159,10 +159,10 @@ export default function PricingClient() {
                 <>
                   <div className="flex items-baseline justify-center gap-3">
                     <span className="text-2xl font-bold text-slate-500 line-through">$497</span>
-                    <span className="text-[64px] font-extrabold tracking-tight text-white sm:text-[72px]">$414</span>
+                    <span className="text-[64px] font-extrabold tracking-tight text-white sm:text-[72px]">$397</span>
                     <span className="text-xl text-slate-400">/mo</span>
                   </div>
-                  <p className="mt-1 text-sm text-slate-500">Billed annually at $4,970</p>
+                  <p className="mt-1 text-sm text-slate-500">Billed annually at $4,764</p>
                 </>
               ) : (
                 <div className="flex items-baseline justify-center gap-2">

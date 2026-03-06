@@ -18,7 +18,7 @@ export default function SettingsPage() {
   useEffect(() => {
     if (tab === "platform" && !platform) {
       fetch("/api/admin/dashboard")
-        .then((r) => r.json())
+        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
         .then((d) => setPlatform({
           totalClients: d.clients ?? 0,
           activeClients: d.activeClients ?? d.clients ?? 0,

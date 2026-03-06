@@ -110,7 +110,7 @@ function AuditContent() {
 
   useEffect(() => {
     fetch("/api/audit/request?count=true")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => { if (d.count) setAuditCount(d.count); })
       .catch(() => {});
   }, []);

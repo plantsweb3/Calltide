@@ -59,7 +59,7 @@ export default function AdminFeedbackPage() {
     setError(null);
     const url = filter ? `/api/admin/feedback?status=${filter}` : "/api/admin/feedback";
     fetch(url)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => {
         setItems(d.items || []);
         setStats(d.stats || { total: 0, new: 0, inProgress: 0, resolved: 0 });

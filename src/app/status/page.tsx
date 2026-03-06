@@ -91,7 +91,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
 
   const fetchStatus = useCallback(() => {
     fetch("/api/status")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => {});
   }, []);

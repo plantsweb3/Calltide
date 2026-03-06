@@ -38,7 +38,7 @@ export default function OpsPage() {
 
   useEffect(() => {
     fetch("/api/admin/ops")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => setError("Failed to load system operations data"));
   }, []);

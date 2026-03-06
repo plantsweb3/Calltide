@@ -57,6 +57,10 @@ export default function CallTranscript({
       <div
         className="fixed inset-0 z-40 bg-black/50"
         onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="transcript-title"
+        onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
       />
 
       {/* Panel */}
@@ -76,7 +80,7 @@ export default function CallTranscript({
           }}
         >
           <div>
-            <h2 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+            <h2 id="transcript-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
               {call.leadName || call.callerPhone || "Unknown Caller"}
             </h2>
             <div className="flex items-center gap-3 mt-1">

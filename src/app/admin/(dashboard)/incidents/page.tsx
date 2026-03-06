@@ -62,7 +62,7 @@ export default function IncidentsPage() {
 
   const fetchIncidents = useCallback(() => {
     fetch("/api/admin/incidents")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setIncidents(d.incidents ?? []))
       .catch(() => setError("Failed to load incidents"))
       .finally(() => setLoading(false));
@@ -70,7 +70,7 @@ export default function IncidentsPage() {
 
   const fetchSubscribers = useCallback(() => {
     fetch("/api/admin/incidents/subscribers")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setSubscribers(d.subscribers ?? []))
       .catch(() => setError("Failed to load subscribers"));
   }, []);

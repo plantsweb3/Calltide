@@ -18,7 +18,7 @@ const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.
  */
 function getPlanAmount(planType?: string | null): { display: string; displayEs: string } {
   if (planType === "annual") {
-    return { display: "$4,970/yr", displayEs: "$4,970/año" };
+    return { display: "$4,764/yr", displayEs: "$4,764/año" };
   }
   return { display: "$497/mo", displayEs: "$497/mes" };
 }

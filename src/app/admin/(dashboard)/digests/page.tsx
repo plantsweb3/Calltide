@@ -47,7 +47,7 @@ export default function DigestsPage() {
 
   useEffect(() => {
     fetch("/api/admin/digests")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => {})
       .finally(() => setLoading(false));

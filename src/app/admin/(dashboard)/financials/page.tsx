@@ -75,7 +75,7 @@ function RevenueTab() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/financials?tab=revenue").then((r) => r.json()).then(setData).catch(() => setError("Failed to load revenue data"));
+    fetch("/api/admin/financials?tab=revenue").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load revenue data"));
   }, []);
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
@@ -146,7 +146,7 @@ function PaymentsTab() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/financials?tab=payments").then((r) => r.json()).then(setData).catch(() => setError("Failed to load payments data"));
+    fetch("/api/admin/financials?tab=payments").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load payments data"));
   }, []);
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
@@ -211,7 +211,7 @@ function CostsTab() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/financials?tab=costs").then((r) => r.json()).then(setData).catch(() => setError("Failed to load cost data"));
+    fetch("/api/admin/financials?tab=costs").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load cost data"));
   }, []);
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
@@ -257,7 +257,7 @@ function ForecastTab() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/financials?tab=forecast").then((r) => r.json()).then(setData).catch(() => setError("Failed to load forecast data"));
+    fetch("/api/admin/financials?tab=forecast").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load forecast data"));
   }, []);
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;

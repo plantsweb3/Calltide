@@ -53,7 +53,7 @@ export default function ClientFeedbackPage() {
 
   useEffect(() => {
     fetch("/api/dashboard/feedback")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setItems(d.items || []))
       .catch(() => {})
       .finally(() => setLoading(false));

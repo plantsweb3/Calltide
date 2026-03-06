@@ -151,7 +151,7 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
 
   useEffect(() => {
     fetch("/api/dashboard/billing")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setAiStatus(d.status ?? "active"))
       .catch(() => setAiStatus("active"));
   }, []);

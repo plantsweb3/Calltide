@@ -72,7 +72,7 @@ export default function Page() {
                 name: "Is there a contract?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "No. Month-to-month. Cancel anytime. Annual plan available at $4,970/year (save $994).",
+                  text: "No. Month-to-month. Cancel anytime. Annual plan available at $4,764/year (save $1,200).",
                 },
               },
               {

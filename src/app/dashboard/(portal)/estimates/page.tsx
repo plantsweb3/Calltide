@@ -329,26 +329,26 @@ export default function EstimatesPage() {
                                 <button
                                   onClick={() => { setShowWonModal(est.id); setWonAmount(est.amount?.toString() || ""); }}
                                   className="rounded-lg px-3 py-1.5 text-xs font-medium"
-                                  style={{ background: "#dcfce7", color: "#166534" }}
+                                  style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80" }}
                                 >
                                   Mark Won
                                 </button>
                                 <button
                                   onClick={() => setShowLostModal(est.id)}
                                   className="rounded-lg px-3 py-1.5 text-xs font-medium"
-                                  style={{ background: "#fee2e2", color: "#991b1b" }}
+                                  style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
                                 >
                                   Mark Lost
                                 </button>
                               </>
                             )}
                             {est.status === "won" && est.wonAt && (
-                              <span className="text-xs font-medium" style={{ color: "#166534" }}>
+                              <span className="text-xs font-medium" style={{ color: "#4ade80" }}>
                                 Won on {formatDate(est.wonAt)} — {formatCurrency(est.amount)}
                               </span>
                             )}
                             {est.status === "lost" && (
-                              <span className="text-xs font-medium" style={{ color: "#991b1b" }}>
+                              <span className="text-xs font-medium" style={{ color: "#f87171" }}>
                                 Lost: {est.lostReason?.replace(/_/g, " ") || "no reason"}
                               </span>
                             )}

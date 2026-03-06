@@ -7,7 +7,7 @@ export default function PaymentBanner() {
 
   useEffect(() => {
     fetch("/api/dashboard/billing")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setStatus(d.status ?? "active"))
       .catch(() => setStatus("active"));
   }, []);

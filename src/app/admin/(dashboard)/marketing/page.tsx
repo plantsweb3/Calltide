@@ -330,7 +330,7 @@ export default function MarketingPage() {
 
   const fetchStats = useCallback(() => {
     fetch("/api/marketing/stats")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setStats)
       .catch(() => setError("Failed to load marketing stats"));
   }, []);
@@ -340,7 +340,7 @@ export default function MarketingPage() {
       ? `?status=${encodeURIComponent(auditStatusFilter)}`
       : "";
     fetch(`/api/marketing/audit-requests${params}`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((data) => setAuditRequests(Array.isArray(data) ? data : data.data ?? []))
       .catch(() => setError("Failed to load audit requests"));
   }, [auditStatusFilter]);
@@ -350,7 +350,7 @@ export default function MarketingPage() {
       ? `?status=${encodeURIComponent(contentFilter)}`
       : "";
     fetch(`/api/content-queue${params}`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((data) => setContentQueue(Array.isArray(data) ? data : data.data ?? []))
       .catch(() => setError("Failed to load content queue"));
   }, [contentFilter]);

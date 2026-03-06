@@ -29,7 +29,7 @@ export default function CampaignsPage() {
     setError(null);
     Promise.all([
       fetch("/api/admin/dashboard")
-        .then((r) => r.json())
+        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
         .then((data) => {
           const statuses = data.prospects?.byStatus ?? {};
           setOutreachStats(
@@ -40,7 +40,7 @@ export default function CampaignsPage() {
           );
         }),
       fetch("/api/admin/outbound")
-        .then((r) => r.json())
+        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
         .then((data) => {
           // Group outbound calls by type as pseudo-campaigns
           const types: Record<string, { total: number; completed: number }> = {};

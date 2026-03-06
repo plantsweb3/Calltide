@@ -80,7 +80,7 @@ export default function AdminDemosPage() {
 
   useEffect(() => {
     fetch("/api/admin/demos")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setMetrics)
       .catch(() => setError("Failed to load demo analytics"))
       .finally(() => setLoading(false));

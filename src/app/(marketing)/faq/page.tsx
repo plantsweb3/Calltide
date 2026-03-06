@@ -54,7 +54,7 @@ export default function Page() {
                 name: "What does Calltide cost?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "One plan at $497/month (or $4,970/year). Everything included — unlimited calls, bilingual support, booking, CRM, analytics, compliance. No per-minute charges.",
+                  text: "One plan at $497/month (or $4,764/year). Everything included — unlimited calls, bilingual support, booking, CRM, analytics, compliance. No per-minute charges.",
                 },
               },
             ],

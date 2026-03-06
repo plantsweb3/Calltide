@@ -117,7 +117,7 @@ export default function CallsPage() {
     if (tab === "outbound" && outboundCalls.length === 0) {
       setOutboundLoading(true);
       fetch("/api/dashboard/outbound")
-        .then((r) => r.json())
+        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
         .then((d) => setOutboundCalls(d.recentCalls ?? []))
         .catch(() => {})
         .finally(() => setOutboundLoading(false));

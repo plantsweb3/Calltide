@@ -67,7 +67,7 @@ export default function ProspectDetail({
 
   useEffect(() => {
     fetch(`/api/prospects/${prospectId}`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => {
         setData(d);
         setNotes(d.prospect.notes ?? "");

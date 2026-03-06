@@ -99,7 +99,7 @@ export default function OverviewPage() {
 
   useEffect(() => {
     fetch("/api/dashboard/overview")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => setError("Failed to load dashboard data"));
   }, []);

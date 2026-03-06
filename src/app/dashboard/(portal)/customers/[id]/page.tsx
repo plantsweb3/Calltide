@@ -276,8 +276,8 @@ export default function CustomerDetailPage() {
                       <span
                         className="rounded px-1.5 py-0.5 text-[10px] font-medium"
                         style={{
-                          background: call.status === "completed" ? "#dcfce7" : call.status === "missed" ? "#fee2e2" : "var(--db-hover)",
-                          color: call.status === "completed" ? "#166534" : call.status === "missed" ? "#991b1b" : "var(--db-text-muted)",
+                          background: call.status === "completed" ? "rgba(74,222,128,0.15)" : call.status === "missed" ? "rgba(248,113,113,0.15)" : "var(--db-hover)",
+                          color: call.status === "completed" ? "#4ade80" : call.status === "missed" ? "#f87171" : "var(--db-text-muted)",
                         }}
                       >
                         {call.status.toUpperCase()}
@@ -322,8 +322,8 @@ export default function CustomerDetailPage() {
                     <span
                       className="rounded px-1.5 py-0.5 text-[10px] font-medium"
                       style={{
-                        background: appt.status === "confirmed" ? "#dcfce7" : appt.status === "completed" ? "#dbeafe" : "#fee2e2",
-                        color: appt.status === "confirmed" ? "#166534" : appt.status === "completed" ? "#1e40af" : "#991b1b",
+                        background: appt.status === "confirmed" ? "rgba(74,222,128,0.15)" : appt.status === "completed" ? "rgba(96,165,250,0.15)" : "rgba(248,113,113,0.15)",
+                        color: appt.status === "confirmed" ? "#4ade80" : appt.status === "completed" ? "#60a5fa" : "#f87171",
                       }}
                     >
                       {appt.status.toUpperCase()}

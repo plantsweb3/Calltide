@@ -54,7 +54,7 @@ export default function AIPerformancePage() {
 
   useEffect(() => {
     fetch("/api/admin/ai")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => setError("Failed to load AI performance data"));
   }, []);

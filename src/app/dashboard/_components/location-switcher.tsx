@@ -29,7 +29,7 @@ export default function LocationSwitcher() {
 
   useEffect(() => {
     fetch("/api/dashboard/locations")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => {});
   }, []);
@@ -80,7 +80,7 @@ export default function LocationSwitcher() {
         setOpen(false);
         router.refresh();
         // Re-fetch location data to update current
-        const refreshed = await fetch("/api/dashboard/locations").then((r) => r.json());
+        const refreshed = await fetch("/api/dashboard/locations").then((r) => { if (!r.ok) throw new Error(); return r.json(); });
         setData(refreshed);
       }
     } catch {

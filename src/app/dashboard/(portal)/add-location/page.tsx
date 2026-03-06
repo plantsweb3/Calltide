@@ -49,7 +49,7 @@ export default function AddLocationPage() {
   // Load primary location data for pre-fill
   useEffect(() => {
     fetch("/api/dashboard/settings")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => {
         setPrimary({
           services: d.services ?? [],

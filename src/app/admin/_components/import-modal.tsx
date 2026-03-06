@@ -59,10 +59,21 @@ export default function ImportModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-6">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="import-modal-title"
+    >
+      <div
+        className="w-full max-w-md rounded-xl p-6"
+        style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold">Import Prospects</h2>
+          <h2 id="import-modal-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>Import Prospects</h2>
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-slate-200 text-lg"

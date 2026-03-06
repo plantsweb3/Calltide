@@ -65,16 +65,24 @@ export default function AddClientModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-client-title"
+    >
       <div
         className="w-full max-w-md rounded-xl p-6"
         style={{
           background: "var(--db-card)",
           border: "1px solid var(--db-border)",
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+          <h2 id="add-client-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
             Add Client
           </h2>
           <button

@@ -1496,6 +1496,7 @@ export default function SettingsPage() {
                         </div>
                         <button
                           onClick={async () => {
+                            if (!confirm("Remove this response?")) return;
                             await fetch(`/api/receptionist/responses/${item.id}`, { method: "DELETE" });
                             setCustomResponses((prev) => ({
                               ...prev,
@@ -1503,10 +1504,11 @@ export default function SettingsPage() {
                             }));
                             toast.success("Removed");
                           }}
-                          className="shrink-0 p-1 rounded hover:bg-red-50"
+                          className="shrink-0 p-1 rounded transition-colors"
+                          style={{ color: "#ef4444" }}
                           title="Delete"
                         >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
                         </button>
                       </div>
                     ))}
@@ -1792,7 +1794,7 @@ function OutboundSettingsSection() {
 
   useEffect(() => {
     fetch("/api/dashboard/outbound")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => {
         setSettings(d.settings);
         setCalls(d.recentCalls ?? []);
@@ -1801,7 +1803,7 @@ function OutboundSettingsSection() {
       .catch(() => {});
 
     fetch("/api/dashboard/seasonal-services")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setSeasonal(d.items ?? []))
       .catch(() => {});
   }, []);
@@ -2157,7 +2159,7 @@ function SecuritySection() {
 
   useEffect(() => {
     fetch("/api/dashboard/settings/password")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => {
         setHasPassword(d.hasPassword);
         setPasswordChangedAt(d.passwordChangedAt);

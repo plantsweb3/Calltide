@@ -57,7 +57,7 @@ function ConsentTab() {
   const [data, setData] = useState<{ records: any[]; outdatedTosCount: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/compliance?tab=consent").then((r) => r.json()).then(setData).catch(() => setError("Failed to load consent data"));
+    fetch("/api/admin/compliance?tab=consent").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load consent data"));
   }, []);
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
@@ -89,7 +89,7 @@ function SmsTab() {
   const [data, setData] = useState<{ optOuts: any[]; activeConsentCount: number; optOutCount: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/compliance?tab=sms").then((r) => r.json()).then(setData).catch(() => setError("Failed to load SMS compliance data"));
+    fetch("/api/admin/compliance?tab=sms").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load SMS compliance data"));
   }, []);
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
@@ -116,7 +116,7 @@ function DocumentsTab() {
   const [data, setData] = useState<{ documents: any[]; totalActiveClients: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/compliance?tab=documents").then((r) => r.json()).then(setData).catch(() => setError("Failed to load documents data"));
+    fetch("/api/admin/compliance?tab=documents").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load documents data"));
   }, []);
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
@@ -145,7 +145,7 @@ function RetentionTab() {
   const [data, setData] = useState<{ logs: any[]; deletionRequests: any[] } | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/compliance?tab=retention").then((r) => r.json()).then(setData).catch(() => setError("Failed to load retention data"));
+    fetch("/api/admin/compliance?tab=retention").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load retention data"));
   }, []);
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
@@ -206,7 +206,7 @@ function SubProcessorsTab() {
   const [data, setData] = useState<{ processors: any[] } | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch("/api/admin/compliance?tab=subprocessors").then((r) => r.json()).then(setData).catch(() => setError("Failed to load sub-processors data"));
+    fetch("/api/admin/compliance?tab=subprocessors").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load sub-processors data"));
   }, []);
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;

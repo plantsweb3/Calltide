@@ -122,10 +122,10 @@ const T = {
     annualLabel: "Annual",
     monthlyPrice: "$497",
     monthlyPer: "/month",
-    annualPrice: "$414",
+    annualPrice: "$397",
     annualPer: "/month billed annually",
-    annualTotal: "$4,970/year",
-    annualSave: "Save $994",
+    annualTotal: "$4,764/year",
+    annualSave: "Save $1,200",
     hireCta: "Hire",
     guarantee: "30-day money-back guarantee",
     cancelAnytime: "Cancel anytime",
@@ -241,10 +241,10 @@ const T = {
     annualLabel: "Anual",
     monthlyPrice: "$497",
     monthlyPer: "/mes",
-    annualPrice: "$414",
+    annualPrice: "$397",
     annualPer: "/mes facturado anualmente",
-    annualTotal: "$4,970/año",
-    annualSave: "Ahorra $994",
+    annualTotal: "$4,764/año",
+    annualSave: "Ahorra $1,200",
     hireCta: "Contratar a",
     guarantee: "Garantía de devolución de 30 días",
     cancelAnytime: "Cancela cuando quieras",
@@ -600,7 +600,7 @@ function OnboardingPage() {
   // ── Step 5: Poll for test call ──
   const startPolling = useCallback(() => {
     if (pollRef.current) return;
-    fetch("/api/dashboard/calls?limit=1").then((r) => r.json()).then((data) => { initialCallCountRef.current = data.total ?? 0; }).catch(() => { initialCallCountRef.current = 0; });
+    fetch("/api/dashboard/calls?limit=1").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then((data) => { initialCallCountRef.current = data.total ?? 0; }).catch(() => { initialCallCountRef.current = 0; });
     pollRef.current = setInterval(async () => {
       try {
         const res = await fetch("/api/dashboard/calls?limit=1");

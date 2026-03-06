@@ -84,13 +84,13 @@ export default function KnowledgeBasePage() {
   const [newCat, setNewCat] = useState({ slug: "", name: "", nameEs: "", description: "", descriptionEs: "", icon: "", sortOrder: 0 });
 
   useEffect(() => {
-    fetch("/api/admin/help/articles").then((r) => r.json()).then((d) => setArticles(d.articles || [])).catch(() => setError("Failed to load articles"));
-    fetch("/api/admin/help/categories").then((r) => r.json()).then((d) => setCategories(d.categories || [])).catch(() => setError("Failed to load categories"));
+    fetch("/api/admin/help/articles").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then((d) => setArticles(d.articles || [])).catch(() => setError("Failed to load articles"));
+    fetch("/api/admin/help/categories").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then((d) => setCategories(d.categories || [])).catch(() => setError("Failed to load categories"));
   }, []);
 
   useEffect(() => {
     if (tab === "analytics" && !analytics) {
-      fetch("/api/admin/help/analytics").then((r) => r.json()).then(setAnalytics).catch(() => setError("Failed to load analytics"));
+      fetch("/api/admin/help/analytics").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setAnalytics).catch(() => setError("Failed to load analytics"));
     }
   }, [tab, analytics]);
 

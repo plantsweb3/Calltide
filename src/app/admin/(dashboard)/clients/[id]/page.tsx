@@ -97,7 +97,7 @@ export default function ClientDetailPage({
 
   useEffect(() => {
     fetch(`/api/admin/clients/${id}`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => {
         setBusiness(d);
         setLoading(false);
@@ -105,48 +105,48 @@ export default function ClientDetailPage({
       .catch(() => { setLoading(false); setError("Failed to load client data"); });
 
     fetch(`/api/admin/clients/${id}/calls?limit=50`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setCallsData)
       .catch(() => setError("Failed to load calls data"));
 
     fetch(`/api/admin/clients/${id}/appointments?limit=50`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setAppointmentsData)
       .catch(() => setError("Failed to load appointments data"));
 
     fetch(`/api/admin/clients/${id}/sms?limit=50`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setSmsData)
       .catch(() => setError("Failed to load SMS data"));
 
     fetch(`/api/admin/clients/${id}/notes`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setNotes(d.notes || []))
       .catch(() => setError("Failed to load notes"));
 
     // Fetch QA, NPS, referral, timeline data
     fetch(`/api/admin/clients/${id}/qa`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setQaScores(d.scores || []))
       .catch(() => setError("Failed to load QA data"));
 
     fetch(`/api/admin/clients/${id}/nps`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setNpsHistory(d.responses || []))
       .catch(() => setError("Failed to load NPS data"));
 
     fetch(`/api/admin/clients/${id}/referrals`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setReferralData(d))
       .catch(() => setError("Failed to load referral data"));
 
     fetch(`/api/admin/clients/${id}/timeline`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setTimeline(d.events || []))
       .catch(() => setError("Failed to load timeline data"));
 
     fetch(`/api/admin/clients/${id}/customers?limit=50`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setCrmCustomers(d.customers || []))
       .catch(() => setError("Failed to load customer data"));
   }, [id]);

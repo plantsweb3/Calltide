@@ -63,7 +63,7 @@ const content = {
         items: [
           {
             q: "What does Calltide cost?",
-            a: "One plan: $497/month or $4,970/year (save $994). Everything included — unlimited calls, bilingual support, booking, CRM, analytics, compliance. No per-minute charges, no hidden fees.",
+            a: "One plan: $497/month or $4,764/year (save $1,200). Everything included — unlimited calls, bilingual support, booking, CRM, analytics, compliance. No per-minute charges, no hidden fees.",
           },
           {
             q: "What if I want to cancel?",
@@ -147,7 +147,7 @@ const content = {
         items: [
           {
             q: "¿Cuánto cuesta Calltide?",
-            a: "Un plan: $497/mes o $4,970/año (ahorra $994). Todo incluido — llamadas ilimitadas, soporte bilingüe, agendamiento, CRM, analíticas, cumplimiento. Sin cargos por minuto, sin costos ocultos.",
+            a: "Un plan: $497/mes o $4,764/año (ahorra $1,200). Todo incluido — llamadas ilimitadas, soporte bilingüe, agendamiento, CRM, analíticas, cumplimiento. Sin cargos por minuto, sin costos ocultos.",
           },
           {
             q: "¿Qué pasa si quiero cancelar?",

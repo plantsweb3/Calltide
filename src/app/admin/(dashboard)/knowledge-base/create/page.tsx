@@ -78,18 +78,18 @@ function ArticleEditor() {
 
   useEffect(() => {
     fetch("/api/admin/help/categories")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setCategories(d.categories || []))
       .catch(() => setError("Failed to load categories"));
 
     fetch("/api/admin/help/articles")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setArticles((d.articles || []).map((a: { id: string; title: string }) => ({ id: a.id, title: a.title }))))
       .catch(() => setError("Failed to load articles"));
 
     if (editId) {
       fetch(`/api/admin/help/articles/${editId}`)
-        .then((r) => r.json())
+        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
         .then((a) => {
           if (a.article) {
             const art = a.article;

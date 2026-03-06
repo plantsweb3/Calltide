@@ -48,7 +48,7 @@ export default function BillingPage() {
 
   useEffect(() => {
     fetch("/api/admin/billing")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => setError("Failed to load billing data"));
   }, []);
