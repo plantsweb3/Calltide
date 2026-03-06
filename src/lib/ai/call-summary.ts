@@ -67,7 +67,7 @@ async function generateSummary(transcript: TranscriptLine[]): Promise<GeneratedS
     .join("\n");
 
   const response = await anthropic.messages.create({
-    model: process.env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929",
+    model: process.env.CLAUDE_MODEL ?? "claude-haiku-4-5-20251001",
     max_tokens: 500,
     messages: [
       {
@@ -142,13 +142,13 @@ export async function processCallSummary(callId: string, chatId: string): Promis
 
     console.log("Call summary generated:", { callId, sentiment, outcome, lines: transcript.length });
 
-    // Trigger QA scoring (fire-and-forget)
-    const [call] = await db.select().from(calls).where(eq(calls.id, callId)).limit(1);
-    if (call) {
-      const [biz] = await db.select().from(businesses).where(eq(businesses.id, call.businessId)).limit(1);
+    // Trigger QA scoring (fire-and-forget) — use data already in memory
+    const [callRecord] = await db.select().from(calls).where(eq(calls.id, callId)).limit(1);
+    if (callRecord) {
+      const [biz] = await db.select().from(businesses).where(eq(businesses.id, callRecord.businessId)).limit(1);
       if (biz) {
         triggerQaIfNewClient(
-          { ...call, transcript, summary, sentiment },
+          { ...callRecord, transcript, summary, sentiment },
           biz,
         ).catch((err) => {
           reportError("QA trigger failed", err, { extra: { callId } });

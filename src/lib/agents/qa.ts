@@ -7,7 +7,7 @@ import { logAgentActivity } from "./tools";
 import { reportError } from "@/lib/error-reporting";
 import { createNotification } from "@/lib/notifications";
 
-const CLAUDE_MODEL = env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929";
+const CLAUDE_MODEL = env.CLAUDE_MODEL ?? "claude-haiku-4-5-20251001";
 
 interface QaResult {
   score: number;
@@ -107,22 +107,28 @@ export async function triggerQaIfNewClient(
   }
 
   try {
-    // Build context for Claude
-    const context = {
-      transcript: callRecord.transcript,
-      summary: callRecord.summary,
-      sentiment: callRecord.sentiment,
-      duration: callRecord.duration,
-      language: callRecord.language,
-      businessProfile: {
-        name: businessRecord.name,
-        type: businessRecord.type,
-        services: businessRecord.services,
-        hours: businessRecord.businessHours,
-        language: businessRecord.defaultLanguage,
-        owner: businessRecord.ownerName,
-      },
-    };
+    // Build formatted context (reduces token count ~30-40% vs JSON)
+    const formattedTranscript = callRecord.transcript
+      .map((line) => `${line.speaker === "ai" ? "AI" : "Caller"}: ${line.text}`)
+      .join("\n");
+
+    const hoursStr = businessRecord.businessHours
+      ? Object.entries(businessRecord.businessHours)
+          .map(([day, h]) => `${day}: ${h.open}-${h.close}`)
+          .join(", ")
+      : "not set";
+
+    const contextText = `Transcript:
+${formattedTranscript}
+
+Summary: ${callRecord.summary ?? "none"}
+Sentiment: ${callRecord.sentiment ?? "unknown"}
+Duration: ${callRecord.duration ?? "unknown"}s
+Language: ${callRecord.language ?? "unknown"}
+Business: ${businessRecord.name} (${businessRecord.type})
+Services: ${businessRecord.services?.join(", ") || "none listed"}
+Hours: ${hoursStr}
+Default Language: ${businessRecord.defaultLanguage}`;
 
     // Direct Claude call for QA scoring (no tool use needed)
     const anthropic = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
@@ -131,7 +137,7 @@ export async function triggerQaIfNewClient(
       max_tokens: 800,
       system: QA_SYSTEM_PROMPT,
       messages: [
-        { role: "user", content: JSON.stringify(context) },
+        { role: "user", content: contextText },
       ],
     });
 
