@@ -229,18 +229,12 @@ async function checkAnthropic(): Promise<HealthCheck> {
     return { name: "Anthropic", statusCode: 0, responseTimeMs: 0, healthy: false, error: "ANTHROPIC_API_KEY not set" };
   }
   try {
-    const resp = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
+    // GET /v1/models is free — validates API key + connectivity without token spend
+    const resp = await fetch("https://api.anthropic.com/v1/models", {
       headers: {
         "x-api-key": env.ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01",
-        "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 1,
-        messages: [{ role: "user", content: "ping" }],
-      }),
       signal: AbortSignal.timeout(15000),
     });
     return {
