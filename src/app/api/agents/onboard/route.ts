@@ -2,9 +2,123 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { businesses, calls, appointments, outreachLog } from "@/db/schema";
 import { eq, sql, and } from "drizzle-orm";
-import { runAgent, SUPPORT_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
+import { executeTool, logAgentActivity } from "@/lib/agents";
 import { canContactToday, logOutreach } from "@/lib/outreach";
 import { createHandoff } from "@/lib/agents/handoffs";
+
+// ── Nudge Templates (EN) ──
+
+const TEMPLATES = {
+  welcome: {
+    subject: (name: string) => `Welcome to Calltide, ${name}!`,
+    body: (ownerName: string) => `<div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;">
+      <p>Hi ${ownerName},</p>
+      <p>Welcome to Calltide! We're excited to have you on board.</p>
+      <p>To get the most out of your AI receptionist, here are the next steps to finish your setup:</p>
+      <ol>
+        <li>Set your business hours so your receptionist knows when to answer</li>
+        <li>Add your services so callers get accurate information</li>
+        <li>Test your receptionist with a quick call</li>
+      </ol>
+      <p>If you need any help, just reply to this email — we're here for you.</p>
+      <p>Best,<br/>The Calltide Team</p>
+    </div>`,
+  },
+  testCall: {
+    sms: (name: string) =>
+      `Hi ${name}! Your Calltide receptionist is ready. Give it a test call to hear it in action — just call your business number. Reply HELP if you need assistance.`,
+  },
+  needHelp: {
+    subject: (bizName: string) => `Need help getting started with ${bizName}?`,
+    body: (ownerName: string) => `<div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;">
+      <p>Hi ${ownerName},</p>
+      <p>We noticed you haven't received any calls through Calltide yet. We want to make sure everything is set up correctly.</p>
+      <p>Here are a few things to check:</p>
+      <ul>
+        <li>Is call forwarding set up on your business line?</li>
+        <li>Have you tested your receptionist with a call?</li>
+        <li>Do your business hours look correct in the dashboard?</li>
+      </ul>
+      <p>If you'd like a hand with any of this, just reply and we'll help you get started.</p>
+      <p>Best,<br/>The Calltide Team</p>
+    </div>`,
+  },
+  skippedTestCall: {
+    sms: (name: string) =>
+      `Hi ${name}! You're almost set up on Calltide. Try calling your business number to hear your AI receptionist in action — it takes less than a minute! Reply HELP for assistance.`,
+  },
+} as const;
+
+// ── Nudge Decision Logic ──
+
+interface NudgeDecision {
+  action: "email" | "sms" | "escalate" | "none";
+  template: string;
+  subject?: string;
+  body?: string;
+  smsBody?: string;
+}
+
+function decideNudge(params: {
+  daysSinceSignup: number;
+  onboardingStep: number;
+  skippedSteps: number[];
+  hasFirstCall: boolean;
+  hasFirstAppointment: boolean;
+  hasHumeConfig: boolean;
+  hasBusinessHours: boolean;
+  ownerName: string;
+  bizName: string;
+}): NudgeDecision {
+  const { daysSinceSignup, onboardingStep, skippedSteps, hasFirstCall, ownerName, bizName } = params;
+
+  // Day 14+, inactive → escalate to owner
+  if (daysSinceSignup >= 14 && !hasFirstCall) {
+    return { action: "escalate", template: "stalled_onboarding" };
+  }
+
+  // Skipped test call (step 7) and no calls yet → specific nudge
+  if (skippedSteps.includes(7) && !hasFirstCall) {
+    return {
+      action: "sms",
+      template: "skipped_test_call",
+      smsBody: TEMPLATES.skippedTestCall.sms(ownerName),
+    };
+  }
+
+  // Day 1-2, early setup → welcome email
+  if (daysSinceSignup <= 2 && onboardingStep < 4) {
+    return {
+      action: "email",
+      template: "welcome",
+      subject: TEMPLATES.welcome.subject(bizName),
+      body: TEMPLATES.welcome.body(ownerName),
+    };
+  }
+
+  // Day 3-7, no first call → test call SMS
+  if (daysSinceSignup >= 3 && daysSinceSignup <= 7 && !hasFirstCall) {
+    return {
+      action: "sms",
+      template: "test_call",
+      smsBody: TEMPLATES.testCall.sms(ownerName),
+    };
+  }
+
+  // Day 7-14, no appointment → need help email
+  if (daysSinceSignup >= 7 && daysSinceSignup < 14 && !hasFirstCall) {
+    return {
+      action: "email",
+      template: "need_help",
+      subject: TEMPLATES.needHelp.subject(bizName),
+      body: TEMPLATES.needHelp.body(ownerName),
+    };
+  }
+
+  return { action: "none", template: "none" };
+}
+
+// ── Route ──
 
 /**
  * GET /api/agents/onboard
@@ -41,7 +155,7 @@ export async function GET(req: NextRequest) {
   const results = [];
 
   for (const client of newClients) {
-    const milestones = await checkOnboardingMilestones(client.id);
+    const milestones = await checkOnboardingMilestones(client);
 
     // Skip clients who have completed all milestones
     if (milestones.allComplete) continue;
@@ -56,35 +170,60 @@ export async function GET(req: NextRequest) {
     const onboardingStep = client.onboardingStep ?? 1;
     const skippedSteps = (client.onboardingSkippedSteps as number[]) ?? [];
 
-    const message = `Check onboarding progress for this new client and send appropriate nudges:
+    const nudge = decideNudge({
+      daysSinceSignup,
+      onboardingStep,
+      skippedSteps,
+      hasFirstCall: milestones.hasFirstCall,
+      hasFirstAppointment: milestones.hasFirstAppointment,
+      hasHumeConfig: milestones.hasHumeConfig,
+      hasBusinessHours: milestones.hasBusinessHours,
+      ownerName: client.ownerName,
+      bizName: client.name,
+    });
 
-Business: ${client.name} (${client.type})
-Owner: ${client.ownerName}
-Email: ${client.ownerEmail ?? "none"}
-Phone: ${client.ownerPhone}
-Signed Up: ${client.createdAt} (${daysSinceSignup} days ago)
+    if (nudge.action === "none") continue;
 
-ONBOARDING WIZARD:
-- Current step: ${onboardingStep} of 8
-- Skipped steps: ${skippedSteps.length > 0 ? skippedSteps.join(", ") : "none"}
+    const actionsTaken: string[] = [];
 
-ONBOARDING MILESTONES:
-- Has Hume config: ${milestones.hasHumeConfig ? "YES" : "NO"}
-- Has business hours set: ${milestones.hasBusinessHours ? "YES" : "NO"}
-- Has received first call: ${milestones.hasFirstCall ? "YES" : "NO"}
-- Has first appointment booked: ${milestones.hasFirstAppointment ? "YES" : "NO"}
-- Total calls received: ${milestones.totalCalls}
+    if (nudge.action === "email" && client.ownerEmail) {
+      const emailResult = await executeTool(
+        "send_email",
+        { to: client.ownerEmail, subject: nudge.subject, body: nudge.body },
+        "onboard",
+      );
+      actionsTaken.push(`send_email: ${emailResult}`);
+    } else if (nudge.action === "sms" && client.ownerPhone) {
+      const smsResult = await executeTool(
+        "send_sms",
+        { to: client.ownerPhone, body: nudge.smsBody },
+        "onboard",
+      );
+      actionsTaken.push(`send_sms: ${smsResult}`);
+    } else if (nudge.action === "escalate") {
+      const escalateResult = await executeTool(
+        "escalate_to_owner",
+        {
+          reason: `Stalled onboarding for ${client.name} — ${daysSinceSignup} days, no first call`,
+          urgency: daysSinceSignup > 21 ? "high" : "medium",
+          context: `Step: ${onboardingStep}/8. Skipped: ${skippedSteps.join(",") || "none"}. Calls: ${milestones.totalCalls}.`,
+        },
+        "onboard",
+      );
+      actionsTaken.push(`escalate_to_owner: ${escalateResult}`);
+    }
 
-Based on how many days since signup, current wizard step, and which milestones are incomplete, decide what nudge to send (email, SMS) or whether to escalate a stalled onboarding. If they skipped the test call (step 7), specifically recommend testing their receptionist.`;
-
-    const result = await runAgent({
+    // Log agent activity
+    await logAgentActivity({
       agentName: "onboard",
-      systemPrompt: AGENT_PROMPTS.onboard,
-      userMessage: message,
-      tools: SUPPORT_TOOLS, // Onboard uses send_email, send_sms, escalate_to_owner
+      actionType: nudge.action === "escalate" ? "escalated" : nudge.action === "email" ? "email_sent" : "sms_sent",
       targetId: client.id,
       targetType: "client",
-      inputSummary: `Onboard check: ${client.name} (${daysSinceSignup}d)`,
+      inputSummary: `Onboard check: ${client.name} (${daysSinceSignup}d, step ${onboardingStep})`,
+      outputSummary: `Nudge: ${nudge.template}. ${actionsTaken.map((a) => a.split(":")[0]).join(", ")}`,
+      toolsCalled: actionsTaken.map((a) => a.split(":")[0]),
+      escalated: nudge.action === "escalate",
+      resolvedWithoutEscalation: nudge.action !== "escalate" && actionsTaken.length > 0,
     });
 
     // Log outreach to prevent same-day duplicate contacts
@@ -118,43 +257,49 @@ Based on how many days since signup, current wizard step, and which milestones a
       });
     }
 
-    results.push({ businessId: client.id, name: client.name, daysSinceSignup, ...result });
+    results.push({
+      businessId: client.id,
+      name: client.name,
+      daysSinceSignup,
+      nudge: nudge.template,
+      actionsTaken: actionsTaken.map((a) => a.split(":")[0]),
+    });
   }
 
   return NextResponse.json({ processed: results.length, results });
 }
 
-async function checkOnboardingMilestones(businessId: string) {
-  const [callCount] = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(calls)
-    .where(eq(calls.businessId, businessId));
+// ── Milestone Checking (uses client object to avoid redundant biz fetch) ──
 
-  const [aptCount] = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(appointments)
-    .where(eq(appointments.businessId, businessId));
+async function checkOnboardingMilestones(
+  client: { id: string; humeConfigId?: string | null; businessHours?: unknown },
+) {
+  // Combine call + appointment counts into a single parallel batch
+  const [callCount, aptCount] = await Promise.all([
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(calls)
+      .where(eq(calls.businessId, client.id))
+      .then((rows) => rows[0]?.count ?? 0),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(appointments)
+      .where(eq(appointments.businessId, client.id))
+      .then((rows) => rows[0]?.count ?? 0),
+  ]);
 
-  const [biz] = await db
-    .select({
-      humeConfigId: businesses.humeConfigId,
-      businessHours: businesses.businessHours,
-    })
-    .from(businesses)
-    .where(eq(businesses.id, businessId))
-    .limit(1);
-
-  const totalCalls = callCount?.count ?? 0;
-  const totalApts = aptCount?.count ?? 0;
-  const hasHumeConfig = !!biz?.humeConfigId;
-  const hasBusinessHours = !!biz?.businessHours && Object.keys(biz.businessHours).length > 0;
+  const hasHumeConfig = !!client.humeConfigId;
+  const hasBusinessHours =
+    !!client.businessHours &&
+    typeof client.businessHours === "object" &&
+    Object.keys(client.businessHours as Record<string, unknown>).length > 0;
 
   return {
     hasHumeConfig,
     hasBusinessHours,
-    hasFirstCall: totalCalls > 0,
-    hasFirstAppointment: totalApts > 0,
-    totalCalls,
-    allComplete: hasHumeConfig && hasBusinessHours && totalCalls > 0 && totalApts > 0,
+    hasFirstCall: callCount > 0,
+    hasFirstAppointment: aptCount > 0,
+    totalCalls: callCount,
+    allComplete: hasHumeConfig && hasBusinessHours && callCount > 0 && aptCount > 0,
   };
 }
