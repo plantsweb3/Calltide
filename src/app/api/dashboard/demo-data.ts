@@ -1,5 +1,5 @@
 // Demo data for screenshot-ready dashboard
-// Matches DashboardMockup names and realistic service businesses
+// Uses realistic service business names and data
 
 const DEMO_BUSINESS_ID = "demo-client-001";
 

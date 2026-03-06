@@ -6,7 +6,6 @@ import {
   prospects,
   demos,
   churnRiskScores,
-  systemHealthLogs,
   agentActivityLog,
   smsMessages,
   businesses,
@@ -101,20 +100,6 @@ export const SHARED_TOOLS: ToolDefinition[] = [
         reasoning: { type: "string", description: "Explanation of the score" },
       },
       required: ["businessId", "score", "reasoning"],
-    },
-  },
-  {
-    name: "log_health_status",
-    description: "Log a service health check result.",
-    input_schema: {
-      type: "object" as const,
-      properties: {
-        service: { type: "string", description: "Service name" },
-        statusCode: { type: "number", description: "HTTP status code" },
-        responseTimeMs: { type: "number", description: "Response time in milliseconds" },
-        healthy: { type: "boolean", description: "Whether the service is healthy" },
-      },
-      required: ["service", "statusCode", "responseTimeMs", "healthy"],
     },
   },
 ];
@@ -320,28 +305,6 @@ async function toolUpdateChurnScore(input: Record<string, unknown>): Promise<str
   return `Churn score updated to ${score} for business ${businessId}`;
 }
 
-async function toolLogHealthStatus(input: Record<string, unknown>): Promise<string> {
-  await db.insert(systemHealthLogs).values({
-    serviceName: String(input.service),
-    status: input.healthy ? "operational" : "down",
-    latencyMs: Number(input.responseTimeMs),
-    errorCount: input.healthy ? 0 : 1,
-  });
-
-  // Notify on provider down
-  if (!input.healthy) {
-    await createNotification({
-      source: "agents",
-      severity: "emergency",
-      title: `${input.service} is DOWN`,
-      message: `Status: unhealthy, Response: ${input.responseTimeMs}ms`,
-      actionUrl: "/admin/ops",
-    });
-  }
-
-  return `Health logged: ${input.service} — ${input.healthy ? "healthy" : "unhealthy"} (${input.responseTimeMs}ms)`;
-}
-
 // ── Main Executor ──
 
 export async function executeTool(
@@ -363,8 +326,6 @@ export async function executeTool(
         return await toolCreateDemo(toolInput);
       case "update_churn_score":
         return await toolUpdateChurnScore(toolInput);
-      case "log_health_status":
-        return await toolLogHealthStatus(toolInput);
       default:
         return `Unknown tool: ${toolName}`;
     }

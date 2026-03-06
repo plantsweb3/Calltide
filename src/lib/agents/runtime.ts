@@ -182,7 +182,6 @@ function deriveActionType(toolsCalled: string[], escalated: boolean): ActionType
   if (escalated) return "escalated";
   if (toolsCalled.includes("create_demo")) return "demo_created";
   if (toolsCalled.includes("update_prospect_status")) return "qualified";
-  if (toolsCalled.includes("log_health_status")) return "health_check";
   if (toolsCalled.includes("send_email")) return "email_sent";
   if (toolsCalled.includes("send_sms")) return "sms_sent";
   if (toolsCalled.includes("update_churn_score")) return "nudged";
