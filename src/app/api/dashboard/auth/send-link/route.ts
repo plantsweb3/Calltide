@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { z } from "zod";
+import { getResend } from "@/lib/email/client";
 import { db } from "@/db";
 import { accounts, businesses } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       secret,
     );
 
-    const resend = new Resend(env.RESEND_API_KEY);
+    const resend = getResend();
     await resend.emails.send({
       from: env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>",
       to: email,

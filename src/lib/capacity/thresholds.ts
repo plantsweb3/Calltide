@@ -1,8 +1,8 @@
 import { db } from "@/db";
 import { capacityAlerts } from "@/db/schema";
 import { eq, and, isNull } from "drizzle-orm";
-import { Resend } from "resend";
 import { env } from "@/lib/env";
+import { getResend } from "@/lib/email/client";
 import { createNotification } from "@/lib/notifications";
 import { reportError } from "@/lib/error-reporting";
 
@@ -102,7 +102,7 @@ async function notifyAdmin(severity: AlertSeverity, message: string) {
   const color = severity === "emergency" ? "#ef4444" : severity === "critical" ? "#f59e0b" : "#3b82f6";
 
   try {
-    const resend = new Resend(env.RESEND_API_KEY);
+    const resend = getResend();
     await resend.emails.send({
       from,
       to: ownerEmail,

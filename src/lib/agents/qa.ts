@@ -1,4 +1,3 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { db } from "@/db";
 import { calls, businesses, callQaScores } from "@/db/schema";
 import { eq, and, gte, lt } from "drizzle-orm";
@@ -6,8 +5,9 @@ import { env } from "@/lib/env";
 import { logAgentActivity } from "./tools";
 import { reportError } from "@/lib/error-reporting";
 import { createNotification } from "@/lib/notifications";
+import { getAnthropic, HAIKU_MODEL } from "@/lib/ai/client";
 
-const CLAUDE_MODEL = env.CLAUDE_MODEL ?? "claude-haiku-4-5-20251001";
+const CLAUDE_MODEL = env.CLAUDE_MODEL ?? HAIKU_MODEL;
 
 interface QaResult {
   score: number;
@@ -131,7 +131,7 @@ Hours: ${hoursStr}
 Default Language: ${businessRecord.defaultLanguage}`;
 
     // Direct Claude call for QA scoring (no tool use needed)
-    const anthropic = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
+    const anthropic = getAnthropic();
     const response = await anthropic.messages.create({
       model: CLAUDE_MODEL,
       max_tokens: 800,

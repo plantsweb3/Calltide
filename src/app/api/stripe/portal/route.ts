@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
-
-function getStripe(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
-  return new Stripe(key, { apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion });
-}
+import { getStripe } from "@/lib/stripe/client";
 
 export async function POST(request: NextRequest) {
   const businessId = request.headers.get("x-business-id");

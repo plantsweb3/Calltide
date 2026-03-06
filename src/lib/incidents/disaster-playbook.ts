@@ -6,6 +6,7 @@ import { addIncidentUpdate } from "./engine";
 import { env } from "@/lib/env";
 import { canSendSms } from "@/lib/compliance/sms";
 import { reportError } from "@/lib/error-reporting";
+import { getResend } from "@/lib/email/client";
 
 // ── Disaster Playbook ──
 // Defines automated response actions for each provider outage.
@@ -226,8 +227,7 @@ async function notifyClientsSmsPlaybook(service: string): Promise<void> {
 
 async function notifyClientsEmailPlaybook(service: string): Promise<void> {
   if (!env.RESEND_API_KEY) return;
-  const { Resend } = await import("resend");
-  const resend = new Resend(env.RESEND_API_KEY);
+  const resend = getResend();
   const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
 
   const activeClients = await db

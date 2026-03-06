@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import crypto from "crypto";
+import { getResend } from "@/lib/email/client";
 import { db } from "@/db";
 import {
   businesses,
@@ -157,7 +157,7 @@ async function handlePromoter(businessId: string) {
 
     const shareLink = `${BASE_URL}/r/${business.referralCode}`;
     const testimonialLink = `${BASE_URL}/api/testimonial/submit?businessId=${businessId}`;
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = getResend();
 
     await resend.emails.send({
       from: "Calltide <success@calltide.app>",
@@ -279,7 +279,7 @@ async function handleDetractor(businessId: string, score: number) {
 
     // Send escalation email
     if (business.ownerEmail) {
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      const resend = getResend();
       await resend.emails.send({
         from: "Calltide <success@calltide.app>",
         to: business.ownerEmail,

@@ -1,6 +1,6 @@
-import { Resend } from "resend";
 import { env } from "@/lib/env";
 import { getTwilioClient } from "@/lib/twilio/client";
+import { getResend } from "@/lib/email/client";
 import { db } from "@/db";
 import {
   prospects,
@@ -118,15 +118,6 @@ export const CHURN_TOOLS = SHARED_TOOLS.filter((t) =>
 );
 
 // ── Tool Executors ──
-
-let resendClient: Resend | null = null;
-function getResend(): Resend {
-  if (!resendClient) {
-    if (!env.RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
-    resendClient = new Resend(env.RESEND_API_KEY);
-  }
-  return resendClient;
-}
 
 async function toolSendEmail(input: Record<string, unknown>): Promise<string> {
   const resend = getResend();

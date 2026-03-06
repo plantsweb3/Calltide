@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { db } from "@/db";
+import { getResend } from "@/lib/email/client";
 import {
   businesses,
   calls,
@@ -59,11 +59,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Check Resend key
-  if (!env.RESEND_API_KEY) {
-    return NextResponse.json({ error: "RESEND_API_KEY not configured" }, { status: 500 });
-  }
-  const resend = new Resend(env.RESEND_API_KEY);
+  const resend = getResend();
 
   let sent = 0;
   let skipped = 0;

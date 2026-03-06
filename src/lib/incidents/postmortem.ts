@@ -6,16 +6,9 @@ import { env } from "@/lib/env";
 import { formatDuration } from "./engine";
 import { notifyClients, notifySubscribers } from "./notifications";
 import { reportError } from "@/lib/error-reporting";
+import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
 
-const CLAUDE_MODEL = env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929";
-
-let anthropicClient: Anthropic | null = null;
-function getAnthropic(): Anthropic {
-  if (!anthropicClient) {
-    anthropicClient = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
-  }
-  return anthropicClient;
-}
+const CLAUDE_MODEL = env.CLAUDE_MODEL ?? SONNET_MODEL;
 
 export async function generatePostmortem(incidentId: string): Promise<void> {
   const [incident] = await db

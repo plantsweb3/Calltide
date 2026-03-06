@@ -7,7 +7,7 @@ import { env } from "@/lib/env";
 import { hashResetToken } from "@/lib/password";
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
-import { Resend } from "resend";
+import { getResend } from "@/lib/email/client";
 
 const forgotSchema = z.object({
   email: z.string().email("Valid email is required"),
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     // Send reset email
     const resetUrl = `${env.NEXT_PUBLIC_APP_URL}/dashboard/reset-password?token=${rawToken}&email=${encodeURIComponent(normalizedEmail)}`;
 
-    const resend = new Resend(env.RESEND_API_KEY);
+    const resend = getResend();
     await resend.emails.send({
       from: env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>",
       to: normalizedEmail,

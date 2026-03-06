@@ -11,6 +11,8 @@ import { eq, count } from "drizzle-orm";
 import * as schema from "../src/db/schema";
 import Anthropic from "@anthropic-ai/sdk";
 
+const SONNET_MODEL = "claude-sonnet-4-5-20250929";
+
 const client = createClient({
   url: process.env.TURSO_DATABASE_URL!,
   authToken: process.env.TURSO_AUTH_TOKEN!,
@@ -18,7 +20,7 @@ const client = createClient({
 const db = drizzle(client, { schema });
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
-const MODEL = process.env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929";
+const MODEL = process.env.CLAUDE_MODEL ?? SONNET_MODEL;
 
 // ── Categories ──
 

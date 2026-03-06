@@ -1,5 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { getHumeClient } from "@/lib/hume/client";
+import { getAnthropic, HAIKU_MODEL } from "@/lib/ai/client";
 import { db } from "@/db";
 import { calls } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -60,14 +60,14 @@ interface GeneratedSummary {
 }
 
 async function generateSummary(transcript: TranscriptLine[]): Promise<GeneratedSummary> {
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const anthropic = getAnthropic();
 
   const transcriptText = transcript
     .map((line) => `${line.speaker === "ai" ? "AI" : "Caller"}: ${line.text}`)
     .join("\n");
 
   const response = await anthropic.messages.create({
-    model: process.env.CLAUDE_MODEL ?? "claude-haiku-4-5-20251001",
+    model: process.env.CLAUDE_MODEL ?? HAIKU_MODEL,
     max_tokens: 500,
     messages: [
       {

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import Stripe from "stripe";
 import { db } from "@/db";
 import { accounts, businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { logActivity } from "@/lib/activity";
 import { getLocationPriceId, getLocationMrr, type PlanType } from "@/lib/stripe-prices";
+import { getStripe } from "@/lib/stripe/client";
 
 const addLocationSchema = z.object({
   locationName: z.string().min(1).max(200),
@@ -19,12 +19,6 @@ const addLocationSchema = z.object({
   })).optional(),
   greeting: z.string().max(500).optional(),
 });
-
-function getStripe(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
-  return new Stripe(key, { apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion });
-}
 
 const DEFAULT_HOURS: Record<string, { open: string; close: string }> = {
   Mon: { open: "08:00", close: "17:00" },

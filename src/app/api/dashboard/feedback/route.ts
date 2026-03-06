@@ -5,6 +5,7 @@ import { clientFeedback, businesses } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-reporting";
+import { getResend } from "@/lib/email/client";
 
 const createSchema = z.object({
   type: z.enum(["feedback", "feature_request", "bug_report"]),
@@ -96,11 +97,12 @@ async function sendFeedbackAck(businessId: string, feedbackTitle: string) {
 
   if (!biz?.ownerEmail) return;
 
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return;
-
-  const { Resend } = await import("resend");
-  const resend = new Resend(apiKey);
+  let resend;
+  try {
+    resend = getResend();
+  } catch {
+    return;
+  }
   const lang = biz.defaultLanguage === "es" ? "es" : "en";
 
   const t = lang === "es"

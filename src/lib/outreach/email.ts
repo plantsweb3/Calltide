@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { getResend } from "@/lib/email/client";
 import { env } from "@/lib/env";
 import { db } from "@/db";
 import { prospectOutreach, paywallEmails } from "@/db/schema";
@@ -6,16 +6,6 @@ import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 
 const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
-
-let resendClient: Resend | null = null;
-
-function getResend(): Resend {
-  if (!resendClient) {
-    if (!env.RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
-    resendClient = new Resend(env.RESEND_API_KEY);
-  }
-  return resendClient;
-}
 
 export async function sendOutreachEmail(params: {
   prospectId: string;

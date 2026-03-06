@@ -8,16 +8,11 @@ import { DEMO_BUSINESS_ID } from "../../demo-data";
 import { reportError } from "@/lib/error-reporting";
 import { getPriceId, getLocationPriceId, getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
 import { logActivity } from "@/lib/activity";
+import { getStripe } from "@/lib/stripe/client";
 
 const schema = z.object({
   plan: z.enum(["monthly", "annual"]),
 });
-
-function getStripe(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
-  return new Stripe(key, { apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion });
-}
 
 export async function POST(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");

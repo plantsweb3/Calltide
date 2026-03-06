@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { Resend } from "resend";
 import { db } from "@/db";
+import { getResend } from "@/lib/email/client";
 import { statusPageSubscribers } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/lib/env";
@@ -12,15 +12,6 @@ const subscribeSchema = z.object({
   email: z.string().email("Valid email required"),
   language: z.enum(["en", "es"]).default("en"),
 });
-
-let resendClient: Resend | null = null;
-function getResend(): Resend {
-  if (!resendClient) {
-    if (!env.RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
-    resendClient = new Resend(env.RESEND_API_KEY);
-  }
-  return resendClient;
-}
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);

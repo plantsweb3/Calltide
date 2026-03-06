@@ -1,10 +1,10 @@
 import { db } from "@/db";
 import { dunningState, businesses, calls } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
-import { Resend } from "resend";
 import Twilio from "twilio";
-import Stripe from "stripe";
 import { env } from "@/lib/env";
+import { getStripe } from "@/lib/stripe/client";
+import { getResend } from "@/lib/email/client";
 import { canSendSms } from "@/lib/compliance/sms";
 import { createNotification } from "@/lib/notifications";
 import { canContactToday, logOutreach } from "@/lib/outreach";
@@ -21,15 +21,6 @@ function getPlanAmount(planType?: string | null): { display: string; displayEs: 
     return { display: "$4,764/yr", displayEs: "$4,764/año" };
   }
   return { display: "$497/mo", displayEs: "$497/mes" };
-}
-
-let resend: Resend | null = null;
-function getResend(): Resend {
-  if (!resend) {
-    if (!env.RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
-    resend = new Resend(env.RESEND_API_KEY);
-  }
-  return resend;
 }
 
 let twilio: Twilio.Twilio | null = null;
@@ -471,14 +462,6 @@ async function sendDunningSms(
   } catch (e) {
     reportError("[dunning] Failed to send SMS", e);
   }
-}
-
-// ── Stripe helper ──
-
-function getStripe(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
-  return new Stripe(key, { apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion });
 }
 
 // ── Farewell Email ──

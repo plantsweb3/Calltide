@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { getResend } from "@/lib/email/client";
 import { getTwilioClient } from "@/lib/twilio/client";
 import { db } from "@/db";
 import {
@@ -17,17 +17,6 @@ import { reportError } from "@/lib/error-reporting";
 
 type IncidentRow = typeof incidents.$inferSelect;
 type NotificationEvent = "created" | "update" | "resolved";
-
-// ── Resend client (lazy, same pattern as outreach/email.ts) ──
-
-let resendClient: Resend | null = null;
-function getResend(): Resend {
-  if (!resendClient) {
-    if (!env.RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
-    resendClient = new Resend(env.RESEND_API_KEY);
-  }
-  return resendClient;
-}
 
 const FROM_EMAIL = "Calltide Status <status@contact.calltide.app>";
 const OWNER_PHONE = env.OWNER_PHONE;

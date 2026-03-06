@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { businesses, capacitySnapshots, capacityAlerts } from "@/db/schema";
 import { desc, eq, gte, sql } from "drizzle-orm";
-import { Resend } from "resend";
 import { env } from "@/lib/env";
+import { getResend } from "@/lib/email/client";
 import { PROVIDER_LIMITS, determineTier } from "@/lib/capacity/config";
 import { projectBreachDate, estimateMonthlyCost } from "@/lib/capacity/modeling";
 import { reportError } from "@/lib/error-reporting";
@@ -150,7 +150,7 @@ export async function POST(request: Request) {
   <p style="color:#94A3B8;font-size:11px;">Calltide Inc. &middot; San Antonio, TX</p>
 </div>`;
 
-    const resend = new Resend(env.RESEND_API_KEY);
+    const resend = getResend();
     const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
     await resend.emails.send({
       from,

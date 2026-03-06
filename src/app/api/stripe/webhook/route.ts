@@ -16,12 +16,7 @@ import { getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
 import { reportError } from "@/lib/error-reporting";
 import { provisionTwilioNumber } from "@/lib/twilio/provision";
 import { recordConsent } from "@/lib/compliance/consent";
-
-function getStripe(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
-  return new Stripe(key, { apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion });
-}
+import { getStripe } from "@/lib/stripe/client";
 
 export async function POST(request: Request) {
   const body = await request.text();

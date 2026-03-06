@@ -5,18 +5,11 @@ import { agentConfig } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { executeTool, logAgentActivity } from "./tools";
 import { reportError } from "@/lib/error-reporting";
+import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
 import type { AgentName, AgentResult, TargetType, ToolDefinition, ActionType } from "./types";
 
-const CLAUDE_MODEL = env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929";
+const CLAUDE_MODEL = env.CLAUDE_MODEL ?? SONNET_MODEL;
 const MAX_TOOL_ROUNDS = 5;
-
-let anthropicClient: Anthropic | null = null;
-function getAnthropic(): Anthropic {
-  if (!anthropicClient) {
-    anthropicClient = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
-  }
-  return anthropicClient;
-}
 
 // ── Core Agent Runner ──
 

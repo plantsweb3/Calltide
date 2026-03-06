@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { db } from "@/db";
+import { getResend } from "@/lib/email/client";
 import { businesses, paywallEmails } from "@/db/schema";
 import { and, eq, isNull, ne } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
@@ -14,12 +14,6 @@ import {
 
 const FROM_EMAIL = "Ulysses at Calltide <hello@calltide.app>";
 const REPLY_TO = "hello@calltide.app";
-
-function getResend(): Resend | null {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) return null;
-  return new Resend(key);
-}
 
 /**
  * GET /api/cron/paywall-retarget
@@ -41,8 +35,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const resend = getResend();
-  if (!resend) {
+  let resend;
+  try {
+    resend = getResend();
+  } catch {
     return NextResponse.json({ error: "RESEND_API_KEY not configured" }, { status: 500 });
   }
 

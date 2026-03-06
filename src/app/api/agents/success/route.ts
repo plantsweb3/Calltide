@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import crypto from "crypto";
+import { getResend } from "@/lib/email/client";
 import { db } from "@/db";
 import {
   businesses,
@@ -64,12 +64,6 @@ function pctChange(curr: number, prev: number): string {
   if (prev === 0) return curr > 0 ? "+100%" : "0%";
   const pct = Math.round(((curr - prev) / prev) * 100);
   return pct >= 0 ? `+${pct}%` : `${pct}%`;
-}
-
-function getResend(): Resend {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) throw new Error("RESEND_API_KEY not configured");
-  return new Resend(key);
 }
 
 function emailWrapper(content: string, unsubscribeUrl: string): string {

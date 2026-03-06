@@ -10,6 +10,7 @@ import { handleProspectSmsKeyword } from "@/lib/outreach/sms-outreach";
 import { logActivity } from "@/lib/activity";
 import { sendSMS } from "@/lib/twilio/sms";
 import { env } from "@/lib/env";
+import { getResend } from "@/lib/email/client";
 
 const OPT_OUT_KEYWORDS = ["stop", "unsubscribe", "cancel", "quit", "end", "optout", "opt out"];
 const OPT_IN_KEYWORDS = ["start", "unstop", "subscribe", "opt in", "optin"];
@@ -218,8 +219,7 @@ async function handleCallbackRequest(
 
 async function notifyOwnerOfSms(businessId: string, businessName: string, ownerEmail: string, messageBody: string): Promise<void> {
   if (!env.RESEND_API_KEY) return;
-  const { Resend } = await import("resend");
-  const resend = new Resend(env.RESEND_API_KEY);
+  const resend = getResend();
   const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
   const preview = escapeHtml(messageBody.slice(0, 200));
 

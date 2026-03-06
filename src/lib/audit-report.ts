@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { getResend } from "@/lib/email/client";
 import { db } from "@/db";
 import { auditRequests } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -25,8 +25,10 @@ interface AuditReportData {
 }
 
 export async function generateAndSendAuditReport(data: AuditReportData) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  let resend;
+  try {
+    resend = getResend();
+  } catch {
     reportError("RESEND_API_KEY not set — cannot send audit report", new Error("Missing env"));
     return;
   }
@@ -56,7 +58,6 @@ export async function generateAndSendAuditReport(data: AuditReportData) {
   });
 
   try {
-    const resend = new Resend(apiKey);
     const from = process.env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
 
     await resend.emails.send({

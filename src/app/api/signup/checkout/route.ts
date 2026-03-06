@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import Stripe from "stripe";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { getPriceId, type PlanType } from "@/lib/stripe-prices";
 import { reportError } from "@/lib/error-reporting";
+import { getStripe } from "@/lib/stripe/client";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
   plan: z.enum(["monthly", "annual"]).default("monthly"),
 });
-
-function getStripe(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
-  return new Stripe(key, { apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion });
-}
 
 export async function POST(req: NextRequest) {
   const rl = await rateLimit(`signup-checkout:${getClientIp(req)}`, { limit: 5, windowSeconds: 3600 });

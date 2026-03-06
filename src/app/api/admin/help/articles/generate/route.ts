@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/lib/env";
+import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
 
 const ARTICLE_SYSTEM_PROMPT = `You are a bilingual help center content writer for Calltide, a bilingual AI receptionist service for Hispanic home service businesses in Texas.
 
@@ -49,10 +49,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "title required" }, { status: 400 });
   }
 
-  const anthropic = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
+  const anthropic = getAnthropic();
 
   const response = await anthropic.messages.create({
-    model: env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929",
+    model: env.CLAUDE_MODEL ?? SONNET_MODEL,
     max_tokens: 4096,
     system: ARTICLE_SYSTEM_PROMPT,
     messages: [

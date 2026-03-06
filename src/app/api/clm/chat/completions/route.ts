@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessByPhone, detectLanguage } from "@/lib/ai/context-builder";
+import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
 import { getReturningCallerContext } from "@/lib/crm/returning-caller";
 import { buildSystemPrompt } from "@/lib/ai/system-prompts";
 import { buildPricingContext } from "@/lib/ai/pricing-context";
@@ -14,7 +14,7 @@ import type { ChatCompletionRequest, SSEChunk, BusinessContext, Language } from 
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
-const CLAUDE_MODEL = process.env.CLAUDE_MODEL ?? "claude-sonnet-4-5-20250929";
+const CLAUDE_MODEL = process.env.CLAUDE_MODEL ?? SONNET_MODEL;
 const MAX_MESSAGES = 50; // Cap conversation history to prevent unbounded input
 const MAX_MESSAGE_LENGTH = 2000; // Cap individual message content length
 
@@ -74,9 +74,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    });
+    const anthropic = getAnthropic();
 
     const body: ChatCompletionRequest = await req.json();
     const { messages: rawMessages, metadata } = body;
