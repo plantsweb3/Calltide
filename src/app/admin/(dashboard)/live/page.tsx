@@ -293,7 +293,7 @@ export default function LiveMonitorPage() {
             change={
               data?.activeByStatus
                 ? Object.entries(data.activeByStatus)
-                    .map(([k, v]) => `${v} ${k.replace("_", " ")}`)
+                    .map(([k, v]) => `${v} ${k.replace(/_/g, " ")}`)
                     .join(", ")
                 : "No active calls"
             }

@@ -51,7 +51,19 @@ export default function ReferralsPage() {
   }, []);
 
   function copyToClipboard(text: string, type: "code" | "link") {
-    navigator.clipboard.writeText(text);
+    try {
+      navigator.clipboard.writeText(text);
+    } catch {
+      // Fallback for older browsers / non-HTTPS
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+    }
     setCopied(type);
     toast.success(type === "code" ? "Referral code copied!" : "Share link copied!");
     setTimeout(() => setCopied(null), 2000);
@@ -72,7 +84,7 @@ export default function ReferralsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)" }}>
+        <h1 className="text-2xl font-semibold" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>
           Referral Program
         </h1>
         <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
@@ -138,7 +150,7 @@ export default function ReferralsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {[
           { label: "Referred", value: data.stats.totalReferred },
           { label: "Active", value: data.stats.active },
@@ -191,7 +203,7 @@ export default function ReferralsPage() {
                           style={{ background: style.bg, color: style.color }}
                         >
                           <span className="h-1.5 w-1.5 rounded-full" style={{ background: style.color }} />
-                          {ref.status.replace("_", " ")}
+                          {ref.status.replace(/_/g, " ")}
                         </span>
                       </td>
                       <td className="px-4 py-3" style={{ color: "var(--db-text-secondary)" }}>

@@ -13,7 +13,7 @@ function ImportContent() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>
+        <h1 className="text-2xl font-semibold" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>
           Import Data
         </h1>
         <p className="text-sm mt-1" style={{ color: "var(--db-text-muted)" }}>

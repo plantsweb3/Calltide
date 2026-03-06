@@ -229,7 +229,7 @@ export default function RetargetingPage() {
               </thead>
               <tbody>
                 {filtered.map((biz) => {
-                  const statusLabel = biz.converted ? "converted" : biz.paywallUnsubscribed ? "unsubscribed" : biz.onboardingStatus?.replace("_", " ");
+                  const statusLabel = biz.converted ? "converted" : biz.paywallUnsubscribed ? "unsubscribed" : biz.onboardingStatus?.replace(/_/g, " ");
                   const statusColor = biz.converted ? "#22C55E" : biz.paywallUnsubscribed ? "#9CA3AF" : biz.onboardingStatus === "abandoned" ? "#EF4444" : "#F59E0B";
                   return (
                     <tr key={biz.id} className="transition-colors hover:opacity-80" style={{ borderBottom: "1px solid var(--db-border)" }}>
@@ -240,7 +240,7 @@ export default function RetargetingPage() {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-sm capitalize" style={{ color: "var(--db-text)" }}>
-                        {biz.type?.replace("_", " ") || "—"}
+                        {biz.type?.replace(/_/g, " ") || "—"}
                       </td>
                       <td className="px-4 py-3 text-sm" style={{ color: "var(--db-text)" }}>
                         {biz.receptionistName || "—"}

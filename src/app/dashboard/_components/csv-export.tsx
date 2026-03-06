@@ -36,7 +36,8 @@ export default function ExportCsvButton<T>({
     );
     const csv = [headerRow, ...dataRows].join("\n");
 
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const bom = "\uFEFF";
+    const blob = new Blob([bom + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -45,19 +46,21 @@ export default function ExportCsvButton<T>({
     URL.revokeObjectURL(url);
   }, [data, columns, filename]);
 
-  if (data.length === 0) return null;
+  const isEmpty = data.length === 0;
 
   return (
     <button
       onClick={handleExport}
+      disabled={isEmpty}
       className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
       style={{
         background: "var(--db-surface)",
         border: "1px solid var(--db-border)",
         color: "var(--db-text-muted)",
-        cursor: "pointer",
+        cursor: isEmpty ? "not-allowed" : "pointer",
+        opacity: isEmpty ? 0.5 : 1,
       }}
-      title="Export as CSV"
+      title={isEmpty ? "No data to export" : "Export as CSV"}
     >
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />

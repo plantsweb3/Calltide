@@ -46,14 +46,14 @@ export default class ErrorBoundary extends Component<Props, State> {
               {this.state.error?.message || "An unexpected error occurred"}
             </p>
             <button
-              onClick={() => this.setState({ hasError: false, error: null })}
+              onClick={() => window.location.reload()}
               className="mt-4 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
               style={{
                 background: "var(--db-accent)",
                 color: "#fff",
               }}
             >
-              Try Again
+              Reload Page
             </button>
           </div>
         </div>

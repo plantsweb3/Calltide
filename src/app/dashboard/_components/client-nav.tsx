@@ -141,6 +141,14 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
   const { theme, toggleTheme } = useTheme();
   const [aiStatus, setAiStatus] = useState<string>("active");
 
+  // Close mobile sidebar on Escape key
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [open, onClose]);
+
   useEffect(() => {
     fetch("/api/dashboard/billing")
       .then((r) => r.json())
@@ -330,6 +338,9 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
               e.currentTarget.style.background = "transparent";
             }}
           >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
             Logout
           </button>
         </div>

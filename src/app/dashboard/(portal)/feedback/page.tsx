@@ -102,7 +102,7 @@ export default function ClientFeedbackPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)" }}>Feedback</h1>
+          <h1 className="text-2xl font-semibold" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>Feedback</h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
             Share ideas, report issues, or request features. We read every submission.
           </p>
@@ -162,6 +162,7 @@ export default function ClientFeedbackPage() {
               className="w-full rounded-lg px-3 py-2 text-sm outline-none"
               style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
             />
+            <p className="mt-1 text-xs text-right" style={{ color: "var(--db-text-muted)" }}>{title.length}/200</p>
           </div>
 
           <div>
@@ -177,6 +178,7 @@ export default function ClientFeedbackPage() {
               className="w-full resize-none rounded-lg px-3 py-2 text-sm outline-none"
               style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
             />
+            <p className="mt-1 text-xs text-right" style={{ color: "var(--db-text-muted)" }}>{description.length}/2000</p>
           </div>
 
           {formError && (

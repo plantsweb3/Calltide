@@ -391,7 +391,7 @@ export default function ClientDetailPage({
                     </div>
                     <div className="mt-1.5 flex items-center gap-2">
                       <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={statusColor(call.status)}>
-                        {call.status.replace("_", " ")}
+                        {call.status.replace(/_/g, " ")}
                       </span>
                       <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{formatDuration(call.duration)}</span>
                       {call.language && <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{call.language.toUpperCase()}</span>}
@@ -465,7 +465,7 @@ export default function ClientDetailPage({
                 <div className="flex items-center justify-between">
                   <span className="font-medium" style={{ color: "var(--db-text)" }}>{apt.service}</span>
                   <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={statusColor(apt.status)}>
-                    {apt.status.replace("_", " ")}
+                    {apt.status.replace(/_/g, " ")}
                   </span>
                 </div>
                 <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
@@ -685,7 +685,7 @@ export default function ClientDetailPage({
                             className="rounded-full px-2 py-0.5 text-[10px] font-medium"
                             style={{ background: `${refColor}15`, color: refColor }}
                           >
-                            {ref.status?.replace("_", " ")}
+                            {ref.status?.replace(/_/g, " ")}
                           </span>
                           <span className="text-xs" style={{ color: "var(--db-text-secondary)" }}>
                             ${ref.creditAmount} {ref.creditApplied ? "applied" : "pending"}

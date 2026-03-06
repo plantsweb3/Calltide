@@ -31,12 +31,12 @@ interface Pipeline {
 }
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
-  new: { bg: "#dbeafe", text: "#1e40af" },
-  sent: { bg: "#e0e7ff", text: "#3730a3" },
-  follow_up: { bg: "#fef3c7", text: "#92400e" },
-  won: { bg: "#dcfce7", text: "#166534" },
-  lost: { bg: "#fee2e2", text: "#991b1b" },
-  expired: { bg: "#f3f4f6", text: "#6b7280" },
+  new: { bg: "rgba(59,130,246,0.15)", text: "#60a5fa" },
+  sent: { bg: "rgba(99,102,241,0.15)", text: "#818cf8" },
+  follow_up: { bg: "rgba(245,158,11,0.15)", text: "#fbbf24" },
+  won: { bg: "rgba(34,197,94,0.15)", text: "#4ade80" },
+  lost: { bg: "rgba(239,68,68,0.15)", text: "#f87171" },
+  expired: { bg: "rgba(148,163,184,0.15)", text: "#94a3b8" },
 };
 
 const LOST_REASONS = [
@@ -100,6 +100,8 @@ export default function EstimatesPage() {
     }
   }
 
+  const [confirmFollowUpId, setConfirmFollowUpId] = useState<string | null>(null);
+
   async function sendFollowUp(id: string) {
     try {
       const res = await fetch(`/api/dashboard/estimates/${id}/follow-up`, { method: "POST" });
@@ -132,7 +134,7 @@ export default function EstimatesPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>
+        <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)", fontFamily: "var(--font-body), system-ui, sans-serif" }}>
           Estimates Pipeline
         </h1>
         <ExportCsvButton
@@ -248,7 +250,7 @@ export default function EstimatesPage() {
                     <td colSpan={6} className="p-0">
                       {/* Row */}
                       <div
-                        className="grid cursor-pointer transition-colors px-4 py-3"
+                        className="flex flex-col sm:grid cursor-pointer transition-colors px-4 py-3 hover:bg-[var(--db-hover)]"
                         style={{ gridTemplateColumns: "1fr 1fr 0.7fr 0.7fr 0.7fr 0.8fr", borderBottom: "1px solid var(--db-border)" }}
                         role="button"
                         tabIndex={0}
@@ -256,30 +258,37 @@ export default function EstimatesPage() {
                         aria-label={`${isExpanded ? "Collapse" : "Expand"} estimate for ${est.customerName || "Unknown"}`}
                         onClick={() => setExpandedId(isExpanded ? null : est.id)}
                         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpandedId(isExpanded ? null : est.id); } }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = "var(--db-hover)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                       >
-                        <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                          {est.customerName || "Unknown"}
-                        </span>
-                        <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                          {est.service || "—"}
-                        </span>
-                        <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                          {formatCurrency(est.amount)}
-                        </span>
-                        <span>
+                        <div className="flex items-center justify-between sm:contents">
+                          <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                            {est.customerName || "Unknown"}
+                          </span>
                           <span
-                            className="rounded px-2 py-0.5 text-[10px] font-medium"
+                            className="rounded-full px-2 py-0.5 text-[10px] font-medium sm:order-none"
                             style={{ background: colors.bg, color: colors.text }}
                           >
                             {est.status.replace(/_/g, " ").toUpperCase()}
                           </span>
+                        </div>
+                        <span className="text-sm hidden sm:block" style={{ color: "var(--db-text-secondary)" }}>
+                          {est.service || "—"}
                         </span>
-                        <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>
+                        <span className="text-sm font-medium hidden sm:block" style={{ color: "var(--db-text)" }}>
+                          {formatCurrency(est.amount)}
+                        </span>
+                        <span className="hidden sm:block" />
+                        <div className="flex items-center gap-3 mt-1 sm:mt-0 sm:contents">
+                          <span className="text-xs sm:text-sm" style={{ color: "var(--db-text-muted)" }}>
+                            {est.service ? `${est.service} · ` : ""}{formatCurrency(est.amount)}
+                          </span>
+                          <span className="text-xs sm:hidden" style={{ color: "var(--db-text-muted)" }}>
+                            {formatDate(est.createdAt)}
+                          </span>
+                        </div>
+                        <span className="text-sm hidden sm:block" style={{ color: "var(--db-text-muted)" }}>
                           {formatDate(est.createdAt)}
                         </span>
-                        <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>
+                        <span className="text-sm hidden sm:block" style={{ color: "var(--db-text-muted)" }}>
                           {formatDate(est.nextFollowUpAt)}
                         </span>
                       </div>
@@ -311,7 +320,7 @@ export default function EstimatesPage() {
                             {["new", "sent", "follow_up"].includes(est.status) && (
                               <>
                                 <button
-                                  onClick={() => sendFollowUp(est.id)}
+                                  onClick={() => setConfirmFollowUpId(est.id)}
                                   className="rounded-lg px-3 py-1.5 text-xs font-medium text-white"
                                   style={{ background: "var(--db-accent)" }}
                                 >
@@ -357,18 +366,42 @@ export default function EstimatesPage() {
 
       )}
 
+      {/* Follow-Up Confirmation */}
+      {confirmFollowUpId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setConfirmFollowUpId(null)} onKeyDown={(e) => { if (e.key === "Escape") setConfirmFollowUpId(null); }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="followup-title" className="w-full max-w-sm rounded-xl p-6" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }} onClick={(e) => e.stopPropagation()}>
+            <h3 id="followup-title" className="text-lg font-semibold mb-2" style={{ color: "var(--db-text)" }}>Send Follow-Up SMS?</h3>
+            <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>This will send a follow-up text message to the customer. SMS charges may apply.</p>
+            <div className="flex gap-2">
+              <button onClick={() => setConfirmFollowUpId(null)} className="flex-1 rounded-lg px-4 py-2 text-sm" style={{ background: "var(--db-hover)", color: "var(--db-text)" }}>
+                Cancel
+              </button>
+              <button
+                onClick={() => { sendFollowUp(confirmFollowUpId); setConfirmFollowUpId(null); }}
+                className="flex-1 rounded-lg px-4 py-2 text-sm font-medium text-white"
+                style={{ background: "var(--db-accent)" }}
+              >
+                Send SMS
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Won Modal */}
       {showWonModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-sm rounded-xl p-6" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
-            <h3 className="text-lg font-bold mb-4" style={{ color: "var(--db-text)" }}>Mark as Won</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowWonModal(null)} onKeyDown={(e) => { if (e.key === "Escape") setShowWonModal(null); }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="won-title" className="w-full max-w-sm rounded-xl p-6" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }} onClick={(e) => e.stopPropagation()}>
+            <h3 id="won-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>Mark as Won</h3>
             <label className="block text-sm mb-1" style={{ color: "var(--db-text-muted)" }}>Final Amount ($)</label>
             <input
               type="number"
+              min="0"
               value={wonAmount}
               onChange={(e) => setWonAmount(e.target.value)}
               className="w-full rounded-lg border px-3 py-2 text-sm mb-4"
               style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              autoFocus
             />
             <div className="flex gap-2">
               <button onClick={() => setShowWonModal(null)} className="flex-1 rounded-lg px-4 py-2 text-sm" style={{ background: "var(--db-hover)", color: "var(--db-text)" }}>
@@ -391,15 +424,16 @@ export default function EstimatesPage() {
 
       {/* Lost Modal */}
       {showLostModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-sm rounded-xl p-6" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
-            <h3 className="text-lg font-bold mb-4" style={{ color: "var(--db-text)" }}>Mark as Lost</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowLostModal(null)} onKeyDown={(e) => { if (e.key === "Escape") setShowLostModal(null); }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="lost-title" className="w-full max-w-sm rounded-xl p-6" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }} onClick={(e) => e.stopPropagation()}>
+            <h3 id="lost-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>Mark as Lost</h3>
             <label className="block text-sm mb-1" style={{ color: "var(--db-text-muted)" }}>Reason</label>
             <select
               value={lostReason}
               onChange={(e) => setLostReason(e.target.value)}
               className="w-full rounded-lg border px-3 py-2 text-sm mb-4"
               style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              autoFocus
             >
               {LOST_REASONS.map((r) => (
                 <option key={r.value} value={r.value}>{r.label}</option>

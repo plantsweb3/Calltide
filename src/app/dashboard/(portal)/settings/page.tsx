@@ -175,7 +175,9 @@ export default function SettingsPage() {
   const [pricing, setPricing] = useState<PricingEntry[]>([]);
   const [pricingLoading, setPricingLoading] = useState(true);
   const [editingPriceId, setEditingPriceId] = useState<string | null>(null);
+  const [editingPriceData, setEditingPriceData] = useState<{ serviceName: string; priceMin: string; priceMax: string; unit: string }>({ serviceName: "", priceMin: "", priceMax: "", unit: "per_job" });
   const [newPriceRow, setNewPriceRow] = useState<{ serviceName: string; priceMin: string; priceMax: string; unit: string } | null>(null);
+  const [confirmDeletePriceId, setConfirmDeletePriceId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/dashboard/settings")
@@ -691,20 +693,10 @@ export default function SettingsPage() {
                 Enable Weekly Digest
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                const next = !data.enableWeeklyDigest;
-                setData({ ...data, enableWeeklyDigest: next });
-              }}
-              className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
-              style={{ background: data.enableWeeklyDigest ? "var(--db-accent)" : "var(--db-border)" }}
-            >
-              <span
-                className="inline-block h-4 w-4 rounded-full bg-white transition-transform"
-                style={{ transform: data.enableWeeklyDigest ? "translateX(22px)" : "translateX(4px)" }}
-              />
-            </button>
+            <ToggleSwitch
+              checked={data.enableWeeklyDigest}
+              onChange={(v) => setData({ ...data, enableWeeklyDigest: v })}
+            />
           </div>
           {data.enableWeeklyDigest && (
             <div>
@@ -749,19 +741,10 @@ export default function SettingsPage() {
                 Enable Daily Summary
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                setData({ ...data, enableDailySummary: !data.enableDailySummary });
-              }}
-              className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
-              style={{ background: data.enableDailySummary ? "var(--db-accent)" : "var(--db-border)" }}
-            >
-              <span
-                className="inline-block h-4 w-4 rounded-full bg-white transition-transform"
-                style={{ transform: data.enableDailySummary ? "translateX(22px)" : "translateX(4px)" }}
-              />
-            </button>
+            <ToggleSwitch
+              checked={data.enableDailySummary}
+              onChange={(v) => setData({ ...data, enableDailySummary: v })}
+            />
           </div>
         </div>
       </Card>
@@ -1085,8 +1068,8 @@ export default function SettingsPage() {
                         <>
                           <input
                             type="text"
-                            defaultValue={p.serviceName}
-                            id={`edit-name-${p.id}`}
+                            value={editingPriceData.serviceName}
+                            onChange={(e) => setEditingPriceData((d) => ({ ...d, serviceName: e.target.value }))}
                             className="flex-1 min-w-[120px] rounded px-2 py-1 text-sm"
                             style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                           />
@@ -1094,8 +1077,8 @@ export default function SettingsPage() {
                             <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
                             <input
                               type="number"
-                              defaultValue={p.priceMin ?? ""}
-                              id={`edit-min-${p.id}`}
+                              value={editingPriceData.priceMin}
+                              onChange={(e) => setEditingPriceData((d) => ({ ...d, priceMin: e.target.value }))}
                               className="w-20 rounded px-2 py-1 text-sm"
                               style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                               placeholder="Min"
@@ -1104,16 +1087,16 @@ export default function SettingsPage() {
                             <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
                             <input
                               type="number"
-                              defaultValue={p.priceMax ?? ""}
-                              id={`edit-max-${p.id}`}
+                              value={editingPriceData.priceMax}
+                              onChange={(e) => setEditingPriceData((d) => ({ ...d, priceMax: e.target.value }))}
                               className="w-20 rounded px-2 py-1 text-sm"
                               style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                               placeholder="Max"
                             />
                           </div>
                           <select
-                            defaultValue={p.unit}
-                            id={`edit-unit-${p.id}`}
+                            value={editingPriceData.unit}
+                            onChange={(e) => setEditingPriceData((d) => ({ ...d, unit: e.target.value }))}
                             className="rounded px-2 py-1 text-xs"
                             style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                           >
@@ -1124,19 +1107,15 @@ export default function SettingsPage() {
                           </select>
                           <button
                             onClick={async () => {
-                              const nameEl = document.getElementById(`edit-name-${p.id}`) as HTMLInputElement;
-                              const minEl = document.getElementById(`edit-min-${p.id}`) as HTMLInputElement;
-                              const maxEl = document.getElementById(`edit-max-${p.id}`) as HTMLInputElement;
-                              const unitEl = document.getElementById(`edit-unit-${p.id}`) as HTMLSelectElement;
                               try {
                                 const res = await fetch(`/api/dashboard/pricing/${p.id}`, {
                                   method: "PUT",
                                   headers: { "Content-Type": "application/json" },
                                   body: JSON.stringify({
-                                    serviceName: nameEl.value,
-                                    priceMin: minEl.value ? parseFloat(minEl.value) : null,
-                                    priceMax: maxEl.value ? parseFloat(maxEl.value) : null,
-                                    unit: unitEl.value,
+                                    serviceName: editingPriceData.serviceName,
+                                    priceMin: editingPriceData.priceMin ? parseFloat(editingPriceData.priceMin) : null,
+                                    priceMax: editingPriceData.priceMax ? parseFloat(editingPriceData.priceMax) : null,
+                                    unit: editingPriceData.unit,
                                   }),
                                 });
                                 if (res.ok) {
@@ -1177,25 +1156,25 @@ export default function SettingsPage() {
                               : "—"}
                           </span>
                           <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                            {p.unit.replace("_", " ")}
+                            {p.unit.replace(/_/g, " ")}
                           </span>
                           <button
-                            onClick={() => setEditingPriceId(p.id)}
+                            onClick={() => {
+                              setEditingPriceId(p.id);
+                              setEditingPriceData({
+                                serviceName: p.serviceName,
+                                priceMin: p.priceMin != null ? String(p.priceMin) : "",
+                                priceMax: p.priceMax != null ? String(p.priceMax) : "",
+                                unit: p.unit,
+                              });
+                            }}
                             className="text-xs font-medium"
                             style={{ color: "var(--db-accent)" }}
                           >
                             Edit
                           </button>
                           <button
-                            onClick={async () => {
-                              try {
-                                await fetch(`/api/dashboard/pricing/${p.id}`, { method: "DELETE" });
-                                setPricing((prev) => prev.filter((x) => x.id !== p.id));
-                                toast.success("Pricing removed");
-                              } catch {
-                                toast.error("Failed to delete");
-                              }
-                            }}
+                            onClick={() => setConfirmDeletePriceId(p.id)}
                             className="text-xs"
                             style={{ color: "#f87171" }}
                           >
@@ -1634,6 +1613,59 @@ export default function SettingsPage() {
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>
+        </div>
+      )}
+
+      {/* Delete Pricing Confirmation */}
+      {confirmDeletePriceId && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: "rgba(0,0,0,0.6)" }}
+          onClick={() => setConfirmDeletePriceId(null)}
+          onKeyDown={(e) => { if (e.key === "Escape") setConfirmDeletePriceId(null); }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-price-title"
+        >
+          <div
+            className="w-full max-w-sm rounded-xl p-6 space-y-4"
+            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="delete-price-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+              Delete Pricing?
+            </h3>
+            <p className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
+              This will remove the pricing entry. This action cannot be undone.
+            </p>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setConfirmDeletePriceId(null)}
+                className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                style={{ color: "var(--db-text-secondary)" }}
+              >
+                Cancel
+              </button>
+              <button
+                autoFocus
+                onClick={async () => {
+                  const id = confirmDeletePriceId;
+                  setConfirmDeletePriceId(null);
+                  try {
+                    await fetch(`/api/dashboard/pricing/${id}`, { method: "DELETE" });
+                    setPricing((prev) => prev.filter((x) => x.id !== id));
+                    toast.success("Pricing removed");
+                  } catch {
+                    toast.error("Failed to delete");
+                  }
+                }}
+                className="rounded-lg px-4 py-2 text-sm font-semibold text-white"
+                style={{ background: "#ef4444" }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -2333,6 +2365,8 @@ function SecuritySection() {
 function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <button
+      role="switch"
+      aria-checked={checked}
       onClick={() => onChange(!checked)}
       className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors"
       style={{ background: checked ? "var(--db-accent)" : "var(--db-border)" }}

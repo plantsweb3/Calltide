@@ -151,7 +151,7 @@ export default function CallAnalyticsPage() {
         const style = statusStyles[row.status] || { background: "var(--db-hover)", color: "var(--db-text-secondary)" };
         return (
           <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={style}>
-            {row.status.replace("_", " ")}
+            {row.status.replace(/_/g, " ")}
           </span>
         );
       },

@@ -142,7 +142,7 @@ export default function OnboardingPipelinePage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-sm capitalize" style={{ color: "var(--db-text)" }}>
-                      {biz.type?.replace("_", " ") || "—"}
+                      {biz.type?.replace(/_/g, " ") || "—"}
                     </td>
                     <td className="px-4 py-3 text-sm" style={{ color: "var(--db-text-muted)" }}>
                       {biz.serviceArea || "—"}
@@ -169,7 +169,7 @@ export default function OnboardingPipelinePage() {
                         }}
                       >
                         <span className="h-1.5 w-1.5 rounded-full" style={{ background: STATUS_COLORS[biz.onboardingStatus] || "#9CA3AF" }} />
-                        {biz.onboardingStatus?.replace("_", " ") || "not started"}
+                        {biz.onboardingStatus?.replace(/_/g, " ") || "not started"}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs" style={{ color: "var(--db-text-muted)" }}>

@@ -78,6 +78,7 @@ export default function PortalLayout({
             className="h-8 w-8 rounded-full border-2 border-t-transparent animate-spin"
             style={{ borderColor: "var(--db-border)", borderTopColor: "var(--db-accent)" }}
           />
+          <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -114,7 +115,7 @@ export default function PortalLayout({
       </div>
 
       <main
-        className="min-w-0 flex-1 p-4 pt-18 md:ml-60 md:p-6 md:pt-6"
+        className="min-w-0 flex-1 p-4 pt-[4.5rem] md:ml-60 md:p-6 md:pt-6"
       >
         <PaymentBanner />
         <ErrorBoundary>{children}</ErrorBoundary>

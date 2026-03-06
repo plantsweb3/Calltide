@@ -28,7 +28,7 @@ export function MetricCardSkeleton() {
   );
 }
 
-export function TableSkeleton({ rows = 5 }: { rows?: number }) {
+export function TableSkeleton({ rows = 5, columns = 4 }: { rows?: number; columns?: number }) {
   return (
     <div
       className="rounded-xl overflow-hidden"
@@ -38,10 +38,9 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
         <Skeleton className="h-4 w-full" />
         {Array.from({ length: rows }).map((_, i) => (
           <div key={i} className="flex gap-4">
-            <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-4 w-20" />
-            <Skeleton className="h-4 flex-1" />
+            {Array.from({ length: columns }).map((_, j) => (
+              <Skeleton key={j} className={`h-4 ${j === columns - 1 ? "flex-1" : j % 2 === 0 ? "w-24" : "w-32"}`} />
+            ))}
           </div>
         ))}
       </div>

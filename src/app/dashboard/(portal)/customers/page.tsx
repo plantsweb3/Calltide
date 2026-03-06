@@ -75,18 +75,25 @@ export default function CustomersPage() {
     return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   }
 
+  function formatPhone(p: string) {
+    const digits = p.replace(/\D/g, "");
+    if (digits.length === 10) return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    if (digits.length === 11 && digits[0] === "1") return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+    return p;
+  }
+
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>
+          <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)", fontFamily: "var(--font-body), system-ui, sans-serif" }}>
             Customers
           </h1>
           <p className="text-sm mt-1" style={{ color: "var(--db-text-muted)" }}>
             {total} total customers
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/dashboard/import?type=customers"
             className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
@@ -232,7 +239,7 @@ export default function CustomersPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                    {c.phone}
+                    {formatPhone(c.phone)}
                   </td>
                   <td className="px-4 py-3 text-sm" style={{ color: "var(--db-text-secondary)" }}>
                     {c.totalCalls}
@@ -254,6 +261,11 @@ export default function CustomersPage() {
                           {tag}
                         </span>
                       ))}
+                      {(c.tags || []).length > 3 && (
+                        <span className="rounded px-1.5 py-0.5 text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                          +{c.tags.length - 3}
+                        </span>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -340,40 +352,54 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose} onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-customer-title"
         className="w-full max-w-md rounded-xl p-6"
         style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
+        onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-bold mb-4" style={{ color: "var(--db-text)" }}>
+        <h2 id="add-customer-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>
           Add Customer
         </h2>
         <form onSubmit={handleSubmit} className="space-y-3">
-          <input
-            type="text"
-            placeholder="Name *"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-lg border px-3 py-2 text-sm"
-            style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
-          />
-          <input
-            type="tel"
-            placeholder="Phone *"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full rounded-lg border px-3 py-2 text-sm"
-            style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
-          />
-          <input
-            type="email"
-            placeholder="Email (optional)"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg border px-3 py-2 text-sm"
-            style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
-          />
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          <div>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Name *</label>
+            <input
+              type="text"
+              placeholder="John Smith"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2 text-sm"
+              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              autoFocus
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Phone *</label>
+            <input
+              type="tel"
+              placeholder="(512) 555-1234"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2 text-sm"
+              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Email (optional)</label>
+            <input
+              type="email"
+              placeholder="john@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2 text-sm"
+              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+            />
+          </div>
+          {error && <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>}
           <div className="flex gap-2 pt-2">
             <button
               type="button"

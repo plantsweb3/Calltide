@@ -30,6 +30,7 @@ export default function BillingPage() {
   const [data, setData] = useState<BillingData | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [switchLoading, setSwitchLoading] = useState(false);
+  const [showSwitchConfirm, setShowSwitchConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -171,7 +172,7 @@ export default function BillingPage() {
               </div>
             </div>
             <button
-              onClick={switchToAnnual}
+              onClick={() => setShowSwitchConfirm(true)}
               disabled={switchLoading}
               className="shrink-0 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
               style={{ background: "var(--db-accent)" }}
@@ -404,6 +405,51 @@ export default function BillingPage() {
           >
             {portalLoading ? "Opening Portal..." : "Manage Billing in Stripe"}
           </button>
+        </div>
+      )}
+
+      {/* Switch to Annual Confirmation */}
+      {showSwitchConfirm && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: "rgba(0,0,0,0.6)" }}
+          onClick={() => setShowSwitchConfirm(false)}
+          onKeyDown={(e) => { if (e.key === "Escape") setShowSwitchConfirm(false); }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="switch-confirm-title"
+        >
+          <div
+            className="w-full max-w-md rounded-xl p-6 space-y-4"
+            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="switch-confirm-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+              Switch to Annual Billing?
+            </h3>
+            <div className="space-y-2 text-sm" style={{ color: "var(--db-text-secondary)" }}>
+              <p>Your plan will change from <strong>$497/mo</strong> to <strong>$397/mo</strong> billed annually at $4,764/year.</p>
+              <p>This saves you <strong style={{ color: "#4ade80" }}>$1,200/year</strong>.</p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setShowSwitchConfirm(false)}
+                className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                style={{ color: "var(--db-text-secondary)" }}
+              >
+                Cancel
+              </button>
+              <button
+                autoFocus
+                onClick={() => { setShowSwitchConfirm(false); switchToAnnual(); }}
+                disabled={switchLoading}
+                className="rounded-lg px-5 py-2 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
+                style={{ background: "var(--db-accent)" }}
+              >
+                {switchLoading ? "Switching..." : "Confirm Switch"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

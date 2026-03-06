@@ -235,7 +235,7 @@ export default function CallsPage() {
             className="rounded-full px-2 py-0.5 text-xs font-medium"
             style={{ background: c.bg, color: c.text }}
           >
-            {row.status.replace("_", " ")}
+            {row.status.replace(/_/g, " ")}
           </span>
         );
       },

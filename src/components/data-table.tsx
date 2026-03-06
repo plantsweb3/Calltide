@@ -161,6 +161,7 @@ export default function DataTable<T extends { id: string }>({
                     background:
                       expandedId === row.id ? "var(--db-hover)" : "transparent",
                   }}
+                  tabIndex={expandedContent ? 0 : undefined}
                   onMouseEnter={(e) => {
                     if (expandedId !== row.id)
                       e.currentTarget.style.background = "var(--db-hover)";
@@ -172,6 +173,13 @@ export default function DataTable<T extends { id: string }>({
                   onClick={() => {
                     if (!expandedContent) return;
                     setExpandedId(expandedId === row.id ? null : row.id);
+                  }}
+                  onKeyDown={(e) => {
+                    if (!expandedContent) return;
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setExpandedId(expandedId === row.id ? null : row.id);
+                    }
                   }}
                 >
                   {selectable && (

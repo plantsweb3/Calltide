@@ -106,8 +106,15 @@ export default function OverviewPage() {
 
   if (error) {
     return (
-      <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+      <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
         <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        <button
+          onClick={() => { setError(null); window.location.reload(); }}
+          className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+          style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -288,7 +295,7 @@ export default function OverviewPage() {
             value={data.costPerLead!}
             prefix="$"
             decimals={2}
-            change="vs $52 avg on Google Ads"
+            change="Per qualified lead"
             changeType="positive"
           />
           <MetricCard
@@ -549,10 +556,10 @@ function FirstCallBanner({
             className="text-lg font-bold"
             style={{ color: "#22c55e" }}
           >
-            {receptionistName} handled her first call!
+            {receptionistName} handled the first call!
           </h3>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-secondary)" }}>
-            {receptionistName} just handled her first call
+            {receptionistName} just handled the first call
             {celebration.callerName ? ` from ${celebration.callerName}` : ""}
             {durationMin ? ` (${durationMin} min)` : ""}.
             This is just the beginning — every call from here is revenue you&apos;re no longer missing.
