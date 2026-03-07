@@ -4,7 +4,6 @@ import { helpArticles, helpCategories } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { getCategoriesWithCounts } from "@/lib/help/search";
-import HelpLangToggle from "../../../help/_components/help-lang-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -54,16 +53,6 @@ export default async function HelpCategoryEsPage({ params }: { params: Promise<{
 
   return (
     <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
-      <header className="border-b" style={{ borderColor: "#E2E8F0" }}>
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <Link href="/" className="text-xl font-bold" style={{ color: "#C59A27" }}>Calltide</Link>
-          <div className="flex items-center gap-4">
-            <HelpLangToggle lang="es" />
-            <Link href="/es/help" className="text-sm font-medium" style={{ color: "#475569" }}>Centro de Ayuda</Link>
-          </div>
-        </div>
-      </header>
-
       <div className="mx-auto max-w-5xl px-4 py-8">
         <nav className="flex items-center gap-2 text-sm" style={{ color: "#94A3B8" }}>
           <Link href="/es/help" className="hover:underline" style={{ color: "#475569" }}>Centro de Ayuda</Link>
@@ -139,9 +128,6 @@ export default async function HelpCategoryEsPage({ params }: { params: Promise<{
         </div>
       </div>
 
-      <footer className="border-t py-8 text-center text-sm" style={{ borderColor: "#E2E8F0", color: "#94A3B8" }}>
-        <p>&copy; {new Date().getFullYear()} Calltide. Todos los derechos reservados.</p>
-      </footer>
     </div>
   );
 }

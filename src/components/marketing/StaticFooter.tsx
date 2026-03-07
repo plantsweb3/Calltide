@@ -63,6 +63,8 @@ export function StaticFooter({ lang }: StaticFooterProps) {
             <ul className="mt-4 space-y-3 text-sm">
               <li><Link href={lang === "en" ? "/legal/terms" : "/es/legal/terms"} className="text-white/40 transition hover:text-white/60">{labels.terms}</Link></li>
               <li><Link href={lang === "en" ? "/legal/privacy" : "/es/legal/privacy"} className="text-white/40 transition hover:text-white/60">{labels.privacy}</Link></li>
+              <li><Link href={lang === "en" ? "/legal/dpa" : "/es/legal/dpa"} className="text-white/40 transition hover:text-white/60">DPA</Link></li>
+              <li><Link href={lang === "en" ? "/legal/sub-processors" : "/es/legal/sub-processors"} className="text-white/40 transition hover:text-white/60">{lang === "en" ? "Sub-Processors" : "Sub-Procesadores"}</Link></li>
               <li><Link href={lang === "en" ? "/status" : "/es/status"} className="text-white/40 transition hover:text-white/60">Status</Link></li>
             </ul>
           </div>

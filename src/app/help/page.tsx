@@ -27,21 +27,6 @@ export default async function HelpCenterPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
-      {/* Nav */}
-      <header className="border-b" style={{ borderColor: "#E2E8F0" }}>
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <Link href="/" className="text-xl font-bold" style={{ color: "#C59A27" }}>
-            Calltide
-          </Link>
-          <div className="flex items-center gap-4">
-            <HelpLangToggle lang="en" autoRedirect />
-            <Link href="/audit" className="rounded-lg px-4 py-2 text-sm font-medium text-white" style={{ background: "#C59A27" }}>
-              Free Audit
-            </Link>
-          </div>
-        </div>
-      </header>
-
       {/* Hero + Search */}
       <section className="grain-overlay py-16 md:py-24" style={{ background: "#111827" }}>
         <div className="mx-auto max-w-3xl px-4 text-center">
@@ -128,10 +113,6 @@ export default async function HelpCenterPage() {
         </section>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t py-8 text-center text-sm" style={{ borderColor: "#E2E8F0", color: "#94A3B8" }}>
-        <p>&copy; {new Date().getFullYear()} Calltide. All rights reserved.</p>
-      </footer>
     </div>
   );
 }

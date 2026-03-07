@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getCategoriesWithCounts, getPopularArticles } from "@/lib/help/search";
 import HelpSearch from "../../help/_components/help-search";
-import HelpLangToggle from "../../help/_components/help-lang-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -27,18 +26,6 @@ export default async function HelpCenterEsPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
-      <header className="border-b" style={{ borderColor: "#E2E8F0" }}>
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <Link href="/" className="text-xl font-bold" style={{ color: "#C59A27" }}>Calltide</Link>
-          <div className="flex items-center gap-4">
-            <HelpLangToggle lang="es" autoRedirect />
-            <Link href="/audit" className="rounded-lg px-4 py-2 text-sm font-medium text-white" style={{ background: "#C59A27" }}>
-              Auditoría Gratis
-            </Link>
-          </div>
-        </div>
-      </header>
-
       <section className="grain-overlay py-16 md:py-24" style={{ background: "#111827" }}>
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
@@ -111,9 +98,6 @@ export default async function HelpCenterEsPage() {
         </section>
       </div>
 
-      <footer className="border-t py-8 text-center text-sm" style={{ borderColor: "#E2E8F0", color: "#94A3B8" }}>
-        <p>&copy; {new Date().getFullYear()} Calltide. Todos los derechos reservados.</p>
-      </footer>
     </div>
   );
 }
