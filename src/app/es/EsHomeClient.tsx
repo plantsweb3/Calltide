@@ -181,8 +181,8 @@ export default function EsHomepage() {
             <a href={BOOKING_URL} className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
               Reservar Demo &rarr;
             </a>
-            <a href="/audit" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:border-white/40">
-              Auditoría Gratis
+            <a href="/setup" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:border-white/40">
+              Prueba Calltide Gratis
             </a>
           </div>
         </div>

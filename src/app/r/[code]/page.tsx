@@ -26,7 +26,7 @@ export default async function ReferralPage({
       status: "pending",
     });
 
-    redirect(`/audit?ref=${code}`);
+    redirect(`/setup?ref=${code}`);
   }
 
   // Invalid referral code — show friendly fallback
@@ -68,16 +68,16 @@ export default async function ReferralPage({
 
         <p className="mt-3 text-sm leading-relaxed" style={{ color: "#666" }}>
           The referral code may have expired or is no longer active. You can
-          still check out Calltide and get a free audit of your business.
+          still check out Calltide and get started for free.
         </p>
 
         <div className="mt-8 flex flex-col gap-3">
           <Link
-            href="/audit"
+            href="/setup"
             className="rounded-lg px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             style={{ backgroundColor: "#C59A27" }}
           >
-            Get a Free Audit
+            Get Started Free
           </Link>
           <Link
             href="/"

@@ -12,7 +12,7 @@ const CATEGORY_LABELS_ES: Record<string, string> = {
 };
 import { StaticNav } from "@/components/marketing/StaticNav";
 import { StaticFooter } from "@/components/marketing/StaticFooter";
-import AuditCTA from "@/components/audit-cta";
+import SetupCTA from "@/components/setup-cta";
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -145,12 +145,12 @@ export default async function BlogPostEsPage({ params }: PageProps) {
           )}
         </div>
 
-        <AuditCTA variant="inline" lang="es" postSlug={post.slug} postId={post.id} />
+        <SetupCTA variant="inline" lang="es" postSlug={post.slug} postId={post.id} />
 
         <article className="prose prose-lg prose-slate mt-10 max-w-none" style={{ lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.body) }} />
 
         <div className="mt-16">
-          <AuditCTA variant="full" lang="es" postSlug={post.slug} postId={post.id} />
+          <SetupCTA variant="full" lang="es" postSlug={post.slug} postId={post.id} />
         </div>
 
         {relatedPosts.length > 0 && (

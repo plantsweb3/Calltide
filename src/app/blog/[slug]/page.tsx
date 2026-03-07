@@ -6,7 +6,7 @@ import { eq, and, inArray } from "drizzle-orm";
 import { CATEGORY_LABELS } from "../page";
 import { StaticNav } from "@/components/marketing/StaticNav";
 import { StaticFooter } from "@/components/marketing/StaticFooter";
-import AuditCTA from "@/components/audit-cta";
+import SetupCTA from "@/components/setup-cta";
 import { sanitizeHtml } from "@/lib/sanitize-html";
 import type { Metadata } from "next";
 
@@ -164,7 +164,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         </div>
 
         {/* Mid-page CTA */}
-        <AuditCTA variant="inline" lang="en" postSlug={post.slug} postId={post.id} />
+        <SetupCTA variant="inline" lang="en" postSlug={post.slug} postId={post.id} />
 
         {/* Post body */}
         <article
@@ -175,7 +175,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         {/* Bottom CTA */}
         <div className="mt-16">
-          <AuditCTA variant="full" lang="en" postSlug={post.slug} postId={post.id} />
+          <SetupCTA variant="full" lang="en" postSlug={post.slug} postId={post.id} />
         </div>
 
         {/* Related posts */}

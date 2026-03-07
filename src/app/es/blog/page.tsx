@@ -92,15 +92,15 @@ export default async function BlogEsIndexPage({
           ))}
         </div>
 
-        {/* Audit CTA */}
+        {/* Setup CTA */}
         <div className="mt-10 rounded-xl bg-navy p-6 text-center dark-section">
-          <p className="text-lg font-bold text-white">Auditoría Gratuita de Llamadas Perdidas</p>
-          <p className="mt-1 text-sm text-slate-300">Descubra qué experimentan sus clientes cuando llaman.</p>
+          <p className="text-lg font-bold text-white">Deja de Perder Llamadas Hoy</p>
+          <p className="mt-1 text-sm text-slate-300">Configura tu recepcionista IA en minutos. Pruébalo gratis por 14 días.</p>
           <Link
-            href="/audit?utm_source=blog&utm_medium=banner"
+            href="/setup?utm_source=blog&utm_medium=banner"
             className="cta-gold cta-shimmer mt-4 inline-block rounded-lg px-6 py-2.5 text-sm font-semibold text-white"
           >
-            Obtener Auditoría Gratis &rarr;
+            Empieza Gratis &rarr;
           </Link>
         </div>
 
