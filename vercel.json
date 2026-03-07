@@ -1,8 +1,8 @@
 {
   "crons": [
-    { "path": "/api/capacity/real-time", "schedule": "*/5 * * * *" },
-    { "path": "/api/agents/health", "schedule": "*/15 * * * *" },
-    { "path": "/api/agents/onboard", "schedule": "0 * * * *" },
+    { "path": "/api/capacity/real-time", "schedule": "0 5 * * *" },
+    { "path": "/api/agents/health", "schedule": "0 4 * * *" },
+    { "path": "/api/agents/onboard", "schedule": "0 10 * * *" },
     { "path": "/api/capacity/snapshot", "schedule": "55 5 * * *" },
     { "path": "/api/financial/mrr-snapshot", "schedule": "0 6 * * *" },
     { "path": "/api/agents/qualify", "schedule": "0 8 * * *" },
@@ -17,10 +17,10 @@
     { "path": "/api/cron/outbound-reminders", "schedule": "0 0 * * *" },
     { "path": "/api/cron/outbound-estimate-followup", "schedule": "0 16 * * *" },
     { "path": "/api/cron/outbound-seasonal", "schedule": "0 17 1 * *" },
-    { "path": "/api/cron/outbound-dispatch", "schedule": "*/15 16-23 * * *" },
+    { "path": "/api/cron/outbound-dispatch", "schedule": "0 17 * * *" },
     { "path": "/api/cron/weekly-digest", "schedule": "0 14 * * 1" },
     { "path": "/api/cron/daily-summary", "schedule": "0 23 * * *" },
     { "path": "/api/cron/review-requests", "schedule": "0 16 * * *" },
-    { "path": "/api/cron/missed-call-recovery", "schedule": "*/5 * * * *" }
+    { "path": "/api/cron/missed-call-recovery", "schedule": "0 18 * * *" }
   ]
 }
