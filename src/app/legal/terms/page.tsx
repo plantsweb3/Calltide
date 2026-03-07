@@ -3,6 +3,7 @@ import { legalDocuments } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import Link from "next/link";
 import { legalMarkdown } from "@/lib/legal-markdown";
+import { TOS_EN } from "@/lib/legal/content";
 
 export const dynamic = "force-dynamic";
 
@@ -12,21 +13,31 @@ export const metadata = {
 };
 
 export default async function TermsPage() {
-  const [doc] = await db
-    .select()
-    .from(legalDocuments)
-    .where(
-      and(
-        eq(legalDocuments.documentType, "tos"),
-        eq(legalDocuments.isCurrentVersion, true),
-      ),
-    )
-    .limit(1);
+  let content = TOS_EN;
+  let version = "2.0";
+  let effectiveDate = "2026-03-03";
 
-  return <LegalPageLayout doc={doc} type="tos" />;
-}
+  try {
+    const [doc] = await db
+      .select()
+      .from(legalDocuments)
+      .where(
+        and(
+          eq(legalDocuments.documentType, "tos"),
+          eq(legalDocuments.isCurrentVersion, true),
+        ),
+      )
+      .limit(1);
 
-function LegalPageLayout({ doc, type }: { doc: typeof legalDocuments.$inferSelect | undefined; type: string }) {
+    if (doc) {
+      content = doc.content;
+      version = doc.version;
+      effectiveDate = doc.effectiveDate;
+    }
+  } catch {
+    // DB unavailable — use static fallback
+  }
+
   return (
     <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
       <header className="border-b" style={{ borderColor: "#E2E8F0" }}>
@@ -45,22 +56,16 @@ function LegalPageLayout({ doc, type }: { doc: typeof legalDocuments.$inferSelec
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-12">
-        {doc ? (
-          <>
-            <div className="mb-8 rounded-lg border p-4" style={{ background: "#F8FAFC", borderColor: "#E2E8F0" }}>
-              <p className="text-xs" style={{ color: "#94A3B8" }}>
-                Version {doc.version} &middot; Effective {new Date(doc.effectiveDate).toLocaleDateString("en", { month: "long", day: "numeric", year: "numeric" })}
-              </p>
-            </div>
-            <article
-              className="prose prose-slate max-w-none"
-              style={{ color: "#1A1D24", lineHeight: 1.8 }}
-              dangerouslySetInnerHTML={{ __html: legalMarkdown(doc.content) }}
-            />
-          </>
-        ) : (
-          <p style={{ color: "#94A3B8" }}>Document not found. Run the compliance seed endpoint first.</p>
-        )}
+        <div className="mb-8 rounded-lg border p-4" style={{ background: "#F8FAFC", borderColor: "#E2E8F0" }}>
+          <p className="text-xs" style={{ color: "#94A3B8" }}>
+            Version {version} &middot; Effective {new Date(effectiveDate).toLocaleDateString("en", { month: "long", day: "numeric", year: "numeric" })}
+          </p>
+        </div>
+        <article
+          className="prose prose-slate max-w-none"
+          style={{ color: "#1A1D24", lineHeight: 1.8 }}
+          dangerouslySetInnerHTML={{ __html: legalMarkdown(content) }}
+        />
       </main>
 
       <footer className="border-t py-8 text-center text-sm" style={{ borderColor: "#E2E8F0", color: "#94A3B8" }}>
@@ -69,4 +74,3 @@ function LegalPageLayout({ doc, type }: { doc: typeof legalDocuments.$inferSelec
     </div>
   );
 }
-

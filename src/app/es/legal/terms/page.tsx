@@ -3,6 +3,7 @@ import { legalDocuments } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import Link from "next/link";
 import { legalMarkdown } from "@/lib/legal-markdown";
+import { TOS_ES } from "@/lib/legal/content";
 
 export const dynamic = "force-dynamic";
 
@@ -12,19 +13,30 @@ export const metadata = {
 };
 
 export default async function TermsEsPage() {
-  const [doc] = await db
-    .select()
-    .from(legalDocuments)
-    .where(
-      and(
-        eq(legalDocuments.documentType, "tos"),
-        eq(legalDocuments.isCurrentVersion, true),
-      ),
-    )
-    .limit(1);
+  let content = TOS_ES;
+  let version = "2.0";
+  let effectiveDate = "2026-03-03";
 
-  const content = doc?.contentEs || doc?.content;
-  const title = doc?.titleEs || doc?.title;
+  try {
+    const [doc] = await db
+      .select()
+      .from(legalDocuments)
+      .where(
+        and(
+          eq(legalDocuments.documentType, "tos"),
+          eq(legalDocuments.isCurrentVersion, true),
+        ),
+      )
+      .limit(1);
+
+    if (doc) {
+      content = doc.contentEs || doc.content;
+      version = doc.version;
+      effectiveDate = doc.effectiveDate;
+    }
+  } catch {
+    // DB unavailable — use static fallback
+  }
 
   return (
     <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
@@ -44,22 +56,16 @@ export default async function TermsEsPage() {
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-12">
-        {doc ? (
-          <>
-            <div className="mb-8 rounded-lg border p-4" style={{ background: "#F8FAFC", borderColor: "#E2E8F0" }}>
-              <p className="text-xs" style={{ color: "#94A3B8" }}>
-                Versión {doc.version} &middot; Vigente desde {new Date(doc.effectiveDate).toLocaleDateString("es", { month: "long", day: "numeric", year: "numeric" })}
-              </p>
-            </div>
-            <article
-              className="prose prose-slate max-w-none"
-              style={{ color: "#1A1D24", lineHeight: 1.8 }}
-              dangerouslySetInnerHTML={{ __html: legalMarkdown(content ?? "") }}
-            />
-          </>
-        ) : (
-          <p style={{ color: "#94A3B8" }}>Documento no encontrado. Ejecute el endpoint de semilla de cumplimiento primero.</p>
-        )}
+        <div className="mb-8 rounded-lg border p-4" style={{ background: "#F8FAFC", borderColor: "#E2E8F0" }}>
+          <p className="text-xs" style={{ color: "#94A3B8" }}>
+            Versión {version} &middot; Vigente desde {new Date(effectiveDate).toLocaleDateString("es", { month: "long", day: "numeric", year: "numeric" })}
+          </p>
+        </div>
+        <article
+          className="prose prose-slate max-w-none"
+          style={{ color: "#1A1D24", lineHeight: 1.8 }}
+          dangerouslySetInnerHTML={{ __html: legalMarkdown(content) }}
+        />
       </main>
 
       <footer className="border-t py-8 text-center text-sm" style={{ borderColor: "#E2E8F0", color: "#94A3B8" }}>
@@ -68,4 +74,3 @@ export default async function TermsEsPage() {
     </div>
   );
 }
-

@@ -40,6 +40,8 @@ export function Footer({ lang }: { lang: Lang }) {
             <ul className="mt-4 space-y-3 text-sm">
               <li><a href={`${p}/legal/terms`} className="text-white/40 transition hover:text-white/60">{t.footer.terms}</a></li>
               <li><a href={`${p}/legal/privacy`} className="text-white/40 transition hover:text-white/60">{t.footer.privacy}</a></li>
+              <li><a href={`${p}/legal/dpa`} className="text-white/40 transition hover:text-white/60">DPA</a></li>
+              <li><a href={`${p}/legal/sub-processors`} className="text-white/40 transition hover:text-white/60">{lang === "es" ? "Sub-Procesadores" : "Sub-Processors"}</a></li>
               <li><a href={`${p}/status`} className="text-white/40 transition hover:text-white/60">Status</a></li>
             </ul>
           </div>
