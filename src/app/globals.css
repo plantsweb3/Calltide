@@ -51,6 +51,14 @@ button:focus-visible {
   border-radius: 4px;
 }
 
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="switch"]:focus-visible {
+  outline: 2px solid var(--db-accent, #C59A27);
+  outline-offset: 2px;
+}
+
 /* ── Grain texture overlay — hero and dark sections ── */
 .grain-overlay {
   position: relative;

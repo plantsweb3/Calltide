@@ -76,7 +76,8 @@ export default function ImportModal({
           <h2 id="import-modal-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>Import Prospects</h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-200 text-lg"
+            className="text-lg transition-colors"
+            style={{ color: "var(--db-text-muted)" }}
           >
             ×
           </button>
@@ -91,11 +92,11 @@ export default function ImportModal({
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
-          className={`cursor-pointer rounded-xl border-2 border-dashed px-6 py-12 text-center transition-colors ${
-            dragOver
-              ? "border-green-500 bg-green-500/5"
-              : "border-slate-700 bg-slate-800/50 hover:border-slate-600"
-          }`}
+          className="cursor-pointer rounded-xl border-2 border-dashed px-6 py-12 text-center transition-colors"
+          style={{
+            borderColor: dragOver ? "var(--db-accent)" : "var(--db-border)",
+            background: dragOver ? "rgba(197,154,39,0.05)" : "var(--db-surface)",
+          }}
         >
           <input
             ref={inputRef}
@@ -106,17 +107,17 @@ export default function ImportModal({
           />
           {file ? (
             <div>
-              <p className="text-sm text-slate-200">{file.name}</p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="text-sm" style={{ color: "var(--db-text)" }}>{file.name}</p>
+              <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
                 {(file.size / 1024).toFixed(1)} KB
               </p>
             </div>
           ) : (
             <div>
-              <p className="text-sm text-slate-300">
+              <p className="text-sm" style={{ color: "var(--db-text)" }}>
                 Drop a CSV file here or click to browse
               </p>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
                 Headers: business_name, phone, email, website, city, state,
                 vertical
               </p>
@@ -140,7 +141,7 @@ export default function ImportModal({
         <button
           onClick={handleUpload}
           disabled={!file || loading}
-          className="mt-4 w-full rounded-lg bg-green-600 py-2.5 text-sm font-medium text-white hover:bg-green-500 disabled:opacity-50 transition-colors"
+          className="cta-gold mt-4 w-full rounded-lg py-2.5 text-sm font-medium text-white disabled:opacity-50 transition-colors"
         >
           {loading ? "Importing..." : "Import CSV"}
         </button>

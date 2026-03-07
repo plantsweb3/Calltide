@@ -82,7 +82,8 @@ export default function ScrapeModal({
           <h2 id="scrape-modal-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>Scrape New Prospects</h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-200 text-lg"
+            className="text-lg transition-colors"
+            style={{ color: "var(--db-text-muted)" }}
           >
             ×
           </button>
@@ -90,34 +91,37 @@ export default function ScrapeModal({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm text-slate-400">City</label>
+            <label className="mb-1 block text-sm" style={{ color: "var(--db-text-muted)" }}>City</label>
             <input
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+              className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors"
+              style={{ borderColor: "var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
               placeholder="e.g. San Antonio"
               required
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-slate-400">State</label>
+            <label className="mb-1 block text-sm" style={{ color: "var(--db-text-muted)" }}>State</label>
             <input
               type="text"
               value={state}
               onChange={(e) => setState(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+              className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors"
+              style={{ borderColor: "var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
               placeholder="e.g. TX"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-slate-400">Vertical</label>
+            <label className="mb-1 block text-sm" style={{ color: "var(--db-text-muted)" }}>Vertical</label>
             <select
               value={vertical}
               onChange={(e) => setVertical(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+              className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors"
+              style={{ borderColor: "var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
             >
               {VERTICALS.map((v) => (
                 <option key={v} value={v}>
@@ -128,14 +132,15 @@ export default function ScrapeModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-slate-400">
+            <label className="mb-1 block text-sm" style={{ color: "var(--db-text-muted)" }}>
               Max Results
             </label>
             <input
               type="number"
               value={maxResults}
               onChange={(e) => setMaxResults(parseInt(e.target.value, 10))}
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-green-500"
+              className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors"
+              style={{ borderColor: "var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
               min={1}
               max={200}
             />
@@ -157,7 +162,7 @@ export default function ScrapeModal({
           <button
             type="submit"
             disabled={loading || !city}
-            className="w-full rounded-lg bg-green-600 py-2.5 text-sm font-medium text-white hover:bg-green-500 disabled:opacity-50 transition-colors"
+            className="cta-gold w-full rounded-lg py-2.5 text-sm font-medium text-white disabled:opacity-50 transition-colors"
           >
             {loading ? "Scraping..." : "Start Scrape"}
           </button>
