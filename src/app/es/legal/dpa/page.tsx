@@ -19,13 +19,19 @@ export default async function DpaEsPage() {
   } catch { /* static fallback */ }
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-12" style={{ background: "#FBFBFC" }}>
-      <div className="mb-8 rounded-lg border p-4" style={{ background: "#F8FAFC", borderColor: "#E2E8F0" }}>
-        <p className="text-xs" style={{ color: "#94A3B8" }}>
-          Versión {version} &middot; Vigente desde {new Date(effectiveDate).toLocaleDateString("es", { month: "long", day: "numeric", year: "numeric" })}
-        </p>
+    <main className="mx-auto max-w-4xl px-4 py-14" style={{ background: "#FBFBFC" }}>
+      <div className="mb-2">
+        <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: "#1A1D24" }}>Acuerdo de Procesamiento de Datos</h1>
       </div>
-      <article className="prose prose-slate max-w-none" style={{ color: "#1A1D24", lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: legalMarkdown(content) }} />
+      <div className="mb-10 flex items-center gap-3">
+        <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: "rgba(197,154,39,0.1)", color: "#B8860B" }}>
+          v{version}
+        </span>
+        <span className="text-sm" style={{ color: "#94A3B8" }}>
+          Vigente desde {new Date(effectiveDate).toLocaleDateString("es", { month: "long", day: "numeric", year: "numeric" })}
+        </span>
+      </div>
+      <article className="legal-prose" dangerouslySetInnerHTML={{ __html: legalMarkdown(content) }} />
     </main>
   );
 }

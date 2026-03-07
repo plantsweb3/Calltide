@@ -4,7 +4,6 @@ import { helpArticles, helpCategories } from "@/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import ArticleBody from "../../_components/article-body";
-import HelpLangToggle from "../../_components/help-lang-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +22,6 @@ async function getArticle(categorySlug: string, articleSlug: string) {
     .limit(1);
   if (!article) return null;
 
-  // Get related articles
   let related: Array<{ id: string; slug: string; title: string; categorySlug: string | null; readingTimeMinutes: number | null }> = [];
   const relatedIds = article.relatedArticles;
   if (relatedIds && relatedIds.length > 0) {
@@ -57,19 +55,8 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   return {
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      url,
-      type: "article",
-    },
-    alternates: {
-      canonical: url,
-      languages: {
-        en: url,
-        es: `${appUrl}/es/help/${category}/${slug}`,
-      },
-    },
+    openGraph: { title, description, url, type: "article" },
+    alternates: { canonical: url, languages: { en: url, es: `${appUrl}/es/help/${category}/${slug}` } },
   };
 }
 
@@ -83,7 +70,6 @@ export default async function HelpArticlePage({ params }: { params: Promise<{ ca
 
   return (
     <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
-      {/* JSON-LD for prospect articles */}
       {catSlug === "for-prospects" && (
         <script
           type="application/ld+json"
@@ -102,51 +88,59 @@ export default async function HelpArticlePage({ params }: { params: Promise<{ ca
           }}
         />
       )}
-      <div className="mx-auto max-w-3xl px-4 py-8">
+      <div className="mx-auto max-w-3xl px-4 py-10">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-sm" style={{ color: "#94A3B8" }}>
-          <Link href="/help" className="hover:underline" style={{ color: "#475569" }}>Help Center</Link>
-          <span>/</span>
-          <Link href={`/help/${catSlug}`} className="hover:underline" style={{ color: "#475569" }}>{category.name}</Link>
-          <span>/</span>
-          <span className="truncate" style={{ color: "#1A1D24" }}>{article.title}</span>
+        <nav className="flex items-center gap-1.5 text-sm" style={{ color: "#94A3B8" }}>
+          <Link href="/help" className="transition hover:text-charcoal" style={{ color: "#64748B" }}>Help Center</Link>
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+          <Link href={`/help/${catSlug}`} className="transition hover:text-charcoal" style={{ color: "#64748B" }}>{category.name}</Link>
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+          <span className="truncate font-medium" style={{ color: "#1A1D24" }}>{article.title}</span>
         </nav>
 
         {/* Article Header */}
-        <div className="mt-6">
-          <h1 className="text-2xl font-bold md:text-3xl" style={{ color: "#1A1D24" }}>{article.title}</h1>
-          <div className="mt-2 flex items-center gap-3 text-sm" style={{ color: "#94A3B8" }}>
-            <span>{article.readingTimeMinutes} min read</span>
+        <div className="mt-8">
+          <h1 className="text-2xl font-extrabold tracking-tight md:text-3xl" style={{ color: "#1A1D24" }}>{article.title}</h1>
+          <div className="mt-3 flex items-center gap-3 text-sm" style={{ color: "#94A3B8" }}>
+            <span className="inline-flex items-center gap-1.5">
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              {article.readingTimeMinutes} min read
+            </span>
             {article.updatedAt && (
               <>
-                <span>·</span>
+                <span style={{ color: "#CBD5E1" }}>·</span>
                 <span>Updated {new Date(article.updatedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</span>
               </>
             )}
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="mt-6 h-px" style={{ background: "linear-gradient(to right, #C59A27, #E2E8F0 40%)" }} />
+
         {/* Article Content */}
-        <ArticleBody
-          articleId={article.id}
-          content={article.content}
-          lang="en"
-        />
+        <ArticleBody articleId={article.id} content={article.content} lang="en" />
 
         {/* Related */}
         {related.length > 0 && (
-          <div className="mt-12 border-t pt-8" style={{ borderColor: "#E2E8F0" }}>
-            <h2 className="text-base font-semibold" style={{ color: "#1A1D24" }}>Related Articles</h2>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-14">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-5 w-1 rounded-full" style={{ background: "#C59A27" }} />
+              <h2 className="text-base font-bold" style={{ color: "#1A1D24" }}>Related Articles</h2>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
                 <Link
                   key={r.id}
                   href={`/help/${r.categorySlug}/${r.slug}`}
-                  className="rounded-xl border p-4 transition-all hover:shadow-md"
+                  className="group rounded-xl border p-4 shadow-sm transition-all hover:shadow-md hover:border-amber-300 hover:-translate-y-px"
                   style={{ borderColor: "#E2E8F0", background: "white" }}
                 >
-                  <p className="text-sm font-medium" style={{ color: "#1A1D24" }}>{r.title}</p>
-                  <p className="mt-1 text-xs" style={{ color: "#94A3B8" }}>{r.readingTimeMinutes} min read</p>
+                  <p className="text-sm font-semibold leading-snug" style={{ color: "#1A1D24" }}>{r.title}</p>
+                  <div className="mt-2 flex items-center gap-1 text-xs font-medium" style={{ color: "#C59A27" }}>
+                    <span>{r.readingTimeMinutes} min read</span>
+                    <svg className="h-3 w-3 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -155,30 +149,35 @@ export default async function HelpArticlePage({ params }: { params: Promise<{ ca
 
         {/* Prospect CTA */}
         {catSlug === "for-prospects" && (
-          <div className="mt-12 rounded-xl p-8 text-center" style={{ background: "#111827" }}>
-            <p className="text-lg font-bold text-white">Ready to stop missing calls?</p>
-            <p className="mt-1 text-sm" style={{ color: "#94A3B8" }}>
-              See exactly what your callers experience with a free phone audit.
-            </p>
-            <Link
-              href="/audit?utm_source=help&utm_medium=prospect-cta"
-              className="mt-4 inline-block rounded-lg px-6 py-2.5 text-sm font-semibold text-white"
-              style={{ background: "#C59A27" }}
-            >
-              Get Your Free Audit &rarr;
-            </Link>
+          <div className="relative mt-14 overflow-hidden rounded-2xl p-10 text-center" style={{ background: "#111827" }}>
+            <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 50% 80% at 50% 100%, rgba(197,154,39,0.1) 0%, transparent 60%)" }} />
+            <div className="relative">
+              <p className="text-xl font-bold text-white">Ready to stop missing calls?</p>
+              <p className="mt-2 text-sm" style={{ color: "#94A3B8" }}>
+                See exactly what your callers experience with a free phone audit.
+              </p>
+              <Link
+                href="/audit?utm_source=help&utm_medium=prospect-cta"
+                className="mt-5 inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:brightness-110"
+                style={{ background: "#C59A27" }}
+              >
+                Get Your Free Audit
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </Link>
+            </div>
           </div>
         )}
 
         {/* Still need help */}
-        <div className="mt-12 rounded-xl border p-6 text-center" style={{ background: "#F8FAFC", borderColor: "#E2E8F0" }}>
-          <p className="font-medium" style={{ color: "#1A1D24" }}>Still need help?</p>
-          <a href="mailto:support@calltide.app" className="mt-2 inline-block text-sm font-medium" style={{ color: "#C59A27" }}>
-            Contact our support team &rarr;
+        <div className="relative mt-14 overflow-hidden rounded-2xl border p-8 text-center" style={{ background: "white", borderColor: "#E2E8F0" }}>
+          <p className="font-semibold" style={{ color: "#1A1D24" }}>Still need help?</p>
+          <p className="mt-1 text-sm" style={{ color: "#64748B" }}>Our support team typically responds within a few hours.</p>
+          <a href="mailto:support@calltide.app" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold transition hover:brightness-110" style={{ color: "#C59A27" }}>
+            Contact support
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </a>
         </div>
       </div>
-
     </div>
   );
 }

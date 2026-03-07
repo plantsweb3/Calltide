@@ -103,13 +103,14 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
           }}
         />
       )}
-      <div className="mx-auto max-w-3xl px-4 py-8">
-        <nav className="flex items-center gap-2 text-sm" style={{ color: "#94A3B8" }}>
-          <Link href="/es/help" className="hover:underline" style={{ color: "#475569" }}>Centro de Ayuda</Link>
-          <span>/</span>
-          <Link href={`/es/help/${catSlug}`} className="hover:underline" style={{ color: "#475569" }}>{category.nameEs || category.name}</Link>
-          <span>/</span>
-          <span className="truncate" style={{ color: "#1A1D24" }}>{article.titleEs || article.title}</span>
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        {/* Breadcrumbs */}
+        <nav className="flex items-center gap-1.5 text-sm" style={{ color: "#94A3B8" }}>
+          <Link href="/es/help" className="transition hover:text-charcoal" style={{ color: "#64748B" }}>Centro de Ayuda</Link>
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+          <Link href={`/es/help/${catSlug}`} className="transition hover:text-charcoal" style={{ color: "#64748B" }}>{category.nameEs || category.name}</Link>
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+          <span className="truncate font-medium" style={{ color: "#1A1D24" }}>{article.titleEs || article.title}</span>
         </nav>
 
         {!hasSpanish && (
@@ -118,36 +119,51 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
           </div>
         )}
 
-        <div className="mt-6">
-          <h1 className="text-2xl font-bold md:text-3xl" style={{ color: "#1A1D24" }}>
+        {/* Article Header */}
+        <div className="mt-8">
+          <h1 className="text-2xl font-extrabold tracking-tight md:text-3xl" style={{ color: "#1A1D24" }}>
             {article.titleEs || article.title}
           </h1>
-          <div className="mt-2 flex items-center gap-3 text-sm" style={{ color: "#94A3B8" }}>
-            <span>{article.readingTimeMinutes} min</span>
+          <div className="mt-3 flex items-center gap-3 text-sm" style={{ color: "#94A3B8" }}>
+            <span className="inline-flex items-center gap-1.5">
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              {article.readingTimeMinutes} min
+            </span>
             {article.updatedAt && (
               <>
-                <span>·</span>
+                <span style={{ color: "#CBD5E1" }}>·</span>
                 <span>Actualizado {new Date(article.updatedAt).toLocaleDateString("es", { month: "short", day: "numeric", year: "numeric" })}</span>
               </>
             )}
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="mt-6 h-px" style={{ background: "linear-gradient(to right, #C59A27, #E2E8F0 40%)" }} />
+
+        {/* Article Content */}
         <ArticleBody articleId={article.id} content={content} lang="es" />
 
+        {/* Related */}
         {related.length > 0 && (
-          <div className="mt-12 border-t pt-8" style={{ borderColor: "#E2E8F0" }}>
-            <h2 className="text-base font-semibold" style={{ color: "#1A1D24" }}>Artículos Relacionados</h2>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-14">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-5 w-1 rounded-full" style={{ background: "#C59A27" }} />
+              <h2 className="text-base font-bold" style={{ color: "#1A1D24" }}>Artículos Relacionados</h2>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
                 <Link
                   key={r.id}
                   href={`/es/help/${r.categorySlug}/${r.slug}`}
-                  className="rounded-xl border p-4 transition-all hover:shadow-md"
+                  className="group rounded-xl border p-4 shadow-sm transition-all hover:shadow-md hover:border-amber-300 hover:-translate-y-px"
                   style={{ borderColor: "#E2E8F0", background: "white" }}
                 >
-                  <p className="text-sm font-medium" style={{ color: "#1A1D24" }}>{r.titleEs || r.title}</p>
-                  <p className="mt-1 text-xs" style={{ color: "#94A3B8" }}>{r.readingTimeMinutes} min</p>
+                  <p className="text-sm font-semibold leading-snug" style={{ color: "#1A1D24" }}>{r.titleEs || r.title}</p>
+                  <div className="mt-2 flex items-center gap-1 text-xs font-medium" style={{ color: "#C59A27" }}>
+                    <span>{r.readingTimeMinutes} min</span>
+                    <svg className="h-3 w-3 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -156,29 +172,35 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
 
         {/* Prospect CTA */}
         {catSlug === "for-prospects" && (
-          <div className="mt-12 rounded-xl p-8 text-center" style={{ background: "#111827" }}>
-            <p className="text-lg font-bold text-white">¿Listo para dejar de perder llamadas?</p>
-            <p className="mt-1 text-sm" style={{ color: "#94A3B8" }}>
-              Vea exactamente lo que experimentan sus clientes con una auditoría gratuita.
-            </p>
-            <Link
-              href="/audit?utm_source=help&utm_medium=prospect-cta"
-              className="mt-4 inline-block rounded-lg px-6 py-2.5 text-sm font-semibold text-white"
-              style={{ background: "#C59A27" }}
-            >
-              Obtener Auditoría Gratis &rarr;
-            </Link>
+          <div className="relative mt-14 overflow-hidden rounded-2xl p-10 text-center" style={{ background: "#111827" }}>
+            <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 50% 80% at 50% 100%, rgba(197,154,39,0.1) 0%, transparent 60%)" }} />
+            <div className="relative">
+              <p className="text-xl font-bold text-white">¿Listo para dejar de perder llamadas?</p>
+              <p className="mt-2 text-sm" style={{ color: "#94A3B8" }}>
+                Vea exactamente lo que experimentan sus clientes con una auditoría gratuita.
+              </p>
+              <Link
+                href="/audit?utm_source=help&utm_medium=prospect-cta"
+                className="mt-5 inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:brightness-110"
+                style={{ background: "#C59A27" }}
+              >
+                Obtener Auditoría Gratis
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </Link>
+            </div>
           </div>
         )}
 
-        <div className="mt-12 rounded-xl border p-6 text-center" style={{ background: "#F8FAFC", borderColor: "#E2E8F0" }}>
-          <p className="font-medium" style={{ color: "#1A1D24" }}>¿Aún necesitas ayuda?</p>
-          <a href="mailto:support@calltide.app" className="mt-2 inline-block text-sm font-medium" style={{ color: "#C59A27" }}>
-            Contacta a nuestro equipo de soporte &rarr;
+        {/* Still need help */}
+        <div className="relative mt-14 overflow-hidden rounded-2xl border p-8 text-center" style={{ background: "white", borderColor: "#E2E8F0" }}>
+          <p className="font-semibold" style={{ color: "#1A1D24" }}>¿Aún necesitas ayuda?</p>
+          <p className="mt-1 text-sm" style={{ color: "#64748B" }}>Nuestro equipo de soporte está listo para asistirte.</p>
+          <a href="mailto:support@calltide.app" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold transition hover:brightness-110" style={{ color: "#C59A27" }}>
+            Contacta a nuestro equipo de soporte
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </a>
         </div>
       </div>
-
     </div>
   );
 }
