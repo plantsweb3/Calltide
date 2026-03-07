@@ -53,7 +53,10 @@ const t = {
   services: "Component Status",
   activeIncidents: "Active Incidents",
   pastIncidents: "Past Incidents",
-  uptime90: "90-Day Uptime",
+  uptimeHeading: "Uptime over the past 90 days.",
+  daysAgo: "90 days ago",
+  uptimeSuffix: " % uptime",
+  today: "Today",
   subscribe: "Get notified",
   subscribeDesc: "Subscribe to email notifications when Calltide creates, updates, or resolves an incident.",
   subscribePlaceholder: "your@email.com",
@@ -72,8 +75,6 @@ const t = {
   unsubscribedMsg: "You've been unsubscribed from status updates.",
   verifyFailedMsg: "Verification failed. Please try again.",
   subscribedMsg: "Check your email to confirm your subscription.",
-  last90: "90 days",
-  today: "Today",
 };
 
 export default function StatusPage() {
@@ -154,7 +155,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
     <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
       {/* ── Header ── */}
       <header style={{ borderBottom: "1px solid #E2E8F0" }}>
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-5">
           <Link href="/" className="flex items-center gap-2.5">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <rect width="24" height="24" rx="6" fill="#C59A27" />
@@ -179,7 +180,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-6 py-10 space-y-12">
+      <main className="mx-auto max-w-4xl px-6 py-10 space-y-12">
         {/* ── Overall Status Banner ── */}
         <div
           className="rounded-2xl px-8 py-7"
@@ -193,7 +194,6 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
           }}
         >
           <div className="flex items-center gap-4">
-            {/* Status icon */}
             <div
               className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
               style={{ background: `${overallDotColor}12` }}
@@ -217,7 +217,6 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
                 {text.subtitle}
               </p>
             </div>
-            {/* Pulsing dot for non-operational */}
             {data.overallColor !== "green" && (
               <div className="ml-auto">
                 <span
@@ -233,7 +232,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
           </div>
         </div>
 
-        {/* ── Active Incidents (pinned above services) ── */}
+        {/* ── Active Incidents ── */}
         {data.activeIncidents.length > 0 && (
           <section>
             <SectionHeading>{text.activeIncidents}</SectionHeading>
@@ -252,16 +251,26 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
           </section>
         )}
 
-        {/* ── Component Status with Uptime Bars ── */}
+        {/* ── Component Status — Individual bordered rows with uptime bars ── */}
         <section>
-          <SectionHeading>{text.services}</SectionHeading>
-          <div className="space-y-0 rounded-2xl overflow-hidden" style={{ border: "1px solid #E2E8F0" }}>
+          <div className="flex items-center justify-between mb-5">
+            <SectionHeading>{text.services}</SectionHeading>
+          </div>
+
+          {/* "Uptime over the past 90 days" label */}
+          {Object.keys(data.dailyHealth).length > 0 && (
+            <p className="text-right text-sm mb-3" style={{ color: "#94A3B8" }}>
+              {text.uptimeHeading}
+            </p>
+          )}
+
+          <div className="space-y-0 rounded-xl overflow-hidden" style={{ border: "1px solid #E2E8F0" }}>
             {data.services.map((svc, idx) => {
               const sColor = svc.status === "operational" ? "#22c55e" : svc.status === "degraded" ? "#f59e0b" : "#ef4444";
               const days = data.dailyHealth[svc.name] || [];
               const uptimePct = days.length > 0
                 ? ((days.filter((d) => d.status === "operational").length / days.length) * 100).toFixed(2)
-                : "—";
+                : null;
 
               return (
                 <div
@@ -272,43 +281,27 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
                     borderTop: idx > 0 ? "1px solid #E2E8F0" : undefined,
                   }}
                 >
-                  {/* Service header */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span className="font-semibold text-sm" style={{ color: "#1A1D24" }}>{svc.name}</span>
-                      {svc.latencyMs != null && (
-                        <span className="text-xs tabular-nums" style={{ color: "#94A3B8" }}>
-                          {svc.latencyMs}ms
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-medium tabular-nums" style={{ color: "#64748B" }}>
-                        {uptimePct}%
-                      </span>
-                      <span
-                        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
-                        style={{ background: `${sColor}10`, color: sColor }}
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full" style={{ background: sColor }} />
-                        {svc.status === "operational" ? text.operational : svc.status === "degraded" ? text.degraded : text.outage}
-                      </span>
-                    </div>
+                  {/* Name + "Operational" status text */}
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-bold text-[15px]" style={{ color: "#1A1D24" }}>{svc.name}</span>
+                    <span className="text-sm font-medium" style={{ color: sColor }}>
+                      {svc.status === "operational" ? text.operational : svc.status === "degraded" ? text.degraded : text.outage}
+                    </span>
                   </div>
 
                   {/* 90-day uptime bar */}
                   {days.length > 0 && (
-                    <div className="relative">
-                      <div className="flex gap-[1px] h-8 rounded-lg overflow-hidden">
+                    <>
+                      <div className="flex gap-[2px] h-[34px]">
                         {days.map((d, i) => {
                           const barColor = d.status === "operational" ? "#22c55e" : d.status === "degraded" ? "#f59e0b" : "#ef4444";
                           return (
                             <div
                               key={i}
-                              className="flex-1 min-w-[2px] rounded-sm transition-opacity cursor-pointer"
+                              className="flex-1 min-w-[2px] rounded-[1px] cursor-pointer transition-opacity"
                               style={{
                                 background: barColor,
-                                opacity: hoveredDay && hoveredDay.service === svc.name && hoveredDay.day.date !== d.date ? 0.4 : 1,
+                                opacity: hoveredDay && hoveredDay.service === svc.name && hoveredDay.day.date !== d.date ? 0.3 : 1,
                               }}
                               onMouseEnter={(e) => {
                                 const rect = e.currentTarget.getBoundingClientRect();
@@ -319,11 +312,16 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
                           );
                         })}
                       </div>
-                      <div className="flex items-center justify-between mt-1.5">
-                        <span className="text-[10px]" style={{ color: "#94A3B8" }}>{text.last90}</span>
-                        <span className="text-[10px]" style={{ color: "#94A3B8" }}>{text.today}</span>
+
+                      {/* "90 days ago ── XX.XX % uptime ── Today" */}
+                      <div className="flex items-center mt-1.5 text-xs" style={{ color: "#94A3B8" }}>
+                        <span className="shrink-0">{text.daysAgo}</span>
+                        <span className="flex-1 mx-3 h-px" style={{ background: "#E2E8F0" }} />
+                        <span className="shrink-0 tabular-nums">{uptimePct}{text.uptimeSuffix}</span>
+                        <span className="flex-1 mx-3 h-px" style={{ background: "#E2E8F0" }} />
+                        <span className="shrink-0">{text.today}</span>
                       </div>
-                    </div>
+                    </>
                   )}
                 </div>
               );
@@ -413,7 +411,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
 
       {/* ── Footer ── */}
       <footer style={{ borderTop: "1px solid #E2E8F0" }}>
-        <div className="mx-auto max-w-3xl px-6 py-6 flex items-center justify-between">
+        <div className="mx-auto max-w-4xl px-6 py-6 flex items-center justify-between">
           <p className="text-xs" style={{ color: "#94A3B8" }}>
             &copy; {new Date().getFullYear()} Calltide
           </p>
