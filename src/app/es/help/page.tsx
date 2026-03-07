@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCategoriesWithCounts, getPopularArticles } from "@/lib/help/search";
 import HelpSearch from "../../help/_components/help-search";
+import { HelpCategoryIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -95,8 +96,8 @@ export default async function HelpCenterEsPage() {
                 className="group rounded-xl border p-6 shadow-sm transition-all hover:shadow-lg hover:-translate-y-0.5 hover:border-amber-300"
                 style={{ borderColor: "#E2E8F0", background: "white" }}
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg text-xl" style={{ background: "rgba(197,154,39,0.08)" }}>
-                  {cat.icon}
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ background: "rgba(197,154,39,0.08)", color: "#C59A27" }}>
+                  <HelpCategoryIcon slug={cat.slug} size={20} />
                 </div>
                 <h3 className="mt-3 font-semibold" style={{ color: "#1A1D24" }}>{cat.nameEs || cat.name}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed" style={{ color: "#64748B" }}>{cat.descriptionEs || cat.description}</p>

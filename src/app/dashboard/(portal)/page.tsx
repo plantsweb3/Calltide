@@ -9,6 +9,8 @@ import BusinessInsights from "@/app/dashboard/_components/business-insights";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import SetupChecklist from "@/app/dashboard/_components/setup-checklist";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import { IconSparkles, IconClock, IconTarget, IconParty } from "@/components/icons";
+import { IconPhone } from "@/components/marketing/icons";
 
 interface Overview {
   callsToday: number;
@@ -134,10 +136,10 @@ export default function OverviewPage() {
     data.appointmentsThisWeek === 0
   ) {
     const steps = [
-      { label: "Forward your business number", desc: "Set up call forwarding from your existing phone number to your Calltide receptionist number.", href: "/dashboard/settings", icon: "📞" },
-      { label: "Customize your receptionist", desc: "Set her name, greeting, personality, and the services you offer.", href: "/dashboard/settings", icon: "✨" },
-      { label: "Set your business hours", desc: "Tell her when you're available so she books appointments at the right times.", href: "/dashboard/settings", icon: "🕐" },
-      { label: "Make a test call", desc: "Call your Calltide number to hear how she handles a real conversation.", icon: "🎯" },
+      { label: "Forward your business number", desc: "Set up call forwarding from your existing phone number to your Calltide receptionist number.", href: "/dashboard/settings", icon: <IconPhone size={18} /> },
+      { label: "Customize your receptionist", desc: "Set her name, greeting, personality, and the services you offer.", href: "/dashboard/settings", icon: <IconSparkles size={18} /> },
+      { label: "Set your business hours", desc: "Tell her when you're available so she books appointments at the right times.", href: "/dashboard/settings", icon: <IconClock size={18} /> },
+      { label: "Make a test call", desc: "Call your Calltide number to hear how she handles a real conversation.", icon: <IconTarget size={18} /> },
     ];
 
     return (
@@ -164,7 +166,7 @@ export default function OverviewPage() {
           <div className="mt-4 space-y-4">
             {steps.map((step, i) => (
               <div key={i} className="flex items-start gap-4">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-lg" style={{ background: "var(--db-hover)" }}>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full" style={{ background: "var(--db-hover)", color: "var(--db-accent)" }}>
                   {step.icon}
                 </span>
                 <div className="flex-1">
@@ -549,7 +551,7 @@ function FirstCallBanner({
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl"
           style={{ background: "rgba(34,197,94,0.15)" }}
         >
-          <span role="img" aria-label="celebration">&#127881;</span>
+          <IconParty size={20} />
         </div>
         <div>
           <h3

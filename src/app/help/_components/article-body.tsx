@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { IconThumbsUp, IconThumbsDown } from "@/components/icons";
 
 interface Props {
   articleId: string;
@@ -72,14 +73,14 @@ export default function ArticleBody({ articleId, content, lang }: Props) {
                 className="rounded-lg border px-4 py-2 text-sm transition-colors hover:bg-green-50"
                 style={{ borderColor: "#E2E8F0", color: "#475569" }}
               >
-                👍 {lang === "es" ? "Sí" : "Yes"}
+                <IconThumbsUp size={16} /> {lang === "es" ? "Sí" : "Yes"}
               </button>
               <button
                 onClick={() => handleFeedback(false)}
                 className="rounded-lg border px-4 py-2 text-sm transition-colors hover:bg-red-50"
                 style={{ borderColor: "#E2E8F0", color: "#475569" }}
               >
-                👎 {lang === "es" ? "No" : "No"}
+                <IconThumbsDown size={16} /> {lang === "es" ? "No" : "No"}
               </button>
             </div>
           </>

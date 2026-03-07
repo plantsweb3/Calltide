@@ -4,6 +4,7 @@ import { helpArticles, helpCategories } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { getCategoriesWithCounts } from "@/lib/help/search";
+import { HelpCategoryIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -65,8 +66,8 @@ export default async function HelpCategoryEsPage({ params }: { params: Promise<{
           {/* Main content */}
           <div>
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl text-2xl" style={{ background: "rgba(197,154,39,0.08)" }}>
-                {cat.icon}
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: "rgba(197,154,39,0.08)", color: "#C59A27" }}>
+                <HelpCategoryIcon slug={cat.slug} size={24} />
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight" style={{ color: "#1A1D24" }}>{cat.nameEs || cat.name}</h1>
@@ -125,7 +126,7 @@ export default async function HelpCategoryEsPage({ params }: { params: Promise<{
                       borderLeft: c.slug === slug ? "2px solid #C59A27" : "2px solid transparent",
                     }}
                   >
-                    <span>{c.icon}</span>
+                    <HelpCategoryIcon slug={c.slug} size={16} />
                     <span>{c.nameEs || c.name}</span>
                     <span className="ml-auto text-xs" style={{ color: "#94A3B8" }}>{c.articleCount}</span>
                   </Link>

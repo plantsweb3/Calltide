@@ -1,5 +1,7 @@
 "use client";
 
+import { IconGlobe } from "@/components/icons";
+
 interface Insight {
   text: string;
   icon: string;
@@ -115,7 +117,7 @@ export default function BusinessInsights({
               className="flex h-10 w-10 items-center justify-center rounded-full"
               style={{ background: "rgba(197,154,39,0.15)" }}
             >
-              <span className="text-lg">🌎</span>
+              <IconGlobe size={16} />
             </div>
             <div>
               <p className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>
