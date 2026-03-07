@@ -50,15 +50,16 @@ interface StatusData {
 const t = {
   title: "System Status",
   subtitle: "Real-time status of all Calltide services",
-  services: "Service Status",
+  services: "Component Status",
   activeIncidents: "Active Incidents",
   pastIncidents: "Past Incidents",
   uptime90: "90-Day Uptime",
-  subscribe: "Subscribe to Updates",
+  subscribe: "Get notified",
+  subscribeDesc: "Subscribe to email notifications when Calltide creates, updates, or resolves an incident.",
   subscribePlaceholder: "your@email.com",
   subscribeBtn: "Subscribe",
-  noActiveIncidents: "No active incidents",
-  noPastIncidents: "No incidents in the last 90 days",
+  noActiveIncidents: "No active incidents — all systems running normally.",
+  noPastIncidents: "No incidents in the last 90 days.",
   operational: "Operational",
   degraded: "Degraded",
   outage: "Outage",
@@ -71,6 +72,8 @@ const t = {
   unsubscribedMsg: "You've been unsubscribed from status updates.",
   verifyFailedMsg: "Verification failed. Please try again.",
   subscribedMsg: "Check your email to confirm your subscription.",
+  last90: "90 days",
+  today: "Today",
 };
 
 export default function StatusPage() {
@@ -87,6 +90,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
   const [subscribeEmail, setSubscribeEmail] = useState("");
   const [subscribeMsg, setSubscribeMsg] = useState("");
   const [subscribing, setSubscribing] = useState(false);
+  const [hoveredDay, setHoveredDay] = useState<{ service: string; day: { date: string; status: string }; x: number; y: number } | null>(null);
   const searchParams = useSearchParams();
 
   const fetchStatus = useCallback(() => {
@@ -127,146 +131,219 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
     setSubscribing(false);
   };
 
+  // ── Loading ──
   if (!data) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#FBFBFC" }}>
-        <p style={{ color: "#94A3B8" }}>{text.loading}</p>
+        <div className="flex items-center gap-3">
+          <div className="h-5 w-5 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "#C59A27", borderTopColor: "transparent" }} />
+          <p className="text-sm" style={{ color: "#94A3B8" }}>{text.loading}</p>
+        </div>
       </div>
     );
   }
 
-  const colorMap: Record<string, string> = { green: "#4ade80", amber: "#f59e0b", red: "#ef4444" };
-  const overallDotColor = colorMap[data.overallColor] ?? "#4ade80";
+  const statusColors: Record<string, string> = {
+    green: "#22c55e",
+    amber: "#f59e0b",
+    red: "#ef4444",
+  };
+  const overallDotColor = statusColors[data.overallColor] ?? "#22c55e";
 
   return (
-    <div className="min-h-screen" style={{ background: "#FBFBFC", fontFamily: "Inter, -apple-system, sans-serif" }}>
-      {/* Nav */}
-      <header className="border-b" style={{ borderColor: "#E2E8F0" }}>
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <Link href="/" className="text-xl font-bold" style={{ color: "#C59A27" }}>
-            Calltide
+    <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
+      {/* ── Header ── */}
+      <header style={{ borderBottom: "1px solid #E2E8F0" }}>
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
+          <Link href="/" className="flex items-center gap-2.5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect width="24" height="24" rx="6" fill="#C59A27" />
+              <path d="M7 8.5C7 7.67 7.67 7 8.5 7h7c.83 0 1.5.67 1.5 1.5v0c0 .83-.67 1.5-1.5 1.5h-7C7.67 10 7 9.33 7 8.5zM7 12c0-.83.67-1.5 1.5-1.5h3c.83 0 1.5.67 1.5 1.5v0c0 .83-.67 1.5-1.5 1.5h-3C7.67 13.5 7 12.83 7 12zM7 15.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5v0c0 .83-.67 1.5-1.5 1.5h-5C7.67 17 7 16.33 7 15.5z" fill="white"/>
+            </svg>
+            <span className="text-lg font-bold tracking-tight" style={{ color: "#1A1D24" }}>
+              Calltide <span className="font-normal" style={{ color: "#94A3B8" }}>Status</span>
+            </span>
           </Link>
-          <div className="flex items-center gap-4">
-            <Link href={text.langToggleHref} className="text-sm font-medium" style={{ color: "#475569" }}>
+          <div className="flex items-center gap-5">
+            <Link href={text.langToggleHref} className="text-sm" style={{ color: "#64748B" }}>
               {text.langToggle}
             </Link>
-            <Link href="/" className="text-sm font-medium" style={{ color: "#475569" }}>
-              Home
-            </Link>
+            <a
+              href="#subscribe"
+              className="text-sm font-medium"
+              style={{ color: "#C59A27" }}
+            >
+              {text.subscribe}
+            </a>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl px-4 py-8 space-y-10">
-        {/* Overall Status Banner */}
+      <main className="mx-auto max-w-3xl px-6 py-10 space-y-12">
+        {/* ── Overall Status Banner ── */}
         <div
-          className="rounded-xl p-6 text-center"
+          className="rounded-2xl px-8 py-7"
           style={{
-            background: data.overallColor === "green" ? "rgba(74,222,128,0.06)" : data.overallColor === "red" ? "rgba(239,68,68,0.06)" : "rgba(245,158,11,0.06)",
-            border: `1px solid ${overallDotColor}33`,
+            background: data.overallColor === "green"
+              ? "linear-gradient(135deg, rgba(34,197,94,0.06) 0%, rgba(34,197,94,0.02) 100%)"
+              : data.overallColor === "red"
+                ? "linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(239,68,68,0.02) 100%)"
+                : "linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(245,158,11,0.02) 100%)",
+            border: `1px solid ${overallDotColor}20`,
           }}
         >
-          <div className="flex items-center justify-center gap-3">
-            <span
-              className="h-3 w-3 rounded-full"
-              style={{
-                background: overallDotColor,
-                boxShadow: `0 0 8px ${overallDotColor}80`,
-                animation: data.overallColor !== "green" ? "pulse 2s infinite" : undefined,
-              }}
-            />
-            <span className="text-xl font-semibold" style={{ color: "#1A1D24" }}>
-              {data.overallStatus}
-            </span>
+          <div className="flex items-center gap-4">
+            {/* Status icon */}
+            <div
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
+              style={{ background: `${overallDotColor}12` }}
+            >
+              {data.overallColor === "green" ? (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={overallDotColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              ) : (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={overallDotColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              )}
+            </div>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight" style={{ color: "#1A1D24" }}>
+                {data.overallStatus}
+              </h1>
+              <p className="mt-0.5 text-sm" style={{ color: "#64748B" }}>
+                {text.subtitle}
+              </p>
+            </div>
+            {/* Pulsing dot for non-operational */}
+            {data.overallColor !== "green" && (
+              <div className="ml-auto">
+                <span
+                  className="block h-3 w-3 rounded-full"
+                  style={{
+                    background: overallDotColor,
+                    boxShadow: `0 0 0 0 ${overallDotColor}`,
+                    animation: "status-pulse 2s infinite",
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Service Cards Grid */}
-        <section>
-          <h2 className="mb-4 text-lg font-semibold" style={{ color: "#1A1D24" }}>{text.services}</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {data.services.map((svc) => {
-              const sColor = svc.status === "operational" ? "#4ade80" : svc.status === "degraded" ? "#f59e0b" : "#ef4444";
-              return (
-                <div
-                  key={svc.name}
-                  className="rounded-xl border p-4"
-                  style={{ background: "white", borderColor: "#E2E8F0" }}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-medium text-sm" style={{ color: "#1A1D24" }}>{svc.name}</span>
-                    <span
-                      className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium"
-                      style={{ background: `${sColor}15`, color: sColor }}
-                    >
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: sColor }} />
-                      {svc.status === "operational" ? text.operational : svc.status === "degraded" ? text.degraded : text.outage}
-                    </span>
-                  </div>
-                  <div className="text-xs space-y-1" style={{ color: "#94A3B8" }}>
-                    <p>Response: {svc.latencyMs != null ? `${svc.latencyMs}ms` : "—"}</p>
-                    <p>Checked: {svc.checkedAt ? new Date(svc.checkedAt).toLocaleTimeString() : "—"}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Active Incidents */}
-        <section>
-          <h2 className="mb-4 text-lg font-semibold" style={{ color: "#1A1D24" }}>{text.activeIncidents}</h2>
-          {data.activeIncidents.length === 0 ? (
-            <p className="text-sm" style={{ color: "#94A3B8" }}>{text.noActiveIncidents}</p>
-          ) : (
+        {/* ── Active Incidents (pinned above services) ── */}
+        {data.activeIncidents.length > 0 && (
+          <section>
+            <SectionHeading>{text.activeIncidents}</SectionHeading>
             <div className="space-y-3">
               {data.activeIncidents.map((inc) => (
                 <IncidentCard
                   key={inc.id}
                   incident={inc}
                   lang={lang}
+                  text={text}
                   expanded={expandedIncident === inc.id}
                   onToggle={() => setExpandedIncident(expandedIncident === inc.id ? null : inc.id)}
                 />
               ))}
             </div>
-          )}
-        </section>
-
-        {/* 90-Day Uptime Bars */}
-        {Object.keys(data.dailyHealth).length > 0 && (
-          <section>
-            <h2 className="mb-4 text-lg font-semibold" style={{ color: "#1A1D24" }}>{text.uptime90}</h2>
-            <div className="space-y-4">
-              {Object.entries(data.dailyHealth).map(([service, days]) => (
-                <div key={service}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium" style={{ color: "#1A1D24" }}>{service}</span>
-                    <span className="text-xs" style={{ color: "#94A3B8" }}>
-                      {((days.filter((d) => d.status === "operational").length / Math.max(days.length, 1)) * 100).toFixed(2)}%
-                    </span>
-                  </div>
-                  <div className="flex gap-px h-6 rounded overflow-hidden">
-                    {days.map((d, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 min-w-[2px]"
-                        title={`${d.date}: ${d.status}`}
-                        style={{
-                          background: d.status === "operational" ? "#4ade80" : d.status === "degraded" ? "#f59e0b" : "#ef4444",
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
           </section>
         )}
 
-        {/* Past Incidents */}
+        {/* ── Component Status with Uptime Bars ── */}
         <section>
-          <h2 className="mb-4 text-lg font-semibold" style={{ color: "#1A1D24" }}>{text.pastIncidents}</h2>
+          <SectionHeading>{text.services}</SectionHeading>
+          <div className="space-y-0 rounded-2xl overflow-hidden" style={{ border: "1px solid #E2E8F0" }}>
+            {data.services.map((svc, idx) => {
+              const sColor = svc.status === "operational" ? "#22c55e" : svc.status === "degraded" ? "#f59e0b" : "#ef4444";
+              const days = data.dailyHealth[svc.name] || [];
+              const uptimePct = days.length > 0
+                ? ((days.filter((d) => d.status === "operational").length / days.length) * 100).toFixed(2)
+                : "—";
+
+              return (
+                <div
+                  key={svc.name}
+                  className="px-6 py-5"
+                  style={{
+                    background: "white",
+                    borderTop: idx > 0 ? "1px solid #E2E8F0" : undefined,
+                  }}
+                >
+                  {/* Service header */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold text-sm" style={{ color: "#1A1D24" }}>{svc.name}</span>
+                      {svc.latencyMs != null && (
+                        <span className="text-xs tabular-nums" style={{ color: "#94A3B8" }}>
+                          {svc.latencyMs}ms
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-medium tabular-nums" style={{ color: "#64748B" }}>
+                        {uptimePct}%
+                      </span>
+                      <span
+                        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
+                        style={{ background: `${sColor}10`, color: sColor }}
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full" style={{ background: sColor }} />
+                        {svc.status === "operational" ? text.operational : svc.status === "degraded" ? text.degraded : text.outage}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 90-day uptime bar */}
+                  {days.length > 0 && (
+                    <div className="relative">
+                      <div className="flex gap-[1px] h-8 rounded-lg overflow-hidden">
+                        {days.map((d, i) => {
+                          const barColor = d.status === "operational" ? "#22c55e" : d.status === "degraded" ? "#f59e0b" : "#ef4444";
+                          return (
+                            <div
+                              key={i}
+                              className="flex-1 min-w-[2px] rounded-sm transition-opacity cursor-pointer"
+                              style={{
+                                background: barColor,
+                                opacity: hoveredDay && hoveredDay.service === svc.name && hoveredDay.day.date !== d.date ? 0.4 : 1,
+                              }}
+                              onMouseEnter={(e) => {
+                                const rect = e.currentTarget.getBoundingClientRect();
+                                setHoveredDay({ service: svc.name, day: d, x: rect.left + rect.width / 2, y: rect.top });
+                              }}
+                              onMouseLeave={() => setHoveredDay(null)}
+                            />
+                          );
+                        })}
+                      </div>
+                      <div className="flex items-center justify-between mt-1.5">
+                        <span className="text-[10px]" style={{ color: "#94A3B8" }}>{text.last90}</span>
+                        <span className="text-[10px]" style={{ color: "#94A3B8" }}>{text.today}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ── No Active Incidents Note ── */}
+        {data.activeIncidents.length === 0 && (
+          <div className="flex items-center gap-3 rounded-xl px-5 py-4" style={{ background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.12)" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span className="text-sm" style={{ color: "#64748B" }}>{text.noActiveIncidents}</span>
+          </div>
+        )}
+
+        {/* ── Past Incidents ── */}
+        <section>
+          <SectionHeading>{text.pastIncidents}</SectionHeading>
           {data.recentIncidents.length === 0 ? (
             <p className="text-sm" style={{ color: "#94A3B8" }}>{text.noPastIncidents}</p>
           ) : (
@@ -276,6 +353,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
                   key={inc.id}
                   incident={inc}
                   lang={lang}
+                  text={text}
                   expanded={expandedIncident === inc.id}
                   onToggle={() => setExpandedIncident(expandedIncident === inc.id ? null : inc.id)}
                   showPostmortem
@@ -285,83 +363,174 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
           )}
         </section>
 
-        {/* Subscribe Form */}
-        <section className="rounded-xl p-8 text-center" style={{ background: "#F8FAFC", border: "1px solid #E2E8F0" }}>
-          <h2 className="text-lg font-semibold" style={{ color: "#1A1D24" }}>{text.subscribe}</h2>
-          {subscribeMsg && (
-            <p className="mt-2 text-sm" style={{ color: "#C59A27" }}>{subscribeMsg}</p>
-          )}
-          <form onSubmit={handleSubscribe} className="mt-4 flex flex-col sm:flex-row gap-2 justify-center max-w-md mx-auto">
-            <input
-              type="email"
-              value={subscribeEmail}
-              onChange={(e) => setSubscribeEmail(e.target.value)}
-              placeholder={text.subscribePlaceholder}
-              required
-              className="flex-1 rounded-lg border px-4 py-2.5 text-sm"
-              style={{ borderColor: "#E2E8F0", outline: "none" }}
-            />
-            <button
-              type="submit"
-              disabled={subscribing}
-              className="rounded-lg px-6 py-2.5 text-sm font-medium text-white"
-              style={{ background: "#C59A27", opacity: subscribing ? 0.6 : 1 }}
-            >
-              {text.subscribeBtn}
-            </button>
-          </form>
+        {/* ── Subscribe ── */}
+        <section id="subscribe" className="scroll-mt-20">
+          <div
+            className="rounded-2xl p-8"
+            style={{ background: "white", border: "1px solid #E2E8F0" }}
+          >
+            <div className="flex items-start gap-4">
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+                style={{ background: "rgba(197,154,39,0.08)" }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-base font-semibold" style={{ color: "#1A1D24" }}>{text.subscribe}</h2>
+                <p className="mt-1 text-sm leading-relaxed" style={{ color: "#64748B" }}>
+                  {text.subscribeDesc}
+                </p>
+                {subscribeMsg && (
+                  <p className="mt-3 text-sm font-medium" style={{ color: "#C59A27" }}>{subscribeMsg}</p>
+                )}
+                <form onSubmit={handleSubscribe} className="mt-4 flex gap-2">
+                  <input
+                    type="email"
+                    value={subscribeEmail}
+                    onChange={(e) => setSubscribeEmail(e.target.value)}
+                    placeholder={text.subscribePlaceholder}
+                    required
+                    className="flex-1 rounded-lg border px-4 py-2.5 text-sm outline-none transition-colors"
+                    style={{ borderColor: "#E2E8F0", background: "#FBFBFC" }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={subscribing}
+                    className="cta-gold rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-50"
+                  >
+                    {text.subscribeBtn}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
         </section>
-      </div>
+      </main>
 
-      {/* Footer */}
-      <footer className="border-t py-8 text-center text-sm" style={{ borderColor: "#E2E8F0", color: "#94A3B8" }}>
-        <p>&copy; {new Date().getFullYear()} Calltide. All rights reserved.</p>
+      {/* ── Footer ── */}
+      <footer style={{ borderTop: "1px solid #E2E8F0" }}>
+        <div className="mx-auto max-w-3xl px-6 py-6 flex items-center justify-between">
+          <p className="text-xs" style={{ color: "#94A3B8" }}>
+            &copy; {new Date().getFullYear()} Calltide
+          </p>
+          <div className="flex items-center gap-5">
+            <Link href="/" className="text-xs" style={{ color: "#94A3B8" }}>Home</Link>
+            <Link href="/help" className="text-xs" style={{ color: "#94A3B8" }}>Help</Link>
+            <Link href="/legal/privacy" className="text-xs" style={{ color: "#94A3B8" }}>Privacy</Link>
+            <Link href="/legal/terms" className="text-xs" style={{ color: "#94A3B8" }}>Terms</Link>
+          </div>
+        </div>
       </footer>
 
+      {/* ── Uptime bar tooltip ── */}
+      {hoveredDay && (
+        <div
+          className="fixed z-50 pointer-events-none rounded-lg px-3 py-2 shadow-lg"
+          style={{
+            left: Math.max(8, Math.min(hoveredDay.x - 80, typeof window !== "undefined" ? window.innerWidth - 170 : 600)),
+            top: hoveredDay.y - 52,
+            background: "#1A1D24",
+            border: "1px solid #334155",
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <span
+              className="h-2 w-2 rounded-full"
+              style={{
+                background: hoveredDay.day.status === "operational" ? "#22c55e" : hoveredDay.day.status === "degraded" ? "#f59e0b" : "#ef4444",
+              }}
+            />
+            <span className="text-xs font-medium text-white">
+              {new Date(hoveredDay.day.date + "T12:00:00").toLocaleDateString(lang === "es" ? "es" : "en", { month: "short", day: "numeric" })}
+            </span>
+            <span className="text-xs capitalize" style={{ color: "#94A3B8" }}>
+              {hoveredDay.day.status}
+            </span>
+          </div>
+        </div>
+      )}
+
       <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
+        @keyframes status-pulse {
+          0% { box-shadow: 0 0 0 0 currentColor; }
+          70% { box-shadow: 0 0 0 8px transparent; }
+          100% { box-shadow: 0 0 0 0 transparent; }
         }
       `}</style>
     </div>
   );
 }
 
-// ── Incident Card Component ──
+// ── Section Heading ──
+
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-3 mb-5">
+      <h2 className="text-xs font-bold uppercase tracking-[0.15em]" style={{ color: "#94A3B8" }}>
+        {children}
+      </h2>
+      <div className="flex-1 h-px" style={{ background: "#E2E8F0" }} />
+    </div>
+  );
+}
+
+// ── Incident Card ──
 
 function IncidentCard({
   incident,
   lang,
+  text,
   expanded,
   onToggle,
   showPostmortem,
 }: {
   incident: Incident;
   lang: string;
+  text: typeof t;
   expanded: boolean;
   onToggle: () => void;
   showPostmortem?: boolean;
 }) {
-  const sevColor = incident.severity === "critical" ? "#ef4444" : incident.severity === "major" ? "#f59e0b" : "#3b82f6";
+  const sevColors: Record<string, string> = {
+    critical: "#ef4444",
+    major: "#f59e0b",
+    minor: "#3b82f6",
+    maintenance: "#6366f1",
+  };
+  const sevColor = sevColors[incident.severity] ?? "#64748B";
   const title = lang === "es" && incident.titleEs ? incident.titleEs : incident.title;
   const isResolved = incident.status === "resolved" || incident.status === "postmortem";
 
+  const statusLabels: Record<string, string> = {
+    detected: lang === "es" ? "Detectado" : "Detected",
+    investigating: lang === "es" ? "Investigando" : "Investigating",
+    identified: lang === "es" ? "Identificado" : "Identified",
+    monitoring: lang === "es" ? "Monitoreando" : "Monitoring",
+    resolved: lang === "es" ? "Resuelto" : "Resolved",
+    postmortem: lang === "es" ? "Postmortem" : "Postmortem",
+  };
+
   return (
-    <div className="rounded-xl border" style={{ background: "white", borderColor: "#E2E8F0" }}>
+    <div
+      className="rounded-xl overflow-hidden transition-shadow"
+      style={{ background: "white", border: `1px solid ${isResolved ? "#E2E8F0" : sevColor + "30"}` }}
+    >
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 text-left"
-        style={{ cursor: "pointer" }}
+        className="w-full flex items-center justify-between px-5 py-4 text-left"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <span
             className="h-2.5 w-2.5 rounded-full flex-shrink-0"
-            style={{ background: isResolved ? "#4ade80" : sevColor }}
+            style={{ background: isResolved ? "#22c55e" : sevColor }}
           />
-          <div>
-            <p className="font-medium text-sm" style={{ color: "#1A1D24" }}>{title}</p>
-            <p className="text-xs mt-0.5" style={{ color: "#94A3B8" }}>
+          <div className="min-w-0">
+            <p className="font-semibold text-sm truncate" style={{ color: "#1A1D24" }}>{title}</p>
+            <p className="text-xs mt-0.5 truncate" style={{ color: "#94A3B8" }}>
               {incident.affectedServices.join(", ")} &middot;{" "}
               {new Date(incident.startedAt).toLocaleDateString(lang === "es" ? "es" : "en", {
                 month: "short",
@@ -372,20 +541,22 @@ function IncidentCard({
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0 ml-3">
           <span
-            className="rounded-full px-2 py-0.5 text-xs font-medium"
-            style={{ background: `${sevColor}15`, color: sevColor }}
+            className="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide"
+            style={{ background: `${isResolved ? "#22c55e" : sevColor}10`, color: isResolved ? "#22c55e" : sevColor }}
           >
-            {incident.severity}
+            {statusLabels[incident.status] || incident.status}
           </span>
           <svg
-            width={16}
-            height={16}
+            width={14}
+            height={14}
             viewBox="0 0 24 24"
             fill="none"
             stroke="#94A3B8"
-            strokeWidth={2}
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
             style={{ transform: expanded ? "rotate(180deg)" : undefined, transition: "transform 0.2s" }}
           >
             <polyline points="6 9 12 15 18 9" />
@@ -394,39 +565,51 @@ function IncidentCard({
       </button>
 
       {expanded && (
-        <div className="border-t px-4 pb-4 pt-3" style={{ borderColor: "#E2E8F0" }}>
+        <div className="px-5 pb-5 pt-1" style={{ borderTop: "1px solid #E2E8F0" }}>
           {/* Timeline */}
-          <div className="space-y-3">
-            {incident.updates.map((upd) => (
-              <div key={upd.id} className="flex gap-3">
-                <div className="flex flex-col items-center">
-                  <span className="h-2 w-2 rounded-full mt-1.5" style={{ background: "#C59A27" }} />
-                  <span className="flex-1 w-px" style={{ background: "#E2E8F0" }} />
+          <div className="mt-3 space-y-0">
+            {incident.updates.map((upd, i) => {
+              const isLast = i === incident.updates.length - 1;
+              return (
+                <div key={upd.id} className="flex gap-3">
+                  <div className="flex flex-col items-center pt-1">
+                    <span
+                      className="h-2 w-2 rounded-full flex-shrink-0"
+                      style={{ background: i === 0 ? "#C59A27" : "#CBD5E1" }}
+                    />
+                    {!isLast && <span className="flex-1 w-px mt-1" style={{ background: "#E2E8F0" }} />}
+                  </div>
+                  <div className={isLast ? "" : "pb-4"}>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold capitalize" style={{ color: "#475569" }}>
+                        {upd.status.replace(/_/g, " ")}
+                      </span>
+                      <span className="text-[11px]" style={{ color: "#94A3B8" }}>
+                        {new Date(upd.createdAt).toLocaleString(lang === "es" ? "es" : "en", {
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                    <p className="text-sm mt-0.5 leading-relaxed" style={{ color: "#475569" }}>
+                      {lang === "es" && upd.messageEs ? upd.messageEs : upd.message}
+                    </p>
+                  </div>
                 </div>
-                <div className="pb-3">
-                  <p className="text-xs font-medium" style={{ color: "#475569" }}>
-                    {upd.status.replace(/_/g, " ")} &middot;{" "}
-                    {new Date(upd.createdAt).toLocaleString(lang === "es" ? "es" : "en", {
-                      month: "short",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                  <p className="text-sm mt-0.5" style={{ color: "#1A1D24" }}>
-                    {lang === "es" && upd.messageEs ? upd.messageEs : upd.message}
-                  </p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Postmortem */}
           {showPostmortem && incident.postmortem && (
-            <div className="mt-4 rounded-lg p-4" style={{ background: "#F8FAFC", border: "1px solid #E2E8F0" }}>
-              <p className="text-xs font-semibold mb-2" style={{ color: "#C59A27" }}>{lang === "es" ? "Informe Post-Incidente" : "Postmortem"}</p>
+            <div className="mt-5 rounded-lg p-4" style={{ background: "#FBFBFC", border: "1px solid #E2E8F0" }}>
+              <p className="text-xs font-bold uppercase tracking-[0.1em] mb-3" style={{ color: "#C59A27" }}>
+                {text.postmortem}
+              </p>
               <div
-                className="prose prose-sm max-w-none text-sm"
+                className="prose prose-sm max-w-none text-sm leading-relaxed"
                 style={{ color: "#475569" }}
                 dangerouslySetInnerHTML={{
                   __html: simpleMarkdown(lang === "es" && incident.postmortemEs ? incident.postmortemEs : incident.postmortem),
@@ -439,6 +622,8 @@ function IncidentCard({
     </div>
   );
 }
+
+// ── Utilities ──
 
 function formatDurationClient(seconds: number): string {
   if (seconds < 60) return `${seconds}s`;

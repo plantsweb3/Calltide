@@ -6,15 +6,16 @@ import { StatusPageInner } from "@/app/status/page";
 const t = {
   title: "Estado del Sistema",
   subtitle: "Estado en tiempo real de todos los servicios de Calltide",
-  services: "Estado de Servicios",
+  services: "Estado de Componentes",
   activeIncidents: "Incidentes Activos",
   pastIncidents: "Incidentes Pasados",
   uptime90: "Disponibilidad 90 Días",
-  subscribe: "Suscríbete a Actualizaciones",
+  subscribe: "Recibe notificaciones",
+  subscribeDesc: "Suscríbete a notificaciones por correo cuando Calltide cree, actualice o resuelva un incidente.",
   subscribePlaceholder: "tu@correo.com",
   subscribeBtn: "Suscribirse",
-  noActiveIncidents: "No hay incidentes activos",
-  noPastIncidents: "No hay incidentes en los últimos 90 días",
+  noActiveIncidents: "No hay incidentes activos — todos los sistemas funcionan con normalidad.",
+  noPastIncidents: "No hay incidentes en los últimos 90 días.",
   operational: "Operativo",
   degraded: "Degradado",
   outage: "Interrupción",
@@ -27,6 +28,8 @@ const t = {
   unsubscribedMsg: "Te has dado de baja de las actualizaciones de estado.",
   verifyFailedMsg: "La verificación falló. Por favor, inténtalo de nuevo.",
   subscribedMsg: "Revisa tu correo para confirmar tu suscripción.",
+  last90: "90 días",
+  today: "Hoy",
 };
 
 export default function StatusPageEs() {
