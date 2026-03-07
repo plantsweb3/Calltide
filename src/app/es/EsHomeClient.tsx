@@ -238,7 +238,7 @@ export default function EsHomepage() {
 
       {/* ── 6. ROI CALCULATOR ── */}
       <section className="relative px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#0f1729" }}>
-        <div className="relative z-10 mx-auto max-w-5xl"><ROICalculator /></div>
+        <div className="relative z-10 mx-auto max-w-5xl"><ROICalculator lang="es" /></div>
       </section>
 
       {/* ── 7. SOCIAL PROOF ── */}

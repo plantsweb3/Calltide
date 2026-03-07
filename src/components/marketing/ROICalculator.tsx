@@ -5,14 +5,12 @@ import { useState, useRef, useEffect } from "react";
 function useAnimatedNumber(target: number, duration = 400) {
   const [display, setDisplay] = useState(target);
   const rafRef = useRef<number>(0);
-  const startRef = useRef<number>(0);
   const fromRef = useRef<number>(target);
 
   useEffect(() => {
     const from = fromRef.current;
     if (from === target) return;
     const startTime = performance.now();
-    startRef.current = startTime;
 
     function step(now: number) {
       const elapsed = now - startTime;
@@ -43,13 +41,44 @@ function useAnimatedNumber(target: number, duration = 400) {
   return display;
 }
 
-function formatDollars(n: number) {
-  return "$" + n.toLocaleString("en-US");
+const translations = {
+  en: {
+    heading: "ROI Calculator",
+    title: "Calculate Your Missed Call Cost",
+    jobLabel: "What's your average job value?",
+    callsLabel: "How many calls do you miss per week?",
+    losing: "You're losing",
+    costs: "Calltide costs",
+    roi: "Your ROI",
+    perMonth: "/month",
+    return: "return",
+    annual: (amount: string) => <>That&apos;s <span className="font-extrabold text-white">{amount} saved per year</span> after Calltide.</>,
+    cta: "Stop Losing Money",
+  },
+  es: {
+    heading: "Calculadora de ROI",
+    title: "Calcula el Costo de tus Llamadas Perdidas",
+    jobLabel: "¿Cuál es el valor promedio de tu trabajo?",
+    callsLabel: "¿Cuántas llamadas pierdes por semana?",
+    losing: "Estás perdiendo",
+    costs: "Calltide cuesta",
+    roi: "Tu ROI",
+    perMonth: "/mes",
+    return: "retorno",
+    annual: (amount: string) => <>Eso es <span className="font-extrabold text-white">{amount} ahorrados al año</span> con Calltide.</>,
+    cta: "Deja de Perder Dinero",
+  },
+};
+
+function formatDollars(n: number, lang: "en" | "es" = "en") {
+  return "$" + n.toLocaleString(lang === "es" ? "es-US" : "en-US");
 }
 
-export function ROICalculator() {
+export function ROICalculator({ lang = "en" }: { lang?: "en" | "es" }) {
   const [jobValue, setJobValue] = useState(800);
   const [missedCalls, setMissedCalls] = useState(3);
+
+  const t = translations[lang];
 
   const missedRevenuePerMonth = Math.round(jobValue * missedCalls * 4.33);
   const calltideCost = 497;
@@ -69,9 +98,9 @@ export function ROICalculator() {
   return (
     <div className="reveal">
       <div className="text-center mb-12">
-        <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">ROI Calculator</p>
+        <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.heading}</p>
         <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">
-          Calculate Your Missed Call Cost
+          {t.title}
         </h2>
       </div>
 
@@ -88,8 +117,8 @@ export function ROICalculator() {
           {/* Job Value Slider */}
           <div>
             <div className="flex items-baseline justify-between mb-3">
-              <label className="text-sm font-medium text-slate-400">What&apos;s your average job value?</label>
-              <span className="text-lg font-extrabold text-white tabular-nums">{formatDollars(jobValue)}</span>
+              <label className="text-sm font-medium text-slate-400">{t.jobLabel}</label>
+              <span className="text-lg font-extrabold text-white tabular-nums">{formatDollars(jobValue, lang)}</span>
             </div>
             <div className="relative">
               <input
@@ -112,7 +141,7 @@ export function ROICalculator() {
           {/* Missed Calls Slider */}
           <div>
             <div className="flex items-baseline justify-between mb-3">
-              <label className="text-sm font-medium text-slate-400">How many calls do you miss per week?</label>
+              <label className="text-sm font-medium text-slate-400">{t.callsLabel}</label>
               <span className="text-lg font-extrabold text-white tabular-nums">{missedCalls}</span>
             </div>
             <div className="relative">
@@ -141,38 +170,36 @@ export function ROICalculator() {
         <div className="grid gap-8 sm:grid-cols-3 text-center">
           {/* Missed Revenue */}
           <div>
-            <p className="text-sm font-medium text-slate-500 mb-2">You&apos;re losing</p>
+            <p className="text-sm font-medium text-slate-500 mb-2">{t.losing}</p>
             <p className="text-4xl font-black tracking-tight tabular-nums md:text-6xl" style={{ color: "#f97316" }}>
-              {formatDollars(animatedLoss)}
+              {formatDollars(animatedLoss, lang)}
             </p>
-            <p className="text-sm text-slate-500 mt-1">/month</p>
+            <p className="text-sm text-slate-500 mt-1">{t.perMonth}</p>
           </div>
 
           {/* Calltide Cost */}
           <div>
-            <p className="text-sm font-medium text-slate-500 mb-2">Calltide costs</p>
+            <p className="text-sm font-medium text-slate-500 mb-2">{t.costs}</p>
             <p className="text-4xl font-black tracking-tight tabular-nums text-white md:text-6xl">
               $497
             </p>
-            <p className="text-sm text-slate-500 mt-1">/month</p>
+            <p className="text-sm text-slate-500 mt-1">{t.perMonth}</p>
           </div>
 
           {/* ROI */}
           <div>
-            <p className="text-sm font-medium text-slate-500 mb-2">Your ROI</p>
+            <p className="text-sm font-medium text-slate-500 mb-2">{t.roi}</p>
             <p className="text-4xl font-black tracking-tight tabular-nums md:text-6xl" style={{ color: "#d4a843" }}>
               {netSavings > 0 ? `${(animatedRoi / 10).toFixed(1)}:1` : "—"}
             </p>
-            <p className="text-sm text-slate-500 mt-1">return</p>
+            <p className="text-sm text-slate-500 mt-1">{t.return}</p>
           </div>
         </div>
 
         {/* Annual savings */}
         <div className="mt-10 text-center">
           <p className="text-lg text-slate-400">
-            That&apos;s{" "}
-            <span className="font-extrabold text-white">{formatDollars(animatedAnnual)} saved per year</span>
-            {" "}after Calltide.
+            {t.annual(formatDollars(animatedAnnual, lang))}
           </p>
         </div>
 
@@ -182,7 +209,7 @@ export function ROICalculator() {
             href="/pricing"
             className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white"
           >
-            Stop Losing Money &rarr;
+            {t.cta} &rarr;
           </a>
         </div>
       </div>

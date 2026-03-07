@@ -110,6 +110,18 @@ export default async function HelpCenterPage() {
           </div>
         </section>
 
+        {/* Blog link */}
+        <section className="flex items-center justify-center gap-3">
+          <span className="text-sm" style={{ color: "#64748B" }}>Want more tips?</span>
+          <Link
+            href="/blog"
+            className="text-sm font-semibold transition-colors hover:underline"
+            style={{ color: "#C59A27" }}
+          >
+            Browse our Blog &rarr;
+          </Link>
+        </section>
+
         {/* Still need help */}
         <section className="relative overflow-hidden rounded-2xl p-10 text-center" style={{ background: "#111827" }}>
           <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 50% 80% at 50% 100%, rgba(197,154,39,0.1) 0%, transparent 60%)" }} />

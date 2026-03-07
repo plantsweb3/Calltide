@@ -25,10 +25,6 @@ const content = {
     missionLabel: "Our Mission",
     missionH: "Never miss another customer call.",
     missionP: "Every home service business deserves a professional front office. Not just the ones who can afford a full-time receptionist. Calltide gives every contractor the same advantage — an always-on, bilingual receptionist that handles calls, books jobs, and protects their revenue.",
-    founderLabel: "The Founder",
-    founderName: "Ulysses Munoz",
-    founderTitle: "Founder & CEO",
-    founderBio: "San Antonio native. Built Calltide because he watched too many great contractors lose business to missed calls. Bilingual by default — because that's how Texas works.",
     ctaH: "Ready to stop missing calls?",
     ctaSub: "Get your AI receptionist up and running in 5 minutes.",
     ctaButton: "Get Calltide",
@@ -54,10 +50,6 @@ const content = {
     missionLabel: "Nuestra Misión",
     missionH: "Nunca pierdas otra llamada de un cliente.",
     missionP: "Cada negocio de servicio del hogar merece una oficina profesional. No solo los que pueden pagar una recepcionista de tiempo completo. Calltide le da a cada contratista la misma ventaja — una recepcionista siempre activa y bilingüe que maneja llamadas, agenda trabajos y protege sus ingresos.",
-    founderLabel: "El Fundador",
-    founderName: "Ulysses Munoz",
-    founderTitle: "Fundador y CEO",
-    founderBio: "Nativo de San Antonio. Construyó Calltide porque vio a demasiados grandes contratistas perder negocios por llamadas perdidas. Bilingüe por defecto — porque así funciona Texas.",
     ctaH: "¿Listo para dejar de perder llamadas?",
     ctaSub: "Pon tu recepcionista IA a funcionar en 5 minutos.",
     ctaButton: "Obtén Calltide",
@@ -138,30 +130,6 @@ export default function AboutPage() {
             {c.missionH}
           </h2>
           <p className="mt-6 text-lg leading-[1.8] text-slate-300 max-w-2xl mx-auto">{c.missionP}</p>
-        </div>
-      </section>
-
-      {/* Founder */}
-      <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#111827" }}>
-        <div className="reveal mx-auto max-w-3xl">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400 text-center">{c.founderLabel}</p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center gap-8">
-            {/* Placeholder avatar */}
-            <div
-              className="flex-shrink-0 w-32 h-32 rounded-full flex items-center justify-center"
-              style={{
-                background: "linear-gradient(135deg, rgba(212,168,67,0.2) 0%, rgba(212,168,67,0.05) 100%)",
-                border: "2px solid rgba(212,168,67,0.3)",
-              }}
-            >
-              <span className="text-4xl font-black" style={{ color: "#d4a843" }}>UM</span>
-            </div>
-            <div className="text-center sm:text-left">
-              <h3 className="text-2xl font-extrabold text-white">{c.founderName}</h3>
-              <p className="mt-1 text-sm font-medium" style={{ color: "#d4a843" }}>{c.founderTitle}</p>
-              <p className="mt-4 text-base leading-[1.7] text-slate-300">{c.founderBio}</p>
-            </div>
-          </div>
         </div>
       </section>
 
