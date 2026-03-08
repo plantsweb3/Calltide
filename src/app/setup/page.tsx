@@ -1,7 +1,18 @@
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import SetupClient from "./SetupClient";
 
-// Temporary redirect until the full setup "hiring flow" page is built.
-// All marketing links now point to /setup instead of /audit.
+export const metadata: Metadata = {
+  title: "Hire Your AI Receptionist | Calltide",
+  description:
+    "Set up your bilingual AI receptionist in minutes. She'll answer calls, book appointments, and never miss a lead — in English and Spanish.",
+  openGraph: {
+    title: "Hire Your AI Receptionist | Calltide",
+    description:
+      "Set up your bilingual AI receptionist in minutes. She'll answer calls, book appointments, and never miss a lead.",
+    type: "website",
+  },
+};
+
 export default function SetupPage() {
-  redirect("/#signup");
+  return <SetupClient />;
 }

@@ -1137,6 +1137,66 @@ export const reviewRequests = sqliteTable("review_requests", {
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
+// ── Setup Sessions (Public Hiring Flow) ──
+
+export const setupSessions = sqliteTable("setup_sessions", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  token: text("token").unique().notNull().$defaultFn(() => crypto.randomUUID()),
+  // Step 1: Business info
+  businessName: text("business_name"),
+  businessType: text("business_type"),
+  city: text("city"),
+  state: text("state"),
+  services: text("services", { mode: "json" }).$type<string[]>(),
+  // Step 2: Contact info
+  ownerName: text("owner_name"),
+  ownerEmail: text("owner_email"),
+  ownerPhone: text("owner_phone"),
+  // Step 3: Receptionist name
+  receptionistName: text("receptionist_name"),
+  // Step 4: Personality
+  personalityPreset: text("personality_preset"),
+  // Step 5: FAQ + off-limits
+  faqAnswers: text("faq_answers", { mode: "json" }).$type<Record<string, string>>(),
+  offLimits: text("off_limits", { mode: "json" }).$type<Record<string, boolean>>(),
+  // Step 6: Plan selection
+  selectedPlan: text("selected_plan"), // monthly | annual
+  // Flow tracking
+  currentStep: integer("current_step").notNull().default(1),
+  maxStepReached: integer("max_step_reached").notNull().default(1),
+  status: text("status").notNull().default("active"), // active, converted, abandoned
+  // Linked records
+  prospectId: text("prospect_id"),
+  businessId: text("business_id"),
+  // UTM + referral tracking
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  refCode: text("ref_code"),
+  // Locale
+  language: text("language").notNull().default("en"),
+  // Timestamps
+  lastActiveAt: text("last_active_at").notNull().default(sql`(datetime('now'))`),
+  convertedAt: text("converted_at"),
+  abandonedAt: text("abandoned_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const setupRetargetEmails = sqliteTable("setup_retarget_emails", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  setupSessionId: text("setup_session_id").notNull().references(() => setupSessions.id),
+  emailNumber: integer("email_number").notNull(), // 1-4
+  templateKey: text("template_key").notNull(),
+  status: text("status").notNull().default("sent"), // sent, delivered, opened, clicked, bounced, failed
+  resendId: text("resend_id"),
+  language: text("language").notNull().default("en"),
+  sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
+  openedAt: text("opened_at"),
+  clickedAt: text("clicked_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
 export const demoSessions = sqliteTable("demo_sessions", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   ipHash: text("ip_hash").notNull(),
