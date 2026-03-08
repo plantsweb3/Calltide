@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS `monthly_digests` (
 	`resend_id` text,
 	`created_at` text DEFAULT (datetime('now')) NOT NULL
 );
-
+--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS `idx_monthly_digests_biz_month` ON `monthly_digests` (`business_id`, `month_key`);

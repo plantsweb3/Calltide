@@ -10,5 +10,5 @@ CREATE TABLE IF NOT EXISTS `pending_jobs` (
 	`created_at` text DEFAULT (datetime('now')) NOT NULL,
 	`completed_at` text
 );
-
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS `idx_pending_jobs_status_retry` ON `pending_jobs` (`status`, `next_retry_at`);
