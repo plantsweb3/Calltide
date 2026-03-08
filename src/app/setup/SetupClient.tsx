@@ -52,8 +52,6 @@ interface TradeData {
 
 const T = {
   en: {
-    langToggle: "ES",
-    langLabel: "Switch to Spanish",
     step1Title: "What's your business?",
     step1Sub: "We'll customize your receptionist for your trade.",
     bizName: "Business Name",
@@ -153,8 +151,6 @@ const T = {
     sessionError: "Could not start setup. Please refresh the page.",
   },
   es: {
-    langToggle: "EN",
-    langLabel: "Cambiar a inglés",
     step1Title: "¿Cuál es tu negocio?",
     step1Sub: "Personalizaremos tu recepcionista para tu industria.",
     bizName: "Nombre del Negocio",
@@ -320,7 +316,13 @@ export default function SetupClientWrapper() {
 function SetupClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = useState<Lang>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("calltide-lang");
+      if (saved === "es") return "es";
+    }
+    return "en";
+  });
   const t = T[lang];
 
   // Session
@@ -527,11 +529,11 @@ function SetupClient() {
     return () => abortController.abort();
   }, [bizType]);
 
-  // ── Persist language to server ──
-  const toggleLang = useCallback(() => {
-    const newLang = lang === "en" ? "es" : "en";
+  // ── Persist language ──
+  const switchLang = useCallback((newLang: Lang) => {
     setLang(newLang);
-    // Fire and forget — persist to server
+    try { localStorage.setItem("calltide-lang", newLang); } catch {}
+    // Fire and forget — persist to server session
     fetch("/api/setup/step/1", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -542,7 +544,7 @@ function SetupClient() {
         state: state || "TX",
       }),
     }).catch(() => {});
-  }, [lang, bizName, bizType, city, state]);
+  }, [bizName, bizType, city, state]);
 
   // ── Field error setter (per-field, not global) ──
   const setFieldError = useCallback((field: string, msg: string) => {
@@ -752,9 +754,25 @@ function SetupClient() {
       {/* Nav */}
       <nav className={s.nav}>
         <span className={s.logo}>Calltide</span>
-        <button onClick={toggleLang} className={s.langBtn} aria-label={t.langLabel}>
-          {t.langToggle}
-        </button>
+        <div className={s.langSwitch} role="radiogroup" aria-label="Language">
+          <button
+            onClick={() => switchLang("en")}
+            className={`${s.langOption} ${lang === "en" ? s.langOptionActive : ""}`}
+            role="radio"
+            aria-checked={lang === "en"}
+          >
+            EN
+          </button>
+          <span className={s.langDivider}>|</span>
+          <button
+            onClick={() => switchLang("es")}
+            className={`${s.langOption} ${lang === "es" ? s.langOptionActive : ""}`}
+            role="radio"
+            aria-checked={lang === "es"}
+          >
+            ES
+          </button>
+        </div>
       </nav>
 
       {/* Progress bar */}
