@@ -78,6 +78,7 @@ interface Overview {
     newThisMonth: number;
     topByCallCount: Array<{ name: string | null; phone: string; totalCalls: number }>;
   };
+  healthScore?: number;
   // Setup checklist data
   businessHours?: Record<string, { open?: string; close?: string; closed?: boolean }> | null;
   greeting?: string | null;
@@ -269,7 +270,8 @@ export default function OverviewPage() {
         </div>
 
         {/* Revenue Metric Cards */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <HealthScoreCard score={data.healthScore ?? 50} />
           <MetricCard
             label="Revenue Captured"
             value={data.revenueThisMonth!}
@@ -515,6 +517,56 @@ export default function OverviewPage() {
           bilingualStats={data.bilingualStats}
         />
       )}
+    </div>
+  );
+}
+
+function HealthScoreCard({ score }: { score: number }) {
+  const color = score >= 80 ? "#4ade80" : score >= 50 ? "#fbbf24" : "#f87171";
+  const label = score >= 80 ? "Excellent" : score >= 50 ? "Good" : "Needs Attention";
+
+  return (
+    <div
+      className="rounded-xl p-5 flex flex-col items-center justify-center"
+      style={{
+        background: "var(--db-card)",
+        border: "1px solid var(--db-border)",
+        boxShadow: "var(--db-card-shadow)",
+      }}
+    >
+      <p
+        className="text-xs font-semibold uppercase tracking-wider mb-2"
+        style={{ color: "var(--db-text-muted)" }}
+      >
+        Health Score
+      </p>
+      <div className="relative w-16 h-16 flex items-center justify-center">
+        <svg viewBox="0 0 36 36" className="w-16 h-16 -rotate-90">
+          <path
+            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+            fill="none"
+            stroke="var(--db-border)"
+            strokeWidth="3"
+          />
+          <path
+            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+            fill="none"
+            stroke={color}
+            strokeWidth="3"
+            strokeDasharray={`${score}, 100`}
+            strokeLinecap="round"
+          />
+        </svg>
+        <span
+          className="absolute text-lg font-bold"
+          style={{ color }}
+        >
+          {score}
+        </span>
+      </div>
+      <p className="mt-1 text-xs font-medium" style={{ color }}>
+        {label}
+      </p>
     </div>
   );
 }

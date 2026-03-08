@@ -1050,6 +1050,31 @@ export const weeklyDigests = sqliteTable("weekly_digests", {
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
+export const monthlyDigests = sqliteTable("monthly_digests", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  monthKey: text("month_key").notNull(), // e.g. "2026-02"
+  monthLabel: text("month_label").notNull(), // e.g. "February 2026"
+  stats: text("stats", { mode: "json" }).notNull().$type<{
+    totalCalls: number;
+    afterHoursCalls: number;
+    appointmentsBooked: number;
+    estimatedRevenue: number;
+    emergencyCalls: number;
+    newCustomers: number;
+    savedEstimate: number;
+    prevMonthCalls: number;
+    momChangePercent: number;
+    roiMultiple: number;
+    costPerLead: number;
+    spanishCallPercent: number;
+  }>(),
+  emailSentAt: text("email_sent_at"),
+  smsSentAt: text("sms_sent_at"),
+  resendId: text("resend_id"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
 // ── Agent Handoffs ──
 
 export const agentHandoffs = sqliteTable("agent_handoffs", {

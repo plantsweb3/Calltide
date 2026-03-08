@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
       hasPricingEnabled: businesses.hasPricingEnabled,
       setupChecklistDismissed: businesses.setupChecklistDismissed,
       createdAt: businesses.createdAt,
+      healthScore: businesses.healthScore,
     })
     .from(businesses)
     .where(eq(businesses.id, businessId))
@@ -146,6 +147,7 @@ export async function GET(req: NextRequest) {
     hasPricing: biz?.hasPricingEnabled ?? false,
     setupChecklistDismissed: biz?.setupChecklistDismissed ?? false,
     createdAt: biz?.createdAt,
+    healthScore: biz?.healthScore ?? 50,
   };
 
   // ── Enhanced metrics (wrapped so basic always returns) ──
