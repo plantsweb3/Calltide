@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { calls, leads, smsMessages, appointments } from "@/db/schema";
-import { eq, and, or, like, desc, count, sql } from "drizzle-orm";
+import { eq, and, or, like, desc, count, sql, inArray } from "drizzle-orm";
 import { DEMO_BUSINESS_ID, DEMO_CALLS, DEMO_TRANSCRIPTS, DEMO_RECOVERY_TIMELINES } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
 
@@ -88,93 +88,118 @@ export async function GET(req: NextRequest) {
     const total = totalResult.count;
     const totalPages = Math.ceil(total / limit);
 
-    // Build recovery timelines for missed calls
-    const callsWithRecovery = await Promise.all(
-      rows.map(async (row) => {
-        if (row.status !== "missed" || !row.leadId) {
-          return { ...row, recoveryTimeline: null };
-        }
+    // Build recovery timelines for missed calls (batched to avoid N+1)
+    const missedRows = rows.filter((r) => r.status === "missed" && r.leadId);
+    const missedLeadIds = [...new Set(missedRows.map((r) => r.leadId!))];
 
-        // Find SMS sent after the missed call for this lead
-        const followUpSms = await db
+    // Batch fetch all SMS and appointments for missed call leads in 2 queries (not 2×N)
+    const allFollowUpSms = missedLeadIds.length > 0
+      ? await db
           .select({
             id: smsMessages.id,
             body: smsMessages.body,
             createdAt: smsMessages.createdAt,
             direction: smsMessages.direction,
+            leadId: smsMessages.leadId,
           })
           .from(smsMessages)
           .where(
             and(
               eq(smsMessages.businessId, businessId),
-              eq(smsMessages.leadId, row.leadId!),
-              sql`${smsMessages.createdAt} >= ${row.createdAt}`,
+              inArray(smsMessages.leadId, missedLeadIds),
             ),
           )
           .orderBy(smsMessages.createdAt)
-          .limit(5);
+      : [];
 
-        // Find appointment booked after the missed call for this lead
-        const followUpAppt = await db
+    const allFollowUpAppts = missedLeadIds.length > 0
+      ? await db
           .select({
             id: appointments.id,
             service: appointments.service,
             date: appointments.date,
             time: appointments.time,
             createdAt: appointments.createdAt,
+            leadId: appointments.leadId,
           })
           .from(appointments)
           .where(
             and(
               eq(appointments.businessId, businessId),
-              eq(appointments.leadId, row.leadId!),
-              sql`${appointments.createdAt} >= ${row.createdAt}`,
+              inArray(appointments.leadId, missedLeadIds),
             ),
           )
           .orderBy(appointments.createdAt)
-          .limit(1);
+      : [];
 
-        type TimelineStep = {
-          time: string;
-          event: string;
-          detail: string;
-          status: "missed" | "action" | "reply" | "recovered";
-        };
+    // Group by leadId for O(1) lookup
+    const smsByLead = new Map<string, typeof allFollowUpSms>();
+    for (const sms of allFollowUpSms) {
+      if (!sms.leadId) continue;
+      const list = smsByLead.get(sms.leadId) || [];
+      list.push(sms);
+      smsByLead.set(sms.leadId, list);
+    }
+    const apptsByLead = new Map<string, typeof allFollowUpAppts>();
+    for (const appt of allFollowUpAppts) {
+      if (!appt.leadId) continue;
+      const list = apptsByLead.get(appt.leadId) || [];
+      list.push(appt);
+      apptsByLead.set(appt.leadId, list);
+    }
 
-        const timeline: TimelineStep[] = [
-          {
-            time: row.createdAt,
-            event: "Missed Call",
-            detail: `Call from ${row.leadName || row.callerPhone || "unknown"}`,
-            status: "missed",
-          },
-        ];
+    type TimelineStep = {
+      time: string;
+      event: string;
+      detail: string;
+      status: "missed" | "action" | "reply" | "recovered";
+    };
 
-        for (const sms of followUpSms) {
-          timeline.push({
-            time: sms.createdAt,
-            event: sms.direction === "outbound" ? "AI Sent SMS" : "Customer Replied",
-            detail: sms.body.length > 80 ? sms.body.slice(0, 80) + "..." : sms.body,
-            status: sms.direction === "outbound" ? "action" : "reply",
-          });
-        }
+    const callsWithRecovery = rows.map((row) => {
+      if (row.status !== "missed" || !row.leadId) {
+        return { ...row, recoveryTimeline: null };
+      }
 
-        if (followUpAppt.length > 0) {
-          const appt = followUpAppt[0];
-          timeline.push({
-            time: appt.createdAt,
-            event: "Appointment Booked",
-            detail: `${appt.service} on ${appt.date} at ${appt.time}`,
-            status: "recovered",
-          });
-        }
+      const followUpSms = (smsByLead.get(row.leadId!) || [])
+        .filter((s) => s.createdAt >= row.createdAt)
+        .slice(0, 5);
+      const followUpAppt = (apptsByLead.get(row.leadId!) || [])
+        .filter((a) => a.createdAt >= row.createdAt)
+        .slice(0, 1);
 
-        return {
-          ...row,
-          recoveryTimeline: timeline.length > 1 ? timeline : null,
-        };
-      }),
-    );
+      const timeline: TimelineStep[] = [
+        {
+          time: row.createdAt,
+          event: "Missed Call",
+          detail: `Call from ${row.leadName || row.callerPhone || "unknown"}`,
+          status: "missed",
+        },
+      ];
+
+      for (const sms of followUpSms) {
+        timeline.push({
+          time: sms.createdAt,
+          event: sms.direction === "outbound" ? "AI Sent SMS" : "Customer Replied",
+          detail: sms.body.length > 80 ? sms.body.slice(0, 80) + "..." : sms.body,
+          status: sms.direction === "outbound" ? "action" : "reply",
+        });
+      }
+
+      if (followUpAppt.length > 0) {
+        const appt = followUpAppt[0];
+        timeline.push({
+          time: appt.createdAt,
+          event: "Appointment Booked",
+          detail: `${appt.service} on ${appt.date} at ${appt.time}`,
+          status: "recovered",
+        });
+      }
+
+      return {
+        ...row,
+        recoveryTimeline: timeline.length > 1 ? timeline : null,
+      };
+    });
 
     return NextResponse.json({ calls: callsWithRecovery, total, page, totalPages });
   } catch (err) {

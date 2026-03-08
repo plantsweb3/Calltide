@@ -32,17 +32,27 @@ export async function GET(req: NextRequest) {
 
     const rows = await query;
 
-    // Include updates for each incident
-    const results = await Promise.all(
-      rows.map(async (inc) => {
-        const updates = await db
+    // Batch fetch all updates for returned incidents (avoids N+1)
+    const incidentIds = rows.map((r) => r.id);
+    const allUpdates = incidentIds.length > 0
+      ? await db
           .select()
           .from(incidentUpdates)
-          .where(eq(incidentUpdates.incidentId, inc.id))
-          .orderBy(desc(incidentUpdates.createdAt));
-        return { ...inc, updates };
-      }),
-    );
+          .where(inArray(incidentUpdates.incidentId, incidentIds))
+          .orderBy(desc(incidentUpdates.createdAt))
+      : [];
+
+    const updatesByIncident = new Map<string, typeof allUpdates>();
+    for (const update of allUpdates) {
+      const list = updatesByIncident.get(update.incidentId) || [];
+      list.push(update);
+      updatesByIncident.set(update.incidentId, list);
+    }
+
+    const results = rows.map((inc) => ({
+      ...inc,
+      updates: updatesByIncident.get(inc.id) || [],
+    }));
 
     return NextResponse.json({ incidents: results });
   } catch (error) {

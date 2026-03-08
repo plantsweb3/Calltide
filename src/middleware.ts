@@ -101,6 +101,46 @@ async function requireAdminAuth(req: NextRequest, isApi: boolean): Promise<NextR
   return null;
 }
 
+/**
+ * Verify client cookie and inject x-business-id / x-account-id headers.
+ * Returns a NextResponse.next() with headers on success, or an error response.
+ * For page routes, pass isApi=false to redirect to login instead of returning JSON.
+ */
+async function requireClientAuth(req: NextRequest, isApi: boolean): Promise<NextResponse> {
+  const secret = process.env.CLIENT_AUTH_SECRET;
+  if (!secret) {
+    return isApi
+      ? NextResponse.json({ error: "Auth not configured" }, { status: 500 })
+      : NextResponse.redirect(new URL("/dashboard/login", req.url));
+  }
+
+  const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
+  if (!cookie) {
+    return isApi
+      ? NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      : NextResponse.redirect(new URL("/dashboard/login", req.url));
+  }
+
+  const valid = await verifyToken(cookie, secret);
+  if (!valid) {
+    return isApi
+      ? NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      : NextResponse.redirect(new URL("/dashboard/login", req.url));
+  }
+
+  const clientPayload = parseClientPayload(cookie);
+  if (!clientPayload) {
+    return isApi
+      ? NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      : NextResponse.redirect(new URL("/dashboard/login", req.url));
+  }
+
+  const headers = new Headers(req.headers);
+  headers.set("x-business-id", clientPayload.businessId);
+  if (clientPayload.accountId) headers.set("x-account-id", clientPayload.accountId);
+  return NextResponse.next({ request: { headers } });
+}
+
 /** Routes that require admin auth but aren't under /admin or /api/admin. */
 function isProtectedInternalRoute(pathname: string): boolean {
   return (
@@ -120,8 +160,6 @@ function isProtectedInternalRoute(pathname: string): boolean {
 /** Blog post API routes that need admin auth for write methods only. */
 function isBlogWriteRoute(pathname: string, method: string): boolean {
   if (!pathname.startsWith("/api/blog/posts")) return false;
-  // GET requests to /api/blog/posts are public (used by blog pages)
-  // POST/PATCH/DELETE require admin auth
   return method !== "GET";
 }
 
@@ -138,8 +176,6 @@ export async function middleware(req: NextRequest) {
   ) {
     const origin = req.headers.get("origin");
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-    // Allow requests with no origin (server-to-server, curl, cron jobs)
-    // but reject requests from foreign origins
     if (origin && appUrl && origin !== appUrl) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -147,18 +183,14 @@ export async function middleware(req: NextRequest) {
 
   // ── Admin routes (pages + API) ──
   if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
-    // Allow auth endpoints through
     if (pathname === "/admin/login" || pathname === "/api/admin/auth" || pathname === "/api/admin/auth/logout") {
       return NextResponse.next();
     }
-
-    // Rate limit admin API routes
     if (pathname.startsWith("/api/admin")) {
       if (!rateLimit(getIp(req), "admin", ADMIN_RL_LIMIT)) {
         return NextResponse.json({ error: "Too many requests" }, { status: 429 });
       }
     }
-
     const error = await requireAdminAuth(req, pathname.startsWith("/api/"));
     if (error) return error;
     return NextResponse.next();
@@ -173,124 +205,51 @@ export async function middleware(req: NextRequest) {
 
   // ── Outbound call route (cron secret OR valid session) ──
   if (pathname === "/api/outbound/call") {
-    // Allow cron secret through
     const cronSecret = req.headers.get("x-cron-secret") || req.headers.get("authorization")?.replace("Bearer ", "");
     if (cronSecret === process.env.CRON_SECRET) return NextResponse.next();
-    // Otherwise require valid admin or client session
     const adminPassword = process.env.ADMIN_PASSWORD;
     const adminCookie = req.cookies.get(ADMIN_COOKIE)?.value;
     if (adminCookie && adminPassword && await verifyToken(adminCookie, adminPassword)) {
       return NextResponse.next();
     }
-    const secret = process.env.CLIENT_AUTH_SECRET;
-    if (!secret) return NextResponse.json({ error: "Auth not configured" }, { status: 500 });
-    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
-    if (!cookie) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const valid = await verifyToken(cookie, secret);
-    if (!valid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const clientPayload = parseClientPayload(cookie);
-    if (!clientPayload) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const headers = new Headers(req.headers);
-    headers.set("x-business-id", clientPayload.businessId);
-    return NextResponse.next({ request: { headers } });
+    return requireClientAuth(req, true);
   }
 
-  // ── Compliance SMS opt-out webhook (needs Twilio signature verification in route) ──
+  // ── Compliance SMS opt-out webhook ──
   if (pathname === "/api/compliance/sms-optout") {
-    // Rate limit to prevent abuse
     if (!rateLimit(getIp(req), "sms-optout", 50)) {
       return new Response("Too many requests", { status: 429 });
     }
     return NextResponse.next();
   }
 
-  // ── Receptionist API routes (client-facing, need dashboard auth) ──
-  if (pathname.startsWith("/api/receptionist")) {
-    const secret = process.env.CLIENT_AUTH_SECRET;
-    if (!secret) return NextResponse.json({ error: "Auth not configured" }, { status: 500 });
-    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
-    if (!cookie) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const valid = await verifyToken(cookie, secret);
-    if (!valid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const clientPayload = parseClientPayload(cookie);
-    if (!clientPayload) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const headers = new Headers(req.headers);
-    headers.set("x-business-id", clientPayload.businessId);
-    if (clientPayload.accountId) headers.set("x-account-id", clientPayload.accountId);
-    return NextResponse.next({ request: { headers } });
-  }
-
-  // ── Hume token route (requires valid session — client or admin) ──
-  if (pathname === "/api/hume/token") {
-    // Accept either admin or client cookie
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    const adminCookie = req.cookies.get(ADMIN_COOKIE)?.value;
-    if (adminCookie && adminPassword && await verifyToken(adminCookie, adminPassword)) {
-      return NextResponse.next();
-    }
-    const secret = process.env.CLIENT_AUTH_SECRET;
-    if (!secret) return NextResponse.json({ error: "Auth not configured" }, { status: 500 });
-    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
-    if (!cookie) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const valid = await verifyToken(cookie, secret);
-    if (!valid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const clientPayload = parseClientPayload(cookie);
-    if (!clientPayload) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const headers = new Headers(req.headers);
-    headers.set("x-business-id", clientPayload.businessId);
-    return NextResponse.next({ request: { headers } });
-  }
-
-  // ── Stripe portal route (client-facing, needs dashboard auth) ──
-  if (pathname === "/api/stripe/portal") {
-    const secret = process.env.CLIENT_AUTH_SECRET;
-    if (!secret) return NextResponse.json({ error: "Auth not configured" }, { status: 500 });
-    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
-    if (!cookie) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const valid = await verifyToken(cookie, secret);
-    if (!valid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const clientPayload = parseClientPayload(cookie);
-    if (!clientPayload) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const headers = new Headers(req.headers);
-    headers.set("x-business-id", clientPayload.businessId);
-    if (clientPayload.accountId) headers.set("x-account-id", clientPayload.accountId);
-    return NextResponse.next({ request: { headers } });
-  }
-
-  // ── Dashboard API routes ──
-  if (pathname.startsWith("/api/dashboard")) {
+  // ── Client-authenticated API routes ──
+  if (
+    pathname.startsWith("/api/receptionist") ||
+    pathname.startsWith("/api/dashboard") ||
+    pathname === "/api/stripe/portal" ||
+    pathname === "/api/hume/token"
+  ) {
     // Allow auth endpoints through without cookie
     if (pathname.startsWith("/api/dashboard/auth")) return NextResponse.next();
 
     // Rate limit dashboard API routes
-    if (!rateLimit(getIp(req), "dashboard", DASHBOARD_RL_LIMIT)) {
-      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    if (pathname.startsWith("/api/dashboard")) {
+      if (!rateLimit(getIp(req), "dashboard", DASHBOARD_RL_LIMIT)) {
+        return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      }
     }
 
-    const secret = process.env.CLIENT_AUTH_SECRET;
-    if (!secret) {
-      return NextResponse.json({ error: "Auth not configured" }, { status: 500 });
+    // For /api/hume/token, also accept admin cookie
+    if (pathname === "/api/hume/token") {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const adminCookie = req.cookies.get(ADMIN_COOKIE)?.value;
+      if (adminCookie && adminPassword && await verifyToken(adminCookie, adminPassword)) {
+        return NextResponse.next();
+      }
     }
 
-    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
-    if (!cookie) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const valid = await verifyToken(cookie, secret);
-    if (!valid) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const clientPayload = parseClientPayload(cookie);
-    if (!clientPayload) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const headers = new Headers(req.headers);
-    headers.set("x-business-id", clientPayload.businessId);
-    if (clientPayload.accountId) headers.set("x-account-id", clientPayload.accountId);
-    return NextResponse.next({ request: { headers } });
+    return requireClientAuth(req, true);
   }
 
   // ── Dashboard pages ──
@@ -301,30 +260,7 @@ export async function middleware(req: NextRequest) {
       pathname === "/dashboard/reset-password"
     ) return NextResponse.next();
 
-    const secret = process.env.CLIENT_AUTH_SECRET;
-    if (!secret) {
-      return NextResponse.redirect(new URL("/dashboard/login", req.url));
-    }
-
-    const cookie = req.cookies.get(CLIENT_COOKIE)?.value;
-    if (!cookie) {
-      return NextResponse.redirect(new URL("/dashboard/login", req.url));
-    }
-
-    const valid = await verifyToken(cookie, secret);
-    if (!valid) {
-      return NextResponse.redirect(new URL("/dashboard/login", req.url));
-    }
-
-    const clientPayload = parseClientPayload(cookie);
-    if (!clientPayload) {
-      return NextResponse.redirect(new URL("/dashboard/login", req.url));
-    }
-
-    const headers = new Headers(req.headers);
-    headers.set("x-business-id", clientPayload.businessId);
-    if (clientPayload.accountId) headers.set("x-account-id", clientPayload.accountId);
-    return NextResponse.next({ request: { headers } });
+    return requireClientAuth(req, false);
   }
 
   return NextResponse.next();

@@ -66,11 +66,13 @@ export function detectLanguage(text: string): Language {
     "hola", "buenos", "buenas", "necesito", "quiero", "tiene",
     "puede", "cita", "servicio", "ayuda", "gracias", "por favor",
     "llamar", "hablar", "problema", "emergencia", "plomero",
-    "cuánto", "cuándo", "dónde", "cómo",
+    "cuánto", "cuándo", "dónde", "cómo", "sí", "señor", "señora",
+    "disculpe", "perdón", "número", "teléfono", "dirección",
   ];
   const lower = text.toLowerCase();
   const matches = spanishIndicators.filter((w) => lower.includes(w));
-  return matches.length >= 2 ? "es" : "en";
+  // Single strong indicator (greeting/polite word) is enough to switch
+  return matches.length >= 1 ? "es" : "en";
 }
 
 /**

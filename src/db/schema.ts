@@ -1215,3 +1215,18 @@ export const demoSessions = sqliteTable("demo_sessions", {
   userAgent: text("user_agent"),
   estimatedMonthlyLoss: integer("estimated_monthly_loss"),
 });
+
+// ── Retry Queue ──
+// Stores failed async operations for retry with exponential backoff.
+export const pendingJobs = sqliteTable("pending_jobs", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  type: text("type").notNull(), // "twilio_provision" | "call_summary" | "consent_record"
+  payload: text("payload", { mode: "json" }).notNull().$type<Record<string, unknown>>(),
+  status: text("status").notNull().default("pending"), // "pending" | "completed" | "failed"
+  attempts: integer("attempts").notNull().default(0),
+  maxAttempts: integer("max_attempts").notNull().default(5),
+  lastError: text("last_error"),
+  nextRetryAt: text("next_retry_at").notNull().default(sql`(datetime('now'))`),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  completedAt: text("completed_at"),
+});

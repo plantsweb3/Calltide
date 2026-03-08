@@ -128,9 +128,19 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Build the system prompt with business context
+    // Returning caller detection — inject context for repeat customers
+    let callerContext: string | null = null;
+    if (businessContext && metadata?.caller_phone) {
+      try {
+        callerContext = await getReturningCallerContext(businessContext.id, metadata.caller_phone);
+      } catch {
+        // Non-critical — don't block the call
+      }
+    }
+
+    // Build the system prompt with business context + caller history
     let systemPrompt = businessContext
-      ? buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock)
+      ? buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock, callerContext)
       : buildDefaultSystemPrompt(lang);
 
     // Record TCPA disclosures on first message (fire-and-forget)
@@ -141,18 +151,6 @@ export async function POST(req: NextRequest) {
         businessContext.id,
         metadata.caller_phone,
       ).catch(() => { /* non-critical */ });
-    }
-
-    // Returning caller detection — inject context for repeat customers
-    if (businessContext && metadata?.caller_phone) {
-      try {
-        const callerContext = await getReturningCallerContext(businessContext.id, metadata.caller_phone);
-        if (callerContext) {
-          systemPrompt += `\n\n${callerContext}`;
-        }
-      } catch {
-        // Non-critical — don't block the call
-      }
     }
 
     // Check if business is currently closed (after-hours)

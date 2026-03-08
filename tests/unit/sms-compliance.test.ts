@@ -96,8 +96,10 @@ describe("canSendSms()", () => {
   });
 
   it("returns allowed:true when no opt-out and during business hours", async () => {
-    // Mock time to 10 AM CT
-    vi.spyOn(Date.prototype, "getHours").mockReturnValue(10);
+    // Mock getBusinessHour to return 10 (10 AM, within business hours)
+    vi.doMock("@/lib/timezone", () => ({
+      getBusinessHour: vi.fn().mockReturnValue(10),
+    }));
 
     const mod = await import("@/lib/compliance/sms");
     canSendSms = mod.canSendSms;

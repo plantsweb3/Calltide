@@ -9,6 +9,7 @@ import { sendSMS } from "@/lib/twilio/sms";
 import { processCallSummary } from "@/lib/ai/call-summary";
 import type { HumeWebhookEvent, HumeChatStartedData, HumeChatEndedData, HumeToolCallData } from "@/types";
 import { reportError, reportWarning } from "@/lib/error-reporting";
+import { enqueueJob } from "@/lib/jobs/queue";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { trackCallStart, trackCallEnd, updateActiveCall } from "@/lib/monitoring/active-calls";
 
@@ -153,11 +154,12 @@ async function handleChatEnded(event: HumeWebhookEvent) {
       });
     }
 
-    // Generate AI summary from transcript (fire-and-forget)
-    processCallSummary(call.id, event.chat_id).catch((err) => {
+    // Generate AI summary from transcript (fire-and-forget, with retry on failure)
+    processCallSummary(call.id, event.chat_id).catch(async (err) => {
       reportError("Background call summary failed", err, {
         extra: { callId: call.id, chatId: event.chat_id },
       });
+      await enqueueJob("call_summary", { callId: call.id, chatId: event.chat_id }).catch(() => {});
     });
   }
 

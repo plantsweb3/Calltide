@@ -19,6 +19,7 @@ import { reportError } from "@/lib/error-reporting";
 import { provisionTwilioNumber } from "@/lib/twilio/provision";
 import { recordConsent } from "@/lib/compliance/consent";
 import { getStripe } from "@/lib/stripe/client";
+import { enqueueJob } from "@/lib/jobs/queue";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -175,9 +176,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       .where(eq(businesses.id, existingByEmail.id))
       .limit(1);
     if (bizForPhone && !bizForPhone.twilioNumber) {
-      provisionTwilioNumber(bizForPhone.id).catch((err) =>
-        reportError("Failed to auto-provision Twilio number (existing biz)", err, { extra: { businessId: bizForPhone.id } })
-      );
+      provisionTwilioNumber(bizForPhone.id).catch(async (err) => {
+        reportError("Failed to auto-provision Twilio number (existing biz)", err, { extra: { businessId: bizForPhone.id } });
+        await enqueueJob("twilio_provision", { businessId: bizForPhone.id }).catch(() => {});
+      });
     }
     return;
   }
@@ -259,9 +261,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     .where(eq(businesses.ownerEmail, email))
     .limit(1);
   if (newBiz) {
-    provisionTwilioNumber(newBiz.id).catch((err) =>
-      reportError("Failed to auto-provision Twilio number", err, { extra: { businessId: newBiz.id } })
-    );
+    provisionTwilioNumber(newBiz.id).catch(async (err) => {
+      reportError("Failed to auto-provision Twilio number", err, { extra: { businessId: newBiz.id } });
+      await enqueueJob("twilio_provision", { businessId: newBiz.id }).catch(() => {});
+    });
   }
 }
 
@@ -760,9 +763,10 @@ async function handleSetupPageCheckout(
   );
 
   // Auto-provision Twilio number
-  provisionTwilioNumber(businessId).catch((err) =>
-    reportError("Failed to auto-provision Twilio (setup)", err, { extra: { businessId } })
-  );
+  provisionTwilioNumber(businessId).catch(async (err) => {
+    reportError("Failed to auto-provision Twilio (setup)", err, { extra: { businessId } });
+    await enqueueJob("twilio_provision", { businessId }).catch(() => {});
+  });
 }
 
 // ── Consent Recording ──
