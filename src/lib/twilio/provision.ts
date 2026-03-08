@@ -17,6 +17,18 @@ export async function provisionTwilioNumber(businessId: string): Promise<string 
     return null;
   }
 
+  // Guard: check if business already has a number assigned
+  const [existing] = await db
+    .select({ twilioNumber: businesses.twilioNumber })
+    .from(businesses)
+    .where(eq(businesses.id, businessId))
+    .limit(1);
+
+  if (existing?.twilioNumber && existing.twilioNumber.startsWith("+")) {
+    console.log(`[provision] Business ${businessId.slice(0, 8)} already has ${existing.twilioNumber} — skipping`);
+    return existing.twilioNumber;
+  }
+
   const client = getTwilioClient();
 
   try {
