@@ -60,6 +60,40 @@ export async function POST(req: NextRequest) {
 }
 
 /**
+ * PATCH /api/setup/session
+ * Update session language. Separate from step saves to avoid polluting step data.
+ */
+export async function PATCH(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit(`setup-session-patch:${ip}`, { limit: 20, windowSeconds: 60 });
+  if (!rl.success) return rateLimitResponse(rl);
+
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(COOKIE_NAME)?.value;
+    if (!token) {
+      return NextResponse.json({ error: "No session" }, { status: 401 });
+    }
+
+    const body = await req.json().catch(() => ({}));
+    const { language } = body as { language?: string };
+    if (language !== "en" && language !== "es") {
+      return NextResponse.json({ error: "Invalid language" }, { status: 400 });
+    }
+
+    await db
+      .update(setupSessions)
+      .set({ language, updatedAt: new Date().toISOString() })
+      .where(eq(setupSessions.token, token));
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    reportError("[setup/session] Failed to update language", err);
+    return NextResponse.json({ error: "Failed to update" }, { status: 500 });
+  }
+}
+
+/**
  * GET /api/setup/session
  * Load session from cookie or ?token= param.
  */
@@ -85,7 +119,9 @@ export async function GET(req: NextRequest) {
       .where(eq(setupSessions.token, token))
       .limit(1);
 
-    if (!session || session.status === "converted") {
+    // Filter out converted sessions unless explicitly requested (post-payment celebration needs this)
+    const includeConverted = req.nextUrl.searchParams.get("include_converted") === "1";
+    if (!session || (!includeConverted && session.status === "converted")) {
       return NextResponse.json({ session: null });
     }
 

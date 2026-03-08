@@ -1,4 +1,5 @@
 import { BRAND_COLOR, COMPANY_ADDRESS } from "@/lib/constants";
+import { TRADE_PROFILES, calculateROI } from "@/lib/receptionist/trade-profiles";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://calltide.app";
 
@@ -14,14 +15,13 @@ const TRADE_LABELS: Record<string, { en: string; es: string }> = {
   garage_door: { en: "garage door", es: "puertas de garaje" },
 };
 
-const TRADE_AVG_JOB: Record<string, number> = {
-  hvac: 350, plumbing: 275, electrical: 350, roofing: 3000, general_contractor: 15000,
-  restoration: 5000, landscaping: 500, pest_control: 350, garage_door: 300,
-};
-
 function calcMonthlyLoss(type: string): number {
-  const avg = TRADE_AVG_JOB[type] || 350;
-  return 3 * avg * 4;
+  const key = type as keyof typeof TRADE_PROFILES;
+  if (key in TRADE_PROFILES) {
+    const roi = calculateROI(key);
+    return roi.estimatedMonthlyLoss;
+  }
+  return 3 * 350 * 4; // fallback
 }
 
 function goldButton(text: string, href: string): string {

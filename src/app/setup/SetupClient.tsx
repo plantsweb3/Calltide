@@ -397,7 +397,7 @@ function SetupClient() {
         const token = searchParams.get("token");
         if (token) {
           try {
-            const res = await fetch(`/api/setup/session?token=${token}`, { signal: abortController.signal });
+            const res = await fetch(`/api/setup/session?token=${token}&include_converted=1`, { signal: abortController.signal });
             if (res.ok) {
               const data = await res.json();
               if (data.session) populateFromSession(data.session);
@@ -406,18 +406,32 @@ function SetupClient() {
             if ((e as Error).name !== "AbortError") { /* ok */ }
           }
         }
-        // Authenticate — exchange setup token for dashboard cookie
-        try {
-          const authRes = await fetch("/api/setup/auth", { method: "POST", signal: abortController.signal });
-          if (authRes.ok) {
-            setAuthState("success");
-          } else {
-            setAuthState("failed");
-          }
-        } catch (e) {
-          if ((e as Error).name !== "AbortError") setAuthState("failed");
-        }
+        // Authenticate — poll with retry since Stripe webhook may not have fired yet
         setLoading(false);
+        const MAX_ATTEMPTS = 10;
+        const RETRY_DELAY = 3000; // 3s between attempts
+        for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+          if (abortController.signal.aborted) return;
+          try {
+            const authRes = await fetch("/api/setup/auth", { method: "POST", signal: abortController.signal });
+            if (authRes.ok) {
+              setAuthState("success");
+              return;
+            }
+            // 404 = webhook hasn't fired yet, retry
+            if (authRes.status !== 404) {
+              setAuthState("failed");
+              return;
+            }
+          } catch (e) {
+            if ((e as Error).name === "AbortError") return;
+          }
+          // Wait before next attempt
+          if (attempt < MAX_ATTEMPTS - 1) {
+            await new Promise((r) => setTimeout(r, RETRY_DELAY));
+          }
+        }
+        setAuthState("failed");
         return;
       }
 
@@ -534,17 +548,12 @@ function SetupClient() {
     setLang(newLang);
     try { localStorage.setItem("calltide-lang", newLang); } catch {}
     // Fire and forget — persist to server session
-    fetch("/api/setup/step/1", {
-      method: "PUT",
+    fetch("/api/setup/session", {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        businessName: bizName || "TBD",
-        businessType: bizType || "other",
-        city: city || "TBD",
-        state: state || "TX",
-      }),
+      body: JSON.stringify({ language: newLang }),
     }).catch(() => {});
-  }, [bizName, bizType, city, state]);
+  }, []);
 
   // ── Field error setter (per-field, not global) ──
   const setFieldError = useCallback((field: string, msg: string) => {

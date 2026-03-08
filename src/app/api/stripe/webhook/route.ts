@@ -713,10 +713,10 @@ async function handleSetupPageCheckout(
   // Create off-limits entries
   if (setupSession.offLimits) {
     const limits = setupSession.offLimits as Record<string, boolean>;
-    const offLimitEntries: { triggerText: string; sortOrder: number }[] = [];
-    if (limits.pricing) offLimitEntries.push({ triggerText: "Don't discuss pricing over the phone", sortOrder: 0 });
-    if (limits.competitors) offLimitEntries.push({ triggerText: "Don't discuss competitors", sortOrder: 1 });
-    if (limits.timing) offLimitEntries.push({ triggerText: "Don't make promises about timing", sortOrder: 2 });
+    const offLimitEntries: { triggerText: string; responseText: string; sortOrder: number }[] = [];
+    if (limits.pricing) offLimitEntries.push({ triggerText: "Don't discuss pricing over the phone", responseText: "I'd be happy to have someone get back to you with pricing details. Can I take your information?", sortOrder: 0 });
+    if (limits.competitors) offLimitEntries.push({ triggerText: "Don't discuss competitors", responseText: "I'm not able to speak to that, but I can tell you about what we offer. Would you like more information?", sortOrder: 1 });
+    if (limits.timing) offLimitEntries.push({ triggerText: "Don't make promises about timing", responseText: "I'd rather not give you an estimate on timing that might not be accurate. Let me have our team follow up with you on that.", sortOrder: 2 });
 
     for (const entry of offLimitEntries) {
       await db.insert(receptionistCustomResponses).values({

@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { setupSessions, setupRetargetEmails } from "@/db/schema";
-import { and, eq, lt, inArray } from "drizzle-orm";
+import { and, eq, lt, inArray, isNull, or } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 
 /**
  * GET /api/cron/setup-cleanup
  *
- * Weekly cron — deletes setup sessions older than 90 days
- * with status 'abandoned'. Cleans up associated retarget emails.
+ * Weekly cron — cleans up old setup sessions:
+ * 1. Deletes abandoned sessions older than 90 days
+ * 2. Deletes stale active sessions (no email, older than 30 days)
+ *    that can never be retargeted
  */
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
@@ -18,18 +20,29 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - 90);
-    const cutoffStr = cutoff.toISOString();
+    const abandonedCutoff = new Date();
+    abandonedCutoff.setDate(abandonedCutoff.getDate() - 90);
 
-    // Find old abandoned sessions
+    const staleCutoff = new Date();
+    staleCutoff.setDate(staleCutoff.getDate() - 30);
+
+    // Find sessions to delete:
+    // 1. Abandoned sessions older than 90 days
+    // 2. Active sessions with no email, older than 30 days (anonymous, can't retarget)
     const oldSessions = await db
       .select({ id: setupSessions.id })
       .from(setupSessions)
       .where(
-        and(
-          eq(setupSessions.status, "abandoned"),
-          lt(setupSessions.createdAt, cutoffStr),
+        or(
+          and(
+            eq(setupSessions.status, "abandoned"),
+            lt(setupSessions.createdAt, abandonedCutoff.toISOString()),
+          ),
+          and(
+            eq(setupSessions.status, "active"),
+            isNull(setupSessions.ownerEmail),
+            lt(setupSessions.createdAt, staleCutoff.toISOString()),
+          ),
         ),
       );
 
@@ -45,7 +58,7 @@ export async function GET(req: NextRequest) {
       .where(inArray(setupRetargetEmails.setupSessionId, sessionIds));
 
     // Delete sessions
-    const result = await db
+    await db
       .delete(setupSessions)
       .where(inArray(setupSessions.id, sessionIds));
 
