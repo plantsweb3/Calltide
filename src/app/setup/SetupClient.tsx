@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { PHONE, PHONE_TEL } from "@/lib/marketing/translations";
 import s from "./setup.module.css";
 
 // ── Types ──
@@ -52,8 +53,8 @@ interface TradeData {
 
 const T = {
   en: {
-    step1Title: "What's your business?",
-    step1Sub: "We'll customize your receptionist for your trade.",
+    step1Title: "Let's build your receptionist",
+    step1Sub: "She'll know your trade, your services, and your market.",
     bizName: "Business Name",
     bizNamePlaceholder: "e.g. Smith Plumbing",
     tradeType: "Trade / Industry",
@@ -66,20 +67,21 @@ const T = {
     addService: "Add",
     addServicePlaceholder: "Add a custom service...",
     step2Title: "How should we reach you?",
-    step2Sub: "You'll get real-time notifications when she books appointments.",
+    step2Sub: "She'll text you the moment a job is booked.",
     ownerName: "Your Name",
     ownerNamePlaceholder: "e.g. John Smith",
     email: "Email",
     emailPlaceholder: "john@smithplumbing.com",
     phone: "Phone",
     phonePlaceholder: "(210) 555-1234",
-    step3Title: "Name your receptionist",
-    step3Sub: "She'll introduce herself by this name on every call.",
-    namePresets: ["Maria", "Sofia", "Isabella"],
+    step3Title: "Meet your receptionist",
+    step3Sub: "Name her and choose how she sounds on the phone.",
+    namePresets: ["Maria", "Sofia", "Isabella", "Rachel", "Alex"],
     customName: "Custom Name",
     namePlaceholder: "Enter a name",
-    step4Title: "Choose her personality",
-    step4Sub: "How should she sound on the phone?",
+    personalityTitle: "Choose her personality",
+    previewGreeting: "Preview greeting",
+    previewNote: "Your actual receptionist sounds even better.",
     professional: "Professional",
     professionalDesc: "Polished and efficient. Gets straight to business.",
     professionalSample: "Good morning, thank you for calling {biz}. This is {name}, how may I assist you today?",
@@ -89,8 +91,8 @@ const T = {
     warm: "Warm & Caring",
     warmDesc: "Extra empathetic. Perfect for sensitive situations.",
     warmSample: "Hello, thank you so much for calling {biz}. I'm {name}, and I'm here to help. What's going on?",
-    step5Title: "Teach her your business",
-    step5Sub: "Help her answer common questions from callers.",
+    step5Title: "She already knows your trade",
+    step5Sub: "Add the details only you know.",
     faqHoursQ: "What are your hours?",
     faqHoursPlaceholder: "e.g. Mon-Fri 8am-5pm, Sat by appointment",
     faqAreaQ: "What areas do you serve?",
@@ -102,9 +104,15 @@ const T = {
     offLimitsPricing: "Don't discuss pricing over the phone",
     offLimitsCompetitors: "Don't discuss competitors",
     offLimitsTiming: "Don't make timing promises",
-    step6Title: "Hire",
+    phoneReassurance: "Works with your existing phone number \u2014 just forward calls when you can\u2019t answer.",
+    roiSource: "Based on average {trade} businesses in {city}",
+    roiMissedPerDay: "missed calls/day",
+    roiCostPerMissed: "avg. lost per missed call",
+    roiBreakeven: "Pays for herself after {count} answered calls",
+    comparisonAnchor: "A bilingual receptionist costs $3,000\u2013$4,000/month",
+    questions: "Questions?",
     step6Sub: "is ready to answer phones for",
-    trialNote: "You won't be charged for 14 days",
+    trialNote: "You won't be charged for 14 days.",
     cancelAnytime: "Cancel anytime",
     guarantee: "30-day money-back guarantee",
     monthlyLabel: "Monthly",
@@ -114,7 +122,7 @@ const T = {
     annualPrice: "$397",
     annualPer: "/month billed annually",
     annualSave: "Save $1,200",
-    hireCta: "Hire",
+    hireCta: "Start Free Trial with",
     missedCallsTitle: "You're Losing Money Right Now",
     roiMonthlyLoss: "/month in missed calls",
     roiMultiple: "x return on investment",
@@ -129,9 +137,10 @@ const T = {
     toast5: "{name} can now answer {count} questions about {biz}",
     celebrationTitle: "{name} is hired!",
     celebrationSub: "Your AI receptionist is ready to start answering calls.",
+    recommended: "Most popular",
     whatsNext: "What's next",
-    whatsNextDesc: "Connect your phone line so {name} can start answering calls",
-    connectPhone: "Connect Your Phone",
+    whatsNextDesc: "Connect your phone line so {name} can start answering calls. Takes 2 minutes.",
+    connectPhone: "Start Answering Calls",
     businessLabel: "Business",
     receptionistLabel: "Receptionist",
     personalityLabel: "Personality",
@@ -151,8 +160,8 @@ const T = {
     sessionError: "Could not start setup. Please refresh the page.",
   },
   es: {
-    step1Title: "¿Cuál es tu negocio?",
-    step1Sub: "Personalizaremos tu recepcionista para tu industria.",
+    step1Title: "Construyamos tu recepcionista",
+    step1Sub: "Ella conocerá tu industria, tus servicios y tu mercado.",
     bizName: "Nombre del Negocio",
     bizNamePlaceholder: "ej. Plomería Smith",
     tradeType: "Tipo de Negocio",
@@ -165,20 +174,21 @@ const T = {
     addService: "Agregar",
     addServicePlaceholder: "Agregar servicio...",
     step2Title: "¿Cómo te contactamos?",
-    step2Sub: "Recibirás notificaciones en tiempo real cuando agende citas.",
+    step2Sub: "Te enviará un mensaje en cuanto agende un trabajo.",
     ownerName: "Tu Nombre",
     ownerNamePlaceholder: "ej. Juan Pérez",
     email: "Correo Electrónico",
     emailPlaceholder: "juan@plomeriasmith.com",
     phone: "Teléfono",
     phonePlaceholder: "(210) 555-1234",
-    step3Title: "Nombre tu recepcionista",
-    step3Sub: "Se presentará con este nombre en cada llamada.",
-    namePresets: ["Maria", "Sofia", "Isabella"],
+    step3Title: "Conoce a tu recepcionista",
+    step3Sub: "Ponle nombre y elige cómo suena en el teléfono.",
+    namePresets: ["Maria", "Sofia", "Isabella", "Rachel", "Alex"],
     customName: "Nombre Personalizado",
     namePlaceholder: "Ingresa un nombre",
-    step4Title: "Elige su personalidad",
-    step4Sub: "¿Cómo debería sonar en el teléfono?",
+    personalityTitle: "Elige su personalidad",
+    previewGreeting: "Escuchar saludo",
+    previewNote: "Tu recepcionista real suena aún mejor.",
     professional: "Profesional",
     professionalDesc: "Pulida y eficiente. Va directo al grano.",
     professionalSample: "Buenos días, gracias por llamar a {biz}. Soy {name}, ¿en qué puedo ayudarle?",
@@ -188,8 +198,8 @@ const T = {
     warm: "Cálida y Atenta",
     warmDesc: "Extra empática. Perfecta para situaciones delicadas.",
     warmSample: "Hola, muchas gracias por llamar a {biz}. Soy {name}, estoy aquí para ayudarte. ¿Qué sucede?",
-    step5Title: "Enséñale tu negocio",
-    step5Sub: "Ayúdala a responder preguntas comunes de los clientes.",
+    step5Title: "Ella ya conoce tu industria",
+    step5Sub: "Agrega los detalles que solo tú sabes.",
     faqHoursQ: "¿Cuál es su horario?",
     faqHoursPlaceholder: "ej. Lun-Vie 8am-5pm, Sáb con cita",
     faqAreaQ: "¿Qué áreas cubren?",
@@ -201,9 +211,15 @@ const T = {
     offLimitsPricing: "No discutir precios por teléfono",
     offLimitsCompetitors: "No discutir competidores",
     offLimitsTiming: "No hacer promesas de tiempo",
-    step6Title: "Contratar a",
+    phoneReassurance: "Funciona con tu número actual \u2014 solo redirige llamadas cuando no puedas contestar.",
+    roiSource: "Basado en negocios promedio de {trade} en {city}",
+    roiMissedPerDay: "llamadas perdidas/día",
+    roiCostPerMissed: "pérdida promedio por llamada perdida",
+    roiBreakeven: "Se paga sola después de {count} llamadas contestadas",
+    comparisonAnchor: "Una recepcionista bilingüe cuesta $3,000\u2013$4,000/mes",
+    questions: "¿Preguntas?",
     step6Sub: "está lista para contestar llamadas de",
-    trialNote: "No se te cobrará por 14 días",
+    trialNote: "No se te cobrará por 14 días.",
     cancelAnytime: "Cancela cuando quieras",
     guarantee: "Garantía de devolución de 30 días",
     monthlyLabel: "Mensual",
@@ -213,7 +229,7 @@ const T = {
     annualPrice: "$397",
     annualPer: "/mes facturado anualmente",
     annualSave: "Ahorra $1,200",
-    hireCta: "Contratar a",
+    hireCta: "Prueba gratis con",
     missedCallsTitle: "Estás Perdiendo Dinero Ahora Mismo",
     roiMonthlyLoss: "/mes en llamadas perdidas",
     roiMultiple: "x retorno de inversión",
@@ -228,9 +244,10 @@ const T = {
     toast5: "{name} ahora puede responder {count} preguntas sobre {biz}",
     celebrationTitle: "¡{name} está contratada!",
     celebrationSub: "Tu recepcionista de IA está lista para contestar llamadas.",
+    recommended: "Más popular",
     whatsNext: "¿Qué sigue?",
-    whatsNextDesc: "Conecta tu línea telefónica para que {name} empiece a contestar",
-    connectPhone: "Conectar Tu Teléfono",
+    whatsNextDesc: "Conecta tu línea telefónica para que {name} empiece a contestar. Toma 2 minutos.",
+    connectPhone: "Empezar a Contestar Llamadas",
     businessLabel: "Negocio",
     receptionistLabel: "Recepcionista",
     personalityLabel: "Personalidad",
@@ -265,7 +282,14 @@ const TRADE_OPTIONS = [
 ];
 
 const PERSONALITY_OPTIONS = ["professional", "friendly", "warm"] as const;
-const TOTAL_STEPS = 6;
+const VISUAL_STEPS = 5;
+
+/** Map server step (1-6) to visual step (1-5) since steps 3+4 are merged */
+function serverStepToVisual(serverStep: number): number {
+  if (serverStep <= 2) return serverStep;
+  if (serverStep <= 4) return 3;
+  return serverStep - 1;
+}
 
 // ── Helpers ──
 
@@ -294,7 +318,7 @@ function replaceVars(template: string, vars: Record<string, string>): string {
 }
 
 function clampStep(n: number): number {
-  return Math.max(1, Math.min(TOTAL_STEPS, isNaN(n) ? 1 : n));
+  return Math.max(1, Math.min(VISUAL_STEPS, isNaN(n) ? 1 : n));
 }
 
 // ── Main Component ──
@@ -326,7 +350,6 @@ function SetupClient() {
   const t = T[lang];
 
   // Session
-  const [sessionLoaded, setSessionLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [step, setStep] = useState(1);
@@ -358,9 +381,13 @@ function SetupClient() {
   const [offLimits, setOffLimits] = useState<Record<string, boolean>>({ pricing: false, competitors: false, timing: false });
 
   // Step 6
-  const [planToggle, setPlanToggle] = useState<PlanType>("monthly");
+  const [planToggle, setPlanToggle] = useState<PlanType>("annual");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [tradeData, setTradeData] = useState<TradeData | null>(null);
+
+  // Speech preview
+  const [hasSpeech, setHasSpeech] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // Toast
   const [toastVisible, setToastVisible] = useState(false);
@@ -377,13 +404,72 @@ function SetupClient() {
   const toastInnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const submittingRef = useRef(false);
 
-  // Cleanup timers on unmount
+  // Cleanup timers + speech on unmount
   useEffect(() => {
     return () => {
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       if (toastInnerTimerRef.current) clearTimeout(toastInnerTimerRef.current);
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
     };
   }, []);
+
+  // Clear form-level errors + autofocus first input on step change
+  useEffect(() => {
+    setErrors((prev) => {
+      if (!prev._form) return prev;
+      const next = { ...prev };
+      delete next._form;
+      return next;
+    });
+    // Autofocus first input after step transition animation
+    const timer = setTimeout(() => {
+      const container = document.querySelector(`.${s.stepContent}`);
+      const firstInput = container?.querySelector<HTMLInputElement | HTMLSelectElement>("input, select");
+      if (firstInput && firstInput.type !== "checkbox") firstInput.focus();
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [step]);
+
+  // Detect speech synthesis support
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    const check = () => setHasSpeech(window.speechSynthesis.getVoices().length > 0);
+    check();
+    // Chrome loads voices async
+    window.speechSynthesis.addEventListener("voiceschanged", check);
+    return () => window.speechSynthesis.removeEventListener("voiceschanged", check);
+  }, []);
+
+  const playGreeting = useCallback(() => {
+    if (!window.speechSynthesis || isPlaying) return;
+    window.speechSynthesis.cancel();
+    const labels: Record<string, { sample: string }> = {
+      professional: { sample: t.professionalSample },
+      friendly: { sample: t.friendlySample },
+      warm: { sample: t.warmSample },
+    };
+    const text = replaceVars(labels[personalityPreset]?.sample || labels.friendly.sample, {
+      biz: bizName || t.yourBusiness,
+      name: receptionistName || "Maria",
+    });
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.1;
+    utterance.lang = lang === "es" ? "es-US" : "en-US";
+    // Try to find a female voice matching the current language
+    const voices = window.speechSynthesis.getVoices();
+    const langPrefix = lang === "es" ? "es" : "en";
+    const preferred = voices.find((v) => v.lang.startsWith(langPrefix) && v.name.toLowerCase().includes("female"))
+      || voices.find((v) => v.lang.startsWith(langPrefix) && /samantha|victoria|karen|zira|jenny|paulina|monica/i.test(v.name))
+      || voices.find((v) => v.lang.startsWith(langPrefix));
+    if (preferred) utterance.voice = preferred;
+    utterance.onstart = () => setIsPlaying(true);
+    utterance.onend = () => setIsPlaying(false);
+    utterance.onerror = () => setIsPlaying(false);
+    window.speechSynthesis.speak(utterance);
+  }, [isPlaying, personalityPreset, bizName, receptionistName, t]);
 
   // ── Initialize session ──
   useEffect(() => {
@@ -447,13 +533,13 @@ function SetupClient() {
           const data = await res.json();
           if (data.session) {
             populateFromSession(data.session);
-            setSessionLoaded(true);
+
             if (canceled && stepParam) {
-              setStep(clampStep(parseInt(stepParam, 10)));
+              setStep(clampStep(serverStepToVisual(parseInt(stepParam, 10))));
             } else if (stepParam) {
-              setStep(clampStep(parseInt(stepParam, 10)));
+              setStep(clampStep(serverStepToVisual(parseInt(stepParam, 10))));
             } else {
-              setStep(clampStep(data.session.currentStep));
+              setStep(clampStep(serverStepToVisual(data.session.currentStep)));
             }
             setLoading(false);
             return;
@@ -477,9 +563,7 @@ function SetupClient() {
           }),
           signal: abortController.signal,
         });
-        if (createRes.ok) {
-          setSessionLoaded(true);
-        } else {
+        if (!createRes.ok) {
           setInitError(t.sessionError);
         }
       } catch (e) {
@@ -509,7 +593,7 @@ function SetupClient() {
     if (sess.ownerPhone) setOwnerPhone(sess.ownerPhone);
     if (sess.receptionistName) {
       setReceptionistName(sess.receptionistName);
-      if (!["Maria", "Sofia", "Isabella"].includes(sess.receptionistName)) {
+      if (!["Maria", "Sofia", "Isabella", "Rachel", "Alex"].includes(sess.receptionistName)) {
         setUseCustomName(true);
       }
     }
@@ -640,20 +724,22 @@ function SetupClient() {
         if (!ok) return;
         showToastAndAdvance({ title: t.toast2Title, body: replaceVars(t.toast2Body, { phone: ownerPhone }) }, 3);
       } else if (step === 3) {
+        // Merged step: save name (server 3) then personality (server 4)
         if (!receptionistName.trim()) { setFieldError("receptionistName", t.required); return; }
-        const ok = await saveStep(3, { receptionistName: receptionistName.trim() });
-        if (!ok) return;
-        showToastAndAdvance({ title: replaceVars(t.toast3, { name: receptionistName.trim() }) }, 4);
-      } else if (step === 4) {
-        const ok = await saveStep(4, { personalityPreset });
-        if (!ok) return;
+        // Keep saving=true across both calls to prevent button flash
+        setSaving(true);
+        const okName = await saveStep(3, { receptionistName: receptionistName.trim() });
+        if (!okName) return;
+        const okPers = await saveStep(4, { personalityPreset });
+        if (!okPers) return;
         const personalityLabel = personalityPreset === "professional" ? t.professional.toLowerCase() : personalityPreset === "warm" ? t.warm.toLowerCase() : t.friendly.toLowerCase();
-        showToastAndAdvance({ title: replaceVars(t.toast4, { name: receptionistName, personality: personalityLabel }) }, 5);
-      } else if (step === 5) {
+        showToastAndAdvance({ title: replaceVars(t.toast4, { name: receptionistName, personality: personalityLabel }) }, 4);
+      } else if (step === 4) {
+        // FAQ/Off-limits → server step 5
         const ok = await saveStep(5, { faqAnswers, offLimits });
         if (!ok) return;
         const answerCount = Object.values(faqAnswers).filter((v) => v.trim()).length;
-        showToastAndAdvance({ title: replaceVars(t.toast5, { name: receptionistName, count: String(answerCount || 3), biz: bizName }) }, 6);
+        showToastAndAdvance({ title: replaceVars(t.toast5, { name: receptionistName, count: String(answerCount || 3), biz: bizName }) }, 5);
       }
     } finally {
       submittingRef.current = false;
@@ -757,36 +843,51 @@ function SetupClient() {
     );
   }
 
+  // ── Enter key to advance ──
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && step < 5 && !saving) {
+      const target = e.target as HTMLElement;
+      // Don't intercept Enter on textareas, buttons, or the service add input
+      if (target.tagName === "TEXTAREA" || target.tagName === "BUTTON") return;
+      if (target.id === "newService" || target.closest("[data-service-input]")) return;
+      e.preventDefault();
+      handleNext();
+    }
+  }, [step, saving, handleNext]);
+
   // ── Main flow ──
   return (
-    <div className={s.page}>
+    <div className={s.page} onKeyDown={handleKeyDown}>
       {/* Nav */}
       <nav className={s.nav}>
         <span className={s.logo}>Calltide</span>
-        <div className={s.langSwitch} role="radiogroup" aria-label="Language">
-          <button
-            onClick={() => switchLang("en")}
-            className={`${s.langOption} ${lang === "en" ? s.langOptionActive : ""}`}
-            role="radio"
-            aria-checked={lang === "en"}
-          >
-            EN
-          </button>
-          <span className={s.langDivider}>|</span>
-          <button
-            onClick={() => switchLang("es")}
-            className={`${s.langOption} ${lang === "es" ? s.langOptionActive : ""}`}
-            role="radio"
-            aria-checked={lang === "es"}
-          >
-            ES
-          </button>
+        <div className={s.navRight}>
+          <a href={PHONE_TEL} className={s.helpLink}>{t.questions} {PHONE}</a>
+          <div className={s.langSwitch} role="radiogroup" aria-label="Language">
+            <button
+              onClick={() => switchLang("en")}
+              className={`${s.langOption} ${lang === "en" ? s.langOptionActive : ""}`}
+              role="radio"
+              aria-checked={lang === "en"}
+            >
+              EN
+            </button>
+            <span className={s.langDivider}>|</span>
+            <button
+              onClick={() => switchLang("es")}
+              className={`${s.langOption} ${lang === "es" ? s.langOptionActive : ""}`}
+              role="radio"
+              aria-checked={lang === "es"}
+            >
+              ES
+            </button>
+          </div>
         </div>
       </nav>
 
       {/* Progress bar */}
-      <div className={s.progressContainer} role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-label={`${t.step} ${step} ${t.of} ${TOTAL_STEPS}`}>
-        {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+      <div className={s.progressContainer} role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={VISUAL_STEPS} aria-label={`${t.step} ${step} ${t.of} ${VISUAL_STEPS}`}>
+        {Array.from({ length: VISUAL_STEPS }, (_, i) => (
           <div key={i} className={`${s.progressSegment} ${i < step ? s.progressActive : s.progressInactive}`} />
         ))}
       </div>
@@ -804,7 +905,7 @@ function SetupClient() {
 
       {/* Step content */}
       <div className={s.container}>
-        <div className={s.stepLabel}>{t.step} {step} {t.of} {TOTAL_STEPS}</div>
+        <div className={s.stepLabel}>{t.step} {step} {t.of} {VISUAL_STEPS}</div>
 
         {/* ── STEP 1: Business Info ── */}
         {step === 1 && (
@@ -879,7 +980,7 @@ function SetupClient() {
                   ))}
                 </div>
               )}
-              <div style={{ display: "flex", gap: 8, marginTop: services.length > 0 ? 8 : 0 }}>
+              <div style={{ display: "flex", gap: 8, marginTop: services.length > 0 ? 8 : 0 }} data-service-input>
                 <input
                   className={s.input}
                   style={{ flex: 1 }}
@@ -889,7 +990,10 @@ function SetupClient() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && newService.trim()) {
                       e.preventDefault();
-                      setServices([...services, newService.trim()]);
+                      const trimmed = newService.trim();
+                      if (!services.some((s) => s.toLowerCase() === trimmed.toLowerCase())) {
+                        setServices([...services, trimmed]);
+                      }
                       setNewService("");
                     }
                   }}
@@ -897,15 +1001,22 @@ function SetupClient() {
                 <button
                   className={s.secondaryBtn}
                   onClick={() => {
-                    if (newService.trim()) {
-                      setServices([...services, newService.trim()]);
-                      setNewService("");
+                    const trimmed = newService.trim();
+                    if (trimmed && !services.some((s) => s.toLowerCase() === trimmed.toLowerCase())) {
+                      setServices([...services, trimmed]);
                     }
+                    setNewService("");
                   }}
                 >
                   {t.addService}
                 </button>
               </div>
+            </div>
+
+            {/* Phone reassurance */}
+            <div className={s.phoneReassurance}>
+              <span>📞</span>
+              <span>{t.phoneReassurance}</span>
             </div>
           </div>
         )}
@@ -956,19 +1067,20 @@ function SetupClient() {
           </div>
         )}
 
-        {/* ── STEP 3: Name Receptionist ── */}
+        {/* ── STEP 3: Meet Your Receptionist (Name + Personality merged) ── */}
         {step === 3 && (
           <div className={s.stepContent} key="step3">
             <h1 className={s.title}>{t.step3Title}</h1>
             <p className={s.subtitle}>{t.step3Sub}</p>
 
-            <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+            {/* Name grid */}
+            <div className={s.nameGrid}>
               {t.namePresets.map((name) => (
                 <button
                   key={name}
                   onClick={() => { setReceptionistName(name); setUseCustomName(false); clearFieldError("receptionistName"); }}
                   className={`${s.cardSelectable} ${receptionistName === name && !useCustomName ? s.cardSelected : ""}`}
-                  style={{ flex: 1, minWidth: 100, textAlign: "center", padding: "16px 12px" }}
+                  style={{ textAlign: "center", padding: "16px 12px" }}
                   aria-pressed={receptionistName === name && !useCustomName}
                 >
                   <div style={{ fontSize: 24, marginBottom: 4 }}>👩</div>
@@ -997,35 +1109,14 @@ function SetupClient() {
             )}
             {errors.receptionistName && <span className={s.error}>{errors.receptionistName}</span>}
 
-            {receptionistName.trim() && (
-              <div className={s.previewBubble}>
-                <div className={s.previewAvatar}>👩</div>
-                <div>
-                  <div style={{ color: "#D4A843", fontWeight: 600, fontSize: 13, marginBottom: 4 }}>{receptionistName}</div>
-                  <div style={{ color: "#e2e8f0", fontSize: 14 }}>
-                    &ldquo;{lang === "en"
-                      ? `Hi! Thanks for calling ${bizName || t.yourBusiness}! I'm ${receptionistName} — how can I help?`
-                      : `¡Hola! ¡Gracias por llamar a ${bizName || t.yourBusiness}! Soy ${receptionistName} — ¿en qué puedo ayudar?`
-                    }&rdquo;
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── STEP 4: Personality ── */}
-        {step === 4 && (
-          <div className={s.stepContent} key="step4">
-            <h1 className={s.title}>{t.step4Title}</h1>
-            <p className={s.subtitle}>{t.step4Sub}</p>
-
+            {/* Personality section */}
+            <h3 style={{ color: "#fff", fontWeight: 600, fontSize: 16, margin: "28px 0 12px" }}>{t.personalityTitle}</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {PERSONALITY_OPTIONS.map((preset) => {
                 const labels = {
-                  professional: { name: t.professional, desc: t.professionalDesc, sample: t.professionalSample },
-                  friendly: { name: t.friendly, desc: t.friendlyDesc, sample: t.friendlySample },
-                  warm: { name: t.warm, desc: t.warmDesc, sample: t.warmSample },
+                  professional: { name: t.professional, desc: t.professionalDesc },
+                  friendly: { name: t.friendly, desc: t.friendlyDesc },
+                  warm: { name: t.warm, desc: t.warmDesc },
                 };
                 const l = labels[preset];
                 return (
@@ -1033,27 +1124,47 @@ function SetupClient() {
                     key={preset}
                     onClick={() => setPersonalityPreset(preset)}
                     className={`${s.cardSelectable} ${personalityPreset === preset ? s.cardSelected : ""}`}
-                    style={{ textAlign: "left", padding: 20 }}
+                    style={{ textAlign: "left", padding: 16 }}
                     aria-pressed={personalityPreset === preset}
                   >
                     <div style={{ color: "#fff", fontWeight: 600, marginBottom: 4 }}>{l.name}</div>
-                    <div style={{ color: "#94a3b8", fontSize: 14, marginBottom: 12 }}>{l.desc}</div>
-                    <div className={s.previewBubble}>
-                      <div className={s.previewAvatar}>👩</div>
-                      <div style={{ color: "#e2e8f0", fontSize: 13, fontStyle: "italic" }}>
-                        &ldquo;{replaceVars(l.sample, { biz: bizName || t.yourBusiness, name: receptionistName })}&rdquo;
-                      </div>
-                    </div>
+                    <div style={{ color: "#94a3b8", fontSize: 14 }}>{l.desc}</div>
                   </button>
                 );
               })}
             </div>
+
+            {/* Greeting preview bubble */}
+            {receptionistName.trim() && (
+              <div className={s.previewBubble}>
+                <div className={s.previewAvatar}>👩</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ color: "#D4A843", fontWeight: 600, fontSize: 13, marginBottom: 4 }}>{receptionistName}</div>
+                  <div style={{ color: "#e2e8f0", fontSize: 14 }}>
+                    &ldquo;{replaceVars(
+                      personalityPreset === "professional" ? t.professionalSample
+                        : personalityPreset === "warm" ? t.warmSample
+                        : t.friendlySample,
+                      { biz: bizName || t.yourBusiness, name: receptionistName }
+                    )}&rdquo;
+                  </div>
+                  {hasSpeech && (
+                    <>
+                      <button onClick={playGreeting} disabled={isPlaying} className={s.previewBtn}>
+                        {isPlaying ? "..." : `🔊 ${t.previewGreeting}`}
+                      </button>
+                      <div style={{ color: "#64748b", fontSize: 11, marginTop: 4, fontStyle: "italic" }}>{t.previewNote}</div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        {/* ── STEP 5: FAQ + Off-Limits ── */}
-        {step === 5 && (
-          <div className={s.stepContent} key="step5">
+        {/* ── STEP 4: FAQ + Off-Limits (was step 5) ── */}
+        {step === 4 && (
+          <div className={s.stepContent} key="step4">
             <h1 className={s.title}>{t.step5Title}</h1>
             <p className={s.subtitle}>{t.step5Sub}</p>
 
@@ -1097,21 +1208,32 @@ function SetupClient() {
           </div>
         )}
 
-        {/* ── STEP 6: Hire / Checkout ── */}
-        {step === 6 && (
-          <div className={s.stepContent} key="step6">
-            <h1 className={s.title}>{t.step6Title} {receptionistName}</h1>
+        {/* ── STEP 5: Hire / Checkout (was step 6) ── */}
+        {step === 5 && (
+          <div className={s.stepContent} key="step5">
+            <h1 className={s.title}>{receptionistName} {t.step6Sub} {bizName || t.yourBusiness}</h1>
             <p className={s.subtitle}>
-              {receptionistName} {t.step6Sub} {bizName}
+              {t.trialNote}
             </p>
 
-            {/* ROI Card */}
+            {/* ROI Card — enhanced */}
             {tradeData?.roi && (
               <div className={s.card} style={{ marginBottom: 24, padding: 20 }}>
                 <h3 style={{ color: "#D4A843", margin: "0 0 12px", fontSize: 15 }}>{t.missedCallsTitle}</h3>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                  <span style={{ color: "#94a3b8", fontSize: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                  <span style={{ color: "#94a3b8", fontSize: 14 }}>{tradeData.roi.missedPerDay} {t.roiMissedPerDay}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                  <span style={{ color: "#94a3b8", fontSize: 14 }}>${tradeData.avgJobValue} {t.roiCostPerMissed}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                  <span style={{ color: "#ef4444", fontSize: 14, fontWeight: 600 }}>
                     ${tradeData.roi.estimatedMonthlyLoss.toLocaleString()}{t.roiMonthlyLoss}
+                  </span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                  <span style={{ color: "#10b981", fontSize: 14, fontWeight: 600, background: "rgba(16,185,129,0.1)", padding: "2px 8px", borderRadius: 4 }}>
+                    {replaceVars(t.roiBreakeven, { count: String(tradeData.roi.callsToPayForMaria) })}
                   </span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -1119,10 +1241,24 @@ function SetupClient() {
                     {tradeData.roi.roiMultiple}{t.roiMultiple}
                   </span>
                 </div>
+                {bizType && city && (
+                  <div style={{ color: "#64748b", fontSize: 12, marginTop: 8, fontStyle: "italic" }}>
+                    {replaceVars(t.roiSource, {
+                      trade: TRADE_OPTIONS.find((o) => o.value === bizType)?.[lang] || bizType,
+                      city: city,
+                    })}
+                  </div>
+                )}
               </div>
             )}
 
+            {/* Comparison anchor */}
+            <div className={s.comparisonAnchor}>
+              <span className={s.comparisonStrike}>{t.comparisonAnchor}</span>
+            </div>
+
             {/* Plan toggle */}
+            <div className={s.recommendedLabel}>{t.recommended}</div>
             <div className={s.planToggleContainer}>
               <button
                 onClick={() => setPlanToggle("monthly")}
@@ -1166,8 +1302,8 @@ function SetupClient() {
 
             {/* Trust badges */}
             <div className={s.trustBadges}>
-              <span style={{ color: "#10b981", fontSize: 13 }}>🛡️ {t.trialNote}</span>
-              <span style={{ color: "#94a3b8", fontSize: 13 }}>{t.cancelAnytime} · {t.guarantee}</span>
+              <span style={{ color: "#10b981", fontSize: 13 }}>🛡️ {t.cancelAnytime} · {t.guarantee}</span>
+              <span style={{ color: "#10b981", fontSize: 12 }}>📞 {t.phoneReassurance}</span>
             </div>
 
             {/* CTA */}
@@ -1183,8 +1319,8 @@ function SetupClient() {
           </div>
         )}
 
-        {/* Nav buttons (steps 1-5) */}
-        {step < 6 && (
+        {/* Nav buttons (steps 1-4) */}
+        {step < 5 && (
           <div className={s.navButtons}>
             {step > 1 && (
               <button onClick={() => setStep(step - 1)} className={s.backBtn}>{t.back}</button>
@@ -1200,13 +1336,13 @@ function SetupClient() {
           </div>
         )}
 
-        {step === 6 && (
+        {step === 5 && (
           <div style={{ marginTop: 12 }}>
-            <button onClick={() => setStep(5)} className={s.backBtn}>{t.back}</button>
+            <button onClick={() => setStep(4)} className={s.backBtn}>{t.back}</button>
           </div>
         )}
 
-        {errors._form && step < 6 && (
+        {errors._form && step < 5 && (
           <div className={s.error} style={{ marginTop: 8, textAlign: "center" }}>{errors._form}</div>
         )}
       </div>
