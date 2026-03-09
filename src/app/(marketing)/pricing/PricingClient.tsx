@@ -37,7 +37,7 @@ const FEATURES_COL2 = [
   "Referral program ($497 credit)",
   "Full dashboard + analytics",
   "Status page + incident engine",
-  "Billing portal (Stripe)",
+  "Subscription management portal",
   "Magic link auth (passwordless)",
   "GDPR/CCPA/TCPA compliant",
 ];

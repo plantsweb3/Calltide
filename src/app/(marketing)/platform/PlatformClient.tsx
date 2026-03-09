@@ -199,7 +199,7 @@ const CATEGORIES = [
     icon: icons.layout,
     features: [
       { icon: icons.layout, title: "Dashboard + Analytics", desc: "Real-time metrics: calls answered, appointments booked, revenue recovered, response times, and trends over time." },
-      { icon: icons.creditCard, title: "Billing Portal", desc: "Manage your subscription, view invoices, and update payment details — all from your dashboard via Stripe's secure billing portal." },
+      { icon: icons.creditCard, title: "Subscription Management", desc: "View invoices, update your payment method, and manage your Calltide subscription — all from your dashboard." },
       { icon: icons.gift, title: "Referral Program ($497 Credit)", desc: "Refer another business and earn a full month free ($497 credit). They get 50% off their first month." },
       { icon: iconMapPin, title: "Multi-Location Support", desc: "Manage multiple business locations from one account. Each location gets its own number, settings, and reporting." },
       { icon: icons.activity, title: "Status Page + Incident Engine", desc: "Public status page shows real-time service health. Automatic incident detection, escalation, and postmortem generation." },
