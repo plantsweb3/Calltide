@@ -7,6 +7,7 @@ import { findOrCreateLead } from "@/lib/ai/context-builder";
 import { reportWarning, reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { handleProspectSmsKeyword } from "@/lib/outreach/sms-outreach";
+import { detectOwnerReply } from "@/lib/notifications/owner-reply-handler";
 import { logActivity } from "@/lib/activity";
 import { sendSMS } from "@/lib/twilio/sms";
 import { env } from "@/lib/env";
@@ -103,6 +104,29 @@ export async function POST(req: NextRequest) {
 
     console.log(`SMS opt-in recorded for lead ${lead.id}`);
     return twimlResponse("You have been re-subscribed to SMS messages. Reply STOP to unsubscribe.");
+  }
+
+  // Handle owner replies to job card notifications (1=confirm, 2=adjust, 3=site visit)
+  // Must be checked BEFORE callback/prospect handlers to intercept numeric replies
+  try {
+    const ownerReply = await detectOwnerReply(from, to, body);
+    if (ownerReply.handled && ownerReply.responseMessage) {
+      // Send confirmation back to owner
+      if (biz.twilioNumber) {
+        sendSMS({
+          to: from,
+          from: biz.twilioNumber,
+          body: ownerReply.responseMessage,
+          businessId: biz.id,
+          templateType: "owner_notify",
+        }).catch((err) =>
+          reportError("Owner reply confirmation SMS failed", err, { extra: { businessId: biz.id } })
+        );
+      }
+      return twimlResponse("");
+    }
+  } catch (err) {
+    reportError("Owner reply detection failed", err, { extra: { businessId: biz.id } });
   }
 
   // Handle missed call recovery YES/SÍ replies

@@ -77,6 +77,19 @@ const navItems = [
     ),
   },
   {
+    href: "/dashboard/job-cards",
+    label: "Job Cards",
+    icon: (
+      <svg {...iconProps}>
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <path d="M9 3v18" />
+        <path d="M13 8h5" />
+        <path d="M13 12h5" />
+        <path d="M13 16h5" />
+      </svg>
+    ),
+  },
+  {
     href: "/dashboard/feedback",
     label: "Feedback",
     icon: (

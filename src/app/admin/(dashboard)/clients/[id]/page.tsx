@@ -95,7 +95,7 @@ export default function ClientDetailPage({
   const [timeline, setTimeline] = useState<Array<{ id: string; eventType: string; emailSentAt: string | null; createdAt: string; eventData: Record<string, unknown> | null }>>([]);
   const [crmCustomers, setCrmCustomers] = useState<Array<{ id: string; phone: string; name: string | null; totalCalls: number; totalAppointments: number; lastCallAt: string | null; isRepeat: boolean; tags: string[] }>>([]);
   const [intakesData, setIntakesData] = useState<{ intakes: Array<{ id: string; tradeType: string; scopeLevel: string; answersJson: Record<string, unknown> | null; scopeDescription: string | null; urgency: string; intakeComplete: boolean; createdAt: string; callerPhone: string | null; leadName: string | null }>; total: number; completed: number; completionRate: number }>({ intakes: [], total: 0, completed: 0, completionRate: 0 });
-  const [jobCardsData, setJobCardsData] = useState<{ cards: Array<{ id: string; callerName: string | null; callerPhone: string | null; jobTypeLabel: string | null; scopeLevel: string | null; scopeDescription: string | null; estimateMode: string | null; estimateMin: number | null; estimateMax: number | null; estimateUnit: string | null; estimateConfidence: string | null; estimateCalculationJson: Record<string, unknown> | null; status: string | null; ownerResponse: string | null; ownerAdjustedMin: number | null; ownerAdjustedMax: number | null; createdAt: string }>; total: number; pricingRanges: Array<{ id: string; jobTypeLabel: string; mode: string; minPrice: number | null; maxPrice: number | null; unit: string | null }> }>({ cards: [], total: 0, pricingRanges: [] });
+  const [jobCardsData, setJobCardsData] = useState<{ cards: Array<{ id: string; callerName: string | null; callerPhone: string | null; jobTypeLabel: string | null; scopeLevel: string | null; scopeDescription: string | null; estimateMode: string | null; estimateMin: number | null; estimateMax: number | null; estimateUnit: string | null; estimateConfidence: string | null; estimateCalculationJson: Record<string, unknown> | null; status: string | null; ownerResponse: string | null; ownerAdjustedMin: number | null; ownerAdjustedMax: number | null; ownerRespondedAt: string | null; customerNotifiedAt: string | null; createdAt: string; responses: Array<{ id: string; direction: string; messageType: string; rawReply: string | null; parsedAction: string | null; createdAt: string }>; notifications: Array<{ id: string; notificationType: string; sentAt: string }> }>; total: number; pricingRanges: Array<{ id: string; jobTypeLabel: string; mode: string; minPrice: number | null; maxPrice: number | null; unit: string | null }>; stats: { total30d: number; pending: number; confirmed: number; adjusted: number; expired: number; siteVisit: number; responseRate: number; avgResponseTimeMinutes: number | null } | null }>({ cards: [], total: 0, pricingRanges: [], stats: null });
   const [expandedJobCard, setExpandedJobCard] = useState<string | null>(null);
 
   useEffect(() => {
@@ -900,6 +900,25 @@ export default function ClientDetailPage({
         {/* Job Cards Tab */}
         {tab === "job-cards" && (
           <div className="space-y-4">
+            {/* Response Stats */}
+            {jobCardsData.stats && jobCardsData.stats.total30d > 0 && (
+              <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+                {[
+                  { label: "Total (30d)", value: jobCardsData.stats.total30d },
+                  { label: "Pending", value: jobCardsData.stats.pending },
+                  { label: "Confirmed", value: jobCardsData.stats.confirmed },
+                  { label: "Adjusted", value: jobCardsData.stats.adjusted },
+                  { label: "Response Rate", value: `${jobCardsData.stats.responseRate}%` },
+                  { label: "Avg Response", value: jobCardsData.stats.avgResponseTimeMinutes != null ? `${jobCardsData.stats.avgResponseTimeMinutes}min` : "\u2014" },
+                ].map((s) => (
+                  <div key={s.label} className="rounded-lg p-3 text-center" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+                    <p className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>{s.value}</p>
+                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Pricing Config Summary */}
             {jobCardsData.pricingRanges.length > 0 && (
               <div className="rounded-lg p-4" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
@@ -945,7 +964,7 @@ export default function ClientDetailPage({
                   <div className="flex items-center gap-2">
                     {card.estimateMin != null && card.estimateMax != null ? (
                       <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
-                        ${card.estimateMin.toLocaleString()}–${card.estimateMax.toLocaleString()}
+                        ${(card.ownerAdjustedMin || card.estimateMin).toLocaleString()}–${(card.ownerAdjustedMax || card.estimateMax).toLocaleString()}
                       </span>
                     ) : (
                       <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>No estimate</span>
@@ -960,10 +979,12 @@ export default function ClientDetailPage({
                     <span className={`rounded-full px-2 py-0.5 text-xs ${
                       card.status === "confirmed" ? "bg-green-100 text-green-700"
                       : card.status === "adjusted" ? "bg-blue-100 text-blue-700"
-                      : card.status === "declined" ? "bg-red-100 text-red-700"
+                      : card.status === "site_visit_requested" ? "bg-purple-100 text-purple-700"
+                      : card.status === "expired" ? "bg-gray-100 text-gray-400"
+                      : card.status === "awaiting_adjustment" ? "bg-amber-100 text-amber-700"
                       : "bg-gray-100 text-gray-500"
                     }`}>
-                      {card.status?.replace("_", " ") || "pending"}
+                      {card.status?.replace(/_/g, " ") || "pending"}
                     </span>
                     <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
                       {formatDate(card.createdAt)}
@@ -989,16 +1010,41 @@ export default function ClientDetailPage({
                       </div>
                     )}
                     {card.ownerResponse && (
-                      <div>
-                        <p className="text-xs font-semibold" style={{ color: "var(--db-text-muted)" }}>Owner Response</p>
+                      <div className="rounded-lg p-3" style={{ background: card.ownerResponse === "confirmed" ? "rgba(34,197,94,0.08)" : card.ownerResponse === "adjusted" ? "rgba(99,102,241,0.08)" : "rgba(59,130,246,0.08)" }}>
+                        <p className="text-xs font-semibold mb-1" style={{ color: "var(--db-text-muted)" }}>Owner Response</p>
                         <p className="text-sm" style={{ color: "var(--db-text)" }}>
-                          {card.ownerResponse}
-                          {card.ownerAdjustedMin != null && card.ownerAdjustedMax != null && (
-                            <span className="ml-2 font-medium">
-                              Adjusted: ${card.ownerAdjustedMin.toLocaleString()}–${card.ownerAdjustedMax.toLocaleString()}
-                            </span>
+                          {card.ownerResponse === "confirmed" && "Estimate confirmed"}
+                          {card.ownerResponse === "adjusted" && card.ownerAdjustedMin != null && card.ownerAdjustedMax != null && (
+                            <>Adjusted to ${card.ownerAdjustedMin.toLocaleString()}–${card.ownerAdjustedMax.toLocaleString()}</>
+                          )}
+                          {card.ownerResponse === "site_visit" && "Site visit requested"}
+                          {card.ownerRespondedAt && (
+                            <span className="ml-2 text-xs" style={{ color: "var(--db-text-muted)" }}>{formatDate(card.ownerRespondedAt)}</span>
                           )}
                         </p>
+                      </div>
+                    )}
+                    {card.customerNotifiedAt && (
+                      <div className="flex items-center gap-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                        <span className="inline-block w-2 h-2 rounded-full bg-blue-400" />
+                        Customer notified {formatDate(card.customerNotifiedAt)}
+                      </div>
+                    )}
+                    {/* Response Timeline */}
+                    {card.responses && card.responses.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold mb-2" style={{ color: "var(--db-text-muted)" }}>Response Timeline</p>
+                        <div className="space-y-1">
+                          {card.responses.map((r) => (
+                            <div key={r.id} className="flex items-center gap-2 text-xs">
+                              <span className={`rounded px-1.5 py-0.5 ${r.direction === "inbound" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
+                                {r.direction === "inbound" ? "Owner" : "System"}
+                              </span>
+                              <span style={{ color: "var(--db-text)" }}>{r.rawReply || r.messageType.replace(/_/g, " ")}</span>
+                              <span className="ml-auto" style={{ color: "var(--db-text-muted)" }}>{formatDate(r.createdAt)}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>

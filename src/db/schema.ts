@@ -1375,6 +1375,36 @@ export const jobCards = sqliteTable("job_cards", {
   ownerAdjustedMax: real("owner_adjusted_max"),
   ownerRespondedAt: text("owner_responded_at"),
   customerNotifiedAt: text("customer_notified_at"),
+  reminderSentAt: text("reminder_sent_at"),
+  expiredAt: text("expired_at"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+});
+
+// ── Owner Response Loop ──
+
+export const ownerResponses = sqliteTable("owner_responses", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  jobCardId: text("job_card_id").notNull().references(() => jobCards.id),
+  direction: text("direction").notNull().default("inbound"), // inbound | outbound
+  messageType: text("message_type").notNull(), // job_card_notify | confirm_reply | adjust_reply | site_visit_reply | reminder | expiry
+  messageText: text("message_text"),
+  rawReply: text("raw_reply"),
+  parsedAction: text("parsed_action"), // confirm | adjust | site_visit | unknown
+  parsedAmount: real("parsed_amount"),
+  twilioSid: text("twilio_sid"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const customerNotifications = sqliteTable("customer_notifications", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  jobCardId: text("job_card_id").notNull().references(() => jobCards.id),
+  leadId: text("lead_id").references(() => leads.id),
+  notificationType: text("notification_type").notNull(), // estimate_confirmed | estimate_adjusted | site_visit_scheduled
+  recipientPhone: text("recipient_phone").notNull(),
+  messageText: text("message_text").notNull(),
+  twilioSid: text("twilio_sid"),
+  sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
 });

@@ -172,7 +172,7 @@ export async function processCallSummary(callId: string, chatId: string): Promis
       });
     }
 
-    // Generate job card from completed intake (fire-and-forget)
+    // Generate job card from completed intake + notify owner (fire-and-forget)
     import("@/lib/estimates/job-card").then(async ({ buildJobCard }) => {
       const { jobIntakes } = await import("@/db/schema");
       const { and: drizzleAnd, eq: drizzleEq } = await import("drizzle-orm");
@@ -183,13 +183,19 @@ export async function processCallSummary(callId: string, chatId: string): Promis
         .limit(1);
       if (!intake) return; // No completed intake = no job card
 
-      await buildJobCard({
+      const card = await buildJobCard({
         businessId: callRecord!.businessId,
         callId,
         jobIntakeId: intake.id,
         leadId: callRecord!.leadId || undefined,
         callerName: callerName || undefined,
       });
+
+      // Send job card SMS to owner for quick-response
+      if (card) {
+        const { sendJobCardToOwner } = await import("@/lib/notifications/owner-job-card");
+        await sendJobCardToOwner(card.id);
+      }
     }).catch((err) => {
       reportError("Job card generation failed", err, { extra: { callId } });
     });
