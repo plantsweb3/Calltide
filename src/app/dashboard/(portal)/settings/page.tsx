@@ -34,6 +34,8 @@ interface SettingsData {
   enableWeeklyDigest: boolean;
   digestDeliveryMethod: string;
   enableDailySummary: boolean;
+  digestPreference: string;
+  digestTime: string;
   googleReviewUrl: string;
   enableReviewRequests: boolean;
   enableMissedCallRecovery: boolean;
@@ -317,6 +319,8 @@ export default function SettingsPage() {
         enableWeeklyDigest: data.enableWeeklyDigest,
         digestDeliveryMethod: data.digestDeliveryMethod,
         enableDailySummary: data.enableDailySummary,
+        digestPreference: data.digestPreference || "sms",
+        digestTime: data.digestTime || "18:00",
         googleReviewUrl: data.googleReviewUrl || "",
         enableReviewRequests: data.enableReviewRequests,
         enableMissedCallRecovery: data.enableMissedCallRecovery,
@@ -756,23 +760,56 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* ── Section: Daily Summary Text ── */}
-      <Card title="Daily Summary Text">
+      {/* ── Section: Daily Report ── */}
+      <Card title="Daily Report">
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            Get a daily SMS recap at 6 PM — calls answered, appointments booked, emergencies, and tomorrow's schedule.
+            {data.receptionistName || "Maria"} sends you a daily end-of-day briefing with new leads, estimates, tomorrow's appointments, and action items.
           </p>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Enable Daily Summary
-              </p>
+          <div>
+            <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+              How do you want to receive your daily report?
+            </label>
+            <div className="flex gap-2">
+              {[
+                { value: "sms", label: "Text Message" },
+                { value: "email", label: "Email" },
+                { value: "both", label: "Both" },
+                { value: "none", label: "None" },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setData({ ...data, digestPreference: opt.value })}
+                  className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+                  style={
+                    data.digestPreference === opt.value
+                      ? { background: "rgba(212,168,67,0.15)", color: "var(--db-accent)", border: "1px solid rgba(212,168,67,0.3)" }
+                      : { background: "var(--db-hover)", color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }
+                  }
+                >
+                  {opt.label}
+                </button>
+              ))}
             </div>
-            <ToggleSwitch
-              checked={data.enableDailySummary}
-              onChange={(v) => setData({ ...data, enableDailySummary: v })}
-            />
           </div>
+          {data.digestPreference !== "none" && (
+            <div>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                Delivery Time
+              </label>
+              <select
+                value={data.digestTime}
+                onChange={(e) => setData({ ...data, digestTime: e.target.value })}
+                className="rounded-lg px-3 py-2 text-sm"
+                style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+              >
+                {["17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"].map((t) => (
+                  <option key={t} value={t}>{formatTime12(t)}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       </Card>
 

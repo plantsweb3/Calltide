@@ -351,6 +351,13 @@
       "when": 1776000000000,
       "tag": "0049_owner_response_loop",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "6",
+      "when": 1776100000000,
+      "tag": "0050_contractor_daily_digest",
+      "breakpoints": true
     }
   ]
 }

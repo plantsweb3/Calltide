@@ -380,6 +380,7 @@ function OnboardingPage() {
   const [faqAnswers, setFaqAnswers] = useState<Record<string, string>>({});
   const [offLimits, setOffLimits] = useState<Record<string, boolean>>({ pricing: false, competitors: false, timing: false });
   const [preferredPhrases, setPreferredPhrases] = useState("");
+  const [digestPref, setDigestPref] = useState("sms");
   const [showPricing, setShowPricing] = useState(false);
   const [onboardingPricing, setOnboardingPricing] = useState<Array<{ label: string; min: string; max: string; unit: string }>>([
     { label: "", min: "", max: "", unit: "per_job" },
@@ -613,11 +614,20 @@ function OnboardingPage() {
           }
         } catch { /* Non-critical */ }
       }
+
+      // Save digest preference
+      try {
+        await fetch("/api/dashboard/digest/preferences", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ digestPreference: digestPref }),
+        });
+      } catch { /* Non-critical */ }
     }
 
     await saveProgress(nextStep);
     setStep(nextStep);
-  }, [step, bizName, bizAddress, industry, ownerName, ownerPhone, hours, services, receptionistName, personalityPreset, faqAnswers, offLimits, preferredPhrases, showPricing, onboardingPricing, saveSettings, saveProgress, t]);
+  }, [step, bizName, bizAddress, industry, ownerName, ownerPhone, hours, services, receptionistName, personalityPreset, faqAnswers, offLimits, preferredPhrases, digestPref, showPricing, onboardingPricing, saveSettings, saveProgress, t]);
 
   const goBack = useCallback(() => { if (step > 1) setStep(step - 1); }, [step]);
 
@@ -1104,6 +1114,44 @@ function OnboardingPage() {
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* ── Optional: Daily Report Preference ── */}
+            <div className="mt-6 rounded-xl border border-gray-100 bg-white p-5">
+              <p className="mb-2 text-sm font-semibold text-gray-900">
+                {lang === "es" ? "Informe Diario" : "Daily Report"}
+              </p>
+              <p className="mb-3 text-xs text-gray-500">
+                {lang === "es"
+                  ? `${rName} te enviará un resumen diario cada noche con tus llamadas, nuevos clientes potenciales y lo que necesita tu atención.`
+                  : `${rName} will send you a daily report every evening with your calls, new leads, and what needs your attention.`}
+              </p>
+              <div className="flex gap-2 mb-3">
+                {[
+                  { value: "sms", label: lang === "es" ? "Mensaje de texto" : "Text Message" },
+                  { value: "email", label: "Email" },
+                  { value: "both", label: lang === "es" ? "Ambos" : "Both" },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setDigestPref(opt.value)}
+                    className="rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors"
+                    style={
+                      digestPref === opt.value
+                        ? { background: "#fef3c7", borderColor: "#fbbf24", color: "#92400e" }
+                        : { background: "#fff", borderColor: "#e5e7eb", color: "#6b7280" }
+                    }
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400">
+                {lang === "es"
+                  ? "Puedes cambiar esto en cualquier momento en Configuración."
+                  : "You can change this anytime in Settings."}
+              </p>
             </div>
 
             {errors.save && <ErrorBanner message={errors.save} />}

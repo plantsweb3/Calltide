@@ -124,6 +124,10 @@ export const businesses = sqliteTable("businesses", {
   setupChecklistDismissed: integer("setup_checklist_dismissed", { mode: "boolean" }).default(false),
   // Public booking page
   bookingSlug: text("booking_slug").unique(),
+  // Daily digest
+  digestPreference: text("digest_preference").notNull().default("sms"), // sms, email, both, none
+  digestTime: text("digest_time").notNull().default("18:00"), // HH:MM local time
+  lastDigestSentAt: text("last_digest_sent_at"),
   // Estimate engine
   estimateMode: text("estimate_mode").default("quick"), // quick, advanced, both
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),

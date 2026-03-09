@@ -26,6 +26,9 @@ interface BusinessDetail {
     sms: { total: number; sent: number; received: number };
   };
   churnRisk: { score: number; factors: string[] } | null;
+  digestPreference: string | null;
+  digestTime: string | null;
+  lastDigestSentAt: string | null;
 }
 
 interface Call {
@@ -319,6 +322,20 @@ export default function ClientDetailPage({
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>SMS Sent</p>
           <p className="mt-1 text-lg font-semibold">{business.stats.sms.sent}</p>
         </div>
+      </div>
+
+      {/* Digest config */}
+      <div className="flex items-center gap-4 rounded-lg p-3 text-sm" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+        <span style={{ color: "var(--db-text-muted)" }}>Daily Digest:</span>
+        <span className="rounded-full px-2 py-0.5 text-xs font-medium" style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}>
+          {business.digestPreference || "sms"}
+        </span>
+        <span style={{ color: "var(--db-text-muted)" }}>at {business.digestTime || "18:00"}</span>
+        {business.lastDigestSentAt && (
+          <span style={{ color: "var(--db-text-muted)" }}>
+            Last sent: {new Date(business.lastDigestSentAt).toLocaleDateString()}
+          </span>
+        )}
       </div>
 
       {/* Churn risk factors */}
