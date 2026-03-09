@@ -155,10 +155,13 @@ export function formatJobCardSMS(
   // Action buttons
   lines.push("Reply 1 to confirm | 2 to adjust | 3 to schedule site visit");
 
+  const replyLine = lines[lines.length - 1]; // "Reply 1 to confirm | 2 to adjust | 3 to schedule site visit"
   const result = lines.join("\n");
-  // Truncate to 300 chars for SMS safety
+  // Truncate to 300 chars for SMS safety, but always preserve the reply instructions
   if (result.length > 300) {
-    return result.slice(0, 297) + "...";
+    const maxBodyLen = 300 - replyLine.length - 5; // 5 = "\n...\n"
+    const body = lines.slice(0, -1).join("\n");
+    return body.slice(0, maxBodyLen) + "...\n" + replyLine;
   }
   return result;
 }

@@ -221,11 +221,12 @@ export default function SettingsPage() {
       .catch(() => setPricing([]))
       .finally(() => setPricingLoading(false));
 
-    // Fetch estimate pricing data
+    // Fetch estimate pricing data + mode
     fetch("/api/dashboard/estimate-pricing")
-      .then((r) => r.ok ? r.json() : { ranges: [] })
+      .then((r) => r.ok ? r.json() : { ranges: [], mode: "quick" })
       .then((d) => {
         setEstimateRanges(d.ranges || []);
+        if (d.mode) setEstimateMode(d.mode);
       })
       .catch(() => setEstimateRanges([]))
       .finally(() => setEstimateRangesLoading(false));

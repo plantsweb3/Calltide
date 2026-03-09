@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
-import { pricingRanges } from "@/db/schema";
+import { businesses, pricingRanges } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { DEMO_BUSINESS_ID } from "../demo-data";
@@ -31,6 +31,12 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    const [biz] = await db
+      .select({ estimateMode: businesses.estimateMode })
+      .from(businesses)
+      .where(eq(businesses.id, businessId))
+      .limit(1);
+
     const rows = await db
       .select()
       .from(pricingRanges)
@@ -42,7 +48,7 @@ export async function GET(req: NextRequest) {
       )
       .orderBy(pricingRanges.sortOrder);
 
-    return NextResponse.json({ ranges: rows });
+    return NextResponse.json({ ranges: rows, mode: biz?.estimateMode || "quick" });
   } catch (error) {
     reportError("Failed to fetch estimate pricing", error, { businessId });
     return NextResponse.json({ error: "Failed to fetch estimate pricing" }, { status: 500 });

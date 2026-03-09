@@ -43,9 +43,10 @@ export async function detectOwnerReply(
     .from(businesses)
     .where(eq(businesses.active, true));
 
+  const normalizedTo = normalizePhone(toPhone);
   const matchedBiz = allBiz.find((b) => {
     const normalizedOwner = normalizePhone(b.ownerPhone);
-    return normalizedOwner === normalizedFrom && b.twilioNumber === toPhone;
+    return normalizedOwner === normalizedFrom && normalizePhone(b.twilioNumber) === normalizedTo;
   });
 
   if (!matchedBiz) return { handled: false };

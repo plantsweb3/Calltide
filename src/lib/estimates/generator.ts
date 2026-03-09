@@ -58,12 +58,8 @@ export async function matchPricingRange(
   });
   if (partialMatch) return partialMatch;
 
-  // If no key match, prefer advanced over quick as a general fallback
-  const advanced = candidates.find((r) => r.mode === "advanced");
-  if (advanced) return advanced;
-
-  // Fall back to first quick range
-  return candidates[0] || null;
+  // No match found — don't fall back to a random range (could return wrong job type estimate)
+  return null;
 }
 
 /**
@@ -132,16 +128,36 @@ export function evaluateCondition(
 ): boolean {
   const trimmed = condition.trim();
 
+  // Split on || and && only when NOT inside quotes
+  const splitOutsideQuotes = (str: string, sep: string): string[] | null => {
+    if (!str.includes(sep)) return null;
+    const parts: string[] = [];
+    let current = "";
+    let inQuotes = false;
+    for (let i = 0; i < str.length; i++) {
+      if (str[i] === '"' || str[i] === "'") inQuotes = !inQuotes;
+      if (!inQuotes && str.slice(i, i + sep.length) === sep) {
+        parts.push(current);
+        current = "";
+        i += sep.length - 1;
+      } else {
+        current += str[i];
+      }
+    }
+    parts.push(current);
+    return parts.length > 1 ? parts : null;
+  };
+
   // Handle OR (lowest precedence)
-  if (trimmed.includes("||")) {
-    const parts = trimmed.split("||");
-    return parts.some((part) => evaluateCondition(part, answers));
+  const orParts = splitOutsideQuotes(trimmed, "||");
+  if (orParts) {
+    return orParts.some((part) => evaluateCondition(part, answers));
   }
 
   // Handle AND
-  if (trimmed.includes("&&")) {
-    const parts = trimmed.split("&&");
-    return parts.every((part) => evaluateCondition(part, answers));
+  const andParts = splitOutsideQuotes(trimmed, "&&");
+  if (andParts) {
+    return andParts.every((part) => evaluateCondition(part, answers));
   }
 
   // Handle comparison operators (order matters: >= before >, <= before <, != before ==)
