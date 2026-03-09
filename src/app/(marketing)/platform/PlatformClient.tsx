@@ -248,7 +248,7 @@ export default function PlatformClient() {
       <section className="px-6 sm:px-8 pb-24 sm:pb-32" style={{ background: "#0f1729" }}>
         <div className="mx-auto max-w-5xl">
           {/* Tab bar */}
-          <div className="reveal flex flex-wrap items-center justify-center gap-2 mb-14">
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-14">
             {CATEGORIES.map((cat) => {
               const Icon = cat.icon;
               const isActive = cat.id === activeTab;
@@ -277,7 +277,7 @@ export default function PlatformClient() {
               return (
                 <div
                   key={`${activeTab}-${i}`}
-                  className="rounded-xl p-8 transition-all duration-300"
+                  className="rounded-xl p-8"
                   style={{
                     background: "rgba(255,255,255,0.04)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -316,7 +316,7 @@ export default function PlatformClient() {
             {TRADE_EXAMPLES.map((ex) => (
               <div
                 key={ex.trade}
-                className="reveal rounded-2xl p-8 transition-all duration-300 hover:border-[rgba(212,168,67,0.2)]"
+                className="rounded-2xl p-8"
                 style={{
                   background: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.08)",
