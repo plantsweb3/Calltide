@@ -22,9 +22,18 @@ interface CustomerNotification {
   sentAt: string;
 }
 
+interface Attachment {
+  id: string;
+  mediaUrl: string;
+  mediaContentType: string | null;
+  caption: string | null;
+  createdAt: string;
+}
+
 interface JobCard {
   id: string;
   callId: string | null;
+  jobIntakeId: string | null;
   callerName: string | null;
   callerPhone: string | null;
   callerEmail: string | null;
@@ -46,6 +55,7 @@ interface JobCard {
   customerNotifiedAt: string | null;
   reminderSentAt: string | null;
   expiredAt: string | null;
+  photoCount: number;
   createdAt: string;
   responses: OwnerResponse[];
   notifications: CustomerNotification[];
@@ -87,6 +97,24 @@ export default function JobCardsPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [photos, setPhotos] = useState<Record<string, Attachment[]>>({});
+
+  // Lazy-load photos when a card with photos is expanded
+  useEffect(() => {
+    if (!expandedId) return;
+    const card = cards.find((c) => c.id === expandedId);
+    if (!card || card.photoCount === 0 || !card.jobIntakeId) return;
+    if (photos[card.jobIntakeId]) return; // Already loaded
+
+    fetch(`/api/dashboard/photos/${card.jobIntakeId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.attachments) {
+          setPhotos((prev) => ({ ...prev, [card.jobIntakeId!]: data.attachments }));
+        }
+      })
+      .catch(() => { /* Non-critical */ });
+  }, [expandedId, cards, photos]);
 
   const fetchCards = useCallback(async () => {
     setLoading(true);
@@ -254,6 +282,14 @@ export default function JobCardsPage() {
                     >
                       {card.estimateConfidence || "no match"}
                     </span>
+                    {card.photoCount > 0 && (
+                      <span
+                        className="px-2 py-0.5 rounded-full text-xs font-medium"
+                        style={{ background: "rgba(59,130,246,0.15)", color: "#60a5fa" }}
+                      >
+                        {"\u{1F4F8}"} {card.photoCount}
+                      </span>
+                    )}
                   </div>
 
                   {/* Chevron */}
@@ -281,6 +317,51 @@ export default function JobCardsPage() {
                       <div>
                         <div className="text-xs mb-1" style={{ color: "var(--db-text-muted)" }}>Description</div>
                         <div className="text-sm" style={{ color: "var(--db-text)" }}>{card.scopeDescription}</div>
+                      </div>
+                    )}
+
+                    {/* Photos */}
+                    {card.photoCount > 0 && card.jobIntakeId && (
+                      <div>
+                        <div className="text-xs mb-2" style={{ color: "var(--db-text-muted)" }}>
+                          Photos ({card.photoCount})
+                        </div>
+                        {photos[card.jobIntakeId] ? (
+                          <div>
+                            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
+                              {photos[card.jobIntakeId].map((att) => (
+                                <a
+                                  key={att.id}
+                                  href={att.mediaUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="block rounded-lg overflow-hidden aspect-square"
+                                  style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
+                                >
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={att.mediaUrl}
+                                    alt={att.caption || "Job site photo"}
+                                    className="w-full h-full object-cover"
+                                    loading="lazy"
+                                  />
+                                </a>
+                              ))}
+                            </div>
+                            {photos[card.jobIntakeId][0]?.caption && (
+                              <div className="mt-2 text-xs italic" style={{ color: "var(--db-text-muted)" }}>
+                                &ldquo;{photos[card.jobIntakeId][0].caption}&rdquo;
+                              </div>
+                            )}
+                            {photos[card.jobIntakeId][0]?.createdAt && (
+                              <div className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                                Received: {formatDate(photos[card.jobIntakeId][0].createdAt)}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="text-xs" style={{ color: "var(--db-text-muted)" }}>Loading photos...</div>
+                        )}
                       </div>
                     )}
 

@@ -18,6 +18,7 @@ export interface NewLead {
   estimateRange: string | null;
   urgency: string;
   status: string;
+  photoCount: number;
 }
 
 export interface TomorrowAppointment {
@@ -201,6 +202,7 @@ export async function aggregateDailyDigest(
         estimateRange,
         urgency: intake?.urgency || "normal",
         status,
+        photoCount: jobCard?.photoCount || 0,
       });
       continue;
     }
@@ -233,6 +235,7 @@ export async function aggregateDailyDigest(
       estimateRange: null,
       urgency: "normal",
       status: "no_intake",
+      photoCount: 0,
     });
   }
 

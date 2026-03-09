@@ -57,8 +57,9 @@ export function formatDigestSMS(
     for (const lead of data.callBreakdown.newLeads.slice(0, 5)) {
       const emoji = STATUS_EMOJI[lead.status] || "";
       const estimate = lead.estimateRange ? `, ${lead.estimateRange}` : "";
+      const photos = lead.photoCount > 0 ? `, \u{1F4F8}${lead.photoCount} photo${lead.photoCount > 1 ? "s" : ""}` : "";
       const statusLabel = lead.status === "confirmed" || lead.status === "adjusted" ? " Confirmed" : lead.status === "pending_review" ? " Pending" : "";
-      lines.push(`  - ${lead.callerName}: ${lead.jobType}${estimate} ${emoji}${statusLabel}`);
+      lines.push(`  - ${lead.callerName}: ${lead.jobType}${estimate}${photos} ${emoji}${statusLabel}`);
     }
     if (leadCount > 5) lines.push(`  + ${leadCount - 5} more`);
   }
@@ -152,9 +153,10 @@ export function formatDigestEmail(
     const statusColor = lead.status === "confirmed" || lead.status === "adjusted" ? "#4ade80" : lead.status === "pending_review" ? "#fbbf24" : "#94a3b8";
     const statusLabel = lead.status === "confirmed" || lead.status === "adjusted" ? "Confirmed" : lead.status === "pending_review" ? "Pending" : lead.status === "site_visit_requested" ? "Site Visit" : "";
     const estimate = lead.estimateRange ? `<span style="color:#D4A843;font-weight:600;">${escapeHtml(lead.estimateRange)}</span>` : "";
+    const photos = lead.photoCount > 0 ? `<span style="color:#94a3b8;font-size:11px;margin-left:4px;">\u{1F4F8}${lead.photoCount}</span>` : "";
     return `<tr>
       <td style="padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.06);color:#f8fafc;font-size:13px;">${escapeHtml(lead.callerName)}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.06);color:#94a3b8;font-size:13px;">${escapeHtml(lead.jobType)}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.06);color:#94a3b8;font-size:13px;">${escapeHtml(lead.jobType)}${photos}</td>
       <td style="padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;">${estimate}</td>
       <td style="padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px;"><span style="color:${statusColor};font-weight:500;">${statusLabel}</span></td>
     </tr>`;

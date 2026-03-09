@@ -8,6 +8,7 @@ import { reportWarning, reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { handleProspectSmsKeyword } from "@/lib/outreach/sms-outreach";
 import { detectOwnerReply } from "@/lib/notifications/owner-reply-handler";
+import { processInboundPhotos } from "@/lib/photos/receive";
 import { logActivity } from "@/lib/activity";
 import { sendSMS } from "@/lib/twilio/sms";
 import { env } from "@/lib/env";
@@ -104,6 +105,38 @@ export async function POST(req: NextRequest) {
 
     console.log(`SMS opt-in recorded for lead ${lead.id}`);
     return twimlResponse("You have been re-subscribed to SMS messages. Reply STOP to unsubscribe.");
+  }
+
+  // Handle inbound MMS photos — check BEFORE owner reply detection
+  const numMedia = parseInt(params.NumMedia || "0", 10);
+  if (numMedia > 0) {
+    try {
+      const mediaUrls: string[] = [];
+      const mediaTypes: string[] = [];
+      for (let i = 0; i < numMedia; i++) {
+        if (params[`MediaUrl${i}`]) mediaUrls.push(params[`MediaUrl${i}`]);
+        if (params[`MediaContentType${i}`]) mediaTypes.push(params[`MediaContentType${i}`]);
+      }
+
+      const photoResult = await processInboundPhotos({
+        fromPhone: from,
+        toPhone: to,
+        numMedia,
+        mediaUrls,
+        mediaTypes,
+        bodyText: body || null,
+        businessId: biz.id,
+      });
+
+      if (photoResult.matched) {
+        // Photos matched to an intake — already handled (confirmations sent)
+        return twimlResponse("");
+      }
+      // No match — fall through to regular SMS handling
+    } catch (err) {
+      reportError("Inbound MMS processing failed", err, { extra: { businessId: biz.id } });
+      // Fall through to regular SMS handling
+    }
   }
 
   // Handle owner replies to job card notifications (1=confirm, 2=adjust, 3=site visit)

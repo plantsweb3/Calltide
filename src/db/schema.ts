@@ -1381,8 +1381,26 @@ export const jobCards = sqliteTable("job_cards", {
   customerNotifiedAt: text("customer_notified_at"),
   reminderSentAt: text("reminder_sent_at"),
   expiredAt: text("expired_at"),
+  photoCount: integer("photo_count").notNull().default(0),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+});
+
+// ── Intake Attachments (MMS Photos) ──
+
+export const intakeAttachments = sqliteTable("intake_attachments", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  jobIntakeId: text("job_intake_id").notNull().references(() => jobIntakes.id),
+  jobCardId: text("job_card_id").references(() => jobCards.id),
+  leadId: text("lead_id").references(() => leads.id),
+  fromPhone: text("from_phone").notNull(),
+  mediaUrl: text("media_url").notNull(),
+  mediaContentType: text("media_content_type"),
+  mediaSize: integer("media_size"),
+  storedUrl: text("stored_url"),
+  caption: text("caption"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
 });
 
 // ── Owner Response Loop ──

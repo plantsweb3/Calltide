@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { jobCards, pricingRanges, businesses, ownerResponses, customerNotifications } from "@/db/schema";
+import { jobCards, pricingRanges, businesses, ownerResponses, customerNotifications, intakeAttachments } from "@/db/schema";
 import { eq, desc, sql, and, gte, inArray } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 
@@ -77,6 +77,13 @@ export async function GET(
         ),
     ]);
 
+    // Photo stats
+    const [photoRow] = await db
+      .select({ total: sql<number>`count(*)` })
+      .from(intakeAttachments)
+      .where(eq(intakeAttachments.businessId, id));
+    const totalPhotos = photoRow?.total || 0;
+
     // Fetch responses/notifications for these cards
     const cardIds = cards.map((c) => c.id);
     let responses: (typeof ownerResponses.$inferSelect)[] = [];
@@ -142,6 +149,7 @@ export async function GET(
         siteVisit: statusCounts["site_visit_requested"] || 0,
         responseRate: total30d > 0 ? Math.round((responded / total30d) * 100) : 0,
         avgResponseTimeMinutes: avgRow?.avgMinutes ? Math.round(avgRow.avgMinutes) : null,
+        totalPhotos,
       },
       limit,
       offset,
