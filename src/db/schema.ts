@@ -1403,6 +1403,39 @@ export const intakeAttachments = sqliteTable("intake_attachments", {
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 });
 
+// ── Referral Network ──
+
+export const businessPartners = sqliteTable("business_partners", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  partnerBusinessId: text("partner_business_id").references(() => businesses.id),
+  partnerName: text("partner_name").notNull(),
+  partnerTrade: text("partner_trade").notNull(),
+  partnerPhone: text("partner_phone").notNull(),
+  partnerContactName: text("partner_contact_name"),
+  partnerEmail: text("partner_email"),
+  relationship: text("relationship").notNull().default("trusted"), // trusted, preferred, occasional
+  notes: text("notes"),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+});
+
+export const partnerReferrals = sqliteTable("partner_referrals", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  referringBusinessId: text("referring_business_id").notNull().references(() => businesses.id),
+  partnerId: text("partner_id").notNull().references(() => businessPartners.id),
+  callId: text("call_id").references(() => calls.id),
+  callerName: text("caller_name"),
+  callerPhone: text("caller_phone"),
+  requestedTrade: text("requested_trade").notNull(),
+  jobDescription: text("job_description"),
+  referralMethod: text("referral_method").notNull().default("info_shared"), // info_shared, sms_sent, partner_notified
+  partnerNotified: integer("partner_notified", { mode: "boolean" }).notNull().default(false),
+  outcome: text("outcome").default("pending"), // pending, connected, no_response, declined
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
 // ── Owner Response Loop ──
 
 export const ownerResponses = sqliteTable("owner_responses", {

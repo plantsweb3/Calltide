@@ -148,6 +148,17 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Fetch referral partner context for cross-trade referrals
+    let partnerContext: string | null = null;
+    if (businessContext) {
+      try {
+        const { buildPartnerContext } = await import("@/lib/referrals/partners");
+        partnerContext = await buildPartnerContext(businessContext.id, lang);
+      } catch {
+        // Non-critical — Maria works fine without partner context
+      }
+    }
+
     // Determine if estimate engine is active for this business
     let estimateContext: string | null = null;
     if (businessContext?.estimateMode && businessContext.estimateMode !== "quick") {
@@ -170,7 +181,7 @@ export async function POST(req: NextRequest) {
 
     // Build the system prompt with business context + caller history
     let systemPrompt = businessContext
-      ? buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext)
+      ? buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext, partnerContext)
       : buildDefaultSystemPrompt(lang);
 
     // Record TCPA disclosures on first message (fire-and-forget)

@@ -6,7 +6,7 @@ import Link from "next/link";
 import StatusBadge from "../../../_components/status-badge";
 import { PageSkeleton } from "@/components/skeleton";
 
-type Tab = "calls" | "bookings" | "intakes" | "communications" | "ai" | "notes" | "qa" | "nps" | "referral" | "timeline" | "customers" | "job-cards";
+type Tab = "calls" | "bookings" | "intakes" | "communications" | "ai" | "notes" | "qa" | "nps" | "referral" | "timeline" | "customers" | "job-cards" | "partners";
 
 interface BusinessDetail {
   id: string;
@@ -100,6 +100,7 @@ export default function ClientDetailPage({
   const [intakesData, setIntakesData] = useState<{ intakes: Array<{ id: string; tradeType: string; scopeLevel: string; answersJson: Record<string, unknown> | null; scopeDescription: string | null; urgency: string; intakeComplete: boolean; createdAt: string; callerPhone: string | null; leadName: string | null }>; total: number; completed: number; completionRate: number }>({ intakes: [], total: 0, completed: 0, completionRate: 0 });
   const [jobCardsData, setJobCardsData] = useState<{ cards: Array<{ id: string; callerName: string | null; callerPhone: string | null; jobTypeLabel: string | null; scopeLevel: string | null; scopeDescription: string | null; estimateMode: string | null; estimateMin: number | null; estimateMax: number | null; estimateUnit: string | null; estimateConfidence: string | null; estimateCalculationJson: Record<string, unknown> | null; status: string | null; ownerResponse: string | null; ownerAdjustedMin: number | null; ownerAdjustedMax: number | null; ownerRespondedAt: string | null; customerNotifiedAt: string | null; createdAt: string; responses: Array<{ id: string; direction: string; messageType: string; rawReply: string | null; parsedAction: string | null; createdAt: string }>; notifications: Array<{ id: string; notificationType: string; sentAt: string }> }>; total: number; pricingRanges: Array<{ id: string; jobTypeLabel: string; mode: string; minPrice: number | null; maxPrice: number | null; unit: string | null }>; stats: { total30d: number; pending: number; confirmed: number; adjusted: number; expired: number; siteVisit: number; responseRate: number; avgResponseTimeMinutes: number | null; totalPhotos: number } | null }>({ cards: [], total: 0, pricingRanges: [], stats: null });
   const [expandedJobCard, setExpandedJobCard] = useState<string | null>(null);
+  const [partnerData, setPartnerData] = useState<{ totalPartners: number; totalReferrals: number; partners: Array<{ id: string; name: string; trade: string; phone: string; relationship: string }>; referrals: Array<{ id: string; partnerName: string; partnerTrade: string; callerName: string | null; requestedTrade: string; jobDescription: string | null; partnerNotified: boolean; outcome: string; createdAt: string }> }>({ totalPartners: 0, totalReferrals: 0, partners: [], referrals: [] });
 
   useEffect(() => {
     fetch(`/api/admin/clients/${id}`)
@@ -164,6 +165,11 @@ export default function ClientDetailPage({
     fetch(`/api/admin/clients/${id}/job-cards?limit=50`)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setJobCardsData(d))
+      .catch(() => { /* non-critical */ });
+
+    fetch(`/api/admin/clients/${id}/partner-referrals`)
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((d) => setPartnerData(d))
       .catch(() => { /* non-critical */ });
   }, [id]);
 
@@ -239,6 +245,7 @@ export default function ClientDetailPage({
     { key: "referral", label: "Referral", count: referralData.referrals.length },
     { key: "customers", label: "Customers", count: crmCustomers.length },
     { key: "job-cards", label: "Job Cards", count: jobCardsData.total },
+    { key: "partners", label: "Partners", count: partnerData.totalPartners },
     { key: "timeline", label: "Timeline", count: timeline.length },
     { key: "notes", label: "Notes", count: notes.length },
   ];
@@ -856,6 +863,85 @@ export default function ClientDetailPage({
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Partners Tab */}
+        {tab === "partners" && (
+          <div className="space-y-4">
+            {/* Partner Stats */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-lg p-3 text-center" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+                <p className="text-xl font-bold" style={{ color: "var(--db-text)" }}>{partnerData.totalPartners}</p>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Active Partners</p>
+              </div>
+              <div className="rounded-lg p-3 text-center" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+                <p className="text-xl font-bold" style={{ color: "var(--db-text)" }}>{partnerData.totalReferrals}</p>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Referrals Made</p>
+              </div>
+            </div>
+
+            {/* Partner List */}
+            {partnerData.partners.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--db-text-muted)" }}>Partners</p>
+                <div className="space-y-2">
+                  {partnerData.partners.map((p) => (
+                    <div key={p.id} className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+                      <div>
+                        <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{p.name}</span>
+                        <span className="ml-2 text-xs" style={{ color: "var(--db-text-muted)" }}>{p.trade}</span>
+                      </div>
+                      <span
+                        className="rounded-full px-2 py-0.5 text-xs"
+                        style={{
+                          background: p.relationship === "preferred" ? "rgba(212,168,67,0.15)" : "rgba(96,165,250,0.15)",
+                          color: p.relationship === "preferred" ? "#D4A843" : "#60a5fa",
+                        }}
+                      >
+                        {p.relationship}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Referral Log */}
+            {partnerData.referrals.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--db-text-muted)" }}>Recent Referrals</p>
+                <div className="space-y-2">
+                  {partnerData.referrals.map((r) => (
+                    <div key={r.id} className="rounded-lg px-3 py-2" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm" style={{ color: "var(--db-text)" }}>
+                          {r.callerName || "Unknown"} &rarr; {r.partnerName}
+                        </span>
+                        <span
+                          className="rounded-full px-2 py-0.5 text-xs"
+                          style={{
+                            background: r.outcome === "connected" ? "rgba(74,222,128,0.15)" : "rgba(148,163,184,0.15)",
+                            color: r.outcome === "connected" ? "#4ade80" : "#94a3b8",
+                          }}
+                        >
+                          {r.outcome}
+                        </span>
+                      </div>
+                      <div className="flex gap-3 text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
+                        <span>{r.requestedTrade}</span>
+                        {r.jobDescription && <span className="truncate max-w-[200px]">{r.jobDescription}</span>}
+                        <span>{formatDate(r.createdAt)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {partnerData.totalPartners === 0 && partnerData.totalReferrals === 0 && (
+              <p className="py-8 text-center text-xs" style={{ color: "var(--db-text-muted)" }}>No partner network configured</p>
+            )}
           </div>
         )}
 

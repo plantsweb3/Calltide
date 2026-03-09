@@ -8,6 +8,7 @@ import { getAppointmentConfirmation, getOwnerNotification } from "@/lib/sms-temp
 import { updateActiveCall } from "@/lib/monitoring/active-calls";
 import { reportError } from "@/lib/error-reporting";
 import { saveJobIntake, detectScopeLevel } from "@/lib/intake";
+import { findBestPartner, logReferral, notifyPartner, sendPartnerInfoToCaller } from "@/lib/referrals/partners";
 import type { ToolResult, Language } from "@/types";
 
 interface ToolCallContext {
@@ -25,6 +26,7 @@ const TOOL_INTENT_MAP: Record<string, string> = {
   take_message: "message",
   transfer_to_human: "transfer",
   submit_intake: "intake",
+  refer_partner: "referral",
 };
 
 export async function dispatchToolCall(
@@ -48,6 +50,9 @@ export async function dispatchToolCall(
       break;
     case "submit_intake":
       result = await handleSubmitIntake(params, ctx);
+      break;
+    case "refer_partner":
+      result = await handleReferPartner(params, ctx);
       break;
     default:
       return { success: false, error: `Unknown tool: ${toolName}` };
@@ -417,5 +422,83 @@ async function handleSubmitIntake(
   } catch (err) {
     reportError("Failed to save job intake", err, { extra: { callId: ctx.callId } });
     return { success: false, error: "Failed to save intake data" };
+  }
+}
+
+async function handleReferPartner(
+  params: Record<string, unknown>,
+  ctx: ToolCallContext,
+): Promise<ToolResult> {
+  const requestedTrade = params.requested_trade as string;
+  const callerName = params.caller_name as string | undefined;
+  const jobDescription = params.job_description as string | undefined;
+
+  if (!requestedTrade) {
+    return { success: false, error: "requested_trade is required" };
+  }
+
+  const biz = await getBusinessById(ctx.businessId);
+  if (!biz) return { success: false, error: "Business not found" };
+
+  // Find the best partner for the requested trade
+  const partner = await findBestPartner(ctx.businessId, requestedTrade);
+
+  if (!partner) {
+    return {
+      success: true,
+      data: {
+        found: false,
+        message: ctx.language === "es"
+          ? `No tenemos un socio de ${requestedTrade} registrado en este momento. Puedo tomar su información y ${biz.ownerName} le recomendará a alguien.`
+          : `We don't have a ${requestedTrade} partner on file right now. I can take your information and ${biz.ownerName} will recommend someone.`,
+      },
+    };
+  }
+
+  // Log the referral
+  try {
+    const referralId = await logReferral({
+      referringBusinessId: ctx.businessId,
+      partnerId: partner.id,
+      callId: ctx.callId,
+      callerName: callerName || undefined,
+      callerPhone: ctx.callerPhone,
+      requestedTrade,
+      jobDescription,
+      referralMethod: "info_shared",
+    });
+
+    // Notify partner and send info to caller (fire-and-forget)
+    notifyPartner({ referralId }).catch((err) =>
+      reportError("Partner notification failed", err, { extra: { referralId } }),
+    );
+
+    if (ctx.callerPhone) {
+      sendPartnerInfoToCaller({
+        callerPhone: ctx.callerPhone,
+        businessId: ctx.businessId,
+        partner,
+        language: ctx.language,
+        leadId: ctx.leadId,
+        callId: ctx.callId,
+      }).catch((err) =>
+        reportError("Partner info SMS to caller failed", err, { extra: { referralId } }),
+      );
+    }
+
+    return {
+      success: true,
+      data: {
+        found: true,
+        partnerName: partner.partnerName,
+        partnerTrade: partner.partnerTrade,
+        message: ctx.language === "es"
+          ? `Tenemos un excelente socio de ${partner.partnerTrade}: ${partner.partnerName}. Les voy a notificar sobre usted y le enviaré su información por texto.`
+          : `We have a great ${partner.partnerTrade} partner: ${partner.partnerName}. I'll notify them about you and text you their info.`,
+      },
+    };
+  } catch (err) {
+    reportError("Failed to process partner referral", err, { extra: { callId: ctx.callId } });
+    return { success: false, error: "Failed to process referral" };
   }
 }

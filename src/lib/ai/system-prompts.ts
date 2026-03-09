@@ -48,12 +48,12 @@ function formatHoursEs(hours: Record<string, { open: string; close: string }>): 
     .join("\n");
 }
 
-export function buildSystemPrompt(biz: BusinessContext, lang: Language, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null, estimateContext?: string | null): string {
-  if (lang === "es") return buildSpanishPrompt(biz, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext);
-  return buildEnglishPrompt(biz, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext);
+export function buildSystemPrompt(biz: BusinessContext, lang: Language, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null, estimateContext?: string | null, partnerContext?: string | null): string {
+  if (lang === "es") return buildSpanishPrompt(biz, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext, partnerContext);
+  return buildEnglishPrompt(biz, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext, partnerContext);
 }
 
-function buildEnglishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null, estimateContext?: string | null): string {
+function buildEnglishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null, estimateContext?: string | null, partnerContext?: string | null): string {
   const name = biz.receptionistName || "Maria";
   const presetKey = (biz.personalityPreset || "friendly") as PersonalityPreset;
   const preset = PERSONALITY_PRESETS[presetKey] || PERSONALITY_PRESETS.friendly;
@@ -129,6 +129,18 @@ After collecting intake information and calling submit_intake, the system may pr
 - NEVER present the estimate as a firm quote or binding price.
 - NEVER share formula details, multipliers, or calculation breakdowns with the caller.
 - After sharing the range, offer to schedule a site visit: "Would you like me to schedule a time for ${biz.ownerName} to come take a look?"
+` : ""}${partnerContext ? `## Referral Partners
+If the caller needs a service outside what ${biz.name} offers, check if we have a partner for that trade.
+
+${partnerContext}
+
+When the caller needs a service we don't offer:
+1. Let them know we don't handle that directly, but we work with a trusted partner.
+2. Use the \`refer_partner\` tool with: requested_trade, caller_name, and job_description.
+3. The system will text the caller the partner's contact info and notify the partner.
+4. Say something like: "We don't do [trade] ourselves, but we work with [Partner Name] — they're great. I'll text you their info right now."
+5. NEVER make up partner names or numbers — only refer to partners listed above.
+6. If no partner matches, offer to take a message so the owner can recommend someone.
 ` : ""}## Emergency Protocol
 If the caller describes any of these situations, treat it as an emergency:
 - Gas leak, smell of gas
@@ -189,7 +201,7 @@ ${pricingContext}
 - If you don't know something, say: "I don't have that information, but ${biz.ownerName} can help you with that. Would you like me to take a message?"`;
 }
 
-function buildSpanishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null, estimateContext?: string | null): string {
+function buildSpanishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null, estimateContext?: string | null, partnerContext?: string | null): string {
   const name = biz.receptionistName || "Maria";
   const presetKey = (biz.personalityPreset || "friendly") as PersonalityPreset;
   const preset = PERSONALITY_PRESETS[presetKey] || PERSONALITY_PRESETS.friendly;
@@ -265,6 +277,18 @@ Después de recopilar la información de intake y llamar a submit_intake, el sis
 - NUNCA presentes el estimado como cotización firme o precio vinculante.
 - NUNCA compartas detalles de fórmulas, multiplicadores o desgloses de cálculos con el llamante.
 - Después de compartir el rango, ofrece agendar una visita: "¿Le gustaría que le agende una visita para que ${biz.ownerName} vaya a revisar?"
+` : ""}${partnerContext ? `## Socios de Referencia
+Si el llamante necesita un servicio que ${biz.name} no ofrece, verifica si tenemos un socio para ese oficio.
+
+${partnerContext}
+
+Cuando el llamante necesite un servicio que no ofrecemos:
+1. Hazle saber que no manejamos eso directamente, pero trabajamos con un socio de confianza.
+2. Usa la herramienta \`refer_partner\` con: requested_trade, caller_name, y job_description.
+3. El sistema le enviará al llamante la información del socio por texto y notificará al socio.
+4. Di algo como: "Nosotros no hacemos [oficio], pero trabajamos con [Nombre del Socio] — son excelentes. Le envío su información por texto ahorita."
+5. NUNCA inventes nombres o números de socios — solo refiere a los socios listados arriba.
+6. Si no hay socio disponible, ofrece tomar un mensaje para que el dueño le recomiende a alguien.
 ` : ""}## Protocolo de Emergencia
 Si el llamante describe alguna de estas situaciones, trátalo como emergencia:
 - Fuga de gas, olor a gas
