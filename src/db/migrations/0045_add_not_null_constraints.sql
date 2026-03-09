@@ -1,0 +1,12 @@
+-- SQLite does not support ALTER COLUMN to add NOT NULL constraints.
+-- These constraints are enforced at the ORM level via Drizzle schema.
+-- This migration exists for documentation: the following columns now
+-- have .notNull() in the schema (all already had .default() values):
+--
+--   outbound_calls.status        DEFAULT 'scheduled'  NOT NULL
+--   active_calls.status          DEFAULT 'ringing'     NOT NULL
+--   content_queue.status         DEFAULT 'draft'       NOT NULL
+--   referrals.status             DEFAULT 'pending'     NOT NULL
+--   data_deletion_requests.status DEFAULT 'received'   NOT NULL
+--
+-- No SQL statements needed — existing rows already have defaults.
