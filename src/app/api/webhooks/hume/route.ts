@@ -5,7 +5,6 @@ import { getBusinessByPhone, findOrCreateLead } from "@/lib/ai/context-builder";
 import { db } from "@/db";
 import { calls } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { sendSMS } from "@/lib/twilio/sms";
 import { processCallSummary } from "@/lib/ai/call-summary";
 import type { HumeWebhookEvent, HumeChatStartedData, HumeChatEndedData, HumeToolCallData } from "@/types";
 import { reportError, reportWarning } from "@/lib/error-reporting";
@@ -136,23 +135,8 @@ async function handleChatEnded(event: HumeWebhookEvent) {
       updatedAt: new Date().toISOString(),
     }).where(eq(calls.id, call.id));
 
-    // Notify owner that a call was handled
-    const biz = await getBusinessByPhone(call.calledPhone || "");
-    if (biz) {
-      const duration = data.duration_seconds
-        ? `${Math.round(data.duration_seconds / 60)}min`
-        : "unknown duration";
-
-      await sendSMS({
-        to: biz.ownerPhone,
-        from: biz.twilioNumber,
-        body: `Call handled by AI assistant from ${call.callerPhone || "unknown"}. Duration: ${duration}. Check your dashboard for details.`,
-        businessId: biz.id,
-        callId: call.id,
-        leadId: call.leadId || undefined,
-        templateType: "owner_notify",
-      });
-    }
+    // Rich owner notification + missed-call text-back are sent after summary generation
+    // in processCallSummary() via sendOwnerCallAlert() and sendMissedCallTextBack()
 
     // Generate AI summary from transcript (fire-and-forget, with retry on failure)
     processCallSummary(call.id, event.chat_id).catch(async (err) => {

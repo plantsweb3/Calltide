@@ -6,7 +6,7 @@ Calltide is an AI-powered bilingual (EN/ES) receptionist platform for home servi
 
 ## Tech Stack
 
-- **Framework:** Next.js 15 App Router, TypeScript
+- **Framework:** Next.js 16 App Router, TypeScript
 - **Database:** Drizzle ORM with SQLite/Turso (libsql)
 - **Voice AI:** Hume EVI (WebSocket-based voice conversations)
 - **LLM:** Anthropic Claude (call summaries, QA scoring, content generation)
@@ -23,7 +23,7 @@ Calltide is an AI-powered bilingual (EN/ES) receptionist platform for home servi
 src/
 ├── app/
 │   ├── admin/          # Admin portal (cookie auth, HMAC-SHA256)
-│   ├── dashboard/      # Client portal (magic link auth)
+│   ├── dashboard/      # Client portal (password + magic link auth)
 │   ├── api/
 │   │   ├── admin/      # Admin API routes (cookie auth via middleware)
 │   │   ├── dashboard/  # Client API routes (x-business-id injection via middleware)
@@ -34,9 +34,9 @@ src/
 │   └── page.tsx        # Landing page
 ├── components/         # Shared UI components
 ├── db/
-│   ├── schema.ts       # Drizzle schema (50+ tables)
+│   ├── schema.ts       # Drizzle schema (69 tables)
 │   ├── index.ts        # DB connection
-│   └── migrations/     # SQL migrations (0000-0026)
+│   └── migrations/     # SQL migrations (0000-0039)
 ├── lib/
 │   ├── ai/             # System prompts, context builder, call summary
 │   ├── hume/           # Tool handlers, webhook verification
@@ -52,13 +52,31 @@ tests/
 └── integration/        # Integration tests
 ```
 
+## Architecture Overview
+
+- `/app/(marketing)/*` — Public pages (homepage, pricing, platform, about, faq, blog, help, legal, status)
+- `/app/dashboard/*` — Client portal (18+ pages: calls, appointments, CRM, estimates, billing, settings, referrals, import, onboarding)
+- `/app/admin/*` — Admin portal (31+ pages: mission control, clients, prospects, agents, campaigns, blog CMS, KB, compliance, financials, incidents)
+- `/app/api/*` — 179 API routes
+- `/src/db/*` — Drizzle schema (69 tables) + migrations
+- `/src/lib/*` — Shared utilities (auth, env, rate-limit, error-reporting)
+
 ## Authentication
 
 - **Admin:** Cookie-based (`calltide_admin`) with HMAC-SHA256 signed tokens. Password in `ADMIN_PASSWORD` env var.
-- **Client:** Magic link via email → signed JWT-like token → `calltide_client` cookie. Single-use tokens via `usedMagicTokens` table.
+- **Client:** Password login (primary) + magic link fallback (both supported). `calltide_client` cookie with JWT-like signed tokens. Single-use magic tokens via `usedMagicTokens` table.
+- **Sessions:** JWT-like tokens verified in middleware.
 - **Middleware:** Handles auth for `/admin/*`, `/api/admin/*`, `/dashboard/*`, `/api/dashboard/*`. Injects `x-business-id` header for client routes.
 
 ## Key Patterns
+
+- Zod on all POST/PUT
+- Password login + magic link auth, middleware sessions
+- External: Twilio, Hume EVI, Stripe, Resend, Anthropic, Google Calendar
+- 22 cron jobs (CRON_SECRET protected), 6 AI agents (health, onboard, churn, success, qualify, support)
+- 179 API routes
+- Demo mode with isolated data
+- Onboarding: 8-step wizard, paywall at step 6 (after test call), incomplete signups saved for retargeting
 
 ### API Routes
 - All routes use Zod for input validation
@@ -69,7 +87,7 @@ tests/
 
 ### Database
 - Drizzle ORM with SQLite/Turso
-- Migrations in `src/db/migrations/` (numbered 0000-0026)
+- Migrations in `src/db/migrations/` (numbered 0000-0039)
 - Journal in `src/db/migrations/meta/_journal.json`
 - All tables defined in `src/db/schema.ts`
 
@@ -101,6 +119,24 @@ npm run db:migrate   # Apply migrations
 - `fix:` for bug fixes and security patches
 - `feat:` for new features
 - `chore:` for tests, docs, tooling
+
+## Pricing
+
+ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers.
+
+## Style
+
+- Font: Inter only (no serifs)
+- Colors: Navy #1B2A4A, Gold #D4A843, Dark #0f1729
+- Tailwind + Lucide icons
+- Voice: "jobs" not "conversions", "answers your phone" not "handles inbound"
+
+## Do NOT
+
+- Use serif fonts or dev metrics in UI
+- Add pricing tiers — single plan only
+- Lower the price below $497
+- Use "Start Free Trial" — always "Get Calltide →"
 
 ## Important Notes
 

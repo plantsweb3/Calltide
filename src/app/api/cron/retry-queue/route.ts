@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { processRetryQueue } from "@/lib/jobs/queue";
 import { provisionTwilioNumber } from "@/lib/twilio/provision";
 import { processCallSummary } from "@/lib/ai/call-summary";
+import { getResend } from "@/lib/email/client";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 
@@ -47,6 +48,28 @@ export async function GET(req: NextRequest) {
             businessId,
             consentType: (payload.consentType as string) || "service_agreement",
           });
+        },
+
+        email_send: async (payload) => {
+          const resend = getResend();
+          const from = payload.from as string;
+          const to = payload.to as string | string[];
+          const subject = payload.subject as string;
+          const html = (payload.html as string) || "";
+          const replyTo = (payload.replyTo as string) || undefined;
+          if (!from || !to || !subject) throw new Error("Missing from, to, or subject");
+
+          const { error } = await resend.emails.send({
+            from,
+            to,
+            subject,
+            html,
+            ...(replyTo ? { replyTo } : {}),
+          });
+
+          if (error) {
+            throw new Error(error.message);
+          }
         },
       });
 

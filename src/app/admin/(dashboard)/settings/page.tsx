@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { missedCallSequence, answeredSequence } from "@/lib/outreach/email-templates";
+import { sanitizeHtml } from "@/lib/sanitize-html";
 
 type Tab = "platform" | "email" | "sms" | "twilio" | "api" | "scraping";
 
@@ -169,7 +170,7 @@ export default function SettingsPage() {
                 <div
                   className="mt-2 max-h-40 overflow-y-auto rounded-lg p-3 text-xs"
                   style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
-                  dangerouslySetInnerHTML={{ __html: template.html }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(template.html) }}
                 />
               </div>
             );
@@ -195,7 +196,7 @@ export default function SettingsPage() {
                 <div
                   className="mt-2 max-h-40 overflow-y-auto rounded-lg p-3 text-xs"
                   style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
-                  dangerouslySetInnerHTML={{ __html: template.html }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(template.html) }}
                 />
               </div>
             );

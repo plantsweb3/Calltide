@@ -1,0 +1,702 @@
+/* ── Public Booking Page ── */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.page {
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Loading ── */
+
+.loadingContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 100vh;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(27, 42, 74, 0.15);
+  border-top-color: #1B2A4A;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loadingText {
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* ── Not Found ── */
+
+.notFound {
+  text-align: center;
+  padding: 80px 24px;
+}
+
+.notFoundIcon {
+  margin-bottom: 20px;
+}
+
+.notFoundTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px;
+}
+
+.notFoundSub {
+  font-size: 14px;
+  color: #64748b;
+  max-width: 360px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── Header ── */
+
+.header {
+  background: #1B2A4A;
+  color: #fff;
+  padding: 20px 24px;
+}
+
+.headerInner {
+  max-width: 560px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bizInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bizName {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.bizArea {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.langSwitch {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.langBtn {
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 0.2s;
+  border-radius: 4px;
+}
+
+.langBtn:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.langBtnActive {
+  color: #fff;
+  font-weight: 700;
+}
+
+.langDivider {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 11px;
+  user-select: none;
+}
+
+/* ── Progress ── */
+
+.progress {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 24px 0;
+  max-width: 560px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.progressDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.progressDotActive {
+  background: #D4A843;
+}
+
+.progressDotCurrent {
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* ── Container ── */
+
+.container {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 24px 40px;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+/* ── Step Content ── */
+
+.stepContent {
+  animation: fadeIn 0.3s ease;
+}
+
+.stepTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1B2A4A;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+
+.stepSub {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+/* ── Error Banner ── */
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #dc2626;
+}
+
+/* ── Empty State ── */
+
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+/* ── Service Cards ── */
+
+.serviceGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.serviceCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-align: left;
+  width: 100%;
+}
+
+.serviceCard:hover {
+  border-color: #D4A843;
+  box-shadow: 0 2px 8px rgba(212, 168, 67, 0.12);
+}
+
+.serviceCardSelected {
+  border-color: #D4A843;
+  background: #fffbf0;
+}
+
+.serviceName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1B2A4A;
+}
+
+.serviceDesc {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.servicePrice {
+  font-size: 13px;
+  font-weight: 600;
+  color: #D4A843;
+  margin-top: 2px;
+}
+
+/* ── Calendar ── */
+
+.calendar {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.calendarNav {
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  color: #475569;
+  transition: background 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendarNav:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.calendarMonthLabel {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1B2A4A;
+  text-transform: capitalize;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendarDayLabel {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  padding: 4px 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.calendarBlank {
+  aspect-ratio: 1;
+}
+
+.calendarDay {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.calendarDay:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.calendarDayDisabled {
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.calendarDayDisabled:hover {
+  background: none !important;
+}
+
+.calendarDaySelected {
+  background: #D4A843 !important;
+  color: #fff !important;
+  font-weight: 700;
+}
+
+/* ── Time Slots ── */
+
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.timeSlot {
+  padding: 12px 8px;
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-align: center;
+}
+
+.timeSlot:hover {
+  border-color: #D4A843;
+}
+
+.timeSlotSelected {
+  border-color: #D4A843;
+  background: #fffbf0;
+  color: #1B2A4A;
+  font-weight: 600;
+}
+
+/* ── Form ── */
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1B2A4A;
+  margin-bottom: 6px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #1e293b;
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #D4A843;
+  box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.15);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: #94a3b8;
+}
+
+.inputError {
+  border-color: #ef4444;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.fieldError {
+  display: block;
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 4px;
+}
+
+/* ── Summary Mini ── */
+
+.summaryMini {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  background: #fffbf0;
+  border: 1px solid rgba(212, 168, 67, 0.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: #1B2A4A;
+  font-weight: 500;
+}
+
+.summaryDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #D4A843;
+  flex-shrink: 0;
+}
+
+/* ── Navigation Buttons ── */
+
+.navBtns {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.backBtn {
+  background: #fff;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  font-family: inherit;
+}
+
+.backBtn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.primaryBtn {
+  flex: 1;
+  background: #D4A843;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  font-family: inherit;
+}
+
+.primaryBtn:hover:not(:disabled) {
+  background: #c49a3d;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ── Confirmed ── */
+
+.confirmedIcon {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.confirmedTitle {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1B2A4A;
+  margin: 0 0 8px;
+}
+
+.confirmedSub {
+  text-align: center;
+  font-size: 15px;
+  color: #64748b;
+  margin: 0 0 28px;
+  line-height: 1.5;
+}
+
+.confirmCard {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.confirmCardTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1B2A4A;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 12px;
+}
+
+.confirmRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.confirmRow:last-child {
+  border-bottom: none;
+}
+
+.confirmLabel {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.confirmValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: right;
+}
+
+.secondaryBtn {
+  display: block;
+  width: 100%;
+  background: #fff;
+  color: #1B2A4A;
+  border: 2px solid #1B2A4A;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: center;
+  font-family: inherit;
+}
+
+.secondaryBtn:hover {
+  background: #f8fafc;
+}
+
+/* ── Footer ── */
+
+.footer {
+  text-align: center;
+  padding: 20px 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.footerText {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.footerLink {
+  color: #D4A843;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 480px) {
+  .header {
+    padding: 16px 20px;
+  }
+
+  .bizName {
+    font-size: 18px;
+  }
+
+  .container {
+    padding: 20px 20px 32px;
+  }
+
+  .stepTitle {
+    font-size: 20px;
+  }
+
+  .timeGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .summaryMini {
+    font-size: 12px;
+  }
+
+  .calendarDay {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  .container {
+    padding: 16px 16px 24px;
+  }
+
+  .timeGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .navBtns {
+    flex-direction: column-reverse;
+  }
+
+  .backBtn {
+    text-align: center;
+  }
+}

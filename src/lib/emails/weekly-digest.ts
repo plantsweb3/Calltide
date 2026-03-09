@@ -63,7 +63,9 @@ export function buildDigestEmail(params: {
   const end = new Date(params.weekEndDate + "T12:00:00");
   const dateRange = `${start.toLocaleDateString("en-US", { month: "short", day: "numeric" })} – ${end.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`;
 
-  const subject = `${receptionistName} Weekly Report — ${businessName}`;
+  const subject = stats.savedEstimate > 0
+    ? `${receptionistName} saved you $${Math.round(stats.savedEstimate).toLocaleString("en-US")} this week`
+    : `${receptionistName} Weekly Report — ${businessName}`;
 
   const html = `
 <!DOCTYPE html>

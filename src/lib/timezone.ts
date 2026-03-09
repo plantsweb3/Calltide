@@ -110,7 +110,7 @@ export function getBusinessWeekRange(
  * Convert a local date + time string to a UTC ISO string.
  * Uses binary search on the UTC offset to handle DST correctly.
  */
-function localDateToUtc(
+export function localDateToUtc(
   dateStr: string,
   timeStr: string,
   timezone: string,

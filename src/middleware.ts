@@ -20,6 +20,7 @@ function rateLimit(ip: string, prefix: string, limit: number): boolean {
   return true;
 }
 
+const HUME_TOKEN_RL_LIMIT = 5; // strict limit for token endpoint
 const ADMIN_RL_LIMIT = 200;
 const DASHBOARD_RL_LIMIT = 200; // higher — dashboards make many parallel fetches
 
@@ -141,6 +142,15 @@ async function requireClientAuth(req: NextRequest, isApi: boolean): Promise<Next
   return NextResponse.next({ request: { headers } });
 }
 
+/** Apply security headers to any response. */
+function withSecurityHeaders(response: NextResponse): NextResponse {
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("X-XSS-Protection", "1; mode=block");
+  return response;
+}
+
 /** Routes that require admin auth but aren't under /admin or /api/admin. */
 function isProtectedInternalRoute(pathname: string): boolean {
   return (
@@ -164,6 +174,11 @@ function isBlogWriteRoute(pathname: string, method: string): boolean {
 }
 
 export async function middleware(req: NextRequest) {
+  const response = await middlewareCore(req);
+  return withSecurityHeaders(response);
+}
+
+async function middlewareCore(req: NextRequest): Promise<NextResponse> {
   const { pathname } = req.nextUrl;
 
   // ── CSRF protection for state-changing API requests ──
@@ -218,7 +233,7 @@ export async function middleware(req: NextRequest) {
   // ── Compliance SMS opt-out webhook ──
   if (pathname === "/api/compliance/sms-optout") {
     if (!rateLimit(getIp(req), "sms-optout", 50)) {
-      return new Response("Too many requests", { status: 429 });
+      return new NextResponse("Too many requests", { status: 429 });
     }
     return NextResponse.next();
   }
@@ -240,8 +255,11 @@ export async function middleware(req: NextRequest) {
       }
     }
 
-    // For /api/hume/token, also accept admin cookie
+    // For /api/hume/token, apply strict rate limiting and also accept admin cookie
     if (pathname === "/api/hume/token") {
+      if (!rateLimit(getIp(req), "hume-token", HUME_TOKEN_RL_LIMIT)) {
+        return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      }
       const adminPassword = process.env.ADMIN_PASSWORD;
       const adminCookie = req.cookies.get(ADMIN_COOKIE)?.value;
       if (adminCookie && adminPassword && await verifyToken(adminCookie, adminPassword)) {

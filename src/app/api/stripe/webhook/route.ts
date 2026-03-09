@@ -20,6 +20,7 @@ import { provisionTwilioNumber } from "@/lib/twilio/provision";
 import { recordConsent } from "@/lib/compliance/consent";
 import { getStripe } from "@/lib/stripe/client";
 import { enqueueJob } from "@/lib/jobs/queue";
+import { generateBookingSlug } from "@/lib/booking-slug";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -198,6 +199,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     locationCount: 1,
   });
 
+  const genericSlug = await generateBookingSlug("My Business").catch(() => undefined);
+
   await db.insert(businesses).values({
     name: "My Business", // Placeholder — updated during onboarding
     type: "general",
@@ -225,6 +228,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     locationName: "Main",
     isPrimaryLocation: true,
     locationOrder: 0,
+    bookingSlug: genericSlug,
   });
 
   await logActivity({
@@ -661,6 +665,8 @@ async function handleSetupPageCheckout(
     locationCount: 1,
   });
 
+  const setupSlug = await generateBookingSlug(setupSession.businessName || "My Business").catch(() => undefined);
+
   const [newBiz] = await db
     .insert(businesses)
     .values({
@@ -691,6 +697,7 @@ async function handleSetupPageCheckout(
       onboardingStep: 7,
       onboardingStatus: "in_progress",
       onboardingStartedAt: setupSession.createdAt,
+      bookingSlug: setupSlug,
     })
     .returning({ id: businesses.id });
 

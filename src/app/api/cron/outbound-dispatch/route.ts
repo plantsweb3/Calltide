@@ -4,6 +4,7 @@ import { outboundCalls } from "@/db/schema";
 import { and, lte, inArray } from "drizzle-orm";
 import { initiateOutboundCall } from "@/lib/outbound/engine";
 import { reportError } from "@/lib/error-reporting";
+import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 
 /**
  * GET /api/cron/outbound-dispatch
@@ -22,47 +23,49 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const now = new Date().toISOString();
-  let initiated = 0;
-  let failed = 0;
+  return withCronMonitor("outbound-dispatch", "0 17 * * *", async () => {
+    const now = new Date().toISOString();
+    let initiated = 0;
+    let failed = 0;
 
-  try {
-    // Find calls ready to dispatch
-    const readyCalls = await db
-      .select({ id: outboundCalls.id })
-      .from(outboundCalls)
-      .where(
-        and(
-          inArray(outboundCalls.status, ["scheduled", "retry"]),
-          lte(outboundCalls.scheduledFor, now),
-        ),
-      )
-      .limit(MAX_PER_RUN);
+    try {
+      // Find calls ready to dispatch
+      const readyCalls = await db
+        .select({ id: outboundCalls.id })
+        .from(outboundCalls)
+        .where(
+          and(
+            inArray(outboundCalls.status, ["scheduled", "retry"]),
+            lte(outboundCalls.scheduledFor, now),
+          ),
+        )
+        .limit(MAX_PER_RUN);
 
-    for (const call of readyCalls) {
-      try {
-        const result = await initiateOutboundCall(call.id);
-        if (result.success) {
-          initiated++;
-        } else {
+      for (const call of readyCalls) {
+        try {
+          const result = await initiateOutboundCall(call.id);
+          if (result.success) {
+            initiated++;
+          } else {
+            failed++;
+          }
+        } catch (err) {
+          reportError("Outbound dispatch error", err, {
+            extra: { outboundCallId: call.id },
+          });
           failed++;
         }
-      } catch (err) {
-        reportError("Outbound dispatch error", err, {
-          extra: { outboundCallId: call.id },
-        });
-        failed++;
       }
-    }
 
-    return NextResponse.json({
-      success: true,
-      found: readyCalls.length,
-      initiated,
-      failed,
-    });
-  } catch (error) {
-    reportError("Outbound dispatch cron failed", error);
-    return NextResponse.json({ error: "Cron failed" }, { status: 500 });
-  }
+      return NextResponse.json({
+        success: true,
+        found: readyCalls.length,
+        initiated,
+        failed,
+      });
+    } catch (error) {
+      reportError("Outbound dispatch cron failed", error);
+      return NextResponse.json({ error: "Cron failed" }, { status: 500 });
+    }
+  });
 }

@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { businesses } from "@/db/schema";
 import { reportError } from "@/lib/error-reporting";
 import { triggerQaIfNewClient } from "@/lib/agents/qa";
+import { sendOwnerCallAlert, sendMissedCallTextBack } from "@/lib/notifications/post-call";
 
 interface TranscriptLine {
   speaker: "ai" | "caller";
@@ -170,6 +171,16 @@ export async function processCallSummary(callId: string, chatId: string): Promis
         });
       });
     }
+
+    // Send rich owner SMS alert now that we have the summary (fire-and-forget)
+    sendOwnerCallAlert(callId).catch((err) => {
+      reportError("Post-call owner alert failed", err, { extra: { callId } });
+    });
+
+    // Send missed-call text-back to caller if applicable (fire-and-forget)
+    sendMissedCallTextBack(callId).catch((err) => {
+      reportError("Missed call text-back failed", err, { extra: { callId } });
+    });
 
     return { summary, sentiment, outcome, callerName, serviceRequested, transcript };
   } catch (error) {
