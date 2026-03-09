@@ -208,9 +208,9 @@ const CATEGORIES = [
     label: "Compliance",
     icon: icons.shield,
     features: [
-      { icon: icons.shield, title: "GDPR / CCPA / TCPA Compliant", desc: "Full regulatory compliance out of the box. Consent tracking, data retention policies, and opt-out handling." },
-      { icon: icons.mic, title: "Recording Disclosure", desc: "Automatic recording disclosure at the start of every call, configurable per jurisdiction. Full audit trail." },
-      { icon: icons.key, title: "Magic Link Auth (Passwordless)", desc: "No passwords to remember or steal. Secure magic link login via email with single-use tokens and expiry." },
+      { icon: icons.shield, title: "You're Protected", desc: "Calltide handles the legal stuff — GDPR, CCPA, and TCPA compliance built in so you don't have to think about it." },
+      { icon: icons.mic, title: "Call Recording Notices", desc: "Every call starts with a recording disclosure so you're always covered. Configurable by state." },
+      { icon: icons.lock, title: "Your Data Is Secure", desc: "Encrypted connections, secure login, and strict access controls. Your business data and customer info stay private." },
     ],
   },
 ];
