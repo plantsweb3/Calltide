@@ -6,7 +6,7 @@ import Link from "next/link";
 import StatusBadge from "../../../_components/status-badge";
 import { PageSkeleton } from "@/components/skeleton";
 
-type Tab = "calls" | "bookings" | "intakes" | "communications" | "ai" | "notes" | "qa" | "nps" | "referral" | "timeline" | "customers";
+type Tab = "calls" | "bookings" | "intakes" | "communications" | "ai" | "notes" | "qa" | "nps" | "referral" | "timeline" | "customers" | "job-cards";
 
 interface BusinessDetail {
   id: string;
@@ -95,6 +95,8 @@ export default function ClientDetailPage({
   const [timeline, setTimeline] = useState<Array<{ id: string; eventType: string; emailSentAt: string | null; createdAt: string; eventData: Record<string, unknown> | null }>>([]);
   const [crmCustomers, setCrmCustomers] = useState<Array<{ id: string; phone: string; name: string | null; totalCalls: number; totalAppointments: number; lastCallAt: string | null; isRepeat: boolean; tags: string[] }>>([]);
   const [intakesData, setIntakesData] = useState<{ intakes: Array<{ id: string; tradeType: string; scopeLevel: string; answersJson: Record<string, unknown> | null; scopeDescription: string | null; urgency: string; intakeComplete: boolean; createdAt: string; callerPhone: string | null; leadName: string | null }>; total: number; completed: number; completionRate: number }>({ intakes: [], total: 0, completed: 0, completionRate: 0 });
+  const [jobCardsData, setJobCardsData] = useState<{ cards: Array<{ id: string; callerName: string | null; callerPhone: string | null; jobTypeLabel: string | null; scopeLevel: string | null; scopeDescription: string | null; estimateMode: string | null; estimateMin: number | null; estimateMax: number | null; estimateUnit: string | null; estimateConfidence: string | null; estimateCalculationJson: Record<string, unknown> | null; status: string | null; ownerResponse: string | null; ownerAdjustedMin: number | null; ownerAdjustedMax: number | null; createdAt: string }>; total: number; pricingRanges: Array<{ id: string; jobTypeLabel: string; mode: string; minPrice: number | null; maxPrice: number | null; unit: string | null }> }>({ cards: [], total: 0, pricingRanges: [] });
+  const [expandedJobCard, setExpandedJobCard] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`/api/admin/clients/${id}`)
@@ -154,6 +156,11 @@ export default function ClientDetailPage({
     fetch(`/api/admin/clients/${id}/intakes?limit=50`)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setIntakesData(d))
+      .catch(() => { /* non-critical */ });
+
+    fetch(`/api/admin/clients/${id}/job-cards?limit=50`)
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((d) => setJobCardsData(d))
       .catch(() => { /* non-critical */ });
   }, [id]);
 
@@ -228,6 +235,7 @@ export default function ClientDetailPage({
     { key: "nps", label: "NPS", count: npsHistory.length },
     { key: "referral", label: "Referral", count: referralData.referrals.length },
     { key: "customers", label: "Customers", count: crmCustomers.length },
+    { key: "job-cards", label: "Job Cards", count: jobCardsData.total },
     { key: "timeline", label: "Timeline", count: timeline.length },
     { key: "notes", label: "Notes", count: notes.length },
   ];
@@ -886,6 +894,117 @@ export default function ClientDetailPage({
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Job Cards Tab */}
+        {tab === "job-cards" && (
+          <div className="space-y-4">
+            {/* Pricing Config Summary */}
+            {jobCardsData.pricingRanges.length > 0 && (
+              <div className="rounded-lg p-4" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+                <p className="text-xs font-semibold mb-2" style={{ color: "var(--db-text)" }}>Pricing Configuration</p>
+                <div className="flex flex-wrap gap-2">
+                  {jobCardsData.pricingRanges.map((r) => (
+                    <span key={r.id} className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs"
+                      style={{ background: r.mode === "advanced" ? "#dbeafe" : "var(--db-hover)", color: r.mode === "advanced" ? "#1d4ed8" : "var(--db-text-muted)" }}>
+                      {r.jobTypeLabel}
+                      {r.minPrice != null && r.maxPrice != null && (
+                        <span> · ${r.minPrice.toLocaleString()}–${r.maxPrice.toLocaleString()}</span>
+                      )}
+                      {r.mode === "advanced" && <span> (formula)</span>}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Job Cards */}
+            {jobCardsData.cards.length === 0 && (
+              <p className="py-8 text-center text-xs" style={{ color: "var(--db-text-muted)" }}>No job cards yet</p>
+            )}
+            {jobCardsData.cards.map((card) => (
+              <div
+                key={card.id}
+                className="cursor-pointer rounded-lg p-4 transition-colors"
+                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+                onClick={() => setExpandedJobCard(expandedJobCard === card.id ? null : card.id)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div>
+                      <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                        {card.callerName || "Unknown Caller"}
+                        {card.callerPhone && <span className="ml-1 text-xs" style={{ color: "var(--db-text-muted)" }}>({card.callerPhone})</span>}
+                      </p>
+                      <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                        {card.jobTypeLabel || "Service requested"} · {card.scopeLevel || "residential"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {card.estimateMin != null && card.estimateMax != null ? (
+                      <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
+                        ${card.estimateMin.toLocaleString()}–${card.estimateMax.toLocaleString()}
+                      </span>
+                    ) : (
+                      <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>No estimate</span>
+                    )}
+                    <span className={`rounded-full px-2 py-0.5 text-xs ${
+                      card.estimateConfidence === "estimated" ? "bg-blue-100 text-blue-700"
+                      : card.estimateConfidence === "ballpark" ? "bg-amber-100 text-amber-700"
+                      : "bg-gray-100 text-gray-500"
+                    }`}>
+                      {card.estimateConfidence || "none"}
+                    </span>
+                    <span className={`rounded-full px-2 py-0.5 text-xs ${
+                      card.status === "confirmed" ? "bg-green-100 text-green-700"
+                      : card.status === "adjusted" ? "bg-blue-100 text-blue-700"
+                      : card.status === "declined" ? "bg-red-100 text-red-700"
+                      : "bg-gray-100 text-gray-500"
+                    }`}>
+                      {card.status?.replace("_", " ") || "pending"}
+                    </span>
+                    <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                      {formatDate(card.createdAt)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Expanded View */}
+                {expandedJobCard === card.id && (
+                  <div className="mt-4 space-y-3 border-t pt-3" style={{ borderColor: "var(--db-border)" }}>
+                    {card.scopeDescription && (
+                      <div>
+                        <p className="text-xs font-semibold" style={{ color: "var(--db-text-muted)" }}>Scope</p>
+                        <p className="text-sm" style={{ color: "var(--db-text)" }}>{card.scopeDescription}</p>
+                      </div>
+                    )}
+                    {card.estimateMode === "advanced" && card.estimateCalculationJson && (
+                      <div>
+                        <p className="text-xs font-semibold" style={{ color: "var(--db-text-muted)" }}>Calculation Breakdown</p>
+                        <pre className="mt-1 rounded bg-gray-50 p-2 text-xs overflow-auto" style={{ color: "var(--db-text)" }}>
+                          {JSON.stringify(card.estimateCalculationJson, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+                    {card.ownerResponse && (
+                      <div>
+                        <p className="text-xs font-semibold" style={{ color: "var(--db-text-muted)" }}>Owner Response</p>
+                        <p className="text-sm" style={{ color: "var(--db-text)" }}>
+                          {card.ownerResponse}
+                          {card.ownerAdjustedMin != null && card.ownerAdjustedMax != null && (
+                            <span className="ml-2 font-medium">
+                              Adjusted: ${card.ownerAdjustedMin.toLocaleString()}–${card.ownerAdjustedMax.toLocaleString()}
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
 

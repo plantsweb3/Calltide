@@ -124,6 +124,8 @@ export const businesses = sqliteTable("businesses", {
   setupChecklistDismissed: integer("setup_checklist_dismissed", { mode: "boolean" }).default(false),
   // Public booking page
   bookingSlug: text("booking_slug").unique(),
+  // Estimate engine
+  estimateMode: text("estimate_mode").default("quick"), // quick, advanced, both
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -1305,4 +1307,74 @@ export const customIntakeQuestions = sqliteTable("custom_intake_questions", {
   optionsJson: text("options_json", { mode: "json" }).$type<string[]>(),
   required: integer("required", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
+});
+
+// ── Estimate Engine ──
+// Pricing ranges for structured estimates (quick flat ranges + advanced formulas)
+
+export interface FormulaJson {
+  base_rate: number;
+  base_unit: string; // e.g. "unit", "sqft", "room"
+  base_unit_variable: string; // key in intake answers
+  additional_rates: Array<{
+    rate: number;
+    unit: string;
+    variable: string;
+    label: string;
+  }>;
+  multipliers: Array<{
+    label: string;
+    value: number;
+    condition: string; // e.g. "scope_level == commercial"
+  }>;
+  variables_needed: string[];
+  margin_range: [number, number]; // e.g. [0.85, 1.15]
+}
+
+export const pricingRanges = sqliteTable("pricing_ranges", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  mode: text("mode").default("quick"), // quick | advanced
+  jobTypeKey: text("job_type_key").notNull(),
+  jobTypeLabel: text("job_type_label").notNull(),
+  jobTypeLabelEs: text("job_type_label_es"),
+  tradeType: text("trade_type").notNull(),
+  scopeLevel: text("scope_level").default("residential"),
+  minPrice: real("min_price"),
+  maxPrice: real("max_price"),
+  unit: text("unit").default("per_job"), // per_job, per_hour, per_sqft, per_unit, per_room
+  formulaJson: text("formula_json", { mode: "json" }).$type<FormulaJson>(),
+  sortOrder: integer("sort_order").default(0),
+  active: integer("active", { mode: "boolean" }).default(true),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+});
+
+export const jobCards = sqliteTable("job_cards", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  callId: text("call_id").references(() => calls.id),
+  leadId: text("lead_id").references(() => leads.id),
+  jobIntakeId: text("job_intake_id"),
+  callerName: text("caller_name"),
+  callerPhone: text("caller_phone"),
+  callerEmail: text("caller_email"),
+  jobTypeKey: text("job_type_key"),
+  jobTypeLabel: text("job_type_label"),
+  scopeLevel: text("scope_level"),
+  scopeDescription: text("scope_description"),
+  estimateMode: text("estimate_mode"),
+  estimateMin: real("estimate_min"),
+  estimateMax: real("estimate_max"),
+  estimateUnit: text("estimate_unit"),
+  estimateCalculationJson: text("estimate_calculation_json", { mode: "json" }).$type<Record<string, unknown>>(),
+  estimateConfidence: text("estimate_confidence"), // ballpark, estimated, no_match
+  status: text("status").default("pending_review"), // pending_review, confirmed, adjusted, declined
+  ownerResponse: text("owner_response"),
+  ownerAdjustedMin: real("owner_adjusted_min"),
+  ownerAdjustedMax: real("owner_adjusted_max"),
+  ownerRespondedAt: text("owner_responded_at"),
+  customerNotifiedAt: text("customer_notified_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
 });

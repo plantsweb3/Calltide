@@ -379,13 +379,39 @@ async function handleSubmitIntake(
       intakeComplete: intakeComplete ?? false,
     });
 
+    let message = ctx.language === "es"
+      ? "Información del trabajo registrada correctamente."
+      : "Job intake information has been recorded.";
+
+    // If intake is complete and business has estimate pricing, append inline estimate
+    if (intakeComplete && biz.estimateMode) {
+      try {
+        const { generateEstimate } = await import("@/lib/estimates/generator");
+        const estimate = await generateEstimate(
+          ctx.businessId,
+          id,
+          answers,
+          tradeType,
+          resolvedScope,
+        );
+        if (estimate.matched && estimate.min != null && estimate.max != null) {
+          const min = estimate.min.toLocaleString("en-US", { maximumFractionDigits: 0 });
+          const max = estimate.max.toLocaleString("en-US", { maximumFractionDigits: 0 });
+          const caveat = ctx.language === "es"
+            ? `El rango estimado para este trabajo es de $${min} a $${max}. El dueño revisará los detalles y confirmará el precio exacto.`
+            : `The estimated range for this job is $${min} to $${max}. The owner will review the details and confirm the exact price.`;
+          message += " " + caveat;
+        }
+      } catch {
+        // Estimate generation is non-critical — don't fail the intake
+      }
+    }
+
     return {
       success: true,
       data: {
         intakeId: id,
-        message: ctx.language === "es"
-          ? "Información del trabajo registrada correctamente."
-          : "Job intake information has been recorded.",
+        message,
       },
     };
   } catch (err) {

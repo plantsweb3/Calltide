@@ -172,6 +172,28 @@ export async function processCallSummary(callId: string, chatId: string): Promis
       });
     }
 
+    // Generate job card from completed intake (fire-and-forget)
+    import("@/lib/estimates/job-card").then(async ({ buildJobCard }) => {
+      const { jobIntakes } = await import("@/db/schema");
+      const { and: drizzleAnd, eq: drizzleEq } = await import("drizzle-orm");
+      const [intake] = await db
+        .select()
+        .from(jobIntakes)
+        .where(drizzleAnd(drizzleEq(jobIntakes.callId, callId), drizzleEq(jobIntakes.intakeComplete, true)))
+        .limit(1);
+      if (!intake) return; // No completed intake = no job card
+
+      await buildJobCard({
+        businessId: callRecord!.businessId,
+        callId,
+        jobIntakeId: intake.id,
+        leadId: callRecord!.leadId || undefined,
+        callerName: callerName || undefined,
+      });
+    }).catch((err) => {
+      reportError("Job card generation failed", err, { extra: { callId } });
+    });
+
     // Send rich owner SMS alert now that we have the summary (fire-and-forget)
     sendOwnerCallAlert(callId).catch((err) => {
       reportError("Post-call owner alert failed", err, { extra: { callId } });

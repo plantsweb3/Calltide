@@ -103,5 +103,6 @@ export interface BusinessContext {
   receptionistName?: string;
   personalityPreset?: string;
   hasPricingEnabled?: boolean;
+  estimateMode?: string;
   accountId?: string;
 }

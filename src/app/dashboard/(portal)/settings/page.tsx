@@ -44,13 +44,14 @@ interface SettingsData {
   setupChecklistDismissed: boolean;
 }
 
-type SettingsTab = "general" | "receptionist" | "responses" | "notifications" | "automations";
+type SettingsTab = "general" | "receptionist" | "responses" | "notifications" | "pricing" | "automations";
 
 const SETTINGS_TABS: { key: SettingsTab; label: string }[] = [
   { key: "general", label: "General" },
   { key: "receptionist", label: "Receptionist" },
   { key: "responses", label: "Custom Responses" },
   { key: "notifications", label: "Notifications" },
+  { key: "pricing", label: "Pricing" },
   { key: "automations", label: "Automations" },
 ];
 
@@ -179,6 +180,23 @@ export default function SettingsPage() {
   const [newPriceRow, setNewPriceRow] = useState<{ serviceName: string; priceMin: string; priceMax: string; unit: string } | null>(null);
   const [confirmDeletePriceId, setConfirmDeletePriceId] = useState<string | null>(null);
 
+  // Estimate pricing state
+  const [estimateMode, setEstimateMode] = useState<"quick" | "advanced" | "both">("quick");
+  const [estimateRanges, setEstimateRanges] = useState<Array<{
+    id: string; mode: string; jobTypeKey: string; jobTypeLabel: string; jobTypeLabelEs?: string | null;
+    tradeType: string; scopeLevel: string; minPrice: number | null; maxPrice: number | null;
+    unit: string; formulaJson?: unknown; sortOrder: number;
+  }>>([]);
+  const [estimateRangesLoading, setEstimateRangesLoading] = useState(true);
+  const [newEstimateRow, setNewEstimateRow] = useState<{ jobTypeLabel: string; minPrice: string; maxPrice: string; unit: string } | null>(null);
+  const [advancedFormula, setAdvancedFormula] = useState<{
+    jobTypeLabel: string; baseRate: string; baseUnit: string; baseUnitVariable: string;
+    additionalRates: Array<{ rate: string; unit: string; variable: string; label: string }>;
+    multipliers: Array<{ label: string; value: string; condition: string }>;
+    marginLow: string; marginHigh: string;
+  } | null>(null);
+  const [confirmDeleteEstimateId, setConfirmDeleteEstimateId] = useState<string | null>(null);
+
   useEffect(() => {
     fetch("/api/dashboard/settings")
       .then((r) => {
@@ -200,6 +218,15 @@ export default function SettingsPage() {
       })
       .catch(() => setPricing([]))
       .finally(() => setPricingLoading(false));
+
+    // Fetch estimate pricing data
+    fetch("/api/dashboard/estimate-pricing")
+      .then((r) => r.ok ? r.json() : { ranges: [] })
+      .then((d) => {
+        setEstimateRanges(d.ranges || []);
+      })
+      .catch(() => setEstimateRanges([]))
+      .finally(() => setEstimateRangesLoading(false));
 
     // Fetch custom responses
     fetch("/api/receptionist/responses")
@@ -1590,6 +1617,461 @@ export default function SettingsPage() {
           })}
         </div>
       </Card>
+
+      </>}
+
+      {/* ═══ PRICING TAB (Estimate Engine) ═══ */}
+      {activeTab === "pricing" && <>
+
+      {/* ── Section: Estimate Mode ── */}
+      <Card title="Estimate Mode">
+        <div className="space-y-4">
+          <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            Choose how {data?.receptionistName || "Maria"} quotes prices to callers. Quick mode uses flat min/max ranges. Advanced mode uses formula-based calculations with multipliers.
+          </p>
+          <div className="flex gap-2">
+            {(["quick", "advanced", "both"] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={async () => {
+                  setEstimateMode(mode);
+                  try {
+                    await fetch("/api/dashboard/estimate-pricing/mode", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ estimateMode: mode }),
+                    });
+                    toast.success(`Estimate mode set to ${mode}`);
+                  } catch {
+                    toast.error("Failed to update estimate mode");
+                  }
+                }}
+                className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                style={{
+                  background: estimateMode === mode ? "var(--db-accent)" : "var(--db-hover)",
+                  color: estimateMode === mode ? "#fff" : "var(--db-text)",
+                  border: `1px solid ${estimateMode === mode ? "var(--db-accent)" : "var(--db-border)"}`,
+                }}
+              >
+                {mode === "quick" ? "Quick Setup" : mode === "advanced" ? "Advanced" : "Both"}
+              </button>
+            ))}
+          </div>
+        </div>
+      </Card>
+
+      {/* ── Section: Quick Pricing Ranges ── */}
+      <Card title="Pricing Ranges">
+        <div className="space-y-4">
+          <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            Set min/max price ranges for common job types. {data?.receptionistName || "Maria"} will share these as ballpark estimates with callers.
+          </p>
+
+          {estimateRangesLoading ? (
+            <div className="flex justify-center py-8"><LoadingSpinner /></div>
+          ) : (
+            <div className="space-y-2">
+              {estimateRanges.filter((r) => r.mode === "quick").map((range) => (
+                <div
+                  key={range.id}
+                  className="flex items-center gap-3 rounded-lg border p-3"
+                  style={{ borderColor: "var(--db-border)" }}
+                >
+                  <span className="flex-1 text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                    {range.jobTypeLabel}
+                  </span>
+                  <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>
+                    ${range.minPrice?.toLocaleString() || "0"} – ${range.maxPrice?.toLocaleString() || "0"}
+                  </span>
+                  <span className="text-xs px-2 py-0.5 rounded" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
+                    {range.unit?.replace("per_", "per ") || "per job"}
+                  </span>
+                  <button
+                    onClick={async () => {
+                      if (confirmDeleteEstimateId === range.id) {
+                        try {
+                          await fetch(`/api/dashboard/estimate-pricing/${range.id}`, { method: "DELETE" });
+                          setEstimateRanges((prev) => prev.filter((r) => r.id !== range.id));
+                          toast.success("Pricing range removed");
+                        } catch {
+                          toast.error("Failed to delete");
+                        }
+                        setConfirmDeleteEstimateId(null);
+                      } else {
+                        setConfirmDeleteEstimateId(range.id);
+                        setTimeout(() => setConfirmDeleteEstimateId(null), 3000);
+                      }
+                    }}
+                    className="text-xs px-2 py-1 rounded"
+                    style={{ color: confirmDeleteEstimateId === range.id ? "#ef4444" : "var(--db-text-muted)" }}
+                  >
+                    {confirmDeleteEstimateId === range.id ? "Confirm?" : "×"}
+                  </button>
+                </div>
+              ))}
+
+              {/* Add new quick range */}
+              {newEstimateRow ? (
+                <div
+                  className="flex items-center gap-2 rounded-lg border p-3"
+                  style={{ borderColor: "var(--db-accent)" }}
+                >
+                  <input
+                    type="text"
+                    placeholder="Job type (e.g. Drain Cleaning)"
+                    value={newEstimateRow.jobTypeLabel}
+                    onChange={(e) => setNewEstimateRow({ ...newEstimateRow, jobTypeLabel: e.target.value })}
+                    className="flex-1 rounded border px-2 py-1 text-sm"
+                    style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                  />
+                  <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    value={newEstimateRow.minPrice}
+                    onChange={(e) => setNewEstimateRow({ ...newEstimateRow, minPrice: e.target.value })}
+                    className="w-20 rounded border px-2 py-1 text-sm"
+                    style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                  />
+                  <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>–</span>
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    value={newEstimateRow.maxPrice}
+                    onChange={(e) => setNewEstimateRow({ ...newEstimateRow, maxPrice: e.target.value })}
+                    className="w-20 rounded border px-2 py-1 text-sm"
+                    style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                  />
+                  <select
+                    value={newEstimateRow.unit}
+                    onChange={(e) => setNewEstimateRow({ ...newEstimateRow, unit: e.target.value })}
+                    className="rounded border px-2 py-1 text-sm"
+                    style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                  >
+                    <option value="per_job">per job</option>
+                    <option value="per_hour">per hour</option>
+                    <option value="per_room">per room</option>
+                    <option value="per_sqft">per sqft</option>
+                    <option value="per_unit">per unit</option>
+                  </select>
+                  <button
+                    onClick={async () => {
+                      if (!newEstimateRow.jobTypeLabel.trim()) return;
+                      try {
+                        const res = await fetch("/api/dashboard/estimate-pricing", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            mode: "quick",
+                            jobTypeKey: newEstimateRow.jobTypeLabel.toLowerCase().replace(/\s+/g, "_"),
+                            jobTypeLabel: newEstimateRow.jobTypeLabel,
+                            tradeType: data?.type || "other",
+                            scopeLevel: "residential",
+                            minPrice: Number(newEstimateRow.minPrice) || null,
+                            maxPrice: Number(newEstimateRow.maxPrice) || null,
+                            unit: newEstimateRow.unit,
+                          }),
+                        });
+                        if (res.ok) {
+                          const { range: created } = await res.json();
+                          setEstimateRanges((prev) => [...prev, created]);
+                          setNewEstimateRow(null);
+                          toast.success("Pricing range added");
+                        }
+                      } catch {
+                        toast.error("Failed to create pricing range");
+                      }
+                    }}
+                    className="rounded px-3 py-1 text-sm font-medium"
+                    style={{ background: "var(--db-accent)", color: "#fff" }}
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setNewEstimateRow(null)}
+                    className="text-sm"
+                    style={{ color: "var(--db-text-muted)" }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setNewEstimateRow({ jobTypeLabel: "", minPrice: "", maxPrice: "", unit: "per_job" })}
+                  className="w-full rounded-lg border border-dashed py-2 text-sm"
+                  style={{ borderColor: "var(--db-border)", color: "var(--db-text-muted)" }}
+                >
+                  + Add Job Type
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </Card>
+
+      {/* ── Section: Advanced Formula Builder ── */}
+      {(estimateMode === "advanced" || estimateMode === "both") && (
+        <Card title="Advanced Formulas">
+          <div className="space-y-4">
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+              Formula-based pricing for complex or commercial jobs. Creates calculated estimates using intake data.
+            </p>
+
+            {/* Existing advanced ranges */}
+            {estimateRanges.filter((r) => r.mode === "advanced").map((range) => (
+              <div
+                key={range.id}
+                className="rounded-lg border p-4 space-y-2"
+                style={{ borderColor: "var(--db-border)" }}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                    {range.jobTypeLabel}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs px-2 py-0.5 rounded" style={{ background: "#dbeafe", color: "#1d4ed8" }}>
+                      Advanced
+                    </span>
+                    <button
+                      onClick={async () => {
+                        try {
+                          await fetch(`/api/dashboard/estimate-pricing/${range.id}`, { method: "DELETE" });
+                          setEstimateRanges((prev) => prev.filter((r) => r.id !== range.id));
+                          toast.success("Formula removed");
+                        } catch {
+                          toast.error("Failed to delete");
+                        }
+                      }}
+                      className="text-xs"
+                      style={{ color: "var(--db-text-muted)" }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+                {range.formulaJson != null && (
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                    Base: ${(range.formulaJson as { base_rate?: number }).base_rate || 0}/{(range.formulaJson as { base_unit?: string }).base_unit || "unit"}
+                    {" · "}
+                    Margin: {((range.formulaJson as { margin_range?: number[] }).margin_range?.[0] || 0.85) * 100}% – {((range.formulaJson as { margin_range?: number[] }).margin_range?.[1] || 1.15) * 100}%
+                  </p>
+                )}
+              </div>
+            ))}
+
+            {/* New formula builder */}
+            {advancedFormula ? (
+              <div className="rounded-lg border p-4 space-y-4" style={{ borderColor: "var(--db-accent)" }}>
+                <input
+                  type="text"
+                  placeholder="Job Type Label (e.g. Apartment Complex Repaint)"
+                  value={advancedFormula.jobTypeLabel}
+                  onChange={(e) => setAdvancedFormula({ ...advancedFormula, jobTypeLabel: e.target.value })}
+                  className="w-full rounded border px-3 py-2 text-sm"
+                  style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                />
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>Base Rate ($)</label>
+                    <input
+                      type="number"
+                      value={advancedFormula.baseRate}
+                      onChange={(e) => setAdvancedFormula({ ...advancedFormula, baseRate: e.target.value })}
+                      className="w-full rounded border px-2 py-1 text-sm"
+                      style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>Per</label>
+                    <select
+                      value={advancedFormula.baseUnit}
+                      onChange={(e) => setAdvancedFormula({ ...advancedFormula, baseUnit: e.target.value })}
+                      className="w-full rounded border px-2 py-1 text-sm"
+                      style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                    >
+                      <option value="unit">unit</option>
+                      <option value="room">room</option>
+                      <option value="sqft">sqft</option>
+                      <option value="hour">hour</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>Variable Key</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. unit_count"
+                      value={advancedFormula.baseUnitVariable}
+                      onChange={(e) => setAdvancedFormula({ ...advancedFormula, baseUnitVariable: e.target.value })}
+                      className="w-full rounded border px-2 py-1 text-sm"
+                      style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                    />
+                  </div>
+                </div>
+
+                {/* Additional rates */}
+                <div>
+                  <label className="text-xs font-medium" style={{ color: "var(--db-text)" }}>Additional Rates</label>
+                  {advancedFormula.additionalRates.map((rate, i) => (
+                    <div key={i} className="flex gap-2 mt-1">
+                      <input type="number" placeholder="Rate" value={rate.rate}
+                        onChange={(e) => {
+                          const updated = [...advancedFormula.additionalRates];
+                          updated[i] = { ...rate, rate: e.target.value };
+                          setAdvancedFormula({ ...advancedFormula, additionalRates: updated });
+                        }}
+                        className="w-20 rounded border px-2 py-1 text-sm"
+                        style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                      />
+                      <input type="text" placeholder="per sqft" value={rate.unit}
+                        onChange={(e) => {
+                          const updated = [...advancedFormula.additionalRates];
+                          updated[i] = { ...rate, unit: e.target.value };
+                          setAdvancedFormula({ ...advancedFormula, additionalRates: updated });
+                        }}
+                        className="w-24 rounded border px-2 py-1 text-sm"
+                        style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                      />
+                      <input type="text" placeholder="variable key" value={rate.variable}
+                        onChange={(e) => {
+                          const updated = [...advancedFormula.additionalRates];
+                          updated[i] = { ...rate, variable: e.target.value };
+                          setAdvancedFormula({ ...advancedFormula, additionalRates: updated });
+                        }}
+                        className="w-28 rounded border px-2 py-1 text-sm"
+                        style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                      />
+                      <input type="text" placeholder="Label" value={rate.label}
+                        onChange={(e) => {
+                          const updated = [...advancedFormula.additionalRates];
+                          updated[i] = { ...rate, label: e.target.value };
+                          setAdvancedFormula({ ...advancedFormula, additionalRates: updated });
+                        }}
+                        className="flex-1 rounded border px-2 py-1 text-sm"
+                        style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                      />
+                      <button
+                        onClick={() => {
+                          const updated = advancedFormula.additionalRates.filter((_, j) => j !== i);
+                          setAdvancedFormula({ ...advancedFormula, additionalRates: updated });
+                        }}
+                        className="text-sm" style={{ color: "var(--db-text-muted)" }}
+                      >×</button>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => setAdvancedFormula({
+                      ...advancedFormula,
+                      additionalRates: [...advancedFormula.additionalRates, { rate: "", unit: "sqft", variable: "", label: "" }],
+                    })}
+                    className="mt-1 text-xs" style={{ color: "var(--db-accent)" }}
+                  >+ Add rate</button>
+                </div>
+
+                {/* Margin range */}
+                <div className="flex gap-4">
+                  <div>
+                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>Margin Low (%)</label>
+                    <input
+                      type="number"
+                      value={advancedFormula.marginLow}
+                      onChange={(e) => setAdvancedFormula({ ...advancedFormula, marginLow: e.target.value })}
+                      className="w-20 rounded border px-2 py-1 text-sm"
+                      style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>Margin High (%)</label>
+                    <input
+                      type="number"
+                      value={advancedFormula.marginHigh}
+                      onChange={(e) => setAdvancedFormula({ ...advancedFormula, marginHigh: e.target.value })}
+                      className="w-20 rounded border px-2 py-1 text-sm"
+                      style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={async () => {
+                      if (!advancedFormula.jobTypeLabel.trim()) return;
+                      const formulaJson = {
+                        base_rate: Number(advancedFormula.baseRate) || 0,
+                        base_unit: advancedFormula.baseUnit,
+                        base_unit_variable: advancedFormula.baseUnitVariable,
+                        additional_rates: advancedFormula.additionalRates.map((r) => ({
+                          rate: Number(r.rate) || 0,
+                          unit: r.unit,
+                          variable: r.variable,
+                          label: r.label,
+                        })),
+                        multipliers: advancedFormula.multipliers.map((m) => ({
+                          label: m.label,
+                          value: Number(m.value) || 1,
+                          condition: m.condition,
+                        })),
+                        variables_needed: [
+                          advancedFormula.baseUnitVariable,
+                          ...advancedFormula.additionalRates.map((r) => r.variable),
+                        ].filter(Boolean),
+                        margin_range: [
+                          (Number(advancedFormula.marginLow) || 85) / 100,
+                          (Number(advancedFormula.marginHigh) || 115) / 100,
+                        ] as [number, number],
+                      };
+                      try {
+                        const res = await fetch("/api/dashboard/estimate-pricing", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            mode: "advanced",
+                            jobTypeKey: advancedFormula.jobTypeLabel.toLowerCase().replace(/\s+/g, "_"),
+                            jobTypeLabel: advancedFormula.jobTypeLabel,
+                            tradeType: data?.type || "other",
+                            scopeLevel: "commercial",
+                            formulaJson,
+                            unit: "per_job",
+                          }),
+                        });
+                        if (res.ok) {
+                          const { range: created } = await res.json();
+                          setEstimateRanges((prev) => [...prev, created]);
+                          setAdvancedFormula(null);
+                          toast.success("Formula added");
+                        }
+                      } catch {
+                        toast.error("Failed to create formula");
+                      }
+                    }}
+                    className="rounded px-4 py-2 text-sm font-medium"
+                    style={{ background: "var(--db-accent)", color: "#fff" }}
+                  >
+                    Save Formula
+                  </button>
+                  <button
+                    onClick={() => setAdvancedFormula(null)}
+                    className="rounded px-4 py-2 text-sm"
+                    style={{ color: "var(--db-text-muted)" }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setAdvancedFormula({
+                  jobTypeLabel: "", baseRate: "", baseUnit: "unit", baseUnitVariable: "unit_count",
+                  additionalRates: [], multipliers: [], marginLow: "85", marginHigh: "115",
+                })}
+                className="w-full rounded-lg border border-dashed py-2 text-sm"
+                style={{ borderColor: "var(--db-border)", color: "var(--db-text-muted)" }}
+              >
+                + Add Advanced Formula
+              </button>
+            )}
+          </div>
+        </Card>
+      )}
 
       </>}
 

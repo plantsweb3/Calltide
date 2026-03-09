@@ -55,6 +55,7 @@ function toBizContext(biz: typeof businesses.$inferSelect): BusinessContext {
     receptionistName: biz.receptionistName || undefined,
     personalityPreset: biz.personalityPreset || undefined,
     hasPricingEnabled: biz.hasPricingEnabled ?? false,
+    estimateMode: biz.estimateMode || "quick",
     accountId: biz.accountId || undefined,
   };
 }

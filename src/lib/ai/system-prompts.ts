@@ -48,12 +48,12 @@ function formatHoursEs(hours: Record<string, { open: string; close: string }>): 
     .join("\n");
 }
 
-export function buildSystemPrompt(biz: BusinessContext, lang: Language, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null): string {
-  if (lang === "es") return buildSpanishPrompt(biz, pricingContext, customResponsesBlock, callerContext, intakeContext);
-  return buildEnglishPrompt(biz, pricingContext, customResponsesBlock, callerContext, intakeContext);
+export function buildSystemPrompt(biz: BusinessContext, lang: Language, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null, estimateContext?: string | null): string {
+  if (lang === "es") return buildSpanishPrompt(biz, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext);
+  return buildEnglishPrompt(biz, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext);
 }
 
-function buildEnglishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null): string {
+function buildEnglishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null, estimateContext?: string | null): string {
   const name = biz.receptionistName || "Maria";
   const presetKey = (biz.personalityPreset || "friendly") as PersonalityPreset;
   const preset = PERSONALITY_PRESETS[presetKey] || PERSONALITY_PRESETS.friendly;
@@ -120,6 +120,15 @@ After collecting enough information, call submit_intake with:
 - intake_complete: true if all required questions were answered
 
 Then proceed with scheduling an estimate or taking a message as appropriate.
+` : ""}${estimateContext ? `## Estimate Guidance
+After collecting intake information and calling submit_intake, the system may provide a price range in the response. If a price range is included:
+- Share the range naturally with the caller: "Based on what you've described, this type of job typically runs between $X and $Y."
+- ALWAYS add the caveat: "${biz.ownerName} will review the details and confirm the exact price."
+- If advanced mode with a calculated range: "Based on the details you've provided, we're looking at roughly $X to $Y. ${biz.ownerName} will want to review the specifics before confirming."
+- If no price range is provided by the system, do NOT guess — say "${biz.ownerName} will provide a detailed quote."
+- NEVER present the estimate as a firm quote or binding price.
+- NEVER share formula details, multipliers, or calculation breakdowns with the caller.
+- After sharing the range, offer to schedule a site visit: "Would you like me to schedule a time for ${biz.ownerName} to come take a look?"
 ` : ""}## Emergency Protocol
 If the caller describes any of these situations, treat it as an emergency:
 - Gas leak, smell of gas
@@ -180,7 +189,7 @@ ${pricingContext}
 - If you don't know something, say: "I don't have that information, but ${biz.ownerName} can help you with that. Would you like me to take a message?"`;
 }
 
-function buildSpanishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null): string {
+function buildSpanishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null, estimateContext?: string | null): string {
   const name = biz.receptionistName || "Maria";
   const presetKey = (biz.personalityPreset || "friendly") as PersonalityPreset;
   const preset = PERSONALITY_PRESETS[presetKey] || PERSONALITY_PRESETS.friendly;
@@ -247,6 +256,15 @@ Después de recopilar suficiente información, llama a submit_intake con:
 - intake_complete: true si todas las preguntas requeridas fueron contestadas
 
 Luego procede a agendar un estimado o tomar un mensaje según corresponda.
+` : ""}${estimateContext ? `## Guía de Estimados
+Después de recopilar la información de intake y llamar a submit_intake, el sistema puede incluir un rango de precio en la respuesta. Si se incluye un rango:
+- Comparte el rango naturalmente con el llamante: "Según lo que me describe, este tipo de trabajo generalmente cuesta entre $X y $Y."
+- SIEMPRE agrega la aclaración: "${biz.ownerName} revisará los detalles y confirmará el precio exacto."
+- Si es modo avanzado con rango calculado: "Basándonos en los detalles que me proporcionó, estamos hablando de aproximadamente $X a $Y. ${biz.ownerName} querrá revisar las especificaciones antes de confirmar."
+- Si el sistema NO proporciona un rango de precio, NO adivines — di "${biz.ownerName} le proporcionará una cotización detallada."
+- NUNCA presentes el estimado como cotización firme o precio vinculante.
+- NUNCA compartas detalles de fórmulas, multiplicadores o desgloses de cálculos con el llamante.
+- Después de compartir el rango, ofrece agendar una visita: "¿Le gustaría que le agende una visita para que ${biz.ownerName} vaya a revisar?"
 ` : ""}## Protocolo de Emergencia
 Si el llamante describe alguna de estas situaciones, trátalo como emergencia:
 - Fuga de gas, olor a gas

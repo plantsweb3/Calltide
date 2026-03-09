@@ -380,6 +380,12 @@ function OnboardingPage() {
   const [faqAnswers, setFaqAnswers] = useState<Record<string, string>>({});
   const [offLimits, setOffLimits] = useState<Record<string, boolean>>({ pricing: false, competitors: false, timing: false });
   const [preferredPhrases, setPreferredPhrases] = useState("");
+  const [showPricing, setShowPricing] = useState(false);
+  const [onboardingPricing, setOnboardingPricing] = useState<Array<{ label: string; min: string; max: string; unit: string }>>([
+    { label: "", min: "", max: "", unit: "per_job" },
+    { label: "", min: "", max: "", unit: "per_job" },
+    { label: "", min: "", max: "", unit: "per_job" },
+  ]);
 
   // Step 5
   const [twilioNumber, setTwilioNumber] = useState("");
@@ -584,11 +590,34 @@ function OnboardingPage() {
           });
         }
       } catch { /* Non-critical */ }
+
+      // Save pricing ranges if any were filled
+      if (showPricing) {
+        try {
+          for (const row of onboardingPricing) {
+            if (!row.label.trim()) continue;
+            await fetch("/api/dashboard/estimate-pricing", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                mode: "quick",
+                jobTypeKey: row.label.toLowerCase().replace(/\s+/g, "_"),
+                jobTypeLabel: row.label,
+                tradeType: industry || "other",
+                scopeLevel: "residential",
+                minPrice: Number(row.min) || null,
+                maxPrice: Number(row.max) || null,
+                unit: row.unit,
+              }),
+            });
+          }
+        } catch { /* Non-critical */ }
+      }
     }
 
     await saveProgress(nextStep);
     setStep(nextStep);
-  }, [step, bizName, bizAddress, industry, ownerName, ownerPhone, hours, services, receptionistName, personalityPreset, faqAnswers, offLimits, preferredPhrases, saveSettings, saveProgress, t]);
+  }, [step, bizName, bizAddress, industry, ownerName, ownerPhone, hours, services, receptionistName, personalityPreset, faqAnswers, offLimits, preferredPhrases, showPricing, onboardingPricing, saveSettings, saveProgress, t]);
 
   const goBack = useCallback(() => { if (step > 1) setStep(step - 1); }, [step]);
 
@@ -986,6 +1015,94 @@ function OnboardingPage() {
                 <p className="mb-3 text-xs text-gray-400">{t.phrasesSub}</p>
                 <textarea value={preferredPhrases} onChange={(e) => setPreferredPhrases(e.target.value)}
                   className="input-field min-h-[80px] resize-y" placeholder={t.phrasesPlaceholder} maxLength={1000} rows={3} />
+              </div>
+
+              {/* Optional: Set Up Pricing */}
+              <div className="rounded-lg border border-gray-100 bg-gray-50">
+                <button
+                  onClick={() => setShowPricing(!showPricing)}
+                  className="flex w-full items-center justify-between p-4 text-left"
+                >
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {lang === "es" ? "Opcional: Configurar Precios" : "Optional: Set Up Pricing"}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {lang === "es"
+                        ? `¿Debería ${rName} compartir rangos de precios con los llamantes?`
+                        : `Should ${rName} quote price ranges to callers?`}
+                    </p>
+                  </div>
+                  <span className="text-gray-400">{showPricing ? "▲" : "▼"}</span>
+                </button>
+                {showPricing && (
+                  <div className="border-t border-gray-100 p-4 space-y-3">
+                    {onboardingPricing.map((row, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          placeholder={lang === "es" ? "Tipo de trabajo" : "Job type"}
+                          value={row.label}
+                          onChange={(e) => {
+                            const updated = [...onboardingPricing];
+                            updated[i] = { ...row, label: e.target.value };
+                            setOnboardingPricing(updated);
+                          }}
+                          className="input-field flex-1"
+                        />
+                        <span className="text-xs text-gray-400">$</span>
+                        <input
+                          type="number"
+                          placeholder="Min"
+                          value={row.min}
+                          onChange={(e) => {
+                            const updated = [...onboardingPricing];
+                            updated[i] = { ...row, min: e.target.value };
+                            setOnboardingPricing(updated);
+                          }}
+                          className="input-field w-20"
+                        />
+                        <span className="text-xs text-gray-400">–</span>
+                        <input
+                          type="number"
+                          placeholder="Max"
+                          value={row.max}
+                          onChange={(e) => {
+                            const updated = [...onboardingPricing];
+                            updated[i] = { ...row, max: e.target.value };
+                            setOnboardingPricing(updated);
+                          }}
+                          className="input-field w-20"
+                        />
+                        <select
+                          value={row.unit}
+                          onChange={(e) => {
+                            const updated = [...onboardingPricing];
+                            updated[i] = { ...row, unit: e.target.value };
+                            setOnboardingPricing(updated);
+                          }}
+                          className="input-field w-24 text-xs"
+                        >
+                          <option value="per_job">per job</option>
+                          <option value="per_hour">per hour</option>
+                          <option value="per_room">per room</option>
+                          <option value="per_sqft">per sqft</option>
+                        </select>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => setOnboardingPricing([...onboardingPricing, { label: "", min: "", max: "", unit: "per_job" }])}
+                      className="text-xs text-amber-600 hover:text-amber-700"
+                    >
+                      + {lang === "es" ? "Agregar otro" : "Add another"}
+                    </button>
+                    <p className="text-xs text-gray-400">
+                      {lang === "es"
+                        ? "Puedes agregar más en Configuración → Precios."
+                        : "You can always add more in Settings → Pricing."}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 

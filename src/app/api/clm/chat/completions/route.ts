@@ -148,9 +148,29 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Determine if estimate engine is active for this business
+    let estimateContext: string | null = null;
+    if (businessContext?.estimateMode && businessContext.estimateMode !== "quick") {
+      estimateContext = "enabled";
+    } else if (businessContext) {
+      // Check if any pricing ranges exist even in quick mode
+      try {
+        const { pricingRanges: pricingRangesTable } = await import("@/db/schema");
+        const { eq: eqOp, and: andOp } = await import("drizzle-orm");
+        const [hasRanges] = await db
+          .select({ id: pricingRangesTable.id })
+          .from(pricingRangesTable)
+          .where(andOp(eqOp(pricingRangesTable.businessId, businessContext.id), eqOp(pricingRangesTable.active, true)))
+          .limit(1);
+        if (hasRanges) estimateContext = "enabled";
+      } catch {
+        // Non-critical — continue without estimate context
+      }
+    }
+
     // Build the system prompt with business context + caller history
     let systemPrompt = businessContext
-      ? buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock, callerContext, intakeContext)
+      ? buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext)
       : buildDefaultSystemPrompt(lang);
 
     // Record TCPA disclosures on first message (fire-and-forget)
