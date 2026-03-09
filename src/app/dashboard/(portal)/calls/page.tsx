@@ -13,6 +13,17 @@ interface TranscriptLine {
   text: string;
 }
 
+interface IntakeData {
+  id: string;
+  tradeType: string;
+  scopeLevel: string;
+  answersJson: Record<string, unknown> | null;
+  scopeDescription: string | null;
+  urgency: string;
+  intakeComplete: boolean;
+  createdAt: string;
+}
+
 interface RecoveryStep {
   time: string;
   event: string;
@@ -85,6 +96,7 @@ export default function CallsPage() {
   const [outboundCalls, setOutboundCalls] = useState<OutboundCall[]>([]);
   const [outboundLoading, setOutboundLoading] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [intakeCache, setIntakeCache] = useState<Record<string, IntakeData[]>>({});
 
   const fetchCalls = useCallback(async () => {
     setLoading(true);
@@ -157,6 +169,14 @@ export default function CallsPage() {
       return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
     }
     return phone;
+  }
+
+  function fetchIntakes(callId: string) {
+    if (intakeCache[callId]) return;
+    fetch(`/api/dashboard/intakes?call_id=${callId}`)
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((d) => setIntakeCache((prev) => ({ ...prev, [callId]: d.intakes || [] })))
+      .catch(() => setIntakeCache((prev) => ({ ...prev, [callId]: [] })));
   }
 
   const columns: Column<Call>[] = [
@@ -435,7 +455,11 @@ export default function CallsPage() {
             total,
             onPageChange: setPage,
           }}
-          expandedContent={(row) => (
+          expandedContent={(row) => {
+            // Fetch intakes for this call when expanded
+            if (!intakeCache[row.id]) fetchIntakes(row.id);
+            const intakes = intakeCache[row.id] || [];
+            return (
             <div className="space-y-4">
               {/* Call Insights Badges */}
               <div className="flex flex-wrap items-center gap-2">
@@ -565,6 +589,72 @@ export default function CallsPage() {
                 </div>
               )}
 
+              {/* Intake Summary */}
+              {intakes.length > 0 && intakes.map((intake) => (
+                <div key={intake.id} className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <p
+                      className="text-xs font-medium uppercase tracking-wider"
+                      style={{ color: "var(--db-text-muted)" }}
+                    >
+                      Job Intake
+                    </p>
+                    <span
+                      className="rounded-full px-2 py-0.5 text-[10px] font-medium"
+                      style={{
+                        background: intake.intakeComplete ? "rgba(74,222,128,0.1)" : "rgba(251,191,36,0.1)",
+                        color: intake.intakeComplete ? "#4ade80" : "#fbbf24",
+                      }}
+                    >
+                      {intake.intakeComplete ? "Complete" : "Partial"}
+                    </span>
+                    <span
+                      className="rounded-full px-2 py-0.5 text-[10px] font-medium capitalize"
+                      style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa" }}
+                    >
+                      {intake.scopeLevel}
+                    </span>
+                    {intake.urgency !== "normal" && (
+                      <span
+                        className="rounded-full px-2 py-0.5 text-[10px] font-medium capitalize"
+                        style={{
+                          background: intake.urgency === "emergency" ? "rgba(248,113,113,0.1)"
+                            : intake.urgency === "urgent" ? "rgba(251,191,36,0.1)"
+                            : "rgba(148,163,184,0.1)",
+                          color: intake.urgency === "emergency" ? "#f87171"
+                            : intake.urgency === "urgent" ? "#fbbf24"
+                            : "#94a3b8",
+                        }}
+                      >
+                        {intake.urgency}
+                      </span>
+                    )}
+                  </div>
+                  {intake.scopeDescription && (
+                    <p className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
+                      {intake.scopeDescription}
+                    </p>
+                  )}
+                  {intake.answersJson && Object.keys(intake.answersJson).length > 0 && (
+                    <div
+                      className="rounded-lg p-3 space-y-1.5"
+                      style={{ background: "var(--db-hover)" }}
+                    >
+                      {Object.entries(intake.answersJson).map(([key, val]) => (
+                        <div key={key} className="flex gap-2 text-xs">
+                          <span className="shrink-0 font-medium capitalize" style={{ color: "var(--db-text-muted)" }}>
+                            {key.replace(/_/g, " ")}:
+                          </span>
+                          <span style={{ color: "var(--db-text-secondary)" }}>
+                            {String(val)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+
               {/* View transcript button */}
               {(row.transcript || row.summary) && (
                 <button
@@ -588,7 +678,7 @@ export default function CallsPage() {
                 </p>
               )}
             </div>
-          )}
+          ); }}
         />
       )}
 

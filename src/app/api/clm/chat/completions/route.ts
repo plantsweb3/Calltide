@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getBusinessByPhone, detectLanguage } from "@/lib/ai/context-builder";
+import { getBusinessByPhone, detectLanguage, buildIntakeContext } from "@/lib/ai/context-builder";
 import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
 import { getReturningCallerContext } from "@/lib/crm/returning-caller";
 import { buildSystemPrompt } from "@/lib/ai/system-prompts";
@@ -138,9 +138,19 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Fetch trade intake questions for structured job data collection
+    let intakeContext: string | null = null;
+    if (businessContext?.type) {
+      try {
+        intakeContext = await buildIntakeContext(businessContext.id, businessContext.type, lang);
+      } catch {
+        // Non-critical — Maria works fine without intake templates
+      }
+    }
+
     // Build the system prompt with business context + caller history
     let systemPrompt = businessContext
-      ? buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock, callerContext)
+      ? buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock, callerContext, intakeContext)
       : buildDefaultSystemPrompt(lang);
 
     // Record TCPA disclosures on first message (fire-and-forget)

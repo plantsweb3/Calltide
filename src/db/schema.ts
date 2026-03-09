@@ -1259,3 +1259,50 @@ export const pendingJobs = sqliteTable("pending_jobs", {
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   completedAt: text("completed_at"),
 });
+
+// ── Trade Intake Engine ──
+// Structured qualifying questions per trade that Maria uses during calls.
+
+export const tradeIntakeTemplates = sqliteTable("trade_intake_templates", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  tradeType: text("trade_type").notNull(),
+  scopeLevel: text("scope_level").notNull().default("residential"), // residential | commercial
+  questionOrder: integer("question_order").notNull(),
+  questionKey: text("question_key").notNull(),
+  questionText: text("question_text").notNull(),
+  questionTextEs: text("question_text_es").notNull(),
+  fieldType: text("field_type").notNull().default("text"), // text | number | select | boolean
+  optionsJson: text("options_json", { mode: "json" }).$type<string[]>(),
+  required: integer("required", { mode: "boolean" }).notNull().default(true),
+  helpText: text("help_text"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+});
+
+export const jobIntakes = sqliteTable("job_intakes", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  callId: text("call_id").references(() => calls.id),
+  leadId: text("lead_id").references(() => leads.id),
+  tradeType: text("trade_type").notNull(),
+  scopeLevel: text("scope_level").notNull().default("residential"),
+  answersJson: text("answers_json", { mode: "json" }).notNull().$type<Record<string, unknown>>(),
+  scopeDescription: text("scope_description"),
+  urgency: text("urgency").default("normal"), // emergency | urgent | normal | flexible
+  intakeComplete: integer("intake_complete", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+});
+
+export const customIntakeQuestions = sqliteTable("custom_intake_questions", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  questionOrder: integer("question_order").notNull(),
+  questionKey: text("question_key").notNull(),
+  questionText: text("question_text").notNull(),
+  questionTextEs: text("question_text_es").notNull(),
+  fieldType: text("field_type").notNull().default("text"),
+  optionsJson: text("options_json", { mode: "json" }).$type<string[]>(),
+  required: integer("required", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+});

@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { businesses, leads } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import type { BusinessContext, Language } from "@/types";
+import { getBusinessIntakeQuestions, formatIntakeForPrompt } from "@/lib/intake";
 
 /**
  * Look up business by the Twilio number that was called.
@@ -73,6 +74,40 @@ export function detectLanguage(text: string): Language {
   const matches = spanishIndicators.filter((w) => lower.includes(w));
   // Single strong indicator (greeting/polite word) is enough to switch
   return matches.length >= 1 ? "es" : "en";
+}
+
+/**
+ * Build the intake question block for the system prompt.
+ * Returns both residential and commercial question sets so Maria can
+ * switch mid-call if she detects commercial scope.
+ */
+export async function buildIntakeContext(businessId: string, tradeType: string, lang: Language = "en"): Promise<string | null> {
+  try {
+    const [residential, commercial] = await Promise.all([
+      getBusinessIntakeQuestions(businessId, tradeType, "residential"),
+      getBusinessIntakeQuestions(businessId, tradeType, "commercial"),
+    ]);
+
+    if (residential.length === 0 && commercial.length === 0) return null;
+
+    const resBlock = residential.length > 0 ? formatIntakeForPrompt(residential, lang) : "";
+    const comBlock = commercial.length > 0 ? formatIntakeForPrompt(commercial, lang) : "";
+
+    const lines: string[] = [];
+    if (resBlock) {
+      lines.push(lang === "en" ? "### Residential Intake Questions" : "### Preguntas de Intake Residencial");
+      lines.push(resBlock);
+    }
+    if (comBlock) {
+      lines.push("");
+      lines.push(lang === "en" ? "### Commercial Intake Questions (use if commercial scope detected)" : "### Preguntas de Intake Comercial (usar si se detecta alcance comercial)");
+      lines.push(comBlock);
+    }
+
+    return lines.join("\n");
+  } catch {
+    return null;
+  }
 }
 
 /**

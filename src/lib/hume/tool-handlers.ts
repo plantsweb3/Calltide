@@ -7,6 +7,7 @@ import { sendSMS } from "@/lib/twilio/sms";
 import { getAppointmentConfirmation, getOwnerNotification } from "@/lib/sms-templates";
 import { updateActiveCall } from "@/lib/monitoring/active-calls";
 import { reportError } from "@/lib/error-reporting";
+import { saveJobIntake, detectScopeLevel } from "@/lib/intake";
 import type { ToolResult, Language } from "@/types";
 
 interface ToolCallContext {
@@ -23,6 +24,7 @@ const TOOL_INTENT_MAP: Record<string, string> = {
   book_appointment: "booking",
   take_message: "message",
   transfer_to_human: "transfer",
+  submit_intake: "intake",
 };
 
 export async function dispatchToolCall(
@@ -43,6 +45,9 @@ export async function dispatchToolCall(
       break;
     case "transfer_to_human":
       result = await handleTransferToHuman(params, ctx);
+      break;
+    case "submit_intake":
+      result = await handleSubmitIntake(params, ctx);
       break;
     default:
       return { success: false, error: `Unknown tool: ${toolName}` };
@@ -338,4 +343,53 @@ async function handleTransferToHuman(
         : "I've notified the owner to call you back as soon as possible.",
     },
   };
+}
+
+async function handleSubmitIntake(
+  params: Record<string, unknown>,
+  ctx: ToolCallContext,
+): Promise<ToolResult> {
+  const answers = params.answers as Record<string, unknown> | undefined;
+  const scopeDescription = params.scope_description as string | undefined;
+  const scopeLevel = params.scope_level as "residential" | "commercial" | undefined;
+  const urgency = params.urgency as "emergency" | "urgent" | "normal" | "flexible" | undefined;
+  const intakeComplete = params.intake_complete as boolean | undefined;
+
+  if (!answers || typeof answers !== "object") {
+    return { success: false, error: "answers object is required" };
+  }
+
+  // Determine trade type from business
+  const biz = await getBusinessById(ctx.businessId);
+  if (!biz) return { success: false, error: "Business not found" };
+
+  const tradeType = biz.type || "other";
+  const resolvedScope = scopeLevel || detectScopeLevel("", answers);
+
+  try {
+    const { id } = await saveJobIntake({
+      businessId: ctx.businessId,
+      callId: ctx.callId,
+      leadId: ctx.leadId,
+      tradeType,
+      scopeLevel: resolvedScope,
+      answers,
+      scopeDescription: scopeDescription || "",
+      urgency: urgency || "normal",
+      intakeComplete: intakeComplete ?? false,
+    });
+
+    return {
+      success: true,
+      data: {
+        intakeId: id,
+        message: ctx.language === "es"
+          ? "Información del trabajo registrada correctamente."
+          : "Job intake information has been recorded.",
+      },
+    };
+  } catch (err) {
+    reportError("Failed to save job intake", err, { extra: { callId: ctx.callId } });
+    return { success: false, error: "Failed to save intake data" };
+  }
 }

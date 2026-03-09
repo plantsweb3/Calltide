@@ -6,7 +6,7 @@ import Link from "next/link";
 import StatusBadge from "../../../_components/status-badge";
 import { PageSkeleton } from "@/components/skeleton";
 
-type Tab = "calls" | "bookings" | "communications" | "ai" | "notes" | "qa" | "nps" | "referral" | "timeline" | "customers";
+type Tab = "calls" | "bookings" | "intakes" | "communications" | "ai" | "notes" | "qa" | "nps" | "referral" | "timeline" | "customers";
 
 interface BusinessDetail {
   id: string;
@@ -94,6 +94,7 @@ export default function ClientDetailPage({
   const [referralData, setReferralData] = useState<{ code: string | null; referrals: Array<{ id: string; status: string; creditAmount: number; creditApplied: boolean; createdAt: string }> }>({ code: null, referrals: [] });
   const [timeline, setTimeline] = useState<Array<{ id: string; eventType: string; emailSentAt: string | null; createdAt: string; eventData: Record<string, unknown> | null }>>([]);
   const [crmCustomers, setCrmCustomers] = useState<Array<{ id: string; phone: string; name: string | null; totalCalls: number; totalAppointments: number; lastCallAt: string | null; isRepeat: boolean; tags: string[] }>>([]);
+  const [intakesData, setIntakesData] = useState<{ intakes: Array<{ id: string; tradeType: string; scopeLevel: string; answersJson: Record<string, unknown> | null; scopeDescription: string | null; urgency: string; intakeComplete: boolean; createdAt: string; callerPhone: string | null; leadName: string | null }>; total: number; completed: number; completionRate: number }>({ intakes: [], total: 0, completed: 0, completionRate: 0 });
 
   useEffect(() => {
     fetch(`/api/admin/clients/${id}`)
@@ -149,6 +150,11 @@ export default function ClientDetailPage({
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setCrmCustomers(d.customers || []))
       .catch(() => setError("Failed to load customer data"));
+
+    fetch(`/api/admin/clients/${id}/intakes?limit=50`)
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((d) => setIntakesData(d))
+      .catch(() => { /* non-critical */ });
   }, [id]);
 
   async function addNote() {
@@ -215,6 +221,7 @@ export default function ClientDetailPage({
   const tabs: { key: Tab; label: string; count?: number }[] = [
     { key: "calls", label: "Calls", count: callsData.total },
     { key: "bookings", label: "Bookings", count: appointmentsData.total },
+    { key: "intakes", label: "Intakes", count: intakesData.total },
     { key: "communications", label: "Communications", count: smsData.total },
     { key: "ai", label: "AI Performance" },
     { key: "qa", label: "QA", count: qaScores.length },
@@ -472,6 +479,96 @@ export default function ClientDetailPage({
                   {apt.date} at {apt.time} · {apt.leadName || "—"}
                 </p>
                 {apt.notes && <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>{apt.notes}</p>}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Intakes Tab */}
+        {tab === "intakes" && (
+          <div className="space-y-4">
+            {/* Intake stats */}
+            {intakesData.total > 0 && (
+              <div className="grid grid-cols-3 gap-3">
+                <div className="rounded-lg p-3" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Total Intakes</p>
+                  <p className="mt-1 text-lg font-semibold">{intakesData.total}</p>
+                </div>
+                <div className="rounded-lg p-3" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Completed</p>
+                  <p className="mt-1 text-lg font-semibold" style={{ color: "#4ade80" }}>{intakesData.completed}</p>
+                </div>
+                <div className="rounded-lg p-3" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Completion Rate</p>
+                  <p className="mt-1 text-lg font-semibold">{intakesData.completionRate}%</p>
+                </div>
+              </div>
+            )}
+
+            {/* Intake list */}
+            {intakesData.intakes.length === 0 && (
+              <p className="py-8 text-center text-xs" style={{ color: "var(--db-text-muted)" }}>No job intakes yet</p>
+            )}
+            {intakesData.intakes.map((intake) => (
+              <div
+                key={intake.id}
+                className="rounded-lg px-4 py-3 text-sm"
+                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium capitalize" style={{ color: "var(--db-text)" }}>
+                      {intake.tradeType}
+                    </span>
+                    <span
+                      className="rounded-full px-2 py-0.5 text-[10px] font-medium capitalize"
+                      style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa" }}
+                    >
+                      {intake.scopeLevel}
+                    </span>
+                    <span
+                      className="rounded-full px-2 py-0.5 text-[10px] font-medium"
+                      style={{
+                        background: intake.intakeComplete ? "rgba(74,222,128,0.1)" : "rgba(251,191,36,0.1)",
+                        color: intake.intakeComplete ? "#4ade80" : "#fbbf24",
+                      }}
+                    >
+                      {intake.intakeComplete ? "Complete" : "Partial"}
+                    </span>
+                    {intake.urgency !== "normal" && (
+                      <span
+                        className="rounded-full px-2 py-0.5 text-[10px] font-medium capitalize"
+                        style={{
+                          background: intake.urgency === "emergency" ? "rgba(248,113,113,0.1)" : "rgba(251,191,36,0.1)",
+                          color: intake.urgency === "emergency" ? "#f87171" : "#fbbf24",
+                        }}
+                      >
+                        {intake.urgency}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{formatDate(intake.createdAt)}</span>
+                </div>
+                <div className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  {intake.leadName || intake.callerPhone || "Unknown caller"}
+                </div>
+                {intake.scopeDescription && (
+                  <p className="mt-2 text-xs leading-relaxed" style={{ color: "var(--db-text-secondary)" }}>
+                    {intake.scopeDescription}
+                  </p>
+                )}
+                {intake.answersJson && Object.keys(intake.answersJson).length > 0 && (
+                  <div className="mt-2 rounded-lg p-2.5 space-y-1" style={{ background: "var(--db-hover)" }}>
+                    {Object.entries(intake.answersJson).map(([key, val]) => (
+                      <div key={key} className="flex gap-2 text-xs">
+                        <span className="shrink-0 font-medium capitalize" style={{ color: "var(--db-text-muted)" }}>
+                          {key.replace(/_/g, " ")}:
+                        </span>
+                        <span style={{ color: "var(--db-text-secondary)" }}>{String(val)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>

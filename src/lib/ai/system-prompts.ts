@@ -48,12 +48,12 @@ function formatHoursEs(hours: Record<string, { open: string; close: string }>): 
     .join("\n");
 }
 
-export function buildSystemPrompt(biz: BusinessContext, lang: Language, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null): string {
-  if (lang === "es") return buildSpanishPrompt(biz, pricingContext, customResponsesBlock, callerContext);
-  return buildEnglishPrompt(biz, pricingContext, customResponsesBlock, callerContext);
+export function buildSystemPrompt(biz: BusinessContext, lang: Language, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null): string {
+  if (lang === "es") return buildSpanishPrompt(biz, pricingContext, customResponsesBlock, callerContext, intakeContext);
+  return buildEnglishPrompt(biz, pricingContext, customResponsesBlock, callerContext, intakeContext);
 }
 
-function buildEnglishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null): string {
+function buildEnglishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null): string {
   const name = biz.receptionistName || "Maria";
   const presetKey = (biz.personalityPreset || "friendly") as PersonalityPreset;
   const preset = PERSONALITY_PRESETS[presetKey] || PERSONALITY_PRESETS.friendly;
@@ -105,7 +105,22 @@ ${additionalInfoBlock}${personalityBlock}${customBlock}
    - Use transfer_to_human. Reassure them someone will call back shortly.
 7. Thank them warmly and end the call.
 
-## Emergency Protocol
+${intakeContext ? `## Job Intake
+When a caller describes a job or requests service, collect structured information using these qualifying questions. Work through them CONVERSATIONALLY — do NOT read them like a survey. Weave them naturally into the conversation. If the caller volunteers information that answers a question, skip it. If the caller seems impatient, prioritize required questions only.
+
+Default to the residential question set. Switch to commercial if the caller mentions: apartment complex, office building, university, hotel, warehouse, multiple units, general contractor, specs/plans, or the project exceeds 5 rooms/units or 3000 sqft.
+
+${intakeContext}
+
+After collecting enough information, call submit_intake with:
+- answers: key-value pairs matching the question keys above
+- scope_description: a brief natural language summary of the job
+- scope_level: "residential" or "commercial"
+- urgency: "emergency", "urgent", "normal", or "flexible"
+- intake_complete: true if all required questions were answered
+
+Then proceed with scheduling an estimate or taking a message as appropriate.
+` : ""}## Emergency Protocol
 If the caller describes any of these situations, treat it as an emergency:
 - Gas leak, smell of gas
 - Flooding, burst pipe, water gushing
@@ -165,7 +180,7 @@ ${pricingContext}
 - If you don't know something, say: "I don't have that information, but ${biz.ownerName} can help you with that. Would you like me to take a message?"`;
 }
 
-function buildSpanishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null): string {
+function buildSpanishPrompt(biz: BusinessContext, pricingContext?: string | null, customResponsesBlock?: string | null, callerContext?: string | null, intakeContext?: string | null): string {
   const name = biz.receptionistName || "Maria";
   const presetKey = (biz.personalityPreset || "friendly") as PersonalityPreset;
   const preset = PERSONALITY_PRESETS[presetKey] || PERSONALITY_PRESETS.friendly;
@@ -217,7 +232,22 @@ ${additionalInfoBlock}${personalityBlock}${customBlock}
    - Usa transfer_to_human. Asegúrales que alguien les llamará pronto.
 7. Agradece con calidez y despídete.
 
-## Protocolo de Emergencia
+${intakeContext ? `## Intake de Trabajo
+Cuando un llamante describe un trabajo o solicita servicio, recopila información estructurada usando estas preguntas calificadoras. Hazlas de forma CONVERSACIONAL — NO las leas como una encuesta. Intégralas naturalmente en la conversación. Si el llamante ya proporcionó información que responde una pregunta, sáltala. Si el llamante parece impaciente, prioriza solo las preguntas requeridas.
+
+Por defecto usa las preguntas residenciales. Cambia a comerciales si el llamante menciona: complejo de apartamentos, edificio de oficinas, universidad, hotel, bodega, múltiples unidades, contratista general, planos/especificaciones, o si el proyecto excede 5 habitaciones/unidades o 3000 pies cuadrados.
+
+${intakeContext}
+
+Después de recopilar suficiente información, llama a submit_intake con:
+- answers: pares clave-valor que coincidan con las claves de preguntas anteriores
+- scope_description: un breve resumen en lenguaje natural del trabajo
+- scope_level: "residential" o "commercial"
+- urgency: "emergency", "urgent", "normal", o "flexible"
+- intake_complete: true si todas las preguntas requeridas fueron contestadas
+
+Luego procede a agendar un estimado o tomar un mensaje según corresponda.
+` : ""}## Protocolo de Emergencia
 Si el llamante describe alguna de estas situaciones, trátalo como emergencia:
 - Fuga de gas, olor a gas
 - Inundación, tubería rota, agua saliendo con fuerza
