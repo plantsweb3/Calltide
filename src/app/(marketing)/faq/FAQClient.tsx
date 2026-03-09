@@ -18,7 +18,7 @@ const content = {
   en: {
     badge: "Frequently Asked Questions",
     hero: "Got Questions?\nWe've Got Answers.",
-    heroSub: "Everything you need to know about Calltide, your AI receptionist.",
+    heroSub: "Everything you need to know about Calltide, your AI front office.",
     categories: [
       {
         title: "Getting Started",
@@ -131,7 +131,7 @@ const content = {
   es: {
     badge: "Preguntas Frecuentes",
     hero: "¿Tienes Preguntas?\nTenemos Respuestas.",
-    heroSub: "Todo lo que necesitas saber sobre Calltide, tu recepcionista IA.",
+    heroSub: "Todo lo que necesitas saber sobre Calltide, tu oficina IA.",
     categories: [
       {
         title: "Primeros Pasos",

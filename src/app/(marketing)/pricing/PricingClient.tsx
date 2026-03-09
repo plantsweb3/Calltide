@@ -198,7 +198,7 @@ export default function PricingClient() {
               )}
 
               <p className="mt-4 text-base text-slate-400">
-                Your 24/7 bilingual AI receptionist — fully loaded
+                Your complete AI front office — fully loaded
               </p>
             </div>
 

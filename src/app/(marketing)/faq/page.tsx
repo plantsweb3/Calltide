@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import FAQClient from "./FAQClient";
 
 export const metadata: Metadata = {
-  title: "FAQ — Calltide | AI Receptionist Questions Answered",
+  title: "FAQ — Calltide | AI Front Office Questions Answered",
   description:
-    "Frequently asked questions about Calltide's AI receptionist. Getting started, how Maria works, billing, technical setup, and more.",
+    "Frequently asked questions about Calltide's AI front office. Getting started, features, AI estimates, missed call recovery, billing, and more.",
   openGraph: {
     title: "FAQ — Calltide | Questions Answered",
     description:
-      "Everything you need to know about Calltide's AI receptionist — setup, features, billing, and technical details.",
+      "Everything you need to know about Calltide's AI front office — setup, features, estimates, follow-ups, billing, and technical details.",
     url: "https://calltide.app/faq",
     siteName: "Calltide",
     type: "website",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "FAQ — Calltide",
-    description: "Frequently asked questions about Calltide's AI receptionist.",
+    description: "Frequently asked questions about Calltide's AI front office.",
   },
   alternates: {
     canonical: "/faq",

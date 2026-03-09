@@ -4,11 +4,11 @@ import PricingClient from "./PricingClient";
 export const metadata: Metadata = {
   title: "Pricing | Calltide",
   description:
-    "One plan. Everything included. $497/month for your 24/7 bilingual AI receptionist. Unlimited calls, appointment booking, SMS, emergency detection, and more. 30-day money-back guarantee.",
+    "One plan. Everything included. $497/month for your AI front office. Unlimited calls, AI estimates, missed call recovery, follow-up automation, CRM, and 55+ features. 30-day money-back guarantee.",
   openGraph: {
     title: "Pricing | Calltide",
     description:
-      "One plan. Everything included. $497/month — your 24/7 bilingual AI receptionist with unlimited calls and every feature included.",
+      "One plan. Everything included. $497/month — your AI front office with unlimited calls, AI estimates, missed call recovery, and every feature included.",
     url: "https://calltide.app/pricing",
     siteName: "Calltide",
     type: "website",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pricing | Calltide",
     description:
-      "One plan. Everything included. $497/month — your 24/7 bilingual AI receptionist.",
+      "One plan. Everything included. $497/month — your AI front office with 55+ features.",
   },
   alternates: {
     canonical: "/pricing",
@@ -33,9 +33,9 @@ export default function Page() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            name: "Calltide AI Receptionist",
+            name: "Calltide AI Front Office",
             description:
-              "AI-powered bilingual virtual receptionist for home service businesses. Answers calls 24/7 in English and Spanish. One plan, everything included.",
+              "AI front office for home service businesses. Answers calls, generates estimates, recovers missed calls, and manages follow-ups — in English and Spanish, 24/7. One plan, everything included.",
             brand: { "@type": "Brand", name: "Calltide" },
             offers: [
               {

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import PlatformClient from "./PlatformClient";
 
 export const metadata: Metadata = {
-  title: "Platform | Calltide — The Complete AI Receptionist",
+  title: "Platform | Calltide — The Complete AI Front Office",
   description:
-    "Everything you need to never miss a call again. 24/7 bilingual answering, appointment booking, emergency detection, CRM, analytics, compliance — all in one platform.",
+    "55+ features that answer calls, generate estimates, recover missed calls, and grow your business. Bilingual answering, CRM, scheduling, follow-ups, and more — all in one platform.",
   openGraph: {
-    title: "Platform | Calltide — The Complete AI Receptionist",
+    title: "Platform | Calltide — The Complete AI Front Office",
     description:
-      "24/7 bilingual call answering, scheduling, CRM, analytics, compliance — everything included in one AI receptionist platform.",
+      "55+ features: bilingual answering, AI estimates, missed call recovery, follow-up automation, CRM, scheduling — everything in one AI front office platform.",
     url: "https://calltide.app/platform",
     siteName: "Calltide",
     type: "website",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Platform | Calltide",
-    description: "The complete AI receptionist platform for home service businesses.",
+    description: "The complete AI front office platform for home service businesses.",
   },
   alternates: {
     canonical: "/platform",
@@ -32,11 +32,11 @@ export default function Page() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            name: "Calltide AI Receptionist Platform",
+            name: "Calltide AI Front Office Platform",
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             description:
-              "AI-powered bilingual virtual receptionist with scheduling, CRM, analytics, and compliance. Everything included.",
+              "AI front office for home service businesses. Answers calls, generates estimates, recovers missed calls, manages follow-ups, and grows your business — in English and Spanish, 24/7.",
             offers: {
               "@type": "Offer",
               price: "497",

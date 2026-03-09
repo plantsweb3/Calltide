@@ -4,7 +4,7 @@ import AboutPage from "./AboutClient";
 export const metadata: Metadata = {
   title: "About — Calltide | Built in San Antonio for Service Businesses",
   description:
-    "Calltide was built because too many great service businesses lose jobs when nobody answers the phone. AI receptionist, bilingual, 24/7.",
+    "Calltide was built because too many great service businesses lose jobs when nobody answers the phone. AI front office — answers calls, generates estimates, recovers missed calls, 24/7.",
   openGraph: {
     title: "About — Calltide | Built in San Antonio. Built for You.",
     description:
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "About — Calltide",
-    description: "Built in Texas. AI receptionist for home service businesses.",
+    description: "Built in Texas. AI front office for home service businesses.",
   },
   alternates: {
     canonical: "/about",
@@ -34,7 +34,7 @@ export default function Page() {
             "@type": "Organization",
             name: "Calltide LLC",
             url: "https://calltide.app",
-            description: "AI-powered bilingual virtual receptionist for home service businesses.",
+            description: "AI front office for home service businesses. Answers calls, generates estimates, recovers missed calls, and manages follow-ups — bilingual, 24/7.",
             email: "hello@calltide.app",
             telephone: "+18305217133",
             areaServed: "US",
@@ -50,7 +50,7 @@ export default function Page() {
             "@type": "LocalBusiness",
             name: "Calltide",
             description:
-              "AI-powered bilingual receptionist platform for home service businesses.",
+              "AI front office platform for home service businesses — answers calls, generates estimates, recovers missed calls, and grows your business.",
             url: "https://calltide.app",
             telephone: "+1-830-521-7133",
             email: "hello@calltide.app",
