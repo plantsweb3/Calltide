@@ -224,7 +224,7 @@ const CATEGORIES = [
 ];
 
 export default function PlatformClient() {
-  const [activeTab, setActiveTab] = useState("calls");
+  const [activeTab, setActiveTab] = useState("revenue");
   useScrollReveal();
 
   const activeCategory = CATEGORIES.find((c) => c.id === activeTab) ?? CATEGORIES[0];
@@ -277,7 +277,7 @@ export default function PlatformClient() {
               return (
                 <div
                   key={`${activeTab}-${i}`}
-                  className="reveal rounded-xl p-8 transition-all duration-300"
+                  className="rounded-xl p-8 transition-all duration-300"
                   style={{
                     background: "rgba(255,255,255,0.04)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -295,7 +295,7 @@ export default function PlatformClient() {
 
           {/* Screenshot placeholder */}
           <div
-            className="reveal mt-14 flex items-center justify-center rounded-2xl p-16"
+            className="mt-14 flex items-center justify-center rounded-2xl p-16"
             style={{ background: "rgba(255,255,255,0.03)", border: "1px dashed rgba(255,255,255,0.1)" }}
           >
             <p className="text-sm text-slate-600">{/* Screenshot: {activeCategory.label} dashboard view */}Platform screenshot — {activeCategory.label}</p>
