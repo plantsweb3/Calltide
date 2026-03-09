@@ -5,7 +5,7 @@ import { processAllDigests } from "@/lib/digest/send";
 
 /**
  * GET /api/cron/daily-summary
- * Sends a contractor-oriented daily digest to every active business owner.
+ * Sends a daily digest to every active business owner.
  * Runs at 23:00 UTC (6 PM Central) — all current clients are in Texas.
  * Replaces the generic stats SMS with a rich briefing from Maria including
  * new leads, job card estimates, tomorrow's appointments, and action items.

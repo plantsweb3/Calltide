@@ -1,4 +1,4 @@
--- Contractor Daily Digest: add digest preference columns to businesses
+-- Daily Digest: add digest preference columns to businesses
 
 ALTER TABLE businesses ADD COLUMN digest_preference TEXT NOT NULL DEFAULT 'sms';
 -- 'sms', 'email', 'both', 'none'
