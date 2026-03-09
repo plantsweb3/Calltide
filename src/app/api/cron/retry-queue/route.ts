@@ -50,6 +50,35 @@ export async function GET(req: NextRequest) {
           });
         },
 
+        photo_request: async (payload) => {
+          const { sendPhotoRequest } = await import("@/lib/photos/request");
+          const { jobIntakes: intakeTable } = await import("@/db/schema");
+          const { and: dAnd, eq: dEq } = await import("drizzle-orm");
+          const { db: database } = await import("@/db");
+
+          const callId = payload.callId as string;
+          const businessId = payload.businessId as string;
+          const callerPhone = payload.callerPhone as string;
+          const callerName = (payload.callerName as string) || null;
+          if (!callId || !businessId || !callerPhone) throw new Error("Missing photo request params");
+
+          const [intake] = await database
+            .select()
+            .from(intakeTable)
+            .where(dAnd(dEq(intakeTable.callId, callId), dEq(intakeTable.intakeComplete, true)))
+            .limit(1);
+          if (!intake) return; // No completed intake — skip silently
+
+          await sendPhotoRequest({
+            businessId,
+            callId,
+            callerPhone,
+            callerName,
+            jobIntakeId: intake.id,
+            jobDescription: intake.scopeDescription || "project",
+          });
+        },
+
         email_send: async (payload) => {
           const resend = getResend();
           const from = payload.from as string;

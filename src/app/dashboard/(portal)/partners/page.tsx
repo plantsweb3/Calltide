@@ -11,6 +11,7 @@ interface Partner {
   partnerPhone: string;
   partnerContactName: string | null;
   partnerEmail: string | null;
+  language: string;
   relationship: string;
   notes: string | null;
   active: boolean;
@@ -82,6 +83,7 @@ export default function PartnersPage() {
   const [formPhone, setFormPhone] = useState("");
   const [formContact, setFormContact] = useState("");
   const [formEmail, setFormEmail] = useState("");
+  const [formLanguage, setFormLanguage] = useState("en");
   const [formRelationship, setFormRelationship] = useState("trusted");
   const [formNotes, setFormNotes] = useState("");
 
@@ -114,6 +116,7 @@ export default function PartnersPage() {
     setFormPhone("");
     setFormContact("");
     setFormEmail("");
+    setFormLanguage("en");
     setFormRelationship("trusted");
     setFormNotes("");
     setEditingId(null);
@@ -126,6 +129,7 @@ export default function PartnersPage() {
     setFormPhone(p.partnerPhone);
     setFormContact(p.partnerContactName || "");
     setFormEmail(p.partnerEmail || "");
+    setFormLanguage(p.language || "en");
     setFormRelationship(p.relationship);
     setFormNotes(p.notes || "");
     setEditingId(p.id);
@@ -146,6 +150,7 @@ export default function PartnersPage() {
         partnerPhone: formPhone.trim(),
         partnerContactName: formContact.trim() || null,
         partnerEmail: formEmail.trim() || null,
+        language: formLanguage,
         relationship: formRelationship,
         notes: formNotes.trim() || null,
       };
@@ -317,6 +322,18 @@ export default function PartnersPage() {
                     <option value="preferred">Preferred (top pick)</option>
                     <option value="trusted">Trusted</option>
                     <option value="occasional">Occasional</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Language</label>
+                  <select
+                    value={formLanguage}
+                    onChange={(e) => setFormLanguage(e.target.value)}
+                    className="w-full rounded-lg px-3 py-2 text-sm"
+                    style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                  >
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
                   </select>
                 </div>
               </div>

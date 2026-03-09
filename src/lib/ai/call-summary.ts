@@ -200,32 +200,19 @@ export async function processCallSummary(callId: string, chatId: string): Promis
       reportError("Job card generation failed", err, { extra: { callId } });
     });
 
-    // Send photo request to caller after a delay (fire-and-forget)
-    // Only for genuine leads with completed intakes — 2 min delay so caller has time after hanging up
+    // Enqueue photo request with 2-minute delay (persistent, survives process restarts)
+    // Only for genuine leads with completed intakes
     if (outcome !== "spam" && outcome !== "info_only" && callRecord?.callerPhone) {
-      setTimeout(() => {
-        import("@/lib/photos/request").then(async ({ sendPhotoRequest }) => {
-          const { jobIntakes: intakeTable } = await import("@/db/schema");
-          const { and: dAnd, eq: dEq } = await import("drizzle-orm");
-          const [intake] = await db
-            .select()
-            .from(intakeTable)
-            .where(dAnd(dEq(intakeTable.callId, callId), dEq(intakeTable.intakeComplete, true)))
-            .limit(1);
-          if (!intake) return;
-
-          await sendPhotoRequest({
-            businessId: callRecord!.businessId,
-            callId,
-            callerPhone: callRecord!.callerPhone!,
-            callerName: callerName || null,
-            jobIntakeId: intake.id,
-            jobDescription: intake.scopeDescription || "project",
-          });
-        }).catch((err) => {
-          reportError("Photo request failed", err, { extra: { callId } });
+      import("@/lib/jobs/queue").then(({ enqueueJob }) => {
+        enqueueJob("photo_request", {
+          businessId: callRecord!.businessId,
+          callId,
+          callerPhone: callRecord!.callerPhone!,
+          callerName: callerName || null,
+        }, 3, 2 * 60 * 1000).catch((err) => { // 3 attempts, 2-min delay
+          reportError("Failed to enqueue photo request", err, { extra: { callId } });
         });
-      }, 2 * 60 * 1000); // 2-minute delay
+      }).catch(() => {});
     }
 
     // Send rich owner SMS alert now that we have the summary (fire-and-forget)

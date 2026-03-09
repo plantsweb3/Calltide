@@ -1414,6 +1414,7 @@ export const businessPartners = sqliteTable("business_partners", {
   partnerPhone: text("partner_phone").notNull(),
   partnerContactName: text("partner_contact_name"),
   partnerEmail: text("partner_email"),
+  language: text("language").default("en"), // en, es
   relationship: text("relationship").notNull().default("trusted"), // trusted, preferred, occasional
   notes: text("notes"),
   active: integer("active", { mode: "boolean" }).notNull().default(true),

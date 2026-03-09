@@ -12,6 +12,7 @@ const updateSchema = z.object({
   partnerPhone: z.string().min(10).max(20).optional(),
   partnerContactName: z.string().max(200).optional().nullable(),
   partnerEmail: z.string().email().max(200).optional().nullable(),
+  language: z.enum(["en", "es"]).optional(),
   relationship: z.enum(["preferred", "trusted", "occasional"]).optional(),
   notes: z.string().max(500).optional().nullable(),
 });
@@ -56,6 +57,7 @@ export async function PUT(
     if (data.partnerPhone !== undefined) updates.partnerPhone = data.partnerPhone.replace(/\D/g, "");
     if (data.partnerContactName !== undefined) updates.partnerContactName = data.partnerContactName;
     if (data.partnerEmail !== undefined) updates.partnerEmail = data.partnerEmail;
+    if (data.language !== undefined) updates.language = data.language;
     if (data.relationship !== undefined) updates.relationship = data.relationship;
     if (data.notes !== undefined) updates.notes = data.notes;
 

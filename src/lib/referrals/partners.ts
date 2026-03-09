@@ -173,13 +173,16 @@ export async function notifyPartner(params: NotifyPartnerParams): Promise<void> 
 
   const callerDesc = referral.callerName
     ? `${referral.callerName}${referral.callerPhone ? ` (${referral.callerPhone})` : ""}`
-    : referral.callerPhone || "a caller";
+    : referral.callerPhone || (partner.language === "es" ? "un cliente" : "a caller");
 
   const jobDesc = referral.jobDescription
     ? ` — ${referral.jobDescription.length > 80 ? referral.jobDescription.slice(0, 77) + "..." : referral.jobDescription}`
     : "";
 
-  const body = `Hi${partner.partnerContactName ? ` ${partner.partnerContactName}` : ""}, ${referringBiz.name} just referred ${callerDesc} to you for ${referral.requestedTrade}${jobDesc}. Please reach out to them soon!`;
+  const contactName = partner.partnerContactName ? ` ${partner.partnerContactName}` : "";
+  const body = partner.language === "es"
+    ? `Hola${contactName}, ${referringBiz.name} acaba de referir a ${callerDesc} para ${referral.requestedTrade}${jobDesc}. Por favor comuníquese pronto!`
+    : `Hi${contactName}, ${referringBiz.name} just referred ${callerDesc} to you for ${referral.requestedTrade}${jobDesc}. Please reach out to them soon!`;
 
   await sendSMS({
     to: partner.partnerPhone,

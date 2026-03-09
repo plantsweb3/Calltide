@@ -3,7 +3,7 @@ import { pendingJobs } from "@/db/schema";
 import { eq, and, lte, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 
-export type JobType = "twilio_provision" | "call_summary" | "consent_record" | "email_send";
+export type JobType = "twilio_provision" | "call_summary" | "consent_record" | "email_send" | "photo_request";
 
 /**
  * Enqueue a job for async processing with retry support.
@@ -13,10 +13,15 @@ export async function enqueueJob(
   type: JobType,
   payload: Record<string, unknown>,
   maxAttempts = 5,
+  delayMs?: number,
 ): Promise<string> {
+  const nextRetryAt = delayMs
+    ? new Date(Date.now() + delayMs).toISOString()
+    : new Date().toISOString();
+
   const [job] = await db
     .insert(pendingJobs)
-    .values({ type, payload, maxAttempts })
+    .values({ type, payload, maxAttempts, nextRetryAt })
     .returning({ id: pendingJobs.id });
   return job.id;
 }

@@ -12,6 +12,7 @@ const createSchema = z.object({
   partnerPhone: z.string().min(10).max(20),
   partnerContactName: z.string().max(200).optional().nullable(),
   partnerEmail: z.string().email().max(200).optional().nullable(),
+  language: z.enum(["en", "es"]).default("en"),
   relationship: z.enum(["preferred", "trusted", "occasional"]).default("trusted"),
   notes: z.string().max(500).optional().nullable(),
 });
@@ -32,6 +33,7 @@ export async function GET(req: NextRequest) {
           partnerPhone: "2105551234",
           partnerContactName: "Carlos Rodriguez",
           partnerEmail: null,
+          language: "es",
           relationship: "preferred",
           notes: "Fast response, fair pricing",
           active: true,
@@ -44,6 +46,7 @@ export async function GET(req: NextRequest) {
           partnerPhone: "2105555678",
           partnerContactName: "Mike Torres",
           partnerEmail: "mike@sparkelectric.com",
+          language: "en",
           relationship: "trusted",
           notes: null,
           active: true,
@@ -104,6 +107,7 @@ export async function POST(req: NextRequest) {
         partnerPhone: data.partnerPhone.replace(/\D/g, ""),
         partnerContactName: data.partnerContactName ?? null,
         partnerEmail: data.partnerEmail ?? null,
+        language: data.language,
         relationship: data.relationship,
         notes: data.notes ?? null,
       })
