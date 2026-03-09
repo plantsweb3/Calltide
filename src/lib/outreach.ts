@@ -34,7 +34,7 @@ export async function canContactToday(
 
 export async function logOutreach(
   businessId: string,
-  source: "dunning" | "churn_agent" | "success_agent" | "nudge_agent" | "incident",
+  source: "dunning" | "churn_agent" | "success_agent" | "nudge_agent" | "incident" | "customer_recall",
   channel: "email" | "sms",
 ) {
   await db.insert(outreachLog).values({

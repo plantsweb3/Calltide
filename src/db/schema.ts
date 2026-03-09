@@ -114,12 +114,16 @@ export const businesses = sqliteTable("businesses", {
   enableReviewRequests: integer("enable_review_requests", { mode: "boolean" }).default(true),
   // Missed call recovery
   enableMissedCallRecovery: integer("enable_missed_call_recovery", { mode: "boolean" }).default(true),
+  // Customer recall / maintenance reminders
+  enableCustomerRecall: integer("enable_customer_recall", { mode: "boolean" }).default(true),
   // Notification preferences
   notifyOnEveryCall: integer("notify_on_every_call", { mode: "boolean" }).default(false),
   notifyOnMissedOnly: integer("notify_on_missed_only", { mode: "boolean" }).default(true),
   ownerQuietHoursStart: text("owner_quiet_hours_start").default("21:00"),
   ownerQuietHoursEnd: text("owner_quiet_hours_end").default("08:00"),
   setupChecklistDismissed: integer("setup_checklist_dismissed", { mode: "boolean" }).default(false),
+  // Public booking page
+  bookingSlug: text("booking_slug").unique(),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -188,7 +192,7 @@ export const outboundCalls = sqliteTable("outbound_calls", {
   customerPhone: text("customer_phone").notNull(),
   callType: text("call_type").notNull(), // appointment_reminder, estimate_followup, seasonal_reminder
   referenceId: text("reference_id"), // FK → appointments.id or estimates.id
-  status: text("status").default("scheduled"), // scheduled, calling, completed, failed, no_answer, cancelled
+  status: text("status").default("scheduled").notNull(), // scheduled, calling, completed, failed, no_answer, cancelled
   scheduledFor: text("scheduled_for").notNull(),
   attemptedAt: text("attempted_at"),
   completedAt: text("completed_at"),
@@ -233,7 +237,7 @@ export const activeCalls = sqliteTable("active_calls", {
   humeSessionId: text("hume_session_id"),
   startedAt: text("started_at").notNull().default(sql`(datetime('now'))`),
   lastActivityAt: text("last_activity_at").notNull().default(sql`(datetime('now'))`),
-  status: text("status").default("ringing"),
+  status: text("status").default("ringing").notNull(),
   currentIntent: text("current_intent"),
   durationSeconds: integer("duration_seconds").default(0),
   metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>(),
@@ -570,7 +574,7 @@ export const contentQueue = sqliteTable("content_queue", {
   imageUrl: text("image_url"),
   scheduledFor: text("scheduled_for"),
   publishedAt: text("published_at"),
-  status: text("status").default("draft"), // draft, approved, published
+  status: text("status").default("draft").notNull(), // draft, approved, published
   category: text("category"), // data-drop, maria-demo, client-win, education, behind-the-scenes
   engagementData: text("engagement_data", { mode: "json" }).$type<Record<string, unknown>>(),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
@@ -624,7 +628,7 @@ export const referrals = sqliteTable("referrals", {
   referrerBusinessId: text("referrer_business_id").notNull().references(() => businesses.id),
   referredBusinessId: text("referred_business_id"),
   referralCode: text("referral_code").notNull(),
-  status: text("status").default("pending"), // pending, signed_up, activated, churned, expired
+  status: text("status").default("pending").notNull(), // pending, signed_up, activated, churned, expired
   referrerCreditAmount: integer("referrer_credit_amount").default(497),
   referrerCreditApplied: integer("referrer_credit_applied", { mode: "boolean" }).default(false),
   referrerCreditAppliedAt: text("referrer_credit_applied_at"),
@@ -812,7 +816,7 @@ export const dataDeletionRequests = sqliteTable("data_deletion_requests", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   requestedBy: text("requested_by").notNull(),
   requestType: text("request_type").notNull(), // gdpr, ccpa, manual, offboarding
-  status: text("status").default("received"), // received, verified, processing, completed, denied
+  status: text("status").default("received").notNull(), // received, verified, processing, completed, denied
   dataDescription: text("data_description"),
   verifiedAt: text("verified_at"),
   processingStartedAt: text("processing_started_at"),
@@ -1245,7 +1249,7 @@ export const demoSessions = sqliteTable("demo_sessions", {
 // Stores failed async operations for retry with exponential backoff.
 export const pendingJobs = sqliteTable("pending_jobs", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  type: text("type").notNull(), // "twilio_provision" | "call_summary" | "consent_record"
+  type: text("type").notNull(), // "twilio_provision" | "call_summary" | "consent_record" | "email_send"
   payload: text("payload", { mode: "json" }).notNull().$type<Record<string, unknown>>(),
   status: text("status").notNull().default("pending"), // "pending" | "completed" | "failed"
   attempts: integer("attempts").notNull().default(0),
