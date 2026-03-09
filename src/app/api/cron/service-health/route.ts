@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { reportError, reportWarning } from "@/lib/error-reporting";
+import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 
 interface ServiceCheck {
   name: string;
@@ -23,59 +24,61 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const checks: ServiceCheck[] = await Promise.all([
-    checkTwilio(),
-    checkHume(),
-    checkStripe(),
-    checkResend(),
-    checkTurso(),
-  ]);
+  return withCronMonitor("service-health", "*/5 * * * *", async () => {
+    const checks: ServiceCheck[] = await Promise.all([
+      checkTwilio(),
+      checkHume(),
+      checkStripe(),
+      checkResend(),
+      checkTurso(),
+    ]);
 
-  const degraded = checks.filter((c) => c.status === "degraded");
-  const down = checks.filter((c) => c.status === "down");
+    const degraded = checks.filter((c) => c.status === "degraded");
+    const down = checks.filter((c) => c.status === "down");
 
-  // Report issues to Sentry
-  for (const check of down) {
-    reportError(`[service-health] ${check.name} is DOWN`, new Error(check.error || "Service unreachable"), {
-      extra: { service: check.name, latencyMs: check.latencyMs },
-    });
-  }
-
-  for (const check of degraded) {
-    reportWarning(`[service-health] ${check.name} is DEGRADED (${check.latencyMs}ms)`, {
-      service: check.name,
-      latencyMs: check.latencyMs,
-      error: check.error,
-    });
-  }
-
-  // Track as Sentry custom metric
-  if (down.length > 0 || degraded.length > 0) {
-    Sentry.withScope((scope) => {
-      scope.setTag("monitor.type", "service-health");
-      scope.setExtras({
-        checks: checks.map((c) => ({ name: c.name, status: c.status, latencyMs: c.latencyMs })),
-        downCount: down.length,
-        degradedCount: degraded.length,
+    // Report issues to Sentry
+    for (const check of down) {
+      reportError(`[service-health] ${check.name} is DOWN`, new Error(check.error || "Service unreachable"), {
+        extra: { service: check.name, latencyMs: check.latencyMs },
       });
-      if (down.length > 0) {
-        Sentry.captureMessage(
-          `Service health: ${down.map((d) => d.name).join(", ")} DOWN`,
-          "error",
-        );
-      }
-    });
-  }
+    }
 
-  return NextResponse.json({
-    ok: down.length === 0,
-    timestamp: new Date().toISOString(),
-    checks: checks.map((c) => ({
-      name: c.name,
-      status: c.status,
-      latencyMs: c.latencyMs,
-      ...(c.error ? { error: c.error } : {}),
-    })),
+    for (const check of degraded) {
+      reportWarning(`[service-health] ${check.name} is DEGRADED (${check.latencyMs}ms)`, {
+        service: check.name,
+        latencyMs: check.latencyMs,
+        error: check.error,
+      });
+    }
+
+    // Track as Sentry custom metric
+    if (down.length > 0 || degraded.length > 0) {
+      Sentry.withScope((scope) => {
+        scope.setTag("monitor.type", "service-health");
+        scope.setExtras({
+          checks: checks.map((c) => ({ name: c.name, status: c.status, latencyMs: c.latencyMs })),
+          downCount: down.length,
+          degradedCount: degraded.length,
+        });
+        if (down.length > 0) {
+          Sentry.captureMessage(
+            `Service health: ${down.map((d) => d.name).join(", ")} DOWN`,
+            "error",
+          );
+        }
+      });
+    }
+
+    return NextResponse.json({
+      ok: down.length === 0,
+      timestamp: new Date().toISOString(),
+      checks: checks.map((c) => ({
+        name: c.name,
+        status: c.status,
+        latencyMs: c.latencyMs,
+        ...(c.error ? { error: c.error } : {}),
+      })),
+    });
   });
 }
 

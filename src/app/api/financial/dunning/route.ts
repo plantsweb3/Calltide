@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { processDunning } from "@/lib/financial/dunning";
 import { reportError } from "@/lib/error-reporting";
+import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 
 export async function POST(request: Request) {
   const auth = request.headers.get("authorization");
@@ -12,16 +13,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  try {
-    const results = await processDunning();
-    return NextResponse.json({ ok: true, ...results });
-  } catch (err) {
-    reportError("[dunning cron] Error", err);
-    return NextResponse.json(
-      { error: "Dunning processing failed" },
-      { status: 500 },
-    );
-  }
+  return withCronMonitor("dunning", "30 16 * * *", async () => {
+    try {
+      const results = await processDunning();
+      return NextResponse.json({ ok: true, ...results });
+    } catch (err) {
+      reportError("[dunning cron] Error", err);
+      return NextResponse.json(
+        { error: "Dunning processing failed" },
+        { status: 500 },
+      );
+    }
+  });
 }
 
 // Allow GET for Vercel Cron

@@ -17,6 +17,7 @@ import {
   buildMonthlyRoiSms,
   calculateMonthlyStats,
 } from "@/lib/emails/monthly-roi";
+import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
@@ -36,222 +37,224 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const resend = getResend();
+  return withCronMonitor("monthly-roi", "0 14 1 * *", async () => {
+    const resend = getResend();
 
-  let sent = 0;
-  let skipped = 0;
-  let errors = 0;
+    let sent = 0;
+    let skipped = 0;
+    let errors = 0;
 
-  try {
-    const activeBiz = await db
-      .select()
-      .from(businesses)
-      .where(eq(businesses.active, true));
+    try {
+      const activeBiz = await db
+        .select()
+        .from(businesses)
+        .where(eq(businesses.active, true));
 
-    const dashboardBase = env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
+      const dashboardBase = env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
 
-    // Calculate last month's boundaries
-    const now = new Date();
-    const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const lastMonthYear = lastMonthDate.getFullYear();
-    const lastMonthNum = lastMonthDate.getMonth(); // 0-indexed
-    const monthLabel = `${MONTH_NAMES[lastMonthNum]} ${lastMonthYear}`;
+      // Calculate last month's boundaries
+      const now = new Date();
+      const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastMonthYear = lastMonthDate.getFullYear();
+      const lastMonthNum = lastMonthDate.getMonth(); // 0-indexed
+      const monthLabel = `${MONTH_NAMES[lastMonthNum]} ${lastMonthYear}`;
 
-    // ISO boundaries for last month
-    const monthStart = `${lastMonthYear}-${String(lastMonthNum + 1).padStart(2, "0")}-01T00:00:00`;
-    const thisMonthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01T00:00:00`;
-    const monthKey = `${lastMonthYear}-${String(lastMonthNum + 1).padStart(2, "0")}`;
+      // ISO boundaries for last month
+      const monthStart = `${lastMonthYear}-${String(lastMonthNum + 1).padStart(2, "0")}-01T00:00:00`;
+      const thisMonthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01T00:00:00`;
+      const monthKey = `${lastMonthYear}-${String(lastMonthNum + 1).padStart(2, "0")}`;
 
-    // Previous month (for MoM comparison)
-    const prevMonthDate = new Date(lastMonthYear, lastMonthNum - 1, 1);
-    const prevMonthStart = `${prevMonthDate.getFullYear()}-${String(prevMonthDate.getMonth() + 1).padStart(2, "0")}-01T00:00:00`;
+      // Previous month (for MoM comparison)
+      const prevMonthDate = new Date(lastMonthYear, lastMonthNum - 1, 1);
+      const prevMonthStart = `${prevMonthDate.getFullYear()}-${String(prevMonthDate.getMonth() + 1).padStart(2, "0")}-01T00:00:00`;
 
-    for (const biz of activeBiz) {
-      try {
-        if (!biz.ownerEmail) {
-          skipped++;
-          continue;
-        }
-
-        // Check if digest already sent
-        const [existing] = await db
-          .select({ id: monthlyDigests.id })
-          .from(monthlyDigests)
-          .where(
-            and(
-              eq(monthlyDigests.businessId, biz.id),
-              eq(monthlyDigests.monthKey, monthKey),
-            ),
-          )
-          .limit(1);
-
-        if (existing) {
-          skipped++;
-          continue;
-        }
-
-        const receptionistName = biz.receptionistName || "Maria";
-        const delivery = biz.digestDeliveryMethod ?? "both";
-
-        // ── Aggregate metrics ──
-
-        const monthCalls = await db
-          .select({
-            id: calls.id,
-            language: calls.language,
-            transferRequested: calls.transferRequested,
-            createdAt: calls.createdAt,
-          })
-          .from(calls)
-          .where(
-            and(
-              eq(calls.businessId, biz.id),
-              gte(calls.createdAt, monthStart),
-              lt(calls.createdAt, thisMonthStart),
-            ),
-          );
-
-        // After-hours detection uses business hours — simplified: count calls outside 8am-6pm
-        const bizHours = (biz.businessHours ?? {}) as Record<string, { open: string; close: string; closed?: boolean }>;
-        const tz = biz.timezone || "America/Chicago";
-        let afterHoursCalls = 0;
-        for (const c of monthCalls) {
-          const callDate = new Date(c.createdAt);
-          const localDay = callDate.toLocaleDateString("en-US", { weekday: "short", timeZone: tz });
-          const localTime = callDate.toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit", timeZone: tz });
-          const hours = bizHours[localDay] || bizHours[localDay.toLowerCase()];
-          if (!hours || (hours as { closed?: boolean }).closed) {
-            afterHoursCalls++;
-          } else if (localTime < hours.open || localTime >= hours.close) {
-            afterHoursCalls++;
+      for (const biz of activeBiz) {
+        try {
+          if (!biz.ownerEmail) {
+            skipped++;
+            continue;
           }
-        }
 
-        const emergencyCalls = monthCalls.filter((c) => c.transferRequested).length;
-        const spanishCalls = monthCalls.filter((c) => c.language === "es").length;
+          // Check if digest already sent
+          const [existing] = await db
+            .select({ id: monthlyDigests.id })
+            .from(monthlyDigests)
+            .where(
+              and(
+                eq(monthlyDigests.businessId, biz.id),
+                eq(monthlyDigests.monthKey, monthKey),
+              ),
+            )
+            .limit(1);
 
-        const [apptResult] = await db
-          .select({ count: sql<number>`COUNT(*)` })
-          .from(appointments)
-          .where(
-            and(
-              eq(appointments.businessId, biz.id),
-              gte(appointments.createdAt, monthStart),
-              lt(appointments.createdAt, thisMonthStart),
-            ),
-          );
+          if (existing) {
+            skipped++;
+            continue;
+          }
 
-        const [custResult] = await db
-          .select({ count: sql<number>`COUNT(*)` })
-          .from(customers)
-          .where(
-            and(
-              eq(customers.businessId, biz.id),
-              gte(customers.createdAt, monthStart),
-              lt(customers.createdAt, thisMonthStart),
-              sql`${customers.deletedAt} IS NULL`,
-            ),
-          );
+          const receptionistName = biz.receptionistName || "Maria";
+          const delivery = biz.digestDeliveryMethod ?? "both";
 
-        // Previous month calls for MoM
-        const [prevResult] = await db
-          .select({ count: sql<number>`COUNT(*)` })
-          .from(calls)
-          .where(
-            and(
-              eq(calls.businessId, biz.id),
-              gte(calls.createdAt, prevMonthStart),
-              lt(calls.createdAt, monthStart),
-            ),
-          );
+          // ── Aggregate metrics ──
 
-        const stats = calculateMonthlyStats({
-          totalCalls: monthCalls.length,
-          afterHoursCalls,
-          appointmentsBooked: apptResult?.count ?? 0,
-          emergencyCalls,
-          newCustomers: custResult?.count ?? 0,
-          prevMonthCalls: prevResult?.count ?? 0,
-          spanishCalls,
-          businessType: biz.type,
-          avgJobValueOverride: biz.avgJobValue,
-        });
+          const monthCalls = await db
+            .select({
+              id: calls.id,
+              language: calls.language,
+              transferRequested: calls.transferRequested,
+              createdAt: calls.createdAt,
+            })
+            .from(calls)
+            .where(
+              and(
+                eq(calls.businessId, biz.id),
+                gte(calls.createdAt, monthStart),
+                lt(calls.createdAt, thisMonthStart),
+              ),
+            );
 
-        let emailSentAt: string | null = null;
-        let smsSentAt: string | null = null;
-        let resendId: string | null = null;
+          // After-hours detection uses business hours — simplified: count calls outside 8am-6pm
+          const bizHours = (biz.businessHours ?? {}) as Record<string, { open: string; close: string; closed?: boolean }>;
+          const tz = biz.timezone || "America/Chicago";
+          let afterHoursCalls = 0;
+          for (const c of monthCalls) {
+            const callDate = new Date(c.createdAt);
+            const localDay = callDate.toLocaleDateString("en-US", { weekday: "short", timeZone: tz });
+            const localTime = callDate.toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit", timeZone: tz });
+            const hours = bizHours[localDay] || bizHours[localDay.toLowerCase()];
+            if (!hours || (hours as { closed?: boolean }).closed) {
+              afterHoursCalls++;
+            } else if (localTime < hours.open || localTime >= hours.close) {
+              afterHoursCalls++;
+            }
+          }
 
-        // ── Send Email ──
-        if (delivery === "email" || delivery === "both") {
-          const { subject, html } = buildMonthlyRoiEmail({
-            receptionistName,
-            businessName: biz.name,
+          const emergencyCalls = monthCalls.filter((c) => c.transferRequested).length;
+          const spanishCalls = monthCalls.filter((c) => c.language === "es").length;
+
+          const [apptResult] = await db
+            .select({ count: sql<number>`COUNT(*)` })
+            .from(appointments)
+            .where(
+              and(
+                eq(appointments.businessId, biz.id),
+                gte(appointments.createdAt, monthStart),
+                lt(appointments.createdAt, thisMonthStart),
+              ),
+            );
+
+          const [custResult] = await db
+            .select({ count: sql<number>`COUNT(*)` })
+            .from(customers)
+            .where(
+              and(
+                eq(customers.businessId, biz.id),
+                gte(customers.createdAt, monthStart),
+                lt(customers.createdAt, thisMonthStart),
+                sql`${customers.deletedAt} IS NULL`,
+              ),
+            );
+
+          // Previous month calls for MoM
+          const [prevResult] = await db
+            .select({ count: sql<number>`COUNT(*)` })
+            .from(calls)
+            .where(
+              and(
+                eq(calls.businessId, biz.id),
+                gte(calls.createdAt, prevMonthStart),
+                lt(calls.createdAt, monthStart),
+              ),
+            );
+
+          const stats = calculateMonthlyStats({
+            totalCalls: monthCalls.length,
+            afterHoursCalls,
+            appointmentsBooked: apptResult?.count ?? 0,
+            emergencyCalls,
+            newCustomers: custResult?.count ?? 0,
+            prevMonthCalls: prevResult?.count ?? 0,
+            spanishCalls,
+            businessType: biz.type,
+            avgJobValueOverride: biz.avgJobValue,
+          });
+
+          let emailSentAt: string | null = null;
+          let smsSentAt: string | null = null;
+          let resendId: string | null = null;
+
+          // ── Send Email ──
+          if (delivery === "email" || delivery === "both") {
+            const { subject, html } = buildMonthlyRoiEmail({
+              receptionistName,
+              businessName: biz.name,
+              monthLabel,
+              stats,
+              dashboardUrl: `${dashboardBase}/dashboard`,
+            });
+
+            const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+
+            const { data, error } = await resend.emails.send({
+              from,
+              replyTo: "hello@calltide.app",
+              to: biz.ownerEmail,
+              subject,
+              html,
+            });
+
+            if (error) {
+              reportError(`[monthly-roi] Email failed for ${biz.id}`, error);
+            } else {
+              emailSentAt = new Date().toISOString();
+              resendId = data?.id ?? null;
+            }
+          }
+
+          // ── Send SMS ──
+          if ((delivery === "sms" || delivery === "both") && biz.ownerPhone) {
+            try {
+              const smsBody = buildMonthlyRoiSms({ receptionistName, stats, monthLabel });
+              const twilio = getTwilioClient();
+              await twilio.messages.create({
+                to: biz.ownerPhone,
+                from: env.TWILIO_PHONE_NUMBER,
+                body: smsBody,
+              });
+              smsSentAt = new Date().toISOString();
+            } catch (smsErr) {
+              reportError(`[monthly-roi] SMS failed for ${biz.id}`, smsErr);
+            }
+          }
+
+          // ── Record digest ──
+          await db.insert(monthlyDigests).values({
+            businessId: biz.id,
+            monthKey,
             monthLabel,
             stats,
-            dashboardUrl: `${dashboardBase}/dashboard`,
+            emailSentAt,
+            smsSentAt,
+            resendId,
           });
 
-          const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
-
-          const { data, error } = await resend.emails.send({
-            from,
-            replyTo: "hello@calltide.app",
-            to: biz.ownerEmail,
-            subject,
-            html,
-          });
-
-          if (error) {
-            reportError(`[monthly-roi] Email failed for ${biz.id}`, error);
-          } else {
-            emailSentAt = new Date().toISOString();
-            resendId = data?.id ?? null;
-          }
+          sent++;
+        } catch (err) {
+          errors++;
+          reportError(`[monthly-roi] Error for ${biz.id}`, err);
         }
-
-        // ── Send SMS ──
-        if ((delivery === "sms" || delivery === "both") && biz.ownerPhone) {
-          try {
-            const smsBody = buildMonthlyRoiSms({ receptionistName, stats, monthLabel });
-            const twilio = getTwilioClient();
-            await twilio.messages.create({
-              to: biz.ownerPhone,
-              from: env.TWILIO_PHONE_NUMBER,
-              body: smsBody,
-            });
-            smsSentAt = new Date().toISOString();
-          } catch (smsErr) {
-            reportError(`[monthly-roi] SMS failed for ${biz.id}`, smsErr);
-          }
-        }
-
-        // ── Record digest ──
-        await db.insert(monthlyDigests).values({
-          businessId: biz.id,
-          monthKey,
-          monthLabel,
-          stats,
-          emailSentAt,
-          smsSentAt,
-          resendId,
-        });
-
-        sent++;
-      } catch (err) {
-        errors++;
-        reportError(`[monthly-roi] Error for ${biz.id}`, err);
       }
-    }
 
-    return NextResponse.json({
-      success: true,
-      total: activeBiz.length,
-      sent,
-      skipped,
-      errors,
-    });
-  } catch (err) {
-    reportError("[monthly-roi] Fatal error", err);
-    return NextResponse.json({ error: "Monthly ROI report failed" }, { status: 500 });
-  }
+      return NextResponse.json({
+        success: true,
+        total: activeBiz.length,
+        sent,
+        skipped,
+        errors,
+      });
+    } catch (err) {
+      reportError("[monthly-roi] Fatal error", err);
+      return NextResponse.json({ error: "Monthly ROI report failed" }, { status: 500 });
+    }
+  });
 }
