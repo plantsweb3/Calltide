@@ -153,9 +153,7 @@ const CATEGORIES = [
     features: [
       { icon: iconRefreshCw, title: "Customer Recall", desc: "Automatically re-engage past customers for seasonal maintenance, annual inspections, or follow-up work. Turns one-time jobs into recurring revenue." },
       { icon: icons.star, title: "Google Review Requests", desc: "After a completed job, Maria texts the customer asking for a Google review. Builds your online reputation on autopilot." },
-      { icon: iconMail, title: "Weekly Digest", desc: "Every Monday, get a comprehensive email with last week's calls, appointments, estimates, revenue recovered, and key metrics." },
-      { icon: icons.message, title: "Daily Summary SMS", desc: "A quick text each morning with today's appointments, pending estimates, and anything that needs your attention." },
-      { icon: icons.barChart, title: "Monthly ROI Report", desc: "Detailed monthly report showing calls answered, revenue recovered, missed call recovery rate, and your total ROI on Calltide." },
+      { icon: iconMail, title: "Weekly Digest", desc: "Your dashboard shows a comprehensive weekly summary — calls, appointments, estimates, revenue recovered, and key metrics at a glance." },
       { icon: icons.users, title: "Partner Referral Network", desc: "Get referrals from other trades when they can't handle a job. A plumber refers HVAC leads, an electrician refers plumbing leads." },
       { icon: iconPhoneOutgoing, title: "Outbound Call Automation", desc: "Maria makes outbound calls for appointment confirmations, follow-ups, and customer re-engagement — not just inbound." },
     ],
@@ -178,7 +176,7 @@ const CATEGORIES = [
     label: "Scheduling",
     icon: icons.calendar,
     features: [
-      { icon: icons.calendar, title: "Google Calendar Sync", desc: "Connects to your Google Calendar. Maria checks availability in real-time and books appointments without double-booking." },
+      { icon: icons.calendar, title: "Appointment Management", desc: "Maria books, reschedules, and cancels appointments through natural conversation. Your schedule stays organized without any manual entry." },
       { icon: icons.mic, title: "Voice Booking", desc: "Callers book appointments naturally through conversation — no app downloads, no online forms, no hold music." },
       { icon: icons.message, title: "SMS Confirmations", desc: "Instant text confirmation sent to the caller with appointment details, your business info, and the service address." },
       { icon: icons.bell, title: "Appointment Reminders", desc: "Automated outbound reminders reduce no-shows. Sent via SMS at configurable intervals before the appointment." },
@@ -190,8 +188,7 @@ const CATEGORIES = [
     icon: icons.kanban,
     features: [
       { icon: icons.users, title: "Auto-Populated CRM", desc: "Every caller becomes a customer record automatically. Phone, name, call history, appointments, and notes — all in one place." },
-      { icon: icons.kanban, title: "Estimate Pipeline (Kanban)", desc: "Track estimates from request to signed. Drag-and-drop Kanban board built for service businesses." },
-      { icon: icons.barChart, title: "QA Scoring + Sentiment Analysis", desc: "Every call gets an AI quality score and sentiment rating. Spot trends, identify training opportunities, and track satisfaction." },
+      { icon: icons.kanban, title: "Estimate Pipeline", desc: "Track every estimate from request to signed. See status, follow-up history, and close rates across all your jobs." },
       { icon: icons.brain, title: "AI-Powered Call Summaries", desc: "Claude AI reads the transcript and generates a concise summary with action items. Know what happened without listening to the call." },
       { icon: iconUpload, title: "CSV Import", desc: "Import your existing customer database from any CRM or spreadsheet. Calltide maps the fields and gives Maria full context from day one." },
     ],
@@ -202,8 +199,7 @@ const CATEGORIES = [
     icon: icons.layout,
     features: [
       { icon: icons.layout, title: "Dashboard + Analytics", desc: "Real-time metrics: calls answered, appointments booked, revenue recovered, response times, and trends over time." },
-      { icon: icons.creditCard, title: "Stripe Billing", desc: "Integrated payment processing via Stripe. Subscription management, billing portal, and automatic invoicing." },
-      { icon: icons.refresh, title: "Payment Recovery (Dunning)", desc: "Automated dunning sequences recover failed payments. Email, SMS, and grace periods before any service interruption." },
+      { icon: icons.creditCard, title: "Billing Portal", desc: "Manage your subscription, view invoices, and update payment details — all from your dashboard via Stripe's secure billing portal." },
       { icon: icons.gift, title: "Referral Program ($497 Credit)", desc: "Refer another business and earn a full month free ($497 credit). They get 50% off their first month." },
       { icon: iconMapPin, title: "Multi-Location Support", desc: "Manage multiple business locations from one account. Each location gets its own number, settings, and reporting." },
       { icon: icons.activity, title: "Status Page + Incident Engine", desc: "Public status page shows real-time service health. Automatic incident detection, escalation, and postmortem generation." },
@@ -216,9 +212,7 @@ const CATEGORIES = [
     features: [
       { icon: icons.shield, title: "GDPR / CCPA / TCPA Compliant", desc: "Full regulatory compliance out of the box. Consent tracking, data retention policies, and opt-out handling." },
       { icon: icons.mic, title: "Recording Disclosure", desc: "Automatic recording disclosure at the start of every call, configurable per jurisdiction. Full audit trail." },
-      { icon: icons.fileText, title: "DSAR (Data Subject Access Requests)", desc: "Built-in workflow for handling data access and deletion requests. Respond within regulatory timelines." },
       { icon: icons.key, title: "Magic Link Auth (Passwordless)", desc: "No passwords to remember or steal. Secure magic link login via email with single-use tokens and expiry." },
-      { icon: icons.link, title: "Webhook Verification", desc: "HMAC-SHA256 signature verification on all inbound webhooks. No unsigned requests reach your business data." },
     ],
   },
 ];
@@ -239,7 +233,7 @@ export default function PlatformClient() {
             The Complete AI Front Office
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-400">
-            55+ features that answer calls, generate estimates, recover missed calls, and grow your business.
+            Every feature you need to answer calls, generate estimates, recover missed calls, and grow your business.
           </p>
         </div>
       </section>
@@ -338,7 +332,7 @@ export default function PlatformClient() {
       <section className="px-6 sm:px-8 py-20 sm:py-28" style={{ background: "#0f1729" }}>
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="reveal text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-            55+ features. One plan. $497/month.
+            Everything included. One plan. $497/month.
           </h2>
           <p className="mt-4 text-base text-slate-400">
             No tiers, no upsells. Everything on this page is included.
