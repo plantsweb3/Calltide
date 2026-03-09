@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { PHONE, PHONE_TEL, BOOKING_URL } from "@/lib/marketing/translations";
-import { useScrollReveal } from "@/lib/marketing/hooks";
 
 /* ── Lucide-style SVG icons ── */
 const icons = {
@@ -219,7 +218,6 @@ const CATEGORIES = [
 
 export default function PlatformClient() {
   const [activeTab, setActiveTab] = useState("revenue");
-  useScrollReveal();
 
   const activeCategory = CATEGORIES.find((c) => c.id === activeTab) ?? CATEGORIES[0];
 
@@ -300,7 +298,7 @@ export default function PlatformClient() {
       {/* Trade Examples */}
       <section className="px-6 sm:px-8 py-24 sm:py-32" style={{ background: "#111a2e" }}>
         <div className="mx-auto max-w-5xl">
-          <div className="reveal text-center mb-14">
+          <div className="text-center mb-14">
             <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">See It In Action</p>
             <h2 className="mt-4 text-[28px] font-extrabold tracking-tight text-white sm:text-[36px]">
               How Maria Handles Real Calls
@@ -331,7 +329,7 @@ export default function PlatformClient() {
       {/* Bottom CTAs */}
       <section className="px-6 sm:px-8 py-20 sm:py-28" style={{ background: "#0f1729" }}>
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="reveal text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+          <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
             Everything included. One plan. $497/month.
           </h2>
           <p className="mt-4 text-base text-slate-400">
