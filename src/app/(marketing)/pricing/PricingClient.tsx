@@ -7,29 +7,47 @@ import { SignupForm } from "@/components/marketing/SignupForm";
 import { trackViewContent } from "@/lib/tracking";
 
 const FEATURES_COL1 = [
-  "Unlimited calls, EN/ES auto-detection",
+  "Unlimited calls — English & Spanish",
+  "AI job intake & detail collection",
+  "AI estimate generation",
+  "Job cards + photo intake",
+  "Owner response loop (one-tap approve)",
+  "Missed call recovery SMS",
   "Appointment booking (Google Calendar)",
-  "SMS confirmations + notifications",
+  "SMS confirmations + reminders",
   "Emergency detection + live transfer",
   "After-hours intelligent routing",
   "Returning caller recognition",
-  "Auto-populated customer database",
-  "Estimate pipeline (Kanban board)",
+  "Auto-populated CRM",
+  "Estimate pipeline (Kanban)",
   "Call recordings + transcripts",
   "AI-powered call summaries",
 ];
 
 const FEATURES_COL2 = [
-  "Call QA scoring + sentiment analysis",
+  "Estimate follow-up automation",
+  "Customer recall & reactivation",
+  "Google review requests",
+  "Weekly digest + daily summary SMS",
+  "Monthly ROI report",
+  "CSV import",
+  "Multi-location support",
+  "QA scoring + sentiment analysis",
   "Personality customization",
   "NPS surveys with auto-actions",
   "Referral program ($497 credit)",
-  "Full client dashboard + analytics",
-  "Bilingual help center",
+  "Full dashboard + analytics",
   "Status page + incident engine",
   "Payment recovery (dunning)",
-  "Passwordless login (magic link)",
   "GDPR/CCPA/TCPA compliant",
+];
+
+const SOFTWARE_COSTS = [
+  { name: "Answering service", cost: "$700–$1,600/mo" },
+  { name: "CRM", cost: "$50–$150/mo" },
+  { name: "Estimating tool", cost: "$50–$200/mo" },
+  { name: "Follow-up automation", cost: "$100–$300/mo" },
+  { name: "Review management", cost: "$50–$100/mo" },
 ];
 
 const FAQS = [
@@ -44,6 +62,14 @@ const FAQS = [
   {
     q: "What if I need help setting up?",
     a: "We walk you through everything. Most businesses are live in 24 hours.",
+  },
+  {
+    q: "Can Maria generate estimates?",
+    a: "Yes. She collects job details during the call, generates a price range based on your pricing rules, and texts it to you for one-tap approval before sending it to the customer.",
+  },
+  {
+    q: "What's included that I'd normally need separate software for?",
+    a: "Answering service, CRM, estimating tool, follow-up automation, review management, appointment booking, and analytics. Calltide replaces $950–$2,350/month in separate software subscriptions.",
   },
 ];
 
@@ -235,6 +261,40 @@ export default function PricingClient() {
           <p className="text-lg text-slate-400">
             Maria costs <span className="font-semibold text-white">$497/month</span>. And she never calls in sick.
           </p>
+        </div>
+      </section>
+
+      {/* Software Cost Anchoring */}
+      <section className="px-6 sm:px-8 py-20 sm:py-28" style={{ background: "#111a2e" }}>
+        <div className="reveal mx-auto max-w-3xl">
+          <h2 className="text-center text-2xl font-extrabold tracking-tight text-white sm:text-3xl mb-10">
+            Software Calltide Replaces
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {SOFTWARE_COSTS.map((item) => (
+              <div
+                key={item.name}
+                className="rounded-xl px-5 py-4 text-center"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <p className="text-sm font-medium text-slate-400">{item.name}</p>
+                <p className="mt-1 text-lg font-extrabold text-white">{item.cost}</p>
+              </div>
+            ))}
+            <div
+              className="rounded-xl px-5 py-4 text-center sm:col-span-2 lg:col-span-3"
+              style={{
+                background: "rgba(212,168,67,0.08)",
+                border: "1px solid rgba(212,168,67,0.2)",
+              }}
+            >
+              <p className="text-sm font-medium text-slate-400">Total: $950–$2,350/mo</p>
+              <p className="mt-1 text-lg font-extrabold" style={{ color: "#d4a843" }}>Or get all of it for $497/month.</p>
+            </div>
+          </div>
         </div>
       </section>
 

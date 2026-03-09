@@ -47,26 +47,40 @@ const translations = {
     title: "Calculate Your Missed Call Cost",
     jobLabel: "What's your average job value?",
     callsLabel: "How many calls do you miss per week?",
-    losing: "You're losing",
+    losing: "Total recovered",
     costs: "Calltide costs",
     roi: "Your ROI",
     perMonth: "/month",
     return: "return",
     annual: (amount: string) => <>That&apos;s <span className="font-extrabold text-white">{amount} saved per year</span> after Calltide.</>,
     cta: "Stop Losing Money",
+    showFull: "Show Full ROI",
+    hideFull: "Hide Full ROI",
+    followUpLabel: "Estimates that close with follow-up",
+    recallLabel: "Monthly value from reactivated customers",
+    missedCalls: "Missed calls",
+    followUps: "Follow-ups",
+    recalls: "Recalls",
   },
   es: {
     heading: "Calculadora de ROI",
     title: "Calcula el Costo de tus Llamadas Perdidas",
     jobLabel: "¿Cuál es el valor promedio de tu trabajo?",
     callsLabel: "¿Cuántas llamadas pierdes por semana?",
-    losing: "Estás perdiendo",
+    losing: "Total recuperado",
     costs: "Calltide cuesta",
     roi: "Tu ROI",
     perMonth: "/mes",
     return: "retorno",
     annual: (amount: string) => <>Eso es <span className="font-extrabold text-white">{amount} ahorrados al año</span> con Calltide.</>,
     cta: "Deja de Perder Dinero",
+    showFull: "Ver ROI Completo",
+    hideFull: "Ocultar ROI Completo",
+    followUpLabel: "Presupuestos que cierran con seguimiento",
+    recallLabel: "Valor mensual de clientes reactivados",
+    missedCalls: "Llamadas perdidas",
+    followUps: "Seguimientos",
+    recalls: "Reactivaciones",
   },
 };
 
@@ -77,23 +91,37 @@ function formatDollars(n: number, lang: "en" | "es" = "en") {
 export function ROICalculator({ lang = "en" }: { lang?: "en" | "es" }) {
   const [jobValue, setJobValue] = useState(800);
   const [missedCalls, setMissedCalls] = useState(3);
+  const [showFull, setShowFull] = useState(false);
+  const [followUpRate, setFollowUpRate] = useState(25);
+  const [recallValue, setRecallValue] = useState(500);
 
   const t = translations[lang];
 
-  const missedRevenuePerMonth = Math.round(jobValue * missedCalls * 4.33);
+  const missedRevenue = Math.round(jobValue * missedCalls * 4.33);
+  const followUpRevenue = showFull ? Math.round(missedCalls * 2 * (followUpRate / 100) * jobValue * 4.33 * 0.3) : 0;
+  const recallRevenue = showFull ? recallValue : 0;
+  const totalRecovered = missedRevenue + followUpRevenue + recallRevenue;
   const calltideCost = 497;
-  const netSavings = missedRevenuePerMonth - calltideCost;
-  const roiMultiple = missedRevenuePerMonth > 0 ? Math.round(((missedRevenuePerMonth - calltideCost) / calltideCost) * 100) / 100 : 0;
+  const netSavings = totalRecovered - calltideCost;
+  const roiMultiple = totalRecovered > 0 ? Math.round(((totalRecovered - calltideCost) / calltideCost) * 100) / 100 : 0;
   const roiDisplay = Math.max(0, Math.round(roiMultiple * 10) / 10);
   const annualSavings = Math.max(0, netSavings * 12);
 
-  const animatedLoss = useAnimatedNumber(missedRevenuePerMonth);
+  const animatedTotal = useAnimatedNumber(totalRecovered);
   const animatedRoi = useAnimatedNumber(Math.round(roiDisplay * 10));
   const animatedAnnual = useAnimatedNumber(annualSavings);
 
   // Track fill percentage for sliders
   const jobPercent = ((jobValue - 200) / (10000 - 200)) * 100;
   const callsPercent = ((missedCalls - 1) / (20 - 1)) * 100;
+  const followUpPercent = ((followUpRate - 5) / (60 - 5)) * 100;
+  const recallPercent = (recallValue / 3000) * 100;
+
+  // Breakdown proportions
+  const totalForBar = missedRevenue + followUpRevenue + recallRevenue || 1;
+  const missedPct = Math.round((missedRevenue / totalForBar) * 100);
+  const followUpPct = Math.round((followUpRevenue / totalForBar) * 100);
+  const recallPct = 100 - missedPct - followUpPct;
 
   return (
     <div className="reveal">
@@ -163,16 +191,87 @@ export function ROICalculator({ lang = "en" }: { lang?: "en" | "es" }) {
           </div>
         </div>
 
+        {/* Show Full ROI toggle */}
+        <div className="mt-8 text-center">
+          <button
+            onClick={() => setShowFull(!showFull)}
+            className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition-all"
+            style={{
+              background: showFull ? "rgba(212,168,67,0.15)" : "rgba(255,255,255,0.06)",
+              color: showFull ? "#d4a843" : "#94a3b8",
+              border: showFull ? "1px solid rgba(212,168,67,0.3)" : "1px solid rgba(255,255,255,0.1)",
+            }}
+          >
+            {showFull ? t.hideFull : t.showFull}
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transform: showFull ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Additional sliders */}
+        {showFull && (
+          <div className="mt-8 grid gap-10 sm:grid-cols-2">
+            {/* Follow-up Rate */}
+            <div>
+              <div className="flex items-baseline justify-between mb-3">
+                <label className="text-sm font-medium text-slate-400">{t.followUpLabel}</label>
+                <span className="text-lg font-extrabold text-white tabular-nums">{followUpRate}%</span>
+              </div>
+              <div className="relative">
+                <input
+                  type="range"
+                  min={5}
+                  max={60}
+                  step={5}
+                  value={followUpRate}
+                  onChange={(e) => setFollowUpRate(+e.target.value)}
+                  className="roi-slider w-full"
+                  style={{ "--fill": `${followUpPercent}%` } as React.CSSProperties}
+                />
+              </div>
+              <div className="flex justify-between mt-1.5">
+                <span className="text-[11px] text-slate-600">5%</span>
+                <span className="text-[11px] text-slate-600">60%</span>
+              </div>
+            </div>
+
+            {/* Recall Value */}
+            <div>
+              <div className="flex items-baseline justify-between mb-3">
+                <label className="text-sm font-medium text-slate-400">{t.recallLabel}</label>
+                <span className="text-lg font-extrabold text-white tabular-nums">{formatDollars(recallValue, lang)}</span>
+              </div>
+              <div className="relative">
+                <input
+                  type="range"
+                  min={0}
+                  max={3000}
+                  step={100}
+                  value={recallValue}
+                  onChange={(e) => setRecallValue(+e.target.value)}
+                  className="roi-slider w-full"
+                  style={{ "--fill": `${recallPercent}%` } as React.CSSProperties}
+                />
+              </div>
+              <div className="flex justify-between mt-1.5">
+                <span className="text-[11px] text-slate-600">$0</span>
+                <span className="text-[11px] text-slate-600">$3,000</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Divider */}
         <div className="my-10" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }} />
 
         {/* Output numbers */}
         <div className="grid gap-8 sm:grid-cols-3 text-center">
-          {/* Missed Revenue */}
+          {/* Total Recovered */}
           <div>
             <p className="text-sm font-medium text-slate-500 mb-2">{t.losing}</p>
-            <p className="text-4xl font-black tracking-tight tabular-nums md:text-6xl" style={{ color: "#f97316" }}>
-              {formatDollars(animatedLoss, lang)}
+            <p className="text-4xl font-black tracking-tight tabular-nums md:text-6xl" style={{ color: "#4ade80" }}>
+              {formatDollars(animatedTotal, lang)}
             </p>
             <p className="text-sm text-slate-500 mt-1">{t.perMonth}</p>
           </div>
@@ -195,6 +294,31 @@ export function ROICalculator({ lang = "en" }: { lang?: "en" | "es" }) {
             <p className="text-sm text-slate-500 mt-1">{t.return}</p>
           </div>
         </div>
+
+        {/* Breakdown bar */}
+        {showFull && totalRecovered > 0 && (
+          <div className="mt-8">
+            <div className="flex h-3 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+              <div className="transition-all duration-500" style={{ width: `${missedPct}%`, background: "#4ade80" }} />
+              <div className="transition-all duration-500" style={{ width: `${followUpPct}%`, background: "#d4a843" }} />
+              <div className="transition-all duration-500" style={{ width: `${recallPct}%`, background: "#60a5fa" }} />
+            </div>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
+              <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#4ade80" }} />
+                {t.missedCalls} ({formatDollars(missedRevenue, lang)})
+              </span>
+              <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#d4a843" }} />
+                {t.followUps} ({formatDollars(followUpRevenue, lang)})
+              </span>
+              <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#60a5fa" }} />
+                {t.recalls} ({formatDollars(recallRevenue, lang)})
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Annual savings */}
         <div className="mt-10 text-center">

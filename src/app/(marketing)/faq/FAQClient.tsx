@@ -59,6 +59,35 @@ const content = {
         ],
       },
       {
+        title: "Features & Capabilities",
+        items: [
+          {
+            q: "Can Maria generate estimates?",
+            a: "Yes. She collects job details during the call — problem type, property info, urgency — then generates a price range based on your pricing rules. The estimate is texted to you for one-tap approval before being sent to the customer.",
+          },
+          {
+            q: "What are job cards?",
+            a: "Every call creates a job card with the caller's info, job details, photos, estimate, and status. Think of it as an automatic work order for every inquiry — no manual data entry required.",
+          },
+          {
+            q: "How do estimate follow-ups work?",
+            a: "Maria automatically follows up on estimates that haven't been responded to. You set the timing and frequency. She re-engages the lead via text, keeping your pipeline warm without any manual effort.",
+          },
+          {
+            q: "Can I import my existing customer data?",
+            a: "Yes. Upload a CSV from your current CRM or spreadsheet. Calltide maps the fields and imports your customers so Maria has full context — names, addresses, past jobs — from day one.",
+          },
+          {
+            q: "What happens if a caller hangs up?",
+            a: "Maria auto-texts them within 60 seconds with a friendly message and a link to continue the conversation. Most callers re-engage, recovering jobs that would otherwise go to a competitor.",
+          },
+          {
+            q: "Does Maria re-engage past customers?",
+            a: "Yes. The customer recall feature automatically reaches out to past customers for seasonal maintenance, annual inspections, or follow-up work — turning one-time jobs into recurring revenue.",
+          },
+        ],
+      },
+      {
         title: "Billing & Pricing",
         items: [
           {
@@ -139,6 +168,35 @@ const content = {
           {
             q: "¿Realmente agenda citas?",
             a: "Sí. Se conecta a tu calendario y agenda citas en tiempo real basándose en tu disponibilidad. Los llamantes también reciben una confirmación SMS instantánea con los detalles de la cita.",
+          },
+        ],
+      },
+      {
+        title: "Funciones y Capacidades",
+        items: [
+          {
+            q: "¿Puede Maria generar presupuestos?",
+            a: "Sí. Recopila detalles del trabajo durante la llamada — tipo de problema, información de la propiedad, urgencia — y genera un rango de precio basado en tus reglas de precios. El presupuesto se te envía por texto para aprobación con un toque antes de enviarlo al cliente.",
+          },
+          {
+            q: "¿Qué son las tarjetas de trabajo?",
+            a: "Cada llamada crea una tarjeta de trabajo con la información del llamante, detalles del trabajo, fotos, presupuesto y estado. Piénsalo como una orden de trabajo automática para cada consulta — sin entrada manual de datos.",
+          },
+          {
+            q: "¿Cómo funcionan los seguimientos de presupuestos?",
+            a: "Maria automáticamente da seguimiento a presupuestos que no han sido respondidos. Tú defines el tiempo y frecuencia. Ella re-contacta al prospecto por texto, manteniendo tu pipeline activo sin esfuerzo manual.",
+          },
+          {
+            q: "¿Puedo importar mis datos de clientes existentes?",
+            a: "Sí. Sube un CSV de tu CRM actual o hoja de cálculo. Calltide mapea los campos e importa tus clientes para que Maria tenga contexto completo — nombres, direcciones, trabajos anteriores — desde el primer día.",
+          },
+          {
+            q: "¿Qué pasa si un llamante cuelga?",
+            a: "Maria les envía un texto automáticamente en 60 segundos con un mensaje amigable y un enlace para continuar la conversación. La mayoría vuelve a interactuar, recuperando trabajos que de otra forma irían a la competencia.",
+          },
+          {
+            q: "¿Maria reactiva a clientes anteriores?",
+            a: "Sí. La función de reactivación de clientes contacta automáticamente a clientes anteriores para mantenimiento estacional, inspecciones anuales o trabajo de seguimiento — convirtiendo trabajos únicos en ingresos recurrentes.",
           },
         ],
       },

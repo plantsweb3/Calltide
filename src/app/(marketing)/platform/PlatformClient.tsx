@@ -91,8 +91,75 @@ function svgProps({ size = 24, className = "" }: IconProps) {
   return { className, width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
 }
 
+/* ── Additional icons for new categories ── */
+const iconPhoneMissed = (p: IconProps) => (
+  <svg {...svgProps(p)}><line x1="1" y1="1" x2="5" y2="5" /><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.81.36 1.6.7 2.35a2 2 0 01-.45 2.11" /></svg>
+);
+const iconCalculator = (p: IconProps) => (
+  <svg {...svgProps(p)}><rect x="4" y="2" width="16" height="20" rx="2" /><line x1="8" y1="6" x2="16" y2="6" /><line x1="8" y1="10" x2="8" y2="10.01" /><line x1="12" y1="10" x2="12" y2="10.01" /><line x1="16" y1="10" x2="16" y2="10.01" /><line x1="8" y1="14" x2="8" y2="14.01" /><line x1="12" y1="14" x2="12" y2="14.01" /><line x1="16" y1="14" x2="16" y2="14.01" /><line x1="8" y1="18" x2="16" y2="18" /></svg>
+);
+const iconCamera = (p: IconProps) => (
+  <svg {...svgProps(p)}><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" /><circle cx="12" cy="13" r="4" /></svg>
+);
+const iconSmartphone = (p: IconProps) => (
+  <svg {...svgProps(p)}><rect x="5" y="2" width="14" height="20" rx="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></svg>
+);
+const iconRefreshCw = (p: IconProps) => (
+  <svg {...svgProps(p)}><polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" /><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" /></svg>
+);
+const iconTrendingUp = (p: IconProps) => (
+  <svg {...svgProps(p)}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
+);
+const iconMail = (p: IconProps) => (
+  <svg {...svgProps(p)}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
+);
+const iconUpload = (p: IconProps) => (
+  <svg {...svgProps(p)}><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+);
+const iconPhoneOutgoing = (p: IconProps) => (
+  <svg {...svgProps(p)}><polyline points="23 7 23 1 17 1" /><line x1="16" y1="8" x2="23" y2="1" /><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.81.36 1.6.7 2.35a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.75.34 1.54.57 2.35.7A2 2 0 0122 16.92z" /></svg>
+);
+const iconMapPin = (p: IconProps) => (
+  <svg {...svgProps(p)}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg>
+);
+
+/* ── Trade example scenarios ── */
+const TRADE_EXAMPLES = [
+  { trade: "Plumbing", emoji: "🔧", scenario: "\"I've got water leaking from under the kitchen sink.\" Maria collects the address, asks for photos, generates a $250–$400 estimate for a supply line repair, and texts it to the owner for one-tap approval." },
+  { trade: "HVAC", emoji: "❄️", scenario: "\"My AC stopped cooling and it's 95 degrees.\" Maria flags the urgency, collects the unit age and model, generates a diagnostic visit estimate, and books the next available slot on the owner's calendar." },
+  { trade: "Electrical", emoji: "⚡", scenario: "\"Half my outlets stopped working after the storm.\" Maria asks about the panel and breaker status, generates an estimate for a circuit troubleshoot, and sends the owner a text with photos the caller took of the panel." },
+  { trade: "Roofing", emoji: "🏠", scenario: "\"I've got a leak in my attic after the rain.\" Maria collects the roof age, damage area, and insurance info, generates an inspection estimate, and schedules a visit — all within the same call." },
+];
+
 /* ── Feature categories ── */
 const CATEGORIES = [
+  {
+    id: "revenue",
+    label: "Revenue Recovery",
+    icon: iconPhoneMissed,
+    features: [
+      { icon: iconPhoneMissed, title: "Missed Call Recovery SMS", desc: "When a caller hangs up, Maria auto-texts them within 60 seconds to bring them back. Recovers jobs that would otherwise go to competitors." },
+      { icon: icons.fileText, title: "AI Job Intake", desc: "Maria asks the right questions — problem type, property address, urgency, photos — and creates a complete job card automatically." },
+      { icon: iconCalculator, title: "AI Estimate Generation", desc: "Based on job details and your pricing rules, Maria generates a price range on the call and texts it to the customer for review." },
+      { icon: iconCamera, title: "Job Cards with Photo Intake", desc: "Callers text photos of the job site. Images attach to the job card alongside all details, giving you full context before arriving." },
+      { icon: iconSmartphone, title: "Owner Response Loop", desc: "You get a text with the job summary and estimate. Approve, adjust, or decline with one tap — the customer is notified instantly." },
+      { icon: iconRefreshCw, title: "Estimate Follow-Up Automation", desc: "Cold estimates get automatic follow-ups on a schedule you set. Maria re-engages leads that haven't responded." },
+    ],
+  },
+  {
+    id: "growth",
+    label: "Growth & Automation",
+    icon: iconTrendingUp,
+    features: [
+      { icon: iconRefreshCw, title: "Customer Recall", desc: "Automatically re-engage past customers for seasonal maintenance, annual inspections, or follow-up work. Turns one-time jobs into recurring revenue." },
+      { icon: icons.star, title: "Google Review Requests", desc: "After a completed job, Maria texts the customer asking for a Google review. Builds your online reputation on autopilot." },
+      { icon: iconMail, title: "Weekly Digest", desc: "Every Monday, get a comprehensive email with last week's calls, appointments, estimates, revenue recovered, and key metrics." },
+      { icon: icons.message, title: "Daily Summary SMS", desc: "A quick text each morning with today's appointments, pending estimates, and anything that needs your attention." },
+      { icon: icons.barChart, title: "Monthly ROI Report", desc: "Detailed monthly report showing calls answered, revenue recovered, missed call recovery rate, and your total ROI on Calltide." },
+      { icon: icons.users, title: "Partner Referral Network", desc: "Get referrals from other trades when they can't handle a job. A plumber refers HVAC leads, an electrician refers plumbing leads." },
+      { icon: iconPhoneOutgoing, title: "Outbound Call Automation", desc: "Maria makes outbound calls for appointment confirmations, follow-ups, and customer re-engagement — not just inbound." },
+    ],
+  },
   {
     id: "calls",
     label: "Calls & Voice",
@@ -126,7 +193,7 @@ const CATEGORIES = [
       { icon: icons.kanban, title: "Estimate Pipeline (Kanban)", desc: "Track estimates from request to signed. Drag-and-drop Kanban board built for service businesses." },
       { icon: icons.barChart, title: "QA Scoring + Sentiment Analysis", desc: "Every call gets an AI quality score and sentiment rating. Spot trends, identify training opportunities, and track satisfaction." },
       { icon: icons.brain, title: "AI-Powered Call Summaries", desc: "Claude AI reads the transcript and generates a concise summary with action items. Know what happened without listening to the call." },
-      { icon: icons.star, title: "NPS Surveys with Auto-Actions", desc: "Automated Net Promoter Score surveys after calls. Detractors get flagged, promoters get referral invitations." },
+      { icon: iconUpload, title: "CSV Import", desc: "Import your existing customer database from any CRM or spreadsheet. Calltide maps the fields and gives Maria full context from day one." },
     ],
   },
   {
@@ -138,7 +205,7 @@ const CATEGORIES = [
       { icon: icons.creditCard, title: "Stripe Billing", desc: "Integrated payment processing via Stripe. Subscription management, billing portal, and automatic invoicing." },
       { icon: icons.refresh, title: "Payment Recovery (Dunning)", desc: "Automated dunning sequences recover failed payments. Email, SMS, and grace periods before any service interruption." },
       { icon: icons.gift, title: "Referral Program ($497 Credit)", desc: "Refer another business and earn a full month free ($497 credit). They get 50% off their first month." },
-      { icon: icons.helpCircle, title: "Bilingual Help Center", desc: "28+ help articles in English and Spanish. Searchable, categorized, and accessible from the dashboard." },
+      { icon: iconMapPin, title: "Multi-Location Support", desc: "Manage multiple business locations from one account. Each location gets its own number, settings, and reporting." },
       { icon: icons.activity, title: "Status Page + Incident Engine", desc: "Public status page shows real-time service health. Automatic incident detection, escalation, and postmortem generation." },
     ],
   },
@@ -169,10 +236,10 @@ export default function PlatformClient() {
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">Platform</p>
           <h1 className="mt-4 text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[52px]">
-            The Complete AI Receptionist Platform
+            The Complete AI Front Office
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-400">
-            Everything you need to never miss a call again — in one place.
+            55+ features that answer calls, generate estimates, recover missed calls, and grow your business.
           </p>
         </div>
       </section>
@@ -236,11 +303,42 @@ export default function PlatformClient() {
         </div>
       </section>
 
+      {/* Trade Examples */}
+      <section className="px-6 sm:px-8 py-24 sm:py-32" style={{ background: "#111a2e" }}>
+        <div className="mx-auto max-w-5xl">
+          <div className="reveal text-center mb-14">
+            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">See It In Action</p>
+            <h2 className="mt-4 text-[28px] font-extrabold tracking-tight text-white sm:text-[36px]">
+              How Maria Handles Real Calls
+            </h2>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {TRADE_EXAMPLES.map((ex) => (
+              <div
+                key={ex.trade}
+                className="reveal rounded-2xl p-8 transition-all duration-300 hover:border-[rgba(212,168,67,0.2)]"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  backdropFilter: "blur(12px)",
+                }}
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">{ex.emoji}</span>
+                  <h3 className="text-lg font-extrabold tracking-tight text-white">{ex.trade}</h3>
+                </div>
+                <p className="text-sm leading-relaxed text-slate-400 italic">{ex.scenario}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Bottom CTAs */}
-      <section className="px-6 sm:px-8 py-20 sm:py-28" style={{ background: "#111a2e" }}>
+      <section className="px-6 sm:px-8 py-20 sm:py-28" style={{ background: "#0f1729" }}>
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="reveal text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-            One plan. Every feature. $497/month.
+            55+ features. One plan. $497/month.
           </h2>
           <p className="mt-4 text-base text-slate-400">
             No tiers, no upsells. Everything on this page is included.

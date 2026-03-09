@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 
 import { T, PHONE, PHONE_TEL, BOOKING_URL, type Lang } from "@/lib/marketing/translations";
 import { useScrolled, useScrollReveal } from "@/lib/marketing/hooks";
-import { FEATURE_ICONS, STEP_ICONS } from "@/components/marketing/icons";
+import { FEATURE_ICONS, STEP_ICONS, WORKFLOW_ICONS } from "@/components/marketing/icons";
 import { SpotlightCard } from "@/components/marketing/SpotlightCard";
 import { Counter } from "@/components/marketing/Counter";
 import { ROICalculator } from "@/components/marketing/ROICalculator";
@@ -58,7 +58,7 @@ export default function LandingPage() {
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             offers: { "@type": "Offer", price: "497", priceCurrency: "USD", priceValidUntil: "2027-12-31" },
-            description: "AI receptionist for home service businesses. Answers every call in English and Spanish, 24/7. Books appointments.",
+            description: "AI front office for home service businesses. Answers calls, generates estimates, recovers missed calls, and manages follow-ups — in English and Spanish, 24/7.",
           }),
         }}
       />
@@ -203,6 +203,50 @@ export default function LandingPage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4b. WORKFLOW — What Maria Actually Does ── */}
+      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
+        <div className="mx-auto max-w-3xl">
+          <div className="reveal text-center">
+            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">{t.workflow.label}</p>
+            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-tight text-charcoal sm:text-[44px] max-w-2xl mx-auto">
+              {t.workflow.h2}
+            </h2>
+          </div>
+
+          <div className="mt-16 relative">
+            {/* Vertical timeline line */}
+            <div className="absolute left-7 top-0 bottom-0 w-px bg-gradient-to-b from-amber/40 via-amber/20 to-transparent hidden sm:block" />
+
+            <div className="space-y-10">
+              {t.workflow.steps.map((step, i) => {
+                const StepIcon = WORKFLOW_ICONS[i];
+                return (
+                  <motion.div
+                    key={i}
+                    className="reveal flex gap-6 items-start"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-amber/30 bg-white shadow-sm">
+                      <StepIcon size={22} className="text-amber" />
+                    </div>
+                    <div className="pt-1">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-bold uppercase tracking-widest text-amber">{lang === "en" ? `Step ${i + 1}` : `Paso ${i + 1}`}</span>
+                      </div>
+                      <h3 className="mt-1 text-[20px] font-extrabold tracking-tight text-charcoal">{step.title}</h3>
+                      <p className="mt-2 text-base leading-[1.7] text-charcoal-muted">{step.desc}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
