@@ -746,8 +746,6 @@ function SetupClient() {
   const [tradeData, setTradeData] = useState<TradeData | null>(null);
 
   // Speech preview
-  const [hasSpeech, setHasSpeech] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   // Toast
   const [toastVisible, setToastVisible] = useState(false);
@@ -770,9 +768,6 @@ function SetupClient() {
     return () => {
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       if (toastInnerTimerRef.current) clearTimeout(toastInnerTimerRef.current);
-      if (typeof window !== "undefined" && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
     };
   }, []);
 
@@ -792,45 +787,6 @@ function SetupClient() {
     }, 350);
     return () => clearTimeout(timer);
   }, [step]);
-
-  // Detect speech synthesis support
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    const check = () => setHasSpeech(window.speechSynthesis.getVoices().length > 0);
-    check();
-    // Chrome loads voices async
-    window.speechSynthesis.addEventListener("voiceschanged", check);
-    return () => window.speechSynthesis.removeEventListener("voiceschanged", check);
-  }, []);
-
-  const playGreeting = useCallback(() => {
-    if (!window.speechSynthesis || isPlaying) return;
-    window.speechSynthesis.cancel();
-    const labels: Record<string, { sample: string }> = {
-      professional: { sample: t.professionalSample },
-      friendly: { sample: t.friendlySample },
-      warm: { sample: t.warmSample },
-    };
-    const text = replaceVars(labels[personalityPreset]?.sample || labels.friendly.sample, {
-      biz: bizName || t.yourBusiness,
-      name: receptionistName || "Maria",
-    });
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.95;
-    utterance.pitch = 1.1;
-    utterance.lang = lang === "es" ? "es-US" : "en-US";
-    // Try to find a female voice matching the current language
-    const voices = window.speechSynthesis.getVoices();
-    const langPrefix = lang === "es" ? "es" : "en";
-    const preferred = voices.find((v) => v.lang.startsWith(langPrefix) && v.name.toLowerCase().includes("female"))
-      || voices.find((v) => v.lang.startsWith(langPrefix) && /samantha|victoria|karen|zira|jenny|paulina|monica/i.test(v.name))
-      || voices.find((v) => v.lang.startsWith(langPrefix));
-    if (preferred) utterance.voice = preferred;
-    utterance.onstart = () => setIsPlaying(true);
-    utterance.onend = () => setIsPlaying(false);
-    utterance.onerror = () => setIsPlaying(false);
-    window.speechSynthesis.speak(utterance);
-  }, [isPlaying, personalityPreset, bizName, receptionistName, t]);
 
   // ── Initialize session ──
   useEffect(() => {
@@ -1537,14 +1493,6 @@ function SetupClient() {
                       { biz: bizName || t.yourBusiness, name: receptionistName }
                     )}&rdquo;
                   </div>
-                  {hasSpeech && (
-                    <>
-                      <button onClick={playGreeting} disabled={isPlaying} className={s.previewBtn}>
-                        {isPlaying ? "..." : `🔊 ${t.previewGreeting}`}
-                      </button>
-                      <div style={{ color: "#64748b", fontSize: 11, marginTop: 4, fontStyle: "italic" }}>{t.previewNote}</div>
-                    </>
-                  )}
                 </div>
               </div>
             )}
