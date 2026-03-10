@@ -890,7 +890,7 @@ function SetupClient() {
     <div className={s.page} onKeyDown={handleKeyDown}>
       {/* Nav */}
       <nav className={s.nav}>
-        <img src="/images/logo-inline-navy.webp" alt="Capta" className={s.logo} style={{ height: 28, width: "auto" }} />
+        <img src="/images/logo-inline-white.webp" alt="Capta" style={{ height: 28, width: "auto" }} />
         <div className={s.navRight}>
           <a href={PHONE_TEL} className={s.helpLink}>{t.questions} {PHONE}</a>
           <div className={s.langSwitch} role="radiogroup" aria-label="Language">
