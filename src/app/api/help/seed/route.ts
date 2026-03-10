@@ -953,91 +953,129 @@ Even if Maria only converts half of those missed calls into bookings, you're loo
   {
     slug: "first-month-expectations",
     categorySlug: "for-prospects",
-    title: "What to Expect in Your First Month",
+    title: "What to Expect: Setup to Live in Under an Hour",
     sortOrder: 38,
-    searchKeywords: "first month, setup, onboarding, expectations, roi, timeline, week by week, results",
+    searchKeywords: "first month, setup, onboarding, expectations, roi, timeline, getting started, results, how long",
     relatedArticles: ["what-is-capta", "missed-calls-cost-money", "tips-best-results"],
-    content: `### Week 1: Setup & Testing
+    content: `## Setup: Under an Hour
 
-**Days 1-2: Create Your Profile** (30-60 minutes)
-Fill out your business profile with your services, pricing, hours, and custom greeting. This is the foundation of everything Maria does.
+Capta is designed to go live the same day you sign up. Most contractors finish setup in 30-60 minutes.
 
-**Days 2-3: Set Your Availability** (5 minutes)
-Configure your hours and availability in your Capta settings so Maria can book appointments automatically.
+### Step 1: Build Your Receptionist (10 minutes)
+Walk through the setup wizard: enter your business name, trade, location, and services. Name your receptionist, pick her personality (professional, friendly, or warm), and customize her greeting.
 
-**Days 3-5: Forward Your Phone Number** (varies)
-Contact your phone provider and set up call forwarding to the Capta number you'll receive.
+### Step 2: Train Her on Your Business (10 minutes)
+Answer a few questions only you know: your hours, service area, whether you offer free estimates, and any topics she should avoid (like pricing or competitor discussions). She already knows your trade — you're just adding the details specific to your business.
 
-**Days 5-7: Test Maria** (5 minutes)
-Call your business number from your personal phone and have a test conversation with Maria. Ask her about your services and test appointment booking.
+### Step 3: Subscribe & Get Your Number (5 minutes)
+Choose monthly ($497/mo) or annual ($397/mo). After checkout, Capta automatically provisions a dedicated phone number for your business.
 
-**By end of Week 1:** Maria is officially live and answering your real calls.
+### Step 4: Forward Your Calls (5 minutes)
+Set up call forwarding from your existing business line:
+- **AT&T:** Dial \`*21*[your Capta number]#\`
+- **Verizon:** Dial \`*72 [your Capta number]\`
+- **T-Mobile:** Dial \`**21*[your Capta number]#\`
+- **Other carriers:** Call your provider and ask for "conditional call forwarding"
 
-### Week 2: Live Calls & Observation
+### Step 5: Test It (5 minutes)
+Call your business number from your personal phone. Maria answers. Test her — ask about your services, request an estimate, try an emergency scenario. She's live.
 
-Maria is now answering your actual calls. You're getting real data about what callers need.
+**That's it.** Maria is answering your real calls.
 
-**Your Job:**
-- Check call summaries daily
-- Look for patterns in what customers ask
-- Verify appointments are showing up in your calendar
-- Check you're receiving SMS alerts
+---
 
-**What You'll Notice:**
-Most contractors are surprised by how many calls they were missing. You may need to call some customers back for complex conversations—that's okay. Maria handled the initial contact.
+## What's Working From Day One
 
-### Week 3: Optimization
+Everything is active immediately — no phased rollout, no waiting periods. Here's what Maria does starting with your very first call:
 
-Review the calls from Week 2 and update your profile based on real calls. If callers frequently ask about something you don't list, add it. Tweak your greeting if needed.
+### Every Inbound Call
+- Answers with your custom greeting, in English or Spanish (detects automatically)
+- Collects caller info, job details, urgency level
+- Books appointments based on your availability
+- Gives ballpark pricing based on your configured service rates
+- Detects emergencies (gas leak, burst pipe, sparking outlet) and transfers to you immediately
+- Takes messages and texts you a summary instantly
+- Recognizes returning callers by name
 
-**By end of Week 3:** Maria is dialed in. Your profile is refined. She's booking smarter.
+### After the Call
+- **Job card created** — caller info, job type, description, urgency, all in one place
+- **Photo request sent** — Maria texts the caller asking for photos of the job site. Photos attach to the job card automatically.
+- **AI estimate generated** — based on the job details collected, Maria creates a price range. You confirm or adjust via text. Customer gets a real number, not "someone will call you back."
+- **Owner notification** — you get a text summary. Reply right from your phone: "Book it for Thursday" or "Tell them $2,500" and Maria follows up with the customer.
 
-### Week 4: Evaluate Results
+### Missed Call Recovery
+If a caller hangs up or the line drops, Maria auto-texts them within 60 seconds to re-engage. Most are recovered before they call your competitor.
 
-Go to **Reports**. You'll see:
-- Total calls answered
-- Appointments booked
-- Calls by time of day
-- Customer satisfaction (NPS)
-- Top services requested
+### Automated Follow-Ups
+- **Estimate follow-ups** — quotes that go cold get automatic follow-up texts and calls. Maria re-engages: "Hi, we sent you an estimate last week. Would you like to schedule the work?"
+- **Customer recall** — past customers who haven't called in a while get proactive outreach: "It's been 12 months since your last AC tune-up — want to schedule your annual maintenance?"
+- **Appointment reminders** — customers get automatic reminder calls before their appointments
 
-**Calculate Your ROI:**
-How many appointments did Maria book? What's the average job value? (Appointments × average job value) − $497 = your profit from Maria.
+### Partner Referral Network
+When someone calls asking for a service you don't offer (e.g., an electrician calls a plumbing company), Maria refers them to a trusted partner in your network. They handle the job, you get a referral fee. Revenue from calls that aren't even your trade.
 
-Most contractors find that Maria pays for herself within the first month.
+### Google Review Requests
+After a completed job, Maria automatically asks the customer for a Google review. More reviews = higher rankings = more calls.
 
-### What to Expect
+---
 
-Average results after Month 1:
-- **30–50% increase in booked appointments** (because you're answering calls you were missing)
-- **500–1,500 total calls answered** (depending on your market)
-- **50–150 appointments booked** (varies widely)
-- **NPS score of 40–60** (solid, room to improve)
+## Your Dashboard
+
+Your Capta dashboard is live from day one with 20 pages of tools:
+
+- **Overview** — call volume, revenue metrics, booking rate, activity feed
+- **Calls** — every call with recording, transcript, AI summary, and quality score
+- **Appointments** — upcoming and past, managed in your dashboard
+- **Estimates** — Kanban pipeline from new to closed, with one-click follow-up
+- **Job Cards** — structured job details with photos, ready for your crew
+- **Customers** — auto-populated CRM. Every caller becomes a profile with full history.
+- **SMS** — all text conversations in one place
+- **Partners** — manage your referral network
+- **Import** — CSV upload to bring in your existing customer list
+- **Settings** — edit hours, services, greeting, personality, pricing, custom responses, automations
+- **Billing** — plan details, invoices, Stripe portal
+
+### Reports That Come to You
+- **Daily summary SMS** — quick text every evening with today's call count and action items
+- **Weekly digest email** — Monday morning summary: calls, bookings, open estimates, revenue
+- **Monthly ROI report** — actual revenue impact with dollar amounts
+
+---
+
+## First Week: What to Watch For
+
+**Day 1-2:** Check your call summaries. See what customers are asking. If callers frequently ask about something you didn't list, add it in Settings.
+
+**Day 3-5:** Review your estimate pipeline. Follow up on any open quotes. Check that SMS alerts are coming through.
+
+**By end of Week 1:** You'll have real data on how many calls you were missing and how much revenue Maria is recovering. Most contractors are surprised by the numbers.
+
+---
+
+## First Month Results
+
+Average results after 30 days:
+- **30-50% increase in booked appointments** — because you're answering calls you were missing
+- **Missed calls recovered** — callers who would have gone to your competitor are now in your pipeline
+- **Estimates generated and followed up** — no more quotes dying in your voicemail
+- **Past customers reactivated** — dormant customers coming back for maintenance and new work
+- **Clear ROI** — your dashboard shows exactly what Maria recovered vs. her $497/month cost
 
 ### If Results Are Lower Than Expected
 
-Don't panic. Some contractors see lower booking rates in Month 1 because:
-- Your profile wasn't complete enough (update it)
-- Your greeting needs work (test and refine)
-- Your calendar wasn't synced properly (verify)
-- Your local market has lower volume (you're still capturing calls you were missing)
+Check these first:
+- **Profile incomplete** — add more services, update pricing, refine your greeting
+- **Call forwarding not set up correctly** — test by calling your business line
+- **Not checking the dashboard** — Maria books appointments and creates job cards, but you still need to follow up on complex jobs
+- **Low call volume market** — you're still capturing every call. The ROI compounds as volume grows.
 
-Most improve significantly in Month 2 once they optimize.
-
-### Month 2+: Momentum Builds
-
-By Month 2, you'll see the real impact:
-- Your NPS score improves (happier callers)
-- Booking rate increases
-- Maria handles more complex conversations
-- Your team is less stressed
-- Your ROI is crystal clear
+---
 
 ## Get Started
 
-30-day money-back guarantee. Test Maria with your real calls. See if she works for you. No risk.
+30-day money-back guarantee. Full access to everything. Cancel anytime.
 
-**Ready to try it?** Get started at [capta.app](https://capta.app).
+**Ready?** Get started at [capta.app](https://capta.app).
 
 Need help? Email support@capta.app or call (830) 521-7133.`,
   },
