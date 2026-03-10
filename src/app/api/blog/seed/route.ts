@@ -813,7 +813,7 @@ Cuando alguien llama a tu número:
 2. Detecta automáticamente si la persona habla inglés o español y responde en su idioma.
 3. Pregunta qué tipo de servicio necesita—plomería, electricidad, reparación de aire—y por qué.
 4. Si es una emergencia (cañería rota, sin agua caliente), María lo identifica y te alerta inmediatamente por SMS.
-5. Agenda la cita en tu calendario automáticamente.
+5. Agenda la cita automáticamente en tu panel de Capta.
 6. Envía un SMS de confirmación al cliente en su idioma preferido.
 7. Todo queda registrado en tu CRM para que veas el historial completo.
 
@@ -1079,7 +1079,7 @@ Si contratas a una persona física para que conteste teléfono 9am-5pm:
 | **Horario** | 9am-5pm (5 días) | 24/7 (365 días) |
 | **Idiomas** | Generalmente 1 (inglés) | 2 (inglés + español) |
 | **Absentismo** | 5-10% del año sin cobertura | Cero. Nunca falla. |
-| **Agendamiento de Citas** | Manual (posibles errores) | Automático a tu calendario |
+| **Agendamiento de Citas** | Manual (posibles errores) | Automático en tu panel de Capta |
 | **SMS a Clientes** | No incluido | Automático |
 | **Detección de Emergencias** | Posiblemente olvida | Automático + SMS de alerta |
 | **Rotación de Personal** | Cada 1-2 años = más costo | Nunca. María siempre es María. |
@@ -1220,7 +1220,7 @@ Capta cuesta $497/mes = $5,964/año. Recuperas tu inversión en 30 días. El res
 
 - **Respuesta 24/7:** María contesta a las 2am si es necesario.
 - **Bilingüe perfecto:** Inglés natural, español natural. Sin acento robótico.
-- **Agendamiento:** Citas automáticas en tu calendario.
+- **Agendamiento:** Citas automáticas en tu panel de Capta.
 - **SMS:** Confirmación de cita al cliente en su idioma. (Los textos funcionan mejor que voicemail.)
 - **Detección de emergencias:** "Sin agua caliente en la casa" → María te avisa por SMS inmediatamente.
 - **Transcripciones:** Sabes exactamente qué dijo el cliente.

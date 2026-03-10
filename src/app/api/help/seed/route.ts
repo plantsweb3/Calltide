@@ -66,7 +66,7 @@ The more complete your profile, the better Maria can handle calls.
 ## Why Contractors Choose Capta
 
 1. **Never miss a call** — Maria answers 24/7, even when you're in the field
-2. **Automatic scheduling** — Appointments sync to your Google Calendar instantly
+2. **Automatic scheduling** — Appointments booked and managed in your Capta dashboard
 3. **Bilingual** — Spanish and English, no extra cost
 4. **Real data** — Call logs, transcripts, and customer info all in one place
 5. **Affordable** — $497/month for unlimited calls and features
@@ -74,7 +74,7 @@ The more complete your profile, the better Maria can handle calls.
 ## Getting Started
 
 1. **Set up your profile** (30 minutes) — Tell Maria about your services, pricing, and hours
-2. **Connect your calendar** (5 minutes) — Link your Google Calendar so Maria can book appointments
+2. **Set your availability** (5 minutes) — Configure your hours and availability so Maria can book appointments
 3. **Forward your phone number** (varies) — Set up call forwarding to Capta
 4. **Test Maria** (5 minutes) — Call your number and have a test conversation
 5. **Go live** — Maria starts answering your real calls
@@ -153,7 +153,7 @@ Need help? Email support@capta.app or call (830) 521-7133.`,
     categorySlug: "managing-calls",
     title: "How Appointments Are Booked and Tracked",
     sortOrder: 11,
-    searchKeywords: "appointments, booking, calendar, scheduling, google calendar, reschedule, cancel, no-show",
+    searchKeywords: "appointments, booking, calendar, scheduling, reschedule, cancel, no-show, dashboard",
     dashboardContextRoutes: ["/dashboard/appointments"],
     relatedArticles: ["how-maria-handles-calls", "tips-best-results"],
     content: `### Maria's Booking Process
@@ -165,8 +165,8 @@ Maria gathers the information she needs:
 4. Preferred date and time
 
 She then:
-- Checks your Google Calendar for availability
-- Syncs the appointment automatically
+- Checks your availability based on your configured hours
+- Books the appointment in your Capta dashboard
 - Sends SMS confirmation to the customer
 - Notifies you via SMS
 
@@ -178,7 +178,7 @@ In the Appointments section, you can:
 - Reschedule or cancel appointments
 - Track no-shows
 
-**Pro tip:** Keep your calendar updated daily so Maria always has your real availability.`,
+**Pro tip:** Keep your hours and availability updated in your Capta settings so Maria always has your real availability.`,
   },
   {
     slug: "viewing-messages",
@@ -826,7 +826,7 @@ Maria doesn't pretend to know everything. If she needs more info, she asks natur
 Maria answers questions about your services, pricing, availability, and hours. She uses the business profile you set up.
 
 **Step 4: Book an Appointment**
-If the caller wants to schedule something, Maria checks your calendar and books it. She confirms the date, time, and caller info. The appointment automatically syncs to your Google Calendar.
+If the caller wants to schedule something, Maria checks your availability and books it. She confirms the date, time, and caller info. The appointment appears in your Capta dashboard immediately.
 
 **Step 5: Take a Message (If Needed)**
 If you're fully booked or the caller can't schedule, Maria offers to take a message. She records the caller's name, phone, and issue, then sends you a summary.
@@ -962,8 +962,8 @@ Even if Maria only converts half of those missed calls into bookings, you're loo
 **Days 1-2: Create Your Profile** (30-60 minutes)
 Fill out your business profile with your services, pricing, hours, and custom greeting. This is the foundation of everything Maria does.
 
-**Days 2-3: Connect Google Calendar** (5 minutes)
-Link your Google Calendar so Maria can see your availability and book appointments automatically.
+**Days 2-3: Set Your Availability** (5 minutes)
+Configure your hours and availability in your Capta settings so Maria can book appointments automatically.
 
 **Days 3-5: Forward Your Phone Number** (varies)
 Contact your phone provider and set up call forwarding to the Capta number you'll receive.

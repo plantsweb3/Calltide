@@ -72,7 +72,7 @@ tests/
 
 - Zod on all POST/PUT
 - Password login + magic link auth, middleware sessions
-- External: Twilio, Hume EVI, Stripe, Resend, Anthropic, Google Calendar
+- External: Twilio, Hume EVI, Stripe, Resend, Anthropic
 - 31 cron-scheduled routes (CRON_SECRET protected): 18 cron jobs, 6 AI agents, 3 capacity, 3 financial, 1 compliance
 - 212 API routes
 - Demo mode with isolated data

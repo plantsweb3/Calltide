@@ -54,7 +54,7 @@ const content = {
           },
           {
             q: "Does she actually book appointments?",
-            a: "Yes. She connects to your calendar and books appointments in real-time based on your availability. Callers also get an instant SMS confirmation with the appointment details.",
+            a: "Yes. She books appointments in real-time based on your availability. Callers get an instant SMS confirmation with the appointment details. All appointments are managed right in your Capta dashboard.",
           },
         ],
       },
@@ -167,7 +167,7 @@ const content = {
           },
           {
             q: "¿Realmente agenda citas?",
-            a: "Sí. Se conecta a tu calendario y agenda citas en tiempo real basándose en tu disponibilidad. Los llamantes también reciben una confirmación SMS instantánea con los detalles de la cita.",
+            a: "Sí. Agenda citas en tiempo real basándose en tu disponibilidad. Los llamantes reciben una confirmación SMS instantánea con los detalles de la cita. Todas las citas se administran directamente en tu panel de Capta.",
           },
         ],
       },

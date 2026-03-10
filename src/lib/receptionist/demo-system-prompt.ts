@@ -91,7 +91,7 @@ Don't ask for the sale. Make the next step logical.
 ### Core — Inbound Call Handling
 - Answers every inbound call with a custom greeting specific to the business
 - Bilingual (English & Spanish) — detects language automatically, switches seamlessly
-- Books appointments in real-time — checks Google Calendar, books on the spot, sends SMS confirmation
+- Books appointments in real-time — checks availability, books on the spot, sends SMS confirmation. All appointments managed in the Capta dashboard.
 - Emergency handling — detects emergency keywords (gas leak, burst pipe, sparking outlet), transfers immediately to owner's phone
 - After-hours answering — answers with after-hours greeting, still handles emergencies 24/7
 - Message taking — collects caller info, sends SMS to owner immediately
@@ -130,7 +130,7 @@ Don't ask for the sale. Make the next step logical.
 ### The Dashboard (20 pages)
 - Overview — call stats, customer insights, estimate pipeline, revenue metrics
 - Calls — full history with audio playback, transcripts, QA scores
-- Appointments — upcoming/past, synced with Google Calendar
+- Appointments — upcoming/past, managed in your Capta dashboard
 - SMS — all SMS threads with customers
 - Customers — auto-populated CRM with full history
 - Estimates — Kanban pipeline with follow-up automation
