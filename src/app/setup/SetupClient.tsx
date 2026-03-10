@@ -321,6 +321,172 @@ function clampStep(n: number): number {
   return Math.max(1, Math.min(VISUAL_STEPS, isNaN(n) ? 1 : n));
 }
 
+// ── Hours Schedule Builder ──
+
+const DAYS_EN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
+const DAYS_ES = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"] as const;
+
+const TIME_OPTIONS = [
+  "5:00 AM", "5:30 AM", "6:00 AM", "6:30 AM", "7:00 AM", "7:30 AM",
+  "8:00 AM", "8:30 AM", "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM",
+  "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM",
+  "2:00 PM", "2:30 PM", "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM",
+  "5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM",
+  "8:00 PM", "8:30 PM", "9:00 PM", "9:30 PM", "10:00 PM", "10:30 PM",
+  "11:00 PM",
+];
+
+interface DaySchedule { open: boolean; from: string; to: string }
+
+function parseHoursString(val: string): Record<string, DaySchedule> {
+  const defaults: Record<string, DaySchedule> = {};
+  for (const d of DAYS_EN) {
+    defaults[d] = d === "Sat" || d === "Sun"
+      ? { open: false, from: "8:00 AM", to: "5:00 PM" }
+      : { open: true, from: "8:00 AM", to: "5:00 PM" };
+  }
+  if (!val) return defaults;
+  // Try to detect existing schedule from string
+  for (const d of DAYS_EN) {
+    const pattern = new RegExp(`${d}[:\\s]+([\\d:]+\\s*[AaPp][Mm])\\s*[-–]\\s*([\\d:]+\\s*[AaPp][Mm])`, "i");
+    const m = val.match(pattern);
+    if (m) {
+      const from = TIME_OPTIONS.find((t) => t.toLowerCase().replace(/\s/g, "") === m[1].toLowerCase().replace(/\s/g, ""));
+      const to = TIME_OPTIONS.find((t) => t.toLowerCase().replace(/\s/g, "") === m[2].toLowerCase().replace(/\s/g, ""));
+      if (from && to) defaults[d] = { open: true, from, to };
+    }
+  }
+  return defaults;
+}
+
+function scheduleToString(schedule: Record<string, DaySchedule>): string {
+  const groups: { days: string[]; from: string; to: string }[] = [];
+  const closedDays: string[] = [];
+
+  for (const d of DAYS_EN) {
+    const day = schedule[d];
+    if (!day.open) { closedDays.push(d); continue; }
+    const last = groups[groups.length - 1];
+    if (last && last.from === day.from && last.to === day.to) {
+      last.days.push(d);
+    } else {
+      groups.push({ days: [d], from: day.from, to: day.to });
+    }
+  }
+
+  const parts = groups.map((g) => {
+    const dayRange = g.days.length > 2
+      ? `${g.days[0]}-${g.days[g.days.length - 1]}`
+      : g.days.join(", ");
+    return `${dayRange} ${g.from}-${g.to}`;
+  });
+
+  if (closedDays.length > 0 && closedDays.length < 7) {
+    const closedRange = closedDays.length > 2
+      ? `${closedDays[0]}-${closedDays[closedDays.length - 1]}`
+      : closedDays.join(", ");
+    parts.push(`${closedRange} Closed`);
+  }
+
+  return parts.join(", ");
+}
+
+function HoursSchedule({ lang, value, onChange }: { lang: Lang; value: string; onChange: (v: string) => void }) {
+  const [schedule, setSchedule] = useState<Record<string, DaySchedule>>(() => parseHoursString(value));
+  const days = lang === "es" ? DAYS_ES : DAYS_EN;
+  const closedLabel = lang === "es" ? "Cerrado" : "Closed";
+
+  const update = (day: string, patch: Partial<DaySchedule>) => {
+    const next = { ...schedule, [day]: { ...schedule[day], ...patch } };
+    setSchedule(next);
+    onChange(scheduleToString(next));
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {DAYS_EN.map((dayKey, i) => {
+        const day = schedule[dayKey];
+        return (
+          <div
+            key={dayKey}
+            style={{
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "8px 12px", borderRadius: 8,
+              background: day.open ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => update(dayKey, { open: !day.open })}
+              style={{
+                width: 48, flexShrink: 0, fontWeight: 600, fontSize: 13,
+                color: day.open ? "#D4A843" : "#64748b",
+                background: "none", border: "none", cursor: "pointer",
+                textAlign: "left", padding: 0,
+              }}
+            >
+              {days[i]}
+            </button>
+
+            {day.open ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 6, flex: 1, minWidth: 0 }}>
+                <select
+                  value={day.from}
+                  onChange={(e) => update(dayKey, { from: e.target.value })}
+                  className={s.select}
+                  style={{ flex: 1, padding: "6px 28px 6px 8px", fontSize: 13, minWidth: 0 }}
+                >
+                  {TIME_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <span style={{ color: "#64748b", fontSize: 13, flexShrink: 0 }}>–</span>
+                <select
+                  value={day.to}
+                  onChange={(e) => update(dayKey, { to: e.target.value })}
+                  className={s.select}
+                  style={{ flex: 1, padding: "6px 28px 6px 8px", fontSize: 13, minWidth: 0 }}
+                >
+                  {TIME_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => update(dayKey, { open: true })}
+                style={{
+                  flex: 1, color: "#64748b", fontSize: 13,
+                  background: "none", border: "none", cursor: "pointer",
+                  textAlign: "left", padding: 0,
+                }}
+              >
+                {closedLabel}
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => update(dayKey, { open: !day.open })}
+              style={{
+                width: 36, height: 20, borderRadius: 10, flexShrink: 0,
+                background: day.open ? "#D4A843" : "rgba(255,255,255,0.12)",
+                border: "none", cursor: "pointer", position: "relative",
+                transition: "background 0.2s",
+              }}
+            >
+              <span style={{
+                position: "absolute", top: 2, width: 16, height: 16,
+                borderRadius: "50%", background: "#fff",
+                transition: "left 0.2s",
+                left: day.open ? 18 : 2,
+              }} />
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Main Component ──
 
 export default function SetupClientWrapper() {
@@ -1197,8 +1363,17 @@ function SetupClient() {
             <h1 className={s.title}>{t.step5Title}</h1>
             <p className={s.subtitle}>{t.step5Sub}</p>
 
+            {/* Hours schedule builder */}
+            <div className={s.field}>
+              <label className={s.label}>{t.faqHoursQ}</label>
+              <HoursSchedule
+                lang={lang}
+                value={faqAnswers.hours || ""}
+                onChange={(val) => setFaqAnswers({ ...faqAnswers, hours: val })}
+              />
+            </div>
+
             {[
-              { key: "hours", q: t.faqHoursQ, placeholder: t.faqHoursPlaceholder },
               { key: "area", q: t.faqAreaQ, placeholder: t.faqAreaPlaceholder },
               { key: "estimates", q: t.faqEstimatesQ, placeholder: t.faqEstimatesPlaceholder },
             ].map(({ key, q, placeholder }) => (
