@@ -1113,20 +1113,18 @@ function SetupClient() {
                   style={{ textAlign: "center", padding: "16px 12px" }}
                   aria-pressed={receptionistName === name && !useCustomName}
                 >
-                  <div style={{ fontSize: 24, marginBottom: 4 }}>👩</div>
                   <div style={{ color: "#fff", fontWeight: 600 }}>{name}</div>
                 </button>
               ))}
+              <button
+                onClick={() => { setUseCustomName(true); setReceptionistName(""); }}
+                className={`${s.cardSelectable} ${useCustomName ? s.cardSelected : ""}`}
+                style={{ textAlign: "center", padding: "16px 12px" }}
+                aria-pressed={useCustomName}
+              >
+                <div style={{ color: useCustomName ? "#fff" : "#94a3b8", fontWeight: 600 }}>{t.customName}</div>
+              </button>
             </div>
-
-            <button
-              onClick={() => { setUseCustomName(true); setReceptionistName(""); }}
-              className={`${s.cardSelectable} ${useCustomName ? s.cardSelected : ""}`}
-              style={{ width: "100%", textAlign: "left", padding: "12px 16px", marginBottom: 12 }}
-              aria-pressed={useCustomName}
-            >
-              <span style={{ color: "#94a3b8" }}>{t.customName}</span>
-            </button>
             {useCustomName && (
               <input
                 id="receptionistName"
@@ -1134,6 +1132,7 @@ function SetupClient() {
                 placeholder={t.namePlaceholder}
                 value={receptionistName}
                 onChange={(e) => { setReceptionistName(e.target.value); clearFieldError("receptionistName"); }}
+                style={{ marginTop: 12 }}
                 autoFocus
               />
             )}
@@ -1167,7 +1166,7 @@ function SetupClient() {
             {/* Greeting preview bubble */}
             {receptionistName.trim() && (
               <div className={s.previewBubble}>
-                <div className={s.previewAvatar}>👩</div>
+                <div className={s.previewAvatar} style={{ background: "rgba(212,168,67,0.15)", color: "#D4A843", fontSize: 16, fontWeight: 700 }}>{receptionistName.charAt(0).toUpperCase()}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ color: "#D4A843", fontWeight: 600, fontSize: 13, marginBottom: 4 }}>{receptionistName}</div>
                   <div style={{ color: "#e2e8f0", fontSize: 14 }}>
