@@ -487,6 +487,200 @@ function HoursSchedule({ lang, value, onChange }: { lang: Lang; value: string; o
   );
 }
 
+// ── Setup ROI Calculator ──
+
+function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
+  lang: Lang;
+  defaultMissed: number;
+  defaultJobValue: number;
+  tradeName: string;
+  city: string;
+}) {
+  const [missedCalls, setMissedCalls] = useState(defaultMissed);
+  const [jobValue, setJobValue] = useState(defaultJobValue);
+
+  const monthlyLoss = Math.round(jobValue * missedCalls * 4.33);
+  const captaCost = 497;
+  const roiMultiple = monthlyLoss > captaCost
+    ? Math.round(((monthlyLoss - captaCost) / captaCost) * 10) / 10
+    : 0;
+
+  const jobPct = ((jobValue - 100) / (5000 - 100)) * 100;
+  const callsPct = ((missedCalls - 1) / (10 - 1)) * 100;
+
+  const l = lang === "es" ? {
+    title: "Tu Costo Real de Llamadas Perdidas",
+    jobLabel: "Valor promedio del trabajo",
+    callsLabel: "Llamadas perdidas por día",
+    losing: "Perdiendo",
+    costs: "Capta cuesta",
+    roi: "Tu ROI",
+    perMonth: "/mes",
+    returnLabel: "retorno",
+    source: `Basado en negocios de ${tradeName} en ${city}`,
+  } : {
+    title: "Your Real Cost of Missed Calls",
+    jobLabel: "Average job value",
+    callsLabel: "Missed calls per day",
+    losing: "You're losing",
+    costs: "Capta costs",
+    roi: "Your ROI",
+    perMonth: "/month",
+    returnLabel: "return",
+    source: `Based on ${tradeName} businesses in ${city}`,
+  };
+
+  return (
+    <div style={{ marginBottom: 24 }}>
+      <div
+        style={{
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 12,
+          padding: "24px 20px",
+        }}
+      >
+        <h3 style={{ color: "#fff", fontSize: 15, fontWeight: 700, margin: "0 0 20px", textAlign: "center" }}>
+          {l.title}
+        </h3>
+
+        {/* Sliders */}
+        <div style={{ display: "grid", gap: 20 }}>
+          {/* Job Value */}
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+              <span style={{ color: "#94a3b8", fontSize: 13 }}>{l.jobLabel}</span>
+              <span style={{ color: "#fff", fontWeight: 700, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>
+                ${jobValue.toLocaleString()}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={100}
+              max={5000}
+              step={50}
+              value={jobValue}
+              onChange={(e) => setJobValue(+e.target.value)}
+              className="setup-roi-slider"
+              style={{ "--fill": `${jobPct}%` } as React.CSSProperties}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+              <span style={{ color: "#475569", fontSize: 11 }}>$100</span>
+              <span style={{ color: "#475569", fontSize: 11 }}>$5,000</span>
+            </div>
+          </div>
+
+          {/* Missed Calls */}
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+              <span style={{ color: "#94a3b8", fontSize: 13 }}>{l.callsLabel}</span>
+              <span style={{ color: "#fff", fontWeight: 700, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>
+                {missedCalls}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={10}
+              step={1}
+              value={missedCalls}
+              onChange={(e) => setMissedCalls(+e.target.value)}
+              className="setup-roi-slider"
+              style={{ "--fill": `${callsPct}%` } as React.CSSProperties}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+              <span style={{ color: "#475569", fontSize: 11 }}>1</span>
+              <span style={{ color: "#475569", fontSize: 11 }}>10</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "20px 0" }} />
+
+        {/* Output */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, textAlign: "center" }}>
+          <div>
+            <p style={{ color: "#94a3b8", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.losing}</p>
+            <p style={{ color: "#ef4444", fontSize: 22, fontWeight: 800, margin: 0, fontVariantNumeric: "tabular-nums" }}>
+              ${monthlyLoss.toLocaleString()}
+            </p>
+            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
+          </div>
+          <div>
+            <p style={{ color: "#94a3b8", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.costs}</p>
+            <p style={{ color: "#fff", fontSize: 22, fontWeight: 800, margin: 0 }}>$497</p>
+            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
+          </div>
+          <div>
+            <p style={{ color: "#94a3b8", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.roi}</p>
+            <p style={{ color: "#d4a843", fontSize: 22, fontWeight: 800, margin: 0 }}>
+              {roiMultiple > 0 ? `${roiMultiple.toFixed(1)}x` : "—"}
+            </p>
+            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.returnLabel}</p>
+          </div>
+        </div>
+
+        {/* Source note */}
+        {tradeName && city && (
+          <p style={{ textAlign: "center", color: "#475569", fontSize: 11, margin: "16px 0 0" }}>
+            {l.source}
+          </p>
+        )}
+      </div>
+
+      {/* Slider styles */}
+      <style>{`
+        .setup-roi-slider {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 100%;
+          height: 5px;
+          border-radius: 3px;
+          background: linear-gradient(to right, #d4a843 0%, #d4a843 var(--fill), rgba(255,255,255,0.1) var(--fill), rgba(255,255,255,0.1) 100%);
+          outline: none;
+          cursor: pointer;
+        }
+        .setup-roi-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #d4a843;
+          border: 2px solid #0f1729;
+          box-shadow: 0 0 8px rgba(212,168,67,0.4);
+          cursor: pointer;
+          transition: box-shadow 0.2s, transform 0.15s;
+        }
+        .setup-roi-slider::-webkit-slider-thumb:hover {
+          box-shadow: 0 0 14px rgba(212,168,67,0.6);
+          transform: scale(1.1);
+        }
+        .setup-roi-slider::-moz-range-thumb {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #d4a843;
+          border: 2px solid #0f1729;
+          box-shadow: 0 0 8px rgba(212,168,67,0.4);
+          cursor: pointer;
+        }
+        .setup-roi-slider::-moz-range-track {
+          height: 5px;
+          border-radius: 3px;
+          background: rgba(255,255,255,0.1);
+        }
+        .setup-roi-slider::-moz-range-progress {
+          height: 5px;
+          border-radius: 3px;
+          background: #d4a843;
+        }
+      `}</style>
+    </div>
+  );
+}
+
 // ── Main Component ──
 
 export default function SetupClientWrapper() {
@@ -1420,41 +1614,14 @@ function SetupClient() {
               {t.trialNote}
             </p>
 
-            {/* ROI Card — enhanced */}
-            {tradeData?.roi && (
-              <div className={s.card} style={{ marginBottom: 24, padding: 20 }}>
-                <h3 style={{ color: "#D4A843", margin: "0 0 12px", fontSize: 15 }}>{t.missedCallsTitle}</h3>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ color: "#94a3b8", fontSize: 14 }}>{tradeData.roi.missedPerDay} {t.roiMissedPerDay}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ color: "#94a3b8", fontSize: 14 }}>${tradeData.avgJobValue} {t.roiCostPerMissed}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ color: "#ef4444", fontSize: 14, fontWeight: 600 }}>
-                    ${tradeData.roi.estimatedMonthlyLoss.toLocaleString()}{t.roiMonthlyLoss}
-                  </span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ color: "#10b981", fontSize: 14, fontWeight: 600, background: "rgba(16,185,129,0.1)", padding: "2px 8px", borderRadius: 4 }}>
-                    {replaceVars(t.roiBreakeven, { count: String(tradeData.roi.callsToPayForMaria) })}
-                  </span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#10b981", fontSize: 14, fontWeight: 600 }}>
-                    {tradeData.roi.roiMultiple}{t.roiMultiple}
-                  </span>
-                </div>
-                {bizType && city && (
-                  <div style={{ color: "#64748b", fontSize: 12, marginTop: 8, fontStyle: "italic" }}>
-                    {replaceVars(t.roiSource, {
-                      trade: TRADE_OPTIONS.find((o) => o.value === bizType)?.[lang] || bizType,
-                      city: city,
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
+            {/* ROI Calculator */}
+            <SetupROI
+              lang={lang}
+              defaultMissed={tradeData?.roi?.missedPerDay ?? 3}
+              defaultJobValue={tradeData?.avgJobValue ?? 500}
+              tradeName={TRADE_OPTIONS.find((o) => o.value === bizType)?.[lang] || bizType}
+              city={city}
+            />
 
             {/* Comparison anchor */}
             <div className={s.comparisonAnchor}>
@@ -1506,8 +1673,19 @@ function SetupClient() {
 
             {/* Trust badges */}
             <div className={s.trustBadges}>
-              <span style={{ color: "#10b981", fontSize: 13 }}>🛡️ {t.cancelAnytime} · {t.guarantee}</span>
-              <span style={{ color: "#10b981", fontSize: 12 }}>📞 {t.phoneReassurance}</span>
+              <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <path d="M9 12l2 2 4-4" />
+                </svg>
+                {t.cancelAnytime} · {t.guarantee}
+              </span>
+              <span style={{ color: "#10b981", fontSize: 12, display: "flex", alignItems: "center", gap: 6 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                </svg>
+                {t.phoneReassurance}
+              </span>
             </div>
 
             {/* CTA */}
