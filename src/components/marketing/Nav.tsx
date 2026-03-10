@@ -42,7 +42,7 @@ export function Nav({ lang, toggleLang, scrolled }: NavProps) {
           <a href="/dashboard/login" className="hidden text-sm font-medium text-charcoal-muted transition hover:text-charcoal sm:inline-block">
             {t.nav.login}
           </a>
-          <a href="#signup" className="cta-shimmer hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-light sm:inline-flex">
+          <a href="/setup" className="cta-shimmer hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-light sm:inline-flex">
             {t.nav.cta}
           </a>
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="flex h-10 w-10 items-center justify-center rounded-lg text-charcoal md:hidden" aria-label="Menu">
@@ -61,7 +61,7 @@ export function Nav({ lang, toggleLang, scrolled }: NavProps) {
             <a href={lang === "en" ? "/help" : "/es/help"} onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">{t.nav.help}</a>
             <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted">{PHONE}</a>
             <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">{t.nav.login}</a>
-            <a href="#signup" onClick={() => setMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white">{t.nav.cta}</a>
+            <a href="/setup" onClick={() => setMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white">{t.nav.cta}</a>
           </div>
         </div>
       )}

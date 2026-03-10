@@ -39,7 +39,7 @@ export function StaticNav({ lang, langHref }: StaticNavProps) {
           <Link href="/dashboard/login" className="hidden text-sm font-medium text-charcoal-muted transition hover:text-charcoal sm:inline-block">
             {labels.login}
           </Link>
-          <Link href="/#signup" className="cta-shimmer hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-light sm:inline-flex">
+          <Link href="/setup" className="cta-shimmer hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-light sm:inline-flex">
             {labels.cta}
           </Link>
         </div>

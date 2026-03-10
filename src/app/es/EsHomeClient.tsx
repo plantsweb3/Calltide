@@ -43,7 +43,7 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
             EN
           </Link>
           <a href="/dashboard/login" className="hidden text-sm font-medium text-charcoal-muted transition hover:text-charcoal sm:inline-block">Iniciar Sesión</a>
-          <a href="#signup" className="cta-shimmer hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-light sm:inline-flex">
+          <a href="/setup" className="cta-shimmer hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-light sm:inline-flex">
             Obtén Capta
           </a>
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="flex h-10 w-10 items-center justify-center rounded-lg text-charcoal md:hidden" aria-label="Menú">
@@ -63,7 +63,7 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
             <a href="/es/help" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Ayuda</a>
             <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted">{PHONE}</a>
             <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">Iniciar Sesión</a>
-            <a href="#signup" onClick={() => setMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white">Obtén Capta</a>
+            <a href="/setup" onClick={() => setMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white">Obtén Capta</a>
           </div>
         </div>
       )}
@@ -120,7 +120,7 @@ export default function EsHomepage() {
                 <p className="mt-6 max-w-xl text-xl font-medium leading-[1.7] text-slate-300">{t.hero.sub}</p>
 
                 <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <a href="#signup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+                  <a href="/setup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
                     {t.hero.cta} &rarr;
                   </a>
                   <button onClick={() => setShowVoiceChat(true)} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
@@ -305,7 +305,7 @@ export default function EsHomepage() {
                 ))}
               </ul>
               <p className="mt-8 text-sm italic text-[#A0A3A8]">{t.pricing.comparison}</p>
-              <a href="#signup" className="cta-gold cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg px-8 py-4 text-lg font-semibold text-white">{t.pricing.cta} &rarr;</a>
+              <a href="/setup" className="cta-gold cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg px-8 py-4 text-lg font-semibold text-white">{t.pricing.cta} &rarr;</a>
               <p className="mt-4 text-xs text-[#A0A3A8]">{t.pricing.guarantee}</p>
 
               <div className="mt-6 flex flex-col items-center gap-2">

@@ -388,7 +388,7 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
       )}
 
       <a
-        href="#signup"
+        href="/setup"
         className="block w-full rounded-lg px-6 py-4 text-center text-base font-semibold text-white transition-all hover:brightness-110"
         style={{ background: "linear-gradient(135deg, #C59A27, #A17D1F)" }}
       >

@@ -102,7 +102,7 @@ export default function LandingPage() {
                 <p className="mt-6 max-w-xl text-xl font-medium leading-[1.7] text-slate-300">{t.hero.sub}</p>
 
                 <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <a href="#signup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+                  <a href="/setup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
                     {t.hero.cta} &rarr;
                   </a>
                   <button onClick={() => setShowVoiceChat(true)} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
@@ -400,7 +400,7 @@ export default function LandingPage() {
 
               <p className="mt-8 text-sm italic text-[#A0A3A8]">{t.pricing.comparison}</p>
 
-              <a href="#signup" className="cta-gold cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg px-8 py-4 text-lg font-semibold text-white">
+              <a href="/setup" className="cta-gold cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg px-8 py-4 text-lg font-semibold text-white">
                 {t.pricing.cta} &rarr;
               </a>
 
