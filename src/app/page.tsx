@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 
@@ -35,13 +35,11 @@ export default function LandingPage() {
     if (typeof window !== "undefined") localStorage.setItem("capta-lang", l);
   }, []);
 
-  // Restore on mount
-  useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("capta-lang");
-      if (saved === "en" || saved === "es") setLang(saved);
-    }
-  });
+  // Restore saved language on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("capta-lang");
+    if (saved === "en" || saved === "es") setLang(saved);
+  }, []);
 
   const t = T[lang];
 
