@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { hashPassword, validatePassword, hashResetToken } from "@/lib/password";
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
+import { timingSafeEqual } from "crypto";
 
 const resetSchema = z.object({
   email: z.string().email(),
@@ -52,8 +53,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid or expired reset link" }, { status: 400 });
     }
 
-    // Verify token matches
-    if (account.passwordResetToken !== hashedToken) {
+    // Verify token matches (constant-time comparison on hashed values)
+    const tokensMatch =
+      account.passwordResetToken.length === hashedToken.length &&
+      timingSafeEqual(Buffer.from(account.passwordResetToken), Buffer.from(hashedToken));
+    if (!tokensMatch) {
       return NextResponse.json({ error: "Invalid or expired reset link" }, { status: 400 });
     }
 

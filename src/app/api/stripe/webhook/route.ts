@@ -11,7 +11,7 @@ import {
   receptionistCustomResponses,
 } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
-import { startDunning, clearDunning, cancelDunning, sendTrialEndingEmail } from "@/lib/financial/dunning";
+import { startDunning, clearDunning, cancelDunning } from "@/lib/financial/dunning";
 import { createNotification } from "@/lib/notifications";
 import { logActivity } from "@/lib/activity";
 import { getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
@@ -62,7 +62,6 @@ export async function POST(request: Request) {
     "customer.subscription.updated": () => handleSubscriptionUpdated(event.data.object as Stripe.Subscription),
     "customer.subscription.deleted": () => handleSubscriptionDeleted(event.data.object as Stripe.Subscription),
     "charge.refunded": () => handleChargeRefunded(event.data.object as Stripe.Charge),
-    "customer.subscription.trial_will_end": () => handleTrialWillEnd(event.data.object as Stripe.Subscription),
   };
   const handler = handlers[event.type];
 
@@ -568,42 +567,6 @@ async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
     entityId: business.id,
     title: `${business.name} subscription canceled`,
     detail: `Data retention hold until ${holdUntil.toISOString().slice(0, 10)}. MRR impact: $${((business.mrr ?? 49700) / 100).toFixed(0)}`,
-  });
-}
-
-async function handleTrialWillEnd(sub: Stripe.Subscription) {
-  const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
-  if (!customerId) return;
-
-  const business = await findBusinessByCustomer(customerId);
-  if (!business) return;
-
-  // Skip if already notified (avoid duplicate emails)
-  if (business.trialEndingNotified) return;
-
-  // Send trial-ending email (3 days before trial expires) with call count
-  await sendTrialEndingEmail(business);
-
-  // Mark as notified
-  await db
-    .update(businesses)
-    .set({ trialEndingNotified: true, updatedAt: new Date().toISOString() })
-    .where(eq(businesses.id, business.id));
-
-  await createNotification({
-    source: "financial",
-    severity: "info",
-    title: "Trial ending soon",
-    message: `${business.name} — trial ends in 3 days`,
-    actionUrl: "/admin/billing",
-  });
-
-  await logActivity({
-    type: "trial_ending",
-    entityType: "business",
-    entityId: business.id,
-    title: `${business.name} trial ending soon`,
-    detail: "Trial-ending email sent with call count. Payment method required to continue service.",
   });
 }
 

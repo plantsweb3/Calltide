@@ -280,18 +280,8 @@ function LoginForm() {
         style={{ borderTop: "1px solid var(--db-border)" }}
       >
         <Link
-          href="/api/dashboard/auth/demo"
-          className="text-sm font-medium transition-colors"
-          style={{ color: "var(--db-accent)" }}
-        >
-          Try Demo
-        </Link>
-        <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
-          Explore the portal with sample data
-        </p>
-        <Link
           href="/help"
-          className="mt-3 inline-block text-xs transition-colors"
+          className="inline-block text-xs transition-colors"
           style={{ color: "var(--db-text-muted)" }}
         >
           Need help? Visit our Help Center

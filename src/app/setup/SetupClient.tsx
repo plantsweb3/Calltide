@@ -781,6 +781,18 @@ function SetupClient() {
     }
   }, [planToggle]);
 
+  // ── Enter key to advance ──
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && step < 5 && !saving) {
+      const target = e.target as HTMLElement;
+      // Don't intercept Enter on textareas, buttons, or the service add input
+      if (target.tagName === "TEXTAREA" || target.tagName === "BUTTON") return;
+      if (target.id === "newService" || target.closest("[data-service-input]")) return;
+      e.preventDefault();
+      handleNext();
+    }
+  }, [step, saving, handleNext]);
+
   // ── Loading screen ──
   if (loading) {
     return (
@@ -872,18 +884,6 @@ function SetupClient() {
       </div>
     );
   }
-
-  // ── Enter key to advance ──
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && step < 5 && !saving) {
-      const target = e.target as HTMLElement;
-      // Don't intercept Enter on textareas, buttons, or the service add input
-      if (target.tagName === "TEXTAREA" || target.tagName === "BUTTON") return;
-      if (target.id === "newService" || target.closest("[data-service-input]")) return;
-      e.preventDefault();
-      handleNext();
-    }
-  }, [step, saving, handleNext]);
 
   // ── Main flow ──
   return (
