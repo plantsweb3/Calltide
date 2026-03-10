@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
           <h2 style="color: #1A1D24; margin-bottom: 8px;">Sign in to Capta</h2>
           <p style="color: #475569; margin-bottom: 24px;">
-            Click the button below to access your ${business.name} dashboard. This link expires in 15 minutes.
+            Click the button below to access your ${business.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")} dashboard. This link expires in 15 minutes.
           </p>
           <a href="${link}" style="display: inline-block; background: #C59A27; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
             Sign In to Dashboard

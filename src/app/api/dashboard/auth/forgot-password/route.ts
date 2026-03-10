@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
           <h2 style="color: #1A1D24; margin-bottom: 8px;">Reset your password</h2>
           <p style="color: #475569; margin-bottom: 24px;">
-            Hi ${account.ownerName || "there"}, we received a request to reset your Capta password. Click the button below to set a new one. This link expires in 1 hour.
+            Hi ${(account.ownerName || "there").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")}, we received a request to reset your Capta password. Click the button below to set a new one. This link expires in 1 hour.
           </p>
           <a href="${resetUrl}" style="display: inline-block; background: #C59A27; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
             Reset Password

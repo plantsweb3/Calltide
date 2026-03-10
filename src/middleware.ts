@@ -3,6 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 const ADMIN_COOKIE = "capta_admin";
 const CLIENT_COOKIE = "capta_client";
 
+// ── Constant-time string comparison (Edge-compatible, prevents timing attacks) ──
+function constantTimeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
 // ── Lightweight rate limiter for middleware (Edge-compatible) ──
 const rlStore = new Map<string, { count: number; resetAt: number }>();
 const RL_WINDOW = 60_000;
@@ -226,7 +236,7 @@ async function middlewareCore(req: NextRequest): Promise<NextResponse> {
   // ── Outbound call route (cron secret OR valid session) ──
   if (pathname === "/api/outbound/call") {
     const cronSecret = req.headers.get("x-cron-secret") || req.headers.get("authorization")?.replace("Bearer ", "");
-    if (cronSecret === process.env.CRON_SECRET) return NextResponse.next();
+    if (cronSecret && process.env.CRON_SECRET && constantTimeEqual(cronSecret, process.env.CRON_SECRET)) return NextResponse.next();
     const adminPassword = process.env.ADMIN_PASSWORD;
     const adminCookie = req.cookies.get(ADMIN_COOKIE)?.value;
     if (adminCookie && adminPassword && await verifyToken(adminCookie, adminPassword)) {
