@@ -11,7 +11,6 @@ import { SpotlightCard } from "@/components/marketing/SpotlightCard";
 import { Counter } from "@/components/marketing/Counter";
 import { ROICalculator } from "@/components/marketing/ROICalculator";
 import { FAQ } from "@/components/marketing/FAQ";
-import { SignupForm, SignupStatus } from "@/components/marketing/SignupForm";
 import { MobileCTA } from "@/components/marketing/MobileCTA";
 import { Footer } from "@/components/marketing/Footer";
 import Link from "next/link";
@@ -370,15 +369,16 @@ export default function EsHomepage() {
         </div>
       </section>
 
-      {/* ── 10. FINAL CTA + SIGNUP ── */}
-      <section id="signup" className="relative px-6 sm:px-8 py-24 sm:py-32 overflow-hidden dark-section grain-overlay">
+      {/* ── 10. FINAL CTA ── */}
+      <section className="relative px-6 sm:px-8 py-24 sm:py-32 overflow-hidden dark-section grain-overlay">
         <img src="/images/grit-texture.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-center" loading="lazy" />
         <div className="grit-overlay-cta absolute inset-0" />
         <div className="section-fade-top-dark" />
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <h2 className="reveal text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[40px] lg:text-[48px]">{t.cta.h2}</h2>
-          <SignupForm lang={lang} plan={planChoice} />
-          <SignupStatus lang={lang} />
+          <a href="/setup" className="cta-gold cta-shimmer mt-10 inline-flex items-center justify-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
+            {t.hero.cta} &rarr;
+          </a>
           <p className="mt-6 text-sm text-slate-400">{t.cta.sub}</p>
           <p className="mt-4 text-sm text-slate-500">
             O llámanos: <a href={PHONE_TEL} className="font-semibold text-amber hover:underline">{PHONE}</a>
