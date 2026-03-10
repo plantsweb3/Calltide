@@ -8,8 +8,8 @@ import { hashPassword } from "@/lib/password";
 import { reportError } from "@/lib/error-reporting";
 import { cookies } from "next/headers";
 
-const SETUP_COOKIE = "calltide_setup";
-const CLIENT_COOKIE = "calltide_client";
+const SETUP_COOKIE = "capta_setup";
+const CLIENT_COOKIE = "capta_client";
 const SESSION_30D = 30 * 24 * 60 * 60 * 1000;
 
 /**
@@ -18,7 +18,7 @@ const SESSION_30D = 30 * 24 * 60 * 60 * 1000;
  * After Stripe checkout completes, the setup flow calls this to:
  * 1. Verify the setup session is converted (has businessId)
  * 2. Generate a password for the account if none exists
- * 3. Set the calltide_client cookie so the user can access /dashboard
+ * 3. Set the capta_client cookie so the user can access /dashboard
  * 4. Return the businessId + generated password for the celebration screen
  */
 export async function POST(req: NextRequest) {

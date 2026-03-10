@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
   const dailyRl = await rateLimit(`demo-daily:${ip}`, RATE_LIMITS.demoDaily);
   if (!dailyRl.success) {
     return NextResponse.json(
-      { error: "You've reached the daily demo limit. Get Calltide to talk to Maria anytime." },
+      { error: "You've reached the daily demo limit. Get Capta to talk to Maria anytime." },
       { status: 429 },
     );
   }
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
   if ((todayCount?.count ?? 0) >= DAILY_CAP) {
     return NextResponse.json(
-      { error: "Maria's busy right now. Get Calltide to talk to her anytime.", fallback: true },
+      { error: "Maria's busy right now. Get Capta to talk to her anytime.", fallback: true },
       { status: 429 },
     );
   }
@@ -96,6 +96,6 @@ export async function POST(req: NextRequest) {
     configId: process.env.NEXT_PUBLIC_HUME_CONFIG_ID,
     systemPrompt: buildDemoSystemPrompt(),
     maxDuration: 300,
-    greeting: "Hey there! I'm Maria. I'm the AI receptionist behind Calltide — I answer calls for home service businesses in English and Spanish, 24 hours a day. I'd love to show you how I'd work for YOUR business specifically. Mind if I ask you a couple quick questions?",
+    greeting: "Hey there! I'm Maria. I'm the AI receptionist behind Capta — I answer calls for home service businesses in English and Spanish, 24 hours a day. I'd love to show you how I'd work for YOUR business specifically. Mind if I ask you a couple quick questions?",
   });
 }

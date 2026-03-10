@@ -5,7 +5,7 @@ import { legalMarkdown } from "@/lib/legal-markdown";
 import { PRIVACY_ES } from "@/lib/legal/content";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Política de Privacidad — Calltide", description: "Política de Privacidad de Calltide" };
+export const metadata = { title: "Política de Privacidad — Capta", description: "Política de Privacidad de Capta" };
 
 export default async function PrivacyEsPage() {
   let content = PRIVACY_ES;

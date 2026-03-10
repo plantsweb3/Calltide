@@ -14,13 +14,13 @@ interface StaticNavProps {
  */
 export function StaticNav({ lang, langHref }: StaticNavProps) {
   const labels = lang === "en"
-    ? { platform: "Platform", pricing: "Pricing", about: "About", help: "Help", login: "Log In", cta: "Get Calltide" }
-    : { platform: "Plataforma", pricing: "Precios", about: "Nosotros", help: "Ayuda", login: "Iniciar Sesión", cta: "Obtén Calltide" };
+    ? { platform: "Platform", pricing: "Pricing", about: "About", help: "Help", login: "Log In", cta: "Get Capta" }
+    : { platform: "Plataforma", pricing: "Precios", about: "Nosotros", help: "Ayuda", login: "Iniciar Sesión", cta: "Obtén Capta" };
 
   return (
     <nav className="sticky top-0 z-40 border-b border-cream-border bg-cream">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 sm:px-8 py-4">
-        <Link href="/"><img src="/images/logo.webp" alt="Calltide" className="h-7 w-auto sm:h-8" /></Link>
+        <Link href="/"><img src="/images/logo-inline-navy.webp" alt="Capta" className="h-7 w-auto sm:h-8" /></Link>
         <div className="hidden items-center gap-8 md:flex">
           <Link href="/platform" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{labels.platform}</Link>
           <Link href="/pricing" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{labels.pricing}</Link>

@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
         .from(businesses)
         .where(eq(businesses.active, true));
 
-      const dashboardBase = env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
+      const dashboardBase = env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
 
       // Calculate last month's boundaries
       const now = new Date();
@@ -193,11 +193,11 @@ export async function GET(req: NextRequest) {
               dashboardUrl: `${dashboardBase}/dashboard`,
             });
 
-            const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+            const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
 
             const { data, error } = await resend.emails.send({
               from,
-              replyTo: "hello@calltide.app",
+              replyTo: "hello@capta.app",
               to: biz.ownerEmail,
               subject,
               html,

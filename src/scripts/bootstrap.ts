@@ -1,5 +1,5 @@
 /**
- * Calltide Bootstrap Script
+ * Capta Bootstrap Script
  *
  * Seeds initial data for a fresh deployment.
  * Run with: npx tsx src/scripts/bootstrap.ts
@@ -16,7 +16,7 @@ import {
 import { sql } from "drizzle-orm";
 
 async function bootstrap() {
-  console.log("Calltide Bootstrap\n");
+  console.log("Capta Bootstrap\n");
 
   // ── 1. Seed scaling playbook ──
   console.log("Seeding scaling playbook...");

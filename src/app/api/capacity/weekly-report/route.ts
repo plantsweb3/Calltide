@@ -79,7 +79,7 @@ export async function POST(request: Request) {
     const html = `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;background:#ffffff;">
   <div style="margin-bottom:24px;">
-    <span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span>
+    <span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span>
     <span style="color:#94A3B8;font-size:14px;margin-left:8px;">Weekly Capacity Report</span>
   </div>
 
@@ -147,15 +147,15 @@ export async function POST(request: Request) {
   </a>
 
   <hr style="border:none;border-top:1px solid #E2E8F0;margin:32px 0 16px;" />
-  <p style="color:#94A3B8;font-size:11px;">Calltide Inc. &middot; San Antonio, TX</p>
+  <p style="color:#94A3B8;font-size:11px;">Capta LLC &middot; San Antonio, TX</p>
 </div>`;
 
     const resend = getResend();
-    const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+    const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
     await resend.emails.send({
       from,
       to: ownerEmail,
-      subject: `Calltide Capacity Report — ${tier.toUpperCase()} Tier, ${activeClients} clients`,
+      subject: `Capta Capacity Report — ${tier.toUpperCase()} Tier, ${activeClients} clients`,
       html,
     });
 

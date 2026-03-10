@@ -1,8 +1,8 @@
-# CLAUDE.md — Calltide Project Instructions
+# CLAUDE.md — Capta Project Instructions
 
 ## Project Overview
 
-Calltide is an AI-powered bilingual (EN/ES) receptionist platform for home service businesses. It handles inbound calls via Hume EVI voice AI, books appointments, takes messages, handles emergencies, and provides a full client + admin portal.
+Capta is an AI-powered bilingual (EN/ES) receptionist platform for home service businesses. It handles inbound calls via Hume EVI voice AI, books appointments, takes messages, handles emergencies, and provides a full client + admin portal.
 
 ## Tech Stack
 
@@ -63,8 +63,8 @@ tests/
 
 ## Authentication
 
-- **Admin:** Cookie-based (`calltide_admin`) with HMAC-SHA256 signed tokens. Password in `ADMIN_PASSWORD` env var.
-- **Client:** Password login (primary) + magic link fallback (both supported). `calltide_client` cookie with JWT-like signed tokens. Single-use magic tokens via `usedMagicTokens` table.
+- **Admin:** Cookie-based (`capta_admin`) with HMAC-SHA256 signed tokens. Password in `ADMIN_PASSWORD` env var.
+- **Client:** Password login (primary) + magic link fallback (both supported). `capta_client` cookie with JWT-like signed tokens. Single-use magic tokens via `usedMagicTokens` table.
 - **Sessions:** JWT-like tokens verified in middleware.
 - **Middleware:** Handles auth for `/admin/*`, `/api/admin/*`, `/dashboard/*`, `/api/dashboard/*`. Injects `x-business-id` header for client routes.
 
@@ -81,7 +81,7 @@ tests/
 ### API Routes
 - All routes use Zod for input validation
 - Rate limiting via `rateLimit()` (async, Turso-backed)
-- Admin routes: check `calltide_admin` cookie
+- Admin routes: check `capta_admin` cookie
 - Client routes: middleware injects `x-business-id` header
 - Error responses: generic messages to clients, `reportError()` for internal logging
 
@@ -136,7 +136,7 @@ ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers.
 - Use serif fonts or dev metrics in UI
 - Add pricing tiers — single plan only
 - Lower the price below $497
-- Use "Start Free Trial" — always "Get Calltide →"
+- Use "Start Free Trial" — always "Get Capta →"
 
 ## Important Notes
 

@@ -16,7 +16,7 @@ import { createNotification } from "@/lib/notifications";
 import { canSendSms } from "@/lib/compliance/sms";
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
 
 function classify(score: number): "promoter" | "passive" | "detractor" {
   if (score >= 9) return "promoter";
@@ -160,12 +160,12 @@ async function handlePromoter(businessId: string) {
     const resend = getResend();
 
     await resend.emails.send({
-      from: "Calltide <success@calltide.app>",
+      from: "Capta <success@capta.app>",
       to: business.ownerEmail,
       subject: `${business.ownerName}, you're amazing! Share the love & earn $497`,
       html: `
         <div style="font-family: 'Inter', -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 24px;">
-          <img src="${BASE_URL}/images/logo.webp" alt="Calltide" style="height: 28px; margin-bottom: 32px;" />
+          <img src="${BASE_URL}/images/logo.png" alt="Capta" style="height: 28px; margin-bottom: 32px;" />
 
           <h1 style="font-size: 24px; font-weight: 700; color: #1a1a2e; margin-bottom: 12px;">
             Thank you for the incredible score!
@@ -173,7 +173,7 @@ async function handlePromoter(businessId: string) {
 
           <p style="font-size: 16px; color: #555; line-height: 1.7;">
             ${business.ownerName}, your rating means the world to us. We're thrilled
-            that Calltide is making a real difference for ${business.name}.
+            that Capta is making a real difference for ${business.name}.
           </p>
 
           <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin: 24px 0;">
@@ -181,7 +181,7 @@ async function handlePromoter(businessId: string) {
               Would you share a quick testimonial?
             </p>
             <p style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 12px;">
-              A sentence or two about your experience helps other business owners discover Calltide. It takes 30 seconds.
+              A sentence or two about your experience helps other business owners discover Capta. It takes 30 seconds.
             </p>
             <a href="${testimonialLink}" style="display:inline-block;background:#16a34a;color:#ffffff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
               Leave a Testimonial
@@ -207,7 +207,7 @@ async function handlePromoter(businessId: string) {
           </p>
 
           <p style="font-size: 14px; color: #aaa; margin-top: 32px;">
-            &mdash; The Calltide Team
+            &mdash; The Capta Team
           </p>
         </div>
       `,
@@ -272,7 +272,7 @@ async function handleDetractor(businessId: string, score: number) {
       await twilioClient.messages.create({
         to: business.ownerPhone,
         from: business.twilioNumber,
-        body: `[Calltide Alert] ${business.ownerName}, your business ${business.name} received an NPS score of ${score}/10. This indicates a risk of churn. Our team will reach out within 24 hours to address any concerns. Reply HELP for immediate support.`,
+        body: `[Capta Alert] ${business.ownerName}, your business ${business.name} received an NPS score of ${score}/10. This indicates a risk of churn. Our team will reach out within 24 hours to address any concerns. Reply HELP for immediate support.`,
       });
       smsSent = true;
     }
@@ -281,12 +281,12 @@ async function handleDetractor(businessId: string, score: number) {
     if (business.ownerEmail) {
       const resend = getResend();
       await resend.emails.send({
-        from: "Calltide <success@calltide.app>",
+        from: "Capta <success@capta.app>",
         to: business.ownerEmail,
         subject: `Action needed: ${business.name} NPS score ${score}/10`,
         html: `
           <div style="font-family: 'Inter', -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 24px;">
-            <img src="${BASE_URL}/images/logo.webp" alt="Calltide" style="height: 28px; margin-bottom: 32px;" />
+            <img src="${BASE_URL}/images/logo.png" alt="Capta" style="height: 28px; margin-bottom: 32px;" />
 
             <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
               <p style="font-size: 14px; color: #dc2626; font-weight: 600; margin: 0;">
@@ -310,7 +310,7 @@ async function handleDetractor(businessId: string, score: number) {
             </p>
 
             <p style="font-size: 14px; color: #aaa; margin-top: 32px;">
-              &mdash; The Calltide Team
+              &mdash; The Capta Team
             </p>
           </div>
         `,

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Calltide — AI Receptionist for Home Service Businesses";
+export const alt = "Capta — AI Receptionist for Home Service Businesses";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -65,7 +65,7 @@ export default function OgImage() {
             marginBottom: 16,
           }}
         >
-          Calltide
+          Capta
         </div>
 
         {/* Tagline */}

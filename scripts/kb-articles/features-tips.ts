@@ -53,7 +53,7 @@ Maria can let callers know if you serve their area. Make sure your service area 
 
 ## Check Your Dashboard Often
 
-Your Calltide dashboard shows you how Maria is doing. Look at:
+Your Capta dashboard shows you how Maria is doing. Look at:
 
 - **Call volume** — see how many calls come in each day and week.
 - **Sentiment scores** — find out if callers are happy, neutral, or frustrated.
@@ -113,7 +113,7 @@ María puede avisarles a los clientes si cubres su zona. Asegúrate de que tu á
 
 ## Revisa Tu Panel de Control Seguido
 
-Tu panel de control de Calltide te muestra cómo va María. Revisa:
+Tu panel de control de Capta te muestra cómo va María. Revisa:
 
 - **Volumen de llamadas** — cuántas llamadas recibes cada día y semana.
 - **Puntuación de sentimiento** — si los clientes están contentos, neutrales o frustrados.
@@ -130,8 +130,8 @@ Dedicar cinco minutos a la semana a tu panel te ayuda a mejorar a María y ganar
 5. Revisa tu panel de control una vez por semana.
 
 Sigue estos pasos y María agendará más citas, contestará más preguntas y hará que tu negocio se vea increíble — incluso a las 2 AM un sábado.`,
-    metaTitle: "Getting the Most Out of Maria | Calltide Help",
-    metaTitleEs: "Aprovechando al Máximo a María | Ayuda Calltide",
+    metaTitle: "Getting the Most Out of Maria | Capta Help",
+    metaTitleEs: "Aprovechando al Máximo a María | Ayuda Capta",
     metaDescription:
       "Pro tips to optimize your AI receptionist Maria — update services, greeting, hours, and service area to book more appointments automatically.",
     metaDescriptionEs:
@@ -157,7 +157,7 @@ Sigue estos pasos y María agendará más citas, contestará más preguntas y ha
       "Aprende qué pasa cuando un cliente llama fuera de tu horario de trabajo, incluyendo manejo de emergencias y seguimiento al día siguiente.",
     content: `# How After-Hours Calls Are Handled
 
-One of the biggest advantages of Calltide is that you never miss a call — even at midnight, on weekends, or on holidays. Maria answers every call 24/7. But what happens when someone calls after you close? This article explains the full after-hours flow.
+One of the biggest advantages of Capta is that you never miss a call — even at midnight, on weekends, or on holidays. Maria answers every call 24/7. But what happens when someone calls after you close? This article explains the full after-hours flow.
 
 ## What Counts as "After Hours"
 
@@ -195,7 +195,7 @@ You can customize what counts as an emergency and set your on-call number in **S
 
 ## Next-Day Follow-Up
 
-For non-emergency after-hours calls, Calltide creates a follow-up task that appears in your dashboard the next morning. Each task includes:
+For non-emergency after-hours calls, Capta creates a follow-up task that appears in your dashboard the next morning. Each task includes:
 
 - The caller's name and phone number
 - What they called about
@@ -213,10 +213,10 @@ This way, the first thing you see when you start your day is a clear list of peo
 
 ## You Never Miss a Lead
 
-Without Calltide, an after-hours call goes to voicemail — and most people hang up without leaving a message. With Maria, every caller gets a real conversation, their info is captured, and you have a follow-up task ready the next morning. That means more booked jobs and happier customers.`,
+Without Capta, an after-hours call goes to voicemail — and most people hang up without leaving a message. With Maria, every caller gets a real conversation, their info is captured, and you have a follow-up task ready the next morning. That means more booked jobs and happier customers.`,
     contentEs: `# Cómo Se Manejan las Llamadas Fuera de Horario
 
-Una de las mayores ventajas de Calltide es que nunca pierdes una llamada — ni a medianoche, ni en fines de semana, ni en días festivos. María contesta cada llamada las 24 horas, los 7 días. Pero ¿qué pasa cuando alguien llama después de que cierras? Este artículo te explica todo el proceso.
+Una de las mayores ventajas de Capta es que nunca pierdes una llamada — ni a medianoche, ni en fines de semana, ni en días festivos. María contesta cada llamada las 24 horas, los 7 días. Pero ¿qué pasa cuando alguien llama después de que cierras? Este artículo te explica todo el proceso.
 
 ## ¿Qué Cuenta Como "Fuera de Horario"?
 
@@ -254,7 +254,7 @@ Puedes personalizar qué cuenta como emergencia y poner tu número de guardia en
 
 ## Seguimiento al Día Siguiente
 
-Para llamadas fuera de horario que no son emergencia, Calltide crea una tarea de seguimiento que aparece en tu panel de control a la mañana siguiente. Cada tarea incluye:
+Para llamadas fuera de horario que no son emergencia, Capta crea una tarea de seguimiento que aparece en tu panel de control a la mañana siguiente. Cada tarea incluye:
 
 - El nombre y teléfono del cliente
 - Por qué llamó
@@ -272,9 +272,9 @@ Así, lo primero que ves cuando empiezas tu día es una lista clara de personas 
 
 ## Nunca Pierdes un Cliente Potencial
 
-Sin Calltide, una llamada fuera de horario va al buzón de voz — y la mayoría de las personas cuelgan sin dejar mensaje. Con María, cada persona que llama tiene una conversación real, su información queda guardada y tú tienes una tarea de seguimiento lista a la mañana siguiente. Eso significa más trabajos agendados y clientes más contentos.`,
-    metaTitle: "How After-Hours Calls Are Handled | Calltide",
-    metaTitleEs: "Llamadas Fuera de Horario | Ayuda Calltide",
+Sin Capta, una llamada fuera de horario va al buzón de voz — y la mayoría de las personas cuelgan sin dejar mensaje. Con María, cada persona que llama tiene una conversación real, su información queda guardada y tú tienes una tarea de seguimiento lista a la mañana siguiente. Eso significa más trabajos agendados y clientes más contentos.`,
+    metaTitle: "How After-Hours Calls Are Handled | Capta",
+    metaTitleEs: "Llamadas Fuera de Horario | Ayuda Capta",
     metaDescription:
       "Learn how Maria handles after-hours calls, flags emergencies with instant alerts, and creates next-day follow-up tasks so you never miss a lead.",
     metaDescriptionEs:
@@ -300,11 +300,11 @@ Sin Calltide, una llamada fuera de horario va al buzón de voz — y la mayoría
       "Los recordatorios automáticos por mensaje de texto ayudan a reducir las citas perdidas. Aprende cómo funcionan, cuándo se envían y cómo los clientes pueden cancelar la suscripción.",
     content: `# SMS Appointment Reminders
 
-No-shows cost you money. When a homeowner forgets about their appointment, you lose time you could have spent on another job. Calltide's SMS appointment reminders help fix this problem by sending automatic text messages to your customers before their appointment.
+No-shows cost you money. When a homeowner forgets about their appointment, you lose time you could have spent on another job. Capta's SMS appointment reminders help fix this problem by sending automatic text messages to your customers before their appointment.
 
 ## How It Works
 
-When Maria books an appointment for a caller, Calltide automatically schedules text message reminders. You do not have to do anything — it happens in the background.
+When Maria books an appointment for a caller, Capta automatically schedules text message reminders. You do not have to do anything — it happens in the background.
 
 The system sends reminders at two key times:
 
@@ -325,7 +325,7 @@ The messages use your business name and include the date, time window, and your 
 
 ## Bilingual Reminders
 
-Calltide remembers the language each customer used when they called. If they spoke with Maria in Spanish, their reminders go out in Spanish. If they spoke in English, reminders go out in English. You do not need to set anything — it is automatic.
+Capta remembers the language each customer used when they called. If they spoke with Maria in Spanish, their reminders go out in Spanish. If they spoke in English, reminders go out in English. You do not need to set anything — it is automatic.
 
 ## Customer Confirmation
 
@@ -355,14 +355,14 @@ SMS reminders are turned on by default. To make sure they work well:
 
 ## Cost
 
-SMS reminders are included in your Calltide plan at no extra charge. There is no limit on how many reminders are sent each month.`,
+SMS reminders are included in your Capta plan at no extra charge. There is no limit on how many reminders are sent each month.`,
     contentEs: `# Recordatorios de Citas por SMS
 
-Las citas perdidas te cuestan dinero. Cuando un cliente olvida su cita, pierdes tiempo que podrías haber usado en otro trabajo. Los recordatorios de citas por SMS de Calltide ayudan a resolver este problema enviando mensajes de texto automáticos a tus clientes antes de su cita.
+Las citas perdidas te cuestan dinero. Cuando un cliente olvida su cita, pierdes tiempo que podrías haber usado en otro trabajo. Los recordatorios de citas por SMS de Capta ayudan a resolver este problema enviando mensajes de texto automáticos a tus clientes antes de su cita.
 
 ## Cómo Funciona
 
-Cuando María agenda una cita para alguien que llama, Calltide programa recordatorios por mensaje de texto automáticamente. No tienes que hacer nada — todo pasa en segundo plano.
+Cuando María agenda una cita para alguien que llama, Capta programa recordatorios por mensaje de texto automáticamente. No tienes que hacer nada — todo pasa en segundo plano.
 
 El sistema envía recordatorios en dos momentos clave:
 
@@ -383,7 +383,7 @@ Los mensajes usan el nombre de tu negocio e incluyen la fecha, ventana de horari
 
 ## Recordatorios Bilingües
 
-Calltide recuerda el idioma que usó cada cliente cuando llamó. Si hablaron con María en español, sus recordatorios salen en español. Si hablaron en inglés, los recordatorios salen en inglés. No necesitas configurar nada — es automático.
+Capta recuerda el idioma que usó cada cliente cuando llamó. Si hablaron con María en español, sus recordatorios salen en español. Si hablaron en inglés, los recordatorios salen en inglés. No necesitas configurar nada — es automático.
 
 ## Confirmación del Cliente
 
@@ -413,13 +413,13 @@ Los recordatorios por SMS están activados por defecto. Para asegurarte de que f
 
 ## Costo
 
-Los recordatorios por SMS están incluidos en tu plan de Calltide sin costo extra. No hay límite en cuántos recordatorios se envían cada mes.`,
-    metaTitle: "SMS Appointment Reminders | Calltide Help",
-    metaTitleEs: "Recordatorios de Citas por SMS | Ayuda Calltide",
+Los recordatorios por SMS están incluidos en tu plan de Capta sin costo extra. No hay límite en cuántos recordatorios se envían cada mes.`,
+    metaTitle: "SMS Appointment Reminders | Capta Help",
+    metaTitleEs: "Recordatorios de Citas por SMS | Ayuda Capta",
     metaDescription:
-      "Calltide sends automatic bilingual SMS reminders 24 hours and 2 hours before appointments to reduce no-shows. Learn how they work.",
+      "Capta sends automatic bilingual SMS reminders 24 hours and 2 hours before appointments to reduce no-shows. Learn how they work.",
     metaDescriptionEs:
-      "Calltide envía recordatorios automáticos bilingües por SMS 24 horas y 2 horas antes de las citas para reducir citas perdidas. Aprende cómo funcionan.",
+      "Capta envía recordatorios automáticos bilingües por SMS 24 horas y 2 horas antes de las citas para reducir citas perdidas. Aprende cómo funcionan.",
     searchKeywords:
       "sms reminders, text reminders, appointment reminders, no-shows, confirmation, opt out, stop, text messages, notifications, bilingual sms",
     searchKeywordsEs:
@@ -445,7 +445,7 @@ Every call that Maria handles gets a sentiment score. You can see this score on 
 
 ## What Is Sentiment Analysis?
 
-Sentiment analysis is a way to measure how a caller feels during the conversation. Think of it like a mood reading. After each call, Calltide's AI listens to the tone, words, and flow of the conversation and gives the call one of three labels:
+Sentiment analysis is a way to measure how a caller feels during the conversation. Think of it like a mood reading. After each call, Capta's AI listens to the tone, words, and flow of the conversation and gives the call one of three labels:
 
 - **Positive** — The caller sounded happy, satisfied, or friendly. They likely had a good experience.
 - **Neutral** — The caller was calm and straightforward. Nothing went wrong, but nothing stood out as great either.
@@ -453,7 +453,7 @@ Sentiment analysis is a way to measure how a caller feels during the conversatio
 
 ## How It Is Calculated
 
-Calltide looks at several things to figure out the sentiment:
+Capta looks at several things to figure out the sentiment:
 
 1. **Voice tone.** The AI analyzes pitch, speed, and volume patterns. A calm, steady voice leans neutral or positive. A raised voice or fast, clipped speech may signal frustration.
 2. **Word choice.** Words like "great," "thanks," and "perfect" push the score toward positive. Words like "frustrated," "wrong," and "terrible" push it toward negative.
@@ -508,7 +508,7 @@ Cada llamada que María maneja recibe una puntuación de sentimiento. Puedes ver
 
 ## ¿Qué Es el Análisis de Sentimiento?
 
-El análisis de sentimiento es una forma de medir cómo se siente una persona durante la conversación. Piensa en ello como una lectura del estado de ánimo. Después de cada llamada, la inteligencia artificial de Calltide escucha el tono, las palabras y el flujo de la conversación y le pone una de tres etiquetas:
+El análisis de sentimiento es una forma de medir cómo se siente una persona durante la conversación. Piensa en ello como una lectura del estado de ánimo. Después de cada llamada, la inteligencia artificial de Capta escucha el tono, las palabras y el flujo de la conversación y le pone una de tres etiquetas:
 
 - **Positivo** — La persona sonaba contenta, satisfecha o amigable. Probablemente tuvo una buena experiencia.
 - **Neutral** — La persona estaba tranquila y directa. Nada salió mal, pero nada destacó como excelente.
@@ -516,7 +516,7 @@ El análisis de sentimiento es una forma de medir cómo se siente una persona du
 
 ## Cómo Se Calcula
 
-Calltide analiza varias cosas para determinar el sentimiento:
+Capta analiza varias cosas para determinar el sentimiento:
 
 1. **Tono de voz.** La IA analiza patrones de tono, velocidad y volumen. Una voz tranquila y constante tiende a ser neutral o positiva. Una voz alta o un habla rápida y cortante puede indicar frustración.
 2. **Elección de palabras.** Palabras como "genial," "gracias" y "perfecto" empujan la puntuación hacia positivo. Palabras como "frustrado," "mal" y "terrible" la empujan hacia negativo.
@@ -565,12 +565,12 @@ Ve a **Llamadas** en tu panel de control. Cada llamada muestra una etiqueta de c
 Haz clic en cualquier llamada para ver los detalles completos, incluyendo la grabación, la transcripción y un resumen de por qué la llamada recibió esa puntuación.
 
 El análisis de sentimiento convierte cada llamada en una oportunidad de aprendizaje. Úsalo para seguir mejorando, y tus clientes notarán la diferencia.`,
-    metaTitle: "Call Sentiment Analysis Explained | Calltide",
-    metaTitleEs: "Análisis de Sentimiento de Llamadas | Calltide",
+    metaTitle: "Call Sentiment Analysis Explained | Capta",
+    metaTitleEs: "Análisis de Sentimiento de Llamadas | Capta",
     metaDescription:
-      "Understand what positive, neutral, and negative call sentiment scores mean in Calltide and how to use them to improve your customer experience.",
+      "Understand what positive, neutral, and negative call sentiment scores mean in Capta and how to use them to improve your customer experience.",
     metaDescriptionEs:
-      "Entiende qué significan las puntuaciones de sentimiento positivo, neutral y negativo en Calltide y cómo usarlas para mejorar la experiencia del cliente.",
+      "Entiende qué significan las puntuaciones de sentimiento positivo, neutral y negativo en Capta y cómo usarlas para mejorar la experiencia del cliente.",
     searchKeywords:
       "sentiment analysis, call sentiment, positive, negative, neutral, call quality, customer satisfaction, call scores, tone analysis, voice analysis",
     searchKeywordsEs:
@@ -587,16 +587,16 @@ El análisis de sentimiento convierte cada llamada en una oportunidad de aprendi
     title: "Dark Mode and Theme Settings",
     titleEs: "Modo Oscuro y Configuración de Tema",
     excerpt:
-      "Learn how to switch between dark mode and light mode in your Calltide dashboard.",
+      "Learn how to switch between dark mode and light mode in your Capta dashboard.",
     excerptEs:
-      "Aprende cómo cambiar entre modo oscuro y modo claro en tu panel de control de Calltide.",
+      "Aprende cómo cambiar entre modo oscuro y modo claro en tu panel de control de Capta.",
     content: `# Dark Mode and Theme Settings
 
-Calltide lets you choose between a light theme and a dark theme for your dashboard. Some people find dark mode easier on the eyes, especially at night or in low light. Others prefer the classic light look. You can switch anytime.
+Capta lets you choose between a light theme and a dark theme for your dashboard. Some people find dark mode easier on the eyes, especially at night or in low light. Others prefer the classic light look. You can switch anytime.
 
 ## How to Turn On Dark Mode
 
-1. Log in to your Calltide dashboard.
+1. Log in to your Capta dashboard.
 2. Click on **Settings** in the left-hand menu.
 3. Look for the **Theme** section.
 4. Click **Dark Mode** to switch to the dark theme, or click **Light Mode** to go back to the light theme.
@@ -619,7 +619,7 @@ There is no right or wrong choice. Here are some things to think about:
 
 ## Your Choice Is Saved
 
-Once you pick a theme, Calltide remembers it. The next time you log in, your dashboard will use the same theme you chose last time. This setting is tied to your account, so it works no matter which device or browser you use.
+Once you pick a theme, Capta remembers it. The next time you log in, your dashboard will use the same theme you chose last time. This setting is tied to your account, so it works no matter which device or browser you use.
 
 ## Quick Steps
 
@@ -631,11 +631,11 @@ Once you pick a theme, Calltide remembers it. The next time you log in, your das
 That is all there is to it. Pick the theme that feels best for you and get back to running your business.`,
     contentEs: `# Modo Oscuro y Configuración de Tema
 
-Calltide te permite elegir entre un tema claro y un tema oscuro para tu panel de control. Algunas personas encuentran el modo oscuro más cómodo para los ojos, especialmente de noche o con poca luz. Otros prefieren el aspecto clásico claro. Puedes cambiar cuando quieras.
+Capta te permite elegir entre un tema claro y un tema oscuro para tu panel de control. Algunas personas encuentran el modo oscuro más cómodo para los ojos, especialmente de noche o con poca luz. Otros prefieren el aspecto clásico claro. Puedes cambiar cuando quieras.
 
 ## Cómo Activar el Modo Oscuro
 
-1. Inicia sesión en tu panel de control de Calltide.
+1. Inicia sesión en tu panel de control de Capta.
 2. Haz clic en **Configuración** en el menú del lado izquierdo.
 3. Busca la sección de **Tema**.
 4. Haz clic en **Modo Oscuro** para cambiar al tema oscuro, o haz clic en **Modo Claro** para volver al tema claro.
@@ -658,7 +658,7 @@ No hay una opción correcta o incorrecta. Aquí tienes algunas cosas para pensar
 
 ## Tu Elección Se Guarda
 
-Una vez que escojas un tema, Calltide lo recuerda. La próxima vez que inicies sesión, tu panel de control usará el mismo tema que elegiste la última vez. Esta configuración está ligada a tu cuenta, así que funciona sin importar qué dispositivo o navegador uses.
+Una vez que escojas un tema, Capta lo recuerda. La próxima vez que inicies sesión, tu panel de control usará el mismo tema que elegiste la última vez. Esta configuración está ligada a tu cuenta, así que funciona sin importar qué dispositivo o navegador uses.
 
 ## Pasos Rápidos
 
@@ -668,12 +668,12 @@ Una vez que escojas un tema, Calltide lo recuerda. La próxima vez que inicies s
 | Activar modo claro | Configuración > Tema > Modo Claro |
 
 Eso es todo. Escoge el tema que te parezca mejor y regresa a manejar tu negocio.`,
-    metaTitle: "Dark Mode & Theme Settings | Calltide Help",
-    metaTitleEs: "Modo Oscuro y Tema | Ayuda Calltide",
+    metaTitle: "Dark Mode & Theme Settings | Capta Help",
+    metaTitleEs: "Modo Oscuro y Tema | Ayuda Capta",
     metaDescription:
-      "Switch between dark mode and light mode in your Calltide dashboard. Learn where to find the setting and which theme works best for you.",
+      "Switch between dark mode and light mode in your Capta dashboard. Learn where to find the setting and which theme works best for you.",
     metaDescriptionEs:
-      "Cambia entre modo oscuro y modo claro en tu panel de control de Calltide. Aprende dónde está la configuración y qué tema funciona mejor para ti.",
+      "Cambia entre modo oscuro y modo claro en tu panel de control de Capta. Aprende dónde está la configuración y qué tema funciona mejor para ti.",
     searchKeywords:
       "dark mode, light mode, theme, appearance, display settings, night mode, colors, dashboard theme, screen brightness, eye strain",
     searchKeywordsEs:

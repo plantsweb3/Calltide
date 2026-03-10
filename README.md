@@ -1,4 +1,4 @@
-# Calltide
+# Capta
 
 AI-powered bilingual virtual receptionist for home service businesses. Answers calls 24/7 in English and Spanish, books appointments, takes messages, detects emergencies, and provides a full client + admin portal.
 

@@ -29,7 +29,7 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
   return (
     <nav className={`sticky top-0 z-40 border-b transition-all duration-300 ${scrolled ? "nav-scrolled border-transparent" : "border-cream-border bg-cream"}`}>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 sm:px-8 py-4">
-        <a href="/es"><img src="/images/logo.webp" alt="Calltide" className="h-7 w-auto sm:h-8" /></a>
+        <a href="/es"><img src="/images/logo-inline-navy.webp" alt="Capta" className="h-7 w-auto sm:h-8" /></a>
         <div className="hidden items-center gap-8 md:flex">
           <a href="/platform" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Plataforma</a>
           <a href="/pricing" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Precios</a>
@@ -44,7 +44,7 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
           </Link>
           <a href="/dashboard/login" className="hidden text-sm font-medium text-charcoal-muted transition hover:text-charcoal sm:inline-block">Iniciar Sesión</a>
           <a href="#signup" className="cta-shimmer hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-light sm:inline-flex">
-            Obtén Calltide
+            Obtén Capta
           </a>
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="flex h-10 w-10 items-center justify-center rounded-lg text-charcoal md:hidden" aria-label="Menú">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -63,7 +63,7 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
             <a href="/es/help" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Ayuda</a>
             <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted">{PHONE}</a>
             <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">Iniciar Sesión</a>
-            <a href="#signup" onClick={() => setMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white">Obtén Calltide</a>
+            <a href="#signup" onClick={() => setMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white">Obtén Capta</a>
           </div>
         </div>
       )}
@@ -88,7 +88,7 @@ export default function EsHomepage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            name: "Calltide",
+            name: "Capta",
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             offers: { "@type": "Offer", price: "497", priceCurrency: "USD", priceValidUntil: "2027-12-31" },
@@ -182,7 +182,7 @@ export default function EsHomepage() {
               Reservar Demo &rarr;
             </a>
             <a href="/setup" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:border-white/40">
-              Prueba Calltide Gratis
+              Prueba Capta Gratis
             </a>
           </div>
         </div>

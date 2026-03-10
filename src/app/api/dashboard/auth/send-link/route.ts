@@ -77,12 +77,12 @@ export async function POST(req: NextRequest) {
 
     const resend = getResend();
     await resend.emails.send({
-      from: env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>",
+      from: env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>",
       to: email,
-      subject: "Your Calltide login link",
+      subject: "Your Capta login link",
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
-          <h2 style="color: #1A1D24; margin-bottom: 8px;">Sign in to Calltide</h2>
+          <h2 style="color: #1A1D24; margin-bottom: 8px;">Sign in to Capta</h2>
           <p style="color: #475569; margin-bottom: 24px;">
             Click the button below to access your ${business.name} dashboard. This link expires in 15 minutes.
           </p>
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
           </p>
           <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 24px 0;" />
           <p style="color: #94A3B8; font-size: 12px;">
-            &copy; Calltide &mdash; AI Receptionist for Home Services
+            &copy; Capta &mdash; AI Receptionist for Home Services
           </p>
         </div>
       `,

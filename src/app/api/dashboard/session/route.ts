@@ -7,7 +7,7 @@ import { verifyClientCookie } from "@/lib/client-auth";
 
 export async function GET(req: NextRequest) {
   try {
-    const cookie = req.cookies.get("calltide_client")?.value;
+    const cookie = req.cookies.get("capta_client")?.value;
     const secret = env.CLIENT_AUTH_SECRET;
     if (!cookie || !secret) {
       return NextResponse.json({ valid: false, reason: "no_session" });

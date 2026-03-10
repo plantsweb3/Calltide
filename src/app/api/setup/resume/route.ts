@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { cookies } from "next/headers";
 
-const COOKIE_NAME = "calltide_setup";
+const COOKIE_NAME = "capta_setup";
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
 
 /**
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
 
   const token = req.nextUrl.searchParams.get("token");
   if (!token) {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://calltide.app";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
     return NextResponse.redirect(`${appUrl}/setup`);
   }
 
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     .where(eq(setupSessions.token, token))
     .limit(1);
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://calltide.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
 
   if (!session || session.status === "converted") {
     return NextResponse.redirect(`${appUrl}/setup`);

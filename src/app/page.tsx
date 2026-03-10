@@ -33,13 +33,13 @@ export default function LandingPage() {
   // Persist language preference
   const toggleLang = useCallback((l: Lang) => {
     setLang(l);
-    if (typeof window !== "undefined") localStorage.setItem("calltide-lang", l);
+    if (typeof window !== "undefined") localStorage.setItem("capta-lang", l);
   }, []);
 
   // Restore on mount
   useState(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("calltide-lang");
+      const saved = localStorage.getItem("capta-lang");
       if (saved === "en" || saved === "es") setLang(saved);
     }
   });
@@ -54,7 +54,7 @@ export default function LandingPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            name: "Calltide",
+            name: "Capta",
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             offers: { "@type": "Offer", price: "497", priceCurrency: "USD", priceValidUntil: "2027-12-31" },
@@ -172,7 +172,7 @@ export default function LandingPage() {
               {lang === "en" ? "Book a Demo" : "Reservar Demo"} &rarr;
             </a>
             <a href="/setup" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:border-white/40">
-              {lang === "en" ? "Try Calltide Free" : "Prueba Calltide Gratis"}
+              {lang === "en" ? "Try Capta Free" : "Prueba Capta Gratis"}
             </a>
           </div>
         </div>

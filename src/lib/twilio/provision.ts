@@ -58,7 +58,7 @@ export async function provisionTwilioNumber(businessId: string): Promise<string 
       voiceMethod: "POST",
       smsUrl: `${appUrl}/api/webhooks/twilio/sms`,
       smsMethod: "POST",
-      friendlyName: `Calltide — ${businessId.slice(0, 8)}`,
+      friendlyName: `Capta — ${businessId.slice(0, 8)}`,
     });
 
     // Assign to business

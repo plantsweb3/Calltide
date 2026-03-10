@@ -6,12 +6,12 @@ import { HelpCategoryIcon } from "@/components/icons";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Centro de Ayuda — Calltide",
-  description: "Encuentra respuestas sobre tu recepcionista AI de Calltide. Busca artículos de ayuda o navega por categoría.",
+  title: "Centro de Ayuda — Capta",
+  description: "Encuentra respuestas sobre tu recepcionista AI de Capta. Busca artículos de ayuda o navega por categoría.",
   openGraph: {
-    title: "Centro de Ayuda — Calltide",
-    description: "Encuentra respuestas sobre tu recepcionista AI de Calltide.",
-    url: "https://calltide.app/es/help",
+    title: "Centro de Ayuda — Capta",
+    description: "Encuentra respuestas sobre tu recepcionista AI de Capta.",
+    url: "https://capta.app/es/help",
   },
   alternates: {
     canonical: "/es/help",
@@ -131,7 +131,7 @@ export default async function HelpCenterEsPage() {
               Nuestro equipo de soporte está listo para asistirte.
             </p>
             <a
-              href="mailto:support@calltide.app"
+              href="mailto:support@capta.app"
               className="mt-5 inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:brightness-110"
               style={{ background: "#C59A27" }}
             >

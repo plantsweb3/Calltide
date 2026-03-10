@@ -60,7 +60,7 @@ vi.mock("twilio", () => ({
 beforeEach(async () => {
   vi.clearAllMocks();
   process.env.TWILIO_AUTH_TOKEN = "test_auth_token";
-  process.env.NEXT_PUBLIC_APP_URL = "https://test.calltide.app";
+  process.env.NEXT_PUBLIC_APP_URL = "https://test.capta.app";
   process.env.HUME_API_KEY = "test_hume_api_key";
   process.env.HUME_CONFIG_ID = "test_hume_config_id";
 
@@ -78,7 +78,7 @@ describe("Voice Webhook — TwiML Generation", () => {
     formData.set("From", "+15125551234");
     formData.set("CallSid", "CA_test_001");
 
-    const req = new Request("https://test.calltide.app/api/webhooks/twilio/voice", {
+    const req = new Request("https://test.capta.app/api/webhooks/twilio/voice", {
       method: "POST",
       body: formData,
       headers: {
@@ -109,7 +109,7 @@ describe("Voice Webhook — TwiML Generation", () => {
     formData.set("To", "+15125559999");
     formData.set("From", "+15125551234");
 
-    const req = new Request("https://test.calltide.app/api/webhooks/twilio/voice", {
+    const req = new Request("https://test.capta.app/api/webhooks/twilio/voice", {
       method: "POST",
       body: formData,
       headers: { "x-forwarded-for": "127.0.0.1" },
@@ -131,7 +131,7 @@ describe("Voice Webhook — TwiML Generation", () => {
     formData.set("To", "+15125559999");
     formData.set("From", "+15125551234");
 
-    const req = new Request("https://test.calltide.app/api/webhooks/twilio/voice", {
+    const req = new Request("https://test.capta.app/api/webhooks/twilio/voice", {
       method: "POST",
       body: formData,
       headers: {
@@ -160,7 +160,7 @@ describe("Voice Webhook — TwiML Generation", () => {
     formData.set("To", "+19999999999");
     formData.set("From", "+15125551234");
 
-    const req = new Request("https://test.calltide.app/api/webhooks/twilio/voice", {
+    const req = new Request("https://test.capta.app/api/webhooks/twilio/voice", {
       method: "POST",
       body: formData,
       headers: {
@@ -198,7 +198,7 @@ describe("Voice Webhook — TwiML Generation", () => {
     formData.set("To", "+15125559999");
     formData.set("From", "+15125551234");
 
-    const req = new Request("https://test.calltide.app/api/webhooks/twilio/voice", {
+    const req = new Request("https://test.capta.app/api/webhooks/twilio/voice", {
       method: "POST",
       body: formData,
       headers: {
@@ -248,7 +248,7 @@ describe("Voice Webhook — Rate Limiting", () => {
     formData.set("To", "+15125559999");
     formData.set("From", "+15125551234");
 
-    const req = new Request("https://test.calltide.app/api/webhooks/twilio/voice", {
+    const req = new Request("https://test.capta.app/api/webhooks/twilio/voice", {
       method: "POST",
       body: formData,
       headers: { "x-forwarded-for": "127.0.0.1" },

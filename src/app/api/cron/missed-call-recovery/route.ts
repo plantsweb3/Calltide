@@ -177,8 +177,8 @@ export async function GET(req: NextRequest) {
 
           // Build recovery SMS
           const smsBody = language === "es"
-            ? `¡Hola! Somos ${biz.name}. Parece que su llamada se cortó. ¿Le gustaría que le devolvamos la llamada? Responda SÍ y nos comunicaremos pronto. — ${receptionistName}\n\nResponda STOP para cancelar`
-            : `Hi! This is ${biz.name}. Looks like your call got cut short. Would you like us to call you back? Reply YES and we'll reach out shortly. — ${receptionistName}\n\nReply STOP to opt out`;
+            ? `¡Hola! Somos ${biz.name}. Vimos que nos llamó hace poco. ¿Podemos ayudarle con algo? Responda SÍ y nos comunicaremos pronto. — ${receptionistName}\n\nResponda STOP para cancelar`
+            : `Hi! This is ${biz.name}. We saw you called us a little while ago. Can we help you with anything? Reply YES and we'll reach out shortly. — ${receptionistName}\n\nReply STOP to opt out`;
 
           const result = await sendSMS({
             to: call.callerPhone,

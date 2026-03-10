@@ -13,8 +13,16 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app"),
-  title: "Calltide — AI Receptionist for Home Service Businesses | Bilingual EN/ES",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app"),
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  title: "Capta — AI Receptionist for Home Service Businesses | Bilingual EN/ES",
   description:
     "AI receptionist that answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. Built for HVAC, plumbing, and electrical businesses.",
   keywords: [
@@ -32,18 +40,18 @@ export const metadata: Metadata = {
     "appointment booking AI",
   ],
   openGraph: {
-    title: "Calltide — Every Call Answered. Every Job Booked.",
+    title: "Capta — Every Call Answered. Every Job Booked.",
     description:
       "AI receptionist that answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. Built for home service businesses.",
-    url: "https://calltide.app",
-    siteName: "Calltide",
+    url: "https://capta.app",
+    siteName: "Capta",
     type: "website",
     locale: "en_US",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Calltide — AI Receptionist for Home Service Businesses" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Capta — AI Receptionist for Home Service Businesses" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Calltide — Every Call Answered. Every Job Booked.",
+    title: "Capta — Every Call Answered. Every Job Booked.",
     description:
       "AI receptionist that answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies.",
   },
@@ -67,9 +75,9 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "Calltide",
-              url: "https://calltide.app",
-              logo: "https://calltide.app/icon.png",
+              name: "Capta",
+              url: "https://capta.app",
+              logo: "https://capta.app/icon-512.png",
               description:
                 "AI-powered bilingual receptionist platform for home service businesses. Answers calls 24/7 in English and Spanish.",
               foundingDate: "2025",

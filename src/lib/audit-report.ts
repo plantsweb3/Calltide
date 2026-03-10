@@ -6,7 +6,7 @@ import { reportError } from "@/lib/error-reporting";
 
 import { BRAND_COLOR, COMPANY_ADDRESS, MARKETING_URL } from "@/lib/constants";
 
-const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.com/calltide/onboarding";
+const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.com/capta/onboarding";
 
 const REVENUE_PER_CALL: Record<string, number> = {
   plumber: 250,
@@ -58,7 +58,7 @@ export async function generateAndSendAuditReport(data: AuditReportData) {
   });
 
   try {
-    const from = process.env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+    const from = process.env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
 
     await resend.emails.send({
       from,
@@ -162,10 +162,10 @@ function buildReportEmail(params: {
   }
 
   const mariaSection = isEn
-    ? `<h3 style="color:#0f172a;margin-top:24px;">What Calltide Could Do For You</h3>
+    ? `<h3 style="color:#0f172a;margin-top:24px;">What Capta Could Do For You</h3>
        <p>Maria, our AI receptionist, answers every call in <strong>under 8 seconds</strong> — in English and Spanish. She books appointments, takes messages, and texts you the details. 24/7/365.</p>
        <p>All for less than <strong>$17/day</strong>.</p>`
-    : `<h3 style="color:#0f172a;margin-top:24px;">Lo Que Calltide Puede Hacer Por Usted</h3>
+    : `<h3 style="color:#0f172a;margin-top:24px;">Lo Que Capta Puede Hacer Por Usted</h3>
        <p>Maria, nuestra recepcionista IA, contesta cada llamada en <strong>menos de 8 segundos</strong> — en inglés y español. Agenda citas, toma mensajes y le envía los detalles por texto. 24/7/365.</p>
        <p>Todo por menos de <strong>$17/día</strong>.</p>`;
 
@@ -176,7 +176,7 @@ function buildReportEmail(params: {
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;">
 <div style="max-width:600px;margin:0 auto;padding:32px 24px;">
-  <img src="${MARKETING_URL}/images/logo.webp" alt="Calltide" style="height:24px;margin-bottom:24px;" />
+  <img src="${MARKETING_URL}/images/logo.png" alt="Capta" style="height:24px;margin-bottom:24px;" />
 
   <h2 style="color:#0f172a;margin-bottom:8px;">${headline}</h2>
   <div style="color:#475569;line-height:1.7;font-size:15px;">
@@ -192,7 +192,7 @@ function buildReportEmail(params: {
   </a>
 
   <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;">
-    <p>Calltide — AI Voice Agents for Local Businesses</p>
+    <p>Capta — AI Voice Agents for Local Businesses</p>
     <p style="margin-top:8px;">${COMPANY_ADDRESS}</p>
     <p style="margin-top:8px;">
       <a href="${unsubscribeUrl}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>

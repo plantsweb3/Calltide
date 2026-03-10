@@ -228,7 +228,7 @@ export function buildMonthlyRoiEmail(params: {
       View Full Dashboard &rarr;
     </a>
     <p style="margin:16px 0 0;font-size:11px;color:#64748b;">
-      Calltide Inc. &middot; San Antonio, TX
+      Capta LLC &middot; San Antonio, TX
     </p>
   </div>
 
@@ -245,5 +245,5 @@ export function buildMonthlyRoiSms(params: {
   monthLabel: string;
 }): string {
   const { receptionistName, stats, monthLabel } = params;
-  return `${receptionistName} ${monthLabel} Report: ${stats.totalCalls} calls, ${stats.appointmentsBooked} appointments (~${fmtMoney(stats.estimatedRevenue)}), ${stats.roiMultiple}x ROI on $497. Check your email for full report. — Calltide`;
+  return `${receptionistName} ${monthLabel} Report: ${stats.totalCalls} calls, ${stats.appointmentsBooked} appointments (~${fmtMoney(stats.estimatedRevenue)}), ${stats.roiMultiple}x ROI on $497. Check your email for full report. — Capta`;
 }

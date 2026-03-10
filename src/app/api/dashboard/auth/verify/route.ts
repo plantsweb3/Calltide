@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
   const cookieValue = await signClientCookie(result.businessId, secret, biz?.accountId ?? undefined);
 
   const response = NextResponse.redirect(new URL("/dashboard", req.url));
-  response.cookies.set("calltide_client", cookieValue, {
+  response.cookies.set("capta_client", cookieValue, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",

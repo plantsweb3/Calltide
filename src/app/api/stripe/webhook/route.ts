@@ -235,7 +235,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     type: "signup_completed",
     entityType: "business",
     title: `New signup: ${email}`,
-    detail: `Checkout completed. Subscription: ${subscriptionId || "pending"}. Trial: 14 days.`,
+    detail: `Checkout completed. Subscription: ${subscriptionId || "pending"}.`,
   });
 
   await createNotification({
@@ -753,7 +753,7 @@ async function handleSetupPageCheckout(
     entityType: "business",
     entityId: businessId,
     title: `New signup via setup page: ${email}`,
-    detail: `${setupSession.businessName} (${setupSession.businessType}). Receptionist: ${setupSession.receptionistName}. Trial: 14 days.`,
+    detail: `${setupSession.businessName} (${setupSession.businessType}). Receptionist: ${setupSession.receptionistName}.`,
   });
 
   await createNotification({

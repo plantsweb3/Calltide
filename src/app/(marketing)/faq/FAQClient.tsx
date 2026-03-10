@@ -18,7 +18,7 @@ const content = {
   en: {
     badge: "Frequently Asked Questions",
     hero: "Got Questions?\nWe've Got Answers.",
-    heroSub: "Everything you need to know about Calltide, your AI front office.",
+    heroSub: "Everything you need to know about Capta, your AI front office.",
     categories: [
       {
         title: "Getting Started",
@@ -75,7 +75,7 @@ const content = {
           },
           {
             q: "Can I import my existing customer data?",
-            a: "Yes. Upload a CSV from your current CRM or spreadsheet. Calltide maps the fields and imports your customers so Maria has full context — names, addresses, past jobs — from day one.",
+            a: "Yes. Upload a CSV from your current CRM or spreadsheet. Capta maps the fields and imports your customers so Maria has full context — names, addresses, past jobs — from day one.",
           },
           {
             q: "What happens if a caller hangs up?",
@@ -91,7 +91,7 @@ const content = {
         title: "Billing & Pricing",
         items: [
           {
-            q: "What does Calltide cost?",
+            q: "What does Capta cost?",
             a: "One plan: $497/month or $4,764/year (save $1,200). Everything included — unlimited calls, bilingual support, booking, CRM, analytics, compliance. No per-minute charges, no hidden fees.",
           },
           {
@@ -117,21 +117,21 @@ const content = {
           },
           {
             q: "What if the internet or your servers go down?",
-            a: "We have redundancy built in. If our primary systems experience issues, calls are routed to backup systems. We monitor uptime 24/7 and our status page is always available at calltide.app/status.",
+            a: "We have redundancy built in. If our primary systems experience issues, calls are routed to backup systems. We monitor uptime 24/7 and our status page is always available at capta.app/status.",
           },
         ],
       },
     ] as Category[],
     ctaH: "Still have questions?",
     ctaSub: "Talk to us — or better yet, talk to your receptionist.",
-    ctaButton: "Get Calltide",
+    ctaButton: "Get Capta",
     ctaBook: "Book a Demo",
     ctaCall: "Or call us:",
   },
   es: {
     badge: "Preguntas Frecuentes",
     hero: "¿Tienes Preguntas?\nTenemos Respuestas.",
-    heroSub: "Todo lo que necesitas saber sobre Calltide, tu oficina IA.",
+    heroSub: "Todo lo que necesitas saber sobre Capta, tu oficina IA.",
     categories: [
       {
         title: "Primeros Pasos",
@@ -188,7 +188,7 @@ const content = {
           },
           {
             q: "¿Puedo importar mis datos de clientes existentes?",
-            a: "Sí. Sube un CSV de tu CRM actual o hoja de cálculo. Calltide mapea los campos e importa tus clientes para que Maria tenga contexto completo — nombres, direcciones, trabajos anteriores — desde el primer día.",
+            a: "Sí. Sube un CSV de tu CRM actual o hoja de cálculo. Capta mapea los campos e importa tus clientes para que Maria tenga contexto completo — nombres, direcciones, trabajos anteriores — desde el primer día.",
           },
           {
             q: "¿Qué pasa si un llamante cuelga?",
@@ -204,7 +204,7 @@ const content = {
         title: "Facturación y Precios",
         items: [
           {
-            q: "¿Cuánto cuesta Calltide?",
+            q: "¿Cuánto cuesta Capta?",
             a: "Un plan: $497/mes o $4,764/año (ahorra $1,200). Todo incluido — llamadas ilimitadas, soporte bilingüe, agendamiento, CRM, analíticas, cumplimiento. Sin cargos por minuto, sin costos ocultos.",
           },
           {
@@ -230,14 +230,14 @@ const content = {
           },
           {
             q: "¿Qué pasa si se cae el internet o sus servidores?",
-            a: "Tenemos redundancia incorporada. Si nuestros sistemas principales experimentan problemas, las llamadas se enrutan a sistemas de respaldo. Monitoreamos el tiempo de actividad 24/7 y nuestra página de estado siempre está disponible en calltide.app/status.",
+            a: "Tenemos redundancia incorporada. Si nuestros sistemas principales experimentan problemas, las llamadas se enrutan a sistemas de respaldo. Monitoreamos el tiempo de actividad 24/7 y nuestra página de estado siempre está disponible en capta.app/status.",
           },
         ],
       },
     ] as Category[],
     ctaH: "¿Todavía tienes preguntas?",
     ctaSub: "Habla con nosotros — o mejor aún, habla con tu recepcionista.",
-    ctaButton: "Obtén Calltide",
+    ctaButton: "Obtén Capta",
     ctaBook: "Agenda una Demo",
     ctaCall: "O llámanos:",
   },
@@ -291,7 +291,7 @@ function AccordionItem({ item, isOpen, onToggle }: { item: FAQItem; isOpen: bool
 export default function FAQClient() {
   const [lang] = useState<Lang>(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("calltide-lang");
+      const saved = localStorage.getItem("capta-lang");
       if (saved === "en" || saved === "es") return saved;
     }
     return "en";

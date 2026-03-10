@@ -6,7 +6,7 @@ import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-reporting";
 import { cookies } from "next/headers";
 
-const COOKIE_NAME = "calltide_setup";
+const COOKIE_NAME = "capta_setup";
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 days
 
 /**

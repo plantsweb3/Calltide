@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
           ),
         );
 
-      const dashboardBase = env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
+      const dashboardBase = env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
 
       for (const biz of activeBiz) {
         try {
@@ -242,11 +242,11 @@ export async function GET(req: NextRequest) {
               dashboardUrl: `${dashboardBase}/dashboard`,
             });
 
-            const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+            const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
 
             const { data, error } = await resend.emails.send({
               from,
-              replyTo: "hello@calltide.app",
+              replyTo: "hello@capta.app",
               to: biz.ownerEmail,
               subject,
               html,

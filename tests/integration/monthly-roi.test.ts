@@ -129,7 +129,7 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Joe's Plumbing",
       monthLabel: "February 2026",
       stats: baseStats,
-      dashboardUrl: "https://calltide.app/dashboard",
+      dashboardUrl: "https://capta.app/dashboard",
     });
 
     expect(subject).toBe("Maria Monthly ROI Report — Joe's Plumbing");
@@ -144,7 +144,7 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Test Biz",
       monthLabel: "January 2026",
       stats: baseStats,
-      dashboardUrl: "https://calltide.app/dashboard",
+      dashboardUrl: "https://capta.app/dashboard",
     });
 
     expect(html).toContain("12.1x");
@@ -159,7 +159,7 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Test Biz",
       monthLabel: "March 2026",
       stats: baseStats,
-      dashboardUrl: "https://calltide.app/dashboard",
+      dashboardUrl: "https://capta.app/dashboard",
     });
 
     expect(html).toContain("21%");
@@ -172,7 +172,7 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Test Biz",
       monthLabel: "March 2026",
       stats: baseStats,
-      dashboardUrl: "https://calltide.app/dashboard",
+      dashboardUrl: "https://capta.app/dashboard",
     });
 
     expect(html).toContain("$3,000");
@@ -185,10 +185,10 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Test Biz",
       monthLabel: "March 2026",
       stats: baseStats,
-      dashboardUrl: "https://calltide.app/dashboard",
+      dashboardUrl: "https://capta.app/dashboard",
     });
 
-    expect(html).toContain('href="https://calltide.app/dashboard"');
+    expect(html).toContain('href="https://capta.app/dashboard"');
     expect(html).toContain("View Full Dashboard");
   });
 
@@ -209,7 +209,7 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Test Biz",
       monthLabel: "March 2026",
       stats: noSpanishStats,
-      dashboardUrl: "https://calltide.app/dashboard",
+      dashboardUrl: "https://capta.app/dashboard",
     });
 
     expect(html).not.toContain("Spanish");
@@ -241,7 +241,7 @@ describe("Monthly ROI — SMS Builder", () => {
     expect(sms).toContain("80 calls");
     expect(sms).toContain("10 appointments");
     expect(sms).toContain("ROI");
-    expect(sms).toContain("Calltide");
+    expect(sms).toContain("Capta");
     // SMS must stay under 160 chars if possible (but our format is longer — just check it's reasonable)
     expect(sms.length).toBeLessThan(250);
   });

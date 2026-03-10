@@ -5,7 +5,7 @@ import { sql, desc } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
   // Require admin cookie
-  if (!req.cookies.has("calltide_admin")) {
+  if (!req.cookies.has("capta_admin")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

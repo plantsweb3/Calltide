@@ -29,7 +29,7 @@ const SEED_CATEGORIES = [
   { slug: "managing-calls", name: "Managing Calls", nameEs: "Administrar Llamadas", description: "Understand how Maria handles your calls day to day", descriptionEs: "Entiende cómo María maneja tus llamadas día a día", icon: "📞", sortOrder: 2 },
   { slug: "billing-account", name: "Billing & Account", nameEs: "Facturación y Cuenta", description: "Payments, invoices, and subscription management", descriptionEs: "Pagos, facturas y gestión de suscripción", icon: "💳", sortOrder: 3 },
   { slug: "troubleshooting", name: "Troubleshooting", nameEs: "Solución de Problemas", description: "Fix common issues and get back on track", descriptionEs: "Resuelve problemas comunes y vuelve a la normalidad", icon: "🔧", sortOrder: 4 },
-  { slug: "features-tips", name: "Features & Tips", nameEs: "Funciones y Consejos", description: "Get the most out of Calltide and Maria", descriptionEs: "Aprovecha al máximo Calltide y María", icon: "⭐", sortOrder: 5 },
+  { slug: "features-tips", name: "Features & Tips", nameEs: "Funciones y Consejos", description: "Get the most out of Capta and Maria", descriptionEs: "Aprovecha al máximo Capta y María", icon: "⭐", sortOrder: 5 },
   { slug: "for-prospects", name: "Learn About AI Receptionists", nameEs: "Aprende Sobre Recepcionistas AI", description: "Understand how AI receptionists can help your business", descriptionEs: "Entiende cómo una recepcionista AI puede ayudar a tu negocio", icon: "💡", sortOrder: 6 },
 ];
 
@@ -48,7 +48,7 @@ interface ArticlePlan {
 
 const ARTICLE_PLAN: ArticlePlan[] = [
   // Getting Started (6 articles)
-  { title: "Welcome to Calltide — Your First Steps", titleEs: "Bienvenido a Calltide — Tus Primeros Pasos", categorySlug: "getting-started", keyPoints: "Account activation, first login, dashboard overview, what to expect in the first week", audience: "existing_clients", slug: "welcome-first-steps", dashboardContextRoutes: ["/dashboard"], sortOrder: 1 },
+  { title: "Welcome to Capta — Your First Steps", titleEs: "Bienvenido a Capta — Tus Primeros Pasos", categorySlug: "getting-started", keyPoints: "Account activation, first login, dashboard overview, what to expect in the first week", audience: "existing_clients", slug: "welcome-first-steps", dashboardContextRoutes: ["/dashboard"], sortOrder: 1 },
   { title: "How Maria Handles Your Calls", titleEs: "Cómo María Maneja Tus Llamadas", categorySlug: "getting-started", keyPoints: "Call flow, greeting, language detection, appointment booking, SMS confirmations, after-hours handling", audience: "existing_clients", slug: "how-maria-handles-calls", dashboardContextRoutes: ["/dashboard", "/dashboard/calls"], sortOrder: 2 },
   { title: "Setting Up Your Business Hours", titleEs: "Configurar Tu Horario de Negocio", categorySlug: "getting-started", keyPoints: "How to set business hours, what happens during vs after hours, timezone settings", audience: "existing_clients", slug: "update-business-hours", dashboardContextRoutes: ["/dashboard/settings"], sortOrder: 3 },
   { title: "Customizing Your Services List", titleEs: "Personalizar Tu Lista de Servicios", categorySlug: "getting-started", keyPoints: "How to add/edit services Maria offers to callers, service-based appointment routing", audience: "existing_clients", slug: "customize-services", dashboardContextRoutes: ["/dashboard/settings"], sortOrder: 4 },
@@ -86,16 +86,16 @@ const ARTICLE_PLAN: ArticlePlan[] = [
 
   // For Prospects (5 articles)
   { title: "What Is an AI Receptionist?", titleEs: "¿Qué Es una Recepcionista AI?", categorySlug: "for-prospects", keyPoints: "Basic explanation, how it works, difference from voicemail, difference from call center", audience: "prospects", slug: "what-is-ai-receptionist", sortOrder: 1 },
-  { title: "How Calltide Helps Home Service Businesses", titleEs: "Cómo Calltide Ayuda a Negocios de Servicios del Hogar", categorySlug: "for-prospects", keyPoints: "Missed call problem, revenue impact, 24/7 coverage, bilingual support, ROI", audience: "prospects", slug: "how-calltide-helps", sortOrder: 2 },
+  { title: "How Capta Helps Home Service Businesses", titleEs: "Cómo Capta Ayuda a Negocios de Servicios del Hogar", categorySlug: "for-prospects", keyPoints: "Missed call problem, revenue impact, 24/7 coverage, bilingual support, ROI", audience: "prospects", slug: "how-capta-helps", sortOrder: 2 },
   { title: "The True Cost of Missed Calls", titleEs: "El Verdadero Costo de las Llamadas Perdidas", categorySlug: "for-prospects", keyPoints: "Statistics, revenue lost per missed call, after-hours calls, competitor effect", audience: "prospects", slug: "cost-of-missed-calls", sortOrder: 3 },
   { title: "Why Bilingual Matters for Texas Contractors", titleEs: "Por Qué el Bilingüismo Importa para Contratistas en Texas", categorySlug: "for-prospects", keyPoints: "Hispanic market size in Texas, language as competitive advantage, Maria speaks both", audience: "prospects", slug: "why-bilingual-matters", sortOrder: 4 },
   { title: "Getting Started with Your Free Phone Audit", titleEs: "Comenzar con Tu Auditoría Telefónica Gratis", categorySlug: "for-prospects", keyPoints: "What the audit tests, how it works, what you'll learn, next steps", audience: "prospects", slug: "free-phone-audit", sortOrder: 5 },
 ];
 
-const ARTICLE_SYSTEM_PROMPT = `You are a bilingual help center content writer for Calltide, a bilingual AI receptionist service for Hispanic home service businesses in Texas.
+const ARTICLE_SYSTEM_PROMPT = `You are a bilingual help center content writer for Capta, a bilingual AI receptionist service for Hispanic home service businesses in Texas.
 
 Company context:
-- Calltide provides an AI receptionist named Maria that answers calls in English and Spanish 24/7
+- Capta provides an AI receptionist named Maria that answers calls in English and Spanish 24/7
 - Service costs $497/month
 - Target audience: plumbers, HVAC techs, electricians, landscapers, and other home service businesses
 - Maria books appointments, sends SMS confirmations, and handles after-hours calls
@@ -130,7 +130,7 @@ Return ONLY valid JSON, no markdown fences, no extra text.`;
 // ── Main ──
 
 async function main() {
-  console.log("=== Calltide Knowledge Base Seed + Generate ===\n");
+  console.log("=== Capta Knowledge Base Seed + Generate ===\n");
 
   // 1. Run migration
   console.log("1. Checking migration...");

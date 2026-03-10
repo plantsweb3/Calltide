@@ -11,14 +11,14 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }) {
   const { category: slug } = await params;
   const [cat] = await db.select().from(helpCategories).where(eq(helpCategories.slug, slug)).limit(1);
-  if (!cat) return { title: "Category Not Found — Calltide Help" };
+  if (!cat) return { title: "Category Not Found — Capta Help" };
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
   return {
-    title: `${cat.name} — Calltide Help Center`,
+    title: `${cat.name} — Capta Help Center`,
     description: cat.description,
     openGraph: {
-      title: `${cat.name} — Calltide Help Center`,
+      title: `${cat.name} — Capta Help Center`,
       description: cat.description ?? undefined,
       url: `${appUrl}/help/${slug}`,
     },

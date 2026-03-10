@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { VoiceProvider, useVoice, VoiceReadyState } from "@humeai/voice-react";
+import CaptaSpinner from "@/components/capta-spinner";
 
 type DemoState = "idle" | "connecting" | "active" | "ended";
 type Lang = "en" | "es";
@@ -33,12 +34,12 @@ const LABELS = {
     endedLoss: "Estimated missed-call cost",
     endedPayback: "Maria pays for herself after",
     endedCalls: "calls",
-    endedCta: "Get Calltide",
+    endedCta: "Get Capta",
     endedCtaSub: "Maria will be live in 5 minutes",
     endedRetry: "Talk to Maria again",
     micNote: "Uses your browser microphone",
     elapsed: "Elapsed",
-    errorBusy: "Maria's busy right now. Get Calltide to talk to her anytime.",
+    errorBusy: "Maria's busy right now. Get Capta to talk to her anytime.",
     errorGeneric: "Could not connect. Please try again.",
     trySpanish: "Try speaking Spanish — she'll switch instantly.",
     perMonth: "/mo",
@@ -59,12 +60,12 @@ const LABELS = {
     endedLoss: "Costo estimado de llamadas perdidas",
     endedPayback: "Maria se paga sola después de",
     endedCalls: "llamadas",
-    endedCta: "Obtén Calltide",
+    endedCta: "Obtén Capta",
     endedCtaSub: "Maria estará activa en 5 minutos",
     endedRetry: "Habla con Maria de nuevo",
     micNote: "Usa el micrófono de tu navegador",
     elapsed: "Tiempo",
-    errorBusy: "Maria está ocupada ahora. Obtén Calltide para hablar con ella cuando quieras.",
+    errorBusy: "Maria está ocupada ahora. Obtén Capta para hablar con ella cuando quieras.",
     errorGeneric: "No se pudo conectar. Inténtalo de nuevo.",
     trySpanish: "Intenta hablar en español — ella cambia al instante.",
     perMonth: "/mes",
@@ -250,7 +251,7 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full" style={{ background: "rgba(197,154,39,0.15)" }}>
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-600 border-t-amber-500" />
+          <CaptaSpinner size={32} />
         </div>
         <p className="text-lg font-semibold text-white">{l.connectingTitle}</p>
         <div className="mt-4 flex items-center gap-1">

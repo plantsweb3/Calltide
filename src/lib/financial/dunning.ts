@@ -11,7 +11,7 @@ import { canContactToday, logOutreach } from "@/lib/outreach";
 import { reportError } from "@/lib/error-reporting";
 import { logActivity } from "@/lib/activity";
 
-const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
 
 /**
  * Get the display amount string based on the business's plan type.
@@ -336,7 +336,7 @@ async function sendDunningEmail(
   const html = `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;background:#ffffff;">
   <div style="margin-bottom:24px;">
-    <span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span>
+    <span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span>
   </div>
   <h2 style="color:#1A1D24;margin-bottom:8px;">${t.heading}</h2>
   <p style="color:#475569;line-height:1.7;margin-bottom:16px;">
@@ -350,7 +350,7 @@ async function sendDunningEmail(
     ${lang === "es" ? "¿Necesita ayuda? Responda a este correo y le asistiremos." : "Need help? Reply to this email and we'll assist you."}
   </p>
   <hr style="border:none;border-top:1px solid #E2E8F0;margin:32px 0 16px;" />
-  <p style="color:#94A3B8;font-size:11px;">Calltide Inc. &middot; San Antonio, TX</p>
+  <p style="color:#94A3B8;font-size:11px;">Capta LLC &middot; San Antonio, TX</p>
 </div>`;
 
   try {
@@ -392,22 +392,22 @@ export async function sendTrialEndingEmail(
 
   const callLine = callCount > 0
     ? lang === "es"
-      ? `<strong>${aiName} ha respondido ${callCount} llamada${callCount === 1 ? "" : "s"}</strong> durante tu prueba.`
-      : `<strong>${aiName} has answered ${callCount} call${callCount === 1 ? "" : "s"}</strong> during your trial.`
+      ? `<strong>${aiName} ha respondido ${callCount} llamada${callCount === 1 ? "" : "s"}</strong> para tu negocio.`
+      : `<strong>${aiName} has answered ${callCount} call${callCount === 1 ? "" : "s"}</strong> for your business.`
     : "";
 
   const t = lang === "es"
     ? {
-        subject: `Tu prueba gratis de Calltide termina en 3 días — ${business.name}`,
-        heading: "Tu prueba gratis está por terminar",
-        body: `Hola ${business.ownerName || ""},<br><br>${callLine ? callLine + "<br><br>" : ""}Tu prueba gratuita de 14 días de Calltide para <strong>${business.name}</strong> termina en 3 días. Para que tu recepcionista IA siga respondiendo llamadas sin interrupción, asegúrate de tener un método de pago registrado.<br><br>Si ya lo configuraste, ¡no tienes que hacer nada! Tu servicio continuará automáticamente.`,
+        subject: `Bienvenido a Capta — ${business.name}`,
+        heading: "Tu suscripción de Capta está activa",
+        body: `Hola ${business.ownerName || ""},<br><br>${callLine ? callLine + "<br><br>" : ""}Tu suscripción de Capta para <strong>${business.name}</strong> está activa. Asegúrate de tener un método de pago registrado para que tu recepcionista IA siga respondiendo llamadas sin interrupción.<br><br>Si ya lo configuraste, ¡no tienes que hacer nada! Tu servicio continuará automáticamente.`,
         cta: "Revisar Facturación",
         footer: "¿Preguntas? Responde a este correo — estamos aquí para ayudar.",
       }
     : {
-        subject: `Your Calltide free trial ends in 3 days — ${business.name}`,
-        heading: "Your free trial is ending soon",
-        body: `Hey ${business.ownerName || "there"},<br><br>${callLine ? callLine + "<br><br>" : ""}Your 14-day free trial of Calltide for <strong>${business.name}</strong> ends in 3 days. To keep your AI receptionist answering calls without interruption, make sure you have a payment method on file.<br><br>If you've already set one up, you're all good — your service will continue automatically.`,
+        subject: `Welcome to Capta — ${business.name}`,
+        heading: "Your Capta subscription is active",
+        body: `Hey ${business.ownerName || "there"},<br><br>${callLine ? callLine + "<br><br>" : ""}Your Capta subscription for <strong>${business.name}</strong> is active. Make sure you have a payment method on file to keep your AI receptionist answering calls without interruption.<br><br>If you've already set one up, you're all good — your service will continue automatically.`,
         cta: "Review Billing",
         footer: "Questions? Reply to this email — we're here to help.",
       };
@@ -415,7 +415,7 @@ export async function sendTrialEndingEmail(
   const html = `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;background:#ffffff;">
   <div style="margin-bottom:24px;">
-    <span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span>
+    <span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span>
   </div>
   <h2 style="color:#1A1D24;margin-bottom:8px;">${t.heading}</h2>
   <p style="color:#475569;line-height:1.7;margin-bottom:24px;">${t.body}</p>
@@ -424,7 +424,7 @@ export async function sendTrialEndingEmail(
   </a>
   <p style="color:#94A3B8;font-size:13px;margin-top:32px;line-height:1.6;">${t.footer}</p>
   <hr style="border:none;border-top:1px solid #E2E8F0;margin:32px 0 16px;" />
-  <p style="color:#94A3B8;font-size:11px;">Calltide Inc. &middot; San Antonio, TX</p>
+  <p style="color:#94A3B8;font-size:11px;">Capta LLC &middot; San Antonio, TX</p>
 </div>`;
 
   try {
@@ -449,8 +449,8 @@ async function sendDunningSms(
   const amount = lang === "es" ? displayEs : display;
   const body =
     lang === "es"
-      ? `Calltide: Su pago de ${amount} está pendiente. Actualice su método de pago para evitar interrupciones del servicio: ${portalUrl}`
-      : `Calltide: Your ${amount} payment is past due. Update your payment method to avoid service interruption: ${portalUrl}`;
+      ? `Capta: Su pago de ${amount} está pendiente. Actualice su método de pago para evitar interrupciones del servicio: ${portalUrl}`
+      : `Capta: Your ${amount} payment is past due. Update your payment method to avoid service interruption: ${portalUrl}`;
 
   try {
     const tw = getTwilio();
@@ -475,16 +475,16 @@ async function sendFarewellEmail(
 
   const t = lang === "es"
     ? {
-        subject: `Tu cuenta de Calltide ha sido desactivada — ${business.name}`,
+        subject: `Tu cuenta de Capta ha sido desactivada — ${business.name}`,
         heading: "Tu cuenta ha sido desactivada",
-        body: `Lamentamos informarte que tu cuenta de Calltide para <strong>${business.name}</strong> ha sido desactivada porque no se pudo procesar el pago después de múltiples intentos.<br><br>Tu recepcionista IA ya no está respondiendo llamadas. Tus datos se conservarán por 30 días.<br><br>Si deseas reactivar tu servicio, simplemente actualiza tu método de pago.`,
+        body: `Lamentamos informarte que tu cuenta de Capta para <strong>${business.name}</strong> ha sido desactivada porque no se pudo procesar el pago después de múltiples intentos.<br><br>Tu recepcionista IA ya no está respondiendo llamadas. Tus datos se conservarán por 30 días.<br><br>Si deseas reactivar tu servicio, simplemente actualiza tu método de pago.`,
         cta: "Reactivar Mi Cuenta",
         footer: "¿Necesita ayuda? Responda a este correo.",
       }
     : {
-        subject: `Your Calltide account has been deactivated — ${business.name}`,
+        subject: `Your Capta account has been deactivated — ${business.name}`,
         heading: "Your account has been deactivated",
-        body: `We're sorry to let you know that your Calltide account for <strong>${business.name}</strong> has been deactivated because we couldn't process your payment after multiple attempts.<br><br>Your AI receptionist is no longer answering calls. Your data will be retained for 30 days.<br><br>If you'd like to reactivate your service, simply update your payment method.`,
+        body: `We're sorry to let you know that your Capta account for <strong>${business.name}</strong> has been deactivated because we couldn't process your payment after multiple attempts.<br><br>Your AI receptionist is no longer answering calls. Your data will be retained for 30 days.<br><br>If you'd like to reactivate your service, simply update your payment method.`,
         cta: "Reactivate My Account",
         footer: "Need help? Reply to this email.",
       };
@@ -492,7 +492,7 @@ async function sendFarewellEmail(
   const html = `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;background:#ffffff;">
   <div style="margin-bottom:24px;">
-    <span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span>
+    <span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span>
   </div>
   <h2 style="color:#1A1D24;margin-bottom:8px;">${t.heading}</h2>
   <p style="color:#475569;line-height:1.7;margin-bottom:24px;">${t.body}</p>
@@ -501,7 +501,7 @@ async function sendFarewellEmail(
   </a>
   <p style="color:#94A3B8;font-size:13px;margin-top:32px;line-height:1.6;">${t.footer}</p>
   <hr style="border:none;border-top:1px solid #E2E8F0;margin:32px 0 16px;" />
-  <p style="color:#94A3B8;font-size:11px;">Calltide Inc. &middot; San Antonio, TX</p>
+  <p style="color:#94A3B8;font-size:11px;">Capta LLC &middot; San Antonio, TX</p>
 </div>`;
 
   try {

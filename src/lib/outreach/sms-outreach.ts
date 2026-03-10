@@ -5,11 +5,11 @@ import { prospectOutreach, prospects } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 
-const MARKETING_URL = env.NEXT_PUBLIC_MARKETING_URL ?? "https://calltide.app";
+const MARKETING_URL = env.NEXT_PUBLIC_MARKETING_URL ?? "https://capta.app";
 
 const smsTemplates: Record<string, (businessName: string) => string> = {
   missed_sms_1: (name) =>
-    `Hi ${name}! We just tried calling and couldn't get through. Calltide is an AI receptionist that makes sure you never miss a call again — 24/7, bilingual. Interested? Reply YES for a quick demo. Reply STOP to opt out.`,
+    `Hi ${name}! We just tried calling and couldn't get through. Capta is an AI receptionist that makes sure you never miss a call again — 24/7, bilingual. Interested? Reply YES for a quick demo. Reply STOP to opt out.`,
   missed_sms_2: (name) =>
     `Hey ${name}, just following up. Missing calls = missing revenue. Our AI answers, books appointments & takes messages for you. 10-min demo? Reply YES or visit ${MARKETING_URL}. Reply STOP to opt out.`,
 };

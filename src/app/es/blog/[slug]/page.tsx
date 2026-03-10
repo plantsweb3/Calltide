@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .where(and(eq(blogPosts.slug, slug), eq(blogPosts.published, true), eq(blogPosts.language, "es")))
     .limit(1);
 
-  if (!post) return { title: "Publicación No Encontrada — Calltide" };
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
+  if (!post) return { title: "Publicación No Encontrada — Capta" };
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
 
   // Resolve paired post slug for hreflang
   let enAlternate: string | undefined;
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: post.metaTitle ?? `${post.title} — Calltide Blog`,
+    title: post.metaTitle ?? `${post.title} — Capta Blog`,
     description: post.metaDescription ?? undefined,
     openGraph: {
       title: post.metaTitle ?? post.title,
@@ -96,7 +96,7 @@ export default async function BlogPostEsPage({ params }: PageProps) {
     relatedPosts = relatedPosts.filter((p) => p.id !== post.id);
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
 
   return (
     <div className="min-h-screen bg-[#FBFBFC]">
@@ -110,8 +110,8 @@ export default async function BlogPostEsPage({ params }: PageProps) {
             headline: post.title,
             description: post.metaDescription,
             image: post.ogImage,
-            author: { "@type": "Organization", name: post.authorName ?? "Calltide" },
-            publisher: { "@type": "Organization", name: "Calltide", url: appUrl },
+            author: { "@type": "Organization", name: post.authorName ?? "Capta" },
+            publisher: { "@type": "Organization", name: "Capta", url: appUrl },
             datePublished: post.publishedAt,
             dateModified: post.updatedAt,
             mainEntityOfPage: `${appUrl}/es/blog/${post.slug}`,

@@ -2,20 +2,20 @@ import type { Metadata } from "next";
 import PricingClient from "./PricingClient";
 
 export const metadata: Metadata = {
-  title: "Pricing | Calltide",
+  title: "Pricing | Capta",
   description:
     "One plan. Everything included. $497/month for your AI front office. Unlimited calls, AI estimates, missed call recovery, follow-up automation, CRM, and 55+ features. 30-day money-back guarantee.",
   openGraph: {
-    title: "Pricing | Calltide",
+    title: "Pricing | Capta",
     description:
       "One plan. Everything included. $497/month — your AI front office with unlimited calls, AI estimates, missed call recovery, and every feature included.",
-    url: "https://calltide.app/pricing",
-    siteName: "Calltide",
+    url: "https://capta.app/pricing",
+    siteName: "Capta",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pricing | Calltide",
+    title: "Pricing | Capta",
     description:
       "One plan. Everything included. $497/month — your AI front office with 55+ features.",
   },
@@ -33,10 +33,10 @@ export default function Page() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            name: "Calltide AI Front Office",
+            name: "Capta AI Front Office",
             description:
               "AI front office for home service businesses. Answers calls, generates estimates, recovers missed calls, and manages follow-ups — in English and Spanish, 24/7. One plan, everything included.",
-            brand: { "@type": "Brand", name: "Calltide" },
+            brand: { "@type": "Brand", name: "Capta" },
             offers: [
               {
                 "@type": "Offer",
@@ -45,7 +45,7 @@ export default function Page() {
                 priceCurrency: "USD",
                 priceValidUntil: "2027-12-31",
                 availability: "https://schema.org/InStock",
-                url: "https://calltide.app/pricing",
+                url: "https://capta.app/pricing",
               },
               {
                 "@type": "Offer",
@@ -54,7 +54,7 @@ export default function Page() {
                 priceCurrency: "USD",
                 priceValidUntil: "2027-12-31",
                 availability: "https://schema.org/InStock",
-                url: "https://calltide.app/pricing",
+                url: "https://capta.app/pricing",
               },
             ],
           }),

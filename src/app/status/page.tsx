@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import CaptaSpinner from "@/components/capta-spinner";
 
 // ── Types ──
 
@@ -49,7 +50,7 @@ interface StatusData {
 
 const t = {
   title: "System Status",
-  subtitle: "Real-time status of all Calltide services",
+  subtitle: "Real-time status of all Capta services",
   services: "Component Status",
   activeIncidents: "Active Incidents",
   pastIncidents: "Past Incidents",
@@ -58,7 +59,7 @@ const t = {
   uptimeSuffix: " % uptime",
   today: "Today",
   subscribe: "Get notified",
-  subscribeDesc: "Subscribe to email notifications when Calltide creates, updates, or resolves an incident.",
+  subscribeDesc: "Subscribe to email notifications when Capta creates, updates, or resolves an incident.",
   subscribePlaceholder: "your@email.com",
   subscribeBtn: "Subscribe",
   noActiveIncidents: "No active incidents — all systems running normally.",
@@ -137,7 +138,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#FBFBFC" }}>
         <div className="flex items-center gap-3">
-          <div className="h-5 w-5 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "#C59A27", borderTopColor: "transparent" }} />
+          <CaptaSpinner size={20} />
           <p className="text-sm" style={{ color: "#94A3B8" }}>{text.loading}</p>
         </div>
       </div>
@@ -162,7 +163,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
               <path d="M7 8.5C7 7.67 7.67 7 8.5 7h7c.83 0 1.5.67 1.5 1.5v0c0 .83-.67 1.5-1.5 1.5h-7C7.67 10 7 9.33 7 8.5zM7 12c0-.83.67-1.5 1.5-1.5h3c.83 0 1.5.67 1.5 1.5v0c0 .83-.67 1.5-1.5 1.5h-3C7.67 13.5 7 12.83 7 12zM7 15.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5v0c0 .83-.67 1.5-1.5 1.5h-5C7.67 17 7 16.33 7 15.5z" fill="white"/>
             </svg>
             <span className="text-lg font-bold tracking-tight" style={{ color: "#1A1D24" }}>
-              Calltide <span className="font-normal" style={{ color: "#94A3B8" }}>Status</span>
+              Capta <span className="font-normal" style={{ color: "#94A3B8" }}>Status</span>
             </span>
           </Link>
           <div className="flex items-center gap-5">
@@ -413,7 +414,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
       <footer style={{ borderTop: "1px solid #E2E8F0" }}>
         <div className="mx-auto max-w-4xl px-6 py-6 flex items-center justify-between">
           <p className="text-xs" style={{ color: "#94A3B8" }}>
-            &copy; {new Date().getFullYear()} Calltide
+            &copy; {new Date().getFullYear()} Capta
           </p>
           <div className="flex items-center gap-5">
             <Link href="/" className="text-xs" style={{ color: "#94A3B8" }}>Home</Link>

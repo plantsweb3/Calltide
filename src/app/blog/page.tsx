@@ -18,12 +18,12 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export const metadata = {
-  title: "Blog — Calltide",
+  title: "Blog — Capta",
   description: "Tips, data, and insights on missed calls, AI receptionists, and growing your service business.",
   openGraph: {
-    title: "Calltide Blog",
+    title: "Capta Blog",
     description: "Tips, data, and insights on missed calls, AI receptionists, and growing your service business.",
-    url: "https://calltide.app/blog",
+    url: "https://capta.app/blog",
   },
   alternates: {
     canonical: "/blog",
@@ -102,7 +102,7 @@ export default async function BlogIndexPage({
             href="/setup?utm_source=blog&utm_medium=banner"
             className="cta-gold cta-shimmer mt-4 inline-block rounded-lg px-6 py-2.5 text-sm font-semibold text-white"
           >
-            Get Calltide &rarr;
+            Get Capta &rarr;
           </Link>
         </div>
 

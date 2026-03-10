@@ -3,7 +3,7 @@ import { subProcessors } from "@/db/schema";
 import { SUB_PROCESSORS } from "@/lib/legal/content";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Sub-Procesadores — Calltide", description: "Lista de sub-procesadores de datos de Calltide" };
+export const metadata = { title: "Sub-Procesadores — Capta", description: "Lista de sub-procesadores de datos de Capta" };
 
 type Processor = {
   name: string;
@@ -35,7 +35,7 @@ export default async function SubProcessorsEsPage() {
         <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: "#1A1D24" }}>Sub-Procesadores</h1>
       </div>
       <p className="mb-8 text-sm leading-relaxed" style={{ color: "#64748B" }}>
-        Los siguientes proveedores de servicios terceros procesan datos en nombre de Calltide como parte de la entrega de nuestra plataforma de recepcionista AI.
+        Los siguientes proveedores de servicios terceros procesan datos en nombre de Capta como parte de la entrega de nuestra plataforma de recepcionista AI.
       </p>
 
       <div className="overflow-hidden rounded-xl border shadow-sm" style={{ borderColor: "#E2E8F0" }}>

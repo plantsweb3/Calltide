@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { runAgent, SUPPORT_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
 import { searchArticles } from "@/lib/help/search";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
 
 /**
  * POST /api/agents/support

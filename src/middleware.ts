@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const ADMIN_COOKIE = "calltide_admin";
-const CLIENT_COOKIE = "calltide_client";
+const ADMIN_COOKIE = "capta_admin";
+const CLIENT_COOKIE = "capta_client";
 
 // ── Lightweight rate limiter for middleware (Edge-compatible) ──
 const rlStore = new Map<string, { count: number; resetAt: number }>();
@@ -187,12 +187,17 @@ async function middlewareCore(req: NextRequest): Promise<NextResponse> {
     !pathname.startsWith("/api/webhooks/") &&
     !pathname.startsWith("/api/outreach/webhook/") &&
     !pathname.startsWith("/api/stripe/webhook") &&
+    !pathname.startsWith("/api/admin/auth") &&
+    !pathname.startsWith("/api/dashboard/auth") &&
     ["POST", "PUT", "PATCH", "DELETE"].includes(req.method)
   ) {
     const origin = req.headers.get("origin");
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-    if (origin && appUrl && origin !== appUrl) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (origin && appUrl) {
+      const normalizeOrigin = (u: string) => u.replace(/\/+$/, "").replace(/^https?:\/\/www\./, (m) => m.replace("www.", ""));
+      if (normalizeOrigin(origin) !== normalizeOrigin(appUrl)) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
     }
   }
 

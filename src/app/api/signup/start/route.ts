@@ -69,11 +69,11 @@ async function sendCheckoutSms(phone: string, email: string) {
   const from = process.env.TWILIO_PHONE_NUMBER;
   if (!accountSid || !authToken || !from) return;
 
-  const checkoutUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://calltide.app"}/#signup`;
+  const checkoutUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://capta.app"}/#signup`;
   const client = Twilio(accountSid, authToken);
   await client.messages.create({
     to: phone,
     from,
-    body: `Calltide: Here's your signup link to get your AI receptionist set up. Get started: ${checkoutUrl}\n\nReply STOP to opt out.`,
+    body: `Capta: Here's your signup link to get your AI receptionist set up. Get started: ${checkoutUrl}\n\nReply STOP to opt out.`,
   });
 }

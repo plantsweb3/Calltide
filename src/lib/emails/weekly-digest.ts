@@ -163,7 +163,7 @@ export function buildDigestEmail(params: {
       View Full Dashboard &rarr;
     </a>
     <p style="margin:16px 0 0;font-size:11px;color:#64748b;">
-      Calltide Inc. &middot; San Antonio, TX
+      Capta LLC &middot; San Antonio, TX
     </p>
   </div>
 
@@ -182,5 +182,5 @@ export function buildDigestSms(params: {
   stats: DigestStats;
 }): string {
   const { receptionistName, stats } = params;
-  return `${receptionistName} Weekly Report: ${stats.totalCalls} calls answered, ${stats.appointmentsBooked} appointments booked (~${fmtMoney(stats.estimatedRevenue)} revenue), ${stats.afterHoursCalls} after-hours calls caught. Full report in your email. — Calltide`;
+  return `${receptionistName} Weekly Report: ${stats.totalCalls} calls answered, ${stats.appointmentsBooked} appointments booked (~${fmtMoney(stats.estimatedRevenue)} revenue), ${stats.afterHoursCalls} after-hours calls caught. Full report in your email. — Capta`;
 }

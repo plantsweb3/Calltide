@@ -46,7 +46,7 @@ export async function generatePostmortem(incidentId: string): Promise<void> {
     .map((h) => `[${h.checkedAt}] ${h.serviceName}: ${h.status} (${h.latencyMs}ms, errors: ${h.errorCount})`)
     .join("\n");
 
-  const prompt = `Generate a professional incident postmortem report in Markdown for a SaaS business communications platform (Calltide). Be concise and factual.
+  const prompt = `Generate a professional incident postmortem report in Markdown for a SaaS business communications platform (Capta). Be concise and factual.
 
 Incident Details:
 - Title: ${incident.title}

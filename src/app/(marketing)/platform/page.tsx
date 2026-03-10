@@ -2,20 +2,20 @@ import type { Metadata } from "next";
 import PlatformClient from "./PlatformClient";
 
 export const metadata: Metadata = {
-  title: "Platform | Calltide — The Complete AI Front Office",
+  title: "Platform | Capta — The Complete AI Front Office",
   description:
     "55+ features that answer calls, generate estimates, recover missed calls, and grow your business. Bilingual answering, CRM, scheduling, follow-ups, and more — all in one platform.",
   openGraph: {
-    title: "Platform | Calltide — The Complete AI Front Office",
+    title: "Platform | Capta — The Complete AI Front Office",
     description:
       "55+ features: bilingual answering, AI estimates, missed call recovery, follow-up automation, CRM, scheduling — everything in one AI front office platform.",
-    url: "https://calltide.app/platform",
-    siteName: "Calltide",
+    url: "https://capta.app/platform",
+    siteName: "Capta",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Platform | Calltide",
+    title: "Platform | Capta",
     description: "The complete AI front office platform for home service businesses.",
   },
   alternates: {
@@ -32,7 +32,7 @@ export default function Page() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            name: "Calltide AI Front Office Platform",
+            name: "Capta AI Front Office Platform",
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             description:

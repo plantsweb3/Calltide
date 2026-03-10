@@ -122,7 +122,7 @@ const T = {
     ctaH2: "Everything included. One plan. $497/month.",
     ctaSub: "No tiers, no upsells. Everything on this page is included.",
     ctaPricing: "See Pricing",
-    ctaGet: "Get Calltide",
+    ctaGet: "Get Capta",
     ctaCall: "Or call Maria:",
     screenshot: "Platform screenshot",
     categories: [
@@ -173,7 +173,7 @@ const T = {
           { icon: icons.users, title: "Auto-Populated CRM", desc: "Every caller becomes a customer record automatically. Phone, name, call history, appointments, and notes \u2014 all in one place." },
           { icon: icons.kanban, title: "Estimate Pipeline", desc: "Track every estimate from request to signed. See status, follow-up history, and close rates across all your jobs." },
           { icon: icons.brain, title: "AI-Powered Call Summaries", desc: "Claude AI reads the transcript and generates a concise summary with action items. Know what happened without listening to the call." },
-          { icon: iconUpload, title: "CSV Import", desc: "Import your existing customer database from any CRM or spreadsheet. Calltide maps the fields and gives Maria full context from day one." },
+          { icon: iconUpload, title: "CSV Import", desc: "Import your existing customer database from any CRM or spreadsheet. Capta maps the fields and gives Maria full context from day one." },
         ],
       },
       {
@@ -188,7 +188,7 @@ const T = {
       {
         id: "compliance", label: "Compliance", icon: icons.shield,
         features: [
-          { icon: icons.shield, title: "You're Protected", desc: "Calltide handles the legal stuff \u2014 GDPR, CCPA, and TCPA compliance built in so you don't have to think about it." },
+          { icon: icons.shield, title: "You're Protected", desc: "Capta handles the legal stuff \u2014 GDPR, CCPA, and TCPA compliance built in so you don't have to think about it." },
           { icon: icons.mic, title: "Call Recording Notices", desc: "Every call starts with a recording disclosure so you're always covered. Configurable by state." },
           { icon: icons.lock, title: "Your Data Is Secure", desc: "Encrypted connections, secure login, and strict access controls. Your business data and customer info stay private." },
         ],
@@ -210,7 +210,7 @@ const T = {
     ctaH2: "Todo incluido. Un plan. $497/mes.",
     ctaSub: "Sin niveles, sin ventas adicionales. Todo en esta página está incluido.",
     ctaPricing: "Ver Precios",
-    ctaGet: "Obtén Calltide",
+    ctaGet: "Obtén Capta",
     ctaCall: "O llama a Maria:",
     screenshot: "Captura de la plataforma",
     categories: [
@@ -261,7 +261,7 @@ const T = {
           { icon: icons.users, title: "CRM Automático", desc: "Cada llamante se convierte en un registro de cliente automáticamente. Teléfono, nombre, historial, citas y notas \u2014 todo en un solo lugar." },
           { icon: icons.kanban, title: "Pipeline de Presupuestos", desc: "Rastrea cada presupuesto desde la solicitud hasta la firma. Ve estado, historial de seguimiento y tasas de cierre en todos tus trabajos." },
           { icon: icons.brain, title: "Resúmenes de Llamadas IA", desc: "La IA lee la transcripción y genera un resumen conciso con acciones a tomar. Sabe qué pasó sin escuchar la llamada." },
-          { icon: iconUpload, title: "Importación CSV", desc: "Importa tu base de datos de clientes existente desde cualquier CRM o hoja de cálculo. Calltide mapea los campos y le da a Maria contexto completo." },
+          { icon: iconUpload, title: "Importación CSV", desc: "Importa tu base de datos de clientes existente desde cualquier CRM o hoja de cálculo. Capta mapea los campos y le da a Maria contexto completo." },
         ],
       },
       {
@@ -276,7 +276,7 @@ const T = {
       {
         id: "compliance", label: "Cumplimiento", icon: icons.shield,
         features: [
-          { icon: icons.shield, title: "Estás Protegido", desc: "Calltide maneja lo legal \u2014 cumplimiento con GDPR, CCPA y TCPA integrado para que no tengas que pensar en eso." },
+          { icon: icons.shield, title: "Estás Protegido", desc: "Capta maneja lo legal \u2014 cumplimiento con GDPR, CCPA y TCPA integrado para que no tengas que pensar en eso." },
           { icon: icons.mic, title: "Avisos de Grabación", desc: "Cada llamada comienza con un aviso de grabación para que siempre estés cubierto. Configurable por estado." },
           { icon: icons.lock, title: "Tus Datos Están Seguros", desc: "Conexiones encriptadas, inicio de sesión seguro y controles de acceso estrictos. Tu información de negocio y clientes se mantiene privada." },
         ],
@@ -292,14 +292,14 @@ export default function PlatformClient() {
   // Restore language preference
   useState(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("calltide-lang");
+      const saved = localStorage.getItem("capta-lang");
       if (saved === "en" || saved === "es") setLang(saved);
     }
   });
 
   const toggleLang = useCallback((l: Lang) => {
     setLang(l);
-    if (typeof window !== "undefined") localStorage.setItem("calltide-lang", l);
+    if (typeof window !== "undefined") localStorage.setItem("capta-lang", l);
   }, []);
 
   const t = T[lang];

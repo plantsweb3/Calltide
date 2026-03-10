@@ -6,12 +6,12 @@ import { HelpCategoryIcon } from "@/components/icons";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Help Center — Calltide",
-  description: "Find answers about your Calltide AI receptionist. Search our help articles or browse by category.",
+  title: "Help Center — Capta",
+  description: "Find answers about your Capta AI receptionist. Search our help articles or browse by category.",
   openGraph: {
-    title: "Help Center — Calltide",
-    description: "Find answers about your Calltide AI receptionist.",
-    url: "https://calltide.app/help",
+    title: "Help Center — Capta",
+    description: "Find answers about your Capta AI receptionist.",
+    url: "https://capta.app/help",
   },
   alternates: {
     canonical: "/help",
@@ -131,7 +131,7 @@ export default async function HelpCenterPage() {
               Our support team typically responds within a few hours.
             </p>
             <a
-              href="mailto:support@calltide.app"
+              href="mailto:support@capta.app"
               className="mt-5 inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:brightness-110"
               style={{ background: "#C59A27" }}
             >

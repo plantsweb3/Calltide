@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     await revokeConsent({ phoneNumber: normalized, consentType: "sms_client", method: "sms_stop" });
     await revokeConsent({ phoneNumber: normalized, consentType: "sms_caller", method: "sms_stop" });
 
-    return twiml("You've been unsubscribed from Calltide messages. Reply START to resubscribe.");
+    return twiml("You've been unsubscribed from Capta messages. Reply START to resubscribe.");
   }
 
   if (START_KEYWORDS.includes(body)) {
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       .set({ reoptedInAt: new Date().toISOString() })
       .where(eq(smsOptOuts.phoneNumber, normalized));
 
-    return twiml("You've been resubscribed to Calltide messages. Reply STOP to unsubscribe.");
+    return twiml("You've been resubscribed to Capta messages. Reply STOP to unsubscribe.");
   }
 
   return twiml("");

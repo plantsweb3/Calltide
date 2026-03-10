@@ -122,7 +122,7 @@ const T = {
     annualPrice: "$397",
     annualPer: "/month billed annually",
     annualSave: "Save $1,200",
-    hireCta: "Get Calltide with",
+    hireCta: "Get Capta with",
     missedCallsTitle: "You're Losing Money Right Now",
     roiMonthlyLoss: "/month in missed calls",
     roiMultiple: "x return on investment",
@@ -229,7 +229,7 @@ const T = {
     annualPrice: "$397",
     annualPer: "/mes facturado anualmente",
     annualSave: "Ahorra $1,200",
-    hireCta: "Obtén Calltide con",
+    hireCta: "Obtén Capta con",
     missedCallsTitle: "Estás Perdiendo Dinero Ahora Mismo",
     roiMonthlyLoss: "/mes en llamadas perdidas",
     roiMultiple: "x retorno de inversión",
@@ -342,7 +342,7 @@ function SetupClient() {
   const searchParams = useSearchParams();
   const [lang, setLang] = useState<Lang>(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("calltide-lang");
+      const saved = localStorage.getItem("capta-lang");
       if (saved === "es") return "es";
     }
     return "en";
@@ -630,7 +630,7 @@ function SetupClient() {
   // ── Persist language ──
   const switchLang = useCallback((newLang: Lang) => {
     setLang(newLang);
-    try { localStorage.setItem("calltide-lang", newLang); } catch {}
+    try { localStorage.setItem("capta-lang", newLang); } catch {}
     // Fire and forget — persist to server session
     fetch("/api/setup/session", {
       method: "PATCH",
@@ -860,7 +860,7 @@ function SetupClient() {
     <div className={s.page} onKeyDown={handleKeyDown}>
       {/* Nav */}
       <nav className={s.nav}>
-        <span className={s.logo}>Calltide</span>
+        <img src="/images/logo-inline-navy.webp" alt="Capta" className={s.logo} style={{ height: 28, width: "auto" }} />
         <div className={s.navRight}>
           <a href={PHONE_TEL} className={s.helpLink}>{t.questions} {PHONE}</a>
           <div className={s.langSwitch} role="radiogroup" aria-label="Language">

@@ -56,14 +56,14 @@ export async function POST(req: NextRequest) {
 
     const resend = getResend();
     await resend.emails.send({
-      from: env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>",
+      from: env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>",
       to: normalizedEmail,
-      subject: "Reset your Calltide password",
+      subject: "Reset your Capta password",
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
           <h2 style="color: #1A1D24; margin-bottom: 8px;">Reset your password</h2>
           <p style="color: #475569; margin-bottom: 24px;">
-            Hi ${account.ownerName || "there"}, we received a request to reset your Calltide password. Click the button below to set a new one. This link expires in 1 hour.
+            Hi ${account.ownerName || "there"}, we received a request to reset your Capta password. Click the button below to set a new one. This link expires in 1 hour.
           </p>
           <a href="${resetUrl}" style="display: inline-block; background: #C59A27; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
             Reset Password
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
           </p>
           <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 24px 0;" />
           <p style="color: #94A3B8; font-size: 12px;">
-            &copy; Calltide &mdash; AI Receptionist for Home Services
+            &copy; Capta &mdash; AI Receptionist for Home Services
           </p>
         </div>
       `,

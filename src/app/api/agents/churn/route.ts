@@ -156,9 +156,9 @@ function buildCheckInEmail(client: { name: string; ownerName: string }): {
     subject: `${client.name} — just checking in`,
     body: `<div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;">
       <p>Hi ${client.ownerName},</p>
-      <p>This is a quick check-in from Calltide. We noticed your call activity has been a bit lower recently and wanted to make sure everything is running smoothly.</p>
+      <p>This is a quick check-in from Capta. We noticed your call activity has been a bit lower recently and wanted to make sure everything is running smoothly.</p>
       <p>If you're experiencing any issues or have questions about your receptionist setup, we're here to help. Just reply to this email or give us a call.</p>
-      <p>Best,<br/>The Calltide Team</p>
+      <p>Best,<br/>The Capta Team</p>
     </div>`,
   };
 }

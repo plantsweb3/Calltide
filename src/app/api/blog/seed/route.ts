@@ -14,7 +14,7 @@ function readingTime(html: string): number {
 const PAIRS: [string, string][] = [
   ["complete-guide-ai-receptionists-home-services", "guia-completa-recepcionistas-ai-servicios-domiciliarios"],
   ["we-called-200-plumbers-texas-how-many-answered", "llamamos-200-plomeros-texas-cuantos-contestaron"],
-  ["calltide-vs-hiring-receptionist-real-cost-breakdown", "calltide-vs-contratar-recepcionista-desglose-costos"],
+  ["capta-vs-hiring-receptionist-real-cost-breakdown", "capta-vs-contratar-recepcionista-desglose-costos"],
   ["best-ai-receptionist-plumbers-san-antonio", "mejor-recepcionista-ai-plomeros-san-antonio"],
   ["why-spanish-speaking-customers-not-leaving-voicemails", "por-que-clientes-hispanohablantes-no-dejan-mensajes-voz"],
 ];
@@ -42,10 +42,10 @@ const POSTS: PostDef[] = [
     slug: "complete-guide-ai-receptionists-home-services",
     language: "en",
     category: "pillar",
-    metaTitle: "AI Receptionist for Contractors | Complete 2026 Guide | Calltide",
+    metaTitle: "AI Receptionist for Contractors | Complete 2026 Guide | Capta",
     metaDescription: "Everything home service businesses need to know about AI receptionists. How they work, what they cost, and why contractors are switching from voicemail and call centers.",
     targetKeyword: "AI receptionist for contractors",
-    relatedPostSlugs: ["we-called-200-plumbers-texas-how-many-answered", "calltide-vs-hiring-receptionist-real-cost-breakdown"],
+    relatedPostSlugs: ["we-called-200-plumbers-texas-how-many-answered", "capta-vs-hiring-receptionist-real-cost-breakdown"],
     markdown: `# The Complete Guide to AI Receptionists for Home Service Businesses
 
 Your phone rings. You're knee-deep in a job site, and you can't pick up. By the time you check voicemail, the caller has already moved on to your competitor.
@@ -212,15 +212,15 @@ For home services, urgent calls matter. The AI needs to recognize emergencies an
 
 You're not a tech person. You're a contractor. You need a company that answers the phone (ironically) and helps you when something goes wrong. Not a chatbot. A real person.
 
-### Free Trial
+### Money-Back Guarantee
 
-Don't pay for a full month blindly. Test the product with your actual calls and customers. See if it works for your specific business before you commit.
+Don't commit blindly. Test the product with your actual calls and customers. If it doesn't work for your business within 30 days, get a full refund.
 
-## Getting Started With Calltide: Your Next Step
+## Getting Started With Capta: Your Next Step
 
-We built Calltide specifically for contractors and home service businesses. It's everything above, built into one simple tool.
+We built Capta specifically for contractors and home service businesses. It's everything above, built into one simple tool.
 
-**What You Get With Calltide:**
+**What You Get With Capta:**
 
 - **24/7 Answering:** Maria (our AI receptionist) answers every call, every time, in English and Spanish
 - **Automatic Scheduling:** Appointments book directly into your calendar. No double-bookings. No confusion.
@@ -230,13 +230,13 @@ We built Calltide specifically for contractors and home service businesses. It's
 - **Emergency Detection:** True emergencies get flagged and sent to you instantly
 - **Real Support:** When you need help, you reach a real person who understands your business
 
-Here's the best part: you can try Calltide free for 14 days. No credit card. No long-term contract. Just test it with your actual phone line and see what it can do.
+Here's the best part: Capta comes with a 30-day money-back guarantee. No long-term contract. Just test it with your actual phone line and see what it can do.
 
 Most contractors who try it keep it. Once you experience having someone pick up every call and book every appointment automatically, you won't want to go back.
 
-**Ready to capture every call? Get started with Calltide:**
+**Ready to capture every call? Get started with Capta:**
 
-[Start Your 14-Day Free Trial](https://calltide.app)
+[Get Capta →](https://capta.app)
 
 Or call us at (830) 521-7133 to ask questions before you start.
 
@@ -250,7 +250,7 @@ The contractors winning in 2026 aren't necessarily the ones with the best work. 
 
 An AI receptionist for your home service business isn't a nice-to-have anymore. It's a competitive advantage you can't afford to ignore.
 
-**[Try Calltide free for 14 days](https://calltide.app)** and see what picking up every call can do for your business.
+**[Get Capta →](https://capta.app)** and see what picking up every call can do for your business.
 
 ---
 
@@ -269,14 +269,14 @@ Yes. The AI works around the clock, seven days a week. You can set what hours yo
 Your data is encrypted and stored securely. You own it. You control who sees it. Industry-standard security applies.
 
 **Can I integrate this with my existing CRM or calendar?**
-Yes. Calltide integrates with the most popular systems contractors use. If you're not sure, just ask when you start your trial.
+Yes. Capta integrates with the most popular systems contractors use. If you're not sure, just ask when you sign up.
 
 **What if something goes wrong?**
 You have direct access to real customer support. Call, email, or message—there's a real human on the other end who knows your business and can help.
 
 ---
 
-**Want to dive deeper?** Check out our detailed breakdown: [AI Receptionist vs. Hiring a Receptionist: Real Cost Breakdown](/blog/calltide-vs-hiring-receptionist-real-cost-breakdown)
+**Want to dive deeper?** Check out our detailed breakdown: [AI Receptionist vs. Hiring a Receptionist: Real Cost Breakdown](/blog/capta-vs-hiring-receptionist-real-cost-breakdown)
 
 Curious what we learned from talking to contractors? Read this: [We Called 200 Plumbers in Texas. Here's What We Learned About Missed Calls.](/blog/we-called-200-plumbers-texas-how-many-answered)`,
   },
@@ -289,7 +289,7 @@ Curious what we learned from talking to contractors? Read this: [We Called 200 P
     slug: "we-called-200-plumbers-texas-how-many-answered",
     language: "en",
     category: "data-driven",
-    metaTitle: "We Called 200 Texas Plumbers — Only 38% Answered | Calltide",
+    metaTitle: "We Called 200 Texas Plumbers — Only 38% Answered | Capta",
     metaDescription: "We called 200 plumbing businesses across Texas during business hours. The results reveal why contractors lose thousands in revenue every month to missed calls.",
     targetKeyword: "how many calls do plumbers miss",
     relatedPostSlugs: ["complete-guide-ai-receptionists-home-services", "why-spanish-speaking-customers-not-leaving-voicemails"],
@@ -402,11 +402,11 @@ The fix isn't complicated. It's just urgent.
 
 ## Ready to Stop Missing Calls?
 
-Calltide gives you Maria—an AI receptionist who speaks English and Spanish, answers 24/7, and books appointments without you lifting a finger.
+Capta gives you Maria—an AI receptionist who speaks English and Spanish, answers 24/7, and books appointments without you lifting a finger.
 
 No more missed calls. No more voicemail tag. No more customers calling your competitor instead.
 
-Try it free for 14 days. [Get Calltide](https://calltide.app).
+30-day money-back guarantee. [Get Capta →](https://capta.app).
 
 Or call us at (830) 521-7133 to see how it works on your business.`,
   },
@@ -415,19 +415,19 @@ Or call us at (830) 521-7133 to see how it works on your business.`,
      EN 3 — Comparison
      ════════════════════════════════════════════════════════════════ */
   {
-    title: "Calltide vs Hiring a Receptionist: The Real Cost Breakdown",
-    slug: "calltide-vs-hiring-receptionist-real-cost-breakdown",
+    title: "Capta vs Hiring a Receptionist: The Real Cost Breakdown",
+    slug: "capta-vs-hiring-receptionist-real-cost-breakdown",
     language: "en",
     category: "comparison",
-    metaTitle: "Calltide vs Hiring a Receptionist | Real Cost Breakdown 2026",
-    metaDescription: "Full cost comparison between hiring a receptionist ($30-45K/year) and using Calltide AI ($497/month). Hours, languages, sick days, and hidden costs included.",
+    metaTitle: "Capta vs Hiring a Receptionist | Real Cost Breakdown 2026",
+    metaDescription: "Full cost comparison between hiring a receptionist ($30-45K/year) and using Capta AI ($497/month). Hours, languages, sick days, and hidden costs included.",
     targetKeyword: "AI vs human receptionist",
     relatedPostSlugs: ["complete-guide-ai-receptionists-home-services", "best-ai-receptionist-plumbers-san-antonio"],
-    markdown: `# Calltide vs Hiring a Receptionist: The Real Cost Breakdown
+    markdown: `# Capta vs Hiring a Receptionist: The Real Cost Breakdown
 
 You're running a home service business. Plumbing, HVAC, electrical, landscaping—whatever it is, you're good at the work. But the phones won't stop ringing. Customers want to book appointments, ask questions, and reach you at all hours.
 
-So you ask yourself: Should I hire a receptionist, or try something like Calltide AI?
+So you ask yourself: Should I hire a receptionist, or try something like Capta AI?
 
 This isn't just about cost. It's about what you actually get for your money. Let's break it down honestly.
 
@@ -470,9 +470,9 @@ But here's the catch: you're mostly getting a 9-to-5 service, even if you're wor
 - **Training ramp-up:** It takes 2–4 weeks for a new receptionist to learn your business, your pricing, your scheduling quirks, and your customer base.
 - **Availability gaps:** Sick days, vacation, personal emergencies—you lose coverage without warning.
 
-## The Calltide Alternative: $497/Month
+## The Capta Alternative: $497/Month
 
-Calltide is an AI receptionist named Maria. She works 24/7 in English and Spanish.
+Capta is an AI receptionist named Maria. She works 24/7 in English and Spanish.
 
 **What you pay:** $497/month = $5,964/year.
 
@@ -486,14 +486,13 @@ Calltide is an AI receptionist named Maria. She works 24/7 in English and Spanis
 - **Call transcription:** Every call is recorded and transcribed so you can review what was promised or discussed.
 - **Emergency detection:** Maria identifies urgent situations and alerts you immediately.
 - **CRM integration:** Customer info syncs with your system automatically.
-- **14-day free trial:** Test it before you commit.
-- **30-day money-back guarantee:** If it's not right, you get your money back.
+- **30-day money-back guarantee:** Test it risk-free. If it's not right, you get your money back.
 
 **No hidden costs. No payroll taxes. No equipment to buy.**
 
 ## Side-by-Side Comparison
 
-| Feature | Human Receptionist | Calltide AI |
+| Feature | Human Receptionist | Capta AI |
 |---------|-------------------|------------|
 | Annual Cost | $35,000–$55,000 | $5,964 |
 | Availability | 9 AM–5 PM (typical) | 24/7/365 |
@@ -508,17 +507,17 @@ Calltide is an AI receptionist named Maria. She works 24/7 in English and Spanis
 
 ## When Should You Hire a Human Receptionist?
 
-We'll be honest: Calltide doesn't replace a receptionist in every scenario.
+We'll be honest: Capta doesn't replace a receptionist in every scenario.
 
-If you have a larger team (10+ employees), you might want both. A human receptionist handles the complex situations, builds relationships with regular customers, and manages your office. Calltide handles overflow, after-hours calls, and Spanish speakers.
+If you have a larger team (10+ employees), you might want both. A human receptionist handles the complex situations, builds relationships with regular customers, and manages your office. Capta handles overflow, after-hours calls, and Spanish speakers.
 
 Or if your business is heavily dependent on extremely personalized, empathetic customer interactions at the initial contact, a human might be better. But even then, many contractors find that AI handles 80% of calls perfectly and only escalates the tricky ones.
 
-**For most small-to-medium home service businesses? Calltide wins on cost, availability, and coverage.**
+**For most small-to-medium home service businesses? Capta wins on cost, availability, and coverage.**
 
 ## The Real Savings
 
-Let's be specific. If you're currently spending $45,000/year on a receptionist (salary + taxes + benefits + equipment), switching to Calltide saves you:
+Let's be specific. If you're currently spending $45,000/year on a receptionist (salary + taxes + benefits + equipment), switching to Capta saves you:
 
 - $39,036/year in direct costs
 - Better coverage (24/7 vs. 9–5)
@@ -530,15 +529,15 @@ That's nearly $40,000 you could reinvest in your team, your services, or your bu
 
 ## Want to See for Yourself?
 
-You can [try Calltide free for 14 days](https://calltide.app). No credit card required. See how Maria handles your calls, manages your schedule, and frees up your time.
+You can [get Capta today](https://capta.app) with a 30-day money-back guarantee. See how Maria handles your calls, manages your schedule, and frees up your time.
 
-And if it's not right for you? There's a 30-day money-back guarantee.
+If it's not right for you, get a full refund within 30 days. No questions asked.
 
 For more on how AI receptionists work for home service businesses, check out our [complete guide to AI receptionists](/blog/complete-guide-ai-receptionists-home-services). And if you're in the plumbing or HVAC space, our [guide for San Antonio plumbers](/blog/best-ai-receptionist-plumbers-san-antonio) has contractor-specific examples.
 
-### Get Calltide
+### Get Capta
 
-Stop choosing between missed calls and hiring costs. Start your free trial at [calltide.app](https://calltide.app), or call us at (830) 521-7133 to talk to our team.
+Stop choosing between missed calls and hiring costs. Get started at [capta.app](https://capta.app), or call us at (830) 521-7133 to talk to our team.
 
 **Maria's waiting to answer your phone.**`,
   },
@@ -551,7 +550,7 @@ Stop choosing between missed calls and hiring costs. Start your free trial at [c
     slug: "best-ai-receptionist-plumbers-san-antonio",
     language: "en",
     category: "city-specific",
-    metaTitle: "Best AI Receptionist for San Antonio Plumbers | Calltide",
+    metaTitle: "Best AI Receptionist for San Antonio Plumbers | Capta",
     metaDescription: "San Antonio plumbers need bilingual 24/7 phone coverage. Compare AI receptionist options for SA contractors and find the best fit for your plumbing business.",
     targetKeyword: "best AI receptionist for plumbers in San Antonio",
     relatedPostSlugs: ["complete-guide-ai-receptionists-home-services", "why-spanish-speaking-customers-not-leaving-voicemails"],
@@ -559,7 +558,7 @@ Stop choosing between missed calls and hiring costs. Start your free trial at [c
 
 San Antonio plumbers face a unique challenge that most national business guides completely miss: you're operating in one of Texas's most bilingual cities, where nearly two-thirds of your customer base speaks Spanish as a first language. When a customer has a burst pipe at 2 AM on a Saturday, they're not calling during business hours. They're calling now. And if your receptionist can't answer in Spanish, you've already lost the job to a competitor who can.
 
-If you've been handling overflow calls yourself, bouncing between jobs and your phone, or losing customers because you missed their calls—this post is for you. We're going to walk through why San Antonio plumbers specifically need an AI receptionist, what to look for in one, and why Calltide is built specifically for Bexar County home service businesses.
+If you've been handling overflow calls yourself, bouncing between jobs and your phone, or losing customers because you missed their calls—this post is for you. We're going to walk through why San Antonio plumbers specifically need an AI receptionist, what to look for in one, and why Capta is built specifically for Bexar County home service businesses.
 
 ## Why San Antonio Plumbers Need 24/7 AI Receptionist Coverage
 
@@ -610,11 +609,11 @@ Some calls are emergencies. A water heater failure isn't the same as a routine a
 
 You need a record of every call. What did the customer say? What's their address? Do they have existing issues? A good AI receptionist transcribes calls and feeds that information directly into your CRM so you're not starting from zero when you call them back.
 
-## Why Calltide Is Built for San Antonio Plumbers
+## Why Capta Is Built for San Antonio Plumbers
 
-Calltide was built in Texas, by people who understand Texas home service businesses. It wasn't designed in California and then retrofitted for Spanish speakers. Bilingual service is baked in from day one.
+Capta was built in Texas, by people who understand Texas home service businesses. It wasn't designed in California and then retrofitted for Spanish speakers. Bilingual service is baked in from day one.
 
-Here's what makes Calltide different for Bexar County plumbers:
+Here's what makes Capta different for Bexar County plumbers:
 
 **Maria speaks natural Spanish.** Not the Duolingo version. Not phonetically-perfect but emotionally flat. Maria has natural conversational tone in both English and Spanish. She handles accent variations and understands regional Spanish. San Antonio customers recognize her as human-level natural, which builds trust immediately.
 
@@ -622,15 +621,15 @@ Here's what makes Calltide different for Bexar County plumbers:
 
 **Appointment booking with zero friction.** Maria confirms availability on your calendar, books the appointment, sends SMS to the customer, and alerts you to priority calls. No callback needed. The appointment is booked.
 
-**Built for Texas service businesses.** Calltide integrates with the CRM and scheduling tools that San Antonio plumbers actually use. It's not a one-size-fits-all generic service. It's purpose-built for HVAC, plumbing, electrical, and other home service trades operating across Bexar County and Texas.
+**Built for Texas service businesses.** Capta integrates with the CRM and scheduling tools that San Antonio plumbers actually use. It's not a one-size-fits-all generic service. It's purpose-built for HVAC, plumbing, electrical, and other home service trades operating across Bexar County and Texas.
 
 **Emergency detection that matters.** If a customer mentions a burst pipe, gas smell, or immediate water damage, Maria flags it as priority and alerts you right away. You're not finding out about emergencies when you check your voicemail at lunch.
 
 **SMS alerts and transcription.** Every call is transcribed. Every booking generates an instant SMS alert to the customer. Your team gets a summary in your CRM so everyone has context when they arrive at the job site.
 
-## Getting Started with Calltide in San Antonio
+## Getting Started with Capta in San Antonio
 
-Setting up Calltide for your San Antonio plumbing business is straightforward. You provide a local San Antonio number (or use your existing one), Calltide routes inbound calls to Maria, she answers in the customer's language, books appointments, and you handle the rest.
+Setting up Capta for your San Antonio plumbing business is straightforward. You provide a local San Antonio number (or use your existing one), Capta routes inbound calls to Maria, she answers in the customer's language, books appointments, and you handle the rest.
 
 For San Antonio plumbers, the ROI is simple: every additional customer you capture pays for the service. With 64% of your potential customers speaking Spanish natively, and 24/7 call coverage capturing jobs you're currently missing, most SA plumbers break even within the first month.
 
@@ -642,13 +641,13 @@ This is fixable.
 
 Not sure how AI receptionists stack up against your current setup? Check out our comprehensive [Complete Guide to AI Receptionists for Home Service Businesses](/blog/complete-guide-ai-receptionists-home-services). It walks through the full feature comparison, pricing models, and what actually moves the needle for plumbers, HVAC techs, and electricians.
 
-For San Antonio specifically, the choice is clear. You need 24/7 answering, bilingual service that sounds natural, and appointment booking that actually captures these customers. Calltide does all three.
+For San Antonio specifically, the choice is clear. You need 24/7 answering, bilingual service that sounds natural, and appointment booking that actually captures these customers. Capta does all three.
 
 ## Ready to Start?
 
 Stop losing calls. Stop managing overflow yourself. Let Maria handle your phones while you run your plumbing business.
 
-**[Get Calltide](https://calltide.app)** — $497/month for unlimited calls, 24/7 Spanish+English service, and appointment booking. No setup fees. Questions? Call us at (830) 521-7133 or visit calltide.app today.`,
+**[Get Capta](https://capta.app)** — $497/month for unlimited calls, 24/7 Spanish+English service, and appointment booking. No setup fees. Questions? Call us at (830) 521-7133 or visit capta.app today.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -659,7 +658,7 @@ Stop losing calls. Stop managing overflow yourself. Let Maria handle your phones
     slug: "why-spanish-speaking-customers-not-leaving-voicemails",
     language: "en",
     category: "problem-solution",
-    metaTitle: "Why Spanish-Speaking Customers Don't Leave Voicemails | Calltide",
+    metaTitle: "Why Spanish-Speaking Customers Don't Leave Voicemails | Capta",
     metaDescription: "Your Spanish-speaking customers aren't leaving voicemails because most systems are English-only. Learn how bilingual AI receptionists capture calls you're missing.",
     targetKeyword: "Spanish speaking receptionist service",
     relatedPostSlugs: ["complete-guide-ai-receptionists-home-services", "we-called-200-plumbers-texas-how-many-answered"],
@@ -728,9 +727,9 @@ Whether you hire a bilingual receptionist or use a bilingual AI system, the outc
 
 But not all solutions are created equal. A traditional bilingual answering service can cost $1,000+ per month and still has inconsistent coverage. You need something that works 24/7, every day.
 
-## How Calltide Solves This Problem
+## How Capta Solves This Problem
 
-Calltide is a bilingual AI receptionist named Maria. She answers your calls 24/7 in both English and Spanish.
+Capta is a bilingual AI receptionist named Maria. She answers your calls 24/7 in both English and Spanish.
 
 Here's what actually happens when a Spanish-speaking customer calls:
 
@@ -768,10 +767,10 @@ You can also read what we learned from calling 200 plumbers across Texas: ["We C
 
 Ready to stop losing calls to language barriers?
 
-**[Get Calltide today.](https://calltide.app)** Set up bilingual answering in minutes. Your first week is risk-free. Start capturing the calls you've been missing.
+**[Get Capta today.](https://capta.app)** Set up bilingual answering in minutes. Your first week is risk-free. Start capturing the calls you've been missing.
 
 **Phone:** (830) 521-7133
-**Website:** calltide.app`,
+**Website:** capta.app`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -783,14 +782,14 @@ Ready to stop losing calls to language barriers?
     language: "es",
     category: "pillar",
     metaTitle: "Recepcionista Virtual IA para Contratistas - Guía 2026",
-    metaDescription: "Descubre cómo funcionan las recepcionistas de IA como María de Calltide. Guía completa para plomeros, electricistas y contratistas en español.",
+    metaDescription: "Descubre cómo funcionan las recepcionistas de IA como María de Capta. Guía completa para plomeros, electricistas y contratistas en español.",
     targetKeyword: "recepcionista virtual para contratistas",
-    relatedPostSlugs: ["llamamos-200-plomeros-texas-cuantos-contestaron", "calltide-vs-contratar-recepcionista-desglose-costos"],
+    relatedPostSlugs: ["llamamos-200-plomeros-texas-cuantos-contestaron", "capta-vs-contratar-recepcionista-desglose-costos"],
     markdown: `# Guía Completa: Recepcionistas de IA para Negocios de Servicios del Hogar
 
 ## ¿Qué es una Recepcionista de IA?
 
-Si eres plomero, electricista o contratista en Estados Unidos, ya sabes lo frustrante que es perder llamadas. Pero no es solo frustración—es dinero dejado en la mesa. Una **recepcionista de IA** como María, de Calltide, es la solución que más negocios de servicios del hogar están adoptando en 2026.
+Si eres plomero, electricista o contratista en Estados Unidos, ya sabes lo frustrante que es perder llamadas. Pero no es solo frustración—es dinero dejado en la mesa. Una **recepcionista de IA** como María, de Capta, es la solución que más negocios de servicios del hogar están adoptando en 2026.
 
 María no es un robot que suena robótico. Es una asistente virtual entrenada para responder llamadas 24/7, en inglés y español, exactamente como lo haría una persona. Agenda citas, envía mensajes de texto, detecta emergencias y guarda toda la información en tu CRM. Todo funcionando mientras tú estás enfocado en lo que sabes hacer: tu trabajo.
 
@@ -804,7 +803,7 @@ Las estadísticas son claras:
 
 ¿El problema? Trabajas en el terreno. No puedes estar pegado al teléfono. Y si tienes que contratar a alguien para que conteste, eso es $35,000 a $55,000 al año.
 
-Con Calltide, pagas $497 al mes. Una recepcionista que nunca se enferma, nunca falta, nunca comete errores de registro, y que habla español perfectamente.
+Con Capta, pagas $497 al mes. Una recepcionista que nunca se enferma, nunca falta, nunca comete errores de registro, y que habla español perfectamente.
 
 ## ¿Cómo Funciona María?
 
@@ -830,32 +829,32 @@ Eso significa que estás capturando clientes que otros contratistas están perdi
 
 ## ¿Realmente Funciona para Mi Tipo de Negocio?
 
-Calltide está diseñado específicamente para servicios del hogar:
+Capta está diseñado específicamente para servicios del hogar:
 
 - **Plomería:** María entiende urgencias como "sin agua caliente" vs "goteo lento."
 - **Electricidad:** Puede priorizar "sin electricidad en la casa" como emergencia.
 - **HVAC:** Sabe qué es una unidad de aire acondicionado y por qué importa la velocidad.
 - **Cerrajería, Paisajismo, Pintura:** Funciona igual de bien.
 
-El 14 días de prueba gratuita es específicamente para que veas cómo maneja TUS tipos de llamadas.
+Con la garantía de 30 días puedes ver exactamente cómo maneja TUS tipos de llamadas antes de comprometerte.
 
 ## Preocupaciones Comunes (Y Por Qué No Deberías Tenerlas)
 
 ### "¿La IA va a sonar muy robótica?"
 
-No. María suena como una persona. Hace pausas naturales. Dice "um" a veces. No está gritando. Pruébala con el trial gratuito y verás.
+No. María suena como una persona. Hace pausas naturales. Dice "um" a veces. No está gritando. Pruébala y verás — tienes 30 días de garantía.
 
 ### "¿Y si el cliente quiere hablar conmigo directamente?"
 
-María puede transferir la llamada a tu teléfono móvil en cualquier momento. Pero la mayoría de clientes (especialmente para agendar citas) no necesitan hablar contigo. Necesitan una respuesta rápida, y María les da eso.
+María puede transferir la llamada a tu celular en cualquier momento. Pero la mayoría de clientes (especialmente para agendar citas) no necesitan hablar contigo. Necesitan una respuesta rápida, y María les da eso.
 
 ### "¿Qué pasa si falla el sistema?"
 
-Calltide usa infraestructura de nivel empresarial. Si por alguna razón falla, las llamadas se desvían a tu teléfono directamente. Nunca pierdes una llamada.
+Capta usa infraestructura de nivel empresarial. Si por alguna razón falla, las llamadas se desvían a tu teléfono directamente. Nunca pierdes una llamada.
 
 ### "¿Es difícil configurar?"
 
-Toma 10 minutos. Apuntas el número de Calltide, desvías tu línea comercial allá. Fin. María comienza a contestar inmediatamente.
+Toma 10 minutos. Apuntas el número de Capta, desvías tu línea comercial allá. Fin. María comienza a contestar inmediatamente.
 
 ## Cómo Elegir la Recepcionista de IA Correcta
 
@@ -868,11 +867,11 @@ No todas las opciones son iguales. Cuando estés comparando, busca estas caracte
 - **Transcripciones:** Así sabes exactamente qué dijo el cliente.
 - **Garantía de dinero de vuelta:** Si no funciona, deberían darte tu dinero atrás.
 
-Calltide tiene todas estas características. Es más, Calltide tiene 30 días de garantía de devolución de dinero. Si no funciona para ti, devuelven el 100%.
+Capta tiene todas estas características. Es más, Capta tiene 30 días de garantía de devolución de dinero. Si no funciona para ti, devuelven el 100%.
 
 ## ¿Cuánto Cuesta Realmente?
 
-Calltide es $497 por mes. Eso incluye:
+Capta es $497 por mes. Eso incluye:
 
 - Recepcionista 24/7
 - Inglés Y español
@@ -895,7 +894,7 @@ $497/mes son $5,964 al año. El ahorro es obvio.
 
 Los mejores contratistas en Texas ya están usando esto. La razón: no es una "característica bonita." Es un sistema que genera dinero.
 
-Contesta llamadas que antes se perdían. Eso es ingresos adicionales. Pero además, Calltide te da datos. Ves patrones. Qué servicios se preguntan más. En qué horarios hay demanda. Puedes optimizar tu marketing basado en datos reales.
+Contesta llamadas que antes se perdían. Eso es ingresos adicionales. Pero además, Capta te da datos. Ves patrones. Qué servicios se preguntan más. En qué horarios hay demanda. Puedes optimizar tu marketing basado en datos reales.
 
 ## ¿Y si Estás Ocupado?
 
@@ -903,13 +902,13 @@ Ese es el punto. Si estás ocupado, María se encarga de las llamadas mientras t
 
 ## El Siguiente Paso
 
-Prueba Calltide gratis durante 14 días. Sin tarjeta de crédito. Sin trampas. Verás exactamente cómo funciona con tus llamadas reales.
+Prueba Capta gratis durante 14 días. Sin tarjeta de crédito. Sin trampas. Verás exactamente cómo funciona con tus llamadas reales.
 
 Si no funciona, no pagas nada. Si funciona (y funciona), pagas $497/mes y ves cómo cambia tu negocio.
 
 **Para empezar:**
 
-- Web: [calltide.app](https://calltide.app)
+- Web: [capta.app](https://capta.app)
 - Teléfono: [(830) 521-7133](tel:+18305217133)
 
 Habla con María misma. Ella está esperando tu llamada.`,
@@ -997,7 +996,7 @@ Si eres plomero, electricista o contratista en Texas, tienes dos opciones:
 
 ## ¿Cuál Es la Solución?
 
-Una recepcionista de IA como María (de Calltide) contesta CADA llamada. No importa si estás en el terreno, comiendo, o durmiendo.
+Una recepcionista de IA como María (de Capta) contesta CADA llamada. No importa si estás en el terreno, comiendo, o durmiendo.
 
 - Si el cliente habla inglés, María responde en inglés.
 - Si el cliente habla español, María responde en español.
@@ -1016,29 +1015,29 @@ Y si no hablas español, estás ignorando a 1 de cada 4 potenciales clientes en 
 
 ## ¿Cuál Es el Siguiente Paso?
 
-Prueba Calltide durante 14 días. Mira cuántas llamadas recibiste (de verdad, cantidad real). Luego calcula: ¿cuánto dinero dejé en la mesa? Probablemente más de lo que pensabas.
+Prueba Capta durante 14 días. Mira cuántas llamadas recibiste (de verdad, cantidad real). Luego calcula: ¿cuánto dinero dejé en la mesa? Probablemente más de lo que pensabas.
 
 **Para empezar:**
 
-- Web: [calltide.app](https://calltide.app)
+- Web: [capta.app](https://capta.app)
 - Teléfono: [(830) 521-7133](tel:+18305217133)
 
-**¿Listo para recuperar esas llamadas perdidas?** [Obtén Calltide - 14 días gratis](https://calltide.app)`,
+**¿Listo para recuperar esas llamadas perdidas?** [Obtén Capta - 14 días gratis](https://capta.app)`,
   },
 
   /* ════════════════════════════════════════════════════════════════
      ES 3 — Comparación
      ════════════════════════════════════════════════════════════════ */
   {
-    title: "Calltide vs Contratar una Recepcionista: El Verdadero Costo",
-    slug: "calltide-vs-contratar-recepcionista-desglose-costos",
+    title: "Capta vs Contratar una Recepcionista: El Verdadero Costo",
+    slug: "capta-vs-contratar-recepcionista-desglose-costos",
     language: "es",
     category: "comparison",
-    metaTitle: "Calltide vs Recepcionista Humana - Desglose de Costos Real",
+    metaTitle: "Capta vs Recepcionista Humana - Desglose de Costos Real",
     metaDescription: "Comparación honesta: $497/mes vs $50K+/año. Tabla de costos reales. Cuándo contratar persona, cuándo usar IA.",
-    targetKeyword: "Calltide vs recepcionista humana",
+    targetKeyword: "Capta vs recepcionista humana",
     relatedPostSlugs: ["guia-completa-recepcionistas-ai-servicios-domiciliarios", "mejor-recepcionista-ai-plomeros-san-antonio"],
-    markdown: `# Calltide vs Contratar una Recepcionista: El Verdadero Costo
+    markdown: `# Capta vs Contratar una Recepcionista: El Verdadero Costo
 
 ## La Pregunta que Todo Contratista Se Hace
 
@@ -1060,12 +1059,12 @@ Si contratas a una persona física para que conteste teléfono 9am-5pm:
 
 **Total año 2+: $45,000-57,000** (con aumentos de sueldo y beneficios)
 
-## Desglose de Costos: Calltide (IA)
+## Desglose de Costos: Capta (IA)
 
 - **Cuota mensual:** $497/mes
 - **Costo anual:** $5,964
 - **Configuración inicial:** 10 minutos (gratis)
-- **Mantenimiento:** Cero. Calltide lo maneja.
+- **Mantenimiento:** Cero. Capta lo maneja.
 - **Beneficios incluidos:** 24/7 x 365 días, bilingual (inglés+español), SMS, CRM, transcripciones, detección de emergencias
 
 **Total primer año: $5,964**
@@ -1074,7 +1073,7 @@ Si contratas a una persona física para que conteste teléfono 9am-5pm:
 
 ## La Tabla Honesta
 
-| Concepto | Recepcionista Humana | Calltide (IA) |
+| Concepto | Recepcionista Humana | Capta (IA) |
 |----------|----------------------|---------------|
 | **Costo Anual** | $45,000-57,000 | $5,964 |
 | **Horario** | 9am-5pm (5 días) | 24/7 (365 días) |
@@ -1091,7 +1090,7 @@ Si contratas a una persona física para que conteste teléfono 9am-5pm:
 ¿Qué pasa si necesitas que alguien conteste llamadas de 7am a 8pm? ¿Todos los días?
 
 - **Recepcionista humana:** Necesitas 2 personas. Ahora estamos hablando de $90,000-114,000/año. O un horario ridículo para 1 persona.
-- **Calltide:** Sigue siendo $497/mes. María trabaja todo el tiempo.
+- **Capta:** Sigue siendo $497/mes. María trabaja todo el tiempo.
 
 ## ¿Pero Qué Si Necesito Contacto Humano?
 
@@ -1109,15 +1108,15 @@ Sé honesto: hay momentos donde una persona es mejor:
 
 - **Si también necesitas alguien en la oficina para otras cosas.** No solo contestar teléfono, sino también archivar, hacer followups, facturación. Entonces, una persona full-time tiene sentido.
 - **Si tus clientes exigen hablar con una persona "real" y rechazarían una IA.** Esto es raro en servicios del hogar, pero posible.
-- **Si tienes un negocio MUY grande con 100+ llamadas al día.** Incluso entonces, Calltide maneja mejor volumen que 1 persona.
+- **Si tienes un negocio MUY grande con 100+ llamadas al día.** Incluso entonces, Capta maneja mejor volumen que 1 persona.
 
-Para la mayoría de contratistas (plomeros, electricistas, HVAC), Calltide es mejor. Punto.
+Para la mayoría de contratistas (plomeros, electricistas, HVAC), Capta es mejor. Punto.
 
 ## El Modelo Híbrido Inteligente
 
 Algunos negocios hacen esto:
 
-- **Usa Calltide para todas las llamadas.** 24/7, bilingüe, automático.
+- **Usa Capta para todas las llamadas.** 24/7, bilingüe, automático.
 - **Contrata a 1 persona para 10 horas/semana.** Solo para tareas administrativas, no teléfono.
 - **Costo total: $5,964 + $8,000 = $13,964/año.**
 
@@ -1125,7 +1124,7 @@ Comparado con $45,000-57,000 para 1 persona full-time que solo contesta teléfon
 
 ## La Garantía de Dinero de Vuelta
 
-Aquí está el punto de quiebre: Calltide tiene garantía de devolución de dinero de 30 días.
+Aquí está el punto de quiebre: Capta tiene garantía de devolución de dinero de 30 días.
 
 ¿No funciona para ti? Te devuelven el 100%. Cero preguntas.
 
@@ -1135,18 +1134,18 @@ No hay riesgo. Prueba durante 14 días (gratis). Si funciona, sigue. Si no, canc
 
 Eres contratista. Trabajas en el terreno. No estás en una oficina. Por lo tanto:
 
-1. Comienza con Calltide. $497/mes. 24/7 bilingüe.
+1. Comienza con Capta. $497/mes. 24/7 bilingüe.
 2. Si necesitas ayuda administrativa, LUEGO contrata a alguien part-time.
 3. Nunca pagues $50K+ para que alguien solo conteste teléfono 9-5.
 
-Los números hablan por sí solos. Calltide te ahorra dinero, te da mejor servicio, y nunca te abandona.
+Los números hablan por sí solos. Capta te ahorra dinero, te da mejor servicio, y nunca te abandona.
 
 **Para empezar:**
 
-- Web: [calltide.app](https://calltide.app)
+- Web: [capta.app](https://capta.app)
 - Teléfono: [(830) 521-7133](tel:+18305217133)
 
-**¿Listo para ahorrar dinero?** [Obtén Calltide - 14 días gratis](https://calltide.app)`,
+**¿Listo para ahorrar dinero?** [Obtén Capta - 14 días gratis](https://capta.app)`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1158,7 +1157,7 @@ Los números hablan por sí solos. Calltide te ahorra dinero, te da mejor servic
     language: "es",
     category: "city-specific",
     metaTitle: "Recepcionista AI para Plomeros en San Antonio - Bilingüe",
-    metaDescription: "San Antonio es 64% hispanohablante. Los plomeros necesitan IA bilingüe. Descubre por qué Calltide es la solución para SA.",
+    metaDescription: "San Antonio es 64% hispanohablante. Los plomeros necesitan IA bilingüe. Descubre por qué Capta es la solución para SA.",
     targetKeyword: "mejor recepcionista AI para plomeros en San Antonio",
     relatedPostSlugs: ["guia-completa-recepcionistas-ai-servicios-domiciliarios", "por-que-clientes-hispanohablantes-no-dejan-mensajes-voz"],
     markdown: `# La Mejor Recepcionista de IA para Plomeros en San Antonio
@@ -1171,9 +1170,9 @@ San Antonio es 64% hispanohablante. Eso significa que casi 2 de cada 3 personas 
 
 Y si tu recepcionista (o tu teléfono) solo habla inglés, estás perdiendo dinero. Así de simple.
 
-## ¿Por Qué Calltide Nació en Texas?
+## ¿Por Qué Capta Nació en Texas?
 
-Calltide está basada en Texas. Entiende San Antonio. Entiende que necesitas bilingüe. Entiende que muchos de tus clientes no van a dejar mensaje en voicemail en inglés.
+Capta está basada en Texas. Entiende San Antonio. Entiende que necesitas bilingüe. Entiende que muchos de tus clientes no van a dejar mensaje en voicemail en inglés.
 
 María—la recepcionista de IA—fue entrenada específicamente para este mercado. Habla español de verdad. No es una traducción de Google. Es español natural, con jerga local. Entiende cuando alguien dice "tubería" vs "tubo." Sabe qué es una "fugas de agua" y por qué es urgente.
 
@@ -1205,7 +1204,7 @@ Resultado: perdiste 8 de 10 llamadas hispanohablantes. Si 1 de cada 5 llamadas s
 - 1.6 trabajos x $150 = $240/día
 - $240/día x 250 días de trabajo = $60,000 AL AÑO PERDIDOS
 
-Calltide cuesta $497/mes = $5,964/año. Recuperas tu inversión en 30 días. El resto es ganancia pura.
+Capta cuesta $497/mes = $5,964/año. Recuperas tu inversión en 30 días. El resto es ganancia pura.
 
 ## Por Qué San Antonio Específicamente Necesita Esto
 
@@ -1217,7 +1216,7 @@ Calltide cuesta $497/mes = $5,964/año. Recuperas tu inversión en 30 días. El 
 
 **4. Construcción de viviendas:** San Antonio crece. Nuevas casas, nuevos residentes, nuevas demandas de servicios. Pero también, más competencia. Necesitas cada llamada.
 
-## ¿Qué Incluye Calltide Para Ti?
+## ¿Qué Incluye Capta Para Ti?
 
 - **Respuesta 24/7:** María contesta a las 2am si es necesario.
 - **Bilingüe perfecto:** Inglés natural, español natural. Sin acento robótico.
@@ -1233,15 +1232,15 @@ Y todo esto, basado en Texas. Hecho para casos como el tuyo.
 
 En otras ciudades de Texas:
 
-- **Houston (44% hispanohablante):** Calltide útil, pero menos crítico.
+- **Houston (44% hispanohablante):** Capta útil, pero menos crítico.
 - **Dallas (24% hispanohablante):** Bilingüe es bonus.
 - **San Antonio (64% hispanohablante):** Bilingüe es NECESARIO. Si no lo tienes, pierdes.
 
-San Antonio es el caso de uso perfecto para Calltide.
+San Antonio es el caso de uso perfecto para Capta.
 
 ## ¿Qué Dicen los Plomeros Sanantónicos?
 
-Hemos hablado con decenas de plomeros en San Antonio usando Calltide. Lo que dicen:
+Hemos hablado con decenas de plomeros en San Antonio usando Capta. Lo que dicen:
 
 - **"Finalizado más citas en español. Antes esas llamadas desaparecían."**
 - **"María suena como una recepcionista real. Los clientes no saben que es IA."**
@@ -1252,25 +1251,23 @@ Estos son números reales de negocios reales en San Antonio.
 
 ## ¿Cómo Empezar?
 
-Prueba gratis durante 14 días. Sin tarjeta de crédito. Sin compromiso. Simplemente da tu número de teléfono comercial a Calltide, y María comenzará a contestar.
+$497/mes. Sin contrato a largo plazo. Garantía de devolución de 30 días. Simplemente da tu número de teléfono comercial a Capta, y María comenzará a contestar.
 
-Durante esos 14 días:
+Desde el primer día:
 
 - Mira cuántas llamadas recibes realmente (probablemente más de lo que pensabas).
 - Observa cuántos hispanohablantes.
 - Observa cómo María los maneja.
 - Calcula cuánto dinero hace esto por ti.
 
-Si no funciona, cancelas. Sin penalizaciones.
-
-Si funciona (y funciona), pagas $497/mes y ves cómo crece tu negocio.
+Si no funciona en 30 días, te devolvemos tu dinero. Sin preguntas.
 
 **Para empezar:**
 
-- Web: [calltide.app](https://calltide.app)
+- Web: [capta.app](https://capta.app)
 - Teléfono: [(830) 521-7133](tel:+18305217133)
 
-**San Antonio merece mejor. Obtén Calltide.** [14 días gratis →](https://calltide.app)`,
+**San Antonio merece mejor. Obtén Capta.** [Obtén Capta →](https://capta.app)`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1372,7 +1369,7 @@ $60,000. Todos los años. Dinero dejado en la mesa.
 
 ## La Solución: María Contesta En Español Automáticamente
 
-Aquí está la magia de Calltide:
+Aquí está la magia de Capta:
 
 **La llamada entra.**
 
@@ -1404,9 +1401,9 @@ Sí. Pero no suena como una máquina. María tiene:
 
 Después de los primeros 5 segundos, el cliente olvida que es IA. Solo sabe que alguien en español la ayudó.
 
-## Comparación Real: Con vs Sin Calltide
+## Comparación Real: Con vs Sin Capta
 
-**Sin Calltide:**
+**Sin Capta:**
 
 - Cliente hispanohablante llama
 - Escucha: "Hi, you've reached..."
@@ -1415,7 +1412,7 @@ Después de los primeros 5 segundos, el cliente olvida que es IA. Solo sabe que 
 - Llama a otro contratista
 - Resultado: PIERDES el cliente
 
-**Con Calltide:**
+**Con Capta:**
 
 - Cliente hispanohablante llama
 - Escucha: "Hola, me llamo María..."
@@ -1446,10 +1443,10 @@ Luego, decide si vale $497/mes (spoiler: sí).
 
 **Para empezar:**
 
-- Web: [calltide.app](https://calltide.app)
+- Web: [capta.app](https://capta.app)
 - Teléfono: [(830) 521-7133](tel:+18305217133)
 
-**Deja de perder clientes hispanohablantes.** [Obtén Calltide - 14 días gratis →](https://calltide.app)`,
+**Deja de perder clientes hispanohablantes.** [Obtén Capta - 14 días gratis →](https://capta.app)`,
   },
 ];
 

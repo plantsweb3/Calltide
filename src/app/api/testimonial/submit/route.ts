@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Share Your Experience — Calltide</title>
+  <title>Share Your Experience — Capta</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1a1a2e; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
 <body>
   <div class="card" id="form-card">
     <h1>Share Your Experience</h1>
-    <p class="sub">Hey ${escapeHtml(biz.ownerName || "there")}, we'd love to hear how Calltide has helped ${escapeHtml(biz.name)}. A sentence or two goes a long way!</p>
+    <p class="sub">Hey ${escapeHtml(biz.ownerName || "there")}, we'd love to hear how Capta has helped ${escapeHtml(biz.name)}. A sentence or two goes a long way!</p>
     <form id="testimonial-form">
       <input type="hidden" name="businessId" value="${escapeHtml(businessId)}" />
       <label>Rating</label>
@@ -77,7 +77,7 @@ export async function GET(req: NextRequest) {
         ${[1, 2, 3, 4, 5].map((n) => `<button type="button" class="star" data-value="${n}">&#9733;</button>`).join("")}
       </div>
       <label for="quote">Your testimonial</label>
-      <textarea id="quote" name="quote" placeholder="Calltide has been great for my business because..." required minlength="10" maxlength="1000"></textarea>
+      <textarea id="quote" name="quote" placeholder="Capta has been great for my business because..." required minlength="10" maxlength="1000"></textarea>
       <button type="submit">Submit Testimonial</button>
     </form>
   </div>

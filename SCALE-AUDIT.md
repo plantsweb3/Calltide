@@ -1,4 +1,4 @@
-# Calltide Scale Audit
+# Capta Scale Audit
 
 **Date:** 2026-02-26
 **Stack:** Next.js 16 + Drizzle ORM + Turso (SQLite) + Hume EVI + Claude + Twilio + Resend
@@ -85,16 +85,16 @@
 - `revenueMetrics` and `churnRiskScores` tables exist but are **never populated by any automated process**. No Stripe integration. No payment processing. No invoice generation. No subscription lifecycle. Billing page displays whatever's manually inserted into the DB. Churn risk scores are never calculated — the table is empty unless manually seeded. Revenue forecast is naive linear extrapolation with no seasonal adjustment.
 
 ### Admin Settings — Read-Only Display
-- Settings page shows email/SMS templates, Twilio config, API keys, scraping rules — but **nothing is editable**. All templates are hardcoded in source. All config requires code changes. Footer says "Contact us at support@calltide.app." No admin can change AI configuration, system prompts, business hours defaults, or outreach sequences without deploying code.
+- Settings page shows email/SMS templates, Twilio config, API keys, scraping rules — but **nothing is editable**. All templates are hardcoded in source. All config requires code changes. Footer says "Contact us at support@capta.app." No admin can change AI configuration, system prompts, business hours defaults, or outreach sequences without deploying code.
 
 ### Client Self-Service — Read-Only Dashboard
-- Clients can view all their data but **cannot modify anything**. No editing business hours, services, language preference, greeting, or contact info. No appointment management (cancel/reschedule). No self-service onboarding. Footer says "Contact us at support@calltide.app."
+- Clients can view all their data but **cannot modify anything**. No editing business hours, services, language preference, greeting, or contact info. No appointment management (cancel/reschedule). No self-service onboarding. Footer says "Contact us at support@capta.app."
 
 ### Per-Client AI Configuration — Schema Ready, UI Missing
 - `businesses.humeConfigId` field exists in schema but is **never used in code**. All businesses share the same Hume config. System prompt template is global (persona "Maria", max 150 tokens, same call flow). No per-client prompt overrides, model selection, temperature tuning, or voice selection. Business context (name, services, hours) is injected, but the template structure is identical for all.
 
 ### Outbound Campaigns — Tables Only
-- `outboundCampaigns` and `campaignContacts` tables exist in schema. Campaigns page exists in admin UI. But **no API routes or orchestration logic** for outbound call campaigns to a business's existing leads/customers. The outreach system only handles prospect outreach (selling Calltide), not customer campaigns (reactivation, promotions on behalf of clients).
+- `outboundCampaigns` and `campaignContacts` tables exist in schema. Campaigns page exists in admin UI. But **no API routes or orchestration logic** for outbound call campaigns to a business's existing leads/customers. The outreach system only handles prospect outreach (selling Capta), not customer campaigns (reactivation, promotions on behalf of clients).
 
 ### Client Onboarding — Manual Process
 - Add-client modal collects basic info and creates a DB record. But: **no automated Twilio number provisioning**, no Hume config creation, no welcome email, no onboarding checklist, no guided setup wizard. Admin must manually provision Twilio number, configure Hume, and set up the business. Defaults: 8-5 M-F hours, America/Chicago timezone, English, empty services array.
@@ -128,7 +128,7 @@
 - No public signup flow. No trial period. No credit card capture. No email verification. No plan selection. Every client must be manually created by an admin. **This does not scale past ~20 clients.**
 
 ### Calendar Integration
-- No Google Calendar, Outlook, or CalDAV sync. Appointments exist only in Calltide's DB. Business owners must manually check the dashboard for new appointments. Double-booking is prevented only by checking Calltide's own data — if the owner books directly in their calendar, the AI won't know. **Major friction point for clients.**
+- No Google Calendar, Outlook, or CalDAV sync. Appointments exist only in Capta's DB. Business owners must manually check the dashboard for new appointments. Double-booking is prevented only by checking Capta's own data — if the owner books directly in their calendar, the AI won't know. **Major friction point for clients.**
 
 ### CSRF Protection
 - No CSRF tokens on any state-changing request. Cookie-based auth + no CSRF = vulnerable to cross-site request forgery on all POST/PATCH endpoints.

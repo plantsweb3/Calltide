@@ -18,7 +18,7 @@ export function StaticFooter({ lang }: StaticFooterProps) {
         platform: "Platform", pricing: "Pricing", howItWorks: "How It Works",
         company: "Company", about: "About", contact: "Contact", clientLogin: "Client Login",
         legal: "Legal", terms: "Terms", privacy: "Privacy",
-        copyright: `© ${new Date().getFullYear()} Calltide LLC. All rights reserved.`,
+        copyright: `© ${new Date().getFullYear()} Capta LLC. All rights reserved.`,
         builtIn: "Built in Texas.",
       }
     : {
@@ -26,7 +26,7 @@ export function StaticFooter({ lang }: StaticFooterProps) {
         platform: "Plataforma", pricing: "Precios", howItWorks: "Cómo Funciona",
         company: "Empresa", about: "Nosotros", contact: "Contacto", clientLogin: "Acceso Clientes",
         legal: "Legal", terms: "Términos", privacy: "Privacidad",
-        copyright: `© ${new Date().getFullYear()} Calltide LLC. Todos los derechos reservados.`,
+        copyright: `© ${new Date().getFullYear()} Capta LLC. Todos los derechos reservados.`,
         builtIn: "Hecho en Texas.",
       };
 
@@ -35,7 +35,7 @@ export function StaticFooter({ lang }: StaticFooterProps) {
       <div className="mx-auto max-w-5xl">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
-            <img src="/images/logo.webp" alt="Calltide" className="h-7 w-auto brightness-0 invert opacity-70" />
+            <img src="/images/logo-inline-white.webp" alt="Capta" className="h-7 w-auto opacity-70" />
             <p className="mt-4 text-sm text-white/40">{labels.tagline}</p>
             <a href={PHONE_TEL} className="mt-3 inline-block text-sm font-semibold text-amber hover:underline">{PHONE}</a>
           </div>
@@ -52,7 +52,7 @@ export function StaticFooter({ lang }: StaticFooterProps) {
             <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">{labels.company}</p>
             <ul className="mt-4 space-y-3 text-sm">
               <li><Link href="/about" className="text-white/40 transition hover:text-white/60">{labels.about}</Link></li>
-              <li><a href="mailto:hello@calltide.app" className="text-white/40 transition hover:text-white/60">{labels.contact}</a></li>
+              <li><a href="mailto:hello@capta.app" className="text-white/40 transition hover:text-white/60">{labels.contact}</a></li>
               <li><Link href="/dashboard/login" className="text-white/40 transition hover:text-white/60">{labels.clientLogin}</Link></li>
               <li><Link href={lang === "en" ? "/blog" : "/es/blog"} className="text-white/40 transition hover:text-white/60">Blog</Link></li>
               <li><Link href={lang === "en" ? "/help" : "/es/help"} className="text-white/40 transition hover:text-white/60">Help</Link></li>

@@ -5,7 +5,7 @@ const hume = new HumeClient({
   apiKey: process.env.HUME_API_KEY!,
 });
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://calltide.vercel.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://capta.vercel.app";
 
 async function setupConfig() {
   console.log("Creating EVI config...\n");
@@ -33,7 +33,7 @@ async function setupConfig() {
 
   try {
     const config = await hume.empathicVoice.configs.createConfig({
-      name: "calltide-voice-agent",
+      name: "capta-voice-agent",
       eviVersion: "3",
       voice: {
         name: "KORA",

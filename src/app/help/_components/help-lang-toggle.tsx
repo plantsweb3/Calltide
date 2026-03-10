@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "calltide_help_lang";
+const STORAGE_KEY = "capta_help_lang";
 
 interface Props {
   lang: "en" | "es";

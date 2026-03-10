@@ -2,21 +2,21 @@ import type { Metadata } from "next";
 import FAQClient from "./FAQClient";
 
 export const metadata: Metadata = {
-  title: "FAQ — Calltide | AI Front Office Questions Answered",
+  title: "FAQ — Capta | AI Front Office Questions Answered",
   description:
-    "Frequently asked questions about Calltide's AI front office. Getting started, features, AI estimates, missed call recovery, billing, and more.",
+    "Frequently asked questions about Capta's AI front office. Getting started, features, AI estimates, missed call recovery, billing, and more.",
   openGraph: {
-    title: "FAQ — Calltide | Questions Answered",
+    title: "FAQ — Capta | Questions Answered",
     description:
-      "Everything you need to know about Calltide's AI front office — setup, features, estimates, follow-ups, billing, and technical details.",
-    url: "https://calltide.app/faq",
-    siteName: "Calltide",
+      "Everything you need to know about Capta's AI front office — setup, features, estimates, follow-ups, billing, and technical details.",
+    url: "https://capta.app/faq",
+    siteName: "Capta",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FAQ — Calltide",
-    description: "Frequently asked questions about Calltide's AI front office.",
+    title: "FAQ — Capta",
+    description: "Frequently asked questions about Capta's AI front office.",
   },
   alternates: {
     canonical: "/faq",
@@ -51,7 +51,7 @@ export default function Page() {
               },
               {
                 "@type": "Question",
-                name: "What does Calltide cost?",
+                name: "What does Capta cost?",
                 acceptedAnswer: {
                   "@type": "Answer",
                   text: "One plan at $497/month (or $4,764/year). Everything included — unlimited calls, bilingual support, booking, CRM, analytics, compliance. No per-minute charges.",

@@ -4,7 +4,7 @@ import { timingSafeEqual } from "crypto";
 import { env } from "@/lib/env";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
-const COOKIE_NAME = "calltide_admin";
+const COOKIE_NAME = "capta_admin";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 const loginSchema = z.object({

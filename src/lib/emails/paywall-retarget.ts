@@ -1,6 +1,6 @@
 import { BRAND_COLOR, COMPANY_ADDRESS } from "@/lib/constants";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://calltide.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
 
 // ROI: avg missed calls/week × avg job value for the trade
 const TRADE_AVG_JOB: Record<string, number> = {
@@ -112,14 +112,14 @@ function baseLayout(content: string, businessId: string): string {
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;">
 <div style="max-width:600px;margin:0 auto;padding:32px 24px;">
 <div style="margin-bottom:24px;">
-  <span style="font-size:20px;font-weight:700;color:${BRAND_COLOR};">Calltide</span>
+  <span style="font-size:20px;font-weight:700;color:${BRAND_COLOR};">Capta</span>
 </div>
 ${content}
 <div style="margin-top:40px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;">
 <p>${COMPANY_ADDRESS}</p>
 <p style="margin-top:8px;">
   <a href="${unsubscribeUrl}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>
-  &nbsp;|&nbsp; You're receiving this because you started setting up your Calltide receptionist.
+  &nbsp;|&nbsp; You're receiving this because you started setting up your Capta receptionist.
 </p>
 </div>
 </div>
@@ -135,14 +135,14 @@ function baseLayoutEs(content: string, businessId: string): string {
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;">
 <div style="max-width:600px;margin:0 auto;padding:32px 24px;">
 <div style="margin-bottom:24px;">
-  <span style="font-size:20px;font-weight:700;color:${BRAND_COLOR};">Calltide</span>
+  <span style="font-size:20px;font-weight:700;color:${BRAND_COLOR};">Capta</span>
 </div>
 ${content}
 <div style="margin-top:40px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;">
 <p>${COMPANY_ADDRESS}</p>
 <p style="margin-top:8px;">
   <a href="${unsubscribeUrl}" style="color:#94a3b8;text-decoration:underline;">Cancelar suscripción</a>
-  &nbsp;|&nbsp; Recibes esto porque comenzaste a configurar tu recepcionista de Calltide.
+  &nbsp;|&nbsp; Recibes esto porque comenzaste a configurar tu recepcionista de Capta.
 </p>
 </div>
 </div>
@@ -268,7 +268,7 @@ function email3En(d: EmailData): { subject: string; html: string } {
         <p style="color:#0f172a;font-weight:600;margin:0 0 8px;">Your ROI at a glance:</p>
         <p style="color:#475569;margin:4px 0;font-size:14px;">Missed calls recovered: ~3/week</p>
         <p style="color:#475569;margin:4px 0;font-size:14px;">Estimated revenue saved: <strong>$${monthlyLoss.toLocaleString()}/mo</strong></p>
-        <p style="color:#475569;margin:4px 0;font-size:14px;">Calltide cost: <strong>$497/mo</strong></p>
+        <p style="color:#475569;margin:4px 0;font-size:14px;">Capta cost: <strong>$497/mo</strong></p>
         <p style="color:#059669;margin:4px 0;font-size:14px;font-weight:600;">Net gain: $${(monthlyLoss - 497).toLocaleString()}/mo</p>
       </div>
       ${goldButton(`Activate ${d.receptionistName} →`, resumeUrl)}
@@ -301,7 +301,7 @@ function email3Es(d: EmailData): { subject: string; html: string } {
         <p style="color:#0f172a;font-weight:600;margin:0 0 8px;">Tu ROI de un vistazo:</p>
         <p style="color:#475569;margin:4px 0;font-size:14px;">Llamadas recuperadas: ~3/semana</p>
         <p style="color:#475569;margin:4px 0;font-size:14px;">Ingresos estimados: <strong>$${monthlyLoss.toLocaleString()}/mes</strong></p>
-        <p style="color:#475569;margin:4px 0;font-size:14px;">Costo de Calltide: <strong>$497/mes</strong></p>
+        <p style="color:#475569;margin:4px 0;font-size:14px;">Costo de Capta: <strong>$497/mes</strong></p>
         <p style="color:#059669;margin:4px 0;font-size:14px;font-weight:600;">Ganancia neta: $${(monthlyLoss - 497).toLocaleString()}/mes</p>
       </div>
       ${goldButton(`Activar a ${d.receptionistName} →`, resumeUrl)}

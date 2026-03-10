@@ -5,7 +5,7 @@ import { legalMarkdown } from "@/lib/legal-markdown";
 import { TOS_ES } from "@/lib/legal/content";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Términos de Servicio — Calltide", description: "Términos de Servicio de Calltide" };
+export const metadata = { title: "Términos de Servicio — Capta", description: "Términos de Servicio de Capta" };
 
 export default async function TermsEsPage() {
   let content = TOS_ES;

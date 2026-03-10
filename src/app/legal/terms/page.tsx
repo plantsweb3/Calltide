@@ -7,8 +7,8 @@ import { TOS_EN } from "@/lib/legal/content";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Terms of Service — Calltide",
-  description: "Calltide Terms of Service",
+  title: "Terms of Service — Capta",
+  description: "Capta Terms of Service",
 };
 
 export default async function TermsPage() {

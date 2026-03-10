@@ -64,8 +64,8 @@ Una recepcionista AI está entrenada en tu negocio específico. Conoce tus servi
 Como plomero, técnico de HVAC, electricista o paisajista, a menudo estás en un trabajo. No puedes parar lo que estás haciendo para contestar el teléfono. Pero tus clientes necesitan ayuda ahora. Una recepcionista AI se asegura de que cada llamada sea contestada, cada prospecto sea capturado y cada cliente se sienta atendido.
 
 Tú te enfocas en el trabajo. La AI se encarga del teléfono.`,
-    metaTitle: "What Is an AI Receptionist? | Calltide",
-    metaTitleEs: "¿Qué Es una Recepcionista AI? | Calltide",
+    metaTitle: "What Is an AI Receptionist? | Capta",
+    metaTitleEs: "¿Qué Es una Recepcionista AI? | Capta",
     metaDescription:
       "Learn what an AI receptionist is, how it works, and why it beats voicemail and call centers for home service businesses.",
     metaDescriptionEs:
@@ -80,20 +80,20 @@ Tú te enfocas en el trabajo. La AI se encarga del teléfono.`,
     readingTimeMinutes: 3,
   },
 
-  // ─── Article 2: How Calltide Helps Home Service Businesses ──────────
+  // ─── Article 2: How Capta Helps Home Service Businesses ──────────
   {
-    slug: "how-calltide-helps",
-    title: "How Calltide Helps Home Service Businesses",
-    titleEs: "Cómo Calltide Ayuda a Negocios de Servicios del Hogar",
+    slug: "how-capta-helps",
+    title: "How Capta Helps Home Service Businesses",
+    titleEs: "Cómo Capta Ayuda a Negocios de Servicios del Hogar",
     excerpt:
-      "Discover how Calltide's AI receptionist Maria stops missed calls, captures more leads, and pays for itself every month.",
+      "Discover how Capta's AI receptionist Maria stops missed calls, captures more leads, and pays for itself every month.",
     excerptEs:
-      "Descubre cómo la recepcionista AI Maria de Calltide evita llamadas perdidas, captura más prospectos y se paga sola cada mes.",
-    content: `# How Calltide Helps Home Service Businesses
+      "Descubre cómo la recepcionista AI Maria de Capta evita llamadas perdidas, captura más prospectos y se paga sola cada mes.",
+    content: `# How Capta Helps Home Service Businesses
 
 If you run a plumbing, HVAC, electrical, or landscaping business, you know the phone is your lifeline. Every call could be a new job worth hundreds or thousands of dollars. But when you are on a roof, under a sink, or driving to the next job, you can not answer every call.
 
-That is where Calltide comes in.
+That is where Capta comes in.
 
 ## The Missed Call Problem
 
@@ -103,13 +103,13 @@ This is the single biggest money leak in your business. And most owners do not e
 
 ## Meet Maria, Your AI Receptionist
 
-Calltide gives your business an AI receptionist named Maria. She answers every call 24 hours a day, 7 days a week — including nights, weekends, and holidays. She speaks fluent English and Spanish, so she connects with every customer in your market.
+Capta gives your business an AI receptionist named Maria. She answers every call 24 hours a day, 7 days a week — including nights, weekends, and holidays. She speaks fluent English and Spanish, so she connects with every customer in your market.
 
 Maria is not a basic answering machine. She has a real conversation with your callers. She asks what they need, collects their information, and lets them know you will follow up. She can answer common questions about your services, hours, and service area. Every call gets summarized and sent to you by text so you never miss a lead.
 
 ## How It Pays for Itself
 
-Calltide costs **$497 per month**. That sounds like a lot until you do the math. One missed plumbing call could be a $500 repair. One missed HVAC call could be a $3,000 install. One missed electrical call could be a $1,200 panel upgrade.
+Capta costs **$497 per month**. That sounds like a lot until you do the math. One missed plumbing call could be a $500 repair. One missed HVAC call could be a $3,000 install. One missed electrical call could be a $1,200 panel upgrade.
 
 If Maria captures just **one extra job per month** that you would have missed, she has already paid for herself. Most of our clients see a return of **5x to 10x** their investment within the first month.
 
@@ -123,12 +123,12 @@ Maria is not a one-size-fits-all robot. She is configured for your specific busi
 
 ## The Bottom Line
 
-You started your business to do great work, not to sit by the phone all day. Calltide lets you do both. Every call answered. Every lead captured. Every customer taken care of. That is the Calltide difference.`,
-    contentEs: `# Cómo Calltide Ayuda a Negocios de Servicios del Hogar
+You started your business to do great work, not to sit by the phone all day. Capta lets you do both. Every call answered. Every lead captured. Every customer taken care of. That is the Capta difference.`,
+    contentEs: `# Cómo Capta Ayuda a Negocios de Servicios del Hogar
 
 Si tienes un negocio de plomería, HVAC, electricidad o paisajismo, sabes que el teléfono es tu línea de vida. Cada llamada puede ser un trabajo nuevo que vale cientos o miles de dólares. Pero cuando estás en un techo, debajo de un lavabo o manejando al siguiente trabajo, no puedes contestar cada llamada.
 
-Ahí es donde entra Calltide.
+Ahí es donde entra Capta.
 
 ## El Problema de las Llamadas Perdidas
 
@@ -138,13 +138,13 @@ Esta es la fuga de dinero más grande en tu negocio. Y la mayoría de los dueño
 
 ## Conoce a Maria, Tu Recepcionista AI
 
-Calltide le da a tu negocio una recepcionista AI llamada Maria. Ella contesta cada llamada las 24 horas del día, los 7 días de la semana — incluyendo noches, fines de semana y días festivos. Habla inglés y español con fluidez, así que se conecta con cada cliente en tu mercado.
+Capta le da a tu negocio una recepcionista AI llamada Maria. Ella contesta cada llamada las 24 horas del día, los 7 días de la semana — incluyendo noches, fines de semana y días festivos. Habla inglés y español con fluidez, así que se conecta con cada cliente en tu mercado.
 
 Maria no es una contestadora básica. Ella tiene una conversación real con tus clientes. Pregunta qué necesitan, recoge su información y les dice que tú darás seguimiento. Puede responder preguntas comunes sobre tus servicios, horarios y área de servicio. Cada llamada se resume y se te envía por texto para que nunca pierdas un prospecto.
 
 ## Cómo Se Paga Sola
 
-Calltide cuesta **$497 al mes**. Suena como mucho hasta que haces las cuentas. Una llamada perdida de plomería puede ser una reparación de $500. Una llamada perdida de HVAC puede ser una instalación de $3,000. Una llamada perdida de electricidad puede ser una actualización de panel de $1,200.
+Capta cuesta **$497 al mes**. Suena como mucho hasta que haces las cuentas. Una llamada perdida de plomería puede ser una reparación de $500. Una llamada perdida de HVAC puede ser una instalación de $3,000. Una llamada perdida de electricidad puede ser una actualización de panel de $1,200.
 
 Si Maria captura solo **un trabajo extra al mes** que hubieras perdido, ya se pagó sola. La mayoría de nuestros clientes ven un retorno de **5x a 10x** su inversión dentro del primer mes.
 
@@ -158,17 +158,17 @@ Maria no es un robot genérico. Está configurada para tu negocio específico. C
 
 ## La Conclusión
 
-Empezaste tu negocio para hacer un gran trabajo, no para sentarte junto al teléfono todo el día. Calltide te permite hacer ambas cosas. Cada llamada contestada. Cada prospecto capturado. Cada cliente atendido. Esa es la diferencia Calltide.`,
-    metaTitle: "How Calltide Helps Home Service Businesses",
-    metaTitleEs: "Cómo Calltide Ayuda a Negocios del Hogar",
+Empezaste tu negocio para hacer un gran trabajo, no para sentarte junto al teléfono todo el día. Capta te permite hacer ambas cosas. Cada llamada contestada. Cada prospecto capturado. Cada cliente atendido. Esa es la diferencia Capta.`,
+    metaTitle: "How Capta Helps Home Service Businesses",
+    metaTitleEs: "Cómo Capta Ayuda a Negocios del Hogar",
     metaDescription:
-      "See how Calltide's AI receptionist Maria answers every call 24/7 in English and Spanish so you never miss a lead again.",
+      "See how Capta's AI receptionist Maria answers every call 24/7 in English and Spanish so you never miss a lead again.",
     metaDescriptionEs:
       "Descubre cómo la recepcionista AI Maria contesta cada llamada 24/7 en inglés y español para que nunca pierdas un prospecto.",
     searchKeywords:
-      "calltide, ai receptionist for contractors, home service answering, missed calls plumber, hvac phone answering, 24/7 receptionist, bilingual receptionist",
+      "capta, ai receptionist for contractors, home service answering, missed calls plumber, hvac phone answering, 24/7 receptionist, bilingual receptionist",
     searchKeywordsEs:
-      "calltide, recepcionista ai para contratistas, contestar llamadas servicios del hogar, llamadas perdidas plomero, hvac contestar teléfono, recepcionista 24/7, recepcionista bilingüe",
+      "capta, recepcionista ai para contratistas, contestar llamadas servicios del hogar, llamadas perdidas plomero, hvac contestar teléfono, recepcionista 24/7, recepcionista bilingüe",
     categorySlug: "for-prospects",
     dashboardContextRoutes: [],
     sortOrder: 2,
@@ -225,7 +225,7 @@ When you add it all up — the lost job, the lost lifetime customer value, the w
 
 ## The Fix Is Simple
 
-You do not need to hire a receptionist or chain yourself to the phone. An AI receptionist like Calltide's Maria answers every call, day and night, for a flat $497 per month. That is less than the cost of one missed job.
+You do not need to hire a receptionist or chain yourself to the phone. An AI receptionist like Capta's Maria answers every call, day and night, for a flat $497 per month. That is less than the cost of one missed job.
 
 Stop the leak. Start capturing every call.`,
     contentEs: `# El Verdadero Costo de las Llamadas Perdidas
@@ -269,11 +269,11 @@ Cuando sumas todo — el trabajo perdido, el valor de un cliente de por vida, el
 
 ## La Solución Es Simple
 
-No necesitas contratar una recepcionista ni encadenarte al teléfono. Una recepcionista AI como Maria de Calltide contesta cada llamada, día y noche, por una tarifa fija de $497 al mes. Eso es menos que el costo de un solo trabajo perdido.
+No necesitas contratar una recepcionista ni encadenarte al teléfono. Una recepcionista AI como Maria de Capta contesta cada llamada, día y noche, por una tarifa fija de $497 al mes. Eso es menos que el costo de un solo trabajo perdido.
 
 Detén la fuga. Empieza a capturar cada llamada.`,
-    metaTitle: "The True Cost of Missed Calls | Calltide",
-    metaTitleEs: "El Verdadero Costo de Llamadas Perdidas | Calltide",
+    metaTitle: "The True Cost of Missed Calls | Capta",
+    metaTitleEs: "El Verdadero Costo de Llamadas Perdidas | Capta",
     metaDescription:
       "Missed calls cost home service businesses thousands per year. Learn the real numbers and how to stop losing leads today.",
     metaDescriptionEs:
@@ -318,7 +318,7 @@ Being bilingual is not just nice to have. In Texas, it is a **money-making advan
 
 ## Maria Speaks Both
 
-Calltide's AI receptionist Maria is fully bilingual. She detects whether a caller is speaking English or Spanish and responds in the same language — instantly. There is no awkward "press 1 for English, press 2 for Spanish" menu. No putting someone on hold to find a translator. Just a smooth, natural conversation in the language the customer prefers.
+Capta's AI receptionist Maria is fully bilingual. She detects whether a caller is speaking English or Spanish and responds in the same language — instantly. There is no awkward "press 1 for English, press 2 for Spanish" menu. No putting someone on hold to find a translator. Just a smooth, natural conversation in the language the customer prefers.
 
 Maria speaks both languages fluently with natural pronunciation. Spanish-speaking callers feel respected and understood from the first word. English-speaking callers get the same professional experience. Every caller gets the best service, no matter what language they speak.
 
@@ -330,7 +330,7 @@ Word-of-mouth is powerful in tight-knit Hispanic communities. One great experien
 
 ## Stop Leaving Money on the Table
 
-If you are a contractor in Texas and you are not serving Spanish-speaking customers, you are ignoring nearly half your potential market. With Calltide, you do not need to hire a bilingual receptionist or learn Spanish yourself. Maria handles it all, 24/7, for $497 a month.
+If you are a contractor in Texas and you are not serving Spanish-speaking customers, you are ignoring nearly half your potential market. With Capta, you do not need to hire a bilingual receptionist or learn Spanish yourself. Maria handles it all, 24/7, for $497 a month.
 
 Open your business to every customer in Texas. Let Maria speak their language.`,
     contentEs: `# Por Qué el Bilingüismo Importa para Contratistas en Texas
@@ -353,7 +353,7 @@ Ser bilingüe no es solo algo bonito de tener. En Texas, es una **ventaja para g
 
 ## Maria Habla Ambos Idiomas
 
-La recepcionista AI de Calltide, Maria, es completamente bilingüe. Detecta si la persona que llama habla inglés o español y responde en el mismo idioma — al instante. No hay un menú incómodo de "presione 1 para inglés, presione 2 para español". No ponen a nadie en espera para buscar un traductor. Solo una conversación suave y natural en el idioma que el cliente prefiere.
+La recepcionista AI de Capta, Maria, es completamente bilingüe. Detecta si la persona que llama habla inglés o español y responde en el mismo idioma — al instante. No hay un menú incómodo de "marque 1 para inglés, marque 2 para español". No ponen a nadie en espera para buscar un traductor. Solo una conversación suave y natural en el idioma que el cliente prefiere.
 
 Maria habla ambos idiomas con fluidez y pronunciación natural. Los clientes que hablan español se sienten respetados y comprendidos desde la primera palabra. Los clientes que hablan inglés reciben la misma experiencia profesional. Cada persona que llama recibe el mejor servicio, sin importar qué idioma hable.
 
@@ -365,7 +365,7 @@ El boca a boca es poderoso en comunidades hispanas unidas. Una gran experiencia 
 
 ## Deja de Dejar Dinero en la Mesa
 
-Si eres contratista en Texas y no estás atendiendo a clientes que hablan español, estás ignorando casi la mitad de tu mercado potencial. Con Calltide, no necesitas contratar una recepcionista bilingüe ni aprender español tú mismo. Maria se encarga de todo, 24/7, por $497 al mes.
+Si eres contratista en Texas y no estás atendiendo a clientes que hablan español, estás ignorando casi la mitad de tu mercado potencial. Con Capta, no necesitas contratar una recepcionista bilingüe ni aprender español tú mismo. Maria se encarga de todo, 24/7, por $497 al mes.
 
 Abre tu negocio a cada cliente en Texas. Deja que Maria hable su idioma.`,
     metaTitle: "Why Bilingual Matters for Texas Contractors",
@@ -395,7 +395,7 @@ Abre tu negocio a cada cliente en Texas. Deja que Maria hable su idioma.`,
       "Mira exactamente cuántas llamadas pierde tu negocio con una auditoría telefónica gratis. Esto es lo que prueba y lo que aprenderás.",
     content: `# Getting Started with Your Free Phone Audit
 
-You might think you are answering most of your calls. The truth is, most home service businesses miss way more calls than they realize. That is why Calltide offers a **free phone audit** — so you can see the real numbers before you make any decisions.
+You might think you are answering most of your calls. The truth is, most home service businesses miss way more calls than they realize. That is why Capta offers a **free phone audit** — so you can see the real numbers before you make any decisions.
 
 ## What Is a Phone Audit?
 
@@ -433,13 +433,13 @@ Getting your free audit is easy. Here is the process:
 1. **Sign up.** Fill out the short form on our website or call us. We just need your business name and phone number.
 2. **We test.** Over the next few days, we run test calls at different times to get an accurate picture.
 3. **We report.** You get your full audit report with all the numbers and recommendations.
-4. **We talk.** If you want, we walk you through the results and show you how Calltide can fix the gaps.
+4. **We talk.** If you want, we walk you through the results and show you how Capta can fix the gaps.
 
 The whole process takes about a week. There is no cost and no obligation. If you see the results and decide to do nothing, that is fine. But at least you will know the truth about your phones.
 
 ## Why We Offer It Free
 
-We offer the audit for free because we know what it shows. Once you see how many calls and dollars you are losing, the value of Calltide becomes obvious. We do not need a hard sell. The numbers speak for themselves.
+We offer the audit for free because we know what it shows. Once you see how many calls and dollars you are losing, the value of Capta becomes obvious. We do not need a hard sell. The numbers speak for themselves.
 
 ## Take the First Step
 
@@ -448,7 +448,7 @@ You work hard to grow your business. Make sure the phone is not undoing that wor
 No pressure. No commitment. Just the truth about your calls.`,
     contentEs: `# Comenzar con Tu Auditoría Telefónica Gratis
 
-Puede que pienses que estás contestando la mayoría de tus llamadas. La verdad es que la mayoría de los negocios de servicios del hogar pierden muchas más llamadas de las que se dan cuenta. Por eso Calltide ofrece una **auditoría telefónica gratis** — para que puedas ver los números reales antes de tomar cualquier decisión.
+Puede que pienses que estás contestando la mayoría de tus llamadas. La verdad es que la mayoría de los negocios de servicios del hogar pierden muchas más llamadas de las que se dan cuenta. Por eso Capta ofrece una **auditoría telefónica gratis** — para que puedas ver los números reales antes de tomar cualquier decisión.
 
 ## ¿Qué Es una Auditoría Telefónica?
 
@@ -486,29 +486,29 @@ Obtener tu auditoría gratis es fácil. Este es el proceso:
 1. **Regístrate.** Llena el formulario corto en nuestro sitio web o llámanos. Solo necesitamos el nombre de tu negocio y número de teléfono.
 2. **Probamos.** Durante los próximos días, hacemos llamadas de prueba en diferentes horarios para obtener una imagen precisa.
 3. **Reportamos.** Recibes tu reporte completo de auditoría con todos los números y recomendaciones.
-4. **Hablamos.** Si quieres, te explicamos los resultados y te mostramos cómo Calltide puede cubrir los huecos.
+4. **Hablamos.** Si quieres, te explicamos los resultados y te mostramos cómo Capta puede cubrir los huecos.
 
 Todo el proceso toma aproximadamente una semana. No tiene costo y no hay obligación. Si ves los resultados y decides no hacer nada, está bien. Pero al menos sabrás la verdad sobre tus teléfonos.
 
 ## Por Qué Lo Ofrecemos Gratis
 
-Ofrecemos la auditoría gratis porque sabemos lo que muestra. Una vez que veas cuántas llamadas y dólares estás perdiendo, el valor de Calltide se vuelve obvio. No necesitamos una venta agresiva. Los números hablan por sí solos.
+Ofrecemos la auditoría gratis porque sabemos lo que muestra. Una vez que veas cuántas llamadas y dólares estás perdiendo, el valor de Capta se vuelve obvio. No necesitamos una venta agresiva. Los números hablan por sí solos.
 
 ## Da el Primer Paso
 
 Trabajas duro para hacer crecer tu negocio. Asegúrate de que el teléfono no esté deshaciendo ese trabajo. Obtén tu auditoría telefónica gratis hoy y descubre exactamente dónde estás.
 
 Sin presión. Sin compromiso. Solo la verdad sobre tus llamadas.`,
-    metaTitle: "Free Phone Audit for Your Business | Calltide",
-    metaTitleEs: "Auditoría Telefónica Gratis | Calltide",
+    metaTitle: "Free Phone Audit for Your Business | Capta",
+    metaTitleEs: "Auditoría Telefónica Gratis | Capta",
     metaDescription:
       "Get a free phone audit and see exactly how many calls your home service business is missing. No cost, no obligation.",
     metaDescriptionEs:
       "Obtén una auditoría telefónica gratis y mira cuántas llamadas pierde tu negocio de servicios del hogar. Sin costo ni obligación.",
     searchKeywords:
-      "free phone audit, call audit, missed call report, phone answering test, business phone audit, how many calls am I missing, calltide audit",
+      "free phone audit, call audit, missed call report, phone answering test, business phone audit, how many calls am I missing, capta audit",
     searchKeywordsEs:
-      "auditoría telefónica gratis, auditoría de llamadas, reporte llamadas perdidas, prueba contestar teléfono, auditoría teléfono negocio, cuántas llamadas pierdo, auditoría calltide",
+      "auditoría telefónica gratis, auditoría de llamadas, reporte llamadas perdidas, prueba contestar teléfono, auditoría teléfono negocio, cuántas llamadas pierdo, auditoría capta",
     categorySlug: "for-prospects",
     dashboardContextRoutes: [],
     sortOrder: 5,

@@ -538,7 +538,7 @@ export const blogPosts = sqliteTable("blog_posts", {
   ogImage: text("og_image"),
   published: integer("published", { mode: "boolean" }).default(false),
   publishedAt: text("published_at"),
-  authorName: text("author_name").default("Calltide"),
+  authorName: text("author_name").default("Capta"),
   readingTimeMin: integer("reading_time_min"),
   targetKeyword: text("target_keyword"),
   relatedPostSlugs: text("related_post_slugs", { mode: "json" }).$type<string[]>(),

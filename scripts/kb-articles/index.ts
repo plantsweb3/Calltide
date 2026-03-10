@@ -34,7 +34,7 @@ const ALL_ARTICLES: ArticleData[] = [
 ];
 
 async function main() {
-  console.log("=== Calltide KB Article Seeder ===\n");
+  console.log("=== Capta KB Article Seeder ===\n");
 
   // Get category map
   const cats = await db.select().from(schema.helpCategories);

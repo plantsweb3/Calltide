@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import { CaptaSpinnerInline } from "@/components/capta-spinner";
 
 interface BusinessHourEntry {
   open: string;
@@ -436,7 +437,7 @@ export default function SettingsPage() {
         >
           {saving ? (
             <span className="flex items-center gap-2">
-              <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+              <CaptaSpinnerInline size={16} />
               Saving...
             </span>
           ) : (
@@ -568,7 +569,7 @@ export default function SettingsPage() {
               }}
             >
               {formatPhone(data.twilioNumber)}
-              <span className="ml-2 text-xs opacity-60" style={{ color: "var(--db-text-muted)" }}>(managed by Calltide)</span>
+              <span className="ml-2 text-xs opacity-60" style={{ color: "var(--db-text-muted)" }}>(managed by Capta)</span>
             </div>
           </div>
           <div className="sm:col-span-2">

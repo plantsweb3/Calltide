@@ -69,7 +69,7 @@ const FAQS = [
   },
   {
     q: "What's included that I'd normally need separate software for?",
-    a: "Answering service, CRM, estimating tool, follow-up automation, review management, appointment booking, and analytics. Calltide replaces $950–$2,350/month in separate software subscriptions.",
+    a: "Answering service, CRM, estimating tool, follow-up automation, review management, appointment booking, and analytics. Capta replaces $950–$2,350/month in separate software subscriptions.",
   },
 ];
 
@@ -208,7 +208,7 @@ export default function PricingClient() {
                 href={BOOKING_URL}
                 className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white"
               >
-                Get Calltide &rarr;
+                Get Capta &rarr;
               </a>
             </div>
 
@@ -268,7 +268,7 @@ export default function PricingClient() {
       <section className="px-6 sm:px-8 py-20 sm:py-28" style={{ background: "#111a2e" }}>
         <div className="reveal mx-auto max-w-3xl">
           <h2 className="text-center text-2xl font-extrabold tracking-tight text-white sm:text-3xl mb-10">
-            Software Calltide Replaces
+            Software Capta Replaces
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {SOFTWARE_COSTS.map((item) => (

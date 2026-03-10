@@ -12,7 +12,7 @@ export function Footer({ lang }: { lang: Lang }) {
       <div className="mx-auto max-w-5xl">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
-            <a href={home}><img src="/images/logo.webp" alt="Calltide" className="h-7 w-auto brightness-0 invert opacity-70" /></a>
+            <a href={home}><img src="/images/logo-inline-white.webp" alt="Capta" className="h-7 w-auto opacity-70" /></a>
             <p className="mt-4 text-sm text-white/40">{t.footer.tagline}</p>
             <a href={PHONE_TEL} className="mt-3 inline-block text-sm font-semibold text-amber hover:underline">{PHONE}</a>
           </div>
@@ -29,7 +29,7 @@ export function Footer({ lang }: { lang: Lang }) {
             <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">{t.footer.company}</p>
             <ul className="mt-4 space-y-3 text-sm">
               <li><a href="/about" className="text-white/40 transition hover:text-white/60">{t.footer.about}</a></li>
-              <li><a href="mailto:hello@calltide.app" className="text-white/40 transition hover:text-white/60">{t.footer.contact}</a></li>
+              <li><a href="mailto:hello@capta.app" className="text-white/40 transition hover:text-white/60">{t.footer.contact}</a></li>
               <li><a href="/dashboard/login" className="text-white/40 transition hover:text-white/60">{t.footer.clientLogin}</a></li>
               <li><a href={`${p}/blog`} className="text-white/40 transition hover:text-white/60">Blog</a></li>
               <li><a href={`${p}/help`} className="text-white/40 transition hover:text-white/60">{lang === "es" ? "Ayuda" : "Help"}</a></li>

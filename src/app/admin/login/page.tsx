@@ -37,7 +37,8 @@ export default function AdminLoginPage() {
         style={{ background: "#1A1D24", borderColor: "#2D3748" }}
       >
         <div>
-          <h1 className="text-2xl font-semibold text-white">Calltide Admin</h1>
+          <img src="/images/logo-inline-white.webp" alt="Capta" className="h-8 w-auto mb-4" />
+          <h1 className="text-2xl font-semibold text-white">Admin Panel</h1>
           <p className="mt-1 text-sm" style={{ color: "#94A3B8" }}>Enter your password to continue</p>
         </div>
 

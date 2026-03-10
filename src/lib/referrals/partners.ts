@@ -132,7 +132,7 @@ export async function logReferral(params: LogReferralParams): Promise<string> {
 
 /**
  * Notify a partner about a new referral via SMS.
- * If the partner is also a Calltide client, create a lead in their system too.
+ * If the partner is also a Capta client, create a lead in their system too.
  */
 export async function notifyPartner(params: NotifyPartnerParams): Promise<void> {
   const [referral] = await db
@@ -199,9 +199,9 @@ export async function notifyPartner(params: NotifyPartnerParams): Promise<void> 
     .set({ partnerNotified: true, referralMethod: "partner_notified" })
     .where(eq(partnerReferrals.id, referral.id));
 
-  // If partner is a Calltide client, create a lead in their system
+  // If partner is a Capta client, create a lead in their system
   if (partner.partnerBusinessId && referral.callerPhone) {
-    await handleCalltidePartnerReferral(
+    await handleCaptaPartnerReferral(
       partner.partnerBusinessId,
       referral.callerPhone,
       referral.callerName,
@@ -259,10 +259,10 @@ export async function sendPartnerInfoToCaller(params: SendPartnerInfoParams): Pr
 // ── Cross-Client Intelligence ──
 
 /**
- * When a partner is also a Calltide client, create a lead in their system
+ * When a partner is also a Capta client, create a lead in their system
  * so the referral shows up in their dashboard.
  */
-async function handleCalltidePartnerReferral(
+async function handleCaptaPartnerReferral(
   partnerBusinessId: string,
   callerPhone: string,
   callerName: string | null,

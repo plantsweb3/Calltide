@@ -12,8 +12,8 @@ import {
   type SetupEmailNumber,
 } from "@/lib/emails/setup-retarget";
 
-const FROM_EMAIL = "Ulysses at Calltide <hello@calltide.app>";
-const REPLY_TO = "hello@calltide.app";
+const FROM_EMAIL = "Ulysses at Capta <hello@capta.app>";
+const REPLY_TO = "hello@capta.app";
 
 /**
  * GET /api/cron/setup-retarget

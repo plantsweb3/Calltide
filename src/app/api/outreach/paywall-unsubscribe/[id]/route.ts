@@ -47,7 +47,7 @@ export async function GET(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Unsubscribed — Calltide</title>
+  <title>Unsubscribed — Capta</title>
   <style>
     body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#f8fafc; display:flex; align-items:center; justify-content:center; min-height:100vh; }
     .card { background:#fff; border-radius:12px; padding:40px; max-width:400px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
@@ -58,7 +58,7 @@ export async function GET(
 <body>
   <div class="card">
     <h1>You've been unsubscribed</h1>
-    <p>You won't receive any more emails about your onboarding setup. If you change your mind, you can always resume at <a href="https://calltide.app/dashboard/onboarding" style="color:#C59A27;">calltide.app</a>.</p>
+    <p>You won't receive any more emails about your onboarding setup. If you change your mind, you can always resume at <a href="https://capta.app/dashboard/onboarding" style="color:#C59A27;">capta.app</a>.</p>
   </div>
 </body>
 </html>`;

@@ -1,7 +1,7 @@
 import { BRAND_COLOR, COMPANY_ADDRESS } from "@/lib/constants";
 import { TRADE_PROFILES, calculateROI } from "@/lib/receptionist/trade-profiles";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://calltide.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
 
 const TRADE_LABELS: Record<string, { en: string; es: string }> = {
   hvac: { en: "HVAC", es: "HVAC" },
@@ -36,14 +36,14 @@ function baseLayout(content: string, unsubToken: string): string {
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;">
 <div style="max-width:600px;margin:0 auto;padding:32px 24px;">
 <div style="margin-bottom:24px;">
-  <span style="font-size:20px;font-weight:700;color:${BRAND_COLOR};">Calltide</span>
+  <span style="font-size:20px;font-weight:700;color:${BRAND_COLOR};">Capta</span>
 </div>
 ${content}
 <div style="margin-top:40px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;">
 <p>${COMPANY_ADDRESS}</p>
 <p style="margin-top:8px;">
   <a href="${unsubscribeUrl}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>
-  &nbsp;|&nbsp; You're receiving this because you started setting up your Calltide receptionist.
+  &nbsp;|&nbsp; You're receiving this because you started setting up your Capta receptionist.
 </p>
 </div>
 </div>
@@ -59,14 +59,14 @@ function baseLayoutEs(content: string, unsubToken: string): string {
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;">
 <div style="max-width:600px;margin:0 auto;padding:32px 24px;">
 <div style="margin-bottom:24px;">
-  <span style="font-size:20px;font-weight:700;color:${BRAND_COLOR};">Calltide</span>
+  <span style="font-size:20px;font-weight:700;color:${BRAND_COLOR};">Capta</span>
 </div>
 ${content}
 <div style="margin-top:40px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;">
 <p>${COMPANY_ADDRESS}</p>
 <p style="margin-top:8px;">
   <a href="${unsubscribeUrl}" style="color:#94a3b8;text-decoration:underline;">Cancelar suscripción</a>
-  &nbsp;|&nbsp; Recibes esto porque comenzaste a configurar tu recepcionista de Calltide.
+  &nbsp;|&nbsp; Recibes esto porque comenzaste a configurar tu recepcionista de Capta.
 </p>
 </div>
 </div>
@@ -184,7 +184,7 @@ function email3En(d: SetupEmailData): { subject: string; html: string } {
       <div style="background:#f1f5f9;border-radius:8px;padding:16px 20px;margin:20px 0;">
         <p style="color:#0f172a;font-weight:600;margin:0 0 8px;">Your ROI at a glance:</p>
         <p style="color:#475569;margin:4px 0;font-size:14px;">Estimated revenue lost: <strong>$${monthlyLoss.toLocaleString()}/mo</strong></p>
-        <p style="color:#475569;margin:4px 0;font-size:14px;">Calltide cost: <strong>$497/mo</strong> (14-day free trial)</p>
+        <p style="color:#475569;margin:4px 0;font-size:14px;">Capta cost: <strong>$497/mo</strong> (30-day money-back guarantee)</p>
         <p style="color:#059669;margin:4px 0;font-size:14px;font-weight:600;">Net gain: $${(monthlyLoss - 497).toLocaleString()}/mo</p>
       </div>
       <p style="color:#475569;line-height:1.7;font-size:15px;">
@@ -209,7 +209,7 @@ function email3Es(d: SetupEmailData): { subject: string; html: string } {
       <div style="background:#f1f5f9;border-radius:8px;padding:16px 20px;margin:20px 0;">
         <p style="color:#0f172a;font-weight:600;margin:0 0 8px;">Tu ROI de un vistazo:</p>
         <p style="color:#475569;margin:4px 0;font-size:14px;">Ingresos perdidos estimados: <strong>$${monthlyLoss.toLocaleString()}/mes</strong></p>
-        <p style="color:#475569;margin:4px 0;font-size:14px;">Costo de Calltide: <strong>$497/mes</strong> (14 días gratis)</p>
+        <p style="color:#475569;margin:4px 0;font-size:14px;">Costo de Capta: <strong>$497/mes</strong> (14 días gratis)</p>
         <p style="color:#059669;margin:4px 0;font-size:14px;font-weight:600;">Ganancia neta: $${(monthlyLoss - 497).toLocaleString()}/mes</p>
       </div>
       <p style="color:#475569;line-height:1.7;font-size:15px;">

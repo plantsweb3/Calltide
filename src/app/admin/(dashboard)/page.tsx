@@ -165,7 +165,7 @@ export default function AdminDashboardPage() {
           Mission Control
         </h1>
         <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Calltide admin overview
+          Capta admin overview
         </p>
       </div>
 

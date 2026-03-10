@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { CaptaSpinnerInline } from "@/components/capta-spinner";
 
 type ImportType = "customers" | "appointments" | "estimates";
 type WizardStep = "choose" | "upload" | "preview" | "results";
@@ -467,7 +468,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
             >
               {uploading ? (
                 <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  <CaptaSpinnerInline size={16} />
                   Importing...
                 </span>
               ) : (

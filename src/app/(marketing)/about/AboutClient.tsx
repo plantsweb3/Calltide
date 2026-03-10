@@ -6,53 +6,53 @@ import { useScrollReveal } from "@/lib/marketing/hooks";
 
 const content = {
   en: {
-    badge: "About Calltide",
+    badge: "About Capta",
     hero: "Built in San Antonio.\nBuilt for You.",
-    heroSub: "We started Calltide because too many great contractors lose jobs when nobody answers the phone.",
+    heroSub: "We started Capta because too many great contractors lose jobs when nobody answers the phone.",
     storyLabel: "The Story",
     storyH: "A Problem We Saw Every Day",
     storyP1: "We watched plumbers, electricians, and HVAC technicians lose thousands of dollars every month — not because their work was bad, but because nobody picked up the phone. While they were on a job, calls went to voicemail. And 80% of those callers? They never called back. They called a competitor.",
     storyP2: "Hiring a bilingual receptionist costs $3,000-$4,000 per month. Answering services are impersonal and expensive. Most owners just let the calls go to voicemail and hope for the best.",
-    storyP3: "We built Calltide to fix that. An AI front office that answers every call, collects job details, generates estimates, recovers missed calls, follows up on quotes, and re-engages dormant customers — 24/7.",
+    storyP3: "We built Capta to fix that. An AI front office that answers every call, collects job details, generates estimates, recovers missed calls, follows up on quotes, and re-engages dormant customers — 24/7.",
     numbersLabel: "The Numbers",
     numbersH: "Why This Matters",
     stats: [
       { value: "52M+", label: "Spanish Speakers", desc: "Spanish speakers in the U.S. — and growing. If you can't serve them, someone else will." },
       { value: "62%", label: "Calls Missed", desc: "Of incoming calls to small service businesses go unanswered. Every one is a lost job." },
       { value: "80%", label: "Won't Leave VM", desc: "Of callers won't leave a voicemail. They hang up and call your competitor instead." },
-      { value: "$3-4K", label: "Receptionist Cost", desc: "Monthly cost of a bilingual receptionist. Calltide does it for $497/mo." },
+      { value: "$3-4K", label: "Receptionist Cost", desc: "Monthly cost of a bilingual receptionist. Capta does it for $497/mo." },
     ],
     missionLabel: "Our Mission",
     missionH: "Never miss another customer call.",
-    missionP: "Every home service business deserves a professional front office. Not just the ones who can afford a receptionist, a CRM, an estimating tool, and a follow-up system. Calltide gives every contractor an AI front office that answers calls, generates estimates, recovers missed opportunities, and grows their business on autopilot.",
+    missionP: "Every home service business deserves a professional front office. Not just the ones who can afford a receptionist, a CRM, an estimating tool, and a follow-up system. Capta gives every contractor an AI front office that answers calls, generates estimates, recovers missed opportunities, and grows their business on autopilot.",
     ctaH: "Ready to stop missing calls?",
     ctaSub: "Get your AI receptionist up and running in 5 minutes.",
-    ctaButton: "Get Calltide",
+    ctaButton: "Get Capta",
     ctaBook: "Book a Demo",
   },
   es: {
-    badge: "Acerca de Calltide",
+    badge: "Acerca de Capta",
     hero: "Hecho en San Antonio.\nHecho para Ti.",
-    heroSub: "Empezamos Calltide porque demasiados grandes contratistas pierden trabajos cuando nadie contesta el teléfono.",
+    heroSub: "Empezamos Capta porque demasiados grandes contratistas pierden trabajos cuando nadie contesta el teléfono.",
     storyLabel: "La Historia",
     storyH: "Un Problema que Vimos Todos los Días",
     storyP1: "Vimos a plomeros, electricistas y técnicos HVAC perder miles de dólares cada mes — no porque su trabajo fuera malo, sino porque nadie contestó el teléfono. Mientras estaban en un trabajo, las llamadas iban al buzón de voz. ¿Y el 80% de esos llamantes? Nunca volvieron a llamar. Llamaron a la competencia.",
     storyP2: "Contratar una recepcionista bilingüe cuesta $3,000-$4,000 por mes. Los servicios telefónicos son impersonales y caros. La mayoría de los dueños simplemente dejan que las llamadas vayan al buzón de voz.",
-    storyP3: "Construimos Calltide para resolver eso. Una oficina IA que contesta cada llamada, recopila detalles del trabajo, genera presupuestos, recupera llamadas perdidas, da seguimiento a cotizaciones y reactiva clientes dormidos — 24/7.",
+    storyP3: "Construimos Capta para resolver eso. Una oficina IA que contesta cada llamada, recopila detalles del trabajo, genera presupuestos, recupera llamadas perdidas, da seguimiento a cotizaciones y reactiva clientes dormidos — 24/7.",
     numbersLabel: "Los Números",
     numbersH: "Por Qué Esto Importa",
     stats: [
       { value: "52M+", label: "Hispanohablantes", desc: "Hispanohablantes en EE.UU. — y creciendo. Si no los puedes atender, alguien más lo hará." },
       { value: "62%", label: "Llamadas Perdidas", desc: "De las llamadas entrantes a pequeños negocios de servicio no se contestan. Cada una es un trabajo perdido." },
       { value: "80%", label: "No Dejan Mensaje", desc: "De los llamantes no dejan mensaje de voz. Cuelgan y llaman a tu competencia." },
-      { value: "$3-4K", label: "Costo Recepcionista", desc: "Costo mensual de una recepcionista bilingüe. Calltide lo hace por $497/mes." },
+      { value: "$3-4K", label: "Costo Recepcionista", desc: "Costo mensual de una recepcionista bilingüe. Capta lo hace por $497/mes." },
     ],
     missionLabel: "Nuestra Misión",
     missionH: "Nunca pierdas otra llamada de un cliente.",
-    missionP: "Cada negocio de servicio del hogar merece una oficina profesional. No solo los que pueden pagar una recepcionista, un CRM, una herramienta de presupuestos y un sistema de seguimiento. Calltide le da a cada contratista una oficina IA que contesta llamadas, genera presupuestos, recupera oportunidades perdidas y hace crecer su negocio en piloto automático.",
+    missionP: "Cada negocio de servicio del hogar merece una oficina profesional. No solo los que pueden pagar una recepcionista, un CRM, una herramienta de presupuestos y un sistema de seguimiento. Capta le da a cada contratista una oficina IA que contesta llamadas, genera presupuestos, recupera oportunidades perdidas y hace crecer su negocio en piloto automático.",
     ctaH: "¿Listo para dejar de perder llamadas?",
     ctaSub: "Pon tu recepcionista IA a funcionar en 5 minutos.",
-    ctaButton: "Obtén Calltide",
+    ctaButton: "Obtén Capta",
     ctaBook: "Agenda una Demo",
   },
 };
@@ -60,7 +60,7 @@ const content = {
 export default function AboutPage() {
   const [lang] = useState<Lang>(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("calltide-lang");
+      const saved = localStorage.getItem("capta-lang");
       if (saved === "en" || saved === "es") return saved;
     }
     return "en";

@@ -277,7 +277,7 @@ async function handleCallbackRequest(
 async function notifyOwnerOfSms(businessId: string, businessName: string, ownerEmail: string, messageBody: string): Promise<void> {
   if (!env.RESEND_API_KEY) return;
   const resend = getResend();
-  const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+  const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
   const preview = escapeHtml(messageBody.slice(0, 200));
 
   await resend.emails.send({
@@ -285,7 +285,7 @@ async function notifyOwnerOfSms(businessId: string, businessName: string, ownerE
     to: ownerEmail,
     subject: `New SMS received — ${escapeHtml(businessName)}`,
     html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;">
-  <div style="margin-bottom:24px;"><span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span></div>
+  <div style="margin-bottom:24px;"><span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span></div>
   <p style="color:#475569;">You received a new text message for <strong>${escapeHtml(businessName)}</strong>:</p>
   <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin:16px 0;">
     <p style="color:#1e293b;margin:0;white-space:pre-wrap;">${preview}</p>

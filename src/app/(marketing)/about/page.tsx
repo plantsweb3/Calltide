@@ -2,20 +2,20 @@ import type { Metadata } from "next";
 import AboutPage from "./AboutClient";
 
 export const metadata: Metadata = {
-  title: "About — Calltide | Built in San Antonio for Service Businesses",
+  title: "About — Capta | Built in San Antonio for Service Businesses",
   description:
-    "Calltide was built because too many great service businesses lose jobs when nobody answers the phone. AI front office — answers calls, generates estimates, recovers missed calls, 24/7.",
+    "Capta was built because too many great service businesses lose jobs when nobody answers the phone. AI front office — answers calls, generates estimates, recovers missed calls, 24/7.",
   openGraph: {
-    title: "About — Calltide | Built in San Antonio. Built for You.",
+    title: "About — Capta | Built in San Antonio. Built for You.",
     description:
       "Every service business deserves a professional front office. Built in San Antonio for home service businesses everywhere.",
-    url: "https://calltide.app/about",
-    siteName: "Calltide",
+    url: "https://capta.app/about",
+    siteName: "Capta",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "About — Calltide",
+    title: "About — Capta",
     description: "Built in Texas. AI front office for home service businesses.",
   },
   alternates: {
@@ -32,13 +32,13 @@ export default function Page() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "Calltide LLC",
-            url: "https://calltide.app",
+            name: "Capta LLC",
+            url: "https://capta.app",
             description: "AI front office for home service businesses. Answers calls, generates estimates, recovers missed calls, and manages follow-ups — bilingual, 24/7.",
-            email: "hello@calltide.app",
+            email: "hello@capta.app",
             telephone: "+18305217133",
             areaServed: "US",
-            sameAs: ["https://calltide.app"],
+            sameAs: ["https://capta.app"],
           }),
         }}
       />
@@ -48,12 +48,12 @@ export default function Page() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
-            name: "Calltide",
+            name: "Capta",
             description:
               "AI front office platform for home service businesses — answers calls, generates estimates, recovers missed calls, and grows your business.",
-            url: "https://calltide.app",
+            url: "https://capta.app",
             telephone: "+1-830-521-7133",
-            email: "hello@calltide.app",
+            email: "hello@capta.app",
             address: {
               "@type": "PostalAddress",
               addressLocality: "San Antonio",

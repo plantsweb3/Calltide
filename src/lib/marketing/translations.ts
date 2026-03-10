@@ -6,12 +6,12 @@ export const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "/setup";
 
 export const T = {
   en: {
-    nav: { login: "Log In", cta: "Get Calltide", help: "Help" },
+    nav: { login: "Log In", cta: "Get Capta", help: "Help" },
     hero: {
       badge: "AI Front Office for Home Services",
       h1: "She Answers. She Quotes. She Follows Up.",
       sub: "Your AI receptionist answers every call, collects job details, generates estimates, recovers missed calls, and manages follow-ups — in English and Spanish.",
-      cta: "Get Calltide →",
+      cta: "Get Capta →",
       audioLabel: "Hear her in action",
       audioSub: "\"Hi, I need to schedule a plumber...\"",
       audioDuration: "0:47",
@@ -74,7 +74,7 @@ export const T = {
     social: {
       label: "Built for Service Businesses",
       highlights: [
-        { title: "Why Calltide?", text: "Every missed call is a lost job. Your receptionist makes sure that never happens — in English or Spanish.", sub: "24/7 AI receptionist for Texas service businesses" },
+        { title: "Why Capta?", text: "Every missed call is a lost job. Your receptionist makes sure that never happens — in English or Spanish.", sub: "24/7 AI receptionist for Texas service businesses" },
         { title: "Never Miss Again", text: "Your customers call once. If nobody answers, they call your competitor. She answers every time.", sub: "Answers, books, follows up — automatically" },
       ],
       stats: [
@@ -89,7 +89,7 @@ export const T = {
       sub: "Practical guides for home service business owners.",
       cards: [
         { slug: "missed-calls-cost-money", title: "Why Missed Calls Cost Your Business Real Money", tag: "Revenue" },
-        { slug: "calltide-vs-receptionist", title: "Calltide vs Hiring a Human Receptionist", tag: "Comparison" },
+        { slug: "capta-vs-receptionist", title: "Capta vs Hiring a Human Receptionist", tag: "Comparison" },
         { slug: "how-ai-receptionists-work", title: "How AI Receptionists Work", tag: "Education" },
       ],
       blogCta: "Read the blog",
@@ -114,11 +114,11 @@ export const T = {
         "Emergency detection & live transfer",
       ],
       comparison: "vs. $3,000+/month for a bilingual receptionist",
-      cta: "Get Calltide",
+      cta: "Get Capta",
       guarantee: "30-day money-back guarantee. Cancel anytime. No contracts.",
       crossLinks: [
         { label: "Why missed calls cost real money", href: "/help/missed-calls-cost-money" },
-        { label: "Calltide vs hiring a receptionist", href: "/help/calltide-vs-receptionist" },
+        { label: "Capta vs hiring a receptionist", href: "/help/capta-vs-receptionist" },
       ],
     },
     faq: {
@@ -135,13 +135,13 @@ export const T = {
         { q: "Can Maria generate estimates?", a: "Yes. She collects job details during the call, generates a price range based on your pricing rules, and texts it to you for one-tap approval before sending it to the customer." },
         { q: "What happens if a caller hangs up?", a: "Maria auto-texts them within 60 seconds with a friendly message and a link to continue the conversation. Most callers re-engage." },
         { q: "What are job cards?", a: "Every call creates a job card with the caller's info, job details, photos, estimate, and status. Think of it as an automatic work order for every inquiry." },
-        { q: "Can I import my existing customer data?", a: "Yes. Upload a CSV from your current CRM or spreadsheet. Calltide maps the fields and imports your customers so Maria has full context from day one." },
+        { q: "Can I import my existing customer data?", a: "Yes. Upload a CSV from your current CRM or spreadsheet. Capta maps the fields and imports your customers so Maria has full context from day one." },
       ],
     },
     cta: {
-      h2: "Stop losing calls. Get Calltide today.",
+      h2: "Stop losing calls. Get Capta today.",
       placeholder: "Enter your business email",
-      button: "Get Calltide →",
+      button: "Get Capta →",
       sub: "Setup takes less than 10 minutes. 30-day money-back guarantee.",
       sending: "Starting...",
       existsError: "Looks like you already have an account.",
@@ -158,17 +158,17 @@ export const T = {
       about: "About",
       terms: "Terms of Service",
       privacy: "Privacy Policy",
-      copyright: `© ${new Date().getFullYear()} Calltide. All rights reserved.`,
+      copyright: `© ${new Date().getFullYear()} Capta. All rights reserved.`,
       builtIn: "Built in Texas",
     },
   },
   es: {
-    nav: { login: "Iniciar Sesión", cta: "Obtén Calltide", help: "Ayuda" },
+    nav: { login: "Iniciar Sesión", cta: "Obtén Capta", help: "Ayuda" },
     hero: {
       badge: "Oficina IA para Servicios del Hogar",
       h1: "Ella Contesta. Ella Cotiza. Ella Da Seguimiento.",
       sub: "Tu recepcionista IA contesta cada llamada, recopila detalles del trabajo, genera presupuestos, recupera llamadas perdidas y maneja seguimientos — en inglés y español.",
-      cta: "Obtén Calltide →",
+      cta: "Obtén Capta →",
       audioLabel: "Escúchala en acción",
       audioSub: "\"Hola, necesito programar un plomero...\"",
       audioDuration: "0:52",
@@ -222,7 +222,7 @@ export const T = {
         { title: "Agenda de Citas", desc: "Ella revisa tu calendario y agenda citas en tiempo real." },
         { title: "Confirmaciones por SMS", desc: "Los llamantes reciben confirmación por texto con los detalles de la cita." },
         { title: "Detección de Emergencias", desc: "¿Fuga de gas? ¿Tubería rota? Ella detecta emergencias y transfiere inmediatamente." },
-        { title: "Panel Completo", desc: "Ve cada llamada, transcripción, cita y mensaje. Sabe exactamente qué está pasando." },
+        { title: "Panel Completo", desc: "Ve cada llamada, transcripción, cita y mensaje. Sabes exactamente qué está pasando." },
         { title: "Recuperación de Llamadas Perdidas", desc: "¿El llamante colgó? Maria le envía un texto en 60 segundos para traerlo de vuelta." },
         { title: "Presupuestos IA", desc: "Recopila detalles del trabajo, genera un rango de precio y lo envía al dueño para aprobación con un toque." },
         { title: "Seguimientos Inteligentes", desc: "Seguimiento automático de presupuestos fríos y reactivación de clientes dormidos para trabajo recurrente." },
@@ -231,7 +231,7 @@ export const T = {
     social: {
       label: "Hecho para Negocios de Servicio",
       highlights: [
-        { title: "¿Por qué Calltide?", text: "Cada llamada perdida es un trabajo perdido. Tu recepcionista se asegura de que eso nunca pase — en inglés o español.", sub: "Recepcionista IA 24/7 para negocios de servicio en Texas" },
+        { title: "¿Por qué Capta?", text: "Cada llamada perdida es un trabajo perdido. Tu recepcionista se asegura de que eso nunca pase — en inglés o español.", sub: "Recepcionista IA 24/7 para negocios de servicio en Texas" },
         { title: "Nunca Pierdas Otra Llamada", text: "Tus clientes llaman una vez. Si nadie contesta, llaman a tu competencia. Ella contesta siempre.", sub: "Contesta, agenda, da seguimiento — automáticamente" },
       ],
       stats: [
@@ -246,7 +246,7 @@ export const T = {
       sub: "Guías prácticas para dueños de negocios de servicios del hogar.",
       cards: [
         { slug: "missed-calls-cost-money", title: "Por Qué las Llamadas Perdidas le Cuestan Dinero Real a tu Negocio", tag: "Ingresos" },
-        { slug: "calltide-vs-receptionist", title: "Calltide vs Contratar una Recepcionista Humana", tag: "Comparación" },
+        { slug: "capta-vs-receptionist", title: "Capta vs Contratar una Recepcionista Humana", tag: "Comparación" },
         { slug: "how-ai-receptionists-work", title: "Cómo Funcionan las Recepcionistas IA", tag: "Educación" },
       ],
       blogCta: "Leer el blog",
@@ -271,11 +271,11 @@ export const T = {
         "Detección de emergencias y transferencia en vivo",
       ],
       comparison: "vs. $3,000+/mes por una recepcionista bilingüe",
-      cta: "Obtén Calltide",
+      cta: "Obtén Capta",
       guarantee: "Garantía de devolución de 30 días. Cancela cuando quieras. Sin contratos.",
       crossLinks: [
         { label: "Por qué las llamadas perdidas cuestan dinero real", href: "/es/help/missed-calls-cost-money" },
-        { label: "Calltide vs contratar una recepcionista", href: "/es/help/calltide-vs-receptionist" },
+        { label: "Capta vs contratar una recepcionista", href: "/es/help/capta-vs-receptionist" },
       ],
     },
     faq: {
@@ -292,13 +292,13 @@ export const T = {
         { q: "¿Puede Maria generar presupuestos?", a: "Sí. Recopila detalles del trabajo durante la llamada, genera un rango de precio basado en tus reglas de precios, y te lo envía por texto para aprobación con un toque antes de enviarlo al cliente." },
         { q: "¿Qué pasa si un llamante cuelga?", a: "Maria les envía un texto automáticamente en 60 segundos con un mensaje amigable y un enlace para continuar la conversación. La mayoría vuelve a interactuar." },
         { q: "¿Qué son las tarjetas de trabajo?", a: "Cada llamada crea una tarjeta de trabajo con la información del llamante, detalles del trabajo, fotos, presupuesto y estado. Piénsalo como una orden de trabajo automática para cada consulta." },
-        { q: "¿Puedo importar mis datos de clientes existentes?", a: "Sí. Sube un CSV de tu CRM actual o hoja de cálculo. Calltide mapea los campos e importa tus clientes para que Maria tenga contexto completo desde el primer día." },
+        { q: "¿Puedo importar mis datos de clientes existentes?", a: "Sí. Sube un CSV de tu CRM actual o hoja de cálculo. Capta mapea los campos e importa tus clientes para que Maria tenga contexto completo desde el primer día." },
       ],
     },
     cta: {
-      h2: "Deja de perder llamadas. Obtén Calltide hoy.",
+      h2: "Deja de perder llamadas. Obtén Capta hoy.",
       placeholder: "Ingresa tu correo de negocio",
-      button: "Obtén Calltide →",
+      button: "Obtén Capta →",
       sub: "La configuración toma menos de 10 minutos. Garantía de devolución de 30 días.",
       sending: "Iniciando...",
       existsError: "Parece que ya tienes una cuenta.",
@@ -315,7 +315,7 @@ export const T = {
       about: "Acerca de",
       terms: "Términos de Servicio",
       privacy: "Política de Privacidad",
-      copyright: `© ${new Date().getFullYear()} Calltide. Todos los derechos reservados.`,
+      copyright: `© ${new Date().getFullYear()} Capta. Todos los derechos reservados.`,
       builtIn: "Hecho en Texas",
     },
   },

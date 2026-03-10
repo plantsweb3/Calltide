@@ -60,19 +60,19 @@ export async function POST(req: NextRequest) {
 
     const resend = getResend();
     await resend.emails.send({
-      from: "Calltide Status <status@contact.calltide.app>",
+      from: "Capta Status <status@contact.capta.app>",
       to: email,
-      subject: isEs ? "Confirma tu suscripción — Calltide Status" : "Confirm your subscription — Calltide Status",
+      subject: isEs ? "Confirma tu suscripción — Capta Status" : "Confirm your subscription — Capta Status",
       html: `<!DOCTYPE html>
 <html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:0;background:#f8fafc;font-family:Inter,-apple-system,sans-serif;">
 <div style="max-width:600px;margin:0 auto;padding:24px;">
   <div style="text-align:center;padding:16px 0;">
-    <span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span>
+    <span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span>
   </div>
   <div style="background:white;border-radius:12px;border:1px solid #e2e8f0;padding:32px;text-align:center;">
     <h2 style="margin:0 0 12px;color:#1e293b;">${isEs ? "Confirma tu suscripción" : "Confirm your subscription"}</h2>
-    <p style="color:#475569;line-height:1.6;">${isEs ? "Haz clic en el botón para recibir actualizaciones de estado de Calltide." : "Click the button below to receive Calltide status updates."}</p>
+    <p style="color:#475569;line-height:1.6;">${isEs ? "Haz clic en el botón para recibir actualizaciones de estado de Capta." : "Click the button below to receive Capta status updates."}</p>
     <a href="${verifyUrl}" style="display:inline-block;margin-top:16px;padding:12px 32px;background:#C59A27;color:white;border-radius:8px;text-decoration:none;font-weight:600;">${isEs ? "Confirmar" : "Confirm Subscription"}</a>
   </div>
   <div style="text-align:center;padding:24px 0;font-size:12px;color:#94a3b8;">

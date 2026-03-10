@@ -10,10 +10,10 @@ import { createHandoff } from "@/lib/agents/handoffs";
 
 const TEMPLATES = {
   welcome: {
-    subject: (name: string) => `Welcome to Calltide, ${name}!`,
+    subject: (name: string) => `Welcome to Capta, ${name}!`,
     body: (ownerName: string) => `<div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;">
       <p>Hi ${ownerName},</p>
-      <p>Welcome to Calltide! We're excited to have you on board.</p>
+      <p>Welcome to Capta! We're excited to have you on board.</p>
       <p>To get the most out of your AI receptionist, here are the next steps to finish your setup:</p>
       <ol>
         <li>Set your business hours so your receptionist knows when to answer</li>
@@ -21,18 +21,18 @@ const TEMPLATES = {
         <li>Test your receptionist with a quick call</li>
       </ol>
       <p>If you need any help, just reply to this email — we're here for you.</p>
-      <p>Best,<br/>The Calltide Team</p>
+      <p>Best,<br/>The Capta Team</p>
     </div>`,
   },
   testCall: {
     sms: (name: string) =>
-      `Hi ${name}! Your Calltide receptionist is ready. Give it a test call to hear it in action — just call your business number. Reply HELP if you need assistance.`,
+      `Hi ${name}! Your Capta receptionist is ready. Give it a test call to hear it in action — just call your business number. Reply HELP if you need assistance.`,
   },
   needHelp: {
     subject: (bizName: string) => `Need help getting started with ${bizName}?`,
     body: (ownerName: string) => `<div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;">
       <p>Hi ${ownerName},</p>
-      <p>We noticed you haven't received any calls through Calltide yet. We want to make sure everything is set up correctly.</p>
+      <p>We noticed you haven't received any calls through Capta yet. We want to make sure everything is set up correctly.</p>
       <p>Here are a few things to check:</p>
       <ul>
         <li>Is call forwarding set up on your business line?</li>
@@ -40,12 +40,12 @@ const TEMPLATES = {
         <li>Do your business hours look correct in the dashboard?</li>
       </ul>
       <p>If you'd like a hand with any of this, just reply and we'll help you get started.</p>
-      <p>Best,<br/>The Calltide Team</p>
+      <p>Best,<br/>The Capta Team</p>
     </div>`,
   },
   skippedTestCall: {
     sms: (name: string) =>
-      `Hi ${name}! You're almost set up on Calltide. Try calling your business number to hear your AI receptionist in action — it takes less than a minute! Reply HELP for assistance.`,
+      `Hi ${name}! You're almost set up on Capta. Try calling your business number to hear your AI receptionist in action — it takes less than a minute! Reply HELP for assistance.`,
   },
 } as const;
 

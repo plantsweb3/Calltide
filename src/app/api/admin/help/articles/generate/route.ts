@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { env } from "@/lib/env";
 import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
 
-const ARTICLE_SYSTEM_PROMPT = `You are a bilingual help center content writer for Calltide, a bilingual AI receptionist service for Hispanic home service businesses in Texas.
+const ARTICLE_SYSTEM_PROMPT = `You are a bilingual help center content writer for Capta, a bilingual AI receptionist service for Hispanic home service businesses in Texas.
 
 Company context:
-- Calltide provides an AI receptionist named Maria that answers calls in English and Spanish 24/7
+- Capta provides an AI receptionist named Maria that answers calls in English and Spanish 24/7
 - Service costs $497/month
 - Target audience: plumbers, HVAC techs, electricians, landscapers, and other home service businesses
 - Maria books appointments, sends SMS confirmations, and handles after-hours calls

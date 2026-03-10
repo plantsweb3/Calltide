@@ -6,6 +6,7 @@ import ClientNav from "../_components/client-nav";
 import HelpWidget from "../_components/help-widget";
 import PaymentBanner from "../_components/payment-banner";
 import ErrorBoundary from "@/components/error-boundary";
+import CaptaSpinner from "@/components/capta-spinner";
 import LegalReacceptanceModal from "../_components/legal-reacceptance";
 
 export default function PortalLayout({
@@ -74,10 +75,7 @@ export default function PortalLayout({
     return (
       <div className="flex min-h-screen items-center justify-center" style={{ background: "var(--db-bg)" }}>
         <div className="flex flex-col items-center gap-3">
-          <div
-            className="h-8 w-8 rounded-full border-2 border-t-transparent animate-spin"
-            style={{ borderColor: "var(--db-border)", borderTopColor: "var(--db-accent)" }}
-          />
+          <CaptaSpinner size={32} />
           <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>Loading your dashboard...</p>
         </div>
       </div>
@@ -106,12 +104,7 @@ export default function PortalLayout({
             <path d="M3 6h18M3 12h18M3 18h18" />
           </svg>
         </button>
-        <span
-          className="ml-3 text-lg font-bold"
-          style={{ color: "var(--db-accent)" }}
-        >
-          Calltide
-        </span>
+        <img src="/images/logo-inline-navy.webp" alt="Capta" className="ml-3 h-6 w-auto" />
       </div>
 
       <main

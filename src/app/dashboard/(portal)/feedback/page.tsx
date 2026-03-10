@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import CaptaSpinner from "@/components/capta-spinner";
 
 interface FeedbackItem {
   id: string;
@@ -93,7 +94,7 @@ export default function ClientFeedbackPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-transparent" style={{ borderTopColor: "var(--db-accent)" }} />
+        <CaptaSpinner size={32} />
       </div>
     );
   }

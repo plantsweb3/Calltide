@@ -97,6 +97,7 @@ function LoginForm() {
       }}
     >
       <div>
+        <img src="/images/logo-inline-navy.webp" alt="Capta" className="h-8 w-auto mb-4" />
         <h1
           className="text-2xl font-semibold"
           style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}

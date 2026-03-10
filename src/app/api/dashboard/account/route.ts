@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
       name: "Demo Plumbing Co.",
       type: "plumbing",
       ownerName: "Demo User",
-      ownerEmail: "demo@calltide.app",
+      ownerEmail: "demo@capta.app",
       ownerPhone: "(555) 000-0000",
       twilioNumber: "(555) 000-0001",
       timezone: "America/Chicago",

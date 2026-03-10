@@ -259,12 +259,14 @@ async function handleTakeMessage(
     templateType: "owner_notify",
   });
 
+  const ownerName = biz.ownerName || (ctx.language === "es" ? "el dueño" : "the owner");
+
   return {
     success: true,
     data: {
       message: ctx.language === "es"
-        ? "Su mensaje ha sido enviado al dueño del negocio. Le contactarán pronto."
-        : "Your message has been sent to the business owner. They'll get back to you soon.",
+        ? `Su mensaje ha sido enviado a ${ownerName}. Le contactará pronto.`
+        : `Your message has been sent to ${ownerName}. They'll get back to you soon.`,
     },
   };
 }

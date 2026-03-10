@@ -13,7 +13,7 @@ const SEED_CATEGORIES = [
   { slug: "managing-calls", name: "Managing Calls", nameEs: "Administrar Llamadas", description: "Understand how Maria handles your calls day to day", descriptionEs: "Entiende cómo María maneja tus llamadas día a día", icon: "📞", sortOrder: 2 },
   { slug: "billing-account", name: "Billing & Account", nameEs: "Facturación y Cuenta", description: "Payments, invoices, and subscription management", descriptionEs: "Pagos, facturas y gestión de suscripción", icon: "💳", sortOrder: 3 },
   { slug: "troubleshooting", name: "Troubleshooting", nameEs: "Solución de Problemas", description: "Fix common issues and get back on track", descriptionEs: "Resuelve problemas comunes y vuelve a la normalidad", icon: "🔧", sortOrder: 4 },
-  { slug: "features-tips", name: "Features & Tips", nameEs: "Funciones y Consejos", description: "Get the most out of Calltide and Maria", descriptionEs: "Aprovecha al máximo Calltide y María", icon: "⭐", sortOrder: 5 },
+  { slug: "features-tips", name: "Features & Tips", nameEs: "Funciones y Consejos", description: "Get the most out of Capta and Maria", descriptionEs: "Aprovecha al máximo Capta y María", icon: "⭐", sortOrder: 5 },
   { slug: "for-prospects", name: "Learn About AI Receptionists", nameEs: "Aprende Sobre Recepcionistas AI", description: "Understand how AI receptionists can help your business", descriptionEs: "Entiende cómo una recepcionista AI puede ayudar a tu negocio", icon: "💡", sortOrder: 6 },
 ];
 
@@ -31,14 +31,14 @@ interface ArticleSeed {
 const ARTICLES: ArticleSeed[] = [
   // ── Getting Started (1 article) ──
   {
-    slug: "what-is-calltide",
+    slug: "what-is-capta",
     categorySlug: "getting-started",
-    title: "What Is Calltide and How Does Maria Work?",
+    title: "What Is Capta and How Does Maria Work?",
     sortOrder: 1,
-    searchKeywords: "calltide, maria, ai receptionist, how it works, setup, getting started, bilingual, scheduling, 24/7",
+    searchKeywords: "capta, maria, ai receptionist, how it works, setup, getting started, bilingual, scheduling, 24/7",
     dashboardContextRoutes: ["/dashboard"],
     relatedArticles: ["how-maria-handles-calls", "tips-best-results", "first-month-expectations"],
-    content: `Calltide is an AI-powered receptionist service for home service businesses. Instead of missing calls or paying someone to answer the phone, Maria—our AI receptionist—handles incoming calls 24/7, even when you're on a job site or helping customers.
+    content: `Capta is an AI-powered receptionist service for home service businesses. Instead of missing calls or paying someone to answer the phone, Maria—our AI receptionist—handles incoming calls 24/7, even when you're on a job site or helping customers.
 
 ## How Maria Works
 
@@ -63,7 +63,7 @@ Maria learns from the information you provide:
 
 The more complete your profile, the better Maria can handle calls.
 
-## Why Contractors Choose Calltide
+## Why Contractors Choose Capta
 
 1. **Never miss a call** — Maria answers 24/7, even when you're in the field
 2. **Automatic scheduling** — Appointments sync to your Google Calendar instantly
@@ -75,15 +75,15 @@ The more complete your profile, the better Maria can handle calls.
 
 1. **Set up your profile** (30 minutes) — Tell Maria about your services, pricing, and hours
 2. **Connect your calendar** (5 minutes) — Link your Google Calendar so Maria can book appointments
-3. **Forward your phone number** (varies) — Set up call forwarding to Calltide
+3. **Forward your phone number** (varies) — Set up call forwarding to Capta
 4. **Test Maria** (5 minutes) — Call your number and have a test conversation
 5. **Go live** — Maria starts answering your real calls
 
-## Try It Free
+## Get Started
 
-Start with a 14-day free trial. No credit card required. See how Maria handles your calls, manages your schedule, and frees up your time.
+$497/month with a 30-day money-back guarantee. See how Maria handles your calls, manages your schedule, and frees up your time.
 
-Need help? Email support@calltide.app or call (830) 521-7133.`,
+Need help? Email support@capta.app or call (830) 521-7133.`,
   },
 
   // ── Managing Calls (5 articles) ──
@@ -248,7 +248,7 @@ Maria gets smarter when you help her. Go through these steps regularly:
 
 The more information you provide, the more calls Maria can handle without transferring to you.
 
-Need help? Email support@calltide.app or call (830) 521-7133.`,
+Need help? Email support@capta.app or call (830) 521-7133.`,
   },
 
   // ── Billing & Account (6 articles) ──
@@ -259,7 +259,7 @@ Need help? Email support@calltide.app or call (830) 521-7133.`,
     sortOrder: 16,
     searchKeywords: "subscription, pricing, plan, features, annual, locations, included, unlimited",
     relatedArticles: ["billing-and-charges", "cancellation-policy"],
-    content: `Your $497/month Calltide subscription includes everything you need:
+    content: `Your $497/month Capta subscription includes everything you need:
 
 - **Unlimited calls** — AI receptionist answers 24/7
 - **Bilingual support** — English and Spanish, no extra fee
@@ -280,7 +280,7 @@ Each additional location costs $197/month. Manage all your locations from one da
 
 ### No Contracts
 
-14-day free trial (no credit card required). 30-day money-back guarantee. Cancel anytime.`,
+30-day money-back guarantee. Cancel anytime. No long-term contracts.`,
   },
   {
     slug: "billing-and-charges",
@@ -289,13 +289,13 @@ Each additional location costs $197/month. Manage all your locations from one da
     sortOrder: 17,
     searchKeywords: "billing, payment, trial, charges, monthly, annual, declined, grace period",
     relatedArticles: ["understanding-subscription", "update-payment-method", "download-invoices"],
-    content: `### Your Free Trial
+    content: `### Getting Started
 
-Your 14-day free trial requires no credit card. Get full access to all features for two weeks at no cost.
+Sign up and get full access to all features immediately. Your subscription starts from the day you sign up.
 
-### After Your Trial Ends
+### Money-Back Guarantee
 
-On day 15, your trial ends. To continue, add a payment method. We'll charge you monthly on your signup anniversary.
+Not satisfied? Contact us within 30 days for a full refund. No questions asked.
 
 ### Monthly Billing
 
@@ -320,7 +320,7 @@ Choose annual billing and save $100/month. We charge your full annual amount onc
     dashboardContextRoutes: ["/dashboard/settings"],
     relatedArticles: ["billing-and-charges", "download-invoices"],
     content: `**Step 1: Go to Billing Settings**
-Log in to your Calltide dashboard. Click **Settings**, then **Billing**.
+Log in to your Capta dashboard. Click **Settings**, then **Billing**.
 
 **Step 2: Find Your Payment Method**
 You'll see your current payment method. Look for the button labeled **Update Payment Method** or **Change Card**.
@@ -329,7 +329,7 @@ You'll see your current payment method. Look for the button labeled **Update Pay
 Enter your card number, expiration date, and CVV code. All major credit and debit cards accepted (Visa, Mastercard, American Express, Discover).
 
 **Secure Processing**
-Your payment information is processed securely through Stripe. Calltide never sees your card number—it's encrypted and handled by Stripe's secure servers.
+Your payment information is processed securely through Stripe. Capta never sees your card number—it's encrypted and handled by Stripe's secure servers.
 
 **When the Change Takes Effect**
 Your new card will be used for your next billing date. If your previous card had a failed payment, update your card as soon as possible to avoid service interruption.`,
@@ -342,7 +342,7 @@ Your new card will be used for your next billing date. If your previous card had
     searchKeywords: "invoices, receipts, pdf, download, tax, deduction, history",
     relatedArticles: ["billing-and-charges", "update-payment-method"],
     content: `**Step 1: Open Billing Settings**
-Log in to your Calltide dashboard. Click **Settings**, then **Billing**.
+Log in to your Capta dashboard. Click **Settings**, then **Billing**.
 
 **Step 2: Find Invoice History**
 Scroll down to the **Invoice History** section. You'll see a list of all your invoices with dates and amounts.
@@ -351,7 +351,7 @@ Scroll down to the **Invoice History** section. You'll see a list of all your in
 Click the download icon next to any invoice to save it as a PDF file. Print it or store it digitally for your records.
 
 **Use for Tax Deductions**
-Calltide subscriptions are a business expense. Keep your invoices for tax purposes and deduction documentation.`,
+Capta subscriptions are a business expense. Keep your invoices for tax purposes and deduction documentation.`,
   },
   {
     slug: "cancellation-policy",
@@ -366,7 +366,7 @@ Log into your dashboard and go to **Settings → Billing → Cancel Subscription
 
 ### When Does Cancellation Take Effect?
 
-Your cancellation takes effect at the end of your current billing period. You keep full access to Calltide until that date.
+Your cancellation takes effect at the end of your current billing period. You keep full access to Capta until that date.
 
 ### No Cancellation Fees
 
@@ -392,18 +392,18 @@ We don't require long-term contracts. Cancel whenever you want.`,
     searchKeywords: "referral, free month, rewards, share, code, earn, unlimited",
     dashboardContextRoutes: ["/dashboard/referrals"],
     relatedArticles: ["understanding-subscription"],
-    content: `### Share Calltide and Earn Free Months
+    content: `### Share Capta and Earn Free Months
 
 Our referral program rewards you for helping other home service businesses succeed. It's free, easy, and unlimited.
 
 **How the Program Works**
-You get a unique referral code. When someone signs up using your code and completes their trial period, you both receive a free month of Calltide service.
+You get a unique referral code. When someone signs up using your code and stays as a paid customer for 30 days, you both receive a free month of Capta service.
 
 **Find Your Referral Code**
 Log into your dashboard. Go to **Settings → Referral Program**. Your unique code is displayed there. Copy it and share it however you like — email, text, social media, or word of mouth.
 
 **Earn Your Reward**
-Once your referral completes the 14-day free trial and stays on as a paid customer, you earn one free month of service. The reward is automatically applied to your account — no vouchers or codes needed.
+Once your referral has been a paid customer for 30 days, you earn one free month of service. The reward is automatically applied to your account — no vouchers or codes needed.
 
 **No Limits**
 There's no cap on referrals. Earn as many free months as you want by referring unlimited customers.
@@ -411,7 +411,7 @@ There's no cap on referrals. Earn as many free months as you want by referring u
 **Track Your Referrals**
 Go to **Settings → Referral Program** to see your referral history, active referrals, and earned rewards. Your dashboard shows each referral's status in real time.
 
-Need help? Email support@calltide.app or call (830) 521-7133.`,
+Need help? Email support@capta.app or call (830) 521-7133.`,
   },
 
   // ── Troubleshooting (6 articles) ──
@@ -431,7 +431,7 @@ The most common issue is that call forwarding isn't configured. Go to **Settings
 Check that your account is paid up and not suspended. Look at your billing status in the Settings tab. If you see any warnings, update your payment information immediately.
 
 **3. Check for Service Outages**
-Visit **calltide.app/status** to see if there's a known outage. During outages, Maria automatically switches to voicemail mode so callers can still leave messages.
+Visit **capta.app/status** to see if there's a known outage. During outages, Maria automatically switches to voicemail mode so callers can still leave messages.
 
 **4. Test with a Different Phone**
 Try calling your business number from a different phone. This helps identify if the issue is with your specific phone or with Maria's service.
@@ -439,7 +439,7 @@ Try calling your business number from a different phone. This helps identify if 
 **5. Still Not Working?**
 Contact our support team. Have your account email and business name ready.
 
-Email: **support@calltide.app**
+Email: **support@capta.app**
 Phone: **(830) 521-7133**`,
   },
   {
@@ -500,7 +500,7 @@ Review your business information monthly, especially if you add new services or 
 Go to **Settings** and confirm the phone number where you want to receive notifications is correct. If it's wrong, update it.
 
 **2. Check Your Email Spam Folder**
-Calltide notifications come to your email. Check your spam folder—sometimes legitimate emails end up there. Add support@calltide.app to your contacts to ensure messages get through.
+Capta notifications come to your email. Check your spam folder—sometimes legitimate emails end up there. Add support@capta.app to your contacts to ensure messages get through.
 
 **3. Review Team Notification Settings**
 Go to **Settings → Team** and check your notification preferences. Make sure notifications are enabled for your user.
@@ -533,7 +533,7 @@ Try a different browser (Chrome, Safari, Firefox, Edge) to see if the problem is
 Make sure you have a stable internet connection. Try disconnecting and reconnecting to WiFi, or switch to a different network.
 
 **5. Contact Support**
-If the dashboard still won't load, email support@calltide.app with a screenshot of the error. Our team can help investigate.`,
+If the dashboard still won't load, email support@capta.app with a screenshot of the error. Our team can help investigate.`,
   },
   {
     slug: "check-outage",
@@ -542,10 +542,10 @@ If the dashboard still won't load, email support@calltide.app with a screenshot 
     sortOrder: 27,
     searchKeywords: "outage, status, downtime, service, maintenance, incident",
     relatedArticles: ["maria-not-answering", "dashboard-not-loading"],
-    content: `If you're experiencing issues with Calltide, a service outage might be the cause.
+    content: `If you're experiencing issues with Capta, a service outage might be the cause.
 
 **Check the Status Page**
-Visit **calltide.app/status** for real-time information about the Calltide service. The status page shows:
+Visit **capta.app/status** for real-time information about the Capta service. The status page shows:
 
 - **Voice Service** — Maria answering calls
 - **SMS** — Message delivery
@@ -566,7 +566,7 @@ If the status page shows everything is normal but you're still having problems, 
 When you need help, our support team is here for you.
 
 **Email Support**
-**support@calltide.app**
+**support@capta.app**
 
 Send us a detailed message describing your issue. Include your business name and any error messages you've seen. We typically respond within a few hours on business days.
 
@@ -576,7 +576,7 @@ Send us a detailed message describing your issue. Include your business name and
 Call us during business hours to speak directly with a team member. Have your account information ready.
 
 **In-Dashboard Help**
-In your Calltide dashboard, go to the **Help** section. There's a feedback form where you can describe your issue and get assistance.
+In your Capta dashboard, go to the **Help** section. There's a feedback form where you can describe your issue and get assistance.
 
 **Tips for Faster Support**
 - Include your business name and account email
@@ -629,7 +629,7 @@ High satisfaction scores mean customers are happy with Maria's responses. Low sc
     relatedArticles: ["monthly-report", "improve-maria-responses"],
     content: `**NPS stands for Net Promoter Score.** It's a simple way to measure how satisfied your customers are with Maria on a scale from **-100 to 100**.
 
-After certain calls, Calltide sends a quick follow-up survey to your customers. The question is simple: "How likely are you to recommend this business?" Customers respond on a scale of 0 to 10.
+After certain calls, Capta sends a quick follow-up survey to your customers. The question is simple: "How likely are you to recommend this business?" Customers respond on a scale of 0 to 10.
 
 ### How the Scoring Works
 
@@ -705,7 +705,7 @@ When callers understand what Maria can do, they ask better questions and she can
     title: "5 Tips for Getting the Best Results from Maria",
     sortOrder: 32,
     searchKeywords: "tips, best practices, calendar, profile, greeting, faq, optimization",
-    relatedArticles: ["improve-maria-responses", "what-is-calltide"],
+    relatedArticles: ["improve-maria-responses", "what-is-capta"],
     content: `Maria is your AI receptionist, and like any team member, she works better when you set her up for success.
 
 ### Tip 1: Fill Out Your Business Profile Completely
@@ -739,7 +739,7 @@ Maria's greeting can change with the seasons. During winter, mention your holida
     title: "How Maria Handles Bilingual Callers",
     sortOrder: 33,
     searchKeywords: "bilingual, spanish, english, language, detection, switch, multilingual",
-    relatedArticles: ["what-is-calltide", "how-maria-handles-calls"],
+    relatedArticles: ["what-is-capta", "how-maria-handles-calls"],
     content: `One of Maria's best features is her ability to handle calls in both English and Spanish—automatically. You don't need to do anything special to set it up.
 
 ### How Language Detection Works
@@ -765,21 +765,21 @@ When you review your call logs in the dashboard, you'll see the detected languag
     sortOrder: 34,
     searchKeywords: "security, encryption, data, privacy, export, delete, tls, retention, gdpr",
     relatedArticles: ["cancellation-policy"],
-    content: `Your data is secure with Calltide. Your business data, customer information, and call recordings are protected with industry-standard security practices.
+    content: `Your data is secure with Capta. Your business data, customer information, and call recordings are protected with industry-standard security practices.
 
 ### How We Protect Your Data
 
 **Encryption in Transit**
-All data traveling between your devices and Calltide's servers is encrypted using TLS (Transport Layer Security).
+All data traveling between your devices and Capta's servers is encrypted using TLS (Transport Layer Security).
 
 **Encryption at Rest**
 Your data stored on our servers is encrypted. Even if someone accessed our servers physically, they couldn't read your data without the encryption keys.
 
 **No Passwords**
-Calltide uses magic link login instead of passwords. You receive a secure link via email, click it, and you're logged in.
+Capta uses magic link login instead of passwords. You receive a secure link via email, click it, and you're logged in.
 
 **Role-Based Access**
-If you add team members to your Calltide account, you control what they can see.
+If you add team members to your Capta account, you control what they can see.
 
 ### Data Retention
 
@@ -797,11 +797,11 @@ Your data belongs to you. You have the right to:
 At any time, you can export all your data (call logs, recordings, business profile, etc.) in a standard format.
 
 **Delete Your Data**
-You can request deletion of your data. Calltide will delete your account and all associated information within 30 days.
+You can request deletion of your data. Capta will delete your account and all associated information within 30 days.
 
 Both options are available in your Settings dashboard.
 
-Need help? Email support@calltide.app or call (830) 521-7133.`,
+Need help? Email support@capta.app or call (830) 521-7133.`,
   },
 
   // ── For Prospects (4 articles) ──
@@ -811,7 +811,7 @@ Need help? Email support@calltide.app or call (830) 521-7133.`,
     title: "How AI Receptionists Work",
     sortOrder: 35,
     searchKeywords: "ai receptionist, technology, ivr, comparison, how it works, chatgpt, conversation, natural",
-    relatedArticles: ["calltide-vs-receptionist", "what-is-calltide"],
+    relatedArticles: ["capta-vs-receptionist", "what-is-capta"],
     content: `Traditional phone systems make you "press 1 for billing, 2 for support." Those systems are frustrating because they don't understand what callers really want. AI receptionists are different. Maria has a conversation, just like a real person would.
 
 ### Maria's Call Handling
@@ -853,9 +853,9 @@ Maria is designed for appointment scheduling and simple Q&A. She's not built for
 You finally have someone answering your phone 24/7 who actually understands what customers want. No more missed calls. No more frustration. Just smooth, professional conversations that lead to booked jobs.`,
   },
   {
-    slug: "calltide-vs-receptionist",
+    slug: "capta-vs-receptionist",
     categorySlug: "for-prospects",
-    title: "Calltide vs Hiring a Human Receptionist",
+    title: "Capta vs Hiring a Human Receptionist",
     sortOrder: 36,
     searchKeywords: "comparison, cost, receptionist, hiring, versus, human, price, savings",
     relatedArticles: ["how-ai-receptionists-work", "missed-calls-cost-money"],
@@ -863,7 +863,7 @@ You finally have someone answering your phone 24/7 who actually understands what
 
 ### The Quick Comparison
 
-| Feature | Calltide (Maria) | Human Receptionist |
+| Feature | Capta (Maria) | Human Receptionist |
 |---------|------------------|-------------------|
 | **Monthly Cost** | $497 | $2,500–$3,500 |
 | **Annual Cost** | $5,964 | $30,000–$42,000 |
@@ -875,13 +875,13 @@ You finally have someone answering your phone 24/7 who actually understands what
 | **Can Book Appointments** | Yes (automated) | Yes |
 | **Handles Complex Issues** | Takes info, you call back | Resolves on the spot |
 
-### When Calltide Makes Sense
+### When Capta Makes Sense
 
 **You're starting out** — You can't afford $30K/year for a receptionist. Maria lets you start at $497/month.
 
 **You're overwhelmed with calls** — You're missing sales because you can't answer the phone. Maria answers every call 24/7.
 
-**You have multiple locations** — Hiring a receptionist per location is expensive. Add Calltide to a new location for just $197/month.
+**You have multiple locations** — Hiring a receptionist per location is expensive. Add Capta to a new location for just $197/month.
 
 **You serve Spanish speakers** — Finding a bilingual receptionist is hard. Maria handles English + Spanish automatically.
 
@@ -907,7 +907,7 @@ Many successful contractors use both: Maria answers 24/7 calls and books routine
     title: "Why Missed Calls Cost Your Business Real Money",
     sortOrder: 37,
     searchKeywords: "missed calls, revenue, lost business, roi, cost, money, voicemail, statistics",
-    relatedArticles: ["calltide-vs-receptionist", "first-month-expectations"],
+    relatedArticles: ["capta-vs-receptionist", "first-month-expectations"],
     content: `### The Real Numbers
 
 **62% of service calls go unanswered.** A survey found that 62% of incoming calls to home service businesses aren't answered. This aligns with industry-wide data.
@@ -941,7 +941,7 @@ You also lose:
 
 ### The Solution: Maria Answers Every Call
 
-With Calltide, every call is answered—24/7. Maria:
+With Capta, every call is answered—24/7. Maria:
 - Picks up immediately (no voicemail jail)
 - Books appointments automatically
 - Qualifies leads if you're fully booked
@@ -956,7 +956,7 @@ Even if Maria only converts half of those missed calls into bookings, you're loo
     title: "What to Expect in Your First Month",
     sortOrder: 38,
     searchKeywords: "first month, setup, onboarding, expectations, roi, timeline, week by week, results",
-    relatedArticles: ["what-is-calltide", "missed-calls-cost-money", "tips-best-results"],
+    relatedArticles: ["what-is-capta", "missed-calls-cost-money", "tips-best-results"],
     content: `### Week 1: Setup & Testing
 
 **Days 1-2: Create Your Profile** (30-60 minutes)
@@ -966,7 +966,7 @@ Fill out your business profile with your services, pricing, hours, and custom gr
 Link your Google Calendar so Maria can see your availability and book appointments automatically.
 
 **Days 3-5: Forward Your Phone Number** (varies)
-Contact your phone provider and set up call forwarding to the Calltide number you'll receive.
+Contact your phone provider and set up call forwarding to the Capta number you'll receive.
 
 **Days 5-7: Test Maria** (5 minutes)
 Call your business number from your personal phone and have a test conversation with Maria. Ask her about your services and test appointment booking.
@@ -1033,13 +1033,13 @@ By Month 2, you'll see the real impact:
 - Your team is less stressed
 - Your ROI is crystal clear
 
-## Try It Free
+## Get Started
 
-You have a 14-day free trial and a 30-day money-back guarantee. Test Maria with your real calls. See if she works for you. No risk.
+30-day money-back guarantee. Test Maria with your real calls. See if she works for you. No risk.
 
-**Ready to try it?** Start your free 14-day trial at [calltide.app](https://calltide.app)—no credit card required.
+**Ready to try it?** Get started at [capta.app](https://capta.app).
 
-Need help? Email support@calltide.app or call (830) 521-7133.`,
+Need help? Email support@capta.app or call (830) 521-7133.`,
   },
 ];
 

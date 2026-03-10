@@ -13,11 +13,11 @@ function baseLayout(content: string, prospectEmail?: string): string {
 <div style="max-width:600px;margin:0 auto;padding:32px 24px;">
 ${content}
 <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;">
-<p>Calltide — AI Voice Agents for Local Businesses</p>
+<p>Capta — AI Voice Agents for Local Businesses</p>
 <p style="margin-top:8px;">${COMPANY_ADDRESS}</p>
 <p style="margin-top:8px;">
   <a href="${unsubscribeUrl}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>
-  &nbsp;|&nbsp; You're receiving this because we think Calltide could help your business. We'll never spam you.
+  &nbsp;|&nbsp; You're receiving this because we think Capta could help your business. We'll never spam you.
 </p>
 </div>
 </div>
@@ -36,7 +36,7 @@ export const missedCallSequence = {
         We just called <strong>${escapeHtml(businessName)}</strong> and it went unanswered. That's a potential customer lost.
       </p>
       <p style="color:#475569;line-height:1.6;">
-        Calltide is an AI voice agent that answers every call 24/7 — in English and Spanish.
+        Capta is an AI voice agent that answers every call 24/7 — in English and Spanish.
         It books appointments, takes messages, and never puts anyone on hold.
       </p>
       <a href="${MARKETING_URL}" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
@@ -65,7 +65,7 @@ export const missedCallSequence = {
   }),
 
   missed_call_3: (businessName: string, email?: string) => ({
-    subject: `Last note from Calltide`,
+    subject: `Last note from Capta`,
     html: baseLayout(`
       <p style="color:#475569;line-height:1.6;">
         Hi — just a final follow-up for ${escapeHtml(businessName)}.
@@ -77,7 +77,7 @@ export const missedCallSequence = {
       <p style="color:#475569;line-height:1.6;">
         Reply to this email anytime — happy to answer questions.
       </p>
-      <p style="color:${BRAND_COLOR};font-weight:600;">— Team Calltide</p>
+      <p style="color:${BRAND_COLOR};font-weight:600;">— Team Capta</p>
     `, email),
   }),
 };
@@ -93,7 +93,7 @@ export const answeredSequence = {
         after hours, on weekends, or when you're slammed with customers?
       </p>
       <p style="color:#475569;line-height:1.6;">
-        Calltide handles overflow and after-hours calls automatically.
+        Capta handles overflow and after-hours calls automatically.
         Same quality, fraction of the cost of a full-time receptionist.
       </p>
       <a href="${MARKETING_URL}" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">

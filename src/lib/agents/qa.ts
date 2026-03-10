@@ -25,7 +25,7 @@ interface QaResult {
   summary: string;
 }
 
-const QA_SYSTEM_PROMPT = `You are Calltide's QA analyst. You review AI receptionist call transcripts for quality.
+const QA_SYSTEM_PROMPT = `You are Capta's QA analyst. You review AI receptionist call transcripts for quality.
 You receive the full call transcript, the business profile, the post-call summary, and sentiment.
 
 Score the call 0-100 using these weighted criteria:

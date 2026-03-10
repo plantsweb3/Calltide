@@ -51,7 +51,7 @@ function ThankYouContent() {
       <nav className="border-b border-[#E2E8F0] bg-white px-6 py-3">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link href="/">
-            <img src="/images/logo.webp" alt="Calltide" className="h-6 w-auto" />
+            <img src="/images/logo-inline-navy.webp" alt="Capta" className="h-6 w-auto" />
           </Link>
         </div>
       </nav>
@@ -162,7 +162,7 @@ function ThankYouContent() {
             className="text-sm font-semibold transition-colors hover:underline"
             style={{ color: "#C59A27" }}
           >
-            Back to Calltide
+            Back to Capta
           </Link>
         </div>
       </main>

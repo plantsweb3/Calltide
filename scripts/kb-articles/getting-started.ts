@@ -1,32 +1,32 @@
 import type { ArticleData } from "./types";
 
 export const articles: ArticleData[] = [
-  // ── 1. Welcome to Calltide ────────────────────────────────────────────
+  // ── 1. Welcome to Capta ────────────────────────────────────────────
   {
     slug: "welcome-first-steps",
-    title: "Welcome to Calltide — Your First Steps",
-    titleEs: "Bienvenido a Calltide — Tus Primeros Pasos",
+    title: "Welcome to Capta — Your First Steps",
+    titleEs: "Bienvenido a Capta — Tus Primeros Pasos",
     excerpt:
-      "Get started with Calltide in minutes. Learn how to activate your account, log in for the first time, and explore your dashboard.",
+      "Get started with Capta in minutes. Learn how to activate your account, log in for the first time, and explore your dashboard.",
     excerptEs:
-      "Comienza con Calltide en minutos. Aprende a activar tu cuenta, iniciar sesión por primera vez y explorar tu panel de control.",
-    content: `# Welcome to Calltide — Your First Steps
+      "Comienza con Capta en minutos. Aprende a activar tu cuenta, iniciar sesión por primera vez y explorar tu panel de control.",
+    content: `# Welcome to Capta — Your First Steps
 
-Congratulations on signing up for Calltide! Maria, your AI receptionist, is almost ready to start answering calls for your business in both English and Spanish, 24 hours a day, 7 days a week.
+Congratulations on signing up for Capta! Maria, your AI receptionist, is almost ready to start answering calls for your business in both English and Spanish, 24 hours a day, 7 days a week.
 
 This guide walks you through everything you need to do in your first few minutes and what to expect during your first week.
 
 ## Activate Your Account
 
-After you sign up, we send a welcome email to the address you used during checkout. Open that email and click the **Activate My Account** button. This takes you to your Calltide dashboard for the first time.
+After you sign up, we send a welcome email to the address you used during checkout. Open that email and click the **Activate My Account** button. This takes you to your Capta dashboard for the first time.
 
-If you do not see the email, check your spam or junk folder. You can also search your inbox for "Calltide" to find it. If it still does not show up, contact our support team and we will resend it right away.
+If you do not see the email, check your spam or junk folder. You can also search your inbox for "Capta" to find it. If it still does not show up, contact our support team and we will resend it right away.
 
 ## Log In to Your Dashboard
 
-Calltide uses magic links instead of passwords. Here is how it works:
+Capta uses magic links instead of passwords. Here is how it works:
 
-1. Go to **app.calltide.com** and enter your email address.
+1. Go to **app.capta.com** and enter your email address.
 2. Click **Send Magic Link**.
 3. Open the email we send you and click the link inside.
 4. You are now logged in — no password needed.
@@ -45,11 +45,11 @@ Take a few minutes to look around. You do not need to set everything up right no
 
 ## What to Expect in Your First Week
 
-Here is a simple timeline for your first week with Calltide:
+Here is a simple timeline for your first week with Capta:
 
 **Day 1 — Set up the basics.** Log in, set your business hours, and add your services list. This tells Maria what to say when customers call.
 
-**Day 2–3 — Forward your phone number.** Set up call forwarding from your business phone to your Calltide number. We provide step-by-step instructions for every major phone carrier.
+**Day 2–3 — Forward your phone number.** Set up call forwarding from your business phone to your Capta number. We provide step-by-step instructions for every major phone carrier.
 
 **Day 4–7 — Review your first calls.** Check your dashboard to see how Maria handled calls. Listen to recordings and review the call summaries. If something needs adjusting, update your settings.
 
@@ -60,23 +60,23 @@ Here is a simple timeline for your first week with Calltide:
 - **Tell your team.** Let your crew know that Maria is answering calls so they are not surprised when customers mention her.
 
 You are all set to get started. Your next step is to learn how Maria handles calls — check out that guide when you are ready.`,
-    contentEs: `# Bienvenido a Calltide — Tus Primeros Pasos
+    contentEs: `# Bienvenido a Capta — Tus Primeros Pasos
 
-¡Felicidades por registrarte en Calltide! María, tu recepcionista de inteligencia artificial, está casi lista para contestar las llamadas de tu negocio en inglés y español, las 24 horas del día, los 7 días de la semana.
+¡Felicidades por registrarte en Capta! María, tu recepcionista de inteligencia artificial, está casi lista para contestar las llamadas de tu negocio en inglés y español, las 24 horas del día, los 7 días de la semana.
 
 Esta guía te explica todo lo que necesitas hacer en tus primeros minutos y qué esperar durante tu primera semana.
 
 ## Activa Tu Cuenta
 
-Después de registrarte, te enviamos un correo de bienvenida a la dirección que usaste durante la compra. Abre ese correo y haz clic en el botón **Activar Mi Cuenta**. Esto te lleva a tu panel de Calltide por primera vez.
+Después de registrarte, te enviamos un correo de bienvenida a la dirección que usaste durante la compra. Abre ese correo y haz clic en el botón **Activar Mi Cuenta**. Esto te lleva a tu panel de Capta por primera vez.
 
-Si no ves el correo, revisa tu carpeta de spam o correo no deseado. También puedes buscar "Calltide" en tu bandeja de entrada para encontrarlo. Si aún no aparece, contacta a nuestro equipo de soporte y te lo reenviamos de inmediato.
+Si no ves el correo, revisa tu carpeta de spam o correo no deseado. También puedes buscar "Capta" en tu bandeja de entrada para encontrarlo. Si aún no aparece, contacta a nuestro equipo de soporte y te lo reenviamos de inmediato.
 
 ## Inicia Sesión en Tu Panel
 
-Calltide usa enlaces mágicos en lugar de contraseñas. Así es como funciona:
+Capta usa enlaces mágicos en lugar de contraseñas. Así es como funciona:
 
-1. Ve a **app.calltide.com** e ingresa tu correo electrónico.
+1. Ve a **app.capta.com** e ingresa tu correo electrónico.
 2. Haz clic en **Enviar Enlace Mágico**.
 3. Abre el correo que te enviamos y haz clic en el enlace.
 4. Ya estás conectado — no necesitas contraseña.
@@ -95,11 +95,11 @@ Tómate unos minutos para explorar. No necesitas configurar todo ahora mismo, pe
 
 ## Qué Esperar en Tu Primera Semana
 
-Aquí tienes un plan simple para tu primera semana con Calltide:
+Aquí tienes un plan simple para tu primera semana con Capta:
 
 **Día 1 — Configura lo básico.** Inicia sesión, establece tu horario de negocio y agrega tu lista de servicios. Esto le dice a María qué decir cuando los clientes llamen.
 
-**Día 2–3 — Transfiere tu número de teléfono.** Configura el desvío de llamadas de tu teléfono de negocio a tu número de Calltide. Proporcionamos instrucciones paso a paso para cada compañía telefónica.
+**Día 2–3 — Transfiere tu número de teléfono.** Configura el desvío de llamadas de tu teléfono de negocio a tu número de Capta. Proporcionamos instrucciones paso a paso para cada compañía telefónica.
 
 **Día 4–7 — Revisa tus primeras llamadas.** Consulta tu panel para ver cómo María manejó las llamadas. Escucha las grabaciones y revisa los resúmenes. Si algo necesita ajuste, actualiza tu configuración.
 
@@ -110,12 +110,12 @@ Aquí tienes un plan simple para tu primera semana con Calltide:
 - **Avisa a tu equipo.** Dile a tu personal que María está contestando llamadas para que no se sorprendan cuando los clientes la mencionen.
 
 Ya estás listo para comenzar. Tu siguiente paso es aprender cómo María maneja las llamadas — revisa esa guía cuando estés listo.`,
-    metaTitle: "Welcome to Calltide — Your First Steps",
-    metaTitleEs: "Bienvenido a Calltide — Tus Primeros Pasos",
+    metaTitle: "Welcome to Capta — Your First Steps",
+    metaTitleEs: "Bienvenido a Capta — Tus Primeros Pasos",
     metaDescription:
-      "Get started with Calltide. Activate your account, log in, and explore your AI receptionist dashboard in minutes.",
+      "Get started with Capta. Activate your account, log in, and explore your AI receptionist dashboard in minutes.",
     metaDescriptionEs:
-      "Comienza con Calltide. Activa tu cuenta, inicia sesión y explora tu panel de recepcionista IA en minutos.",
+      "Comienza con Capta. Activa tu cuenta, inicia sesión y explora tu panel de recepcionista IA en minutos.",
     searchKeywords:
       "getting started, first steps, activate account, login, magic link, dashboard overview, setup, onboarding, welcome",
     searchKeywordsEs:
@@ -285,8 +285,8 @@ Cada llamada que María maneja aparece en la sección de **Llamadas** de tu pane
 - Si la llamada fue en inglés o español
 
 Revisa tus llamadas regularmente, especialmente durante tu primera semana, para asegurarte de que todo suene bien.`,
-    metaTitle: "How Maria Handles Your Calls | Calltide",
-    metaTitleEs: "Cómo María Maneja Tus Llamadas | Calltide",
+    metaTitle: "How Maria Handles Your Calls | Capta",
+    metaTitleEs: "Cómo María Maneja Tus Llamadas | Capta",
     metaDescription:
       "See exactly how Maria, your AI receptionist, answers calls, books appointments, and sends SMS confirmations in English and Spanish.",
     metaDescriptionEs:
@@ -328,7 +328,7 @@ If you do not set your hours, Maria will use the default schedule of Monday thro
 
 Follow these steps to update your hours:
 
-1. Log in to your Calltide dashboard.
+1. Log in to your Capta dashboard.
 2. Click **Settings** in the left menu.
 3. Find the **Business Hours** section.
 4. For each day of the week, set your **open time** and **close time**.
@@ -349,7 +349,7 @@ Follow these steps to update your hours:
 
 ## Timezone Settings
 
-Calltide needs to know your timezone so Maria schedules appointments at the right time. Most of our customers are in Texas, so the default is **Central Time (CT)**.
+Capta needs to know your timezone so Maria schedules appointments at the right time. Most of our customers are in Texas, so the default is **Central Time (CT)**.
 
 To change your timezone:
 
@@ -404,7 +404,7 @@ Si no configuras tu horario, María usará el horario predeterminado de lunes a 
 
 Sigue estos pasos para actualizar tu horario:
 
-1. Inicia sesión en tu panel de Calltide.
+1. Inicia sesión en tu panel de Capta.
 2. Haz clic en **Configuración** en el menú de la izquierda.
 3. Busca la sección de **Horario de Negocio**.
 4. Para cada día de la semana, establece tu **hora de apertura** y **hora de cierre**.
@@ -425,7 +425,7 @@ Sigue estos pasos para actualizar tu horario:
 
 ## Configuración de Zona Horaria
 
-Calltide necesita saber tu zona horaria para que María programe las citas a la hora correcta. La mayoría de nuestros clientes están en Texas, así que la zona predeterminada es **Hora Central (CT)**.
+Capta necesita saber tu zona horaria para que María programe las citas a la hora correcta. La mayoría de nuestros clientes están en Texas, así que la zona predeterminada es **Hora Central (CT)**.
 
 Para cambiar tu zona horaria:
 
@@ -462,8 +462,8 @@ Las llamadas fuera de horario se registran en tu panel para que nunca pierdas un
 - **Incluye el sábado** si trabajas los fines de semana. Muchos clientes de servicios para el hogar prefieren citas los sábados.
 
 Tu horario es fácil de cambiar en cualquier momento. Solo regresa a Configuración y ajústalo cuando tu horario cambie.`,
-    metaTitle: "Setting Up Your Business Hours | Calltide",
-    metaTitleEs: "Configurar Tu Horario de Negocio | Calltide",
+    metaTitle: "Setting Up Your Business Hours | Capta",
+    metaTitleEs: "Configurar Tu Horario de Negocio | Capta",
     metaDescription:
       "Set your business hours so Maria books appointments at the right times and handles after-hours calls correctly.",
     metaDescriptionEs:
@@ -501,7 +501,7 @@ Without a services list, Maria has to be more generic. She might say, "I can sch
 
 Follow these steps to add a new service:
 
-1. Log in to your Calltide dashboard.
+1. Log in to your Capta dashboard.
 2. Click **Settings** in the left menu.
 3. Scroll to the **Services** section.
 4. Click the **Add Service** button.
@@ -592,7 +592,7 @@ Sin una lista de servicios, María tiene que ser más genérica. Podría decir, 
 
 Sigue estos pasos para agregar un nuevo servicio:
 
-1. Inicia sesión en tu panel de Calltide.
+1. Inicia sesión en tu panel de Capta.
 2. Haz clic en **Configuración** en el menú de la izquierda.
 3. Desplázate hasta la sección de **Servicios**.
 4. Haz clic en el botón **Agregar Servicio**.
@@ -669,8 +669,8 @@ Si tienes diferentes equipos o técnicos para diferentes servicios, tu lista de 
 - **Actualiza tu lista** cuando agregues o dejes de ofrecer un servicio. Esto mantiene a María precisa.
 
 Una buena lista de servicios hace que María suene como si realmente conociera tu negocio. Dedica unos minutos a configurarla y notarás la diferencia de inmediato.`,
-    metaTitle: "Customizing Your Services List | Calltide",
-    metaTitleEs: "Personalizar Tu Lista de Servicios | Calltide",
+    metaTitle: "Customizing Your Services List | Capta",
+    metaTitleEs: "Personalizar Tu Lista de Servicios | Capta",
     metaDescription:
       "Add and edit your services so Maria can match callers to the right appointment type and sound knowledgeable about your business.",
     metaDescriptionEs:
@@ -696,7 +696,7 @@ Una buena lista de servicios hace que María suene como si realmente conociera t
       "Aprende qué significa cada número y gráfica en tu panel para que puedas rastrear cómo está funcionando María para tu negocio.",
     content: `# Understanding Your Dashboard
 
-Your Calltide dashboard is your command center. It shows you everything Maria is doing for your business — how many calls she handled, how many appointments she booked, and what your customers are asking for. This guide explains every section so you know exactly what you are looking at.
+Your Capta dashboard is your command center. It shows you everything Maria is doing for your business — how many calls she handled, how many appointments she booked, and what your customers are asking for. This guide explains every section so you know exactly what you are looking at.
 
 ## The Overview Page
 
@@ -757,7 +757,7 @@ You can filter your dashboard by date range using the date picker at the top of 
 Your dashboard updates in real time, so new calls and appointments appear as soon as Maria handles them.`,
     contentEs: `# Entender Tu Panel de Control
 
-Tu panel de Calltide es tu centro de control. Te muestra todo lo que María está haciendo por tu negocio — cuántas llamadas contestó, cuántas citas reservó y qué preguntan tus clientes. Esta guía explica cada sección para que sepas exactamente lo que estás viendo.
+Tu panel de Capta es tu centro de control. Te muestra todo lo que María está haciendo por tu negocio — cuántas llamadas contestó, cuántas citas reservó y qué preguntan tus clientes. Esta guía explica cada sección para que sepas exactamente lo que estás viendo.
 
 ## La Página de Resumen
 
@@ -816,12 +816,12 @@ Puedes filtrar tu panel por rango de fechas usando el selector de fechas en la p
 - **Rango personalizado** — Elige cualquier fecha de inicio y fin.
 
 Tu panel se actualiza en tiempo real, así que las nuevas llamadas y citas aparecen tan pronto como María las maneja.`,
-    metaTitle: "Understanding Your Dashboard | Calltide",
-    metaTitleEs: "Entender Tu Panel de Control | Calltide",
+    metaTitle: "Understanding Your Dashboard | Capta",
+    metaTitleEs: "Entender Tu Panel de Control | Capta",
     metaDescription:
-      "Learn what every metric on your Calltide dashboard means — total calls, appointments booked, call trends, and more.",
+      "Learn what every metric on your Capta dashboard means — total calls, appointments booked, call trends, and more.",
     metaDescriptionEs:
-      "Aprende qué significa cada métrica en tu panel de Calltide — total de llamadas, citas reservadas, tendencias y más.",
+      "Aprende qué significa cada métrica en tu panel de Capta — total de llamadas, citas reservadas, tendencias y más.",
     searchKeywords:
       "dashboard, metrics, total calls, appointments booked, missed calls, call duration, stats, overview, activity feed, reports, analytics",
     searchKeywordsEs:
@@ -843,7 +843,7 @@ Tu panel se actualiza en tiempo real, así que las nuevas llamadas y citas apare
       "Aprende cómo María detecta qué idioma usar y cómo configurar tus preferencias de idioma predeterminado.",
     content: `# Language Settings — English and Spanish
 
-One of the biggest advantages of Calltide is that Maria speaks both English and Spanish fluently. For home service businesses in Texas, this means you can serve every customer who calls — no matter what language they speak. This guide explains how language detection works and how to adjust your settings.
+One of the biggest advantages of Capta is that Maria speaks both English and Spanish fluently. For home service businesses in Texas, this means you can serve every customer who calls — no matter what language they speak. This guide explains how language detection works and how to adjust your settings.
 
 ## How Maria Detects Language
 
@@ -876,7 +876,7 @@ The entire rest of the call continues in Spanish.
 
 Your default language is the language Maria uses for the initial greeting. To change it:
 
-1. Log in to your Calltide dashboard.
+1. Log in to your Capta dashboard.
 2. Go to **Settings**.
 3. Find the **Language** section.
 4. Choose your **default language**: English or Spanish.
@@ -919,7 +919,7 @@ When you review calls in your dashboard, each call shows a language tag — eith
 Yes. Some callers mix both languages, which is common in Texas. Maria follows the caller's lead and responds in whatever language they are using at that moment.
 
 **Can I turn off one language?**
-No, and we do not recommend it. Bilingual support is one of the biggest reasons customers choose Calltide. Keeping both languages active means you never lose a caller because of a language barrier.
+No, and we do not recommend it. Bilingual support is one of the biggest reasons customers choose Capta. Keeping both languages active means you never lose a caller because of a language barrier.
 
 **Does language detection work with accents?**
 Yes. Maria is trained to understand a wide range of English and Spanish accents, including regional Texas accents and various Latin American Spanish dialects.
@@ -927,7 +927,7 @@ Yes. Maria is trained to understand a wide range of English and Spanish accents,
 Bilingual call handling is automatic. Once you set your default language, Maria takes care of the rest.`,
     contentEs: `# Configuración de Idioma — Inglés y Español
 
-Una de las mayores ventajas de Calltide es que María habla inglés y español con fluidez. Para negocios de servicios para el hogar en Texas, esto significa que puedes atender a cada cliente que llame — sin importar qué idioma hable. Esta guía explica cómo funciona la detección de idioma y cómo ajustar tu configuración.
+Una de las mayores ventajas de Capta es que María habla inglés y español con fluidez. Para negocios de servicios para el hogar en Texas, esto significa que puedes atender a cada cliente que llame — sin importar qué idioma hable. Esta guía explica cómo funciona la detección de idioma y cómo ajustar tu configuración.
 
 ## Cómo María Detecta el Idioma
 
@@ -960,7 +960,7 @@ El resto de la llamada continúa en inglés.
 
 Tu idioma predeterminado es el idioma que María usa para el saludo inicial. Para cambiarlo:
 
-1. Inicia sesión en tu panel de Calltide.
+1. Inicia sesión en tu panel de Capta.
 2. Ve a **Configuración**.
 3. Busca la sección de **Idioma**.
 4. Elige tu **idioma predeterminado**: Inglés o Español.
@@ -1003,13 +1003,13 @@ Cuando revisas las llamadas en tu panel, cada llamada muestra una etiqueta de id
 Sí. Algunos clientes mezclan ambos idiomas, lo cual es común en Texas. María sigue el ejemplo del cliente y responde en cualquier idioma que esté usando en ese momento.
 
 **¿Puedo desactivar un idioma?**
-No, y no lo recomendamos. El soporte bilingüe es una de las principales razones por las que los clientes eligen Calltide. Mantener ambos idiomas activos significa que nunca pierdes a una persona por una barrera de idioma.
+No, y no lo recomendamos. El soporte bilingüe es una de las principales razones por las que los clientes eligen Capta. Mantener ambos idiomas activos significa que nunca pierdes a una persona por una barrera de idioma.
 
 **¿Funciona la detección de idioma con acentos?**
 Sí. María está entrenada para entender una amplia gama de acentos en inglés y español, incluyendo acentos regionales de Texas y varios dialectos del español latinoamericano.
 
 El manejo bilingüe de llamadas es automático. Una vez que configuras tu idioma predeterminado, María se encarga del resto.`,
-    metaTitle: "Language Settings — English & Spanish | Calltide",
+    metaTitle: "Language Settings — English & Spanish | Capta",
     metaTitleEs: "Configuración de Idioma — Inglés y Español",
     metaDescription:
       "Learn how Maria detects English or Spanish automatically and configure your default language for your AI receptionist.",

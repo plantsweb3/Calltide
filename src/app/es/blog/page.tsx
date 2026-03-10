@@ -17,12 +17,12 @@ export const dynamic = "force-dynamic";
 const POSTS_PER_PAGE = 10;
 
 export const metadata = {
-  title: "Blog — Calltide (Español)",
+  title: "Blog — Capta (Español)",
   description: "Consejos, datos e ideas sobre llamadas perdidas, recepcionistas IA y cómo hacer crecer su negocio de servicios.",
   openGraph: {
-    title: "Blog de Calltide (Español)",
+    title: "Blog de Capta (Español)",
     description: "Consejos, datos e ideas sobre llamadas perdidas, recepcionistas IA y cómo hacer crecer su negocio.",
-    url: "https://calltide.app/es/blog",
+    url: "https://capta.app/es/blog",
   },
   alternates: {
     canonical: "/es/blog",

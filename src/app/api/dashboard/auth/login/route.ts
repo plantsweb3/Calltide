@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
     const cookieValue = await signClientCookie(businessId, secret, account.id, maxAge);
 
     const response = NextResponse.json({ success: true });
-    response.cookies.set("calltide_client", cookieValue, {
+    response.cookies.set("capta_client", cookieValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

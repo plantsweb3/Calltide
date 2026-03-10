@@ -117,7 +117,7 @@ function estimatePhaseReached(
     aiText.includes("thank you for calling") ||
     aiText.includes("how can i help you today");
   const reachedClose =
-    aiText.includes("14-day free trial") ||
+    aiText.includes("money-back guarantee") ||
     aiText.includes("sign up right here") ||
     aiText.includes("$397 on annual") ||
     aiText.includes("no commitment");

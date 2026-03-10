@@ -64,10 +64,10 @@ export async function sendDailyDigest(businessId: string): Promise<boolean> {
     try {
       const { subject, html } = formatDigestEmail(data, biz.name, ownerName, receptionistName);
       const resend = getResend();
-      const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+      const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
       await resend.emails.send({
         from,
-        replyTo: "hello@calltide.app",
+        replyTo: "hello@capta.app",
         to: biz.ownerEmail,
         subject,
         html,

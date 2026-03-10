@@ -5,7 +5,7 @@ import { legalMarkdown } from "@/lib/legal-markdown";
 import { DPA_ES } from "@/lib/legal/content";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Acuerdo de Procesamiento de Datos — Calltide", description: "Acuerdo de Procesamiento de Datos de Calltide" };
+export const metadata = { title: "Acuerdo de Procesamiento de Datos — Capta", description: "Acuerdo de Procesamiento de Datos de Capta" };
 
 export default async function DpaEsPage() {
   let content = DPA_ES;

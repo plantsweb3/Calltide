@@ -3,7 +3,7 @@ import { subProcessors } from "@/db/schema";
 import { SUB_PROCESSORS } from "@/lib/legal/content";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Sub-Processors — Calltide", description: "Third-party service providers that process data on behalf of Calltide" };
+export const metadata = { title: "Sub-Processors — Capta", description: "Third-party service providers that process data on behalf of Capta" };
 
 type Processor = {
   name: string;
@@ -35,7 +35,7 @@ export default async function SubProcessorsPage() {
         <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: "#1A1D24" }}>Sub-Processors</h1>
       </div>
       <p className="mb-8 text-sm leading-relaxed" style={{ color: "#64748B" }}>
-        The following third-party service providers process data on behalf of Calltide as part of delivering our AI receptionist platform.
+        The following third-party service providers process data on behalf of Capta as part of delivering our AI receptionist platform.
       </p>
 
       <div className="overflow-hidden rounded-xl border shadow-sm" style={{ borderColor: "#E2E8F0" }}>

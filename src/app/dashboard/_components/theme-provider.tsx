@@ -27,7 +27,7 @@ export default function ThemeProvider({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("calltide-theme") as Theme | null;
+    const stored = localStorage.getItem("capta-theme") as Theme | null;
     if (stored === "light" || stored === "dark") {
       setTheme(stored);
     }
@@ -36,7 +36,7 @@ export default function ThemeProvider({
 
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem("calltide-theme", theme);
+      localStorage.setItem("capta-theme", theme);
     }
   }, [theme, mounted]);
 

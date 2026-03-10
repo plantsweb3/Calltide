@@ -48,11 +48,11 @@ const translations = {
     jobLabel: "What's your average job value?",
     callsLabel: "How many calls do you miss per week?",
     losing: "Total recovered",
-    costs: "Calltide costs",
+    costs: "Capta costs",
     roi: "Your ROI",
     perMonth: "/month",
     return: "return",
-    annual: (amount: string) => <>That&apos;s <span className="font-extrabold text-white">{amount} saved per year</span> after Calltide.</>,
+    annual: (amount: string) => <>That&apos;s <span className="font-extrabold text-white">{amount} saved per year</span> after Capta.</>,
     cta: "Stop Losing Money",
     showFull: "Show Full ROI",
     hideFull: "Hide Full ROI",
@@ -68,11 +68,11 @@ const translations = {
     jobLabel: "¿Cuál es el valor promedio de tu trabajo?",
     callsLabel: "¿Cuántas llamadas pierdes por semana?",
     losing: "Total recuperado",
-    costs: "Calltide cuesta",
+    costs: "Capta cuesta",
     roi: "Tu ROI",
     perMonth: "/mes",
     return: "retorno",
-    annual: (amount: string) => <>Eso es <span className="font-extrabold text-white">{amount} ahorrados al año</span> con Calltide.</>,
+    annual: (amount: string) => <>Eso es <span className="font-extrabold text-white">{amount} ahorrados al año</span> con Capta.</>,
     cta: "Deja de Perder Dinero",
     showFull: "Ver ROI Completo",
     hideFull: "Ocultar ROI Completo",
@@ -101,9 +101,9 @@ export function ROICalculator({ lang = "en" }: { lang?: "en" | "es" }) {
   const followUpRevenue = showFull ? Math.round(missedCalls * 2 * (followUpRate / 100) * jobValue * 4.33 * 0.3) : 0;
   const recallRevenue = showFull ? recallValue : 0;
   const totalRecovered = missedRevenue + followUpRevenue + recallRevenue;
-  const calltideCost = 497;
-  const netSavings = totalRecovered - calltideCost;
-  const roiMultiple = totalRecovered > 0 ? Math.round(((totalRecovered - calltideCost) / calltideCost) * 100) / 100 : 0;
+  const captaCost = 497;
+  const netSavings = totalRecovered - captaCost;
+  const roiMultiple = totalRecovered > 0 ? Math.round(((totalRecovered - captaCost) / captaCost) * 100) / 100 : 0;
   const roiDisplay = Math.max(0, Math.round(roiMultiple * 10) / 10);
   const annualSavings = Math.max(0, netSavings * 12);
 
@@ -276,7 +276,7 @@ export function ROICalculator({ lang = "en" }: { lang?: "en" | "es" }) {
             <p className="text-sm text-slate-500 mt-1">{t.perMonth}</p>
           </div>
 
-          {/* Calltide Cost */}
+          {/* Capta Cost */}
           <div>
             <p className="text-sm font-medium text-slate-500 mb-2">{t.costs}</p>
             <p className="text-4xl font-black tracking-tight tabular-nums text-white md:text-6xl">

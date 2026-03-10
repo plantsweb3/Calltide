@@ -33,9 +33,7 @@ export default function DashboardLayout({
             <path d="M3 6h18M3 12h18M3 18h18" />
           </svg>
         </button>
-        <span className="ml-3 text-lg font-bold" style={{ color: "var(--db-accent)" }}>
-          Calltide
-        </span>
+        <img src="/images/logo-inline-navy.webp" alt="Capta" className="ml-3 h-6 w-auto" />
       </div>
 
       <main

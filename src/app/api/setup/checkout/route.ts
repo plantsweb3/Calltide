@@ -9,7 +9,7 @@ import { reportError } from "@/lib/error-reporting";
 import { getStripe } from "@/lib/stripe/client";
 import { cookies } from "next/headers";
 
-const COOKIE_NAME = "calltide_setup";
+const COOKIE_NAME = "capta_setup";
 
 const schema = z.object({
   plan: z.enum(["monthly", "annual"]).default("monthly"),
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       .where(eq(setupSessions.id, session.id));
 
     const stripe = getStripe();
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://calltide.app";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
 
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -88,7 +88,6 @@ export async function POST(req: NextRequest) {
       payment_method_collection: "always",
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
-        trial_period_days: 14,
         metadata: {
           source: "setup_page",
           plan,

@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
   // Require a valid dashboard or admin session (middleware now verifies signatures)
   const businessId = req.headers.get("x-business-id");
-  const hasAdminCookie = req.cookies.has("calltide_admin");
+  const hasAdminCookie = req.cookies.has("capta_admin");
   if (!businessId && !hasAdminCookie) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

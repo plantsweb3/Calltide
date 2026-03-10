@@ -23,7 +23,7 @@ import { BRAND_COLOR, COMPANY_ADDRESS, MARKETING_URL } from "@/lib/constants";
 
 // ── Constants ──
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.calltide.app";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.capta.app";
 const FONT_STACK = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
 const CALL_MILESTONES = [50, 100, 250, 500, 1000];
@@ -72,10 +72,10 @@ function emailWrapper(content: string, unsubscribeUrl: string): string {
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;font-family:${FONT_STACK};background:#f8fafc;">
 <div style="max-width:600px;margin:0 auto;padding:32px 24px;">
-  <img src="${MARKETING_URL}/images/logo.webp" alt="Calltide" style="height:24px;margin-bottom:24px;" />
+  <img src="${MARKETING_URL}/images/logo.png" alt="Capta" style="height:24px;margin-bottom:24px;" />
   ${content}
   <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;">
-    <p>Calltide — AI Voice Agents for Local Businesses</p>
+    <p>Capta — AI Voice Agents for Local Businesses</p>
     <p style="margin-top:8px;">${COMPANY_ADDRESS}</p>
     <p style="margin-top:8px;">
       <a href="${unsubscribeUrl}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>
@@ -144,7 +144,7 @@ async function generateFirstWeekReport(business: Business, now: Date): Promise<s
     ? `Your First Week Report — ${business.name}`
     : `Su Reporte de la Primera Semana — ${business.name}`;
 
-  const headline = isEn ? "Your First Week with Calltide" : "Su Primera Semana con Calltide";
+  const headline = isEn ? "Your First Week with Capta" : "Su Primera Semana con Capta";
 
   const gradeColor = grade === "A" ? "#22c55e" : grade === "B" ? "#3b82f6" : grade === "C" ? "#f59e0b" : "#ef4444";
 
@@ -232,7 +232,7 @@ async function generateFirstWeekReport(business: Business, now: Date): Promise<s
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Calltide <success@calltide.app>",
+      from: "Capta <success@capta.app>",
       to: email,
       subject,
       html,
@@ -430,7 +430,7 @@ async function generateMonthlyReport(business: Business, now: Date): Promise<str
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Calltide <success@calltide.app>",
+      from: "Capta <success@capta.app>",
       to: email,
       subject,
       html,
@@ -492,8 +492,8 @@ async function sendNpsSurvey(business: Business, now: Date): Promise<string> {
 
   const body = isEn
     ? `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
-        <h2 style="color:#0f172a;margin:0 0 8px;">How likely are you to recommend Calltide?</h2>
-        <p style="color:#475569;font-size:15px;line-height:1.7;margin:0 0 20px;">Hi ${business.ownerName.split(" ")[0]}, we'd love your honest feedback. On a scale of 1-10, how likely are you to recommend Calltide to another business owner?</p>
+        <h2 style="color:#0f172a;margin:0 0 8px;">How likely are you to recommend Capta?</h2>
+        <p style="color:#475569;font-size:15px;line-height:1.7;margin:0 0 20px;">Hi ${business.ownerName.split(" ")[0]}, we'd love your honest feedback. On a scale of 1-10, how likely are you to recommend Capta to another business owner?</p>
 
         <div style="text-align:center;margin:24px 0;">
           ${scoreButtons}
@@ -507,8 +507,8 @@ async function sendNpsSurvey(business: Business, now: Date): Promise<string> {
         <p style="color:#94a3b8;font-size:13px;margin:20px 0 0;text-align:center;">Just click a number — takes 2 seconds.</p>
       </div>`
     : `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
-        <h2 style="color:#0f172a;margin:0 0 8px;">¿Qué tan probable es que recomiende Calltide?</h2>
-        <p style="color:#475569;font-size:15px;line-height:1.7;margin:0 0 20px;">Hola ${business.ownerName.split(" ")[0]}, nos encantaría su opinión honesta. En una escala de 1-10, ¿qué tan probable es que recomiende Calltide a otro dueño de negocio?</p>
+        <h2 style="color:#0f172a;margin:0 0 8px;">¿Qué tan probable es que recomiende Capta?</h2>
+        <p style="color:#475569;font-size:15px;line-height:1.7;margin:0 0 20px;">Hola ${business.ownerName.split(" ")[0]}, nos encantaría su opinión honesta. En una escala de 1-10, ¿qué tan probable es que recomiende Capta a otro dueño de negocio?</p>
 
         <div style="text-align:center;margin:24px 0;">
           ${scoreButtons}
@@ -527,7 +527,7 @@ async function sendNpsSurvey(business: Business, now: Date): Promise<string> {
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Calltide <success@calltide.app>",
+      from: "Capta <success@capta.app>",
       to: email,
       subject,
       html,
@@ -575,7 +575,7 @@ async function sendMilestoneEmail(business: Business, milestone: string, now: Da
         <h2 style="color:#0f172a;margin:0 0 8px;">Congratulations!</h2>
         <p style="color:${BRAND_COLOR};font-size:24px;font-weight:800;margin:0 0 16px;">${milestone}</p>
         <p style="color:#475569;font-size:15px;line-height:1.7;">
-          ${business.ownerName.split(" ")[0]}, your business just hit an incredible milestone with Calltide.
+          ${business.ownerName.split(" ")[0]}, your business just hit an incredible milestone with Capta.
           This is a testament to the growth you're driving.
         </p>
         <p style="color:#475569;font-size:15px;line-height:1.7;">Keep up the amazing work!</p>
@@ -592,7 +592,7 @@ async function sendMilestoneEmail(business: Business, milestone: string, now: Da
         <h2 style="color:#0f172a;margin:0 0 8px;">¡Felicidades!</h2>
         <p style="color:${BRAND_COLOR};font-size:24px;font-weight:800;margin:0 0 16px;">${milestone}</p>
         <p style="color:#475569;font-size:15px;line-height:1.7;">
-          ${business.ownerName.split(" ")[0]}, su negocio acaba de alcanzar un hito increíble con Calltide.
+          ${business.ownerName.split(" ")[0]}, su negocio acaba de alcanzar un hito increíble con Capta.
           Esto es un testimonio del crecimiento que está impulsando.
         </p>
         <p style="color:#475569;font-size:15px;line-height:1.7;">¡Siga con el excelente trabajo!</p>
@@ -610,7 +610,7 @@ async function sendMilestoneEmail(business: Business, milestone: string, now: Da
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Calltide <success@calltide.app>",
+      from: "Capta <success@capta.app>",
       to: email,
       subject,
       html,
@@ -672,7 +672,7 @@ async function sendComprehensiveReview(business: Business, dayMark: number, now:
   const body = isEn
     ? `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
         <h2 style="color:#0f172a;margin:0 0 8px;">Your ${periodLabel} Review</h2>
-        <p style="color:#475569;font-size:15px;line-height:1.7;">Here's a snapshot of everything Calltide has done for ${business.name} over the past ${dayMark} days:</p>
+        <p style="color:#475569;font-size:15px;line-height:1.7;">Here's a snapshot of everything Capta has done for ${business.name} over the past ${dayMark} days:</p>
 
         <table style="width:100%;border-collapse:collapse;margin:16px 0;">
           <tr>
@@ -690,7 +690,7 @@ async function sendComprehensiveReview(business: Business, dayMark: number, now:
         </table>
 
         <p style="color:#475569;font-size:14px;line-height:1.7;margin-top:16px;">
-          Thank you for trusting Calltide with your business. We're committed to helping you grow.
+          Thank you for trusting Capta with your business. We're committed to helping you grow.
         </p>
       </div>
 
@@ -699,7 +699,7 @@ async function sendComprehensiveReview(business: Business, dayMark: number, now:
       </a>`
     : `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
         <h2 style="color:#0f172a;margin:0 0 8px;">Su Revisión de ${periodLabel}</h2>
-        <p style="color:#475569;font-size:15px;line-height:1.7;">Aquí hay un resumen de todo lo que Calltide ha hecho por ${business.name} en los últimos ${dayMark} días:</p>
+        <p style="color:#475569;font-size:15px;line-height:1.7;">Aquí hay un resumen de todo lo que Capta ha hecho por ${business.name} en los últimos ${dayMark} días:</p>
 
         <table style="width:100%;border-collapse:collapse;margin:16px 0;">
           <tr>
@@ -717,7 +717,7 @@ async function sendComprehensiveReview(business: Business, dayMark: number, now:
         </table>
 
         <p style="color:#475569;font-size:14px;line-height:1.7;margin-top:16px;">
-          Gracias por confiar en Calltide con su negocio. Estamos comprometidos a ayudarle a crecer.
+          Gracias por confiar en Capta con su negocio. Estamos comprometidos a ayudarle a crecer.
         </p>
       </div>
 
@@ -730,7 +730,7 @@ async function sendComprehensiveReview(business: Business, dayMark: number, now:
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Calltide <success@calltide.app>",
+      from: "Capta <success@capta.app>",
       to: email,
       subject,
       html,
@@ -950,14 +950,14 @@ async function sendAnnualPlanNudge(business: Business, now: Date): Promise<strin
   const estRevenue = totalAppts * avgJobValue;
 
   const subject = isEn
-    ? `Save $1,200/year on Calltide — ${business.name}`
-    : `Ahorre $1,200/año en Calltide — ${business.name}`;
+    ? `Save $1,200/year on Capta — ${business.name}`
+    : `Ahorre $1,200/año en Capta — ${business.name}`;
 
   const body = isEn
     ? `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
         <h2 style="color:#0f172a;margin:0 0 16px;">Hey ${ownerFirst}, you've earned a better rate.</h2>
         <p style="color:#475569;font-size:15px;line-height:1.7;">
-          You've been with Calltide for <strong>${age} days</strong>. In that time, ${business.receptionistName || "Maria"} has handled
+          You've been with Capta for <strong>${age} days</strong>. In that time, ${business.receptionistName || "Maria"} has handled
           <strong>${totalCalls} calls</strong> and booked <strong>${totalAppts} appointments</strong>
           worth an estimated <strong>${fmt$(estRevenue)}</strong>.
         </p>
@@ -993,7 +993,7 @@ async function sendAnnualPlanNudge(business: Business, now: Date): Promise<strin
     : `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
         <h2 style="color:#0f172a;margin:0 0 16px;">Hola ${ownerFirst}, se ha ganado una mejor tarifa.</h2>
         <p style="color:#475569;font-size:15px;line-height:1.7;">
-          Lleva <strong>${age} días</strong> con Calltide. En ese tiempo, ${business.receptionistName || "Maria"} ha manejado
+          Lleva <strong>${age} días</strong> con Capta. En ese tiempo, ${business.receptionistName || "Maria"} ha manejado
           <strong>${totalCalls} llamadas</strong> y agendado <strong>${totalAppts} citas</strong>
           con un valor estimado de <strong>${fmt$(estRevenue)}</strong>.
         </p>
@@ -1032,7 +1032,7 @@ async function sendAnnualPlanNudge(business: Business, now: Date): Promise<strin
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Calltide <success@calltide.app>",
+      from: "Capta <success@capta.app>",
       to: email,
       subject,
       html,
@@ -1100,14 +1100,14 @@ async function processHandoff(
       const isEn = business.defaultLanguage !== "es";
 
       const subject = isEn
-        ? `We're here for you, ${business.ownerName.split(" ")[0]} — let's make Calltide work better`
+        ? `We're here for you, ${business.ownerName.split(" ")[0]} — let's make Capta work better`
         : `Estamos aquí para ayudarle, ${business.ownerName.split(" ")[0]}`;
 
       const body = isEn
         ? `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
             <h2 style="color:#0f172a;margin:0 0 12px;">We Want to Help</h2>
             <p style="color:#475569;font-size:15px;line-height:1.7;">
-              We noticed your usage of Calltide might not be where you'd like it to be. Our team wants to make sure
+              We noticed your usage of Capta might not be where you'd like it to be. Our team wants to make sure
               you're getting the most value from your AI receptionist.
             </p>
             <p style="color:#475569;font-size:15px;line-height:1.7;">
@@ -1121,7 +1121,7 @@ async function processHandoff(
         : `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
             <h2 style="color:#0f172a;margin:0 0 12px;">Queremos Ayudarle</h2>
             <p style="color:#475569;font-size:15px;line-height:1.7;">
-              Notamos que su uso de Calltide podría no estar donde le gustaría. Nuestro equipo quiere asegurarse
+              Notamos que su uso de Capta podría no estar donde le gustaría. Nuestro equipo quiere asegurarse
               de que está obteniendo el máximo valor de su recepcionista de IA.
             </p>
             <p style="color:#475569;font-size:15px;line-height:1.7;">
@@ -1136,7 +1136,7 @@ async function processHandoff(
       try {
         const resend = getResend();
         await resend.emails.send({
-          from: "Calltide <success@calltide.app>",
+          from: "Capta <success@capta.app>",
           to: business.ownerEmail,
           subject,
           html: emailWrapper(body, unsubUrl(business.ownerEmail)),

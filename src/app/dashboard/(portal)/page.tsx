@@ -137,10 +137,10 @@ export default function OverviewPage() {
     data.appointmentsThisWeek === 0
   ) {
     const steps = [
-      { label: "Forward your business number", desc: "Set up call forwarding from your existing phone number to your Calltide receptionist number.", href: "/dashboard/settings", icon: <IconPhone size={18} /> },
+      { label: "Forward your business number", desc: "Set up call forwarding from your existing phone number to your Capta receptionist number.", href: "/dashboard/settings", icon: <IconPhone size={18} /> },
       { label: "Customize your receptionist", desc: "Set her name, greeting, personality, and the services you offer.", href: "/dashboard/settings", icon: <IconSparkles size={18} /> },
       { label: "Set your business hours", desc: "Tell her when you're available so she books appointments at the right times.", href: "/dashboard/settings", icon: <IconClock size={18} /> },
-      { label: "Make a test call", desc: "Call your Calltide number to hear how she handles a real conversation.", icon: <IconTarget size={18} /> },
+      { label: "Make a test call", desc: "Call your Capta number to hear how she handles a real conversation.", icon: <IconTarget size={18} /> },
     ];
 
     return (
@@ -150,7 +150,7 @@ export default function OverviewPage() {
             className="text-2xl font-semibold"
             style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
           >
-            {getGreeting()}, welcome to Calltide
+            {getGreeting()}, welcome to Capta
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
             Let&apos;s get {receptionistName} answering calls in the next 10 minutes.

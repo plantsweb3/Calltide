@@ -51,12 +51,12 @@ vi.mock("@/db/schema", () => ({
 vi.mock("@/lib/env", () => ({
   env: {
     ADMIN_PASSWORD: "test",
-    NEXT_PUBLIC_APP_URL: "https://app.calltide.test",
+    NEXT_PUBLIC_APP_URL: "https://app.capta.test",
     RESEND_API_KEY: "re_test",
     TWILIO_ACCOUNT_SID: "AC_test",
     TWILIO_AUTH_TOKEN: "test_token",
     TWILIO_PHONE_NUMBER: "+15125559999",
-    OUTREACH_FROM_EMAIL: "test@calltide.test",
+    OUTREACH_FROM_EMAIL: "test@capta.test",
   },
 }));
 

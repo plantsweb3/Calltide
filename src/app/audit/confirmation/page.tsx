@@ -21,7 +21,7 @@ const content = {
       { speaker: "Caller", text: "Perfect, thank you!" },
       { speaker: "Maria (AI)", text: "You're all set! You'll receive a confirmation text shortly. Is there anything else I can help with?" },
     ],
-    back: "Back to Calltide",
+    back: "Back to Capta",
     blog: "Read our blog",
   },
   es: {
@@ -38,7 +38,7 @@ const content = {
       { speaker: "Llamante", text: "¡Perfecto, gracias!" },
       { speaker: "Maria (IA)", text: "¡Listo! Recibirá un mensaje de confirmación pronto. ¿Hay algo más en lo que pueda ayudarle?" },
     ],
-    back: "Volver a Calltide",
+    back: "Volver a Capta",
     blog: "Leer nuestro blog",
   },
 };
@@ -56,7 +56,7 @@ function ConfirmationContent() {
       <nav className="border-b border-cream-border bg-white px-6 py-3">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link href="/">
-            <img src="/images/logo.webp" alt="Calltide" className="h-6 w-auto" />
+            <img src="/images/logo-inline-navy.webp" alt="Capta" className="h-6 w-auto" />
           </Link>
           <Link href="/audit" className="text-sm text-charcoal-muted hover:text-charcoal transition-colors">
             {t.back}

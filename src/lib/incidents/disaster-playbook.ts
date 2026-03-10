@@ -214,8 +214,8 @@ async function notifyClientsSmsPlaybook(service: string): Promise<void> {
     if (!smsCheck.allowed) continue;
 
     const body = biz.lang === "es"
-      ? `[Calltide] Estamos experimentando una interrupción temporal del servicio (${service}). Las llamadas se enviarán al buzón de voz hasta que se resuelva. Disculpe las molestias.`
-      : `[Calltide] We're experiencing a temporary service disruption (${service}). Calls will go to voicemail until resolved. We apologize for the inconvenience.`;
+      ? `[Capta] Estamos experimentando una interrupción temporal del servicio (${service}). Las llamadas se enviarán al buzón de voz hasta que se resuelva. Disculpe las molestias.`
+      : `[Capta] We're experiencing a temporary service disruption (${service}). Calls will go to voicemail until resolved. We apologize for the inconvenience.`;
 
     try {
       await client.messages.create({ to: biz.phone, from, body });
@@ -228,7 +228,7 @@ async function notifyClientsSmsPlaybook(service: string): Promise<void> {
 async function notifyClientsEmailPlaybook(service: string): Promise<void> {
   if (!env.RESEND_API_KEY) return;
   const resend = getResend();
-  const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+  const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
 
   const activeClients = await db
     .select({ id: businesses.id, email: businesses.ownerEmail, lang: businesses.defaultLanguage })
@@ -240,10 +240,10 @@ async function notifyClientsEmailPlaybook(service: string): Promise<void> {
 
     const isEs = biz.lang === "es";
     const subject = isEs
-      ? `Calltide — Interrupción temporal del servicio`
-      : `Calltide — Temporary service disruption`;
+      ? `Capta — Interrupción temporal del servicio`
+      : `Capta — Temporary service disruption`;
     const html = `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;">
-  <div style="margin-bottom:24px;"><span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span></div>
+  <div style="margin-bottom:24px;"><span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span></div>
   <div style="background:#fef3c715;border:1px solid #f59e0b30;border-radius:8px;padding:16px;margin-bottom:24px;">
     <p style="color:#f59e0b;font-weight:600;margin:0 0 8px;">${isEs ? "Aviso de Servicio" : "Service Notice"}</p>
     <p style="color:#1A1D24;margin:0;">${isEs

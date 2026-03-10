@@ -47,7 +47,7 @@ export const SHARED_TOOLS: ToolDefinition[] = [
   },
   {
     name: "escalate_to_owner",
-    description: "Escalate an issue to the Calltide owner via SMS and email.",
+    description: "Escalate an issue to the Capta owner via SMS and email.",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -121,7 +121,7 @@ export const CHURN_TOOLS = SHARED_TOOLS.filter((t) =>
 
 async function toolSendEmail(input: Record<string, unknown>): Promise<string> {
   const resend = getResend();
-  const from = env.OUTREACH_FROM_EMAIL ?? "Calltide Support <support@calltide.app>";
+  const from = env.OUTREACH_FROM_EMAIL ?? "Capta Support <support@capta.app>";
 
   const { data, error } = await resend.emails.send({
     from,
@@ -202,7 +202,7 @@ async function toolEscalateToOwner(input: Record<string, unknown>, agentName: st
     try {
       const resend = getResend();
       await resend.emails.send({
-        from: env.OUTREACH_FROM_EMAIL ?? "Calltide Agents <agents@calltide.app>",
+        from: env.OUTREACH_FROM_EMAIL ?? "Capta Agents <agents@capta.app>",
         to: ownerEmail,
         subject: `[${urgency.toUpperCase()}] Agent Escalation: ${reason.slice(0, 80)}`,
         html: `<div style="font-family:sans-serif;max-width:600px;">

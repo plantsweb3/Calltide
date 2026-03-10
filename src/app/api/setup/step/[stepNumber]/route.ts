@@ -7,7 +7,7 @@ import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-reporting";
 import { cookies } from "next/headers";
 
-const COOKIE_NAME = "calltide_setup";
+const COOKIE_NAME = "capta_setup";
 
 // Per-step Zod schemas
 const stepSchemas: Record<number, z.ZodSchema> = {

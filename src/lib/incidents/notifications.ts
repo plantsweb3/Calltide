@@ -18,7 +18,7 @@ import { reportError } from "@/lib/error-reporting";
 type IncidentRow = typeof incidents.$inferSelect;
 type NotificationEvent = "created" | "update" | "resolved";
 
-const FROM_EMAIL = "Calltide Status <status@contact.calltide.app>";
+const FROM_EMAIL = "Capta Status <status@contact.capta.app>";
 const OWNER_PHONE = env.OWNER_PHONE;
 const OWNER_EMAIL = env.OWNER_EMAIL;
 
@@ -188,23 +188,23 @@ async function logNotification(
 function getOwnerSmsBody(incident: IncidentRow, event: NotificationEvent): string {
   const sev = (incident.severity ?? "").toUpperCase();
   if (event === "created") {
-    return `[Calltide ${sev}] ${incident.title}. ${incident.clientsAffected} clients may be affected. Check admin dashboard for details.`;
+    return `[Capta ${sev}] ${incident.title}. ${incident.clientsAffected} clients may be affected. Check admin dashboard for details.`;
   }
   if (event === "resolved") {
-    return `[Calltide RESOLVED] ${incident.title} resolved after ${formatDuration(incident.duration ?? 0)}. All systems operational.`;
+    return `[Capta RESOLVED] ${incident.title} resolved after ${formatDuration(incident.duration ?? 0)}. All systems operational.`;
   }
-  return `[Calltide UPDATE] ${incident.title} — severity escalated to ${sev}. Check admin dashboard.`;
+  return `[Capta UPDATE] ${incident.title} — severity escalated to ${sev}. Check admin dashboard.`;
 }
 
 function getClientSmsBody(incident: IncidentRow, event: NotificationEvent, lang: string): string {
   if (lang === "es") {
-    if (event === "created") return `[Calltide] Estamos experimentando problemas con nuestro servicio. Estamos trabajando para resolverlo. Más info: ${env.NEXT_PUBLIC_APP_URL}/es/status`;
-    if (event === "resolved") return `[Calltide] El problema ha sido resuelto. Todos los sistemas están operativos. Gracias por su paciencia.`;
-    return `[Calltide] Actualización: seguimos trabajando en resolver el problema. Más info: ${env.NEXT_PUBLIC_APP_URL}/es/status`;
+    if (event === "created") return `[Capta] Estamos experimentando problemas con nuestro servicio. Estamos trabajando para resolverlo. Más info: ${env.NEXT_PUBLIC_APP_URL}/es/status`;
+    if (event === "resolved") return `[Capta] El problema ha sido resuelto. Todos los sistemas están operativos. Gracias por su paciencia.`;
+    return `[Capta] Actualización: seguimos trabajando en resolver el problema. Más info: ${env.NEXT_PUBLIC_APP_URL}/es/status`;
   }
-  if (event === "created") return `[Calltide] We're experiencing service issues. We're working to resolve this. Updates: ${env.NEXT_PUBLIC_APP_URL}/status`;
-  if (event === "resolved") return `[Calltide] The issue has been resolved. All systems operational. Thank you for your patience.`;
-  return `[Calltide] Update: we're continuing to work on the issue. Updates: ${env.NEXT_PUBLIC_APP_URL}/status`;
+  if (event === "created") return `[Capta] We're experiencing service issues. We're working to resolve this. Updates: ${env.NEXT_PUBLIC_APP_URL}/status`;
+  if (event === "resolved") return `[Capta] The issue has been resolved. All systems operational. Thank you for your patience.`;
+  return `[Capta] Update: we're continuing to work on the issue. Updates: ${env.NEXT_PUBLIC_APP_URL}/status`;
 }
 
 // ── Email Templates ──
@@ -215,14 +215,14 @@ function emailWrapper(content: string): string {
 <body style="margin:0;padding:0;background:#f8fafc;font-family:Inter,-apple-system,sans-serif;">
 <div style="max-width:600px;margin:0 auto;padding:24px;">
   <div style="text-align:center;padding:16px 0;">
-    <span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span>
+    <span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span>
     <span style="font-size:11px;display:inline-block;margin-left:8px;padding:2px 6px;background:#f1f5f9;border-radius:4px;color:#64748b;">STATUS</span>
   </div>
   <div style="background:white;border-radius:12px;border:1px solid #e2e8f0;padding:32px;">
     ${content}
   </div>
   <div style="text-align:center;padding:24px 0;font-size:12px;color:#94a3b8;">
-    <p>Calltide Inc. — AI-Powered Business Communications</p>
+    <p>Capta LLC — AI-Powered Business Communications</p>
     <p><a href="${env.NEXT_PUBLIC_APP_URL}/status" style="color:#C59A27;text-decoration:none;">View Status Page</a></p>
   </div>
 </div></body></html>`;
@@ -293,7 +293,7 @@ function getClientEmailContent(incident: IncidentRow, event: NotificationEvent, 
   if (lang === "es") {
     if (event === "created") {
       return {
-        subject: `Calltide — Problema de servicio detectado`,
+        subject: `Capta — Problema de servicio detectado`,
         html: emailWrapper(`
           <div style="padding:8px 12px;border-radius:8px;background:${color}15;border-left:4px solid ${color};margin-bottom:16px;">
             <span style="font-weight:600;color:${color};">INCIDENTE ACTIVO</span>
@@ -306,7 +306,7 @@ function getClientEmailContent(incident: IncidentRow, event: NotificationEvent, 
     }
     if (event === "resolved") {
       return {
-        subject: `Calltide — Problema resuelto`,
+        subject: `Capta — Problema resuelto`,
         html: emailWrapper(`
           <div style="padding:8px 12px;border-radius:8px;background:rgba(74,222,128,0.1);border-left:4px solid #4ade80;margin-bottom:16px;">
             <span style="font-weight:600;color:#16a34a;">RESUELTO</span>
@@ -317,7 +317,7 @@ function getClientEmailContent(incident: IncidentRow, event: NotificationEvent, 
       };
     }
     return {
-      subject: `Calltide — Actualización de incidente`,
+      subject: `Capta — Actualización de incidente`,
       html: emailWrapper(`
         <h2 style="margin:0 0 12px;color:#1e293b;">${incident.titleEs ?? incident.title}</h2>
         <p style="color:#475569;line-height:1.6;">Seguimos trabajando en resolver el problema. Visite nuestra página de estado para actualizaciones en tiempo real.</p>
@@ -329,7 +329,7 @@ function getClientEmailContent(incident: IncidentRow, event: NotificationEvent, 
   // English
   if (event === "created") {
     return {
-      subject: `Calltide — Service issue detected`,
+      subject: `Capta — Service issue detected`,
       html: emailWrapper(`
         <div style="padding:8px 12px;border-radius:8px;background:${color}15;border-left:4px solid ${color};margin-bottom:16px;">
           <span style="font-weight:600;color:${color};">ACTIVE INCIDENT</span>
@@ -342,7 +342,7 @@ function getClientEmailContent(incident: IncidentRow, event: NotificationEvent, 
   }
   if (event === "resolved") {
     return {
-      subject: `Calltide — Issue resolved`,
+      subject: `Capta — Issue resolved`,
       html: emailWrapper(`
         <div style="padding:8px 12px;border-radius:8px;background:rgba(74,222,128,0.1);border-left:4px solid #4ade80;margin-bottom:16px;">
           <span style="font-weight:600;color:#16a34a;">RESOLVED</span>
@@ -353,7 +353,7 @@ function getClientEmailContent(incident: IncidentRow, event: NotificationEvent, 
     };
   }
   return {
-    subject: `Calltide — Incident update`,
+    subject: `Capta — Incident update`,
     html: emailWrapper(`
       <h2 style="margin:0 0 12px;color:#1e293b;">${incident.title}</h2>
       <p style="color:#475569;line-height:1.6;">We're continuing to work on the issue. Visit our status page for real-time updates.</p>

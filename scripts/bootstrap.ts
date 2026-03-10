@@ -1,5 +1,5 @@
 /**
- * Calltide Bootstrap Script
+ * Capta Bootstrap Script
  *
  * First-run setup: validates env, runs migrations, seeds data,
  * and verifies the pipeline is ready.
@@ -57,7 +57,7 @@ function run(cmd: string, label: string): boolean {
 
 async function bootstrap() {
   console.log("\n╔══════════════════════════════════════╗");
-  console.log("║      Calltide Bootstrap Script       ║");
+  console.log("║      Capta Bootstrap Script       ║");
   console.log("╚══════════════════════════════════════╝");
 
   // ── Step 1: Pre-flight env checks ──

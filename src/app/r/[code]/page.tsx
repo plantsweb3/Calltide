@@ -68,7 +68,7 @@ export default async function ReferralPage({
 
         <p className="mt-3 text-sm leading-relaxed" style={{ color: "#666" }}>
           The referral code may have expired or is no longer active. You can
-          still check out Calltide and get started for free.
+          still check out Capta and get started for free.
         </p>
 
         <div className="mt-8 flex flex-col gap-3">
@@ -84,7 +84,7 @@ export default async function ReferralPage({
             className="text-sm font-medium transition-colors hover:underline"
             style={{ color: "#666" }}
           >
-            Go to Calltide
+            Go to Capta
           </Link>
         </div>
       </div>

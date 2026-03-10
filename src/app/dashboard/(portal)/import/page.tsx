@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import ImportWizard from "@/app/dashboard/_components/import-wizard";
+import CaptaSpinner from "@/components/capta-spinner";
 
 function ImportContent() {
   const searchParams = useSearchParams();
@@ -29,7 +30,7 @@ export default function ImportPage() {
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center py-12">
-        <div className="h-8 w-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "var(--db-border)", borderTopColor: "var(--db-accent)" }} />
+        <CaptaSpinner size={32} />
       </div>
     }>
       <ImportContent />

@@ -7,7 +7,7 @@ import {
 } from "@/lib/client-auth";
 
 const TEST_SECRET = "test-secret-key-for-hmac-signing";
-const TEST_APP_URL = "https://app.calltide.test";
+const TEST_APP_URL = "https://app.capta.test";
 
 describe("Client Auth — Magic Links", () => {
   it("generates a valid magic link URL", async () => {

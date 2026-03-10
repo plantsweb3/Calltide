@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const PHONE = process.env.NEXT_PUBLIC_PHONE ?? "(830) 521-7133";
 const PHONE_TEL = `tel:${process.env.NEXT_PUBLIC_PHONE_TEL ?? "+18305217133"}`;
-const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.com/calltide/onboarding";
+const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.com/capta/onboarding";
 
 const BUSINESS_TYPES = [
   { value: "plumber", en: "Plumber", es: "Plomero" },
@@ -164,7 +164,7 @@ function AuditContent() {
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-cream-border bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
           <Link href="/">
-            <img src="/images/logo.webp" alt="Calltide" className="h-6 w-auto" />
+            <img src="/images/logo-inline-navy.webp" alt="Capta" className="h-6 w-auto" />
           </Link>
           <div className="flex items-center gap-4 text-sm">
             <button
@@ -298,14 +298,14 @@ function AuditContent() {
       {/* Footer */}
       <footer className="bg-charcoal px-6 py-12">
         <div className="mx-auto max-w-5xl flex flex-col items-center gap-4 text-center">
-          <img src="/images/logo.webp" alt="Calltide" className="h-6 w-auto brightness-0 invert opacity-70" />
+          <img src="/images/logo-inline-white.webp" alt="Capta" className="h-6 w-auto opacity-70" />
           <p className="text-sm text-white/40">Every call answered. Every job booked.</p>
           <div className="flex gap-6 text-sm">
             <Link href="/" className="text-white/40 hover:text-white/60 transition-colors">Home</Link>
             <Link href="/blog" className="text-white/40 hover:text-white/60 transition-colors">Blog</Link>
             <a href={PHONE_TEL} className="text-white/40 hover:text-white/60 transition-colors">{PHONE}</a>
           </div>
-          <p className="text-xs text-white/30">&copy; {new Date().getFullYear()} Calltide. All rights reserved.</p>
+          <p className="text-xs text-white/30">&copy; {new Date().getFullYear()} Capta. All rights reserved.</p>
         </div>
       </footer>
     </div>

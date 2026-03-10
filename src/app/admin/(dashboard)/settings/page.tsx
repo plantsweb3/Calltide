@@ -211,7 +211,7 @@ export default function SettingsPage() {
             <p className="text-xs font-mono mb-2" style={{ color: "var(--db-text-muted)" }}>missed_sms_1</p>
             <p className="text-sm" style={{ color: "var(--db-text)" }}>
               Hi [Business Name]! We just tried calling and couldn&apos;t get
-              through. Calltide is an AI receptionist that makes sure you never
+              through. Capta is an AI receptionist that makes sure you never
               miss a call again — 24/7, bilingual. Interested? Reply YES for a
               quick demo. Reply STOP to opt out.
             </p>
@@ -221,7 +221,7 @@ export default function SettingsPage() {
             <p className="text-sm" style={{ color: "var(--db-text)" }}>
               Hey [Business Name], just following up. Missing calls = missing
               revenue. Our AI answers, books appointments & takes messages for
-              you. 10-min demo? Reply YES or visit calltide.app. Reply STOP to
+              you. 10-min demo? Reply YES or visit capta.app. Reply STOP to
               opt out.
             </p>
           </div>

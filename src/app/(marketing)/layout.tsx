@@ -12,13 +12,13 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
 
   const toggleLang = useCallback((l: Lang) => {
     setLang(l);
-    if (typeof window !== "undefined") localStorage.setItem("calltide-lang", l);
+    if (typeof window !== "undefined") localStorage.setItem("capta-lang", l);
   }, []);
 
   // Restore language on mount
   useState(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("calltide-lang");
+      const saved = localStorage.getItem("capta-lang");
       if (saved === "en" || saved === "es") setLang(saved);
     }
   });

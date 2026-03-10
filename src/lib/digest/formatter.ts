@@ -125,7 +125,7 @@ export function formatDigestSMS(
 
 /**
  * Format digest data into an email.
- * Uses the existing Calltide email template patterns (navy/gold theme).
+ * Uses the existing Capta email template patterns (navy/gold theme).
  * NOTE: Does NOT include customer phone numbers in email (less secure than SMS).
  */
 export function formatDigestEmail(
@@ -135,7 +135,7 @@ export function formatDigestEmail(
   receptionistName: string,
 ): { subject: string; html: string } {
   const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
-  const dashboardUrl = `${env.NEXT_PUBLIC_APP_URL || "https://calltide.app"}/dashboard/job-cards`;
+  const dashboardUrl = `${env.NEXT_PUBLIC_APP_URL || "https://capta.app"}/dashboard/job-cards`;
 
   // Subject line
   const subjectParts: string[] = [];
@@ -280,7 +280,7 @@ export function formatDigestEmail(
       View Job Cards &rarr;
     </a>
     <p style="margin:16px 0 0;font-size:11px;color:#64748b;">
-      Calltide Inc. &middot; San Antonio, TX
+      Capta LLC &middot; San Antonio, TX
     </p>
   </div>
 

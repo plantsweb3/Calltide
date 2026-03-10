@@ -14,7 +14,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  if (!req.cookies.has("calltide_admin")) {
+  if (!req.cookies.has("capta_admin")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -106,12 +106,12 @@ Haz clic en cualquier llamada para abrir su página de detalle. Ahí encontrará
 3. **Observa las tendencias.** Si notas más llamadas en ciertos días u horas, puedes planear tu horario alrededor de eso.
 
 Tu registro de llamadas es tu ventana a cada interacción con clientes. Úsalo para estar al tanto de tu negocio y asegurarte de que cada persona reciba un gran servicio.`,
-    metaTitle: "Understanding Your Call Logs | Calltide Help",
-    metaTitleEs: "Entender Tu Registro de Llamadas | Ayuda Calltide",
+    metaTitle: "Understanding Your Call Logs | Capta Help",
+    metaTitleEs: "Entender Tu Registro de Llamadas | Ayuda Capta",
     metaDescription:
-      "Learn how to read your Calltide call logs, what each call status means, and how to use duration and sentiment data to manage your business.",
+      "Learn how to read your Capta call logs, what each call status means, and how to use duration and sentiment data to manage your business.",
     metaDescriptionEs:
-      "Aprende a leer tu registro de llamadas de Calltide, qué significa cada estado y cómo usar los datos de duración y sentimiento.",
+      "Aprende a leer tu registro de llamadas de Capta, qué significa cada estado y cómo usar los datos de duración y sentimiento.",
     searchKeywords:
       "call logs, call history, call status, completed, missed, failed, transferred, duration, sentiment, call list, dashboard calls",
     searchKeywordsEs:
@@ -158,7 +158,7 @@ If you do not pick up within 20 seconds, the call goes to voicemail. Maria tells
 
 ## How to Prepare for Transfers
 
-1. **Keep your phone nearby.** Transferred calls come from your Calltide number, so save it in your contacts so you recognize it.
+1. **Keep your phone nearby.** Transferred calls come from your Capta number, so save it in your contacts so you recognize it.
 2. **Answer quickly.** The faster you pick up, the better the experience for the caller. They are already waiting.
 3. **Check the notification.** When a transfer starts, you may get a quick text or push notification with the caller's name and reason. Glance at it before you answer so you have context.
 4. **Be professional.** The caller already spoke with Maria, so you can start with "Hi, Maria told me you need help with…" to show you are on the same page.
@@ -204,7 +204,7 @@ Si no contestas en 20 segundos, la llamada va al buzón de voz. Maria le dice a 
 
 ## Cómo Prepararte para Transferencias
 
-1. **Ten tu teléfono cerca.** Las llamadas transferidas vienen de tu número de Calltide, así que guárdalo en tus contactos para que lo reconozcas.
+1. **Ten tu teléfono cerca.** Las llamadas transferidas vienen de tu número de Capta, así que guárdalo en tus contactos para que lo reconozcas.
 2. **Contesta rápido.** Entre más rápido contestes, mejor será la experiencia para la persona. Ya están esperando.
 3. **Revisa la notificación.** Cuando empieza una transferencia, puedes recibir un texto rápido o notificación con el nombre y razón de la persona. Míralo antes de contestar para tener contexto.
 4. **Sé profesional.** La persona ya habló con Maria, así que puedes empezar con "Hola, Maria me dijo que necesita ayuda con…" para mostrar que estás al tanto.
@@ -223,8 +223,8 @@ Puedes ver tanto transferencias como buzones de voz en tu página de **Llamadas*
 Ve a **Panel > Ajustes** para cambiar cuándo Maria transfiere llamadas. Puedes configurar horas tranquilas para que las transferencias solo pasen durante tu horario de trabajo. Fuera de esas horas, todas las llamadas van al buzón de voz automáticamente.
 
 Las transferencias son una función poderosa. Dejan que Maria maneje las llamadas rutinarias mientras se asegura de que estés presente para los momentos que realmente importan.`,
-    metaTitle: "When Calls Get Transferred to You | Calltide",
-    metaTitleEs: "Cuándo las Llamadas Se Transfieren | Calltide",
+    metaTitle: "When Calls Get Transferred to You | Capta",
+    metaTitleEs: "Cuándo las Llamadas Se Transfieren | Capta",
     metaDescription:
       "Understand what triggers Maria to transfer a call to your phone, what callers hear during the handoff, and how to handle transfers and voicemails.",
     metaDescriptionEs:
@@ -358,8 +358,8 @@ Si un cliente no se presenta a su cita, puedes marcarla como "Ausencia" en tu pa
 - **Revisa tus citas cada noche.** Toma dos minutos para ver el horario de mañana y que no haya sorpresas.
 
 La reserva de citas de Maria te ahorra tiempo y se asegura de que nunca pierdas un cliente potencial. Mientras tú reparas un aire acondicionado o destapas un drenaje, Maria está llenando tu agenda con el siguiente trabajo.`,
-    metaTitle: "How Appointments Are Booked and Tracked | Calltide",
-    metaTitleEs: "Cómo Se Reservan y Rastrean las Citas | Calltide",
+    metaTitle: "How Appointments Are Booked and Tracked | Capta",
+    metaTitleEs: "Cómo Se Reservan y Rastrean las Citas | Capta",
     metaDescription:
       "Learn how Maria books appointments for your callers, how SMS confirmations and reminders work, and how to manage cancellations and no-shows.",
     metaDescriptionEs:
@@ -402,7 +402,7 @@ Click on any message to see the full text and the conversation thread with that 
 
 Understanding the difference between these two types helps you see the full picture:
 
-- **Inbound messages** are texts that customers send to your Calltide business number. For example, a customer might text "What time is my appointment?" or "I need to reschedule."
+- **Inbound messages** are texts that customers send to your Capta business number. For example, a customer might text "What time is my appointment?" or "I need to reschedule."
 - **Outbound messages** are texts that Maria sends to customers. These include appointment confirmations, reminders, and follow-up messages.
 
 Your SMS log shows both types so you can see the entire conversation in one place.
@@ -454,7 +454,7 @@ Haz clic en cualquier mensaje para ver el texto completo y el hilo de conversaci
 
 Entender la diferencia entre estos dos tipos te ayuda a ver todo el panorama:
 
-- **Mensajes entrantes** son textos que los clientes envían a tu número de negocio de Calltide. Por ejemplo, un cliente podría escribir "¿A qué hora es mi cita?" o "Necesito reprogramar."
+- **Mensajes entrantes** son textos que los clientes envían a tu número de negocio de Capta. Por ejemplo, un cliente podría escribir "¿A qué hora es mi cita?" o "Necesito reprogramar."
 - **Mensajes salientes** son textos que Maria envía a los clientes. Estos incluyen confirmaciones de citas, recordatorios y mensajes de seguimiento.
 
 Tu registro de SMS muestra ambos tipos para que puedas ver toda la conversación en un solo lugar.
@@ -487,12 +487,12 @@ En la parte superior de la página de SMS, puedes:
 3. **Usa el historial de mensajes antes de devolver llamadas.** Antes de llamar a un cliente, revisa su hilo de SMS para saber qué ya se habló.
 
 Tu registro de SMS funciona de la mano con tu registro de llamadas. Juntos te dan una imagen completa de cada interacción de clientes con tu negocio.`,
-    metaTitle: "Viewing Your SMS Messages | Calltide Help",
-    metaTitleEs: "Ver Tus Mensajes SMS | Ayuda Calltide",
+    metaTitle: "Viewing Your SMS Messages | Capta Help",
+    metaTitleEs: "Ver Tus Mensajes SMS | Ayuda Capta",
     metaDescription:
-      "Learn how to view and manage your SMS message log in Calltide, including inbound and outbound texts, templates, and message history.",
+      "Learn how to view and manage your SMS message log in Capta, including inbound and outbound texts, templates, and message history.",
     metaDescriptionEs:
-      "Aprende a ver y manejar tu registro de mensajes SMS en Calltide, incluyendo textos entrantes y salientes, plantillas e historial.",
+      "Aprende a ver y manejar tu registro de mensajes SMS en Capta, incluyendo textos entrantes y salientes, plantillas e historial.",
     searchKeywords:
       "SMS, text messages, inbound, outbound, message log, appointment confirmation, reminder text, missed call text, SMS history, text templates",
     searchKeywordsEs:
@@ -624,12 +624,12 @@ Las transcripciones no son solo para ver qué pasó — te ayudan a mejorar:
 - **Marca llamadas importantes.** Si una llamada es especialmente valiosa o problemática, márcala para encontrarla fácilmente después.
 
 Las transcripciones y resúmenes te dan visibilidad completa de cada conversación con clientes. Úsalos para dar mejor servicio y hacer crecer tu negocio.`,
-    metaTitle: "Reading Call Transcripts & Summaries | Calltide",
-    metaTitleEs: "Leer Transcripciones y Resúmenes | Calltide",
+    metaTitle: "Reading Call Transcripts & Summaries | Capta",
+    metaTitleEs: "Leer Transcripciones y Resúmenes | Capta",
     metaDescription:
-      "Find call transcripts, AI summaries, and sentiment analysis in your Calltide dashboard. Learn how to use them to improve customer service.",
+      "Find call transcripts, AI summaries, and sentiment analysis in your Capta dashboard. Learn how to use them to improve customer service.",
     metaDescriptionEs:
-      "Encuentra transcripciones, resúmenes de IA y análisis de sentimiento en tu panel de Calltide. Aprende a usarlos para mejorar tu servicio.",
+      "Encuentra transcripciones, resúmenes de IA y análisis de sentimiento en tu panel de Capta. Aprende a usarlos para mejorar tu servicio.",
     searchKeywords:
       "transcripts, call transcripts, AI summary, call summary, sentiment analysis, positive, negative, neutral, call review, call quality",
     searchKeywordsEs:
@@ -651,7 +651,7 @@ Las transcripciones y resúmenes te dan visibilidad completa de cada conversaci�
       "Entiende tu reporte mensual de rendimiento, incluyendo tendencias de volumen de llamadas, tasas de conversión de citas y cómo usar los datos.",
     content: `# Your Monthly Performance Report
 
-At the beginning of each month, Calltide puts together a performance report for your business. This report shows you how Maria performed over the past 30 days and gives you data to make smarter decisions. Here is what is in the report and how to use it.
+At the beginning of each month, Capta puts together a performance report for your business. This report shows you how Maria performed over the past 30 days and gives you data to make smarter decisions. Here is what is in the report and how to use it.
 
 ## Where to Find Your Report
 
@@ -721,7 +721,7 @@ Your report only includes aggregate numbers — it does not share individual cus
 Your monthly report is like a scorecard for your business. Review it every month, look for patterns, and use the data to keep growing. Maria is working for you 24/7 — the report shows you exactly how well she is doing.`,
     contentEs: `# Tu Reporte Mensual de Rendimiento
 
-Al inicio de cada mes, Calltide prepara un reporte de rendimiento para tu negocio. Este reporte te muestra cómo se desempeñó Maria durante los últimos 30 días y te da datos para tomar mejores decisiones. Aquí te explicamos qué contiene el reporte y cómo usarlo.
+Al inicio de cada mes, Capta prepara un reporte de rendimiento para tu negocio. Este reporte te muestra cómo se desempeñó Maria durante los últimos 30 días y te da datos para tomar mejores decisiones. Aquí te explicamos qué contiene el reporte y cómo usarlo.
 
 ## Dónde Encontrar Tu Reporte
 
@@ -789,12 +789,12 @@ Aquí hay maneras prácticas de usar tu reporte mensual:
 Tu reporte solo incluye números generales — no comparte detalles individuales de clientes. Todos los datos se mantienen seguros y solo tú puedes ver tu reporte.
 
 Tu reporte mensual es como una tarjeta de calificaciones para tu negocio. Revísalo cada mes, busca patrones y usa los datos para seguir creciendo. Maria trabaja para ti las 24 horas del día, los 7 días de la semana — el reporte te muestra exactamente qué tan bien lo está haciendo.`,
-    metaTitle: "Your Monthly Performance Report | Calltide",
-    metaTitleEs: "Tu Reporte Mensual de Rendimiento | Calltide",
+    metaTitle: "Your Monthly Performance Report | Capta",
+    metaTitleEs: "Tu Reporte Mensual de Rendimiento | Capta",
     metaDescription:
-      "Understand your Calltide monthly report with call volume trends, appointment conversion rates, sentiment data, and tips to grow your business.",
+      "Understand your Capta monthly report with call volume trends, appointment conversion rates, sentiment data, and tips to grow your business.",
     metaDescriptionEs:
-      "Entiende tu reporte mensual de Calltide con tendencias de llamadas, tasas de conversión de citas, datos de sentimiento y consejos para crecer.",
+      "Entiende tu reporte mensual de Capta con tendencias de llamadas, tasas de conversión de citas, datos de sentimiento y consejos para crecer.",
     searchKeywords:
       "monthly report, performance report, call volume, appointment conversion, conversion rate, sentiment trends, analytics, business data, call stats",
     searchKeywordsEs:

@@ -65,7 +65,7 @@ export async function sendOwnerCallAlert(callId: string): Promise<void> {
     message = message.slice(0, 297) + "...";
   }
 
-  message += " — Calltide";
+  message += " — Capta";
 
   try {
     await sendSMS({
@@ -112,7 +112,7 @@ export async function sendMissedCallTextBack(callId: string): Promise<void> {
   const bizName = biz.name;
   const fromNumber = biz.twilioNumber || env.TWILIO_PHONE_NUMBER;
 
-  const body = `Hi, this is ${bizName}. Sorry we missed your call — we're on a job right now. Can we call you back in the next 30 minutes? Reply YES to confirm. — Calltide`;
+  const body = `Hi, this is ${bizName}. Sorry we missed your call — we're on a job right now. Can we call you back in the next 30 minutes? Reply YES to confirm. — Capta`;
 
   try {
     await sendSMS({

@@ -5,7 +5,7 @@ import { eq, desc } from "drizzle-orm";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://calltide.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
 
   const posts = await db
     .select()
@@ -36,7 +36,7 @@ export async function GET() {
   const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Calltide Blog</title>
+    <title>Capta Blog</title>
     <link>${appUrl}/blog</link>
     <description>Tips, data, and insights for service businesses.</description>
     <language>en-us</language>

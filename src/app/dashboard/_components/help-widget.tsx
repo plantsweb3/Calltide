@@ -20,7 +20,7 @@ interface Article {
 }
 
 const CONTEXT_MAP: Record<string, string[]> = {
-  "/dashboard": ["what-is-calltide", "how-maria-handles-calls", "monthly-report"],
+  "/dashboard": ["what-is-capta", "how-maria-handles-calls", "monthly-report"],
   "/dashboard/calls": ["understanding-call-logs", "how-maria-handles-calls", "when-calls-transfer"],
   "/dashboard/settings": ["improve-maria-responses", "tips-best-results", "update-payment-method"],
   "/dashboard/sms": ["viewing-messages", "not-receiving-notifications"],
@@ -313,7 +313,7 @@ export default function HelpWidget() {
               style={{ borderTop: "1px solid var(--db-border)" }}
             >
               <a
-                href="mailto:support@calltide.app"
+                href="mailto:support@capta.app"
                 className="block text-center text-sm"
                 style={{ color: "var(--db-text-muted)" }}
               >

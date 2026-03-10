@@ -67,14 +67,13 @@ export async function POST(req: NextRequest) {
     }
 
     const stripe = getStripe();
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://calltide.app";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       mode: "subscription",
       payment_method_collection: "always",
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
-        trial_period_days: 14,
         metadata: { source: "onboarding_paywall", plan, businessId },
       },
       metadata: { email: biz.ownerEmail ?? "", source: "onboarding_paywall", plan, businessId },

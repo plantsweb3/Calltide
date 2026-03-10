@@ -16,28 +16,28 @@ If customers are calling your business number and Maria isn't picking up, don't 
 
 ## Step 1: Check Your Call Forwarding
 
-The most common reason Maria doesn't answer is that calls are not being forwarded to her. Your phone carrier needs to send calls to the Calltide number when you can't answer.
+The most common reason Maria doesn't answer is that calls are not being forwarded to her. Your phone carrier needs to send calls to the Capta number when you can't answer.
 
 **How to check:**
 
-1. From your cell phone, dial the test number shown in your Calltide dashboard.
-2. If Maria answers, forwarding from your phone to Calltide works. The problem is between your customers and your carrier.
+1. From your cell phone, dial the test number shown in your Capta dashboard.
+2. If Maria answers, forwarding from your phone to Capta works. The problem is between your customers and your carrier.
 3. If Maria does NOT answer, your forwarding is not set up right.
 
 **How to fix forwarding:**
 
-- **AT&T:** Dial \`*61*[your Calltide number]#\` then press Call.
-- **T-Mobile:** Dial \`**61*1[your Calltide number]#\` then press Call.
-- **Verizon:** Dial \`*71[your Calltide number]\` then press Call.
-- If you use a different carrier, call them and ask to set up "conditional call forwarding" to your Calltide number.
+- **AT&T:** Dial \`*61*[your Capta number]#\` then press Call.
+- **T-Mobile:** Dial \`**61*1[your Capta number]#\` then press Call.
+- **Verizon:** Dial \`*71[your Capta number]\` then press Call.
+- If you use a different carrier, call them and ask to set up "conditional call forwarding" to your Capta number.
 
 ## Step 2: Verify Your Twilio Configuration
 
-Your Calltide account connects to phone lines through Twilio. Sometimes the connection between Twilio and Calltide can have a hiccup.
+Your Capta account connects to phone lines through Twilio. Sometimes the connection between Twilio and Capta can have a hiccup.
 
 **What to check:**
 
-- Log into your Calltide dashboard and go to your account settings.
+- Log into your Capta dashboard and go to your account settings.
 - Make sure your phone number is listed and shows a green "Active" status.
 - If you see a yellow or red status, click on the number to see the error details.
 
@@ -63,8 +63,8 @@ After making any changes, test right away:
 
 If you've checked all of the above and Maria still isn't answering, contact our support team. We can look at the call logs on our end and find the issue fast.
 
-- **Email:** support@calltide.com
-- **Text:** Send "HELP" to your Calltide number
+- **Email:** support@capta.com
+- **Text:** Send "HELP" to your Capta number
 - **Dashboard:** Click the chat icon in the bottom-right corner
 
 We usually respond within one business hour.`,
@@ -74,28 +74,28 @@ Si tus clientes están llamando al número de tu negocio y María no contesta, n
 
 ## Paso 1: Revisa el Desvío de Llamadas
 
-La razón más común por la que María no contesta es que las llamadas no se están desviando hacia ella. Tu compañía de teléfono necesita enviar las llamadas al número de Calltide cuando tú no puedes contestar.
+La razón más común por la que María no contesta es que las llamadas no se están desviando hacia ella. Tu compañía de teléfono necesita enviar las llamadas al número de Capta cuando tú no puedes contestar.
 
 **Cómo verificar:**
 
-1. Desde tu celular, marca el número de prueba que aparece en tu panel de Calltide.
-2. Si María contesta, el desvío desde tu teléfono a Calltide funciona. El problema está entre tus clientes y tu compañía de teléfono.
+1. Desde tu celular, marca el número de prueba que aparece en tu panel de Capta.
+2. Si María contesta, el desvío desde tu teléfono a Capta funciona. El problema está entre tus clientes y tu compañía de teléfono.
 3. Si María NO contesta, el desvío no está bien configurado.
 
 **Cómo arreglar el desvío:**
 
-- **AT&T:** Marca \`*61*[tu número de Calltide]#\` y presiona Llamar.
-- **T-Mobile:** Marca \`**61*1[tu número de Calltide]#\` y presiona Llamar.
-- **Verizon:** Marca \`*71[tu número de Calltide]\` y presiona Llamar.
-- Si usas otra compañía, llámalos y pide que configuren el "desvío de llamadas condicional" hacia tu número de Calltide.
+- **AT&T:** Marca \`*61*[tu número de Capta]#\` y presiona Llamar.
+- **T-Mobile:** Marca \`**61*1[tu número de Capta]#\` y presiona Llamar.
+- **Verizon:** Marca \`*71[tu número de Capta]\` y presiona Llamar.
+- Si usas otra compañía, llámalos y pide que configuren el "desvío de llamadas condicional" hacia tu número de Capta.
 
 ## Paso 2: Verifica la Configuración de Twilio
 
-Tu cuenta de Calltide se conecta a las líneas telefónicas a través de Twilio. A veces la conexión entre Twilio y Calltide puede tener un problema temporal.
+Tu cuenta de Capta se conecta a las líneas telefónicas a través de Twilio. A veces la conexión entre Twilio y Capta puede tener un problema temporal.
 
 **Qué revisar:**
 
-- Entra a tu panel de Calltide y ve a la configuración de tu cuenta.
+- Entra a tu panel de Capta y ve a la configuración de tu cuenta.
 - Asegúrate de que tu número de teléfono esté listado y muestre un estado verde de "Activo."
 - Si ves un estado amarillo o rojo, haz clic en el número para ver los detalles del error.
 
@@ -121,13 +121,13 @@ Después de hacer cualquier cambio, prueba de inmediato:
 
 Si ya revisaste todo lo anterior y María todavía no contesta, contacta a nuestro equipo de soporte. Nosotros podemos revisar los registros de llamadas de nuestro lado y encontrar el problema rápido.
 
-- **Correo electrónico:** support@calltide.com
-- **Mensaje de texto:** Envía "AYUDA" a tu número de Calltide
+- **Correo electrónico:** support@capta.com
+- **Mensaje de texto:** Envía "AYUDA" a tu número de Capta
 - **Panel:** Haz clic en el ícono de chat en la esquina inferior derecha
 
 Normalmente respondemos dentro de una hora de trabajo.`,
-    metaTitle: "Maria Not Answering Calls — Calltide Help",
-    metaTitleEs: "María No Contesta Llamadas — Ayuda Calltide",
+    metaTitle: "Maria Not Answering Calls — Capta Help",
+    metaTitleEs: "María No Contesta Llamadas — Ayuda Capta",
     metaDescription:
       "Troubleshoot why Maria isn't answering your business calls. Check call forwarding, Twilio config, and business hours step by step.",
     metaDescriptionEs:
@@ -148,20 +148,20 @@ Normalmente respondemos dentro de una hora de trabajo.`,
     title: "I'm Not Receiving SMS Notifications",
     titleEs: "No Estoy Recibiendo Notificaciones SMS",
     excerpt:
-      "Find out why you aren't getting text message alerts from Calltide and how to fix common SMS issues.",
+      "Find out why you aren't getting text message alerts from Capta and how to fix common SMS issues.",
     excerptEs:
-      "Descubre por qué no estás recibiendo alertas por mensaje de texto de Calltide y cómo arreglar los problemas comunes de SMS.",
+      "Descubre por qué no estás recibiendo alertas por mensaje de texto de Capta y cómo arreglar los problemas comunes de SMS.",
     content: `# I'm Not Receiving SMS Notifications
 
-Calltide sends you a text message after every call Maria handles. These texts tell you who called, what they needed, and if an appointment was booked. If you stopped getting these messages, here's how to fix it.
+Capta sends you a text message after every call Maria handles. These texts tell you who called, what they needed, and if an appointment was booked. If you stopped getting these messages, here's how to fix it.
 
 ## Step 1: Make Sure You Didn't Opt Out
 
-If you ever replied "STOP" to a Calltide text message, our system is required by law to stop sending you texts. This is the number one reason people stop getting notifications.
+If you ever replied "STOP" to a Capta text message, our system is required by law to stop sending you texts. This is the number one reason people stop getting notifications.
 
 **How to fix it:**
 
-1. From your phone, send the word **START** to your Calltide number.
+1. From your phone, send the word **START** to your Capta number.
 2. You should get a confirmation message within a few seconds.
 3. That's it — you'll start getting notifications again.
 
@@ -171,14 +171,14 @@ Your phone number in the system needs to be in the right format. It should be a 
 
 **How to check:**
 
-1. Log into your Calltide dashboard.
+1. Log into your Capta dashboard.
 2. Go to Settings and find "Notification Phone Number."
 3. Make sure the number is correct and matches the phone you're checking.
 4. If the number is wrong, update it and save.
 
 ## Step 3: Look at Your SMS Log
 
-Your dashboard keeps a record of every text message Calltide tries to send you. This can help you figure out where the problem is.
+Your dashboard keeps a record of every text message Capta tries to send you. This can help you figure out where the problem is.
 
 **How to check:**
 
@@ -196,7 +196,7 @@ Phone carriers like AT&T, T-Mobile, and Verizon sometimes block text messages th
 
 - **Check your phone's spam/blocked messages folder.** Some phones filter texts automatically.
 - **Make sure your phone isn't set to block unknown numbers.** On iPhone, go to Settings > Messages > Filter Unknown Senders. On Android, check your Messages app settings.
-- **Contact your carrier.** Ask them if they are blocking texts from your Calltide number. They can add it to an allow list.
+- **Contact your carrier.** Ask them if they are blocking texts from your Capta number. They can add it to an allow list.
 
 ## Step 5: Check for Do Not Disturb
 
@@ -209,19 +209,19 @@ This one sounds simple, but it catches people all the time. If your phone is on 
 
 If none of the above steps fix the problem, reach out to our support team. We can check the delivery logs on our side and work with your carrier if needed.
 
-- **Email:** support@calltide.com
+- **Email:** support@capta.com
 - **Dashboard:** Click the chat icon in the bottom-right corner`,
     contentEs: `# No Estoy Recibiendo Notificaciones SMS
 
-Calltide te envía un mensaje de texto después de cada llamada que María maneja. Estos textos te dicen quién llamó, qué necesitaban y si se reservó una cita. Si dejaste de recibir estos mensajes, aquí te explicamos cómo arreglarlo.
+Capta te envía un mensaje de texto después de cada llamada que María maneja. Estos textos te dicen quién llamó, qué necesitaban y si se reservó una cita. Si dejaste de recibir estos mensajes, aquí te explicamos cómo arreglarlo.
 
 ## Paso 1: Asegúrate de Que No Te Diste de Baja
 
-Si alguna vez respondiste "STOP" a un mensaje de texto de Calltide, nuestro sistema está obligado por ley a dejar de enviarte textos. Esta es la razón número uno por la que las personas dejan de recibir notificaciones.
+Si alguna vez respondiste "STOP" a un mensaje de texto de Capta, nuestro sistema está obligado por ley a dejar de enviarte textos. Esta es la razón número uno por la que las personas dejan de recibir notificaciones.
 
 **Cómo arreglarlo:**
 
-1. Desde tu teléfono, envía la palabra **START** a tu número de Calltide.
+1. Desde tu teléfono, envía la palabra **START** a tu número de Capta.
 2. Deberías recibir un mensaje de confirmación en unos segundos.
 3. Eso es todo — empezarás a recibir notificaciones de nuevo.
 
@@ -231,14 +231,14 @@ Tu número de teléfono en el sistema necesita estar en el formato correcto. Deb
 
 **Cómo verificar:**
 
-1. Entra a tu panel de Calltide.
+1. Entra a tu panel de Capta.
 2. Ve a Configuración y busca "Número de Teléfono para Notificaciones."
 3. Asegúrate de que el número sea correcto y corresponda al teléfono que estás revisando.
 4. Si el número está mal, actualízalo y guarda los cambios.
 
 ## Paso 3: Revisa Tu Registro de SMS
 
-Tu panel guarda un registro de cada mensaje de texto que Calltide intenta enviarte. Esto puede ayudarte a determinar dónde está el problema.
+Tu panel guarda un registro de cada mensaje de texto que Capta intenta enviarte. Esto puede ayudarte a determinar dónde está el problema.
 
 **Cómo verificar:**
 
@@ -256,7 +256,7 @@ Las compañías de teléfono como AT&T, T-Mobile y Verizon a veces bloquean mens
 
 - **Revisa la carpeta de spam o mensajes bloqueados de tu teléfono.** Algunos teléfonos filtran textos automáticamente.
 - **Asegúrate de que tu teléfono no esté configurado para bloquear números desconocidos.** En iPhone, ve a Ajustes > Mensajes > Filtrar Remitentes Desconocidos. En Android, revisa la configuración de tu aplicación de Mensajes.
-- **Contacta a tu compañía de teléfono.** Pregunta si están bloqueando textos de tu número de Calltide. Ellos pueden agregarlo a una lista de permitidos.
+- **Contacta a tu compañía de teléfono.** Pregunta si están bloqueando textos de tu número de Capta. Ellos pueden agregarlo a una lista de permitidos.
 
 ## Paso 5: Revisa el Modo No Molestar
 
@@ -269,14 +269,14 @@ Esto suena sencillo, pero le pasa a muchas personas. Si tu teléfono está en mo
 
 Si ninguno de los pasos anteriores arregla el problema, comunícate con nuestro equipo de soporte. Podemos revisar los registros de entrega de nuestro lado y trabajar con tu compañía si es necesario.
 
-- **Correo electrónico:** support@calltide.com
+- **Correo electrónico:** support@capta.com
 - **Panel:** Haz clic en el ícono de chat en la esquina inferior derecha`,
-    metaTitle: "Not Getting SMS Notifications — Calltide Help",
-    metaTitleEs: "No Llegan Notificaciones SMS — Ayuda Calltide",
+    metaTitle: "Not Getting SMS Notifications — Capta Help",
+    metaTitleEs: "No Llegan Notificaciones SMS — Ayuda Capta",
     metaDescription:
-      "Fix missing SMS notifications from Calltide. Check opt-out status, phone number format, SMS logs, and carrier blocking issues.",
+      "Fix missing SMS notifications from Capta. Check opt-out status, phone number format, SMS logs, and carrier blocking issues.",
     metaDescriptionEs:
-      "Arregla las notificaciones SMS faltantes de Calltide. Revisa estado de baja, formato de número, registros SMS y bloqueos de compañía.",
+      "Arregla las notificaciones SMS faltantes de Capta. Revisa estado de baja, formato de número, registros SMS y bloqueos de compañía.",
     searchKeywords:
       "sms not working, no text messages, notifications missing, opt out, stop texts, carrier blocking, text alerts, sms log",
     searchKeywordsEs:
@@ -314,7 +314,7 @@ For example: "Thank you for calling Rodriguez Plumbing! Maria speaking, how can 
 
 ## Step 1: Check Your Current Greeting
 
-1. Log into your Calltide dashboard.
+1. Log into your Capta dashboard.
 2. Go to **Settings** and look for the **Greeting** section.
 3. Read what's in the greeting text box. This is exactly what Maria will say.
 4. If it's blank, Maria is using the default greeting.
@@ -372,7 +372,7 @@ After making changes, call your business number from another phone. Listen to wh
 
 Our support team is happy to help you write the perfect greeting in English and Spanish. Just reach out:
 
-- **Email:** support@calltide.com
+- **Email:** support@capta.com
 - **Dashboard:** Click the chat icon in the bottom-right corner`,
     contentEs: `# Los Que Llaman Escuchan el Saludo Incorrecto
 
@@ -392,7 +392,7 @@ Por ejemplo: "¡Gracias por llamar a Rodríguez Plomería! Habla María, ¿en qu
 
 ## Paso 1: Revisa Tu Saludo Actual
 
-1. Entra a tu panel de Calltide.
+1. Entra a tu panel de Capta.
 2. Ve a **Configuración** y busca la sección de **Saludo**.
 3. Lee lo que está en el cuadro de texto del saludo. Esto es exactamente lo que María dirá.
 4. Si está vacío, María está usando el saludo predeterminado.
@@ -450,10 +450,10 @@ Después de hacer cambios, llama a tu número de negocio desde otro teléfono. E
 
 Nuestro equipo de soporte está feliz de ayudarte a escribir el saludo perfecto en inglés y español. Solo contáctanos:
 
-- **Correo electrónico:** support@calltide.com
+- **Correo electrónico:** support@capta.com
 - **Panel:** Haz clic en el ícono de chat en la esquina inferior derecha`,
-    metaTitle: "Fix Wrong Greeting Message — Calltide Help",
-    metaTitleEs: "Arreglar Saludo Incorrecto — Ayuda Calltide",
+    metaTitle: "Fix Wrong Greeting Message — Capta Help",
+    metaTitleEs: "Arreglar Saludo Incorrecto — Ayuda Capta",
     metaDescription:
       "Fix what callers hear when Maria answers. Update your custom greeting, language settings, and Spanish greeting in your dashboard.",
     metaDescriptionEs:
@@ -474,12 +474,12 @@ Nuestro equipo de soporte está feliz de ayudarte a escribir el saludo perfecto 
     title: "Appointments Not Showing in Dashboard",
     titleEs: "Las Citas No Aparecen en el Panel",
     excerpt:
-      "Troubleshoot missing appointments in your Calltide dashboard, including sync timing, filters, and timezone issues.",
+      "Troubleshoot missing appointments in your Capta dashboard, including sync timing, filters, and timezone issues.",
     excerptEs:
-      "Soluciona citas que no aparecen en tu panel de Calltide, incluyendo tiempos de sincronización, filtros y problemas de zona horaria.",
+      "Soluciona citas que no aparecen en tu panel de Capta, incluyendo tiempos de sincronización, filtros y problemas de zona horaria.",
     content: `# Appointments Not Showing in Dashboard
 
-When Maria books an appointment for you, it should show up in your Calltide dashboard right away. If you're not seeing appointments that you know were booked, here are the most common causes and how to fix them.
+When Maria books an appointment for you, it should show up in your Capta dashboard right away. If you're not seeing appointments that you know were booked, here are the most common causes and how to fix them.
 
 ## Step 1: Wait a Moment for Syncing
 
@@ -537,13 +537,13 @@ Make sure you're looking at the right date range. If an appointment was booked f
 
 If you've checked all the above and the appointment is still missing, contact support. We can pull up the call recording and check exactly what happened.
 
-- **Email:** support@calltide.com
+- **Email:** support@capta.com
 - **Dashboard:** Click the chat icon in the bottom-right corner
 
 Give us the approximate time of the call and the caller's name or number, and we'll track it down for you.`,
     contentEs: `# Las Citas No Aparecen en el Panel
 
-Cuando María reserva una cita por ti, debería aparecer en tu panel de Calltide de inmediato. Si no estás viendo citas que sabes que fueron reservadas, aquí están las causas más comunes y cómo arreglarlas.
+Cuando María reserva una cita por ti, debería aparecer en tu panel de Capta de inmediato. Si no estás viendo citas que sabes que fueron reservadas, aquí están las causas más comunes y cómo arreglarlas.
 
 ## Paso 1: Espera un Momento para la Sincronización
 
@@ -601,16 +601,16 @@ Asegúrate de que estés viendo el rango de fechas correcto. Si una cita fue res
 
 Si revisaste todo lo anterior y la cita sigue sin aparecer, contacta a soporte. Podemos revisar la grabación de la llamada y verificar exactamente qué pasó.
 
-- **Correo electrónico:** support@calltide.com
+- **Correo electrónico:** support@capta.com
 - **Panel:** Haz clic en el ícono de chat en la esquina inferior derecha
 
 Danos la hora aproximada de la llamada y el nombre o número de la persona que llamó, y la rastrearemos por ti.`,
-    metaTitle: "Appointments Not Showing — Calltide Help",
-    metaTitleEs: "Citas No Aparecen en el Panel — Ayuda Calltide",
+    metaTitle: "Appointments Not Showing — Capta Help",
+    metaTitleEs: "Citas No Aparecen en el Panel — Ayuda Capta",
     metaDescription:
-      "Fix missing appointments in your Calltide dashboard. Check sync timing, status filters, timezone settings, and call recordings.",
+      "Fix missing appointments in your Capta dashboard. Check sync timing, status filters, timezone settings, and call recordings.",
     metaDescriptionEs:
-      "Arregla citas faltantes en tu panel de Calltide. Revisa sincronización, filtros de estado, zona horaria y grabaciones de llamadas.",
+      "Arregla citas faltantes en tu panel de Capta. Revisa sincronización, filtros de estado, zona horaria y grabaciones de llamadas.",
     searchKeywords:
       "appointments missing, no appointments, dashboard empty, sync problem, timezone wrong, filter appointments, booking not showing, calendar empty",
     searchKeywordsEs:
@@ -627,16 +627,16 @@ Danos la hora aproximada de la llamada y el nombre o número de la persona que l
     title: "I Can't Log Into My Dashboard",
     titleEs: "No Puedo Entrar a Mi Panel",
     excerpt:
-      "Solve login problems with your Calltide dashboard, including magic link issues, expired links, and browser troubles.",
+      "Solve login problems with your Capta dashboard, including magic link issues, expired links, and browser troubles.",
     excerptEs:
-      "Resuelve problemas para entrar a tu panel de Calltide, incluyendo problemas con enlaces mágicos, enlaces expirados y problemas del navegador.",
+      "Resuelve problemas para entrar a tu panel de Capta, incluyendo problemas con enlaces mágicos, enlaces expirados y problemas del navegador.",
     content: `# I Can't Log Into My Dashboard
 
-Calltide uses magic links to log you in. That means instead of a password, we send a special link to your email. You click the link and you're in. If this process isn't working for you, here's what to check.
+Capta uses magic links to log you in. That means instead of a password, we send a special link to your email. You click the link and you're in. If this process isn't working for you, here's what to check.
 
 ## How Magic Link Login Works
 
-1. You go to the Calltide login page.
+1. You go to the Capta login page.
 2. You type in your email address and click "Send Magic Link."
 3. We send an email with a special link to your inbox.
 4. You click the link in the email.
@@ -652,13 +652,13 @@ The most common issue is that the magic link email ended up in your spam or junk
 
 1. Open your email app (Gmail, Yahoo, Outlook, etc.).
 2. Go to your Spam or Junk folder.
-3. Look for an email from **Calltide** or **noreply@calltide.com**.
+3. Look for an email from **Capta** or **noreply@capta.com**.
 4. If you find it, open it and click the login link.
 5. Mark the email as "Not Spam" so future emails go to your inbox.
 
 ## Step 2: Make Sure You're Using the Right Email
 
-You need to use the same email address you signed up with. If you're not sure which email that is, think about which email you gave us when you first set up Calltide.
+You need to use the same email address you signed up with. If you're not sure which email that is, think about which email you gave us when you first set up Capta.
 
 **Common mistakes:**
 
@@ -671,7 +671,7 @@ Magic links expire after 15 minutes. If you waited too long to click the link, i
 
 **How to fix:**
 
-1. Go back to the Calltide login page.
+1. Go back to the Capta login page.
 2. Enter your email again and click "Send Magic Link."
 3. Go to your email right away and click the new link.
 4. Don't wait — click it as soon as you see it.
@@ -692,7 +692,7 @@ Sometimes browser settings or extensions can block the login process. If clickin
 2. Go to Settings > Privacy and Security > Clear Browsing Data.
 3. Check "Cookies" and "Cached images and files."
 4. Click "Clear data."
-5. Go back to the Calltide login page and try again.
+5. Go back to the Capta login page and try again.
 
 ## Step 5: Check Your Internet Connection
 
@@ -702,8 +702,8 @@ If your internet is slow or disconnected, the magic link might not load properly
 
 If you've tried everything above and still can't log in, contact our support team. We can verify your account, resend the magic link, or help you update your email address if needed.
 
-- **Email:** support@calltide.com
-- **Text:** Send "HELP" to your Calltide number
+- **Email:** support@capta.com
+- **Text:** Send "HELP" to your Capta number
 - **Phone:** Call us during business hours at the number in your welcome email
 
 When you contact us, please include:
@@ -713,11 +713,11 @@ When you contact us, please include:
 - What happens when you try to log in (error message, blank page, etc.)`,
     contentEs: `# No Puedo Entrar a Mi Panel
 
-Calltide usa enlaces mágicos para iniciar sesión. Eso significa que en vez de una contraseña, te enviamos un enlace especial a tu correo electrónico. Haces clic en el enlace y ya estás dentro. Si este proceso no te está funcionando, aquí te explicamos qué revisar.
+Capta usa enlaces mágicos para iniciar sesión. Eso significa que en vez de una contraseña, te enviamos un enlace especial a tu correo electrónico. Haces clic en el enlace y ya estás dentro. Si este proceso no te está funcionando, aquí te explicamos qué revisar.
 
 ## Cómo Funciona el Inicio de Sesión con Enlace Mágico
 
-1. Vas a la página de inicio de sesión de Calltide.
+1. Vas a la página de inicio de sesión de Capta.
 2. Escribes tu dirección de correo electrónico y haces clic en "Enviar Enlace Mágico."
 3. Te enviamos un correo con un enlace especial a tu bandeja de entrada.
 4. Haces clic en el enlace del correo.
@@ -733,13 +733,13 @@ El problema más común es que el correo del enlace mágico terminó en tu carpe
 
 1. Abre tu aplicación de correo (Gmail, Yahoo, Outlook, etc.).
 2. Ve a tu carpeta de Spam o Correo No Deseado.
-3. Busca un correo de **Calltide** o **noreply@calltide.com**.
+3. Busca un correo de **Capta** o **noreply@capta.com**.
 4. Si lo encuentras, ábrelo y haz clic en el enlace de inicio de sesión.
 5. Marca el correo como "No es Spam" para que los correos futuros lleguen a tu bandeja de entrada.
 
 ## Paso 2: Asegúrate de Usar el Correo Correcto
 
-Necesitas usar la misma dirección de correo electrónico con la que te registraste. Si no estás seguro cuál es, piensa en cuál correo nos diste cuando configuraste Calltide por primera vez.
+Necesitas usar la misma dirección de correo electrónico con la que te registraste. Si no estás seguro cuál es, piensa en cuál correo nos diste cuando configuraste Capta por primera vez.
 
 **Errores comunes:**
 
@@ -752,7 +752,7 @@ Los enlaces mágicos expiran después de 15 minutos. Si esperaste mucho tiempo p
 
 **Cómo arreglar:**
 
-1. Regresa a la página de inicio de sesión de Calltide.
+1. Regresa a la página de inicio de sesión de Capta.
 2. Ingresa tu correo de nuevo y haz clic en "Enviar Enlace Mágico."
 3. Ve a tu correo de inmediato y haz clic en el nuevo enlace.
 4. No esperes — haz clic tan pronto como lo veas.
@@ -773,7 +773,7 @@ A veces la configuración o las extensiones del navegador pueden bloquear el pro
 2. Ve a Configuración > Privacidad y Seguridad > Borrar Datos de Navegación.
 3. Marca "Cookies" y "Archivos e imágenes en caché."
 4. Haz clic en "Borrar datos."
-5. Regresa a la página de inicio de sesión de Calltide e intenta de nuevo.
+5. Regresa a la página de inicio de sesión de Capta e intenta de nuevo.
 
 ## Paso 5: Revisa Tu Conexión a Internet
 
@@ -783,8 +783,8 @@ Si tu internet está lento o desconectado, el enlace mágico podría no cargar b
 
 Si intentaste todo lo anterior y aún no puedes iniciar sesión, contacta a nuestro equipo de soporte. Podemos verificar tu cuenta, reenviar el enlace mágico o ayudarte a actualizar tu dirección de correo si es necesario.
 
-- **Correo electrónico:** support@calltide.com
-- **Mensaje de texto:** Envía "AYUDA" a tu número de Calltide
+- **Correo electrónico:** support@capta.com
+- **Mensaje de texto:** Envía "AYUDA" a tu número de Capta
 - **Teléfono:** Llámanos en horario de trabajo al número que aparece en tu correo de bienvenida
 
 Cuando nos contactes, por favor incluye:
@@ -792,12 +792,12 @@ Cuando nos contactes, por favor incluye:
 - El nombre de tu negocio
 - La dirección de correo electrónico con la que estás intentando entrar
 - Qué pasa cuando intentas iniciar sesión (mensaje de error, pantalla en blanco, etc.)`,
-    metaTitle: "Can't Log In to Dashboard — Calltide Help",
-    metaTitleEs: "No Puedo Entrar al Panel — Ayuda Calltide",
+    metaTitle: "Can't Log In to Dashboard — Capta Help",
+    metaTitleEs: "No Puedo Entrar al Panel — Ayuda Capta",
     metaDescription:
-      "Fix login issues with your Calltide dashboard. Troubleshoot magic link emails, expired links, spam folders, and browser problems.",
+      "Fix login issues with your Capta dashboard. Troubleshoot magic link emails, expired links, spam folders, and browser problems.",
     metaDescriptionEs:
-      "Arregla problemas de inicio de sesión en tu panel de Calltide. Soluciona enlaces mágicos, enlaces expirados, spam y problemas del navegador.",
+      "Arregla problemas de inicio de sesión en tu panel de Capta. Soluciona enlaces mágicos, enlaces expirados, spam y problemas del navegador.",
     searchKeywords:
       "cant login, login not working, magic link, no email, password reset, dashboard access, locked out, browser issue, expired link",
     searchKeywordsEs:

@@ -19,12 +19,12 @@ const envSchema = z.object({
   // Landing page / marketing
   NEXT_PUBLIC_PHONE: z.string().min(1).optional(),        // Display format: "(830) 521-7133"
   NEXT_PUBLIC_PHONE_TEL: z.string().min(1).optional(),    // tel: format: "+18305217133"
-  NEXT_PUBLIC_BOOKING_URL: z.string().url().optional(),   // e.g. "https://cal.com/calltide/onboarding"
-  NEXT_PUBLIC_MARKETING_URL: z.string().url().optional(), // e.g. "https://calltide.app"
+  NEXT_PUBLIC_BOOKING_URL: z.string().url().optional(),   // e.g. "https://cal.com/capta/onboarding"
+  NEXT_PUBLIC_MARKETING_URL: z.string().url().optional(), // e.g. "https://capta.app"
   NEXT_PUBLIC_HUME_CONFIG_ID: z.string().min(1).optional(),
 
   // Outreach email sender
-  OUTREACH_FROM_EMAIL: z.string().min(1).optional(),      // e.g. "Calltide <hello@contact.calltide.app>"
+  OUTREACH_FROM_EMAIL: z.string().min(1).optional(),      // e.g. "Capta <hello@contact.capta.app>"
 
   // AI model
   CLAUDE_MODEL: z.string().min(1).optional(),             // defaults to claude-sonnet-4-5-20250929

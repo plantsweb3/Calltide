@@ -97,7 +97,7 @@ async function notifyAdmin(severity: AlertSeverity, message: string) {
   const ownerEmail = env.OWNER_EMAIL;
   if (!ownerEmail || !env.RESEND_API_KEY) return;
 
-  const from = env.OUTREACH_FROM_EMAIL ?? "Calltide <hello@contact.calltide.app>";
+  const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
   const severityLabel = severity.toUpperCase();
   const color = severity === "emergency" ? "#ef4444" : severity === "critical" ? "#f59e0b" : "#3b82f6";
 
@@ -106,11 +106,11 @@ async function notifyAdmin(severity: AlertSeverity, message: string) {
     await resend.emails.send({
       from,
       to: ownerEmail,
-      subject: `[${severityLabel}] Calltide Capacity Alert`,
+      subject: `[${severityLabel}] Capta Capacity Alert`,
       html: `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;">
   <div style="margin-bottom:24px;">
-    <span style="font-size:20px;font-weight:700;color:#C59A27;">Calltide</span>
+    <span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span>
   </div>
   <div style="background:${color}15;border:1px solid ${color}30;border-radius:8px;padding:16px;margin-bottom:24px;">
     <p style="color:${color};font-weight:600;margin:0 0 8px;">${severityLabel} Capacity Alert</p>
@@ -120,7 +120,7 @@ async function notifyAdmin(severity: AlertSeverity, message: string) {
     View Dashboard
   </a>
   <hr style="border:none;border-top:1px solid #E2E8F0;margin:32px 0 16px;" />
-  <p style="color:#94A3B8;font-size:11px;">Calltide Inc. &middot; San Antonio, TX</p>
+  <p style="color:#94A3B8;font-size:11px;">Capta LLC &middot; San Antonio, TX</p>
 </div>`,
     });
   } catch (e) {

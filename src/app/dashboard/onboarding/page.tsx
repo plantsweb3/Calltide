@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trackCompleteRegistration, trackPurchase } from "@/lib/tracking";
+import CaptaSpinner from "@/components/capta-spinner";
 
 // ── Types ──
 
@@ -336,7 +337,7 @@ export default function OnboardingPageWrapper() {
   return (
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="h-8 w-8 rounded-full border-2 border-gray-300 border-t-[#D4A82E] animate-spin" />
+        <CaptaSpinner size={32} />
       </div>
     }>
       <OnboardingPage />
@@ -467,7 +468,7 @@ function OnboardingPage() {
   }, [router]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("calltide-lang") as Lang | null;
+    const stored = localStorage.getItem("capta-lang") as Lang | null;
     if (stored === "en" || stored === "es") setLang(stored);
   }, []);
 
@@ -716,7 +717,7 @@ function OnboardingPage() {
   const toggleLang = useCallback(() => {
     const next = lang === "en" ? "es" : "en";
     setLang(next);
-    localStorage.setItem("calltide-lang", next);
+    localStorage.setItem("capta-lang", next);
   }, [lang]);
 
   const formatPhone = (num: string) => {
@@ -739,7 +740,7 @@ function OnboardingPage() {
     return (
       <div className="flex min-h-screen items-center justify-center" style={{ background: "#fff" }}>
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-amber-500" />
+          <CaptaSpinner size={32} />
         </div>
       </div>
     );
@@ -752,7 +753,7 @@ function OnboardingPage() {
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <div className="flex items-center gap-2">
             <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#111827" /><path d="M8 16c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8" stroke="#C59A27" strokeWidth="2.5" strokeLinecap="round" /><circle cx="16" cy="16" r="3" fill="#C59A27" /></svg>
-            <span className="text-lg font-bold text-gray-900">Calltide</span>
+            <span className="text-lg font-bold text-gray-900">Capta</span>
           </div>
           <div className="flex items-center gap-3">
             {bizName && <span className="hidden text-sm text-gray-500 sm:inline">{bizName}</span>}
@@ -1346,7 +1347,7 @@ function OnboardingPage() {
               </>
             ) : (
               <>
-                <div className="mb-4 h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-amber-500" />
+                <CaptaSpinner size={32} className="mb-4" />
                 <p className="text-gray-500">{t.redirectingToCheckout}</p>
               </>
             )}

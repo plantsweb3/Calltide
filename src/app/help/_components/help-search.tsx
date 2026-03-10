@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { CaptaSpinnerInline } from "@/components/capta-spinner";
 
 interface SearchResult {
   id: string;
@@ -79,7 +80,7 @@ export default function HelpSearch({ lang = "en" }: { lang?: "en" | "es" }) {
           style={{ background: "white", color: "#1A1D24" }}
         />
         {loading && (
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" style={{ borderColor: "#C59A27", borderTopColor: "transparent" }} />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2" style={{ color: "#C59A27" }}><CaptaSpinnerInline size={16} /></span>
         )}
       </div>
 
