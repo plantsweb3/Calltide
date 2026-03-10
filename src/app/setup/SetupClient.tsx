@@ -741,7 +741,7 @@ function SetupClient() {
   const [offLimits, setOffLimits] = useState<Record<string, boolean>>({ pricing: false, competitors: false, timing: false });
 
   // Step 6
-  const [planToggle, setPlanToggle] = useState<PlanType>("annual");
+  const [planToggle, setPlanToggle] = useState<PlanType>("monthly");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [tradeData, setTradeData] = useState<TradeData | null>(null);
 
