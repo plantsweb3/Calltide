@@ -372,7 +372,7 @@ export default function PricingClient() {
             Stop missing calls. Start today.
           </h2>
           <SignupForm lang="en" plan={billing} />
-          <p className="mt-6 text-sm text-slate-500">Free for 14 days. Cancel anytime. No contracts.</p>
+          <p className="mt-6 text-sm text-slate-500">30-day money-back guarantee. Cancel anytime. No contracts.</p>
           <p className="mt-4 text-sm text-slate-500">
             Or call us:{" "}
             <a href={PHONE_TEL} className="font-semibold transition hover:underline" style={{ color: "#d4a843" }}>

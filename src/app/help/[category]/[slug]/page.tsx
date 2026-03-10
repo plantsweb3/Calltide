@@ -154,7 +154,7 @@ export default async function HelpArticlePage({ params }: { params: Promise<{ ca
             <div className="relative">
               <p className="text-xl font-bold text-white">Ready to stop missing calls?</p>
               <p className="mt-2 text-sm" style={{ color: "#94A3B8" }}>
-                Set up your AI receptionist in minutes. Try it free for 14 days.
+                Set up your AI receptionist in minutes. 30-day money-back guarantee.
               </p>
               <Link
                 href="/setup?utm_source=help&utm_medium=prospect-cta"

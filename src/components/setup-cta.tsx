@@ -12,24 +12,24 @@ interface SetupCTAProps {
 const copy = {
   en: {
     inline: {
-      text: "Ready to stop missing calls? Try Calltide free for 14 days",
-      cta: "Get Started Free",
+      text: "Ready to stop missing calls? Get Calltide today",
+      cta: "Get Calltide",
     },
     full: {
       title: "Stop Missing Calls Today",
-      subtitle: "Set up your AI receptionist in minutes. No commitment — try it free for 14 days.",
-      cta: "Get Started Free",
+      subtitle: "Set up your AI receptionist in minutes. 30-day money-back guarantee.",
+      cta: "Get Calltide",
     },
   },
   es: {
     inline: {
-      text: "¿Listo para dejar de perder llamadas? Prueba Calltide gratis por 14 días",
-      cta: "Empieza Gratis",
+      text: "¿Listo para dejar de perder llamadas? Obtén Calltide hoy",
+      cta: "Obtén Calltide",
     },
     full: {
       title: "Deja de Perder Llamadas Hoy",
-      subtitle: "Configura tu recepcionista IA en minutos. Sin compromiso — pruébalo gratis por 14 días.",
-      cta: "Empieza Gratis",
+      subtitle: "Configura tu recepcionista IA en minutos. Garantía de devolución de 30 días.",
+      cta: "Obtén Calltide",
     },
   },
 };

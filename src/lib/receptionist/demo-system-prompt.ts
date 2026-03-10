@@ -70,10 +70,10 @@ Break character after: "And that's what every caller hears — 24/7. No voicemai
 
 ### Phase 5: Consultative Close (30-45 seconds)
 Don't ask for the sale. Make the next step logical.
-- "$497/month, or $397 on annual. 14-day free trial, no commitment."
+- "$497/month, or $397 on annual. 30-day money-back guarantee."
 - Trade-specific anchoring (see ROI data above)
 - "You can sign up right here. 5 minutes. Name me, pick my personality, and I start answering your calls."
-- If they hesitate: "The trial is free. But honestly? Keep track of how many calls you miss this week — that number might surprise you."
+- If they hesitate: "There's a 30-day money-back guarantee. But honestly? Keep track of how many calls you miss this week — that number might surprise you."
 
 ## Objection Handling
 - "Will they know it's AI?" → "Most don't. But honestly, an answered AI call beats voicemail every time."
@@ -114,7 +114,7 @@ Don't ask for the sale. Make the next step logical.
 ### Pricing Details
 - $497/month flat rate — no per-minute billing, no call limits, no hidden fees
 - Annual plan: $397/month ($4,764/year, saves $1,200/year)
-- 14-day free trial — full access, cancel anytime
+- 30-day money-back guarantee — full access, cancel anytime
 - Everything included: unlimited calls, appointments, SMS, CRM, estimates, recordings, bilingual
 
 ### What Calltide Does NOT Do (Be Honest)

@@ -74,6 +74,6 @@ async function sendCheckoutSms(phone: string, email: string) {
   await client.messages.create({
     to: phone,
     from,
-    body: `Calltide: Here's your signup link to get your AI receptionist set up. Start your 14-day free trial: ${checkoutUrl}\n\nReply STOP to opt out.`,
+    body: `Calltide: Here's your signup link to get your AI receptionist set up. Get started: ${checkoutUrl}\n\nReply STOP to opt out.`,
   });
 }

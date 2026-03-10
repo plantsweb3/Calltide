@@ -2,7 +2,7 @@ export type Lang = "en" | "es";
 
 export const PHONE = process.env.NEXT_PUBLIC_PHONE ?? "(830) 521-7133";
 export const PHONE_TEL = `tel:${process.env.NEXT_PUBLIC_PHONE_TEL ?? "+18305217133"}`;
-export const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.com/calltide/onboarding";
+export const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "/setup";
 
 export const T = {
   en: {
@@ -11,7 +11,7 @@ export const T = {
       badge: "AI Front Office for Home Services",
       h1: "She Answers. She Quotes. She Follows Up.",
       sub: "Your AI receptionist answers every call, collects job details, generates estimates, recovers missed calls, and manages follow-ups — in English and Spanish.",
-      cta: "Get Calltide — Free for 14 Days",
+      cta: "Get Calltide →",
       audioLabel: "Hear her in action",
       audioSub: "\"Hi, I need to schedule a plumber...\"",
       audioDuration: "0:47",
@@ -115,7 +115,7 @@ export const T = {
       ],
       comparison: "vs. $3,000+/month for a bilingual receptionist",
       cta: "Get Calltide",
-      guarantee: "Free for 14 days. Cancel anytime. No contracts.",
+      guarantee: "30-day money-back guarantee. Cancel anytime. No contracts.",
       crossLinks: [
         { label: "Why missed calls cost real money", href: "/help/missed-calls-cost-money" },
         { label: "Calltide vs hiring a receptionist", href: "/help/calltide-vs-receptionist" },
@@ -141,8 +141,8 @@ export const T = {
     cta: {
       h2: "Stop losing calls. Get Calltide today.",
       placeholder: "Enter your business email",
-      button: "Get Calltide — Free for 14 Days",
-      sub: "Setup takes less than 10 minutes. Free 14-day trial, cancel anytime.",
+      button: "Get Calltide →",
+      sub: "Setup takes less than 10 minutes. 30-day money-back guarantee.",
       sending: "Starting...",
       existsError: "Looks like you already have an account.",
       loginLink: "Log in instead →",
@@ -168,7 +168,7 @@ export const T = {
       badge: "Oficina IA para Servicios del Hogar",
       h1: "Ella Contesta. Ella Cotiza. Ella Da Seguimiento.",
       sub: "Tu recepcionista IA contesta cada llamada, recopila detalles del trabajo, genera presupuestos, recupera llamadas perdidas y maneja seguimientos — en inglés y español.",
-      cta: "Obtén Calltide — Gratis por 14 Días",
+      cta: "Obtén Calltide →",
       audioLabel: "Escúchala en acción",
       audioSub: "\"Hola, necesito programar un plomero...\"",
       audioDuration: "0:52",
@@ -272,7 +272,7 @@ export const T = {
       ],
       comparison: "vs. $3,000+/mes por una recepcionista bilingüe",
       cta: "Obtén Calltide",
-      guarantee: "Gratis por 14 días. Cancela cuando quieras. Sin contratos.",
+      guarantee: "Garantía de devolución de 30 días. Cancela cuando quieras. Sin contratos.",
       crossLinks: [
         { label: "Por qué las llamadas perdidas cuestan dinero real", href: "/es/help/missed-calls-cost-money" },
         { label: "Calltide vs contratar una recepcionista", href: "/es/help/calltide-vs-receptionist" },
@@ -298,8 +298,8 @@ export const T = {
     cta: {
       h2: "Deja de perder llamadas. Obtén Calltide hoy.",
       placeholder: "Ingresa tu correo de negocio",
-      button: "Obtén Calltide — Gratis por 14 Días",
-      sub: "La configuración toma menos de 10 minutos. Prueba gratis por 14 días, cancela cuando quieras.",
+      button: "Obtén Calltide →",
+      sub: "La configuración toma menos de 10 minutos. Garantía de devolución de 30 días.",
       sending: "Iniciando...",
       existsError: "Parece que ya tienes una cuenta.",
       loginLink: "Inicia sesión →",

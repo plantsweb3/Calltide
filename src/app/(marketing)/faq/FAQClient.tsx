@@ -33,7 +33,7 @@ const content = {
           },
           {
             q: "Can I try it before committing?",
-            a: "Yes — every plan starts with a free 14-day trial. No credit card required to start. Cancel anytime during the trial and you won't be charged.",
+            a: "Yes — every plan comes with a 30-day money-back guarantee. If Maria doesn't pay for herself in missed-call revenue within 30 days, you pay nothing.",
           },
         ],
       },
@@ -146,7 +146,7 @@ const content = {
           },
           {
             q: "¿Puedo probarlo antes de comprometerme?",
-            a: "Sí — cada plan empieza con una prueba gratuita de 14 días. No se requiere tarjeta de crédito para empezar. Cancela en cualquier momento durante la prueba y no se te cobrará.",
+            a: "Sí — cada plan incluye una garantía de devolución de 30 días. Si Maria no se paga sola con ingresos de llamadas recuperadas en 30 días, no pagas nada.",
           },
         ],
       },

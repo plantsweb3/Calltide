@@ -97,12 +97,12 @@ export default async function BlogIndexPage({
         {/* Setup CTA banner */}
         <div className="mt-10 rounded-xl bg-navy p-6 text-center dark-section">
           <p className="text-lg font-bold text-white">Stop Missing Calls Today</p>
-          <p className="mt-1 text-sm text-slate-300">Set up your AI receptionist in minutes. Try it free for 14 days.</p>
+          <p className="mt-1 text-sm text-slate-300">Set up your AI receptionist in minutes. 30-day money-back guarantee.</p>
           <Link
             href="/setup?utm_source=blog&utm_medium=banner"
             className="cta-gold cta-shimmer mt-4 inline-block rounded-lg px-6 py-2.5 text-sm font-semibold text-white"
           >
-            Get Started Free &rarr;
+            Get Calltide &rarr;
           </Link>
         </div>
 
