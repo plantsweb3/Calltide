@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Build the internal URL
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || `http://localhost:${process.env.PORT || 3000}`;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
   const url = `${appUrl}/api/agents/${agentName}`;
   const httpMethod = method || "GET";
 

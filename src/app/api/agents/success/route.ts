@@ -23,7 +23,7 @@ import { BRAND_COLOR, COMPANY_ADDRESS, MARKETING_URL } from "@/lib/constants";
 
 // ── Constants ──
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.capta.app";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
 const FONT_STACK = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
 const CALL_MILESTONES = [50, 100, 250, 500, 1000];

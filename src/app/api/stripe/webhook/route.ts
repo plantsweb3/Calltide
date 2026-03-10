@@ -113,9 +113,44 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return;
   }
 
-  // Check if business already exists for this customer
+  // Check if business already exists for this customer — reactivate if canceled
   const existing = await findBusinessByCustomer(customerId);
-  if (existing) return;
+  if (existing) {
+    await db
+      .update(businesses)
+      .set({
+        stripeSubscriptionId: subscriptionId || undefined,
+        stripeSubscriptionStatus: "active",
+        paymentStatus: "active",
+        active: true,
+        planType: plan,
+        mrr,
+        annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(businesses.id, existing.id));
+    if (existing.accountId) {
+      await db
+        .update(accounts)
+        .set({ stripeSubscriptionId: subscriptionId || undefined, stripeSubscriptionStatus: "active", planType: plan, updatedAt: new Date().toISOString() })
+        .where(eq(accounts.id, existing.accountId));
+    }
+    await logActivity({
+      type: "subscription_reactivated",
+      entityType: "business",
+      entityId: existing.id,
+      title: `${existing.name} resubscribed`,
+      detail: `Customer reactivated via new checkout. Plan: ${plan}.`,
+    });
+    await createNotification({
+      source: "financial",
+      severity: "info",
+      title: "Customer resubscribed",
+      message: `${existing.name} (${email}) resubscribed on ${plan} plan.`,
+      actionUrl: "/admin/billing",
+    });
+    return;
+  }
 
   // Also check by email to prevent duplicates
   const [existingByEmail] = await db
@@ -130,7 +165,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       .set({
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId || undefined,
-        stripeSubscriptionStatus: "trialing",
+        stripeSubscriptionStatus: "active",
         paymentStatus: "active",
         planType: plan,
         mrr,
@@ -155,7 +190,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         ownerPhone: biz.ownerPhone || "",
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId || undefined,
-        stripeSubscriptionStatus: "trialing",
+        stripeSubscriptionStatus: "active",
         planType: plan,
         locationCount: 1,
       });
@@ -194,7 +229,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     ownerPhone: "",
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscriptionId || undefined,
-    stripeSubscriptionStatus: "trialing",
+    stripeSubscriptionStatus: "active",
     planType: plan,
     locationCount: 1,
   });
@@ -218,7 +253,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     },
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscriptionId || undefined,
-    stripeSubscriptionStatus: "trialing",
+    stripeSubscriptionStatus: "active",
     paymentStatus: "active",
     planType: plan,
     mrr,
@@ -319,9 +354,15 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
   let failureCode: string | undefined;
   let failureMessage: string | undefined;
 
-  // Extract failure info from invoice metadata if available
+  // Extract failure info from invoice's last_finalization_error or charge
   const invoiceAny = invoice as unknown as Record<string, unknown>;
-  if (invoiceAny.charge && typeof invoiceAny.charge === "object") {
+  const lastError = invoiceAny.last_finalization_error as Record<string, unknown> | null;
+  if (lastError) {
+    failureCode = (lastError.code as string) ?? undefined;
+    failureMessage = (lastError.message as string) ?? undefined;
+  }
+  // Fallback: if charge is expanded (object), extract from it
+  if (!failureCode && invoiceAny.charge && typeof invoiceAny.charge === "object") {
     const charge = invoiceAny.charge as Record<string, unknown>;
     failureCode = (charge.failure_code as string) ?? undefined;
     failureMessage = (charge.failure_message as string) ?? undefined;
@@ -428,13 +469,45 @@ async function handleSubscriptionUpdated(sub: Stripe.Subscription) {
     updates.nextBillingAt = new Date(Number(subAny.current_period_end) * 1000).toISOString();
   }
 
+  // Detect plan changes from Stripe (e.g. portal upgrade/downgrade)
+  const priceId = sub.items?.data?.[0]?.price?.id;
+  if (priceId) {
+    const monthlyPriceId = process.env.STRIPE_PRICE_ID;
+    const annualPriceId = process.env.STRIPE_PRICE_ANNUAL;
+    if (priceId === annualPriceId && business.planType !== "annual") {
+      updates.planType = "annual";
+      updates.mrr = getMrrForPlan("annual");
+      updates.annualConvertedAt = new Date().toISOString();
+    } else if (priceId === monthlyPriceId && business.planType !== "monthly") {
+      updates.planType = "monthly";
+      updates.mrr = getMrrForPlan("monthly");
+    }
+  }
+
+  // Detect pending cancellation (cancel_at_period_end)
+  if (sub.cancel_at_period_end && newStatus === "active") {
+    updates.paymentStatus = "canceling";
+    await createNotification({
+      source: "financial",
+      severity: "warning",
+      title: "Cancellation pending",
+      message: `${business.name} has scheduled cancellation at period end.`,
+      actionUrl: "/admin/billing",
+    });
+  } else if (!sub.cancel_at_period_end && business.paymentStatus === "canceling") {
+    // Customer un-canceled
+    updates.paymentStatus = "active";
+  }
+
   await db.update(businesses).set(updates).where(eq(businesses.id, business.id));
 
   // Sync status to account
   if (business.accountId) {
+    const accountUpdates: Record<string, unknown> = { stripeSubscriptionStatus: newStatus, updatedAt: new Date().toISOString() };
+    if (updates.planType) accountUpdates.planType = updates.planType;
     await db
       .update(accounts)
-      .set({ stripeSubscriptionStatus: newStatus, updatedAt: new Date().toISOString() })
+      .set(accountUpdates)
       .where(eq(accounts.id, business.accountId));
   }
 
@@ -470,6 +543,7 @@ async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
       stripeSubscriptionStatus: "canceled",
       paymentStatus: "canceled",
       active: false,
+      mrr: 0,
       dataRetentionHoldUntil: holdUntil.toISOString(),
       updatedAt: new Date().toISOString(),
     })
@@ -612,7 +686,7 @@ async function handleSetupPageCheckout(
         serviceArea: setupSession.city && setupSession.state ? `${setupSession.city}, ${setupSession.state}` : undefined,
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId,
-        stripeSubscriptionStatus: "trialing",
+        stripeSubscriptionStatus: "active",
         paymentStatus: "active",
         planType: plan,
         mrr,
@@ -660,7 +734,7 @@ async function handleSetupPageCheckout(
     ownerPhone: setupSession.ownerPhone || "",
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscriptionId,
-    stripeSubscriptionStatus: "trialing",
+    stripeSubscriptionStatus: "active",
     planType: plan,
     locationCount: 1,
   });
@@ -684,7 +758,7 @@ async function handleSetupPageCheckout(
       defaultLanguage: setupSession.language || "en",
       stripeCustomerId: customerId,
       stripeSubscriptionId: subscriptionId,
-      stripeSubscriptionStatus: "trialing",
+      stripeSubscriptionStatus: "active",
       paymentStatus: "active",
       planType: plan,
       mrr,

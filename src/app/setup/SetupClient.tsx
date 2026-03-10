@@ -147,7 +147,7 @@ const T = {
     servicesLabel: "Services",
     yourBusiness: "your business",
     authenticating: "Setting up your account...",
-    authFailed: "We're still processing your payment. Please check your email for login instructions.",
+    authFailed: "We're still processing your payment. Try refreshing in a few seconds.",
     next: "Next",
     back: "Back",
     saving: "Saving...",
@@ -254,7 +254,7 @@ const T = {
     servicesLabel: "Servicios",
     yourBusiness: "tu negocio",
     authenticating: "Configurando tu cuenta...",
-    authFailed: "Aún estamos procesando tu pago. Revisa tu correo para instrucciones de inicio de sesión.",
+    authFailed: "Aún estamos procesando tu pago. Intenta refrescar en unos segundos.",
     next: "Siguiente",
     back: "Atrás",
     saving: "Guardando...",
@@ -396,6 +396,7 @@ function SetupClient() {
   // Celebration (post-payment)
   const [showCelebration, setShowCelebration] = useState(false);
   const [authState, setAuthState] = useState<"pending" | "success" | "failed">("pending");
+  const [credentials, setCredentials] = useState<{ email: string; password: string } | null>(null);
 
   // Errors — per-field errors only, cleared per-field
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -501,6 +502,10 @@ function SetupClient() {
           try {
             const authRes = await fetch("/api/setup/auth", { method: "POST", signal: abortController.signal });
             if (authRes.ok) {
+              const authData = await authRes.json().catch(() => null);
+              if (authData?.generatedPassword && authData?.email) {
+                setCredentials({ email: authData.email, password: authData.generatedPassword });
+              }
               setAuthState("success");
               return;
             }
@@ -815,15 +820,40 @@ function SetupClient() {
               <p style={{ color: "#D4A843", fontSize: 14 }}>{t.authenticating}</p>
             )}
             {authState === "success" && (
-              <button
-                onClick={() => router.push("/dashboard/onboarding?step=8")}
-                className={s.primaryBtn}
-              >
-                {t.connectPhone} →
-              </button>
+              <>
+                {credentials && (
+                  <div style={{ background: "rgba(212,168,67,0.1)", border: "1px solid rgba(212,168,67,0.3)", borderRadius: 8, padding: "12px 16px", marginBottom: 16, textAlign: "left" }}>
+                    <p style={{ color: "#D4A843", fontSize: 13, fontWeight: 600, margin: "0 0 8px" }}>
+                      {lang === "en" ? "Save your login credentials:" : "Guarda tus credenciales:"}
+                    </p>
+                    <p style={{ color: "#e2e8f0", fontSize: 13, margin: "0 0 4px" }}>
+                      <span style={{ color: "#94a3b8" }}>Email:</span> {credentials.email}
+                    </p>
+                    <p style={{ color: "#e2e8f0", fontSize: 13, margin: 0 }}>
+                      <span style={{ color: "#94a3b8" }}>{lang === "en" ? "Password:" : "Contraseña:"}</span>{" "}
+                      <code style={{ background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: 4, fontFamily: "monospace" }}>{credentials.password}</code>
+                    </p>
+                  </div>
+                )}
+                <button
+                  onClick={() => router.push("/dashboard/onboarding?step=8")}
+                  className={s.primaryBtn}
+                >
+                  {t.connectPhone} →
+                </button>
+              </>
             )}
             {authState === "failed" && (
-              <p style={{ color: "#94a3b8", fontSize: 14, lineHeight: 1.6 }}>{t.authFailed}</p>
+              <div>
+                <p style={{ color: "#94a3b8", fontSize: 14, lineHeight: 1.6, marginBottom: 12 }}>
+                  {lang === "en"
+                    ? "We're still processing your payment. This usually takes a few seconds — try refreshing."
+                    : "Aún estamos procesando tu pago. Esto normalmente toma unos segundos — intenta refrescar."}
+                </p>
+                <button className={s.primaryBtn} onClick={() => window.location.reload()} style={{ fontSize: 14 }}>
+                  {lang === "en" ? "Refresh" : "Refrescar"}
+                </button>
+              </div>
             )}
           </div>
         </div>

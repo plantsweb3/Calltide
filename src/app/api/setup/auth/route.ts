@@ -23,7 +23,7 @@ const SESSION_30D = 30 * 24 * 60 * 60 * 1000;
  */
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = await rateLimit(`setup-auth:${ip}`, { limit: 10, windowSeconds: 3600 });
+  const rl = await rateLimit(`setup-auth:${ip}`, { limit: 30, windowSeconds: 3600 });
   if (!rl.success) return rateLimitResponse(rl);
 
   const cookieStore = await cookies();
