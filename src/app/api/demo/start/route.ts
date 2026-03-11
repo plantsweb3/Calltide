@@ -17,17 +17,17 @@ function hashIp(ip: string): string {
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
 
-  // Rate limit: 1 demo per IP per hour
-  const hourlyRl = await rateLimit(`demo-hourly:${ip}`, RATE_LIMITS.demo);
+  // Rate limit: 5 demos per IP per 15 minutes
+  const hourlyRl = await rateLimit(`demo-v2:${ip}`, RATE_LIMITS.demo);
   if (!hourlyRl.success) {
     return NextResponse.json(
-      { error: "You can start one demo per hour. Try again later." },
+      { error: "Too many demos. Please wait a few minutes and try again." },
       { status: 429, headers: { "Retry-After": String(Math.ceil((hourlyRl.resetAt - Date.now()) / 1000)) } },
     );
   }
 
-  // Rate limit: 5 demos per IP per 24 hours
-  const dailyRl = await rateLimit(`demo-daily:${ip}`, RATE_LIMITS.demoDaily);
+  // Rate limit: 30 demos per IP per 24 hours
+  const dailyRl = await rateLimit(`demo-daily-v2:${ip}`, RATE_LIMITS.demoDaily);
   if (!dailyRl.success) {
     return NextResponse.json(
       { error: "You've reached the daily demo limit. Get Capta to talk to Maria anytime." },
