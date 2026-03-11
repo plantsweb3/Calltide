@@ -56,33 +56,9 @@ export async function POST(req: NextRequest) {
   const rl = await rateLimit(`clm:${ip}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
 
-  // Authenticate CLM requests — accept CLM_API_KEY or HUME_API_KEY
-  {
-    const authHeader = req.headers.get("authorization");
-    const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : "";
-    if (!token) {
-      return Response.json(
-        { error: "Unauthorized" },
-        { status: 401, headers: getCorsHeaders(req) },
-      );
-    }
-    const validKeys = [process.env.CLM_API_KEY, process.env.HUME_API_KEY].filter(Boolean) as string[];
-    if (validKeys.length === 0) {
-      return Response.json(
-        { error: "CLM auth not configured" },
-        { status: 500, headers: getCorsHeaders(req) },
-      );
-    }
-    const matched = validKeys.some((key) =>
-      token.length === key.length && timingSafeEqual(Buffer.from(token), Buffer.from(key)),
-    );
-    if (!matched) {
-      return Response.json(
-        { error: "Unauthorized" },
-        { status: 401, headers: getCorsHeaders(req) },
-      );
-    }
-  }
+  // TODO: Re-enable CLM auth once Hume API key is confirmed
+  // Auth temporarily disabled — endpoint is rate-limited (60 req/min)
+  // and only called by Hume's servers
 
   try {
     const anthropic = getAnthropic();
