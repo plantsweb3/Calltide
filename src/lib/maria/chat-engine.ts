@@ -11,6 +11,17 @@ import type Anthropic from "@anthropic-ai/sdk";
 const MAX_CONTEXT_MESSAGES = 24;
 const COMPACTION_TRIGGER = 30; // trigger after response, not before
 const COMPACTION_KEEP = 12;
+const MAX_MESSAGE_LENGTH = 4000;
+const MAX_HISTORY_LIMIT = 100;
+
+/** Sanitize user message before storage — strip control chars, enforce length */
+function sanitizeMessage(text: string): string {
+  return text
+    .slice(0, MAX_MESSAGE_LENGTH)
+    // Remove control characters (keep newline, tab, space)
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
+    .trim();
+}
 
 interface ChatResponse {
   reply: string;
@@ -29,11 +40,14 @@ export async function chat(
   const biz = await getBusinessById(businessId);
   if (!biz) throw new Error("Business not found");
 
-  // Save the user message
+  // Sanitize and save the user message
+  const sanitizedMessage = sanitizeMessage(userMessage);
+  if (!sanitizedMessage) throw new Error("Empty message after sanitization");
+
   await db.insert(chatMessages).values({
     businessId,
     role: "user",
-    content: userMessage,
+    content: sanitizedMessage,
     channel,
   });
 
@@ -366,6 +380,7 @@ export async function getChatHistory(
   toolsUsed?: string[];
   createdAt: string;
 }>> {
+  const cappedLimit = Math.min(limit || 50, MAX_HISTORY_LIMIT);
   const messages = await db
     .select({
       id: chatMessages.id,
@@ -377,7 +392,7 @@ export async function getChatHistory(
     .from(chatMessages)
     .where(and(eq(chatMessages.businessId, businessId), eq(chatMessages.channel, channel)))
     .orderBy(desc(chatMessages.createdAt))
-    .limit(limit);
+    .limit(cappedLimit);
 
   return messages
     .reverse()

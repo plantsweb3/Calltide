@@ -43,11 +43,11 @@ const FEATURES_COL2 = [
 ];
 
 const SOFTWARE_COSTS = [
-  { name: "Answering service", cost: "$700–$1,600/mo" },
-  { name: "CRM", cost: "$50–$150/mo" },
-  { name: "Estimating tool", cost: "$50–$200/mo" },
-  { name: "Follow-up automation", cost: "$100–$300/mo" },
-  { name: "Review management", cost: "$50–$100/mo" },
+  { name: "Answering service", cost: "$700\u2013$1,600/mo" },
+  { name: "CRM software", cost: "$50\u2013$300/mo" },
+  { name: "Estimating tool", cost: "$50\u2013$200/mo" },
+  { name: "Follow-up automation", cost: "$100\u2013$300/mo" },
+  { name: "Review management", cost: "$50\u2013$100/mo" },
 ];
 
 const FAQS = [
@@ -69,7 +69,7 @@ const FAQS = [
   },
   {
     q: "What's included that I'd normally need separate software for?",
-    a: "Answering service, CRM, estimating tool, follow-up automation, review management, appointment booking, and analytics. Capta replaces $950–$2,350/month in separate software subscriptions.",
+    a: "Answering service, CRM, estimating tool, follow-up automation, review management, appointment booking, and analytics. Capta replaces $950\u2013$2,500/month in separate software subscriptions.",
   },
 ];
 
@@ -291,7 +291,7 @@ export default function PricingClient() {
                 border: "1px solid rgba(212,168,67,0.2)",
               }}
             >
-              <p className="text-sm font-medium text-slate-400">Total: $950–$2,350/mo</p>
+              <p className="text-sm font-medium text-slate-400">Total: $950\u2013$2,500/mo</p>
               <p className="mt-1 text-lg font-extrabold" style={{ color: "#d4a843" }}>Or get all of it for $497/month.</p>
             </div>
           </div>

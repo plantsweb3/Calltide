@@ -5,10 +5,15 @@ import { eq, and } from "drizzle-orm";
 /** Strip prompt-injection patterns from user-provided custom response text */
 function sanitize(text: string, max = 256): string {
   return text
+    .normalize("NFKD")
+    .replace(/[\u200B-\u200F\u2028-\u202F\u2060\uFEFF]/g, "")
     .slice(0, max)
     .replace(/^#{1,6}\s+/gm, "")
-    .replace(/^(you are|ignore|disregard|forget|override|system:|assistant:|user:).*/gim, "")
+    .replace(/^(you\s+are|ignore|disregard|forget|override|bypass|new\s+instructions|from\s+now\s+on|instead|pretend|act\s+as|roleplay|simulate|system\s*:|assistant\s*:|user\s*:|human\s*:|<\|?\s*(?:system|im_start|im_end))/gim, "")
+    .replace(/[-=]{3,}/g, "")
+    .replace(/[<\[{]\s*(?:system|prompt|instruction|context|INST)[>\]}]/gi, "")
     .replace(/<[^>]*>/g, "")
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
     .trim();
 }
 

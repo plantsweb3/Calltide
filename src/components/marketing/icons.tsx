@@ -98,6 +98,36 @@ export function IconCheckCircle({ size = 24, className = "" }: { size?: number; 
   );
 }
 
+export function IconUsers({ size = 24, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+export function IconMessageSquare({ size = 24, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+export function IconZap({ size = 24, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    </svg>
+  );
+}
+export function IconLayers({ size = 24, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" />
+    </svg>
+  );
+}
+
 export const FEATURE_ICONS = [IconGlobe, IconGlobe, IconCalendar, IconMessageCircle, IconAlertTriangle, IconBarChart, IconPhoneMissed, IconCalculator, IconRefreshCw];
+export const HERO_FEATURE_ICONS = [IconCalculator, IconPhoneMissed, IconRefreshCw, IconUsers];
 export const WORKFLOW_ICONS = [IconPhone, IconClipboard, IconCamera, IconCalculator, IconSmartphone, IconCheckCircle];
 export const STEP_ICONS = [IconClipboard, IconPhone, IconHeadset];

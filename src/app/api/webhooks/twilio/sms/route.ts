@@ -50,8 +50,15 @@ export async function POST(req: NextRequest) {
 
   const from = params.From || "";
   const to = params.To || "";
-  const body = params.Body || "";
+  // Cap body length to prevent memory abuse (SMS max is 1600 chars, MMS can be longer)
+  const body = (params.Body || "").slice(0, 4000).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
   const messageSid = params.MessageSid || "";
+
+  // Validate phone numbers match E.164 format
+  if (from && !/^\+?[1-9]\d{1,14}$/.test(from)) {
+    reportWarning("Inbound SMS with invalid From number", { messageSid });
+    return twimlResponse("");
+  }
 
   console.log("Inbound SMS received:", { messageSid });
 
@@ -110,7 +117,8 @@ export async function POST(req: NextRequest) {
   }
 
   // Handle inbound MMS photos — check BEFORE owner reply detection
-  const numMedia = parseInt(params.NumMedia || "0", 10);
+  const rawNumMedia = parseInt(params.NumMedia || "0", 10);
+  const numMedia = Number.isNaN(rawNumMedia) ? 0 : Math.min(Math.max(rawNumMedia, 0), 10);
   if (numMedia > 0) {
     try {
       const mediaUrls: string[] = [];
@@ -190,10 +198,12 @@ export async function POST(req: NextRequest) {
         const result = await mariaChat(biz.id, body.trim(), "sms");
 
         if (result.reply) {
+          // Cap length and strip control characters before sending
+          const replyBody = result.reply.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "").slice(0, 1500);
           await sendSMS({
             to: from,
             from: biz.twilioNumber,
-            body: result.reply.slice(0, 1500),
+            body: replyBody,
             businessId: biz.id,
             templateType: "owner_notify",
           });
@@ -307,7 +317,7 @@ async function notifyOwnerOfSms(businessId: string, businessName: string, ownerE
   if (!env.RESEND_API_KEY) return;
   const resend = getResend();
   const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
-  const preview = escapeHtml(messageBody.slice(0, 200));
+  const preview = escapeHtml(messageBody).slice(0, 300);
 
   await resend.emails.send({
     from,
