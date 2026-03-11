@@ -125,8 +125,25 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
       setState("active");
     } else if (readyState === VoiceReadyState.CLOSED && state === "active") {
       handleEnd();
+    } else if (readyState === VoiceReadyState.CLOSED && state === "connecting") {
+      // WebSocket failed to open — show error and return to idle
+      setError(l.errorGeneric);
+      setState("idle");
     }
   }, [readyState]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Connection timeout — if stuck in "connecting" for 15s, abort
+  useEffect(() => {
+    if (state !== "connecting") return;
+    const timeout = setTimeout(() => {
+      if (readyState !== VoiceReadyState.OPEN) {
+        try { disconnect(); } catch { /* ignore */ }
+        setError(l.errorGeneric);
+        setState("idle");
+      }
+    }, 15_000);
+    return () => clearTimeout(timeout);
+  }, [state]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 5-minute auto-end
   useEffect(() => {
@@ -282,6 +299,14 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
             />
           ))}
         </div>
+        {phoneTel && (
+          <a
+            href={phoneTel}
+            className="mt-4 text-sm text-slate-400 transition hover:text-white"
+          >
+            {l.idleCallCta} &rarr;
+          </a>
+        )}
       </div>
     );
   }
