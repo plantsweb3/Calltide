@@ -18,8 +18,10 @@ export default function ChatWidget() {
   const [greeting, setGreeting] = useState("");
   const [receptionistName, setReceptionistName] = useState("Maria");
   const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -29,7 +31,8 @@ export default function ChatWidget() {
   useEffect(() => {
     if (!open || loaded) return;
 
-    fetch("/api/dashboard/chat")
+    const controller = new AbortController();
+    fetch("/api/dashboard/chat", { signal: controller.signal })
       .then((r) => {
         if (!r.ok) throw new Error();
         return r.json();
@@ -40,9 +43,13 @@ export default function ChatWidget() {
         setReceptionistName(data.receptionistName || "Maria");
         setLoaded(true);
       })
-      .catch(() => {
+      .catch((err) => {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setLoadError(true);
         setLoaded(true);
       });
+
+    return () => controller.abort();
   }, [open, loaded]);
 
   // Scroll to bottom when messages change
@@ -57,12 +64,32 @@ export default function ChatWidget() {
     }
   }, [open, loaded]);
 
+  // Escape key closes the panel
+  useEffect(() => {
+    if (!open) return;
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [open]);
+
+  // Cleanup inflight request on unmount
+  useEffect(() => {
+    return () => abortRef.current?.abort();
+  }, []);
+
   async function handleSend() {
     const text = input.trim();
     if (!text || sending) return;
 
     setInput("");
     setSending(true);
+
+    // Abort any previous inflight request
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
 
     // Add user message optimistically
     const userMsg: Message = {
@@ -78,6 +105,7 @@ export default function ChatWidget() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
+        signal: controller.signal,
       });
 
       if (!res.ok) throw new Error();
@@ -91,7 +119,8 @@ export default function ChatWidget() {
         createdAt: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, assistantMsg]);
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       const errorMsg: Message = {
         id: `err-${Date.now()}`,
         role: "assistant",
@@ -101,6 +130,7 @@ export default function ChatWidget() {
       setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setSending(false);
+      abortRef.current = null;
     }
   }
 
@@ -128,7 +158,7 @@ export default function ChatWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed z-40 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-transform hover:scale-105"
+          className="fixed z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-transform hover:scale-105"
           style={{
             bottom: "1.5rem",
             right: "4.5rem",
@@ -149,16 +179,18 @@ export default function ChatWidget() {
         <>
           {/* Backdrop on mobile */}
           <div
-            className="fixed inset-0 z-40 bg-black/30 md:bg-transparent md:pointer-events-none"
+            className="fixed inset-0 z-50 bg-black/30 md:bg-transparent md:pointer-events-none"
             onClick={() => setOpen(false)}
           />
           <aside
-            className="fixed right-0 top-0 z-40 flex h-screen w-full max-w-[420px] flex-col"
+            className="fixed right-0 top-0 z-50 flex h-screen w-full max-w-[420px] flex-col"
             style={{
               background: "var(--db-surface)",
               borderLeft: "1px solid var(--db-border)",
               animation: "slideInRight 0.2s ease-out",
             }}
+            role="dialog"
+            aria-label={`Chat with ${receptionistName}`}
           >
             {/* Header */}
             <div
@@ -187,6 +219,7 @@ export default function ChatWidget() {
                 style={{ color: "rgba(255,255,255,0.6)" }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}
+                aria-label="Close chat"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -197,8 +230,27 @@ export default function ChatWidget() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+              {/* Loading state */}
+              {!loaded && (
+                <div className="flex items-center justify-center py-8">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" style={{ color: "var(--db-text-muted)" }} />
+                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Loading conversation...</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Load error */}
+              {loaded && loadError && messages.length === 0 && (
+                <div className="flex items-center justify-center py-8">
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                    Couldn&apos;t load chat history. You can still send messages.
+                  </p>
+                </div>
+              )}
+
               {/* Greeting */}
-              {messages.length === 0 && greeting && (
+              {loaded && messages.length === 0 && greeting && !loadError && (
                 <div className="flex gap-2">
                   <div
                     className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-0.5"
@@ -317,6 +369,7 @@ export default function ChatWidget() {
                     color: input.trim() && !sending ? "#fff" : "var(--db-text-muted)",
                     opacity: input.trim() && !sending ? 1 : 0.4,
                   }}
+                  aria-label="Send message"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13" />

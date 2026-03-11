@@ -11,6 +11,7 @@ import { detectOwnerReply } from "@/lib/notifications/owner-reply-handler";
 import { processInboundPhotos } from "@/lib/photos/receive";
 import { logActivity } from "@/lib/activity";
 import { sendSMS } from "@/lib/twilio/sms";
+import { normalizePhone } from "@/lib/compliance/sms";
 import { env } from "@/lib/env";
 import { getResend } from "@/lib/email/client";
 
@@ -84,10 +85,11 @@ export async function POST(req: NextRequest) {
     status: "received",
   });
 
-  // Handle SMS opt-out / opt-in
+  // Handle SMS opt-out / opt-in (skip for business owner)
   const normalizedBody = body.trim().toLowerCase();
+  const isOwner = normalizePhone(from) === normalizePhone(biz.ownerPhone);
 
-  if (OPT_OUT_KEYWORDS.some((kw) => normalizedBody === kw)) {
+  if (!isOwner && OPT_OUT_KEYWORDS.some((kw) => normalizedBody === kw)) {
     await db.update(leads).set({
       smsOptOut: true,
       updatedAt: new Date().toISOString(),
@@ -97,7 +99,7 @@ export async function POST(req: NextRequest) {
     return twimlResponse("You have been unsubscribed and will no longer receive SMS messages from us. Reply START to re-subscribe.");
   }
 
-  if (OPT_IN_KEYWORDS.some((kw) => normalizedBody === kw)) {
+  if (!isOwner && OPT_IN_KEYWORDS.some((kw) => normalizedBody === kw)) {
     await db.update(leads).set({
       smsOptOut: false,
       updatedAt: new Date().toISOString(),
@@ -179,32 +181,33 @@ export async function POST(req: NextRequest) {
 
   // Owner conversational SMS — route through Maria's chat engine
   // Only triggers if the sender is the business owner and message didn't match any structured handler
-  const normalizedFrom = from.replace(/\D/g, "");
-  const normalizedOwner = biz.ownerPhone.replace(/\D/g, "");
-  if (normalizedFrom === normalizedOwner && body.trim().length > 0) {
-    try {
-      const { chat } = await import("@/lib/maria/chat-engine");
-      const result = await chat(biz.id, body.trim(), "sms");
+  if (isOwner && body.trim().length > 0 && process.env.ANTHROPIC_API_KEY) {
+    // Fire-and-forget: respond immediately to Twilio, process chat in background
+    // Twilio has a 15s timeout — Maria's chat can take longer
+    (async () => {
+      try {
+        const { chat: mariaChat } = await import("@/lib/maria/chat-engine");
+        const result = await mariaChat(biz.id, body.trim(), "sms");
 
-      if (result.reply) {
-        // Send Maria's response back to owner via SMS
-        await sendSMS({
-          to: from,
-          from: biz.twilioNumber,
-          body: result.reply.slice(0, 1500), // SMS length limit
-          businessId: biz.id,
-          templateType: "owner_notify",
-        });
+        if (result.reply) {
+          await sendSMS({
+            to: from,
+            from: biz.twilioNumber,
+            body: result.reply.slice(0, 1500),
+            businessId: biz.id,
+            templateType: "owner_notify",
+          });
+        }
+      } catch (err) {
+        reportError("Owner SMS → Maria chat failed", err, { extra: { businessId: biz.id } });
       }
-      return twimlResponse("");
-    } catch (err) {
-      reportError("Owner SMS → Maria chat failed", err, { extra: { businessId: biz.id } });
-      // Fall through to default behavior
-    }
+    })();
+    return twimlResponse("");
   }
 
   // Notify business owner of inbound SMS from customers (fire-and-forget)
-  if (biz.ownerEmail) {
+  // Skip if the message came from the owner themselves
+  if (biz.ownerEmail && !isOwner) {
     notifyOwnerOfSms(biz.id, biz.name, biz.ownerEmail, body).catch((err) =>
       reportError("Failed to send inbound SMS notification email", err, { extra: { businessId: biz.id } })
     );

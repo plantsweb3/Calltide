@@ -1,11 +1,9 @@
 import { db } from "@/db";
 import {
-  businesses, calls, leads, appointments, customers, estimates,
-  jobCards, smsMessages, chatMessages, businessContextNotes,
-  jobIntakes, servicePricing, weeklyDigests, monthlyDigests,
-  businessPartners, partnerReferrals, reviewRequests,
+  calls, leads, appointments, customers,
+  jobCards, smsMessages, businessContextNotes,
 } from "@/db/schema";
-import { eq, and, desc, gte, lte, sql, count, ne } from "drizzle-orm";
+import { eq, and, desc, gte, sql, count, ne, or, like } from "drizzle-orm";
 import { getWeather } from "./weather";
 import { searchHelp } from "./help-kb";
 import { checkAvailability } from "@/lib/calendar/availability";
@@ -378,14 +376,22 @@ async function getTodaysSchedule(businessId: string, biz: BusinessContext, date?
     .where(and(eq(appointments.businessId, businessId), eq(appointments.date, target)))
     .orderBy(appointments.time);
 
-  // Enrich with lead names
-  const enriched = await Promise.all(
-    rows.map(async (a) => {
-      const [lead] = await db.select({ name: leads.name, phone: leads.phone })
-        .from(leads).where(eq(leads.id, a.leadId)).limit(1);
-      return { ...a, customerName: lead?.name, customerPhone: lead?.phone };
-    })
-  );
+  // Batch-fetch lead names for all appointments
+  const leadIds = [...new Set(rows.map((a) => a.leadId).filter(Boolean))];
+  const leadMap = new Map<string, { name: string | null; phone: string | null }>();
+  if (leadIds.length > 0) {
+    const leadRows = await db.select({ id: leads.id, name: leads.name, phone: leads.phone })
+      .from(leads)
+      .where(or(...leadIds.map((id) => eq(leads.id, id))));
+    for (const l of leadRows) {
+      leadMap.set(l.id, { name: l.name, phone: l.phone });
+    }
+  }
+
+  const enriched = rows.map((a) => {
+    const lead = leadMap.get(a.leadId);
+    return { ...a, customerName: lead?.name, customerPhone: lead?.phone };
+  });
 
   return JSON.stringify({ date: target, appointments: enriched });
 }
@@ -501,7 +507,7 @@ async function getBusinessStats(businessId: string, biz: BusinessContext, period
       .where(and(eq(customers.businessId, businessId), gte(customers.createdAt, start))),
   ]);
 
-  const avgJobValue = biz.services ? 250 : 250; // from business config
+  const avgJobValue = 250; // default estimate per job
 
   return JSON.stringify({
     period: p,
@@ -515,7 +521,25 @@ async function getBusinessStats(businessId: string, biz: BusinessContext, period
 }
 
 async function lookupCustomer(businessId: string, query: string): Promise<string> {
-  const allCustomers = await db.select({
+  const normalizedQuery = query.trim();
+  const queryDigits = normalizedQuery.replace(/\D/g, "");
+
+  // Build SQL conditions — search by name or phone at the DB level
+  const searchConditions = [eq(customers.businessId, businessId)];
+  const matchConditions = [];
+
+  if (normalizedQuery.length > 0) {
+    matchConditions.push(like(customers.name, `%${normalizedQuery}%`));
+  }
+  if (queryDigits.length >= 4) {
+    matchConditions.push(like(customers.phone, `%${queryDigits}%`));
+  }
+
+  if (matchConditions.length === 0) {
+    return JSON.stringify({ found: false, message: `No customer found matching "${query}"` });
+  }
+
+  const matches = await db.select({
     id: customers.id,
     name: customers.name,
     phone: customers.phone,
@@ -527,22 +551,14 @@ async function lookupCustomer(businessId: string, query: string): Promise<string
     notes: customers.notes,
   })
     .from(customers)
-    .where(eq(customers.businessId, businessId))
-    .limit(100);
-
-  const normalizedQuery = query.toLowerCase().trim();
-  const matches = allCustomers.filter((c) => {
-    const name = (c.name || "").toLowerCase();
-    const phone = (c.phone || "").replace(/\D/g, "");
-    const queryDigits = normalizedQuery.replace(/\D/g, "");
-    return name.includes(normalizedQuery) || (queryDigits.length >= 4 && phone.includes(queryDigits));
-  });
+    .where(and(...searchConditions, or(...matchConditions)))
+    .limit(5);
 
   if (matches.length === 0) {
     return JSON.stringify({ found: false, message: `No customer found matching "${query}"` });
   }
 
-  return JSON.stringify({ found: true, customers: matches.slice(0, 5) });
+  return JSON.stringify({ found: true, customers: matches });
 }
 
 async function getPendingEstimates(businessId: string, status?: string): Promise<string> {

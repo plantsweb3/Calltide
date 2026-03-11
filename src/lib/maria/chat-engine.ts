@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { chatMessages, businessContextNotes, conversationSummaries } from "@/db/schema";
-import { eq, and, desc, asc, lt, count } from "drizzle-orm";
+import { eq, and, desc, asc, count } from "drizzle-orm";
 import { getAnthropic, HAIKU_MODEL } from "@/lib/ai/client";
 import { MARIA_TOOLS, handleToolCall } from "./tools";
 import { buildMariaSystemPrompt } from "./persona";
@@ -9,7 +9,7 @@ import { reportError } from "@/lib/error-reporting";
 import type Anthropic from "@anthropic-ai/sdk";
 
 const MAX_CONTEXT_MESSAGES = 24;
-const COMPACTION_TRIGGER = 24;
+const COMPACTION_TRIGGER = 30; // trigger after response, not before
 const COMPACTION_KEEP = 12;
 
 interface ChatResponse {
@@ -20,8 +20,6 @@ interface ChatResponse {
 
 /**
  * Process a message from the business owner and return Maria's response.
- * This is the core chat engine that handles conversation history,
- * context management, tool calls, and response generation.
  */
 export async function chat(
   businessId: string,
@@ -38,16 +36,6 @@ export async function chat(
     content: userMessage,
     channel,
   });
-
-  // Check if compaction is needed
-  const [messageCount] = await db
-    .select({ cnt: count() })
-    .from(chatMessages)
-    .where(and(eq(chatMessages.businessId, businessId), eq(chatMessages.channel, channel)));
-
-  if ((messageCount?.cnt ?? 0) >= COMPACTION_TRIGGER) {
-    await compactConversation(businessId, channel);
-  }
 
   // Load conversation context
   const contextNotes = await db
@@ -93,40 +81,54 @@ export async function chat(
   // Reverse to chronological order
   recentMessages.reverse();
 
-  // Build Anthropic messages array
-  const messages: Anthropic.MessageParam[] = recentMessages.map((m) => {
+  // Build Anthropic messages array — use stable IDs that match between tool_use and tool_result
+  let idCounter = 0;
+  const messages: Anthropic.MessageParam[] = [];
+
+  for (let i = 0; i < recentMessages.length; i++) {
+    const m = recentMessages[i];
+
     if (m.role === "assistant" && m.toolCalls && Array.isArray(m.toolCalls) && m.toolCalls.length > 0) {
-      // Reconstruct assistant message with tool use blocks
       const content: Array<Anthropic.TextBlockParam | Anthropic.ToolUseBlockParam> = [];
       if (m.content) {
         content.push({ type: "text" as const, text: m.content });
       }
+      // Generate tool_use IDs that the next message's tool_result will reference
+      const toolIds: string[] = [];
       for (const tc of m.toolCalls) {
+        const toolId = `hist_tool_${idCounter++}`;
+        toolIds.push(toolId);
         content.push({
           type: "tool_use" as const,
-          id: `tool_${tc.name}_${Date.now()}`,
+          id: toolId,
           name: tc.name,
           input: tc.input,
         });
       }
-      return { role: "assistant" as const, content };
+      messages.push({ role: "assistant" as const, content });
+
+      // Check if the next message is the matching tool results
+      const next = recentMessages[i + 1];
+      if (next && next.role === "user" && next.toolResults && Array.isArray(next.toolResults) && next.toolResults.length > 0) {
+        const resultContent: Anthropic.ToolResultBlockParam[] = next.toolResults.map((tr, idx) => ({
+          type: "tool_result" as const,
+          tool_use_id: toolIds[idx] || `hist_tool_${idCounter++}`,
+          content: typeof tr.result === "string" ? tr.result : JSON.stringify(tr.result),
+        }));
+        messages.push({ role: "user" as const, content: resultContent });
+        i++; // skip the next message since we already processed it
+      }
+      continue;
     }
 
-    if (m.role === "user" && m.toolResults && Array.isArray(m.toolResults) && m.toolResults.length > 0) {
-      // Tool results come as user messages
-      const content: Anthropic.ToolResultBlockParam[] = m.toolResults.map((tr) => ({
-        type: "tool_result" as const,
-        tool_use_id: `tool_${tr.name}_result`,
-        content: typeof tr.result === "string" ? tr.result : JSON.stringify(tr.result),
-      }));
-      return { role: "user" as const, content };
-    }
+    // Skip orphaned tool result messages (already handled above)
+    if (m.role === "user" && m.content === "[tool results]") continue;
 
-    return {
+    messages.push({
       role: m.role as "user" | "assistant",
-      content: m.content,
-    };
-  });
+      content: m.content || " ", // Anthropic requires non-empty content
+    });
+  }
 
   // Call Anthropic with tool support
   const anthropic = getAnthropic();
@@ -135,7 +137,7 @@ export async function chat(
 
   let response = await anthropic.messages.create({
     model: HAIKU_MODEL,
-    max_tokens: 1024,
+    max_tokens: channel === "sms" ? 400 : 1024, // shorter for SMS
     system: systemPrompt,
     tools: MARIA_TOOLS,
     messages,
@@ -148,12 +150,10 @@ export async function chat(
   while (response.stop_reason === "tool_use" && iterations < 5) {
     iterations++;
 
-    // Extract tool calls from response
     const toolUseBlocks = response.content.filter(
       (b): b is Anthropic.ToolUseBlock => b.type === "tool_use"
     );
 
-    // Execute tools
     const toolResults: Anthropic.ToolResultBlockParam[] = [];
     const toolCallsForStorage: Array<{ name: string; input: Record<string, unknown>; result: unknown }> = [];
 
@@ -172,14 +172,17 @@ export async function chat(
         content: result,
       });
 
+      // Safe JSON parse
+      let parsed: unknown;
+      try { parsed = JSON.parse(result); } catch { parsed = result; }
+
       toolCallsForStorage.push({
         name: block.name,
         input: block.input as Record<string, unknown>,
-        result: JSON.parse(result),
+        result: parsed,
       });
     }
 
-    // Get any text content from the assistant's response (before tool calls)
     const textContent = response.content
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text)
@@ -204,13 +207,13 @@ export async function chat(
       toolResults: toolCallsForStorage.map((tc) => ({ name: tc.name, result: tc.result })),
     });
 
-    // Continue the conversation with tool results
+    // Continue the conversation
     messages.push({ role: "assistant", content: response.content });
     messages.push({ role: "user", content: toolResults });
 
     response = await anthropic.messages.create({
       model: HAIKU_MODEL,
-      max_tokens: 1024,
+      max_tokens: channel === "sms" ? 400 : 1024,
       system: systemPrompt,
       tools: MARIA_TOOLS,
       messages,
@@ -220,10 +223,15 @@ export async function chat(
   }
 
   // Extract final text response
-  const finalText = response.content
+  let finalText = response.content
     .filter((b): b is Anthropic.TextBlock => b.type === "text")
     .map((b) => b.text)
     .join("\n");
+
+  // Fallback if model produced no text (only tool calls on final iteration)
+  if (!finalText.trim()) {
+    finalText = "I looked into that for you but couldn't put together a response. Could you try asking again?";
+  }
 
   // Save assistant response
   await db.insert(chatMessages).values({
@@ -234,6 +242,11 @@ export async function chat(
     tokenCount: response.usage?.output_tokens ?? 0,
   });
 
+  // Compact AFTER successful response (non-blocking)
+  compactIfNeeded(businessId, channel).catch((err) =>
+    reportError("Post-response compaction failed", err, { extra: { businessId } })
+  );
+
   return {
     reply: finalText,
     tokenCount: totalTokens,
@@ -242,15 +255,27 @@ export async function chat(
 }
 
 /**
+ * Check and compact if needed — runs after the response is sent.
+ */
+async function compactIfNeeded(businessId: string, channel: "dashboard" | "sms"): Promise<void> {
+  const [messageCount] = await db
+    .select({ cnt: count() })
+    .from(chatMessages)
+    .where(and(eq(chatMessages.businessId, businessId), eq(chatMessages.channel, channel)));
+
+  if ((messageCount?.cnt ?? 0) >= COMPACTION_TRIGGER) {
+    await compactConversation(businessId, channel);
+  }
+}
+
+/**
  * Compact older messages into a summary to keep the context window manageable.
- * Keeps the most recent COMPACTION_KEEP messages, summarizes the rest.
  */
 async function compactConversation(
   businessId: string,
   channel: "dashboard" | "sms"
 ): Promise<void> {
   try {
-    // Get all messages for this channel
     const allMessages = await db
       .select({
         id: chatMessages.id,
@@ -264,27 +289,22 @@ async function compactConversation(
 
     if (allMessages.length <= COMPACTION_KEEP) return;
 
-    // Split: messages to summarize vs keep
     const toSummarize = allMessages.slice(0, allMessages.length - COMPACTION_KEEP);
     const oldest = toSummarize[0];
     const newest = toSummarize[toSummarize.length - 1];
 
-    // Build text for summarization
     const transcript = toSummarize
       .filter((m) => m.content && m.content !== "[tool results]")
       .map((m) => `${m.role === "user" ? "Owner" : "Maria"}: ${m.content}`)
       .join("\n");
 
     if (!transcript.trim()) {
-      // Nothing meaningful to summarize, just delete old messages
-      const idsToDelete = toSummarize.map((m) => m.id);
-      for (const id of idsToDelete) {
-        await db.delete(chatMessages).where(eq(chatMessages.id, id));
+      for (const m of toSummarize) {
+        await db.delete(chatMessages).where(eq(chatMessages.id, m.id));
       }
       return;
     }
 
-    // Summarize using Haiku
     const anthropic = getAnthropic();
     const summaryResponse = await anthropic.messages.create({
       model: HAIKU_MODEL,
@@ -292,7 +312,7 @@ async function compactConversation(
       messages: [
         {
           role: "user",
-          content: `Summarize this conversation between a business owner and their AI office manager Maria. Capture key facts, decisions, preferences mentioned, and any important context. Be concise (3-5 sentences max).\n\n${transcript}`,
+          content: `Summarize this conversation between a business owner and their AI office manager. Capture key facts, decisions, preferences mentioned, and any important context. Be concise (3-5 sentences max).\n\n${transcript}`,
         },
       ],
     });
@@ -302,7 +322,6 @@ async function compactConversation(
       .map((b) => b.text)
       .join("\n");
 
-    // Save summary
     await db.insert(conversationSummaries).values({
       businessId,
       channel,
@@ -312,26 +331,25 @@ async function compactConversation(
       newestMessageAt: newest.createdAt,
     });
 
-    // Delete summarized messages
-    const idsToDelete = toSummarize.map((m) => m.id);
-    for (const id of idsToDelete) {
-      await db.delete(chatMessages).where(eq(chatMessages.id, id));
+    for (const m of toSummarize) {
+      await db.delete(chatMessages).where(eq(chatMessages.id, m.id));
     }
   } catch (err) {
     reportError("Conversation compaction failed", err, { extra: { businessId, channel } });
-    // Non-critical — conversation still works, just longer context
   }
 }
 
 /**
  * Get the auto-greeting message for when the chat widget opens.
- * This is NOT sent through the LLM — it's a static greeting.
  */
-export function getAutoGreeting(ownerName: string, receptionistName: string): string {
-  const hour = new Date().getHours();
+export function getAutoGreeting(ownerName: string, receptionistName: string, timezone?: string): string {
+  const now = new Date();
+  const hour = timezone
+    ? parseInt(now.toLocaleString("en-US", { timeZone: timezone, hour: "numeric", hour12: false }))
+    : now.getHours();
   const timeOfDay = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
-  const firstName = ownerName.split(" ")[0];
-  return `Good ${timeOfDay}, ${firstName}! How can I help you today?`;
+  const firstName = ownerName.split(" ")[0] || ownerName;
+  return `Good ${timeOfDay}, ${firstName}! It's ${receptionistName} — how can I help you today?`;
 }
 
 /**
@@ -361,7 +379,6 @@ export async function getChatHistory(
     .orderBy(desc(chatMessages.createdAt))
     .limit(limit);
 
-  // Reverse to chronological order and filter out tool-result messages
   return messages
     .reverse()
     .filter((m) => m.content && m.content !== "[tool results]")

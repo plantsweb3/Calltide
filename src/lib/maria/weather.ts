@@ -165,7 +165,7 @@ function getTradeAdvisory(weather: WeatherData, tradeType: string): string | nul
     if (tradeType === "roofing") {
       advisories.push(`${weather.precipitationChance}% rain chance today — roof work may need rescheduling. Expect leak repair calls after the rain.`);
     }
-    if (["landscaping", "general_contracting", "roofing"].includes(tradeType)) {
+    if (["landscaping", "general_contracting"].includes(tradeType)) {
       advisories.push(`Rain likely today (${weather.precipitationChance}%) — outdoor jobs may need rescheduling.`);
     }
     if (tradeType === "restoration") {

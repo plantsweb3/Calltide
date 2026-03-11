@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     const messages = await getChatHistory(businessId, "dashboard");
     const biz = await getBusinessById(businessId);
     const greeting = biz
-      ? getAutoGreeting(biz.ownerName, biz.receptionistName || "Maria")
+      ? getAutoGreeting(biz.ownerName, biz.receptionistName || "Maria", biz.timezone)
       : "Hi! How can I help you today?";
 
     return NextResponse.json({
@@ -43,6 +43,15 @@ export async function POST(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Check Anthropic API key is configured
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json({
+      reply: "I'm not available right now — the AI service isn't configured. Please contact support.",
+      tokenCount: 0,
+      toolsUsed: [],
+    });
   }
 
   // Rate limit: 20 messages per minute per business

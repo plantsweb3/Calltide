@@ -29,8 +29,7 @@ export async function searchHelp(query: string): Promise<HelpResult[]> {
       searchKeywords: helpArticles.searchKeywords,
     })
     .from(helpArticles)
-    .where(eq(helpArticles.status, "published"))
-    .all();
+    .where(eq(helpArticles.status, "published"));
 
   // Score and rank results
   const scored = articles
@@ -59,7 +58,7 @@ export async function searchHelp(query: string): Promise<HelpResult[]> {
   if (scored.length === 0) return [];
 
   // Look up category names
-  const categories = await db.select().from(helpCategories).all();
+  const categories = await db.select().from(helpCategories);
   const catMap = new Map(categories.map((c) => [c.id, c.name]));
 
   return scored.map((s) => ({
