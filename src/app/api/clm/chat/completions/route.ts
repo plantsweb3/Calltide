@@ -167,9 +167,17 @@ export async function POST(req: NextRequest) {
     }
 
     // Build the system prompt with business context + caller history
-    let systemPrompt = businessContext
-      ? buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext, partnerContext)
-      : buildDefaultSystemPrompt(lang);
+    let systemPrompt: string;
+    if (businessContext) {
+      systemPrompt = buildSystemPrompt(businessContext, lang, pricingContext, customResponsesBlock, callerContext, intakeContext, estimateContext, partnerContext);
+    } else {
+      // No business context = demo call or unknown caller
+      // Use the system prompt from Hume's session settings if present (demo widget sends it)
+      const humeSystemMsg = messages.find((m) => m.role === "system");
+      systemPrompt = (humeSystemMsg && typeof humeSystemMsg.content === "string" && humeSystemMsg.content.length > 200)
+        ? humeSystemMsg.content
+        : buildDefaultSystemPrompt(lang);
+    }
 
     // Record TCPA disclosures on first message (fire-and-forget)
     const isFirstMessage = messages.filter((m) => m.role === "user").length <= 1;
