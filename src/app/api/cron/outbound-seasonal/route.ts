@@ -5,6 +5,7 @@ import { eq, and, sql, gte } from "drizzle-orm";
 import { scheduleOutboundCall } from "@/lib/outbound/engine";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * GET /api/cron/outbound-seasonal
@@ -15,11 +16,8 @@ import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
  * who had the service done N months ago (based on reminderIntervalMonths).
  */
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("outbound-seasonal", "0 17 1 * *", async () => {
     const now = new Date();

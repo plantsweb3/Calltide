@@ -17,6 +17,7 @@ import {
   completeHandoff,
 } from "@/lib/agents/handoffs";
 import { createNotification } from "@/lib/notifications";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 // ── Programmatic Churn Scoring ──
 
@@ -258,14 +259,8 @@ async function processClient(
  * Schedule: daily at 2 PM (0 14 * * *)
  */
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   // Get all active businesses
   const activeClients = await db
@@ -343,14 +338,8 @@ export async function GET(req: NextRequest) {
  * Body: { businessId: string }
  */
 export async function POST(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   const body = await req.json();
   const { businessId } = body;

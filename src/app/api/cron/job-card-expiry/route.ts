@@ -5,6 +5,7 @@ import { eq, and, isNull, lt } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { env } from "@/lib/env";
 import { reportError } from "@/lib/error-reporting";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * Cron: Job Card Expiry + Reminder
@@ -14,11 +15,8 @@ import { reportError } from "@/lib/error-reporting";
  * 3. Awaiting adjustment nudge: remind owner to send adjusted price after 2 hours
  */
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   const now = new Date();
   const fourHoursAgo = new Date(now.getTime() - 4 * 60 * 60 * 1000).toISOString();

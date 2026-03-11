@@ -7,6 +7,7 @@ import { sendSMS } from "@/lib/twilio/sms";
 import { canSendSms } from "@/lib/compliance/sms";
 import { env } from "@/lib/env";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 const ABANDONED_THRESHOLD_SECONDS = 15;
 const RECOVERY_DELAY_MINUTES = 2;
@@ -18,14 +19,8 @@ const RATE_LIMIT_HOURS = 24;
  * Runs every 5 minutes.
  */
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("missed-call-recovery", "0 18 * * *", async () => {
     const now = new Date();

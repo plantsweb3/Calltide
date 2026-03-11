@@ -11,6 +11,7 @@ import {
   SETUP_ABANDON_HOURS,
   type SetupEmailNumber,
 } from "@/lib/emails/setup-retarget";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 const FROM_EMAIL = "Ulysses at Capta <hello@capta.app>";
 const REPLY_TO = "hello@capta.app";
@@ -22,11 +23,8 @@ const REPLY_TO = "hello@capta.app";
  * that have an email (passed step 2) but haven't converted.
  */
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   let resend;
   try {

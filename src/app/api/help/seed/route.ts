@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { db } from "@/db";
 import { helpCategories, helpArticles } from "@/db/schema";
 import { count, eq, sql } from "drizzle-orm";
+
+function verifySeedAuth(req: NextRequest): boolean {
+  const secret = process.env.CRON_SECRET;
+  if (!secret) return false;
+  const auth = req.headers.get("authorization") ?? req.nextUrl.searchParams.get("key") ?? "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : auth;
+  if (!token || token.length !== secret.length) return false;
+  return timingSafeEqual(Buffer.from(token), Buffer.from(secret));
+}
 
 /* ────────────────────────────────────────────────────────── */
 /*  POST /api/help/seed                                      */
@@ -1082,6 +1092,9 @@ Need help? Email support@capta.app or call (830) 521-7133.`,
 ];
 
 async function seed(req: NextRequest) {
+  if (!verifySeedAuth(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const force = req.nextUrl.searchParams.get("force") === "1";
 

@@ -1,17 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { processDunning } from "@/lib/financial/dunning";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
-export async function POST(request: Request) {
-  const auth = request.headers.get("authorization");
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  if (auth !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export async function POST(request: NextRequest) {
+  const authError = verifyCronAuth(request);
+  if (authError) return authError;
 
   return withCronMonitor("dunning", "30 16 * * *", async () => {
     try {
@@ -28,6 +23,6 @@ export async function POST(request: Request) {
 }
 
 // Allow GET for Vercel Cron
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   return POST(request);
 }

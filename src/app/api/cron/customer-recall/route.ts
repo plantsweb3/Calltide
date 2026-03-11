@@ -8,6 +8,7 @@ import { reportError } from "@/lib/error-reporting";
 import { env } from "@/lib/env";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { normalizePhone } from "@/lib/compliance/sms";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 const MAX_RECALLS_PER_BUSINESS = 20;
 const RECALL_COOLDOWN_DAYS = 90;
@@ -91,14 +92,8 @@ function buildRecallMessage(
  * - Only runs for businesses with enableCustomerRecall + outboundEnabled
  */
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("customer-recall", "0 15 * * 2", async () => {
     let totalSent = 0;

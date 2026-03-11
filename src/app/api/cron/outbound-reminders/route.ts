@@ -6,6 +6,7 @@ import { scheduleOutboundCall } from "@/lib/outbound/engine";
 import { reportError } from "@/lib/error-reporting";
 import { getBusinessDateRange, localDateToUtc } from "@/lib/timezone";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * GET /api/cron/outbound-reminders
@@ -15,11 +16,8 @@ import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
  * Uses business timezone to determine "tomorrow" and schedule calls for 9 AM local time.
  */
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("outbound-reminders", "0 0 * * *", async () => {
     // Query a wide window of upcoming appointments (next 2 days UTC) then filter per business timezone

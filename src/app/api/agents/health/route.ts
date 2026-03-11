@@ -5,6 +5,7 @@ import { systemHealthLogs } from "@/db/schema";
 import { createNotification } from "@/lib/notifications";
 import { reportError } from "@/lib/error-reporting";
 import { sql } from "drizzle-orm";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * GET /api/agents/health
@@ -21,14 +22,8 @@ import { sql } from "drizzle-orm";
  * - Anthropic & Hume: only checked every 4 hours (expensive API calls)
  */
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   // Run health checks against all services
   const checks = await runHealthChecks();

@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { getBusinessByPhone, detectLanguage, buildIntakeContext } from "@/lib/ai/context-builder";
 import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
 import { getReturningCallerContext } from "@/lib/crm/returning-caller";
@@ -65,7 +66,8 @@ export async function POST(req: NextRequest) {
   }
   {
     const authHeader = req.headers.get("authorization");
-    if (authHeader !== `Bearer ${clmKey}`) {
+    const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : "";
+    if (!token || token.length !== clmKey.length || !timingSafeEqual(Buffer.from(token), Buffer.from(clmKey))) {
       return Response.json(
         { error: "Unauthorized" },
         { status: 401, headers: getCorsHeaders(req) }

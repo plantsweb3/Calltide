@@ -5,6 +5,7 @@ import { eq, and, lte, lt, gte, inArray } from "drizzle-orm";
 import { scheduleOutboundCall } from "@/lib/outbound/engine";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * GET /api/cron/outbound-estimate-followup
@@ -13,11 +14,8 @@ import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
  * Runs daily at 10AM CT. Only for businesses with outbound + estimate follow-ups enabled.
  */
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("outbound-estimate-followup", "0 16 * * *", async () => {
     const now = new Date();

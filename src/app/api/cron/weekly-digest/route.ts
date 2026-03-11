@@ -21,6 +21,7 @@ import {
 } from "@/lib/emails/weekly-digest";
 import { getBusinessWeekRange } from "@/lib/timezone";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -53,12 +54,8 @@ function isAfterHours(
 }
 
 export async function GET(req: NextRequest) {
-  // Auth check
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("weekly-digest", "0 14 * * 1", async () => {
     const resend = getResend();

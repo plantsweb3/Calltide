@@ -5,6 +5,7 @@ import { and, lte, inArray } from "drizzle-orm";
 import { initiateOutboundCall } from "@/lib/outbound/engine";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * GET /api/cron/outbound-dispatch
@@ -17,11 +18,8 @@ import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 const MAX_PER_RUN = 10;
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("outbound-dispatch", "0 17 * * *", async () => {
     const now = new Date().toISOString();

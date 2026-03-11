@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runRetentionCleanup } from "@/lib/compliance/retention";
 import { reportError } from "@/lib/error-reporting";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * POST /api/compliance/retention
@@ -8,14 +9,8 @@ import { reportError } from "@/lib/error-reporting";
  * Schedule: 0 9 * * 0 (Sundays 9 AM UTC / 3 AM CT)
  */
 export async function POST(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   try {
     const results = await runRetentionCleanup();

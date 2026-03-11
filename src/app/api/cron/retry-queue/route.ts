@@ -5,6 +5,7 @@ import { processCallSummary } from "@/lib/ai/call-summary";
 import { getResend } from "@/lib/email/client";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * GET /api/cron/retry-queue
@@ -13,14 +14,8 @@ import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
  * Run every 5 minutes via cron.
  */
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("retry-queue", "*/5 * * * *", async () => {
     try {

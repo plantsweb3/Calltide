@@ -7,14 +7,11 @@ import { canSendSms } from "@/lib/compliance/sms";
 import { getEstimateFollowUpMessage } from "@/lib/sms-templates";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 export async function GET(req: NextRequest) {
-  // Auth: CRON_SECRET required
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("estimate-followup", "30 15 * * *", async () => {
     const now = new Date();

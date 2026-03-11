@@ -18,6 +18,7 @@ import {
   calculateMonthlyStats,
 } from "@/lib/emails/monthly-roi";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
@@ -31,11 +32,8 @@ const MONTH_NAMES = [
  * Run on the 1st of each month via cron.
  */
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("monthly-roi", "0 14 1 * *", async () => {
     const resend = getResend();

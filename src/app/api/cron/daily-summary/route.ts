@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { processAllDigests } from "@/lib/digest/send";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * GET /api/cron/daily-summary
@@ -11,14 +12,8 @@ import { processAllDigests } from "@/lib/digest/send";
  * new leads, job card estimates, tomorrow's appointments, and action items.
  */
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("daily-summary", "0 23 * * *", async () => {
     try {

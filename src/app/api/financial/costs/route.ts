@@ -1,18 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { businesses, calls, clientCosts, smsMessages } from "@/db/schema";
 import { eq, and, gte, lt, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
-export async function POST(request: Request) {
-  const auth = request.headers.get("authorization");
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  if (auth !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export async function POST(request: NextRequest) {
+  const authError = verifyCronAuth(request);
+  if (authError) return authError;
 
   try {
     // Calculate for previous month
@@ -101,6 +96,6 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   return POST(request);
 }

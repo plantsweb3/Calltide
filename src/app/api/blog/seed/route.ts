@@ -1,8 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { db } from "@/db";
 import { blogPosts } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { blogMarkdownToHtml } from "@/lib/blog-markdown";
+
+function verifySeedAuth(req: NextRequest): boolean {
+  const secret = process.env.CRON_SECRET;
+  if (!secret) return false;
+  const auth = req.headers.get("authorization") ?? req.nextUrl.searchParams.get("key") ?? "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : auth;
+  if (!token || token.length !== secret.length) return false;
+  return timingSafeEqual(Buffer.from(token), Buffer.from(secret));
+}
 
 function readingTime(html: string): number {
   const text = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
@@ -3304,7 +3314,10 @@ La pregunta no es si puedes permitirte María. La pregunta es si puedes permitir
 
 /* ─── Seed endpoint ───────────────────────────────────────────── */
 
-export async function POST() {
+export async function POST(req: NextRequest) {
+  if (!verifySeedAuth(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     // Clear paired references first (self-referential FK), then delete all posts
     await db.update(blogPosts).set({ pairedPostId: null });
@@ -3366,6 +3379,6 @@ export async function POST() {
   }
 }
 
-export async function GET() {
-  return POST();
+export async function GET(req: NextRequest) {
+  return POST(req);
 }

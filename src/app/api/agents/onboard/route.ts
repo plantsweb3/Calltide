@@ -5,6 +5,7 @@ import { eq, sql, and } from "drizzle-orm";
 import { executeTool, logAgentActivity } from "@/lib/agents";
 import { canContactToday, logOutreach } from "@/lib/outreach";
 import { createHandoff } from "@/lib/agents/handoffs";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 // ── Nudge Templates (EN) ──
 
@@ -128,14 +129,8 @@ function decideNudge(params: {
  * Schedule: hourly (0 * * * *)
  */
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   // Get clients created in the last 30 days
   const thirtyDaysAgo = new Date();

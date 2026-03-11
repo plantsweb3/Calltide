@@ -6,6 +6,7 @@ import { sendSMS } from "@/lib/twilio/sms";
 import { getReminderMessage } from "@/lib/sms-templates";
 import { getBusinessDateRange } from "@/lib/timezone";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 import type { Language } from "@/types";
 
 /**
@@ -18,16 +19,8 @@ import type { Language } from "@/types";
  *   vercel.json: { "crons": [{ "path": "/api/cron/reminders", "schedule": "0 14 * * *" }] }
  */
 export async function GET(req: NextRequest) {
-  // Verify cron secret — mandatory in production
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("reminders", "0 14 * * *", async () => {
     // Query a wide window of upcoming appointments (next 2 days UTC) then filter per business timezone

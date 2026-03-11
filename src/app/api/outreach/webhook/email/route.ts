@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createHmac } from "crypto";
+import { createHmac, timingSafeEqual } from "crypto";
 import { handleEmailWebhook } from "@/lib/outreach/email";
 import { reportWarning } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
@@ -25,7 +25,8 @@ function verifySvixSignature(
   const signatures = signatureHeader.split(" ");
   return signatures.some((s) => {
     const parts = s.split(",");
-    return parts.length === 2 && parts[1] === expected;
+    if (parts.length !== 2 || parts[1].length !== expected.length) return false;
+    return timingSafeEqual(Buffer.from(parts[1]), Buffer.from(expected));
   });
 }
 

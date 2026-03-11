@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { legalDocuments, subProcessors } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { verifyCronAuth } from "@/lib/cron-auth";
 import {
   TOS_EN,
   TOS_ES,
@@ -19,14 +20,8 @@ import {
  * Supersedes any existing v1.0 docs and inserts v2.0.
  */
 export async function POST(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   try {
     const effectiveDate = "2026-03-03";

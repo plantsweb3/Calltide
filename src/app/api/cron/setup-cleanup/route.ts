@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { setupSessions, setupRetargetEmails } from "@/db/schema";
 import { and, eq, lt, inArray, isNull, or } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * GET /api/cron/setup-cleanup
@@ -13,11 +14,8 @@ import { reportError } from "@/lib/error-reporting";
  *    that can never be retargeted
  */
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   try {
     const abandonedCutoff = new Date();

@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { scalingPlaybook } from "@/db/schema";
 import { reportError } from "@/lib/error-reporting";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 const playbook = [
   // SEED TIER
@@ -37,15 +38,9 @@ const playbook = [
   { tier: "hypergrowth", clientRange: "1,000-2,000", provider: "twilio", action: "Multiple geographic phone numbers. Enterprise agreement. Load test.", planRequired: "Enterprise", estimatedMonthlyCost: "$1,700", priority: "required" },
 ];
 
-export async function POST(request: Request) {
-  const auth = request.headers.get("authorization");
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  if (auth !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export async function POST(request: NextRequest) {
+  const authError = verifyCronAuth(request);
+  if (authError) return authError;
 
   try {
     // Clear existing playbook entries
@@ -66,6 +61,6 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   return POST(request);
 }

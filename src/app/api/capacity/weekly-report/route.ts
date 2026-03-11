@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { businesses, capacitySnapshots, capacityAlerts } from "@/db/schema";
 import { desc, eq, gte, sql } from "drizzle-orm";
@@ -7,16 +7,11 @@ import { getResend } from "@/lib/email/client";
 import { PROVIDER_LIMITS, determineTier } from "@/lib/capacity/config";
 import { projectBreachDate, estimateMonthlyCost } from "@/lib/capacity/modeling";
 import { reportError } from "@/lib/error-reporting";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
-export async function POST(request: Request) {
-  const auth = request.headers.get("authorization");
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  if (auth !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export async function POST(request: NextRequest) {
+  const authError = verifyCronAuth(request);
+  if (authError) return authError;
 
   const ownerEmail = env.OWNER_EMAIL;
   if (!ownerEmail || !env.RESEND_API_KEY) {
@@ -169,6 +164,6 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   return POST(request);
 }

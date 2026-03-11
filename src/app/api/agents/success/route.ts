@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { verifyCronAuth } from "@/lib/cron-auth";
 import { getResend } from "@/lib/email/client";
 import { db } from "@/db";
 import {
@@ -1249,14 +1250,8 @@ async function processBusinessSuccess(business: Business, now: Date): Promise<Re
  * Schedule: 0 15 * * *
  */
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   // Check agentConfig — if disabled, return 200
   const [config] = await db
@@ -1325,14 +1320,8 @@ export async function GET(req: NextRequest) {
  * Body: { businessId: string }
  */
 export async function POST(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   let body: Record<string, unknown>;
   try {

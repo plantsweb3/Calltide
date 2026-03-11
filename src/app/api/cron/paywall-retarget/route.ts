@@ -11,6 +11,7 @@ import {
   ABANDON_HOURS,
   type PaywallEmailNumber,
 } from "@/lib/emails/paywall-retarget";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 const FROM_EMAIL = "Ulysses at Capta <hello@capta.app>";
 const REPLY_TO = "hello@capta.app";
@@ -29,11 +30,8 @@ const REPLY_TO = "hello@capta.app";
  * 5. After 14 days (336h), mark as 'abandoned'
  */
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   let resend;
   try {

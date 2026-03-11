@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { prospects } from "@/db/schema";
 import { and, eq, gt, ne } from "drizzle-orm";
 import { runAgent, QUALIFY_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * POST /api/agents/qualify
@@ -11,14 +12,8 @@ import { runAgent, QUALIFY_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
  * Body: { prospectId: string }
  */
 export async function POST(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   let body: unknown;
   try {
@@ -64,14 +59,8 @@ export async function POST(req: NextRequest) {
  * Designed for cron or manual batch runs.
  */
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   // Get prospects that are in active pipeline stages
   const activeProspects = await db

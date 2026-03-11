@@ -172,7 +172,7 @@ export default function VoiceChat({ onClose }: { onClose: () => void }) {
   return (
     <VoiceProvider
       onError={(err) => Sentry.captureException(err)}
-      onClose={(event) => console.log("VoiceProvider closed:", event)}
+      onClose={() => {}}
     >
       <VoiceChatInner onClose={onClose} />
     </VoiceProvider>

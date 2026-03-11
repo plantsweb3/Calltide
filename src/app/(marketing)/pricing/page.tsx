@@ -50,7 +50,7 @@ export default function Page() {
               {
                 "@type": "Offer",
                 name: "Annual Plan",
-                price: "4970",
+                price: "4764",
                 priceCurrency: "USD",
                 priceValidUntil: "2027-12-31",
                 availability: "https://schema.org/InStock",

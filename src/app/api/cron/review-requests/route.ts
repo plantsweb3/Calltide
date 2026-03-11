@@ -8,6 +8,7 @@ import { canSendSms } from "@/lib/compliance/sms";
 import { env } from "@/lib/env";
 import { getBusinessDateRange } from "@/lib/timezone";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
  * GET /api/cron/review-requests
@@ -15,14 +16,8 @@ import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
  * Runs daily at 10 AM CT (16:00 UTC).
  */
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   return withCronMonitor("review-requests", "0 16 * * *", async () => {
     const now = new Date();
