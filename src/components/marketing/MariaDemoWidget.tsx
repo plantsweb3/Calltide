@@ -171,6 +171,10 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
       await connect({
         auth: { type: "accessToken" as const, value: data.accessToken },
         configId: data.configId,
+        sessionSettings: {
+          type: "session_settings" as const,
+          systemPrompt: data.systemPrompt,
+        },
       });
     } catch {
       setError(l.errorGeneric);
