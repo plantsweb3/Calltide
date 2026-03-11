@@ -79,7 +79,7 @@ function formatTime(seconds: number): string {
 }
 
 function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
-  const { connect, disconnect, readyState, messages } = useVoice();
+  const { connect, disconnect, readyState, messages, sendAssistantInput } = useVoice();
   const [state, setState] = useState<DemoState>("idle");
   const [error, setError] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -89,6 +89,7 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
   const startTimeRef = useRef<number>(0);
   const timerRef = useRef<ReturnType<typeof setInterval>>(null);
   const transcriptRef = useRef<{ role: string; content: string }[]>([]);
+  const greetingRef = useRef<string>("");
   const l = LABELS[lang];
 
   // Track elapsed time
@@ -123,6 +124,10 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
   useEffect(() => {
     if (readyState === VoiceReadyState.OPEN && state === "connecting") {
       setState("active");
+      // Inject greeting so Maria speaks first
+      if (greetingRef.current) {
+        try { sendAssistantInput(greetingRef.current); } catch { /* ignore */ }
+      }
     } else if (readyState === VoiceReadyState.CLOSED && state === "active") {
       handleEnd();
     } else if (readyState === VoiceReadyState.CLOSED && state === "connecting") {
@@ -167,6 +172,7 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
       }
 
       setSessionId(data.sessionId);
+      greetingRef.current = data.greeting || "";
 
       await connect({
         auth: { type: "accessToken" as const, value: data.accessToken },

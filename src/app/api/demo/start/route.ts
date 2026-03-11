@@ -50,27 +50,19 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Check for concurrent session from same IP
+  // Auto-expire any stale sessions from same IP (no blocking — just clean up)
   const ipHash = hashIp(ip);
   const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
-  const [activeSession] = await db
-    .select({ id: demoSessions.id })
-    .from(demoSessions)
+  await db
+    .update(demoSessions)
+    .set({ endedAt: new Date().toISOString() })
     .where(
       and(
         eq(demoSessions.ipHash, ipHash),
         gte(demoSessions.startedAt, oneHourAgo),
         sql`${demoSessions.endedAt} IS NULL`,
       ),
-    )
-    .limit(1);
-
-  if (activeSession) {
-    return NextResponse.json(
-      { error: "You already have an active demo session." },
-      { status: 409 },
     );
-  }
 
   // Get Hume access token
   const apiKey = process.env.HUME_API_KEY;
