@@ -28,7 +28,7 @@ const content = {
     ctaH: "Ready to stop missing calls?",
     ctaSub: "Get your AI receptionist up and running in 5 minutes.",
     ctaButton: "Get Capta",
-    ctaBook: "Book a Demo",
+    ctaBook: "Get Capta",
   },
   es: {
     badge: "Acerca de Capta",
@@ -53,7 +53,7 @@ const content = {
     ctaH: "¿Listo para dejar de perder llamadas?",
     ctaSub: "Pon tu recepcionista IA a funcionar en 5 minutos.",
     ctaButton: "Obtén Capta",
-    ctaBook: "Agenda una Demo",
+    ctaBook: "Obtén Capta",
   },
 };
 
@@ -149,13 +149,11 @@ export default function AboutPage() {
               {c.ctaButton} &rarr;
             </a>
             <a
-              href={BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/setup"
               className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-lg font-semibold text-slate-300 hover:text-white transition-colors"
               style={{ border: "1px solid rgba(255,255,255,0.15)" }}
             >
-              {c.ctaBook}
+              {c.ctaBook} &rarr;
             </a>
           </div>
           <p className="mt-6 text-sm text-slate-500">

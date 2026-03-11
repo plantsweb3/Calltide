@@ -15,7 +15,6 @@ import { MobileCTA } from "@/components/marketing/MobileCTA";
 import { Nav } from "@/components/marketing/Nav";
 import { Footer } from "@/components/marketing/Footer";
 
-const VoiceChat = dynamic(() => import("@/components/voice-chat"), { ssr: false });
 const MariaDemoWidget = dynamic(() => import("@/components/marketing/MariaDemoWidget"), { ssr: false });
 
 /* ═══════════════════════════════════════════════════════════════
@@ -23,7 +22,6 @@ const MariaDemoWidget = dynamic(() => import("@/components/marketing/MariaDemoWi
    ═══════════════════════════════════════════════════════════════ */
 
 export default function LandingPage() {
-  const [showVoiceChat, setShowVoiceChat] = useState(false);
   const [lang, setLang] = useState<Lang>("en");
   const [planChoice, setPlanChoice] = useState<"monthly" | "annual">("annual");
   const scrolled = useScrolled();
@@ -73,7 +71,6 @@ export default function LandingPage() {
           }),
         }}
       />
-      {showVoiceChat && <VoiceChat onClose={() => setShowVoiceChat(false)} />}
       <MobileCTA lang={lang} />
 
       {/* ── NAVIGATION ── */}
@@ -102,9 +99,9 @@ export default function LandingPage() {
                   <a href="/setup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
                     {t.hero.cta} &rarr;
                   </a>
-                  <button onClick={() => setShowVoiceChat(true)} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
-                    {lang === "en" ? "Or hear it live" : "O esc\u00FAchala en vivo"} &rarr;
-                  </button>
+                  <a href={PHONE_TEL} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
+                    {lang === "en" ? "Or call her" : "O llámala"}: {PHONE} &rarr;
+                  </a>
                 </div>
 
                 {/* Trust Bar */}
@@ -218,11 +215,8 @@ export default function LandingPage() {
           <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{t.hero.demoSub}</h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">{t.hero.demoDetail}</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <a href={BOOKING_URL} className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-              {lang === "en" ? "Book a Demo" : "Reservar Demo"} &rarr;
-            </a>
-            <a href="/setup" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:border-white/40">
-              {lang === "en" ? "Try Capta Free" : "Prueba Capta Gratis"}
+            <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+              {lang === "en" ? "Get Capta" : "Obtén Capta"} &rarr;
             </a>
           </div>
         </div>

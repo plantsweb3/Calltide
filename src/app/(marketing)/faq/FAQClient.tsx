@@ -125,7 +125,7 @@ const content = {
     ctaH: "Still have questions?",
     ctaSub: "Talk to us — or better yet, talk to your receptionist.",
     ctaButton: "Get Capta",
-    ctaBook: "Book a Demo",
+    ctaBook: "Get Capta",
     ctaCall: "Or call us:",
   },
   es: {
@@ -238,7 +238,7 @@ const content = {
     ctaH: "¿Todavía tienes preguntas?",
     ctaSub: "Habla con nosotros — o mejor aún, habla con tu recepcionista.",
     ctaButton: "Obtén Capta",
-    ctaBook: "Agenda una Demo",
+    ctaBook: "Obtén Capta",
     ctaCall: "O llámanos:",
   },
 };
@@ -371,13 +371,11 @@ export default function FAQClient() {
               {c.ctaButton} &rarr;
             </a>
             <a
-              href={BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/setup"
               className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-lg font-semibold text-slate-300 hover:text-white transition-colors"
               style={{ border: "1px solid rgba(255,255,255,0.15)" }}
             >
-              {c.ctaBook}
+              {c.ctaBook} &rarr;
             </a>
           </div>
           <p className="mt-6 text-sm text-slate-500">

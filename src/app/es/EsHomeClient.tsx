@@ -15,7 +15,6 @@ import { MobileCTA } from "@/components/marketing/MobileCTA";
 import { Footer } from "@/components/marketing/Footer";
 import Link from "next/link";
 
-const VoiceChat = dynamic(() => import("@/components/voice-chat"), { ssr: false });
 const MariaDemoWidget = dynamic(() => import("@/components/marketing/MariaDemoWidget"), { ssr: false });
 
 /**
@@ -71,7 +70,6 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
 }
 
 export default function EsHomepage() {
-  const [showVoiceChat, setShowVoiceChat] = useState(false);
   const [planChoice, setPlanChoice] = useState<"monthly" | "annual">("annual");
   const scrolled = useScrolled();
   useScrollReveal();
@@ -96,7 +94,6 @@ export default function EsHomepage() {
           }),
         }}
       />
-      {showVoiceChat && <VoiceChat onClose={() => setShowVoiceChat(false)} />}
       <MobileCTA lang={lang} />
 
       <EsNav scrolled={scrolled} />
@@ -122,9 +119,9 @@ export default function EsHomepage() {
                   <a href="/setup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
                     {t.hero.cta} &rarr;
                   </a>
-                  <button onClick={() => setShowVoiceChat(true)} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
-                    O escúchala en vivo &rarr;
-                  </button>
+                  <a href={PHONE_TEL} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
+                    O llámala: {PHONE} &rarr;
+                  </a>
                 </div>
 
                 <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -177,11 +174,8 @@ export default function EsHomepage() {
           <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{t.hero.demoSub}</h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">{t.hero.demoDetail}</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <a href={BOOKING_URL} className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-              Reservar Demo &rarr;
-            </a>
-            <a href="/setup" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:border-white/40">
-              Prueba Capta Gratis
+            <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+              Obtén Capta &rarr;
             </a>
           </div>
         </div>

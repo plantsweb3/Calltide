@@ -219,29 +219,48 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
           <p className="mt-2 text-sm leading-relaxed text-slate-400">{l.idleSub}</p>
         </div>
 
-        {error && (
-          <div className="rounded-lg bg-red-500/10 px-4 py-3 text-center text-sm text-red-400">{error}</div>
+        {error ? (
+          <div className="space-y-3">
+            <div className="rounded-lg bg-red-500/10 px-4 py-3 text-center text-sm text-red-400">{error}</div>
+            {phoneTel && (
+              <a
+                href={phoneTel}
+                className="block w-full rounded-lg px-6 py-4 text-center text-base font-semibold text-white transition-all hover:brightness-110"
+                style={{ background: "linear-gradient(135deg, #C59A27, #A17D1F)" }}
+              >
+                {l.idleCallCta} &rarr;
+              </a>
+            )}
+            <button
+              onClick={() => { setError(""); handleStart(); }}
+              className="w-full text-center text-sm font-medium text-slate-400 transition hover:text-white"
+            >
+              {lang === "en" ? "Try again" : "Intentar de nuevo"} &rarr;
+            </button>
+          </div>
+        ) : (
+          <>
+            <button
+              onClick={handleStart}
+              className="w-full rounded-lg px-6 py-4 text-base font-semibold text-white transition-all hover:brightness-110"
+              style={{ background: "linear-gradient(135deg, #C59A27, #A17D1F)" }}
+            >
+              {l.idleCta}
+            </button>
+
+            <div className="flex items-center justify-center gap-4">
+              <a
+                href={phoneTel}
+                className="text-sm font-medium text-slate-400 transition hover:text-white"
+              >
+                {l.idleCallCta} &rarr;
+              </a>
+            </div>
+
+            <p className="text-center text-xs text-slate-500">{l.micNote}</p>
+            <p className="text-center text-xs font-medium text-amber-400/70">{l.trySpanish}</p>
+          </>
         )}
-
-        <button
-          onClick={handleStart}
-          className="w-full rounded-lg px-6 py-4 text-base font-semibold text-white transition-all hover:brightness-110"
-          style={{ background: "linear-gradient(135deg, #C59A27, #A17D1F)" }}
-        >
-          {l.idleCta}
-        </button>
-
-        <div className="flex items-center justify-center gap-4">
-          <a
-            href={phoneTel}
-            className="text-sm font-medium text-slate-400 transition hover:text-white"
-          >
-            {l.idleCallCta} &rarr;
-          </a>
-        </div>
-
-        <p className="text-center text-xs text-slate-500">{l.micNote}</p>
-        <p className="text-center text-xs font-medium text-amber-400/70">{l.trySpanish}</p>
       </div>
     );
   }
