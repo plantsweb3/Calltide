@@ -3305,52 +3305,67 @@ La pregunta no es si puedes permitirte María. La pregunta es si puedes permitir
 /* ─── Seed endpoint ───────────────────────────────────────────── */
 
 export async function POST() {
-  // Clear existing blog posts
-  await db.delete(blogPosts);
+  try {
+    // Clear paired references first (self-referential FK), then delete all posts
+    await db.update(blogPosts).set({ pairedPostId: null });
+    await db.delete(blogPosts);
 
-  // Insert all posts
-  const slugToId: Record<string, string> = {};
+    // Insert all posts
+    const slugToId: Record<string, string> = {};
 
-  for (const post of POSTS) {
-    const html = blogMarkdownToHtml(post.markdown);
-    const now = new Date().toISOString();
+    for (const post of POSTS) {
+      try {
+        const html = blogMarkdownToHtml(post.markdown);
+        const now = new Date().toISOString();
 
-    const [inserted] = await db
-      .insert(blogPosts)
-      .values({
-        title: post.title,
-        slug: post.slug,
-        body: html,
-        authorName: post.authorName || "Capta",
-        language: post.language,
-        category: post.category,
-        metaTitle: post.metaTitle,
-        metaDescription: post.metaDescription,
-        targetKeyword: post.targetKeyword,
-        relatedPostSlugs: post.relatedPostSlugs,
-        readingTimeMin: readingTime(html),
-        published: true,
-        publishedAt: now,
-      })
-      .returning();
+        const [inserted] = await db
+          .insert(blogPosts)
+          .values({
+            title: post.title,
+            slug: post.slug,
+            body: html,
+            authorName: post.authorName || "Capta",
+            language: post.language,
+            category: post.category,
+            metaTitle: post.metaTitle,
+            metaDescription: post.metaDescription,
+            targetKeyword: post.targetKeyword,
+            relatedPostSlugs: post.relatedPostSlugs,
+            readingTimeMin: readingTime(html),
+            published: true,
+            publishedAt: now,
+          })
+          .returning();
 
-    slugToId[post.slug] = inserted.id;
-  }
-
-  // Link EN/ES pairs via pairedPostId
-  for (const [enSlug, esSlug] of PAIRS) {
-    const enId = slugToId[enSlug];
-    const esId = slugToId[esSlug];
-    if (enId && esId) {
-      await db.update(blogPosts).set({ pairedPostId: esId }).where(eq(blogPosts.id, enId));
-      await db.update(blogPosts).set({ pairedPostId: enId }).where(eq(blogPosts.id, esId));
+        slugToId[post.slug] = inserted.id;
+      } catch (err) {
+        console.error(`Failed to seed post: ${post.slug}`, err);
+        return NextResponse.json({ error: `Failed to seed: ${post.slug}`, detail: String(err) }, { status: 500 });
+      }
     }
-  }
 
-  return NextResponse.json({
-    success: true,
-    seeded: POSTS.length,
-    paired: PAIRS.length,
-    slugs: Object.keys(slugToId),
-  });
+    // Link EN/ES pairs via pairedPostId
+    for (const [enSlug, esSlug] of PAIRS) {
+      const enId = slugToId[enSlug];
+      const esId = slugToId[esSlug];
+      if (enId && esId) {
+        await db.update(blogPosts).set({ pairedPostId: esId }).where(eq(blogPosts.id, enId));
+        await db.update(blogPosts).set({ pairedPostId: enId }).where(eq(blogPosts.id, esId));
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      seeded: POSTS.length,
+      paired: PAIRS.length,
+      slugs: Object.keys(slugToId),
+    });
+  } catch (err) {
+    console.error("Blog seed error:", err);
+    return NextResponse.json({ error: "Seed failed", detail: String(err) }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  return POST();
 }
