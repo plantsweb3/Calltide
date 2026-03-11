@@ -134,14 +134,14 @@ export default function LandingPage() {
             {t.outcomeBar.items.map((item, i) => (
               <motion.div
                 key={i}
-                className="text-center"
+                className="rounded-xl border border-slate-200 bg-white px-6 py-8 text-center shadow-sm"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
                 <p className="gold-gradient-text text-[40px] font-extrabold sm:text-[48px]">{item.value}</p>
-                <p className="mt-1 text-sm text-charcoal-muted">{item.label}</p>
+                <p className="mt-1 text-sm font-medium text-charcoal-muted">{item.label}</p>
               </motion.div>
             ))}
           </div>
