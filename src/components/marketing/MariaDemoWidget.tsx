@@ -79,7 +79,7 @@ function formatTime(seconds: number): string {
 }
 
 function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
-  const { connect, disconnect, readyState, messages, sendAssistantInput } = useVoice();
+  const { connect, disconnect, readyState, messages, sendUserInput } = useVoice();
   const [state, setState] = useState<DemoState>("idle");
   const [error, setError] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -89,7 +89,7 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
   const startTimeRef = useRef<number>(0);
   const timerRef = useRef<ReturnType<typeof setInterval>>(null);
   const transcriptRef = useRef<{ role: string; content: string }[]>([]);
-  const greetingRef = useRef<string>("");
+  const mariaSpokeRef = useRef(false);
   const l = LABELS[lang];
 
   // Track elapsed time
@@ -124,18 +124,32 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
   useEffect(() => {
     if (readyState === VoiceReadyState.OPEN && state === "connecting") {
       setState("active");
-      // Inject greeting so Maria speaks first
-      if (greetingRef.current) {
-        try { sendAssistantInput(greetingRef.current); } catch { /* ignore */ }
-      }
+      mariaSpokeRef.current = false;
     } else if (readyState === VoiceReadyState.CLOSED && state === "active") {
       handleEnd();
     } else if (readyState === VoiceReadyState.CLOSED && state === "connecting") {
-      // WebSocket failed to open — show error and return to idle
       setError(l.errorGeneric);
       setState("idle");
     }
   }, [readyState]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // If Maria doesn't speak within 3s of connecting, nudge her with a user message
+  useEffect(() => {
+    if (state !== "active") return;
+    const nudge = setTimeout(() => {
+      if (!mariaSpokeRef.current) {
+        try { sendUserInput("Hello"); } catch { /* ignore */ }
+      }
+    }, 3000);
+    return () => clearTimeout(nudge);
+  }, [state]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Track when Maria first speaks
+  useEffect(() => {
+    if (messages.some((m) => "message" in m && (m as { message: { role: string } }).message.role === "assistant")) {
+      mariaSpokeRef.current = true;
+    }
+  }, [messages]);
 
   // Connection timeout — if stuck in "connecting" for 15s, abort
   useEffect(() => {
@@ -172,15 +186,10 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
       }
 
       setSessionId(data.sessionId);
-      greetingRef.current = data.greeting || "";
 
       await connect({
         auth: { type: "accessToken" as const, value: data.accessToken },
         configId: data.configId,
-        sessionSettings: {
-          type: "session_settings" as const,
-          systemPrompt: data.systemPrompt,
-        },
       });
     } catch {
       setError(l.errorGeneric);
@@ -220,6 +229,7 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
     setConversionData(null);
     setError("");
     transcriptRef.current = [];
+    mariaSpokeRef.current = false;
   }, []);
 
   const recentMessages = messages

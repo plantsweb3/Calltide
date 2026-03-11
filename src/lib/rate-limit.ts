@@ -158,10 +158,10 @@ export const RATE_LIMITS = {
   webhook: { limit: 200, windowSeconds: 60 },
   /** Admin API: 120 per minute */
   admin: { limit: 120, windowSeconds: 60 },
-  /** Demo sessions: 3 per IP per hour */
-  demo: { limit: 3, windowSeconds: 3600 },
-  /** Demo daily cap: 10 per IP per 24 hours */
-  demoDaily: { limit: 10, windowSeconds: 86400 },
+  /** Demo sessions: 5 per IP per 15 minutes */
+  demo: { limit: 5, windowSeconds: 900 },
+  /** Demo daily cap: 30 per IP per 24 hours */
+  demoDaily: { limit: 30, windowSeconds: 86400 },
   /** Password login: 5 attempts per 15 minutes */
   passwordLogin: { limit: 5, windowSeconds: 900 },
   /** Password reset requests: 3 per hour */
