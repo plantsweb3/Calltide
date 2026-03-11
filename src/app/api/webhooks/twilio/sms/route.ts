@@ -177,7 +177,33 @@ export async function POST(req: NextRequest) {
     console.log(`Prospect SMS ${prospectResult.action} processed`);
   }
 
-  // Notify business owner of inbound SMS (fire-and-forget)
+  // Owner conversational SMS — route through Maria's chat engine
+  // Only triggers if the sender is the business owner and message didn't match any structured handler
+  const normalizedFrom = from.replace(/\D/g, "");
+  const normalizedOwner = biz.ownerPhone.replace(/\D/g, "");
+  if (normalizedFrom === normalizedOwner && body.trim().length > 0) {
+    try {
+      const { chat } = await import("@/lib/maria/chat-engine");
+      const result = await chat(biz.id, body.trim(), "sms");
+
+      if (result.reply) {
+        // Send Maria's response back to owner via SMS
+        await sendSMS({
+          to: from,
+          from: biz.twilioNumber,
+          body: result.reply.slice(0, 1500), // SMS length limit
+          businessId: biz.id,
+          templateType: "owner_notify",
+        });
+      }
+      return twimlResponse("");
+    } catch (err) {
+      reportError("Owner SMS → Maria chat failed", err, { extra: { businessId: biz.id } });
+      // Fall through to default behavior
+    }
+  }
+
+  // Notify business owner of inbound SMS from customers (fire-and-forget)
   if (biz.ownerEmail) {
     notifyOwnerOfSms(biz.id, biz.name, biz.ownerEmail, body).catch((err) =>
       reportError("Failed to send inbound SMS notification email", err, { extra: { businessId: biz.id } })

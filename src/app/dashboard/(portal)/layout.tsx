@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import ClientNav from "../_components/client-nav";
 import HelpWidget from "../_components/help-widget";
+import ChatWidget from "../_components/chat-widget";
 import PaymentBanner from "../_components/payment-banner";
 import ErrorBoundary from "@/components/error-boundary";
 import CaptaSpinner from "@/components/capta-spinner";
@@ -114,6 +115,7 @@ export default function PortalLayout({
         <ErrorBoundary>{children}</ErrorBoundary>
       </main>
 
+      <ChatWidget />
       <HelpWidget />
       <LegalReacceptanceModal />
     </div>

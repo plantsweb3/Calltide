@@ -1464,3 +1464,49 @@ export const customerNotifications = sqliteTable("customer_notifications", {
   twilioSid: text("twilio_sid"),
   sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
 });
+
+// ── Phase 8: Maria — AI Office Manager ──
+
+export const chatMessages = sqliteTable("chat_messages", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  role: text("role").notNull().default("user"), // user, assistant
+  content: text("content").notNull(),
+  channel: text("channel").notNull().default("dashboard"), // dashboard, sms
+  toolCalls: text("tool_calls", { mode: "json" }).$type<Array<{ name: string; input: Record<string, unknown>; result: unknown }>>(),
+  toolResults: text("tool_results", { mode: "json" }).$type<Array<{ name: string; result: unknown }>>(),
+  tokenCount: integer("token_count").default(0),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const businessContextNotes = sqliteTable("business_context_notes", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  category: text("category").notNull().default("context"), // preference, context, instruction, insight
+  content: text("content").notNull(),
+  source: text("source").notNull().default("auto"), // auto, manual, chat
+  expiresAt: text("expires_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const conversationSummaries = sqliteTable("conversation_summaries", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  channel: text("channel").notNull().default("dashboard"), // dashboard, sms
+  summary: text("summary").notNull(),
+  messageCount: integer("message_count").notNull().default(0),
+  oldestMessageAt: text("oldest_message_at").notNull(),
+  newestMessageAt: text("newest_message_at").notNull(),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const weatherCache = sqliteTable("weather_cache", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  locationKey: text("location_key").notNull(),
+  lat: real("lat").notNull(),
+  lon: real("lon").notNull(),
+  data: text("data", { mode: "json" }).notNull().$type<Record<string, unknown>>(),
+  expiresAt: text("expires_at").notNull(),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
