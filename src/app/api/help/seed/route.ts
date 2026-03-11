@@ -1081,7 +1081,7 @@ Need help? Email support@capta.app or call (830) 521-7133.`,
   },
 ];
 
-export async function POST(req: NextRequest) {
+async function seed(req: NextRequest) {
   try {
     const force = req.nextUrl.searchParams.get("force") === "1";
 
@@ -1139,7 +1139,7 @@ export async function POST(req: NextRequest) {
     await db.insert(helpArticles).values(values);
 
     // Update article counts on categories
-    for (const [slug, id] of catMap) {
+    for (const [, id] of catMap) {
       const [artCount] = await db
         .select({ c: count() })
         .from(helpArticles)
@@ -1163,4 +1163,13 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     );
   }
+}
+
+// Support GET for easy browser-based reseeding
+export async function GET(req: NextRequest) {
+  return seed(req);
+}
+
+export async function POST(req: NextRequest) {
+  return seed(req);
 }
