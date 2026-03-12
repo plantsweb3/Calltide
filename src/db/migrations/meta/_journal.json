@@ -386,6 +386,13 @@
       "when": 1776500000000,
       "tag": "0054_maria_office_manager",
       "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "6",
+      "when": 1776600000000,
+      "tag": "0055_knowledge_gaps",
+      "breakpoints": true
     }
   ]
 }

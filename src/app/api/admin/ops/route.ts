@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { systemHealthLogs, calls, businesses, appointments } from "@/db/schema";
+import { systemHealthLogs, calls, businesses, appointments, processedStripeEvents } from "@/db/schema";
 import { sql, desc } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 
@@ -49,6 +49,14 @@ export async function GET() {
       .orderBy(desc(systemHealthLogs.checkedAt))
       .limit(20);
 
+    // Webhook health stats
+    const [webhookStats] = await db
+      .select({
+        total24h: sql<number>`count(case when datetime(${processedStripeEvents.processedAt}) >= datetime('now', '-24 hours') then 1 end)`,
+        lastEvent: sql<string>`max(${processedStripeEvents.processedAt})`,
+      })
+      .from(processedStripeEvents);
+
     return NextResponse.json({
       services: serviceHealth,
       systemStats: {
@@ -56,6 +64,10 @@ export async function GET() {
         totalCalls: callStats?.totalCalls ?? 0,
         callsToday: callStats?.callsToday ?? 0,
         totalAppointments: aptStats?.totalAppointments ?? 0,
+      },
+      webhookHealth: {
+        eventsLast24h: webhookStats?.total24h ?? 0,
+        lastEventAt: webhookStats?.lastEvent ?? null,
       },
       recentErrors,
     });

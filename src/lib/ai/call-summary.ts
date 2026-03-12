@@ -52,12 +52,18 @@ async function fetchTranscript(chatId: string): Promise<TranscriptLine[]> {
 /**
  * Use Claude to generate a summary and sentiment from a call transcript.
  */
+interface KnowledgeGap {
+  question: string;
+  aiResponse: string;
+}
+
 interface GeneratedSummary {
   summary: string;
   sentiment: "positive" | "neutral" | "negative";
   outcome: CallOutcome;
   callerName: string | null;
   serviceRequested: string | null;
+  knowledgeGaps: KnowledgeGap[];
 }
 
 async function generateSummary(transcript: TranscriptLine[]): Promise<GeneratedSummary> {
@@ -87,9 +93,10 @@ async function generateSummary(transcript: TranscriptLine[]): Promise<GeneratedS
    - "unknown" — none of the above
 4. The caller's name if mentioned (null if not).
 5. The service the caller asked about if mentioned (null if not).
+6. Knowledge gaps — questions the caller asked where the AI was unsure or couldn't provide a definitive answer. Look for phrases like "I'll have to check on that", "I'm not sure about that", "let me have the owner get back to you", "I don't have that information", or any hedging/deflection. Return each gap as {question, aiResponse} — the caller's actual question and the AI's uncertain response. Empty array if none.
 
 Respond in this exact JSON format only, no other text:
-{"summary":"...","sentiment":"positive|neutral|negative","outcome":"appointment_booked|estimate_requested|message_taken|transfer|info_only|spam|unknown","callerName":"string or null","serviceRequested":"string or null"}
+{"summary":"...","sentiment":"positive|neutral|negative","outcome":"appointment_booked|estimate_requested|message_taken|transfer|info_only|spam|unknown","callerName":"string or null","serviceRequested":"string or null","knowledgeGaps":[{"question":"...","aiResponse":"..."}]}
 
 Transcript:
 ${transcriptText}`,
@@ -106,15 +113,30 @@ ${transcriptText}`,
       : "neutral";
     const validOutcomes: CallOutcome[] = ["appointment_booked", "estimate_requested", "message_taken", "transfer", "info_only", "spam", "unknown"];
     const outcome = validOutcomes.includes(parsed.outcome) ? parsed.outcome : "unknown";
+
+    // Parse knowledge gaps
+    const knowledgeGaps: KnowledgeGap[] = [];
+    if (Array.isArray(parsed.knowledgeGaps)) {
+      for (const gap of parsed.knowledgeGaps) {
+        if (gap?.question && typeof gap.question === "string") {
+          knowledgeGaps.push({
+            question: gap.question.slice(0, 500),
+            aiResponse: typeof gap.aiResponse === "string" ? gap.aiResponse.slice(0, 500) : "",
+          });
+        }
+      }
+    }
+
     return {
       summary: parsed.summary || "Call completed.",
       sentiment,
       outcome,
       callerName: parsed.callerName || null,
       serviceRequested: parsed.serviceRequested || null,
+      knowledgeGaps,
     };
   } catch {
-    return { summary: "Call completed.", sentiment: "neutral", outcome: "unknown", callerName: null, serviceRequested: null };
+    return { summary: "Call completed.", sentiment: "neutral", outcome: "unknown", callerName: null, serviceRequested: null, knowledgeGaps: [] };
   }
 }
 
@@ -131,7 +153,7 @@ export async function processCallSummary(callId: string, chatId: string): Promis
       return null;
     }
 
-    const { summary, sentiment, outcome, callerName, serviceRequested } = await generateSummary(transcript);
+    const { summary, sentiment, outcome, callerName, serviceRequested, knowledgeGaps } = await generateSummary(transcript);
 
     await db.update(calls).set({
       summary,
@@ -155,6 +177,15 @@ export async function processCallSummary(callId: string, chatId: string): Promis
           reportError("QA trigger failed", err, { extra: { callId } });
         });
       }
+    }
+
+    // Store knowledge gaps and notify owner (fire-and-forget)
+    if (knowledgeGaps.length > 0 && callRecord) {
+      import("@/lib/maria/learning").then(({ processKnowledgeGaps }) => {
+        processKnowledgeGaps(callRecord.businessId, callId, knowledgeGaps).catch((err) => {
+          reportError("Knowledge gap processing failed", err, { extra: { callId } });
+        });
+      }).catch(() => {});
     }
 
     // CRM pipeline: upsert customer + auto-create estimate (fire-and-forget)

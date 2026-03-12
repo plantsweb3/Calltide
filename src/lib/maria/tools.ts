@@ -2,6 +2,7 @@ import { db } from "@/db";
 import {
   calls, leads, appointments, customers,
   jobCards, smsMessages, businessContextNotes,
+  businesses,
 } from "@/db/schema";
 import { eq, and, desc, gte, sql, count, ne, or, like } from "drizzle-orm";
 import { getWeather } from "./weather";
@@ -226,6 +227,16 @@ export const MARIA_TOOLS: Anthropic.Tool[] = [
       required: [],
     },
   },
+  // 18. Activate business (onboarding)
+  {
+    name: "activate_business",
+    description: "Activate the business so it starts receiving calls. Use ONLY when the owner confirms they have set up call forwarding (e.g. 'I set up forwarding', 'it's working', 'calls are forwarding', 'done'). This is a one-time action during onboarding.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
 ];
 
 // ── Tool Handlers ──
@@ -272,6 +283,8 @@ export async function handleToolCall(
         return await getCallHistory(businessId, input as { limit?: number; direction?: string });
       case "get_sms_history":
         return await getSmsHistory(businessId, input as { limit?: number; phone?: string });
+      case "activate_business":
+        return await activateBusiness(businessId);
       default:
         return JSON.stringify({ error: `Unknown tool: ${toolName}` });
     }
@@ -767,4 +780,50 @@ async function getSmsHistory(
     .limit(n);
 
   return JSON.stringify({ messages: rows });
+}
+
+async function activateBusiness(businessId: string): Promise<string> {
+  const [biz] = await db
+    .select({ active: businesses.active, name: businesses.name })
+    .from(businesses)
+    .where(eq(businesses.id, businessId))
+    .limit(1);
+
+  if (!biz) return JSON.stringify({ error: "Business not found" });
+  if (biz.active) return JSON.stringify({ success: true, message: "Business is already active!" });
+
+  await db
+    .update(businesses)
+    .set({
+      active: true,
+      onboardingCompletedAt: new Date().toISOString(),
+      onboardingStatus: "completed",
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(businesses.id, businessId));
+
+  // Import lazily to avoid circular deps
+  const { logActivity } = await import("@/lib/activity");
+  const { createNotification } = await import("@/lib/notifications");
+
+  await logActivity({
+    type: "business_activated",
+    entityType: "business",
+    entityId: businessId,
+    title: `${biz.name} activated via SMS`,
+    detail: "Owner confirmed call forwarding — Maria activated business via text.",
+  });
+
+  await createNotification({
+    source: "agents",
+    severity: "info",
+    title: "Business activated via Maria SMS",
+    message: `${biz.name} is now live — owner confirmed forwarding via text.`,
+    actionUrl: "/admin/clients",
+  });
+
+  return JSON.stringify({
+    success: true,
+    message: `${biz.name} is now active! I'll start answering calls immediately.`,
+  });
 }

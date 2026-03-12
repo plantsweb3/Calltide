@@ -1510,3 +1510,17 @@ export const weatherCache = sqliteTable("weather_cache", {
   expiresAt: text("expires_at").notNull(),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
+
+export const knowledgeGaps = sqliteTable("knowledge_gaps", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull(),
+  callId: text("call_id"),
+  question: text("question").notNull(),
+  aiResponse: text("ai_response"),
+  ownerResponse: text("owner_response"),
+  status: text("status").notNull().default("pending"), // pending | asked | answered | auto_created | dismissed
+  customResponseId: text("custom_response_id"),
+  askedAt: text("asked_at"),
+  answeredAt: text("answered_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});

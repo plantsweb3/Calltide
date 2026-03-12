@@ -8,14 +8,20 @@ interface PipelineBusiness {
   type: string;
   ownerName: string;
   ownerEmail: string;
+  ownerPhone: string;
   serviceArea: string | null;
   receptionistName: string | null;
+  twilioNumber: string | null;
+  active: boolean;
   onboardingStep: number;
   onboardingStatus: string;
   onboardingStartedAt: string | null;
   onboardingPaywallReachedAt: string | null;
+  stripeCustomerId: string | null;
+  paymentStatus: string | null;
   updatedAt: string;
   createdAt: string;
+  hasLoggedIn: boolean;
 }
 
 const STEP_LABELS: Record<number, string> = {
@@ -33,6 +39,7 @@ const STATUS_COLORS: Record<string, string> = {
   not_started: "#9CA3AF",
   in_progress: "#3B82F6",
   paywall_reached: "#F59E0B",
+  completed: "#10B981",
   abandoned: "#EF4444",
 };
 
@@ -46,10 +53,19 @@ function timeAgo(dateStr: string): string {
   return `${days}d ago`;
 }
 
+function timeSince(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  return `${days}d`;
+}
+
 export default function OnboardingPipelinePage() {
   const [businesses, setBusinesses] = useState<PipelineBusiness[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -70,12 +86,41 @@ export default function OnboardingPipelinePage() {
     fetchData();
   }, [fetchData]);
 
+  const handleAction = async (action: string, businessId: string) => {
+    setActionLoading(`${action}-${businessId}`);
+    try {
+      const res = await fetch("/api/admin/onboarding-pipeline/actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, businessId }),
+      });
+      if (res.ok) {
+        await fetchData();
+      }
+    } catch {
+      // Ignore
+    }
+    setActionLoading(null);
+  };
+
   const counts = {
     all: businesses.length,
     in_progress: businesses.filter((b) => b.onboardingStatus === "in_progress").length,
     paywall_reached: businesses.filter((b) => b.onboardingStatus === "paywall_reached").length,
     not_started: businesses.filter((b) => b.onboardingStatus === "not_started").length,
     abandoned: businesses.filter((b) => b.onboardingStatus === "abandoned").length,
+  };
+
+  const btnStyle = {
+    padding: "4px 8px",
+    borderRadius: "6px",
+    fontSize: "11px",
+    fontWeight: 500 as const,
+    cursor: "pointer" as const,
+    border: "1px solid var(--db-border)",
+    background: "var(--db-surface)",
+    color: "var(--db-text)",
+    whiteSpace: "nowrap" as const,
   };
 
   return (
@@ -125,7 +170,7 @@ export default function OnboardingPipelinePage() {
             <table className="w-full text-left">
               <thead>
                 <tr style={{ borderBottom: "1px solid var(--db-border)" }}>
-                  {["Business", "Trade", "City", "Receptionist", "Step", "Status", "Started", "Last Activity"].map((h) => (
+                  {["Business", "Trade", "Step", "Status", "Since Payment", "Phone", "Logged In", "Last Activity", "Actions"].map((h) => (
                     <th key={h} className="px-4 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
                       {h}
                     </th>
@@ -139,16 +184,11 @@ export default function OnboardingPipelinePage() {
                       <div>
                         <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{biz.name}</p>
                         <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{biz.ownerName}</p>
+                        <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{biz.ownerEmail}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-sm capitalize" style={{ color: "var(--db-text)" }}>
                       {biz.type?.replace(/_/g, " ") || "—"}
-                    </td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "var(--db-text-muted)" }}>
-                      {biz.serviceArea || "—"}
-                    </td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "var(--db-text)" }}>
-                      {biz.receptionistName || "—"}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
@@ -173,12 +213,54 @@ export default function OnboardingPipelinePage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
-                      {biz.onboardingStartedAt
-                        ? new Date(biz.onboardingStartedAt).toLocaleDateString()
-                        : "—"}
+                      {biz.paymentStatus === "active" && biz.createdAt ? timeSince(biz.createdAt) : "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      {biz.twilioNumber ? (
+                        <span className="inline-flex items-center gap-1 text-xs" style={{ color: "#10B981" }}>
+                          <span className="h-1.5 w-1.5 rounded-full" style={{ background: "#10B981" }} />
+                          Provisioned
+                        </span>
+                      ) : (
+                        <span className="text-xs" style={{ color: "#EF4444" }}>Not yet</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                      {biz.hasLoggedIn ? (
+                        <span style={{ color: "#10B981" }}>Yes</span>
+                      ) : (
+                        <span style={{ color: "#9CA3AF" }}>No</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
                       {biz.updatedAt ? timeAgo(biz.updatedAt) : "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1">
+                        {biz.stripeCustomerId && !biz.paymentStatus && (
+                          <button
+                            style={{ ...btnStyle, borderColor: "#EF4444", color: "#EF4444" }}
+                            disabled={actionLoading === `recover-${biz.id}`}
+                            onClick={() => handleAction("recover", biz.id)}
+                          >
+                            {actionLoading === `recover-${biz.id}` ? "..." : "Recover"}
+                          </button>
+                        )}
+                        <button
+                          style={btnStyle}
+                          disabled={actionLoading === `resend-welcome-${biz.id}`}
+                          onClick={() => handleAction("resend-welcome", biz.id)}
+                        >
+                          {actionLoading === `resend-welcome-${biz.id}` ? "..." : "Resend SMS"}
+                        </button>
+                        <button
+                          style={btnStyle}
+                          disabled={actionLoading === `magic-link-${biz.id}`}
+                          onClick={() => handleAction("magic-link", biz.id)}
+                        >
+                          {actionLoading === `magic-link-${biz.id}` ? "..." : "Magic Link"}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

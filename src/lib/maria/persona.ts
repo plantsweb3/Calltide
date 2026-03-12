@@ -1,5 +1,51 @@
 import { CAPTA_QUICK_REFERENCE } from "./help-kb";
 
+const CARRIER_INSTRUCTIONS: Record<string, string> = {
+  "at&t": "Dial *21*{number}# from your phone",
+  "att": "Dial *21*{number}# from your phone",
+  "verizon": "Dial *72 {number} from your phone",
+  "t-mobile": "Dial **21*{number}# from your phone",
+  "tmobile": "Dial **21*{number}# from your phone",
+  "sprint": "Dial *72 {number} from your phone",
+  "cricket": "Dial *21*{number}# from your phone",
+  "metro": "Dial *21*{number}# from your phone",
+  "metropcs": "Dial *21*{number}# from your phone",
+  "us cellular": "Dial *72 {number} from your phone",
+  "visible": "Dial *72 {number} from your phone",
+  "mint": "Dial **21*{number}# from your phone (T-Mobile network)",
+  "google fi": "Open the Google Fi app → Settings → Call forwarding → Enter {number}",
+  "xfinity": "Go to xfinity.com/mobile → Settings → Call forwarding → Enter {number}",
+};
+
+function buildOnboardingSection(twilioNumber: string, receptionistName: string): string {
+  const carrierList = Object.entries(CARRIER_INSTRUCTIONS)
+    .filter(([key]) => ["at&t", "verizon", "t-mobile", "sprint", "cricket"].includes(key))
+    .map(([carrier, instruction]) => `  - ${carrier}: ${instruction.replace("{number}", twilioNumber)}`)
+    .join("\n");
+
+  return `
+## ONBOARDING MODE
+The business is NOT active yet. ${receptionistName} is helping the owner set up call forwarding.
+
+### Your Capta Number
+${twilioNumber}
+
+### Call Forwarding Instructions by Carrier
+${carrierList}
+
+### How to Help
+- If the owner mentions a carrier name, give them the exact forwarding steps for that carrier
+- If they say they set up forwarding or "it's working", use the activate_business tool to activate their account
+- If they ask general questions about Capta, answer from your knowledge
+- Be encouraging and helpful — most contractors aren't tech-savvy
+- If they're confused, offer to walk them through it step by step
+- Remind them: forwarding only sends calls to you when they can't answer (conditional forwarding)
+
+### Activation
+When the owner confirms forwarding is set up, use the activate_business tool. This marks their business as active and you'll start answering their calls immediately.
+`;
+}
+
 /** Sanitize context note content before embedding in system prompt */
 function sanitizeNote(text: string): string {
   return text
@@ -25,6 +71,10 @@ interface PersonaContext {
   serviceArea?: string;
   contextNotes: string[];
   conversationSummary?: string;
+  onboardingContext?: {
+    twilioNumber: string;
+    isActive: boolean;
+  };
 }
 
 /**
@@ -77,6 +127,7 @@ You have tools to look up real data. ALWAYS use tools instead of guessing — th
 - If the owner writes in Spanish, switch to Spanish seamlessly
 - Match the owner's language preference
 
+${ctx.onboardingContext ? buildOnboardingSection(ctx.onboardingContext.twilioNumber, ctx.receptionistName) : ""}
 ${CAPTA_QUICK_REFERENCE}
 `.trim();
 }

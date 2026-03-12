@@ -814,7 +814,12 @@ function SetupClient() {
         for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
           if (abortController.signal.aborted) return;
           try {
-            const authRes = await fetch("/api/setup/auth", { method: "POST", signal: abortController.signal });
+            const authRes = await fetch("/api/setup/auth", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ attempt, session_id: sessionId }),
+              signal: abortController.signal,
+            });
             if (authRes.ok) {
               const authData = await authRes.json().catch(() => null);
               if (authData?.generatedPassword && authData?.email) {

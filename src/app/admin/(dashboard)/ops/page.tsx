@@ -21,6 +21,10 @@ interface OpsData {
     callsToday: number;
     totalAppointments: number;
   };
+  webhookHealth: {
+    eventsLast24h: number;
+    lastEventAt: string | null;
+  };
   recentErrors: Array<{
     id: string;
     serviceName: string;
@@ -189,6 +193,45 @@ export default function OpsPage() {
               </p>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Webhook health */}
+      <div>
+        <h2 className="mb-3 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>Stripe Webhook Health</h2>
+        <div
+          className="rounded-lg p-4"
+          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+        >
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Events (24h)</p>
+              <p className="text-xl font-bold" style={{ color: "var(--db-text)" }}>
+                {data.webhookHealth.eventsLast24h}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Last Event</p>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                {data.webhookHealth.lastEventAt
+                  ? new Date(data.webhookHealth.lastEventAt).toLocaleString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "No events recorded"}
+              </p>
+            </div>
+          </div>
+          {!data.webhookHealth.lastEventAt && (
+            <div
+              className="mt-3 rounded px-3 py-2 text-xs"
+              style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}
+            >
+              No Stripe webhook events recorded. Check STRIPE_WEBHOOK_SECRET configuration.
+            </div>
+          )}
         </div>
       </div>
 

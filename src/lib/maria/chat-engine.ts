@@ -31,11 +31,14 @@ interface ChatResponse {
 
 /**
  * Process a message from the business owner and return Maria's response.
+ * @param onboardingContext - If "onboarding", Maria knows the business isn't active yet
+ *   and can help with setup (forwarding instructions, activation, etc.)
  */
 export async function chat(
   businessId: string,
   userMessage: string,
-  channel: "dashboard" | "sms" = "dashboard"
+  channel: "dashboard" | "sms" = "dashboard",
+  onboardingContext?: "onboarding",
 ): Promise<ChatResponse> {
   const biz = await getBusinessById(businessId);
   if (!biz) throw new Error("Business not found");
@@ -77,6 +80,10 @@ export async function chat(
     serviceArea: biz.serviceArea,
     contextNotes: contextNotes.map((n) => n.content),
     conversationSummary: latestSummary?.summary,
+    onboardingContext: onboardingContext === "onboarding" ? {
+      twilioNumber: biz.twilioNumber,
+      isActive: false,
+    } : undefined,
   });
 
   // Load recent messages for context window

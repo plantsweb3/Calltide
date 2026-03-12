@@ -63,18 +63,33 @@ export async function POST(req: NextRequest) {
   console.log("Inbound SMS received:", { messageSid });
 
   // Look up which business owns the To number
-  const [biz] = await db
+  let [biz] = await db
     .select()
     .from(businesses)
     .where(and(eq(businesses.twilioNumber, to), eq(businesses.active, true)))
     .limit(1);
 
+  // If no active business, check for inactive business where sender is the owner
+  // This enables onboarding-via-SMS (owner texts before activating)
+  let isOnboarding = false;
   if (!biz) {
-    reportWarning("Inbound SMS to unrecognized number — no business found", {
-      messageSid,
-      timestamp: new Date().toISOString(),
-    });
-    return twimlResponse("Thank you for your message. This number is not currently active.");
+    const normalizedFrom = normalizePhone(from);
+    const [inactiveBiz] = await db
+      .select()
+      .from(businesses)
+      .where(and(eq(businesses.twilioNumber, to), eq(businesses.active, false)))
+      .limit(1);
+
+    if (inactiveBiz && normalizePhone(inactiveBiz.ownerPhone) === normalizedFrom) {
+      biz = inactiveBiz;
+      isOnboarding = true;
+    } else {
+      reportWarning("Inbound SMS to unrecognized number — no business found", {
+        messageSid,
+        timestamp: new Date().toISOString(),
+      });
+      return twimlResponse("Thank you for your message. This number is not currently active.");
+    }
   }
 
   // Find or create lead from the sender's phone
@@ -187,15 +202,28 @@ export async function POST(req: NextRequest) {
     console.log(`Prospect SMS ${prospectResult.action} processed`);
   }
 
+  // Check if this is a learning response (owner replying to a knowledge gap question)
+  if (isOwner && body.trim().length > 0) {
+    try {
+      const { handleLearningResponse } = await import("@/lib/maria/learning");
+      const wasLearning = await handleLearningResponse(biz.id, body.trim());
+      if (wasLearning) {
+        return twimlResponse("");
+      }
+    } catch (err) {
+      reportError("Learning response check failed", err, { extra: { businessId: biz.id } });
+    }
+  }
+
   // Owner conversational SMS — route through Maria's chat engine
-  // Only triggers if the sender is the business owner and message didn't match any structured handler
-  if (isOwner && body.trim().length > 0 && process.env.ANTHROPIC_API_KEY) {
+  // Triggers for active business owners AND onboarding owners (isOnboarding)
+  if ((isOwner || isOnboarding) && body.trim().length > 0 && process.env.ANTHROPIC_API_KEY) {
     // Fire-and-forget: respond immediately to Twilio, process chat in background
     // Twilio has a 15s timeout — Maria's chat can take longer
     (async () => {
       try {
         const { chat: mariaChat } = await import("@/lib/maria/chat-engine");
-        const result = await mariaChat(biz.id, body.trim(), "sms");
+        const result = await mariaChat(biz.id, body.trim(), "sms", isOnboarding ? "onboarding" : undefined);
 
         if (result.reply) {
           // Cap length and strip control characters before sending

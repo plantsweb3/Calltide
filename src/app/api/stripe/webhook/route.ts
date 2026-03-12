@@ -7,8 +7,6 @@ import {
   paymentEvents,
   subscriptionEvents,
   processedStripeEvents,
-  setupSessions,
-  receptionistCustomResponses,
 } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { startDunning, clearDunning, cancelDunning } from "@/lib/financial/dunning";
@@ -21,12 +19,22 @@ import { recordConsent } from "@/lib/compliance/consent";
 import { getStripe } from "@/lib/stripe/client";
 import { enqueueJob } from "@/lib/jobs/queue";
 import { generateBookingSlug } from "@/lib/booking-slug";
+import { createBusinessFromSetup } from "@/lib/onboarding/create-business";
 
 export async function POST(request: Request) {
   const body = await request.text();
   const sig = request.headers.get("stripe-signature");
 
   if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
+    createNotification({
+      source: "incident",
+      severity: "critical",
+      title: "Stripe webhook misconfigured",
+      message: !process.env.STRIPE_WEBHOOK_SECRET
+        ? "STRIPE_WEBHOOK_SECRET is not set — webhook events are being dropped. Customer signups will fail silently."
+        : "Stripe webhook received without signature.",
+      actionUrl: "/admin/ops",
+    }).catch(() => {});
     return NextResponse.json({ error: "Missing signature or secret" }, { status: 400 });
   }
 
@@ -36,6 +44,13 @@ export async function POST(request: Request) {
     event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
     reportError("[stripe] Webhook signature verification failed", err);
+    createNotification({
+      source: "incident",
+      severity: "critical",
+      title: "Stripe webhook signature failed",
+      message: "Webhook signature verification failed — check STRIPE_WEBHOOK_SECRET matches Stripe dashboard.",
+      actionUrl: "/admin/ops",
+    }).catch(() => {});
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
@@ -72,6 +87,13 @@ export async function POST(request: Request) {
       reportError(`[stripe] Error handling ${event.type}`, err, {
         extra: { eventId: event.id, eventType: event.type },
       });
+      createNotification({
+        source: "incident",
+        severity: "critical",
+        title: `Stripe webhook handler failed: ${event.type}`,
+        message: `Event ${event.id} (${event.type}) failed to process. Error: ${err instanceof Error ? err.message : "Unknown"}. Customer data may not have been created.`,
+        actionUrl: "/admin/ops",
+      }).catch(() => {});
       // Still return 200 — we've recorded the event, don't want Stripe to retry
     }
   }
@@ -613,203 +635,13 @@ async function handleSetupPageCheckout(
   const setupSessionId = session.metadata?.setupSessionId;
   if (!setupSessionId) return;
 
-  // Load setup session
-  const [setupSession] = await db
-    .select()
-    .from(setupSessions)
-    .where(eq(setupSessions.id, setupSessionId))
-    .limit(1);
-
-  if (!setupSession) {
-    reportError("[stripe] Setup session not found for checkout", new Error("Missing setup session"), {
-      extra: { setupSessionId },
-    });
-    return;
-  }
-
-  // Check if business already exists for this email (prevent duplicates)
-  const [existingByEmail] = await db
-    .select({ id: businesses.id })
-    .from(businesses)
-    .where(eq(businesses.ownerEmail, email))
-    .limit(1);
-
-  if (existingByEmail) {
-    // Link Stripe IDs to existing business and update from setup data
-    await db
-      .update(businesses)
-      .set({
-        name: setupSession.businessName || undefined,
-        type: setupSession.businessType || undefined,
-        ownerName: setupSession.ownerName || undefined,
-        ownerPhone: setupSession.ownerPhone || undefined,
-        services: setupSession.services || undefined,
-        receptionistName: setupSession.receptionistName || undefined,
-        personalityPreset: setupSession.personalityPreset || undefined,
-        serviceArea: setupSession.city && setupSession.state ? `${setupSession.city}, ${setupSession.state}` : undefined,
-        stripeCustomerId: customerId,
-        stripeSubscriptionId: subscriptionId,
-        stripeSubscriptionStatus: "active",
-        paymentStatus: "active",
-        planType: plan,
-        mrr,
-        onboardingStep: 7,
-        onboardingStatus: "in_progress",
-        annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
-        updatedAt: new Date().toISOString(),
-      })
-      .where(eq(businesses.id, existingByEmail.id));
-
-    // Mark setup session as converted
-    await db
-      .update(setupSessions)
-      .set({
-        status: "converted",
-        businessId: existingByEmail.id,
-        convertedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      })
-      .where(eq(setupSessions.id, setupSession.id));
-
-    recordConsentForCheckout(existingByEmail.id).catch((err) =>
-      reportError("Failed to record consent (setup existing)", err, { extra: { businessId: existingByEmail.id } })
-    );
-    return;
-  }
-
-  // Create account + business with ALL setup data pre-populated
-  const accountId = crypto.randomUUID();
-  const now = new Date().toISOString();
-
-  // Default business hours (Mon-Fri 8-5)
-  const defaultHours: Record<string, { open: string; close: string }> = {
-    Mon: { open: "08:00", close: "17:00" },
-    Tue: { open: "08:00", close: "17:00" },
-    Wed: { open: "08:00", close: "17:00" },
-    Thu: { open: "08:00", close: "17:00" },
-    Fri: { open: "08:00", close: "17:00" },
-  };
-
-  await db.insert(accounts).values({
-    id: accountId,
-    ownerName: setupSession.ownerName || "",
-    ownerEmail: email,
-    ownerPhone: setupSession.ownerPhone || "",
-    stripeCustomerId: customerId,
-    stripeSubscriptionId: subscriptionId,
-    stripeSubscriptionStatus: "active",
-    planType: plan,
-    locationCount: 1,
-  });
-
-  const setupSlug = await generateBookingSlug(setupSession.businessName || "My Business").catch(() => undefined);
-
-  const [newBiz] = await db
-    .insert(businesses)
-    .values({
-      name: setupSession.businessName || "My Business",
-      type: setupSession.businessType || "other",
-      ownerName: setupSession.ownerName || "",
-      ownerPhone: setupSession.ownerPhone || "",
-      ownerEmail: email,
-      twilioNumber: "", // Provisioned async below
-      services: setupSession.services || [],
-      businessHours: defaultHours,
-      serviceArea: setupSession.city && setupSession.state ? `${setupSession.city}, ${setupSession.state}` : undefined,
-      receptionistName: setupSession.receptionistName || "Maria",
-      personalityPreset: setupSession.personalityPreset || "friendly",
-      defaultLanguage: setupSession.language || "en",
-      stripeCustomerId: customerId,
-      stripeSubscriptionId: subscriptionId,
-      stripeSubscriptionStatus: "active",
-      paymentStatus: "active",
-      planType: plan,
-      mrr,
-      annualConvertedAt: plan === "annual" ? now : undefined,
-      active: false, // Activated after phone forwarding
-      accountId,
-      locationName: "Main",
-      isPrimaryLocation: true,
-      locationOrder: 0,
-      onboardingStep: 7,
-      onboardingStatus: "in_progress",
-      onboardingStartedAt: setupSession.createdAt,
-      bookingSlug: setupSlug,
-    })
-    .returning({ id: businesses.id });
-
-  const businessId = newBiz?.id;
-  if (!businessId) return;
-
-  // Create receptionist custom responses from FAQ answers
-  if (setupSession.faqAnswers) {
-    const faqs = setupSession.faqAnswers as Record<string, string>;
-    const faqEntries: { category: string; triggerText: string; responseText: string; sortOrder: number }[] = [];
-    if (faqs.hours) faqEntries.push({ category: "faq", triggerText: "What are your hours?", responseText: faqs.hours, sortOrder: 0 });
-    if (faqs.area) faqEntries.push({ category: "faq", triggerText: "What areas do you serve?", responseText: faqs.area, sortOrder: 1 });
-    if (faqs.estimates) faqEntries.push({ category: "faq", triggerText: "Do you offer free estimates?", responseText: faqs.estimates, sortOrder: 2 });
-
-    for (const entry of faqEntries) {
-      await db.insert(receptionistCustomResponses).values({
-        businessId,
-        ...entry,
-      });
-    }
-  }
-
-  // Create off-limits entries
-  if (setupSession.offLimits) {
-    const limits = setupSession.offLimits as Record<string, boolean>;
-    const offLimitEntries: { triggerText: string; responseText: string; sortOrder: number }[] = [];
-    if (limits.pricing) offLimitEntries.push({ triggerText: "Don't discuss pricing over the phone", responseText: "I'd be happy to have someone get back to you with pricing details. Can I take your information?", sortOrder: 0 });
-    if (limits.competitors) offLimitEntries.push({ triggerText: "Don't discuss competitors", responseText: "I'm not able to speak to that, but I can tell you about what we offer. Would you like more information?", sortOrder: 1 });
-    if (limits.timing) offLimitEntries.push({ triggerText: "Don't make promises about timing", responseText: "I'd rather not give you an estimate on timing that might not be accurate. Let me have our team follow up with you on that.", sortOrder: 2 });
-
-    for (const entry of offLimitEntries) {
-      await db.insert(receptionistCustomResponses).values({
-        businessId,
-        category: "off_limits",
-        ...entry,
-      });
-    }
-  }
-
-  // Mark setup session as converted
-  await db
-    .update(setupSessions)
-    .set({
-      status: "converted",
-      businessId,
-      convertedAt: now,
-      updatedAt: now,
-    })
-    .where(eq(setupSessions.id, setupSession.id));
-
-  await logActivity({
-    type: "signup_completed",
-    entityType: "business",
-    entityId: businessId,
-    title: `New signup via setup page: ${email}`,
-    detail: `${setupSession.businessName} (${setupSession.businessType}). Receptionist: ${setupSession.receptionistName}.`,
-  });
-
-  await createNotification({
-    source: "financial",
-    severity: "info",
-    title: "New customer signup (setup flow)",
-    message: `${setupSession.businessName} — ${email} completed setup flow. Receptionist: ${setupSession.receptionistName}.`,
-    actionUrl: "/admin/billing",
-  });
-
-  // Record consent
-  recordConsentForCheckout(businessId).catch((err) =>
-    reportError("Failed to record consent (setup)", err, { extra: { businessId } })
-  );
-
-  // Auto-provision Twilio number
-  provisionTwilioNumber(businessId).catch(async (err) => {
-    reportError("Failed to auto-provision Twilio (setup)", err, { extra: { businessId } });
-    await enqueueJob("twilio_provision", { businessId }).catch(() => {});
+  await createBusinessFromSetup({
+    setupSessionId,
+    customerId,
+    subscriptionId,
+    email,
+    plan,
+    mrr,
   });
 }
 
