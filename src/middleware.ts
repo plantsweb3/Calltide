@@ -203,17 +203,20 @@ async function middlewareCore(req: NextRequest): Promise<NextResponse> {
   ) {
     const origin = req.headers.get("origin");
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-    if (origin) {
-      if (!appUrl) {
-        // In production, reject cross-origin requests if APP_URL is not configured
-        if (process.env.NODE_ENV === "production") {
-          return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-        }
-      } else {
-        const normalizeOrigin = (u: string) => u.replace(/\/+$/, "").replace(/^https?:\/\/www\./, (m) => m.replace("www.", ""));
-        if (normalizeOrigin(origin) !== normalizeOrigin(appUrl)) {
-          return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-        }
+    if (!origin) {
+      // In production, reject requests without Origin header (CSRF protection)
+      if (process.env.NODE_ENV === "production") {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    } else if (!appUrl) {
+      // In production, reject cross-origin requests if APP_URL is not configured
+      if (process.env.NODE_ENV === "production") {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    } else {
+      const normalizeOrigin = (u: string) => u.replace(/\/+$/, "").replace(/^https?:\/\/www\./, (m) => m.replace("www.", ""));
+      if (normalizeOrigin(origin) !== normalizeOrigin(appUrl)) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
     }
   }

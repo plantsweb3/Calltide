@@ -56,9 +56,19 @@ export async function POST(req: NextRequest) {
   const rl = await rateLimit(`clm:${ip}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
 
-  // TODO: Re-enable CLM auth once Hume API key is confirmed
-  // Auth temporarily disabled — endpoint is rate-limited (60 req/min)
-  // and only called by Hume's servers
+  // Authenticate: require CLM_API_KEY or HUME_API_KEY in Authorization header
+  const authHeader = req.headers.get("authorization");
+  const clmKey = process.env.CLM_API_KEY;
+  const humeKey = process.env.HUME_API_KEY;
+  if (clmKey || humeKey) {
+    const token = authHeader?.replace("Bearer ", "");
+    if (!token || (token !== clmKey && token !== humeKey)) {
+      return Response.json(
+        { error: "Unauthorized" },
+        { status: 401, headers: getCorsHeaders(req) }
+      );
+    }
+  }
 
   try {
     const anthropic = getAnthropic();

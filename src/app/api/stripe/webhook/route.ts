@@ -54,6 +54,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
+  // Reject stale events (>5 minutes old) to prevent replay attacks
+  const eventAge = Math.floor(Date.now() / 1000) - event.created;
+  if (eventAge > 300) {
+    return NextResponse.json({ error: "Event too old" }, { status: 400 });
+  }
+
   // Atomic idempotency: INSERT OR IGNORE avoids SELECT-then-INSERT race condition
   const [inserted] = await db
     .insert(processedStripeEvents)
@@ -77,6 +83,10 @@ export async function POST(request: Request) {
     "customer.subscription.updated": () => handleSubscriptionUpdated(event.data.object as Stripe.Subscription),
     "customer.subscription.deleted": () => handleSubscriptionDeleted(event.data.object as Stripe.Subscription),
     "charge.refunded": () => handleChargeRefunded(event.data.object as Stripe.Charge),
+    "charge.dispute.created": () => handleDisputeCreated(event.data.object as Stripe.Dispute),
+    "charge.dispute.closed": () => handleDisputeClosed(event.data.object as Stripe.Dispute),
+    "invoice.voided": () => handleInvoiceVoided(event.data.object as Stripe.Invoice),
+    "invoice.marked_uncollectible": () => handleInvoiceUncollectible(event.data.object as Stripe.Invoice),
   };
   const handler = handlers[event.type];
 
@@ -620,6 +630,123 @@ async function handleChargeRefunded(charge: Stripe.Charge) {
       })
       .where(eq(businesses.id, business.id));
   }
+}
+
+async function handleDisputeCreated(dispute: Stripe.Dispute) {
+  const charge = dispute.charge;
+  const chargeObj = typeof charge === "string" ? null : charge;
+  const customerId = chargeObj
+    ? (typeof chargeObj.customer === "string" ? chargeObj.customer : chargeObj.customer?.id)
+    : null;
+
+  // If charge is just an ID string, we can't get customer — try payment_intent metadata
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  await createNotification({
+    source: "financial",
+    severity: "critical",
+    title: "Payment dispute opened",
+    message: `${business.name} — dispute for $${(dispute.amount / 100).toFixed(2)} (${dispute.reason || "unknown reason"}).`,
+    actionUrl: "/admin/billing",
+  });
+
+  await logActivity({
+    type: "dispute_opened",
+    entityType: "business",
+    entityId: business.id,
+    title: `Payment dispute opened for ${business.name}`,
+    detail: `Amount: $${(dispute.amount / 100).toFixed(2)}, Reason: ${dispute.reason || "unknown"}.`,
+  });
+
+  await db
+    .update(businesses)
+    .set({ paymentStatus: "disputed", updatedAt: new Date().toISOString() })
+    .where(eq(businesses.id, business.id));
+}
+
+async function handleDisputeClosed(dispute: Stripe.Dispute) {
+  const charge = dispute.charge;
+  const chargeObj = typeof charge === "string" ? null : charge;
+  const customerId = chargeObj
+    ? (typeof chargeObj.customer === "string" ? chargeObj.customer : chargeObj.customer?.id)
+    : null;
+
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  const won = dispute.status === "won";
+
+  await createNotification({
+    source: "financial",
+    severity: won ? "info" : "warning",
+    title: `Payment dispute ${won ? "won" : "lost"}`,
+    message: `${business.name} — dispute for $${(dispute.amount / 100).toFixed(2)} resolved (${dispute.status}).`,
+    actionUrl: "/admin/billing",
+  });
+
+  await logActivity({
+    type: "dispute_closed",
+    entityType: "business",
+    entityId: business.id,
+    title: `Payment dispute ${won ? "won" : "lost"} for ${business.name}`,
+    detail: `Amount: $${(dispute.amount / 100).toFixed(2)}, Status: ${dispute.status}.${!won ? " Refund applied." : ""}`,
+  });
+
+  await db
+    .update(businesses)
+    .set({ paymentStatus: "active", updatedAt: new Date().toISOString() })
+    .where(eq(businesses.id, business.id));
+}
+
+async function handleInvoiceVoided(invoice: Stripe.Invoice) {
+  const customerId = typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id;
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  await db.insert(paymentEvents).values({
+    businessId: business.id,
+    stripeEventId: invoice.id,
+    eventType: "voided",
+    amount: invoice.amount_due ?? 0,
+    currency: invoice.currency ?? "usd",
+    status: "voided",
+    invoiceId: invoice.id,
+  });
+}
+
+async function handleInvoiceUncollectible(invoice: Stripe.Invoice) {
+  const customerId = typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id;
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  await db.insert(paymentEvents).values({
+    businessId: business.id,
+    stripeEventId: invoice.id,
+    eventType: "uncollectible",
+    amount: invoice.amount_due ?? 0,
+    currency: invoice.currency ?? "usd",
+    status: "uncollectible",
+    invoiceId: invoice.id,
+  });
+
+  await startDunning(business.id, "marked_uncollectible");
+
+  await createNotification({
+    source: "financial",
+    severity: "warning",
+    title: "Invoice marked uncollectible",
+    message: `${business.name} — invoice for $${((invoice.amount_due ?? 0) / 100).toFixed(2)} marked uncollectible.`,
+    actionUrl: "/admin/billing",
+  });
 }
 
 // ── Setup Page Checkout ──

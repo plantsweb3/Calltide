@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
 import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq, and, isNull, sql } from "drizzle-orm";
@@ -35,13 +36,29 @@ export async function GET(req: NextRequest) {
     // ── Check 1: Stripe customers with no matching business ──
     // Get active subscriptions from Stripe
     const stripe = getStripe();
-    const subscriptions = await stripe.subscriptions.list({
-      status: "active",
-      limit: 100,
-      expand: ["data.customer"],
-    });
+    let allSubscriptions: Stripe.Subscription[] = [];
+    let hasMore = true;
+    let startingAfter: string | undefined;
 
-    for (const sub of subscriptions.data) {
+    while (hasMore) {
+      const params: Stripe.SubscriptionListParams = {
+        status: "active",
+        limit: 100,
+        expand: ["data.customer"],
+      };
+      if (startingAfter) params.starting_after = startingAfter;
+
+      const page = await stripe.subscriptions.list(params);
+      allSubscriptions = allSubscriptions.concat(page.data);
+      hasMore = page.has_more;
+      if (page.data.length > 0) {
+        startingAfter = page.data[page.data.length - 1].id;
+      } else {
+        hasMore = false;
+      }
+    }
+
+    for (const sub of allSubscriptions) {
       const customerId =
         typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
       if (!customerId) continue;

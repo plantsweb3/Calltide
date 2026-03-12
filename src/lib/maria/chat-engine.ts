@@ -103,7 +103,6 @@ export async function chat(
   recentMessages.reverse();
 
   // Build Anthropic messages array — use stable IDs that match between tool_use and tool_result
-  let idCounter = 0;
   const messages: Anthropic.MessageParam[] = [];
 
   for (let i = 0; i < recentMessages.length; i++) {
@@ -116,8 +115,9 @@ export async function chat(
       }
       // Generate tool_use IDs that the next message's tool_result will reference
       const toolIds: string[] = [];
-      for (const tc of m.toolCalls) {
-        const toolId = `hist_tool_${idCounter++}`;
+      for (let j = 0; j < m.toolCalls.length; j++) {
+        const tc = m.toolCalls[j];
+        const toolId = `hist_${i}_tool_${j}`;
         toolIds.push(toolId);
         content.push({
           type: "tool_use" as const,
@@ -133,7 +133,7 @@ export async function chat(
       if (next && next.role === "user" && next.toolResults && Array.isArray(next.toolResults) && next.toolResults.length > 0) {
         const resultContent: Anthropic.ToolResultBlockParam[] = next.toolResults.map((tr, idx) => ({
           type: "tool_result" as const,
-          tool_use_id: toolIds[idx] || `hist_tool_${idCounter++}`,
+          tool_use_id: toolIds[idx] || `hist_${i}_fallback_${idx}`,
           content: typeof tr.result === "string" ? tr.result : JSON.stringify(tr.result),
         }));
         messages.push({ role: "user" as const, content: resultContent });
@@ -275,17 +275,28 @@ export async function chat(
   };
 }
 
+/** In-process lock to prevent concurrent compaction for the same business+channel */
+const compactingBusinesses = new Set<string>();
+
 /**
  * Check and compact if needed — runs after the response is sent.
  */
 async function compactIfNeeded(businessId: string, channel: "dashboard" | "sms"): Promise<void> {
+  const lockKey = `${businessId}:${channel}`;
+  if (compactingBusinesses.has(lockKey)) return;
+
   const [messageCount] = await db
     .select({ cnt: count() })
     .from(chatMessages)
     .where(and(eq(chatMessages.businessId, businessId), eq(chatMessages.channel, channel)));
 
   if ((messageCount?.cnt ?? 0) >= COMPACTION_TRIGGER) {
-    await compactConversation(businessId, channel);
+    compactingBusinesses.add(lockKey);
+    try {
+      await compactConversation(businessId, channel);
+    } finally {
+      compactingBusinesses.delete(lockKey);
+    }
   }
 }
 

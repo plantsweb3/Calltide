@@ -92,6 +92,18 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Deduplicate: if this messageSid was already processed (Twilio webhook retry), skip
+  if (messageSid) {
+    const [existing] = await db
+      .select({ id: smsMessages.id })
+      .from(smsMessages)
+      .where(eq(smsMessages.twilioSid, messageSid))
+      .limit(1);
+    if (existing) {
+      return twimlResponse("");
+    }
+  }
+
   // Find or create lead from the sender's phone
   const lead = await findOrCreateLead(biz.id, from);
 
@@ -218,9 +230,9 @@ export async function POST(req: NextRequest) {
   // Owner conversational SMS — route through Maria's chat engine
   // Triggers for active business owners AND onboarding owners (isOnboarding)
   if ((isOwner || isOnboarding) && body.trim().length > 0 && process.env.ANTHROPIC_API_KEY) {
-    // Fire-and-forget: respond immediately to Twilio, process chat in background
-    // Twilio has a 15s timeout — Maria's chat can take longer
-    (async () => {
+    // Race pattern: try to complete Maria's response within Twilio's timeout
+    // If it finishes in time, great. If not, it continues in background.
+    const mariaPromise = (async () => {
       try {
         const { chat: mariaChat } = await import("@/lib/maria/chat-engine");
         const result = await mariaChat(biz.id, body.trim(), "sms", isOnboarding ? "onboarding" : undefined);
@@ -240,6 +252,11 @@ export async function POST(req: NextRequest) {
         reportError("Owner SMS → Maria chat failed", err, { extra: { businessId: biz.id } });
       }
     })();
+
+    // Try to complete within Twilio's timeout (14s buffer before 15s limit)
+    const timeout = new Promise<void>((resolve) => setTimeout(resolve, 14000));
+    await Promise.race([mariaPromise, timeout]);
+    // If maria didn't finish, it continues in background
     return twimlResponse("");
   }
 

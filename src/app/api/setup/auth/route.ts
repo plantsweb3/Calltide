@@ -122,6 +122,15 @@ async function tryStripeFallback(
       return null;
     }
 
+    // Verify the checkout email matches the setup session owner
+    if (
+      checkoutSession.customer_email &&
+      setupSession.ownerEmail &&
+      checkoutSession.customer_email.toLowerCase() !== setupSession.ownerEmail.toLowerCase()
+    ) {
+      return null;
+    }
+
     const customerId =
       typeof checkoutSession.customer === "string"
         ? checkoutSession.customer
@@ -134,6 +143,14 @@ async function tryStripeFallback(
       checkoutSession.customer_email || checkoutSession.metadata?.email;
 
     if (!customerId || !email) return null;
+
+    // Verify this Stripe customer isn't already linked to another business
+    const [existingBiz] = await db
+      .select({ id: businesses.id })
+      .from(businesses)
+      .where(eq(businesses.stripeCustomerId, customerId))
+      .limit(1);
+    if (existingBiz) return null;
 
     const plan = (checkoutSession.metadata?.plan === "annual" ? "annual" : "monthly") as PlanType;
     const mrr = getMrrForPlan(plan);

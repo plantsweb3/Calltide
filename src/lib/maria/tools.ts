@@ -5,6 +5,7 @@ import {
   businesses,
 } from "@/db/schema";
 import { eq, and, desc, gte, sql, count, ne, or, like } from "drizzle-orm";
+import { z } from "zod";
 import { getWeather } from "./weather";
 import { searchHelp } from "./help-kb";
 import { checkAvailability } from "@/lib/calendar/availability";
@@ -239,6 +240,82 @@ export const MARIA_TOOLS: Anthropic.Tool[] = [
   },
 ];
 
+// ── Zod Schemas for Tool Params ──
+
+const RecentLeadsSchema = z.object({
+  limit: z.number().min(1).max(20).optional(),
+});
+
+const TodaysScheduleSchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD").optional(),
+});
+
+const CheckAvailabilitySchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD"),
+});
+
+const BlockTimeSchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD"),
+  time: z.string().regex(/^\d{2}:\d{2}$/, "Time must be HH:MM"),
+  duration: z.number().min(1).max(480).optional(),
+  reason: z.string().max(200).optional(),
+});
+
+const MoveAppointmentSchema = z.object({
+  appointment_id: z.string().min(1),
+  new_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD"),
+  new_time: z.string().regex(/^\d{2}:\d{2}$/, "Time must be HH:MM"),
+});
+
+const CancelAppointmentSchema = z.object({
+  appointment_id: z.string().min(1),
+  reason: z.string().max(500).optional(),
+});
+
+const BusinessStatsSchema = z.object({
+  period: z.enum(["today", "week", "month", "30days"]).optional(),
+});
+
+const LookupCustomerSchema = z.object({
+  query: z.string().min(1),
+});
+
+const PendingEstimatesSchema = z.object({
+  status: z.enum(["pending_review", "sent", "all"]).optional(),
+});
+
+const WeatherSchema = z.object({
+  location: z.string().max(200).optional(),
+});
+
+const SaveNoteSchema = z.object({
+  content: z.string().min(1).max(2000),
+  category: z.enum(["preference", "context", "instruction", "insight"]).optional(),
+});
+
+const GetNotesSchema = z.object({
+  category: z.enum(["preference", "context", "instruction", "insight", "all"]).optional(),
+});
+
+const SearchCaptaHelpSchema = z.object({
+  query: z.string().min(1).max(500),
+});
+
+const JobCardsSchema = z.object({
+  status: z.enum(["pending_review", "confirmed", "adjusted", "declined", "all"]).optional(),
+  limit: z.number().min(1).max(20).optional(),
+});
+
+const CallHistorySchema = z.object({
+  limit: z.number().min(1).max(30).optional(),
+  direction: z.enum(["inbound", "outbound", "all"]).optional(),
+});
+
+const SmsHistorySchema = z.object({
+  limit: z.number().min(1).max(30).optional(),
+  phone: z.string().optional(),
+});
+
 // ── Tool Handlers ──
 
 export async function handleToolCall(
@@ -250,41 +327,109 @@ export async function handleToolCall(
   try {
     switch (toolName) {
       case "get_morning_briefing":
+        // No params to validate
         return await getMorningBriefing(businessId, biz);
-      case "get_recent_leads":
-        return await getRecentLeads(businessId, input.limit as number | undefined);
-      case "get_todays_schedule":
-        return await getTodaysSchedule(businessId, biz, input.date as string | undefined);
-      case "check_availability":
-        return await checkAvailabilityTool(biz, input.date as string);
-      case "block_time":
-        return await blockTime(businessId, input as { date: string; time: string; duration?: number; reason?: string });
-      case "move_appointment":
-        return await moveAppointment(biz, input as { appointment_id: string; new_date: string; new_time: string });
-      case "cancel_appointment":
-        return await cancelAppointment(businessId, input as { appointment_id: string; reason?: string });
-      case "get_business_stats":
-        return await getBusinessStats(businessId, biz, input.period as string | undefined);
-      case "lookup_customer":
-        return await lookupCustomer(businessId, input.query as string);
-      case "get_pending_estimates":
-        return await getPendingEstimates(businessId, input.status as string | undefined);
-      case "get_weather":
-        return await getWeatherTool(biz, input.location as string | undefined);
-      case "save_note":
-        return await saveNote(businessId, input as { content: string; category?: string });
-      case "get_notes":
-        return await getNotes(businessId, input.category as string | undefined);
-      case "search_capta_help":
-        return await searchCaptaHelp(input.query as string);
-      case "get_job_cards":
-        return await getJobCards(businessId, input as { status?: string; limit?: number });
-      case "get_call_history":
-        return await getCallHistory(businessId, input as { limit?: number; direction?: string });
-      case "get_sms_history":
-        return await getSmsHistory(businessId, input as { limit?: number; phone?: string });
+
+      case "get_recent_leads": {
+        const parsed = RecentLeadsSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await getRecentLeads(businessId, parsed.data.limit);
+      }
+
+      case "get_todays_schedule": {
+        const parsed = TodaysScheduleSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await getTodaysSchedule(businessId, biz, parsed.data.date);
+      }
+
+      case "check_availability": {
+        const parsed = CheckAvailabilitySchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await checkAvailabilityTool(biz, parsed.data.date);
+      }
+
+      case "block_time": {
+        const parsed = BlockTimeSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await blockTime(businessId, parsed.data);
+      }
+
+      case "move_appointment": {
+        const parsed = MoveAppointmentSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await moveAppointment(biz, parsed.data);
+      }
+
+      case "cancel_appointment": {
+        const parsed = CancelAppointmentSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await cancelAppointment(businessId, parsed.data);
+      }
+
+      case "get_business_stats": {
+        const parsed = BusinessStatsSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await getBusinessStats(businessId, biz, parsed.data.period);
+      }
+
+      case "lookup_customer": {
+        const parsed = LookupCustomerSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await lookupCustomer(businessId, parsed.data.query);
+      }
+
+      case "get_pending_estimates": {
+        const parsed = PendingEstimatesSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await getPendingEstimates(businessId, parsed.data.status);
+      }
+
+      case "get_weather": {
+        const parsed = WeatherSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await getWeatherTool(biz, parsed.data.location);
+      }
+
+      case "save_note": {
+        const parsed = SaveNoteSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await saveNote(businessId, parsed.data);
+      }
+
+      case "get_notes": {
+        const parsed = GetNotesSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await getNotes(businessId, parsed.data.category);
+      }
+
+      case "search_capta_help": {
+        const parsed = SearchCaptaHelpSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await searchCaptaHelp(parsed.data.query);
+      }
+
+      case "get_job_cards": {
+        const parsed = JobCardsSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await getJobCards(businessId, parsed.data);
+      }
+
+      case "get_call_history": {
+        const parsed = CallHistorySchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await getCallHistory(businessId, parsed.data);
+      }
+
+      case "get_sms_history": {
+        const parsed = SmsHistorySchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await getSmsHistory(businessId, parsed.data);
+      }
+
       case "activate_business":
+        // No params to validate
         return await activateBusiness(businessId);
+
       default:
         return JSON.stringify({ error: `Unknown tool: ${toolName}` });
     }

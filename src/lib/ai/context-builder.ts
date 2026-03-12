@@ -64,17 +64,26 @@ function toBizContext(biz: typeof businesses.$inferSelect): BusinessContext {
  * Detect language from message content. Simple heuristic — looks for common Spanish words.
  */
 export function detectLanguage(text: string): Language {
-  const spanishIndicators = [
-    "hola", "buenos", "buenas", "necesito", "quiero", "tiene",
-    "puede", "cita", "servicio", "ayuda", "gracias", "por favor",
+  // Strong indicators — greetings, polite words, question starters
+  const strongIndicators = [
+    "hola", "buenos días", "buenas tardes", "buenas noches",
+    "por favor", "gracias", "necesito", "quiero", "disculpe",
+    "perdón", "señor", "señora",
+  ];
+  // Weak indicators — common words that could appear in mixed speech
+  const weakIndicators = [
+    "tiene", "puede", "cita", "servicio", "ayuda",
     "llamar", "hablar", "problema", "emergencia", "plomero",
-    "cuánto", "cuándo", "dónde", "cómo", "sí", "señor", "señora",
-    "disculpe", "perdón", "número", "teléfono", "dirección",
+    "cuánto", "cuándo", "dónde", "cómo", "sí",
+    "número", "teléfono", "dirección",
   ];
   const lower = text.toLowerCase();
-  const matches = spanishIndicators.filter((w) => lower.includes(w));
-  // Single strong indicator (greeting/polite word) is enough to switch
-  return matches.length >= 1 ? "es" : "en";
+  // Use word-boundary matching to avoid false positives
+  const strongMatches = strongIndicators.filter((w) => new RegExp(`\\b${w}\\b`, "i").test(lower));
+  const weakMatches = weakIndicators.filter((w) => new RegExp(`\\b${w}\\b`, "i").test(lower));
+  // Require 1 strong + 1 weak, or 2+ strong, or 3+ weak
+  const score = strongMatches.length * 2 + weakMatches.length;
+  return score >= 3 ? "es" : "en";
 }
 
 /**

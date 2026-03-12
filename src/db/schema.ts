@@ -459,6 +459,7 @@ export const systemHealthLogs = sqliteTable("system_health_logs", {
   errorCount: integer("error_count").default(0),
   uptimePct: real("uptime_pct").default(100),
   checkedAt: text("checked_at").notNull().default(sql`(datetime('now'))`),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
 export const revenueMetrics = sqliteTable("revenue_metrics", {
@@ -470,6 +471,7 @@ export const revenueMetrics = sqliteTable("revenue_metrics", {
   newCustomers: integer("new_customers").default(0),
   churnedCustomers: integer("churned_customers").default(0),
   failedPayments: integer("failed_payments").default(0),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
 export const churnRiskScores = sqliteTable("churn_risk_scores", {
@@ -925,6 +927,7 @@ export const processedStripeEvents = sqliteTable("processed_stripe_events", {
   stripeEventId: text("stripe_event_id").unique().notNull(),
   eventType: text("event_type").notNull(),
   processedAt: text("processed_at").notNull().default(sql`(datetime('now'))`),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
 // ── Phase 11: Capacity Planning ──
@@ -1123,6 +1126,7 @@ export const rateLimitEntries = sqliteTable("rate_limit_entries", {
   count: integer("count").notNull().default(1),
   windowStart: text("window_start").notNull().default(sql`(datetime('now'))`),
   windowEnd: text("window_end").notNull(),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
 export const clientFeedback = sqliteTable("client_feedback", {
@@ -1249,6 +1253,7 @@ export const demoSessions = sqliteTable("demo_sessions", {
   language: text("language").default("en"),
   userAgent: text("user_agent"),
   estimatedMonthlyLoss: integer("estimated_monthly_loss"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
 // ── Retry Queue ──

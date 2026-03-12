@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { notifications } from "@/db/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit } from "@/lib/rate-limit";
 
 type Severity = "info" | "warning" | "critical" | "emergency";
 type Source = "capacity" | "incident" | "financial" | "retention" | "compliance" | "agents" | "knowledge";
@@ -28,22 +29,17 @@ export async function createNotification(params: {
   return result;
 }
 
-/** Throttle: max 1 SMS per 5 minutes to avoid flooding the admin */
-let lastSmsSentAt = 0;
-const SMS_THROTTLE_MS = 5 * 60 * 1000;
-
-/** Send an SMS to OWNER_PHONE for critical/emergency alerts */
+/** Send an SMS to OWNER_PHONE for critical/emergency alerts (throttled via DB rate limiter) */
 async function forwardToOwnerSms(severity: string, title: string, message: string) {
-  const now = Date.now();
-  if (now - lastSmsSentAt < SMS_THROTTLE_MS) return;
-
   const ownerPhone = process.env.OWNER_PHONE;
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioToken = process.env.TWILIO_AUTH_TOKEN;
   const twilioFrom = process.env.TWILIO_PHONE_NUMBER;
   if (!ownerPhone || !twilioSid || !twilioToken || !twilioFrom) return;
 
-  lastSmsSentAt = now;
+  // Throttle: max 1 SMS per 5 minutes to avoid flooding the admin (DB-backed, survives deploys)
+  const rl = await rateLimit("notification_sms_throttle", { limit: 1, windowSeconds: 300 });
+  if (!rl.success) return;
 
   const twilio = (await import("twilio")).default;
   const client = twilio(twilioSid, twilioToken);

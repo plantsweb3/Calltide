@@ -19,7 +19,16 @@ export async function checkAvailability(
   date: string,
   service?: string
 ): Promise<TimeSlot[]> {
-  const dayOfWeek = new Date(date + "T12:00:00")
+  // Validate date format (YYYY-MM-DD)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return [];
+  }
+  const parsed = new Date(date + "T12:00:00");
+  if (isNaN(parsed.getTime())) {
+    return [];
+  }
+
+  const dayOfWeek = parsed
     .toLocaleDateString("en-US", {
       weekday: "long",
       timeZone: biz.timezone,
@@ -35,6 +44,12 @@ export async function checkAvailability(
   const openMin = parseInt(hours.open.split(":")[1] || "0");
   const closeHour = parseInt(hours.close.split(":")[0]);
   const closeMin = parseInt(hours.close.split(":")[1] || "0");
+
+  // Validate time ranges
+  if (openHour < 0 || openHour > 23 || openMin < 0 || openMin > 59 ||
+      closeHour < 0 || closeHour > 23 || closeMin < 0 || closeMin > 59) {
+    return [];
+  }
 
   // Fetch existing confirmed appointments for this business on this date
   const booked = await db

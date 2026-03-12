@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { appointments, calls, leads } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
+import { z } from "zod";
 import { checkAvailability, bookSlot } from "@/lib/calendar/availability";
 import { getBusinessById } from "@/lib/ai/context-builder";
 import { sendSMS } from "@/lib/twilio/sms";
@@ -10,6 +11,47 @@ import { reportError } from "@/lib/error-reporting";
 import { saveJobIntake, detectScopeLevel } from "@/lib/intake";
 import { findBestPartner, logReferral, notifyPartner, sendPartnerInfoToCaller } from "@/lib/referrals/partners";
 import type { ToolResult, Language } from "@/types";
+
+// --- Zod schemas for tool parameters ---
+
+const checkAvailabilitySchema = z.object({
+  date: z.string().min(1, "date is required"),
+  service: z.string().optional(),
+});
+
+const bookAppointmentSchema = z.object({
+  date: z.string().min(1, "date is required"),
+  time: z.string().min(1, "time is required"),
+  service: z.string().min(1, "service is required"),
+  caller_name: z.string().optional(),
+  caller_phone: z.string().optional(),
+});
+
+const takeMessageSchema = z.object({
+  message: z.string().min(1, "message is required"),
+  caller_name: z.string().optional(),
+  caller_phone: z.string().optional(),
+});
+
+const transferToHumanSchema = z.object({
+  reason: z.string().optional(),
+});
+
+const submitIntakeSchema = z.object({
+  answers: z.record(z.string(), z.unknown()).refine((v) => v !== null && typeof v === "object", {
+    message: "answers must be a non-null object",
+  }),
+  scope_description: z.string().optional(),
+  scope_level: z.enum(["residential", "commercial"]).optional(),
+  urgency: z.enum(["emergency", "urgent", "normal", "flexible"]).optional(),
+  intake_complete: z.boolean().optional(),
+});
+
+const referPartnerSchema = z.object({
+  requested_trade: z.string().min(1, "requested_trade is required"),
+  caller_name: z.string().optional(),
+  job_description: z.string().optional(),
+});
 
 interface ToolCallContext {
   businessId: string;
@@ -78,13 +120,14 @@ async function handleCheckAvailability(
   params: Record<string, unknown>,
   ctx: ToolCallContext
 ): Promise<ToolResult> {
+  const parsed = checkAvailabilitySchema.safeParse(params);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
+  }
+  const { date, service } = parsed.data;
+
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
-
-  const date = params.date as string;
-  const service = params.service as string | undefined;
-
-  if (!date) return { success: false, error: "Date is required" };
 
   const slots = await checkAvailability(biz, date, service);
   const available = slots.filter((s) => s.available);
@@ -118,17 +161,14 @@ async function handleBookAppointment(
   params: Record<string, unknown>,
   ctx: ToolCallContext
 ): Promise<ToolResult> {
+  const parsed = bookAppointmentSchema.safeParse(params);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
+  }
+  const { date, time, service, caller_name: callerName } = parsed.data;
+
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
-
-  const date = params.date as string;
-  const time = params.time as string;
-  const service = params.service as string;
-  const callerName = params.caller_name as string | undefined;
-
-  if (!date || !time || !service) {
-    return { success: false, error: "Date, time, and service are required" };
-  }
 
   // Try to book the slot
   const bookResult = await bookSlot(biz, date, time, service);
@@ -144,34 +184,47 @@ async function handleBookAppointment(
     await db.update(leads).set({ name: callerName }).where(eq(leads.id, ctx.leadId));
   }
 
-  // Double-check for conflicts right before insert to minimize race window
-  const existing = await db
-    .select({ id: appointments.id })
-    .from(appointments)
-    .where(
-      and(
-        eq(appointments.businessId, ctx.businessId),
-        eq(appointments.date, date),
-        eq(appointments.time, time),
-        eq(appointments.status, "confirmed")
-      )
-    )
-    .limit(1);
+  // Atomic conflict check + insert using transaction to prevent double-booking
+  let appointment: { id: string } | undefined;
+  try {
+    const result = await db.transaction(async (tx) => {
+      const existing = await tx
+        .select({ id: appointments.id })
+        .from(appointments)
+        .where(
+          and(
+            eq(appointments.businessId, ctx.businessId),
+            eq(appointments.date, date),
+            eq(appointments.time, time),
+            eq(appointments.status, "confirmed")
+          )
+        )
+        .limit(1);
 
-  if (existing.length > 0) {
-    return { success: false, error: "That time slot was just booked. Please choose another time." };
+      if (existing.length > 0) {
+        return null; // Slot taken
+      }
+
+      const [created] = await tx.insert(appointments).values({
+        businessId: ctx.businessId,
+        leadId: ctx.leadId || "",
+        callId: ctx.callId,
+        service,
+        date,
+        time,
+        status: "confirmed",
+      }).returning();
+
+      return created;
+    });
+
+    if (!result) {
+      return { success: false, error: "That time slot was just booked. Please choose another time." };
+    }
+    appointment = result;
+  } catch (err) {
+    return { success: false, error: "Unable to book appointment. Please try again." };
   }
-
-  // Create appointment record
-  const [appointment] = await db.insert(appointments).values({
-    businessId: ctx.businessId,
-    leadId: ctx.leadId || "",
-    callId: ctx.callId,
-    service,
-    date,
-    time,
-    status: "confirmed",
-  }).returning();
 
   // Send confirmation SMS to caller
   if (ctx.callerPhone) {
@@ -219,14 +272,16 @@ async function handleTakeMessage(
   params: Record<string, unknown>,
   ctx: ToolCallContext
 ): Promise<ToolResult> {
+  const parsed = takeMessageSchema.safeParse(params);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
+  }
+  const { message, caller_name: callerName } = parsed.data;
+
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
 
-  const message = params.message as string;
-  const callerName = params.caller_name as string | undefined;
-  const isEmergency = message?.startsWith("[EMERGENCY]") ?? false;
-
-  if (!message) return { success: false, error: "Message is required" };
+  const isEmergency = message.startsWith("[EMERGENCY]");
 
   // Update lead name and append notes (preserve previous messages)
   if (ctx.leadId) {
@@ -275,7 +330,11 @@ async function handleTransferToHuman(
   params: Record<string, unknown>,
   ctx: ToolCallContext
 ): Promise<ToolResult> {
-  const reason = params.reason as string | undefined;
+  const parsed = transferToHumanSchema.safeParse(params);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
+  }
+  const { reason } = parsed.data;
   const isEmergency = reason?.startsWith("[EMERGENCY]") ?? false;
 
   // Flag the call for transfer (and emergency if applicable)
@@ -356,15 +415,17 @@ async function handleSubmitIntake(
   params: Record<string, unknown>,
   ctx: ToolCallContext,
 ): Promise<ToolResult> {
-  const answers = params.answers as Record<string, unknown> | undefined;
-  const scopeDescription = params.scope_description as string | undefined;
-  const scopeLevel = params.scope_level as "residential" | "commercial" | undefined;
-  const urgency = params.urgency as "emergency" | "urgent" | "normal" | "flexible" | undefined;
-  const intakeComplete = params.intake_complete as boolean | undefined;
-
-  if (!answers || typeof answers !== "object") {
-    return { success: false, error: "answers object is required" };
+  const parsed = submitIntakeSchema.safeParse(params);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
   }
+  const {
+    answers,
+    scope_description: scopeDescription,
+    scope_level: scopeLevel,
+    urgency,
+    intake_complete: intakeComplete,
+  } = parsed.data;
 
   // Determine trade type from business
   const biz = await getBusinessById(ctx.businessId);
@@ -431,13 +492,15 @@ async function handleReferPartner(
   params: Record<string, unknown>,
   ctx: ToolCallContext,
 ): Promise<ToolResult> {
-  const requestedTrade = params.requested_trade as string;
-  const callerName = params.caller_name as string | undefined;
-  const jobDescription = params.job_description as string | undefined;
-
-  if (!requestedTrade) {
-    return { success: false, error: "requested_trade is required" };
+  const parsed = referPartnerSchema.safeParse(params);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
   }
+  const {
+    requested_trade: requestedTrade,
+    caller_name: callerName,
+    job_description: jobDescription,
+  } = parsed.data;
 
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
