@@ -7,7 +7,7 @@ import { StaticFooter } from "@/components/marketing/StaticFooter";
 
 export const dynamic = "force-dynamic";
 
-const POSTS_PER_PAGE = 10;
+const POSTS_PER_PAGE = 12;
 
 const CATEGORY_LABELS: Record<string, string> = {
   pillar: "Pillar",
@@ -15,6 +15,9 @@ const CATEGORY_LABELS: Record<string, string> = {
   comparison: "Comparison",
   "city-specific": "Local",
   "problem-solution": "Guide",
+  "buying-guide": "Buyer's Guide",
+  "vertical-specific": "By Trade",
+  "pain-point": "Pain Point",
 };
 
 export const metadata = {

@@ -8,13 +8,16 @@ const CATEGORY_LABELS_ES: Record<string, string> = {
   comparison: "Comparación",
   "city-specific": "Local",
   "problem-solution": "Solución",
+  "guia-de-compra": "Guía de Compra",
+  "vertical-especifico": "Por Oficio",
+  "punto-de-dolor": "Problema",
 };
 import { StaticNav } from "@/components/marketing/StaticNav";
 import { StaticFooter } from "@/components/marketing/StaticFooter";
 
 export const dynamic = "force-dynamic";
 
-const POSTS_PER_PAGE = 10;
+const POSTS_PER_PAGE = 12;
 
 export const metadata = {
   title: "Blog — Capta (Español)",
