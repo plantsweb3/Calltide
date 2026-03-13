@@ -92,7 +92,7 @@ export default function RootError({
             Go Home
           </a>
           <a
-            href="mailto:hello@capta.app?subject=Error Report&body=Error ID: ${error.digest || 'N/A'}"
+            href="mailto:hello@captahq.com?subject=Error Report&body=Error ID: ${error.digest || 'N/A'}"
             style={{
               padding: "0.625rem 1.5rem",
               borderRadius: "0.5rem",

@@ -29,7 +29,7 @@ export function Footer({ lang }: { lang: Lang }) {
             <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">{t.footer.company}</p>
             <ul className="mt-4 space-y-3 text-sm">
               <li><a href="/about" className="text-white/40 transition hover:text-white/60">{t.footer.about}</a></li>
-              <li><a href="mailto:hello@capta.app" className="text-white/40 transition hover:text-white/60">{t.footer.contact}</a></li>
+              <li><a href="mailto:hello@captahq.com" className="text-white/40 transition hover:text-white/60">{t.footer.contact}</a></li>
               <li><a href="/dashboard/login" className="text-white/40 transition hover:text-white/60">{t.footer.clientLogin}</a></li>
               <li><a href={`${p}/blog`} className="text-white/40 transition hover:text-white/60">Blog</a></li>
               <li><a href={`${p}/help`} className="text-white/40 transition hover:text-white/60">{lang === "es" ? "Ayuda" : "Help"}</a></li>

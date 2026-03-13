@@ -97,7 +97,7 @@ async function notifyAdmin(severity: AlertSeverity, message: string) {
   const ownerEmail = env.OWNER_EMAIL;
   if (!ownerEmail || !env.RESEND_API_KEY) return;
 
-  const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
+  const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
   const severityLabel = severity.toUpperCase();
   const color = severity === "emergency" ? "#ef4444" : severity === "critical" ? "#f59e0b" : "#3b82f6";
 

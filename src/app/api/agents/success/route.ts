@@ -24,7 +24,7 @@ import { BRAND_COLOR, COMPANY_ADDRESS, MARKETING_URL } from "@/lib/constants";
 
 // ── Constants ──
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 const FONT_STACK = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
 const CALL_MILESTONES = [50, 100, 250, 500, 1000];
@@ -233,7 +233,7 @@ async function generateFirstWeekReport(business: Business, now: Date): Promise<s
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Capta <success@capta.app>",
+      from: "Capta <success@captahq.com>",
       to: email,
       subject,
       html,
@@ -431,7 +431,7 @@ async function generateMonthlyReport(business: Business, now: Date): Promise<str
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Capta <success@capta.app>",
+      from: "Capta <success@captahq.com>",
       to: email,
       subject,
       html,
@@ -528,7 +528,7 @@ async function sendNpsSurvey(business: Business, now: Date): Promise<string> {
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Capta <success@capta.app>",
+      from: "Capta <success@captahq.com>",
       to: email,
       subject,
       html,
@@ -611,7 +611,7 @@ async function sendMilestoneEmail(business: Business, milestone: string, now: Da
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Capta <success@capta.app>",
+      from: "Capta <success@captahq.com>",
       to: email,
       subject,
       html,
@@ -731,7 +731,7 @@ async function sendComprehensiveReview(business: Business, dayMark: number, now:
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Capta <success@capta.app>",
+      from: "Capta <success@captahq.com>",
       to: email,
       subject,
       html,
@@ -1033,7 +1033,7 @@ async function sendAnnualPlanNudge(business: Business, now: Date): Promise<strin
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Capta <success@capta.app>",
+      from: "Capta <success@captahq.com>",
       to: email,
       subject,
       html,
@@ -1137,7 +1137,7 @@ async function processHandoff(
       try {
         const resend = getResend();
         await resend.emails.send({
-          from: "Capta <success@capta.app>",
+          from: "Capta <success@captahq.com>",
           to: business.ownerEmail,
           subject,
           html: emailWrapper(body, unsubUrl(business.ownerEmail)),

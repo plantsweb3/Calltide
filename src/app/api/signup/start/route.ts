@@ -69,7 +69,7 @@ async function sendCheckoutSms(phone: string, email: string) {
   const from = process.env.TWILIO_PHONE_NUMBER;
   if (!accountSid || !authToken || !from) return;
 
-  const checkoutUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://capta.app"}/setup`;
+  const checkoutUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com"}/setup`;
   const client = Twilio(accountSid, authToken);
   await client.messages.create({
     to: phone,

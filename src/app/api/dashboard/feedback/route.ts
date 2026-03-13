@@ -120,7 +120,7 @@ async function sendFeedbackAck(businessId: string, feedbackTitle: string) {
       };
 
   await resend.emails.send({
-    from: "Capta <hello@contact.capta.app>",
+    from: "Capta <hello@contact.captahq.com>",
     to: biz.ownerEmail,
     subject: t.subject,
     html: `

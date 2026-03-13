@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       .where(eq(setupSessions.id, session.id));
 
     const stripe = getStripe();
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
 
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",

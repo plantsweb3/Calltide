@@ -85,7 +85,7 @@ export default function GlobalError({
               Go Home
             </a>
             <a
-              href="mailto:hello@capta.app?subject=Error Report"
+              href="mailto:hello@captahq.com?subject=Error Report"
               style={{
                 padding: "0.75rem 1.5rem",
                 borderRadius: "0.5rem",

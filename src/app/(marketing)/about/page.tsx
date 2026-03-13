@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "About — Capta | Built in San Antonio. Built for You.",
     description:
       "Every service business deserves a professional front office. Built in San Antonio for home service businesses everywhere.",
-    url: "https://capta.app/about",
+    url: "https://captahq.com/about",
     siteName: "Capta",
     type: "website",
   },
@@ -33,12 +33,12 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Capta LLC",
-            url: "https://capta.app",
+            url: "https://captahq.com",
             description: "AI front office for home service businesses. Answers calls, generates estimates, recovers missed calls, and manages follow-ups — bilingual, 24/7.",
-            email: "hello@capta.app",
+            email: "hello@captahq.com",
             telephone: "+18305217133",
             areaServed: "US",
-            sameAs: ["https://capta.app"],
+            sameAs: ["https://captahq.com"],
           }),
         }}
       />
@@ -51,9 +51,9 @@ export default function Page() {
             name: "Capta",
             description:
               "AI front office platform for home service businesses — answers calls, generates estimates, recovers missed calls, and grows your business.",
-            url: "https://capta.app",
+            url: "https://captahq.com",
             telephone: "+1-830-521-7133",
-            email: "hello@capta.app",
+            email: "hello@captahq.com",
             address: {
               "@type": "PostalAddress",
               addressLocality: "San Antonio",

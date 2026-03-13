@@ -23,7 +23,7 @@ export const metadata = {
   openGraph: {
     title: "Capta Blog",
     description: "Tips, data, and insights on missed calls, AI receptionists, and growing your service business.",
-    url: "https://capta.app/blog",
+    url: "https://captahq.com/blog",
   },
   alternates: {
     canonical: "/blog",

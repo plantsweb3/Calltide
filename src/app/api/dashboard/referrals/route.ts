@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({
       referralCode: "GARCIA-REF",
-      shareLink: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app"}/r/GARCIA-REF`,
+      shareLink: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com"}/r/GARCIA-REF`,
       stats: { totalReferred: 2, active: 1, creditsEarned: 497 },
       referrals: [
         {
@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       referralCode: biz.referralCode,
       shareLink: biz.referralCode
-        ? `${process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app"}/r/${biz.referralCode}`
+        ? `${process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com"}/r/${biz.referralCode}`
         : null,
       stats: { totalReferred, active, creditsEarned },
       referrals: referralList.map((r) => ({

@@ -221,7 +221,7 @@ export default function SettingsPage() {
             <p className="text-sm" style={{ color: "var(--db-text)" }}>
               Hey [Business Name], just following up. Missing calls = missing
               revenue. Our AI answers, books appointments & takes messages for
-              you. 10-min demo? Reply YES or visit capta.app. Reply STOP to
+              you. 10-min demo? Reply YES or visit captahq.com. Reply STOP to
               opt out.
             </p>
           </div>

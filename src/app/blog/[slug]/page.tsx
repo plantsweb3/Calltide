@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!post) return { title: "Post Not Found — Capta" };
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
   // Resolve paired post slug for hreflang
   let esAlternate: string | undefined;
@@ -109,7 +109,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     relatedPosts = relatedPosts.filter((p) => p.id !== post.id);
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
   return (
     <div className="min-h-screen bg-[#FBFBFC]">

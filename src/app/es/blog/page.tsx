@@ -22,7 +22,7 @@ export const metadata = {
   openGraph: {
     title: "Blog de Capta (Español)",
     description: "Consejos, datos e ideas sobre llamadas perdidas, recepcionistas IA y cómo hacer crecer su negocio.",
-    url: "https://capta.app/es/blog",
+    url: "https://captahq.com/es/blog",
   },
   alternates: {
     canonical: "/es/blog",

@@ -5,7 +5,7 @@ import { prospectOutreach, paywallEmails } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 
-const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
+const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
 
 export async function sendOutreachEmail(params: {
   prospectId: string;

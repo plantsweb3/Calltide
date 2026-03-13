@@ -121,7 +121,7 @@ export const CHURN_TOOLS = SHARED_TOOLS.filter((t) =>
 
 async function toolSendEmail(input: Record<string, unknown>): Promise<string> {
   const resend = getResend();
-  const from = env.OUTREACH_FROM_EMAIL ?? "Capta Support <support@capta.app>";
+  const from = env.OUTREACH_FROM_EMAIL ?? "Capta Support <support@captahq.com>";
 
   const { data, error } = await resend.emails.send({
     from,
@@ -202,7 +202,7 @@ async function toolEscalateToOwner(input: Record<string, unknown>, agentName: st
     try {
       const resend = getResend();
       await resend.emails.send({
-        from: env.OUTREACH_FROM_EMAIL ?? "Capta Agents <agents@capta.app>",
+        from: env.OUTREACH_FROM_EMAIL ?? "Capta Agents <agents@captahq.com>",
         to: ownerEmail,
         subject: `[${urgency.toUpperCase()}] Agent Escalation: ${reason.slice(0, 80)}`,
         html: `<div style="font-family:sans-serif;max-width:600px;">

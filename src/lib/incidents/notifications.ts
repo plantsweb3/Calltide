@@ -18,7 +18,7 @@ import { reportError } from "@/lib/error-reporting";
 type IncidentRow = typeof incidents.$inferSelect;
 type NotificationEvent = "created" | "update" | "resolved";
 
-const FROM_EMAIL = "Capta Status <status@contact.capta.app>";
+const FROM_EMAIL = "Capta Status <status@contact.captahq.com>";
 const OWNER_PHONE = env.OWNER_PHONE;
 const OWNER_EMAIL = env.OWNER_EMAIL;
 

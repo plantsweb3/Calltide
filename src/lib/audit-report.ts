@@ -58,7 +58,7 @@ export async function generateAndSendAuditReport(data: AuditReportData) {
   });
 
   try {
-    const from = process.env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
+    const from = process.env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
 
     await resend.emails.send({
       from,

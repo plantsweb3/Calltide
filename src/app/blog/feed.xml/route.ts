@@ -5,7 +5,7 @@ import { eq, desc } from "drizzle-orm";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
   const posts = await db
     .select()

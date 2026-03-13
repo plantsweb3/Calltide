@@ -313,7 +313,7 @@ export default function HelpWidget() {
               style={{ borderTop: "1px solid var(--db-border)" }}
             >
               <a
-                href="mailto:support@capta.app"
+                href="mailto:support@captahq.com"
                 className="block text-center text-sm"
                 style={{ color: "var(--db-text-muted)" }}
               >

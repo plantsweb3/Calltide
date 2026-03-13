@@ -93,7 +93,7 @@ The more complete your profile, the better Maria can handle calls.
 
 $497/month with a 30-day money-back guarantee. See how Maria handles your calls, manages your schedule, and frees up your time.
 
-Need help? Email support@capta.app or call (830) 521-7133.`,
+Need help? Email support@captahq.com or call (830) 521-7133.`,
   },
 
   // ── Managing Calls (5 articles) ──
@@ -258,7 +258,7 @@ Maria gets smarter when you help her. Go through these steps regularly:
 
 The more information you provide, the more calls Maria can handle without transferring to you.
 
-Need help? Email support@capta.app or call (830) 521-7133.`,
+Need help? Email support@captahq.com or call (830) 521-7133.`,
   },
 
   // ── Billing & Account (6 articles) ──
@@ -421,7 +421,7 @@ There's no cap on referrals. Earn as many free months as you want by referring u
 **Track Your Referrals**
 Go to **Settings → Referral Program** to see your referral history, active referrals, and earned rewards. Your dashboard shows each referral's status in real time.
 
-Need help? Email support@capta.app or call (830) 521-7133.`,
+Need help? Email support@captahq.com or call (830) 521-7133.`,
   },
 
   // ── Troubleshooting (6 articles) ──
@@ -441,7 +441,7 @@ The most common issue is that call forwarding isn't configured. Go to **Settings
 Check that your account is paid up and not suspended. Look at your billing status in the Settings tab. If you see any warnings, update your payment information immediately.
 
 **3. Check for Service Outages**
-Visit **capta.app/status** to see if there's a known outage. During outages, Maria automatically switches to voicemail mode so callers can still leave messages.
+Visit **captahq.com/status** to see if there's a known outage. During outages, Maria automatically switches to voicemail mode so callers can still leave messages.
 
 **4. Test with a Different Phone**
 Try calling your business number from a different phone. This helps identify if the issue is with your specific phone or with Maria's service.
@@ -449,7 +449,7 @@ Try calling your business number from a different phone. This helps identify if 
 **5. Still Not Working?**
 Contact our support team. Have your account email and business name ready.
 
-Email: **support@capta.app**
+Email: **support@captahq.com**
 Phone: **(830) 521-7133**`,
   },
   {
@@ -510,7 +510,7 @@ Review your business information monthly, especially if you add new services or 
 Go to **Settings** and confirm the phone number where you want to receive notifications is correct. If it's wrong, update it.
 
 **2. Check Your Email Spam Folder**
-Capta notifications come to your email. Check your spam folder—sometimes legitimate emails end up there. Add support@capta.app to your contacts to ensure messages get through.
+Capta notifications come to your email. Check your spam folder—sometimes legitimate emails end up there. Add support@captahq.com to your contacts to ensure messages get through.
 
 **3. Review Team Notification Settings**
 Go to **Settings → Team** and check your notification preferences. Make sure notifications are enabled for your user.
@@ -543,7 +543,7 @@ Try a different browser (Chrome, Safari, Firefox, Edge) to see if the problem is
 Make sure you have a stable internet connection. Try disconnecting and reconnecting to WiFi, or switch to a different network.
 
 **5. Contact Support**
-If the dashboard still won't load, email support@capta.app with a screenshot of the error. Our team can help investigate.`,
+If the dashboard still won't load, email support@captahq.com with a screenshot of the error. Our team can help investigate.`,
   },
   {
     slug: "check-outage",
@@ -555,7 +555,7 @@ If the dashboard still won't load, email support@capta.app with a screenshot of 
     content: `If you're experiencing issues with Capta, a service outage might be the cause.
 
 **Check the Status Page**
-Visit **capta.app/status** for real-time information about the Capta service. The status page shows:
+Visit **captahq.com/status** for real-time information about the Capta service. The status page shows:
 
 - **Voice Service** — Maria answering calls
 - **SMS** — Message delivery
@@ -576,7 +576,7 @@ If the status page shows everything is normal but you're still having problems, 
 When you need help, our support team is here for you.
 
 **Email Support**
-**support@capta.app**
+**support@captahq.com**
 
 Send us a detailed message describing your issue. Include your business name and any error messages you've seen. We typically respond within a few hours on business days.
 
@@ -811,7 +811,7 @@ You can request deletion of your data. Capta will delete your account and all as
 
 Both options are available in your Settings dashboard.
 
-Need help? Email support@capta.app or call (830) 521-7133.`,
+Need help? Email support@captahq.com or call (830) 521-7133.`,
   },
 
   // ── For Prospects (4 articles) ──
@@ -1085,9 +1085,9 @@ Check these first:
 
 30-day money-back guarantee. Full access to everything. Cancel anytime.
 
-**Ready?** Get started at [capta.app](https://capta.app).
+**Ready?** Get started at [captahq.com](https://captahq.com).
 
-Need help? Email support@capta.app or call (830) 521-7133.`,
+Need help? Email support@captahq.com or call (830) 521-7133.`,
   },
 ];
 

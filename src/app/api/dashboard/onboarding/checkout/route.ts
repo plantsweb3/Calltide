@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     }
 
     const stripe = getStripe();
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       mode: "subscription",

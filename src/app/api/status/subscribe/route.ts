@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     const resend = getResend();
     await resend.emails.send({
-      from: "Capta Status <status@contact.capta.app>",
+      from: "Capta Status <status@contact.captahq.com>",
       to: email,
       subject: isEs ? "Confirma tu suscripción — Capta Status" : "Confirm your subscription — Capta Status",
       html: `<!DOCTYPE html>

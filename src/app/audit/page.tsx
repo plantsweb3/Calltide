@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "Free Business Audit — Capta",
     description:
       "We call your business and show you what callers experience. Free for home service businesses.",
-    url: "https://capta.app/audit",
+    url: "https://captahq.com/audit",
     siteName: "Capta",
     type: "website",
   },

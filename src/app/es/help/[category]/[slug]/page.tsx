@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   if (!data) return { title: "Artículo No Encontrado — Capta" };
 
   const a = data.article;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
   const title = a.metaTitleEs || a.titleEs || `${a.title} — Centro de Ayuda Capta`;
   const description = a.metaDescriptionEs || a.excerptEs || a.metaDescription || a.excerpt || undefined;
   const url = `${appUrl}/es/help/${category}/${slug}`;
@@ -81,7 +81,7 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
   const { article, category, related } = data;
   const hasSpanish = !!article.contentEs;
   const content = article.contentEs || article.content;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
   return (
     <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
@@ -195,7 +195,7 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
         <div className="relative mt-14 overflow-hidden rounded-2xl border p-8 text-center" style={{ background: "white", borderColor: "#E2E8F0" }}>
           <p className="font-semibold" style={{ color: "#1A1D24" }}>¿Aún necesitas ayuda?</p>
           <p className="mt-1 text-sm" style={{ color: "#64748B" }}>Nuestro equipo de soporte está listo para asistirte.</p>
-          <a href="mailto:support@capta.app" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold transition hover:brightness-110" style={{ color: "#C59A27" }}>
+          <a href="mailto:support@captahq.com" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold transition hover:brightness-110" style={{ color: "#C59A27" }}>
             Contacta a nuestro equipo de soporte
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </a>

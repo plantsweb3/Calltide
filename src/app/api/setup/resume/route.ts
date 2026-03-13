@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
 
   const token = req.nextUrl.searchParams.get("token");
   if (!token) {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
     return NextResponse.redirect(`${appUrl}/setup`);
   }
 
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     .where(eq(setupSessions.token, token))
     .limit(1);
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
 
   if (!session || session.status === "converted") {
     return NextResponse.redirect(`${appUrl}/setup`);

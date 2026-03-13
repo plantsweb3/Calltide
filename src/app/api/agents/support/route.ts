@@ -3,7 +3,7 @@ import { runAgent, SUPPORT_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
 import { searchArticles } from "@/lib/help/search";
 import { verifyCronAuth } from "@/lib/cron-auth";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
 /**
  * POST /api/agents/support

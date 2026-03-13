@@ -119,7 +119,7 @@ Capta may use aggregated, anonymized data derived from the Service (e.g., averag
 
 ## 9. Service Level and Availability
 
-Capta targets 99.9% uptime for the core voice answering service. Planned maintenance will be communicated at least 24 hours in advance. In the event of service disruptions, Capta maintains a voicemail fallback system so callers can still leave messages. A real-time status page is available at [capta.app/status](/status).
+Capta targets 99.9% uptime for the core voice answering service. Planned maintenance will be communicated at least 24 hours in advance. In the event of service disruptions, Capta maintains a voicemail fallback system so callers can still leave messages. A real-time status page is available at [captahq.com/status](/status).
 
 Capta does not guarantee uninterrupted or error-free service. The Service depends on third-party providers (Twilio, Hume AI, etc.) whose availability is outside Capta's direct control.
 
@@ -145,7 +145,7 @@ You agree to indemnify, defend, and hold harmless Capta and its officers, direct
 These Terms are effective from the date you create your account and continue until terminated.
 
 ### 12.2 Termination by You
-You may cancel your subscription at any time through the billing section of your dashboard or by contacting support@capta.app. Cancellation takes effect at the end of the current billing period.
+You may cancel your subscription at any time through the billing section of your dashboard or by contacting support@captahq.com. Cancellation takes effect at the end of the current billing period.
 
 ### 12.3 Termination by Capta
 Capta may suspend or terminate your account immediately if you: (a) violate these Terms; (b) fail to pay fees after the grace period; (c) engage in fraudulent or illegal activity; or (d) use the Service in a manner that threatens the security or integrity of the platform.
@@ -159,7 +159,7 @@ Upon termination, your access to the Service will be disabled. Capta will retain
 These Terms are governed by and construed in accordance with the laws of the State of Texas, without regard to conflict of law principles.
 
 ### 13.2 Informal Resolution
-Before initiating formal proceedings, both parties agree to attempt to resolve disputes informally by contacting the other party. Capta can be reached at legal@capta.app.
+Before initiating formal proceedings, both parties agree to attempt to resolve disputes informally by contacting the other party. Capta can be reached at legal@captahq.com.
 
 ### 13.3 Binding Arbitration
 Any dispute not resolved informally within 30 days shall be resolved by binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules. The arbitration shall take place in Bexar County, Texas, and the arbitrator's award shall be final and binding.
@@ -187,8 +187,8 @@ Capta shall not be liable for any failure or delay in performance due to circums
 ## 15. Contact Information
 
 Capta LLC
-Email: support@capta.app
-Legal inquiries: legal@capta.app
+Email: support@captahq.com
+Legal inquiries: legal@captahq.com
 Phone: (830) 521-7133`;
 
 export const TOS_ES = `# Términos de Servicio
@@ -298,7 +298,7 @@ Capta puede utilizar datos agregados y anonimizados derivados del Servicio (por 
 
 ## 9. Nivel de Servicio y Disponibilidad
 
-Capta se propone alcanzar 99.9% de tiempo de actividad para el servicio principal de contestación de voz. El mantenimiento programado se comunicará con al menos 24 horas de anticipación. En caso de interrupciones del servicio, Capta mantiene un sistema de respuesta de correo de voz de reserva para que las personas que llaman aún puedan dejar mensajes. Una página de estado en tiempo real está disponible en [capta.app/status](/status).
+Capta se propone alcanzar 99.9% de tiempo de actividad para el servicio principal de contestación de voz. El mantenimiento programado se comunicará con al menos 24 horas de anticipación. En caso de interrupciones del servicio, Capta mantiene un sistema de respuesta de correo de voz de reserva para que las personas que llaman aún puedan dejar mensajes. Una página de estado en tiempo real está disponible en [captahq.com/status](/status).
 
 Capta no garantiza un servicio ininterrumpido o libre de errores. El Servicio depende de proveedores terceros (Twilio, Hume AI, etc.) cuya disponibilidad está fuera del control directo de Capta.
 
@@ -324,7 +324,7 @@ Usted acepta indemnizar, defender y mantener indemne a Capta y a sus funcionario
 Estos Términos son efectivos a partir de la fecha en que crea su cuenta y continúan hasta que se terminan.
 
 ### 12.2 Terminación por Usted
-Usted puede cancelar su suscripción en cualquier momento a través de la sección de facturación de su panel de control o comunicándose con support@capta.app. La cancelación entra en vigor al final del período de facturación actual.
+Usted puede cancelar su suscripción en cualquier momento a través de la sección de facturación de su panel de control o comunicándose con support@captahq.com. La cancelación entra en vigor al final del período de facturación actual.
 
 ### 12.3 Terminación por Capta
 Capta puede suspender o terminar su cuenta inmediatamente si: (a) viola estos Términos; (b) no paga las tarifas después del período de gracia; (c) se involucra en actividad fraudulenta o ilegal; o (d) utiliza el Servicio de una manera que amenace la seguridad o integridad de la plataforma.
@@ -338,7 +338,7 @@ Al terminar, su acceso al Servicio será deshabilitado. Capta conservará sus da
 Estos Términos se rigen por y se interpretan de acuerdo con las leyes del Estado de Texas, sin considerar los principios de conflicto de leyes.
 
 ### 13.2 Resolución Informal
-Antes de iniciar procedimientos formales, ambas partes acuerdan intentar resolver disputas informalmente contactando a la otra parte. Capta se puede contactar en legal@capta.app.
+Antes de iniciar procedimientos formales, ambas partes acuerdan intentar resolver disputas informalmente contactando a la otra parte. Capta se puede contactar en legal@captahq.com.
 
 ### 13.3 Arbitraje Vinculante
 Cualquier disputa no resuelta informalmente dentro de 30 días será resuelta por arbitraje vinculante administrado por la Asociación Americana de Arbitraje (AAA) bajo sus Reglas de Arbitraje Comercial. El arbitraje se llevará a cabo en el Condado de Bexar, Texas, y el laudo del árbitro será final y vinculante.
@@ -366,15 +366,15 @@ Capta no será responsable por ningún incumplimiento o retraso en el desempeño
 ## 15. Información de Contacto
 
 Capta LLC
-Correo Electrónico: support@capta.app
-Consultas Legales: legal@capta.app
+Correo Electrónico: support@captahq.com
+Consultas Legales: legal@captahq.com
 Teléfono: (830) 521-7133`;
 
 export const PRIVACY_EN = `# Privacy Policy
 
 **Effective Date:** March 3, 2026
 
-Capta LLC ("Capta," "we," "us," or "our") respects your privacy. This Privacy Policy explains how we collect, use, disclose, and protect personal information when you use the Capta platform, visit our website at capta.app, or interact with our AI receptionist service.
+Capta LLC ("Capta," "we," "us," or "our") respects your privacy. This Privacy Policy explains how we collect, use, disclose, and protect personal information when you use the Capta platform, visit our website at captahq.com, or interact with our AI receptionist service.
 
 This policy applies to: (a) business owners and employees who subscribe to and use the Capta platform ("Clients"); and (b) individuals who call a business phone number serviced by Capta ("Callers").
 
@@ -491,7 +491,7 @@ Our lawful bases for processing include: performance of a contract (providing th
 
 ### 5.4 How to Exercise Your Rights
 
-Submit a data subject access request by emailing privacy@capta.app or through the compliance section of your dashboard. We will verify your identity and respond within 30 days (GDPR) or 45 days (CCPA). Clients can also submit requests on behalf of their callers through the admin portal's DSAR handling system.
+Submit a data subject access request by emailing privacy@captahq.com or through the compliance section of your dashboard. We will verify your identity and respond within 30 days (GDPR) or 45 days (CCPA). Clients can also submit requests on behalf of their callers through the admin portal's DSAR handling system.
 
 ## 6. Security
 
@@ -535,15 +535,15 @@ We may update this Privacy Policy from time to time. Material changes will be co
 For privacy questions, data requests, or concerns:
 
 Capta LLC
-Privacy inquiries: privacy@capta.app
-General support: support@capta.app
+Privacy inquiries: privacy@captahq.com
+General support: support@captahq.com
 Phone: (830) 521-7133`;
 
 export const PRIVACY_ES = `# Política de Privacidad
 
 **Fecha de Vigencia:** 3 de marzo de 2026
 
-Capta LLC ("Capta," "nosotros," "nos," u "nuestro") respeta su privacidad. Esta Política de Privacidad explica cómo recopilamos, utilizamos, divulgamos y protegemos información personal cuando usted utiliza la plataforma Capta, visita nuestro sitio web en capta.app, o interactúa con nuestro servicio de recepcionista de IA.
+Capta LLC ("Capta," "nosotros," "nos," u "nuestro") respeta su privacidad. Esta Política de Privacidad explica cómo recopilamos, utilizamos, divulgamos y protegemos información personal cuando usted utiliza la plataforma Capta, visita nuestro sitio web en captahq.com, o interactúa con nuestro servicio de recepcionista de IA.
 
 Esta política se aplica a: (a) propietarios de negocios y empleados que se suscriben y utilizan la plataforma Capta ("Clientes"); y (b) individuos que llaman a un número de teléfono de negocios servido por Capta ("Llamadores").
 
@@ -663,7 +663,7 @@ Nuestras bases legales para el procesamiento incluyen: cumplimiento de un contra
 
 ### 5.4 Cómo Ejercer Sus Derechos
 
-Envíe una solicitud de acceso de sujeto de datos por correo electrónico a privacy@capta.app o a través de la sección de cumplimiento de su panel de control. Verificaremos su identidad y responderemos dentro de 30 días (GDPR) o 45 días (CCPA). Los Clientes también pueden enviar solicitudes en nombre de sus llamadores a través del sistema de manejo de DSAR del portal de administrador.
+Envíe una solicitud de acceso de sujeto de datos por correo electrónico a privacy@captahq.com o a través de la sección de cumplimiento de su panel de control. Verificaremos su identidad y responderemos dentro de 30 días (GDPR) o 45 días (CCPA). Los Clientes también pueden enviar solicitudes en nombre de sus llamadores a través del sistema de manejo de DSAR del portal de administrador.
 
 ## 6. Seguridad
 
@@ -707,8 +707,8 @@ Podemos actualizar esta Política de Privacidad de vez en cuando. Los cambios ma
 Para preguntas de privacidad, solicitudes de datos o inquietudes:
 
 Capta LLC
-Consultas de privacidad: privacy@capta.app
-Soporte general: support@capta.app
+Consultas de privacidad: privacy@captahq.com
+Soporte general: support@captahq.com
 Teléfono: (830) 521-7133`;
 
 export const DPA_EN = `# Data Processing Agreement
@@ -862,8 +862,8 @@ This DPA shall remain in effect for the duration of the Controller's subscriptio
 For questions about this DPA or data processing:
 
 Capta LLC
-Data Protection inquiries: privacy@capta.app
-General: support@capta.app
+Data Protection inquiries: privacy@captahq.com
+General: support@captahq.com
 Phone: (830) 521-7133`;
 
 export const DPA_ES = `# Acuerdo de Procesamiento de Datos
@@ -1017,6 +1017,6 @@ Este DPA permanecerá en vigor durante la duración de la suscripción del Respo
 Para preguntas sobre este DPA o procesamiento de datos:
 
 Capta LLC
-Consultas de Protección de Datos: privacy@capta.app
-General: support@capta.app
+Consultas de Protección de Datos: privacy@captahq.com
+General: support@captahq.com
 Teléfono: (830) 521-7133`;

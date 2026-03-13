@@ -707,7 +707,7 @@ export default function BookingClient({ slug }: { slug: string }) {
       <footer className={styles.footer}>
         <span className={styles.footerText}>
           {labels.poweredBy}{" "}
-          <a href="https://capta.app" target="_blank" rel="noopener noreferrer" className={styles.footerLink}>
+          <a href="https://captahq.com" target="_blank" rel="noopener noreferrer" className={styles.footerLink}>
             Capta
           </a>
         </span>

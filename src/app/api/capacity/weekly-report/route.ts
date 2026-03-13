@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
 </div>`;
 
     const resend = getResend();
-    const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
+    const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
     await resend.emails.send({
       from,
       to: ownerEmail,

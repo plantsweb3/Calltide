@@ -1,7 +1,7 @@
 import { BRAND_COLOR, COMPANY_ADDRESS } from "@/lib/constants";
 import { TRADE_PROFILES, calculateROI } from "@/lib/receptionist/trade-profiles";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
 
 const TRADE_LABELS: Record<string, { en: string; es: string }> = {
   hvac: { en: "HVAC", es: "HVAC" },

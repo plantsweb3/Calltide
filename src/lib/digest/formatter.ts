@@ -135,7 +135,7 @@ export function formatDigestEmail(
   receptionistName: string,
 ): { subject: string; html: string } {
   const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
-  const dashboardUrl = `${env.NEXT_PUBLIC_APP_URL || "https://capta.app"}/dashboard/job-cards`;
+  const dashboardUrl = `${env.NEXT_PUBLIC_APP_URL || "https://captahq.com"}/dashboard/job-cards`;
 
   // Subject line
   const subjectParts: string[] = [];

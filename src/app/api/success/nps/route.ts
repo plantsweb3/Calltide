@@ -16,7 +16,7 @@ import { createNotification } from "@/lib/notifications";
 import { canSendSms } from "@/lib/compliance/sms";
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
 function classify(score: number): "promoter" | "passive" | "detractor" {
   if (score >= 9) return "promoter";
@@ -160,7 +160,7 @@ async function handlePromoter(businessId: string) {
     const resend = getResend();
 
     await resend.emails.send({
-      from: "Capta <success@capta.app>",
+      from: "Capta <success@captahq.com>",
       to: business.ownerEmail,
       subject: `${business.ownerName}, you're amazing! Share the love & earn $497`,
       html: `
@@ -281,7 +281,7 @@ async function handleDetractor(businessId: string, score: number) {
     if (business.ownerEmail) {
       const resend = getResend();
       await resend.emails.send({
-        from: "Capta <success@capta.app>",
+        from: "Capta <success@captahq.com>",
         to: business.ownerEmail,
         subject: `Action needed: ${business.name} NPS score ${score}/10`,
         html: `

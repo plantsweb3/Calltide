@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "FAQ — Capta | Questions Answered",
     description:
       "Everything you need to know about Capta's AI front office — setup, features, estimates, follow-ups, billing, and technical details.",
-    url: "https://capta.app/faq",
+    url: "https://captahq.com/faq",
     siteName: "Capta",
     type: "website",
   },

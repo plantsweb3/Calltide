@@ -117,7 +117,7 @@ const content = {
           },
           {
             q: "What if the internet or your servers go down?",
-            a: "We have redundancy built in. If our primary systems experience issues, calls are routed to backup systems. We monitor uptime 24/7 and our status page is always available at capta.app/status.",
+            a: "We have redundancy built in. If our primary systems experience issues, calls are routed to backup systems. We monitor uptime 24/7 and our status page is always available at captahq.com/status.",
           },
         ],
       },
@@ -230,7 +230,7 @@ const content = {
           },
           {
             q: "¿Qué pasa si se cae el internet o sus servidores?",
-            a: "Tenemos redundancia incorporada. Si nuestros sistemas principales experimentan problemas, las llamadas se enrutan a sistemas de respaldo. Monitoreamos el tiempo de actividad 24/7 y nuestra página de estado siempre está disponible en capta.app/status.",
+            a: "Tenemos redundancia incorporada. Si nuestros sistemas principales experimentan problemas, las llamadas se enrutan a sistemas de respaldo. Monitoreamos el tiempo de actividad 24/7 y nuestra página de estado siempre está disponible en captahq.com/status.",
           },
         ],
       },

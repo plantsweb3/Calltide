@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     const resend = getResend();
     await resend.emails.send({
-      from: env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>",
+      from: env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>",
       to: normalizedEmail,
       subject: "Reset your Capta password",
       html: `

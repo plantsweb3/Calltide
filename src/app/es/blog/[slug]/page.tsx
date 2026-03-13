@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .limit(1);
 
   if (!post) return { title: "Publicación No Encontrada — Capta" };
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
   // Resolve paired post slug for hreflang
   let enAlternate: string | undefined;
@@ -96,7 +96,7 @@ export default async function BlogPostEsPage({ params }: PageProps) {
     relatedPosts = relatedPosts.filter((p) => p.id !== post.id);
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
   return (
     <div className="min-h-screen bg-[#FBFBFC]">

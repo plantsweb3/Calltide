@@ -11,7 +11,7 @@ export const metadata = {
   openGraph: {
     title: "Help Center — Capta",
     description: "Find answers about your Capta AI receptionist.",
-    url: "https://capta.app/help",
+    url: "https://captahq.com/help",
   },
   alternates: {
     canonical: "/help",
@@ -131,7 +131,7 @@ export default async function HelpCenterPage() {
               Our support team typically responds within a few hours.
             </p>
             <a
-              href="mailto:support@capta.app"
+              href="mailto:support@captahq.com"
               className="mt-5 inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:brightness-110"
               style={{ background: "#C59A27" }}
             >

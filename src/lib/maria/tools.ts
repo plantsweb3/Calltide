@@ -821,7 +821,7 @@ async function searchCaptaHelp(query: string): Promise<string> {
   if (results.length === 0) {
     return JSON.stringify({
       found: false,
-      message: "No help articles found. For specific questions, contact support@capta.app",
+      message: "No help articles found. For specific questions, contact support@captahq.com",
     });
   }
 

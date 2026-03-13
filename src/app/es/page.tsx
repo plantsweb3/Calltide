@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "Capta — Cada Llamada Contestada. Cada Trabajo Reservado.",
     description:
       "Recepcionista IA bilingüe para negocios de servicios del hogar. Contesta llamadas, agenda citas, detecta emergencias. 24/7.",
-    url: "https://capta.app/es",
+    url: "https://captahq.com/es",
     siteName: "Capta",
     type: "website",
     images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
     description: "Recepcionista IA bilingüe. 24/7. Garantía de 30 días.",
   },
   alternates: {
-    canonical: "https://capta.app/es",
-    languages: { en: "https://capta.app", es: "https://capta.app/es" },
+    canonical: "https://captahq.com/es",
+    languages: { en: "https://captahq.com", es: "https://captahq.com/es" },
   },
 };
 

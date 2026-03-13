@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "Pricing | Capta",
     description:
       "One plan. Everything included. $497/month — your AI front office with unlimited calls, AI estimates, missed call recovery, and every feature included.",
-    url: "https://capta.app/pricing",
+    url: "https://captahq.com/pricing",
     siteName: "Capta",
     type: "website",
   },
@@ -45,7 +45,7 @@ export default function Page() {
                 priceCurrency: "USD",
                 priceValidUntil: "2027-12-31",
                 availability: "https://schema.org/InStock",
-                url: "https://capta.app/pricing",
+                url: "https://captahq.com/pricing",
               },
               {
                 "@type": "Offer",
@@ -54,7 +54,7 @@ export default function Page() {
                 priceCurrency: "USD",
                 priceValidUntil: "2027-12-31",
                 availability: "https://schema.org/InStock",
-                url: "https://capta.app/pricing",
+                url: "https://captahq.com/pricing",
               },
             ],
           }),

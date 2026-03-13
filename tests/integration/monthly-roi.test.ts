@@ -129,7 +129,7 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Joe's Plumbing",
       monthLabel: "February 2026",
       stats: baseStats,
-      dashboardUrl: "https://capta.app/dashboard",
+      dashboardUrl: "https://captahq.com/dashboard",
     });
 
     expect(subject).toBe("Maria Monthly ROI Report — Joe's Plumbing");
@@ -144,7 +144,7 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Test Biz",
       monthLabel: "January 2026",
       stats: baseStats,
-      dashboardUrl: "https://capta.app/dashboard",
+      dashboardUrl: "https://captahq.com/dashboard",
     });
 
     expect(html).toContain("12.1x");
@@ -159,7 +159,7 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Test Biz",
       monthLabel: "March 2026",
       stats: baseStats,
-      dashboardUrl: "https://capta.app/dashboard",
+      dashboardUrl: "https://captahq.com/dashboard",
     });
 
     expect(html).toContain("21%");
@@ -172,7 +172,7 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Test Biz",
       monthLabel: "March 2026",
       stats: baseStats,
-      dashboardUrl: "https://capta.app/dashboard",
+      dashboardUrl: "https://captahq.com/dashboard",
     });
 
     expect(html).toContain("$3,000");
@@ -185,10 +185,10 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Test Biz",
       monthLabel: "March 2026",
       stats: baseStats,
-      dashboardUrl: "https://capta.app/dashboard",
+      dashboardUrl: "https://captahq.com/dashboard",
     });
 
-    expect(html).toContain('href="https://capta.app/dashboard"');
+    expect(html).toContain('href="https://captahq.com/dashboard"');
     expect(html).toContain("View Full Dashboard");
   });
 
@@ -209,7 +209,7 @@ describe("Monthly ROI — Email Builder", () => {
       businessName: "Test Biz",
       monthLabel: "March 2026",
       stats: noSpanishStats,
-      dashboardUrl: "https://capta.app/dashboard",
+      dashboardUrl: "https://captahq.com/dashboard",
     });
 
     expect(html).not.toContain("Spanish");

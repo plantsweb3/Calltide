@@ -5,7 +5,7 @@ import { prospectOutreach, prospects } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 
-const MARKETING_URL = env.NEXT_PUBLIC_MARKETING_URL ?? "https://capta.app";
+const MARKETING_URL = env.NEXT_PUBLIC_MARKETING_URL ?? "https://captahq.com";
 
 const smsTemplates: Record<string, (businessName: string) => string> = {
   missed_sms_1: (name) =>

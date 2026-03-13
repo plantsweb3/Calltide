@@ -11,7 +11,7 @@ import { canContactToday, logOutreach } from "@/lib/outreach";
 import { reportError } from "@/lib/error-reporting";
 import { logActivity } from "@/lib/activity";
 
-const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
+const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
 
 /**
  * Get the display amount string based on the business's plan type.

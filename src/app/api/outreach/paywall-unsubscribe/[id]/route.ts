@@ -58,7 +58,7 @@ export async function GET(
 <body>
   <div class="card">
     <h1>You've been unsubscribed</h1>
-    <p>You won't receive any more emails about your onboarding setup. If you change your mind, you can always resume at <a href="https://capta.app/dashboard/onboarding" style="color:#C59A27;">capta.app</a>.</p>
+    <p>You won't receive any more emails about your onboarding setup. If you change your mind, you can always resume at <a href="https://captahq.com/dashboard/onboarding" style="color:#C59A27;">captahq.com</a>.</p>
   </div>
 </body>
 </html>`;

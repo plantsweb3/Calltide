@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com"),
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "32x32" },
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: "Capta — Every Call Answered. Every Job Booked.",
     description:
       "AI receptionist that answers your calls 24/7 in English and Spanish. Book appointments, take messages, detect emergencies. Built for home service businesses.",
-    url: "https://capta.app",
+    url: "https://captahq.com",
     siteName: "Capta",
     type: "website",
     locale: "en_US",
@@ -76,8 +76,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "Capta",
-              url: "https://capta.app",
-              logo: "https://capta.app/icon-512.png",
+              url: "https://captahq.com",
+              logo: "https://captahq.com/icon-512.png",
               description:
                 "AI-powered bilingual receptionist platform for home service businesses. Answers calls 24/7 in English and Spanish.",
               foundingDate: "2025",

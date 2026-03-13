@@ -228,7 +228,7 @@ async function notifyClientsSmsPlaybook(service: string): Promise<void> {
 async function notifyClientsEmailPlaybook(service: string): Promise<void> {
   if (!env.RESEND_API_KEY) return;
   const resend = getResend();
-  const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
+  const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
 
   const activeClients = await db
     .select({ id: businesses.id, email: businesses.ownerEmail, lang: businesses.defaultLanguage })

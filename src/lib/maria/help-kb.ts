@@ -113,6 +113,6 @@ export const CAPTA_QUICK_REFERENCE = `
 - Settings: hours, services, greeting, personality, custom FAQ, intake questions, pricing
 
 ### Support
-- Email: support@capta.app
+- Email: support@captahq.com
 - Phone: (830) 521-7133
 `.trim();

@@ -7,4 +7,4 @@ export const COMPANY_ADDRESS = process.env.COMPANY_ADDRESS ?? "Capta LLC, PO Box
 export const COMPANY_NAME = "Capta";
 
 export const MARKETING_URL =
-  process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://capta.app";
+  process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://captahq.com";

@@ -361,7 +361,7 @@ async function handleCallbackRequest(
 async function notifyOwnerOfSms(businessId: string, businessName: string, ownerEmail: string, messageBody: string): Promise<void> {
   if (!env.RESEND_API_KEY) return;
   const resend = getResend();
-  const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.capta.app>";
+  const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
   const preview = escapeHtml(messageBody).slice(0, 300);
 
   await resend.emails.send({

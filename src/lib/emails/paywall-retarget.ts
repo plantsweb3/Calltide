@@ -1,6 +1,6 @@
 import { BRAND_COLOR, COMPANY_ADDRESS } from "@/lib/constants";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://capta.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
 
 // ROI: avg missed calls/week × avg job value for the trade
 const TRADE_AVG_JOB: Record<string, number> = {

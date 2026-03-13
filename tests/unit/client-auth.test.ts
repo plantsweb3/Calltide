@@ -9,7 +9,7 @@ import {
 const TEST_SECRET = "test-secret-key-32chars-minimum!";
 const TEST_BIZ_ID = "biz_123";
 const TEST_EMAIL = "test@example.com";
-const TEST_APP_URL = "https://capta.app";
+const TEST_APP_URL = "https://captahq.com";
 
 describe("Client Auth", () => {
   describe("generateMagicLink()", () => {

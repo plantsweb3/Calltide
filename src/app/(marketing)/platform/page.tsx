@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "Platform | Capta — The Complete AI Front Office",
     description:
       "55+ features: bilingual answering, AI estimates, missed call recovery, follow-up automation, CRM, scheduling — everything in one AI front office platform.",
-    url: "https://capta.app/platform",
+    url: "https://captahq.com/platform",
     siteName: "Capta",
     type: "website",
   },

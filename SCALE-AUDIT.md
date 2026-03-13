@@ -85,10 +85,10 @@
 - `revenueMetrics` and `churnRiskScores` tables exist but are **never populated by any automated process**. No Stripe integration. No payment processing. No invoice generation. No subscription lifecycle. Billing page displays whatever's manually inserted into the DB. Churn risk scores are never calculated — the table is empty unless manually seeded. Revenue forecast is naive linear extrapolation with no seasonal adjustment.
 
 ### Admin Settings — Read-Only Display
-- Settings page shows email/SMS templates, Twilio config, API keys, scraping rules — but **nothing is editable**. All templates are hardcoded in source. All config requires code changes. Footer says "Contact us at support@capta.app." No admin can change AI configuration, system prompts, business hours defaults, or outreach sequences without deploying code.
+- Settings page shows email/SMS templates, Twilio config, API keys, scraping rules — but **nothing is editable**. All templates are hardcoded in source. All config requires code changes. Footer says "Contact us at support@captahq.com." No admin can change AI configuration, system prompts, business hours defaults, or outreach sequences without deploying code.
 
 ### Client Self-Service — Read-Only Dashboard
-- Clients can view all their data but **cannot modify anything**. No editing business hours, services, language preference, greeting, or contact info. No appointment management (cancel/reschedule). No self-service onboarding. Footer says "Contact us at support@capta.app."
+- Clients can view all their data but **cannot modify anything**. No editing business hours, services, language preference, greeting, or contact info. No appointment management (cancel/reschedule). No self-service onboarding. Footer says "Contact us at support@captahq.com."
 
 ### Per-Client AI Configuration — Schema Ready, UI Missing
 - `businesses.humeConfigId` field exists in schema but is **never used in code**. All businesses share the same Hume config. System prompt template is global (persona "Maria", max 150 tokens, same call flow). No per-client prompt overrides, model selection, temperature tuning, or voice selection. Business context (name, services, hours) is injected, but the template structure is identical for all.

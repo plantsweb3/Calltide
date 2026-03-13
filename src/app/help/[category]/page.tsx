@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const [cat] = await db.select().from(helpCategories).where(eq(helpCategories.slug, slug)).limit(1);
   if (!cat) return { title: "Category Not Found — Capta Help" };
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://capta.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
   return {
     title: `${cat.name} — Capta Help Center`,
     description: cat.description,
