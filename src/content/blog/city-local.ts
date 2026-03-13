@@ -291,7 +291,7 @@ In a market where response time is everything, the contractor who answers in 2 s
 
 Capta's Maria answers every call instantly. She handles appointment booking, collects job details, sends SMS confirmations — all the things Austin's tech-native homeowners expect from a modern business. And she does it 24/7, because in Austin, a lot of home improvement research (and calling) happens at 10 PM after the kids are in bed.
 
-$497/month. No per-call fees. No app for your customers to download. Just a phone that always gets answered by someone who sounds like they've worked at your company for years.
+Flat monthly fee. No per-call charges. No app for your customers to download. Just a phone that always gets answered by someone who sounds like they've worked at your company for years. [See pricing →](https://captahq.com/pricing)
 
 **[Start setup](https://captahq.com/setup)** — 10 minutes and Maria's live on your line.`,
   },
@@ -328,7 +328,7 @@ En un mercado donde el tiempo de respuesta es todo, el contratista que contesta 
 
 María contesta cada llamada instantáneamente. Maneja reservas de citas, recolecta detalles del trabajo, envía confirmaciones por SMS — todo lo que los propietarios tech de Austin esperan. Y lo hace 24/7.
 
-$497/mes. Sin cargos por llamada. Sin apps que descargar.
+Tarifa fija mensual. Sin cargos por llamada. Sin apps que descargar. [Ver precios →](https://captahq.com/pricing)
 
 **[Empieza la configuración](https://captahq.com/setup)** — 10 minutos y María está en tu línea.`,
   },
@@ -369,7 +369,7 @@ In a market that's 82% Hispanic, this isn't a minor leak in your funnel. It's a 
 
 María speaks the same Spanish your El Paso customers speak. Not textbook Spanish — natural, border-region Spanish. She understands context, colloquialisms, and the way people actually talk about plumbing problems, electrical issues, and AC repairs in this market.
 
-$497/month. Every call answered. Every language handled. The same flat price whether you get 50 calls or 500.
+Every call answered. Every language handled. The same flat monthly price whether you get 50 calls or 500. [See what Capta costs →](https://captahq.com/pricing)
 
 **[Start setup](https://captahq.com/setup)** — María can be answering your calls in 10 minutes.`,
   },
@@ -408,7 +408,7 @@ En un mercado que es 82% hispano, esto no es una fuga menor. Es una tubería rot
 
 María habla el mismo español que tus clientes de El Paso hablan. No español de libro — español natural, fronterizo. Entiende el contexto, los coloquialismos, y cómo la gente realmente habla de problemas de plomería, electricidad y aire acondicionado en este mercado.
 
-$497/mes. Cada llamada contestada. Cada idioma manejado.
+Cada llamada contestada. Cada idioma manejado. Tarifa fija mensual sin importar el volumen. [Ver precios →](https://captahq.com/pricing)
 
 **[Empieza la configuración](https://captahq.com/setup)** — María puede estar contestando tus llamadas en 10 minutos.`,
   },
@@ -739,7 +739,7 @@ Each of these starts with a phone call. Often an urgent one, because the problem
 
 María answers every one of those calls, 24/7, regardless of weather. She handles the emergency triage ("Is there active flooding?"), collects the details, books the appointment, and sends you the summary — while you're warm in bed or finishing another job.
 
-$497/month. The same cost in a quiet August as during a January polar vortex.
+Flat monthly rate. The same cost in a quiet August as during a January polar vortex. [See pricing →](https://captahq.com/pricing)
 
 **[See what old homes are costing you in missed calls](https://captahq.com/audit)** — the free audit takes 2 minutes.`,
   },
@@ -778,7 +778,7 @@ Una casa construida en 1920 necesita trabajo a un ritmo que las casas nuevas sim
 
 Cada uno comienza con una llamada telefónica. A menudo urgente. María contesta cada una, 24/7, sin importar el clima.
 
-$497/mes. El mismo costo en un agosto tranquilo que durante un vórtice polar de enero.
+Tarifa fija mensual. El mismo costo en un agosto tranquilo que durante un vórtice polar de enero. [Ver precios →](https://captahq.com/pricing)
 
 **[Descubre lo que las casas antiguas te cuestan en llamadas perdidas](https://captahq.com/audit)**.`,
   },
@@ -895,7 +895,7 @@ The contractor who answers that first call doesn't just get one job — they get
 
 María makes sure you answer every one of those calls. She handles the intake, books the appointment, and sends the confirmation — while you're stuck on I-285.
 
-$497/month. No per-call charges. No limits. Just a phone that always gets answered, capturing the growth that's literally driving into your market every single day.
+No per-call charges. No limits. Just a phone that always gets answered, capturing the growth that's literally driving into your market every single day. [See what it costs →](https://captahq.com/pricing)
 
 **[Start capturing new residents](https://captahq.com/setup)** — 10 minutes to set up. María handles the rest.`,
   },
@@ -934,7 +934,7 @@ Los nuevos residentes son los mejores leads. No tienen un plomero regular todav�
 
 El contratista que contesta esa primera llamada no solo consigue un trabajo — consigue un cliente que podría llamar por los próximos 5, 10 o 20 años.
 
-María se asegura de que contestes cada una de esas llamadas. $497/mes. Sin cargos por llamada. Sin límites.
+María se asegura de que contestes cada una de esas llamadas. Sin cargos por llamada. Sin límites. [Ver precios →](https://captahq.com/pricing)
 
 **[Empieza a capturar nuevos residentes](https://captahq.com/setup)** — 10 minutos de configuración. María maneja el resto.`,
   },

@@ -654,7 +654,7 @@ Here's what actually happens when a Spanish-speaking customer calls:
 4. **She sends a confirmation.** The customer receives an SMS in Spanish with the appointment date, time, and your address.
 5. **You get the lead.** No voicemails disappear. No customers fall through the cracks. Just qualified appointments on your schedule.
 
-And this all happens for $497 per month — with no setup fees, no contracts, and full 24/7 coverage.
+And this all happens at a flat monthly rate — no setup fees, no contracts, no per-call charges, and full 24/7 coverage. [See pricing →](https://captahq.com/pricing)
 
 ## The Competitive Advantage
 
@@ -2055,7 +2055,7 @@ She answers. She quotes. She follows up. You do the work.`,
     language: "en",
     category: "bilingual-advantage",
     metaTitle: "Bilingual Answering Service for Contractors | Capta",
-    metaDescription: "Learn how bilingual phone answering captures 38% more customers in Texas. Maria handles Spanish calls 24/7 for $497/mo.",
+    metaDescription: "Learn how bilingual phone answering captures 38% more customers in Texas. Maria handles Spanish calls 24/7 at a flat monthly rate.",
     targetKeyword: "bilingual answering service contractors",
     relatedPostSlugs: ["why-spanish-speaking-customers-not-leaving-voicemails", "we-called-200-plumbers-texas-how-many-answered"],
     authorName: "Ulysses Munoz",
@@ -2930,7 +2930,7 @@ Nosotros contestamos.
     language: "es",
     category: "ventaja-bilingue",
     metaTitle: "Servicio Contestador Bilingüe para Contratistas | Capta",
-    metaDescription: "María contesta llamadas en español 24/7. Captura leads hispanohablantes. Desde $497/mes. Sin personal costoso.",
+    metaDescription: "María contesta llamadas en español 24/7. Captura leads hispanohablantes con tarifa fija mensual. Sin personal costoso.",
     targetKeyword: "servicio contestador bilingüe contratistas",
     relatedPostSlugs: ["por-que-clientes-hispanohablantes-no-dejan-mensajes-voz", "llamamos-200-plomeros-texas-cuantos-contestaron"],
     authorName: "Ulysses Munoz",
