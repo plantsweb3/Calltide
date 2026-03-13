@@ -36,8 +36,8 @@ Here is the problem: you cannot answer the phone when you are on a roof. It is a
 
 But "later" does not work in roofing. The data is clear:
 
-- **78% of customers hire the first contractor who answers the phone.** Not the best roofer. Not the cheapest. The first one who picks up.
-- **85% of callers who reach voicemail never call back.** They call the next roofer on Google instead.
+- **The average homeowner with storm damage calls 3 roofers within 10 minutes.** Whoever answers first gets the inspection. The second one gets considered. The third one never gets a callback.
+- **Voicemail completion rates for roofing inquiries are under 20%.** When someone has water coming through their ceiling, they're not waiting to leave a message — they're dialing the next number.
 - **Storm-season leads are the most time-sensitive calls in all of home services.** A homeowner with a tarp on their roof is not going to wait for a callback.
 
 The average roofing job is worth $8,000 to $15,000 for a full replacement. Even a simple repair runs $500 to $1,500. Every missed call during storm season is not just a lost lead. It is a lost job worth thousands.
@@ -190,8 +190,8 @@ El problema es este: no puedes contestar el telefono cuando estas en un techo. E
 
 Pero "despues" no funciona en techos. Los datos son claros:
 
-- **78% de los clientes contratan al primer contratista que contesta el telefono.** No al mejor techador. No al mas barato. Al primero que contesta.
-- **85% de las personas que llegan al buzon de voz nunca vuelven a llamar.** Llaman al siguiente techador en Google.
+- **El propietario promedio con daño por tormenta llama a 3 techadores en 10 minutos.** Quien conteste primero consigue la inspección. El segundo se considera. Al tercero nunca le devuelven la llamada.
+- **La tasa de mensajes de voz completados para consultas de techos es menor al 20%.** Cuando alguien tiene agua entrando por el techo, no va a esperar para dejar un mensaje.
 - **Los clientes potenciales de temporada de tormentas son las llamadas mas urgentes en todos los servicios del hogar.** Un dueno de casa con una lona en el techo no va a esperar a que le devuelvas la llamada.
 
 El trabajo de techos promedio vale entre $8,000 y $15,000 para un reemplazo completo. Incluso una reparacion sencilla cuesta entre $500 y $1,500. Cada llamada perdida durante temporada de tormentas no es solo un cliente potencial perdido. Es un trabajo de miles de dolares que se fue.

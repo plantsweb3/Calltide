@@ -34,7 +34,7 @@ You know why. You're on a job. Your hands are covered in PVC cement. You're in a
 
 The phone doesn't care about any of that. It rings when it rings.
 
-**85% of callers who reach voicemail won't leave a message.** They'll call the next plumber on Google. By the time you call back, they've already booked with someone else.
+**The average callback window for a plumbing customer is under 5 minutes.** After that, they've already dialed the next plumber on Google. By the time you check your voicemail, they've booked with someone else.
 
 ## The After-Hours Problem
 
@@ -100,7 +100,7 @@ Incluso si cortamos eso a la mitad, estás viendo $38,000 en ingresos perdidos. 
 
 Lo sabes. Estás en un trabajo. Tus manos están cubiertas de cemento PVC. Estás en un espacio reducido sin señal.
 
-**85% de los que llaman y llegan al buzón de voz no dejan mensaje.** Llaman al siguiente plomero en Google.
+**La ventana promedio de un cliente de plomería es menos de 5 minutos.** Después de eso, ya marcaron al siguiente plomero en Google.
 
 ## El Problema de las Horas Fuera de Oficina
 
@@ -191,7 +191,7 @@ When someone calls at 11 PM because their heat died, Maria:
 
 The after-hours calls you capture in the first week will likely cover the entire month's cost.
 
-**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
+**[See how after-hours capture works →](https://captahq.com/blog/hvac-24-7-answering-service-after-hours)**
 
 ## FAQs
 
@@ -249,7 +249,7 @@ Cuando alguien llama a las 11 PM porque su calefacción murió:
 
 **Costo:** $497/mes fijo. Mismo precio con 20 o 200 llamadas fuera de horario.
 
-**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
+**[Ve cómo funciona la captura fuera de horario →](https://captahq.com/es/blog/hvac-servicio-contestador-24-7-fuera-horario)**
 
 ## Preguntas Frecuentes
 
@@ -289,7 +289,7 @@ In a city like San Antonio (65% Hispanic), Houston (45% Hispanic), or Miami (70%
 
 ## The Voicemail Problem Hits Harder
 
-We know that 85% of callers don't leave voicemail. For Spanish-speaking callers reaching an English-only voicemail, that number is even higher. They don't just hang up and try later — they call a competitor who speaks their language.
+Research shows that Spanish-speaking callers who reach an English-only system abandon the call at nearly double the rate of English speakers. They don't just hang up and try later — they call a competitor who speaks their language.
 
 This is a permanent customer loss, not a delay. Once they find a Spanish-speaking electrician, they stay with them and refer friends and family.
 
@@ -320,7 +320,7 @@ Capta's Maria speaks fluent English and Spanish. Not translation software — ge
 
 A Spanish-speaking homeowner calling about "chispas en mi panel eléctrico" gets the same emergency detection, same appointment booking, same SMS confirmation as an English-speaking caller saying "sparks from my breaker box."
 
-**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
+**[Compare bilingual answering options →](https://captahq.com/blog/best-ai-phone-system-electricians-2026)**
 
 ## FAQs
 
@@ -361,7 +361,7 @@ En una ciudad como San Antonio (65% hispano), Houston (45% hispano), o Miami (70
 
 ## El Problema del Buzón de Voz Es Peor
 
-85% de los que llaman no dejan mensaje de voz. Para hispanohablantes que llegan a un buzón en inglés, ese número es aún mayor. No solo cuelgan — llaman a un competidor que habla su idioma.
+Los hispanohablantes que llegan a un sistema solo en inglés abandonan la llamada a casi el doble de la tasa de los anglohablantes. No solo cuelgan — llaman a un competidor que habla su idioma.
 
 ## La Solución
 
@@ -371,7 +371,7 @@ Un propietario hispanohablante que llama por "chispas en mi panel eléctrico" re
 
 **$497/mes fijo.** Sin cargos por minuto.
 
-**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
+**[Compara opciones bilingües →](https://captahq.com/es/blog/mejor-sistema-telefonico-ai-electricistas-2026)**
 
 ## Preguntas Frecuentes
 
@@ -449,7 +449,7 @@ When you remove the phone from your plate, you can:
 
 The landscaping companies growing fastest in 2026 aren't the ones with the biggest crews. They're the ones who systematized their phone and scheduling first.
 
-**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
+**[Set up in 10 minutes →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=landscaping)**
 
 ## FAQs
 
@@ -513,7 +513,7 @@ Cuando quitas el teléfono de tu plato, puedes:
 - Tomar más propiedades (crecer ingresos)
 - Dejar el negocio un día sin que se caiga
 
-**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
+**[Configúralo en 10 minutos →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=paisajismo)**
 
 ## Preguntas Frecuentes
 
@@ -577,7 +577,7 @@ During storm season, Maria:
 
 That's not a typo. The ROI during storm season alone can be 500x-1,600x.
 
-**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
+**[See the full roofer buyer's guide →](https://captahq.com/blog/best-ai-receptionist-roofers-2026)**
 
 ## FAQs
 
@@ -639,7 +639,7 @@ Durante temporada de tormentas, María:
 - **Ingresos capturados con Capta: $240,000 - $800,000**
 - **Costo de Capta: $497/mes**
 
-**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
+**[Lee la guía completa para techadores →](https://captahq.com/es/blog/mejor-recepcionista-ai-techadores-2026)**
 
 ## Preguntas Frecuentes
 
@@ -831,7 +831,7 @@ Generic call centers don't understand construction. When a sub calls about a con
 
 Maria understands construction terminology and context. She captures the right information from each caller type and routes it appropriately.
 
-**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
+**[Try Capta risk-free for 30 days →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=gc)**
 
 ## FAQs
 
@@ -895,7 +895,7 @@ Los centros de llamadas genéricos no entienden construcción. Cuando un sub lla
 
 María entiende terminología de construcción y captura la información correcta de cada tipo de llamada.
 
-**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
+**[Prueba Capta sin riesgo por 30 días →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=gc)**
 
 ## Preguntas Frecuentes
 
