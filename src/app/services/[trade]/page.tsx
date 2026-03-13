@@ -163,7 +163,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
             {profile.missedCallRate * 100}% of {profile.label.toLowerCase()} calls go unanswered. Each missed call costs an average of ${profile.avgJobValue.toLocaleString()}. Capta answers every one — 24/7, in English and Spanish.
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Link href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+            <Link href={`/setup?utm_source=services&utm_medium=landing&utm_campaign=${tradeSlug}`} className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
               Get Capta &rarr;
             </Link>
             <Link href="/platform" className="text-sm font-medium text-slate-400 transition hover:text-white">
@@ -288,7 +288,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
           <p className="mx-auto mt-4 max-w-xl text-base text-slate-300">
             $497/month. Unlimited calls. Bilingual. 30-day money-back guarantee.
           </p>
-          <Link href="/setup" className="cta-gold cta-shimmer mt-8 inline-flex items-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
+          <Link href={`/setup?utm_source=services&utm_medium=landing&utm_campaign=${tradeSlug}`} className="cta-gold cta-shimmer mt-8 inline-flex items-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
             Get Capta &rarr;
           </Link>
           {meta.blogSlug && (
