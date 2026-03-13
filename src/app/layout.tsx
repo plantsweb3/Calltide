@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "/",
-    languages: { en: "/", es: "/es" },
+    languages: { en: "/", es: "/es", "x-default": "/" },
   },
 };
 
@@ -72,6 +72,25 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
+        <link rel="alternate" type="application/rss+xml" title="Capta Blog" href="/blog/feed.xml" />
+        <link rel="alternate" type="application/rss+xml" title="Capta Blog — Español" href="/es/blog/feed.xml" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Capta",
+              url: "https://captahq.com",
+              inLanguage: ["en", "es"],
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://captahq.com/blog?q={search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

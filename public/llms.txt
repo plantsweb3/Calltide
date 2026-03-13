@@ -1,6 +1,6 @@
 # Capta
 
-> Capta is an AI receptionist named Maria that answers every business call 24/7 in English and Spanish. Built specifically for home service contractors — plumbers, HVAC techs, electricians, landscapers, roofers, painters, and general contractors. $497/month flat, unlimited calls, native bilingual included. 30-day money-back guarantee.
+> Capta is an AI receptionist named Maria that answers every business call 24/7 in English and Spanish. Built specifically for home service contractors — plumbers, HVAC techs, electricians, landscapers, roofers, painters, and general contractors. Unlimited calls, native bilingual included. 30-day money-back guarantee.
 
 ## Product Overview
 
@@ -21,6 +21,22 @@ Capta is built exclusively for home service contractors:
 - General contractors
 - Pest control companies
 - Any trade business that misses calls while on job sites
+
+## Content Library
+
+Capta publishes bilingual blog content covering AI receptionist technology, trade-specific use cases, competitor comparisons, and data-driven insights for home service businesses.
+
+- [Blog (English)](https://captahq.com/blog)
+- [Blog (Español)](https://captahq.com/es/blog)
+- [RSS Feed (English)](https://captahq.com/blog/feed.xml)
+- [RSS Feed (Español)](https://captahq.com/es/blog/feed.xml)
+
+Topics include:
+- AI receptionist comparisons (vs Smith.ai, Ruby, Goodcall, Rosie, Nexa, Dialzara, Jobber)
+- Trade-specific guides (plumbing, HVAC, electrical, landscaping, roofing)
+- Missed call revenue impact and data analysis
+- Bilingual customer service for contractors
+- Home service business growth strategies
 
 ## Key Comparisons
 

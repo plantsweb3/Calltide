@@ -50,12 +50,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `${appUrl}/es/blog/${post.slug}`,
       type: "article",
       images: post.ogImage ? [{ url: post.ogImage }] : undefined,
+      publishedTime: post.publishedAt ?? undefined,
+      modifiedTime: post.updatedAt ?? undefined,
+      authors: [post.authorName ?? "Capta"],
+      section: post.category ?? undefined,
+      tags: post.targetKeyword ? [post.targetKeyword] : undefined,
     },
     alternates: {
       canonical: `${appUrl}/es/blog/${post.slug}`,
       languages: {
         es: `${appUrl}/es/blog/${post.slug}`,
         ...(enAlternate ? { en: enAlternate } : {}),
+        "x-default": enAlternate ?? `${appUrl}/es/blog/${post.slug}`,
       },
     },
   };
@@ -101,6 +107,7 @@ export default async function BlogPostEsPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-[#FBFBFC]">
       <StaticNav lang="es" langHref="/blog" />
+      {/* JSON-LD Article */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -110,11 +117,43 @@ export default async function BlogPostEsPage({ params }: PageProps) {
             headline: post.title,
             description: post.metaDescription,
             image: post.ogImage,
-            author: { "@type": "Organization", name: post.authorName ?? "Capta" },
-            publisher: { "@type": "Organization", name: "Capta", url: appUrl },
+            thumbnailUrl: post.ogImage,
+            url: `${appUrl}/es/blog/${post.slug}`,
+            inLanguage: "es",
+            wordCount: post.body ? Math.round(post.body.replace(/<[^>]*>/g, "").split(/\s+/).length) : undefined,
+            articleSection: post.category ? (CATEGORY_LABELS_ES[post.category] ?? post.category) : undefined,
+            keywords: post.targetKeyword ?? undefined,
+            author: {
+              "@type": "Person",
+              name: post.authorName ?? "Ulysses Munoz",
+              url: appUrl,
+              worksFor: { "@type": "Organization", name: "Capta", url: appUrl },
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "Capta",
+              url: appUrl,
+              logo: { "@type": "ImageObject", url: `${appUrl}/icon-512.png` },
+            },
             datePublished: post.publishedAt,
             dateModified: post.updatedAt,
             mainEntityOfPage: `${appUrl}/es/blog/${post.slug}`,
+            isPartOf: { "@type": "WebPage", url: `${appUrl}/es/blog` },
+          }),
+        }}
+      />
+      {/* JSON-LD BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Inicio", item: `${appUrl}/es` },
+              { "@type": "ListItem", position: 2, name: "Blog", item: `${appUrl}/es/blog` },
+              { "@type": "ListItem", position: 3, name: post.title },
+            ],
           }),
         }}
       />
