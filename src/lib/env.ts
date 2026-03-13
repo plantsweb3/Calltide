@@ -46,6 +46,10 @@ const envSchema = z.object({
   STRIPE_PRICE_ADDITIONAL_LOCATION: z.string().min(1).optional(),
   STRIPE_PRICE_ADDITIONAL_LOCATION_ANNUAL: z.string().min(1).optional(),
 
+  // Google Calendar OAuth (optional)
+  GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+  GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
+
   // Phase 2: Outreach Engine (optional)
   GOOGLE_PLACES_API_KEY: z.string().min(1).optional(),
   RESEND_API_KEY: z.string().min(1).optional(),

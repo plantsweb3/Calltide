@@ -272,6 +272,7 @@ export const appointments = sqliteTable("appointments", {
   status: text("status").notNull().default("confirmed"), // confirmed, cancelled, completed, no_show
   notes: text("notes"),
   reminderSent: integer("reminder_sent", { mode: "boolean" }).default(false),
+  googleCalendarEventId: text("google_calendar_event_id"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -1528,4 +1529,17 @@ export const knowledgeGaps = sqliteTable("knowledge_gaps", {
   askedAt: text("asked_at"),
   answeredAt: text("answered_at"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const googleCalendarConnections = sqliteTable("google_calendar_connections", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().unique().references(() => businesses.id),
+  googleEmail: text("google_email").notNull(),
+  accessToken: text("access_token").notNull(),
+  refreshToken: text("refresh_token").notNull(),
+  tokenExpiresAt: text("token_expires_at").notNull(),
+  calendarId: text("calendar_id").notNull().default("primary"),
+  connectedAt: text("connected_at").notNull().default(sql`(datetime('now'))`),
+  lastSyncAt: text("last_sync_at"),
+  syncEnabled: integer("sync_enabled", { mode: "boolean" }).notNull().default(true),
 });

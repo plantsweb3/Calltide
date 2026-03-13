@@ -47,7 +47,7 @@ interface SettingsData {
   setupChecklistDismissed: boolean;
 }
 
-type SettingsTab = "general" | "receptionist" | "responses" | "notifications" | "pricing" | "automations";
+type SettingsTab = "general" | "receptionist" | "responses" | "notifications" | "pricing" | "automations" | "integrations";
 
 const SETTINGS_TABS: { key: SettingsTab; label: string }[] = [
   { key: "general", label: "General" },
@@ -56,6 +56,7 @@ const SETTINGS_TABS: { key: SettingsTab; label: string }[] = [
   { key: "notifications", label: "Notifications" },
   { key: "pricing", label: "Pricing" },
   { key: "automations", label: "Automations" },
+  { key: "integrations", label: "Integrations" },
 ];
 
 interface CustomResponse {
@@ -2122,6 +2123,13 @@ export default function SettingsPage() {
 
       </>}
 
+      {/* ═══ INTEGRATIONS TAB ═══ */}
+      {activeTab === "integrations" && <>
+
+      <GoogleCalendarSection />
+
+      </>}
+
       {/* Sticky Save Bar (mobile) */}
       {isDirty && (
         <div
@@ -2877,6 +2885,208 @@ function SecuritySection() {
               </button>
             </div>
           </div>
+        )}
+      </div>
+    </Card>
+  );
+}
+
+/* ── Google Calendar Section ── */
+
+interface GCalStatus {
+  connected: boolean;
+  googleEmail?: string;
+  connectedAt?: string;
+  lastSyncAt?: string;
+  syncEnabled?: boolean;
+}
+
+function GoogleCalendarSection() {
+  const [status, setStatus] = useState<GCalStatus | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [connecting, setConnecting] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/dashboard/integrations/google/status")
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((d) => setStatus(d))
+      .catch(() => setStatus({ connected: false }))
+      .finally(() => setLoading(false));
+
+    // Check for gcal query param from OAuth callback
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const gcal = params.get("gcal");
+      if (gcal === "connected") {
+        toast.success("Google Calendar connected");
+        // Clean up URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete("gcal");
+        window.history.replaceState({}, "", url.pathname + url.hash);
+      } else if (gcal === "error") {
+        toast.error("Failed to connect Google Calendar");
+        const url = new URL(window.location.href);
+        url.searchParams.delete("gcal");
+        url.searchParams.delete("reason");
+        window.history.replaceState({}, "", url.pathname + url.hash);
+      }
+    }
+  }, []);
+
+  const handleConnect = async () => {
+    setConnecting(true);
+    try {
+      const res = await fetch("/api/dashboard/integrations/google/auth");
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.error || "Failed to start connection");
+        return;
+      }
+      const { url } = await res.json();
+      window.location.href = url;
+    } catch {
+      toast.error("Failed to connect");
+    } finally {
+      setConnecting(false);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    setDisconnecting(true);
+    try {
+      const res = await fetch("/api/dashboard/integrations/google/auth", { method: "DELETE" });
+      if (res.ok) {
+        setStatus({ connected: false });
+        toast.success("Google Calendar disconnected");
+      } else {
+        toast.error("Failed to disconnect");
+      }
+    } catch {
+      toast.error("Failed to disconnect");
+    } finally {
+      setDisconnecting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Card title="Integrations">
+        <div className="flex items-center gap-2">
+          <CaptaSpinnerInline />
+          <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>Loading...</span>
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <Card title="Google Calendar">
+      <div className="space-y-4">
+        {status?.connected ? (
+          <>
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-10 w-10 items-center justify-center rounded-lg"
+                style={{ background: "rgba(66, 133, 244, 0.1)" }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="4" width="18" height="18" rx="2" stroke="#4285F4" strokeWidth="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" stroke="#4285F4" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                  Connected
+                </p>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  {status.googleEmail}
+                </p>
+              </div>
+              <span
+                className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+                style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}
+              >
+                <span className="h-1.5 w-1.5 rounded-full" style={{ background: "#22c55e" }} />
+                Active
+              </span>
+            </div>
+
+            {status.lastSyncAt && (
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                Last sync: {new Date(status.lastSyncAt).toLocaleString()}
+              </p>
+            )}
+
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+              New appointments booked by your receptionist will appear on your Google Calendar.
+              Busy times on your Google Calendar will be respected when checking availability.
+            </p>
+
+            <button
+              onClick={handleDisconnect}
+              disabled={disconnecting}
+              className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+              style={{
+                background: "var(--db-surface)",
+                border: "1px solid var(--db-border)",
+                color: "#f87171",
+              }}
+            >
+              {disconnecting ? "Disconnecting..." : "Disconnect"}
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-10 w-10 items-center justify-center rounded-lg"
+                style={{ background: "var(--db-surface)" }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="4" width="18" height="18" rx="2" stroke="var(--db-text-muted)" strokeWidth="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" stroke="var(--db-text-muted)" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                  Google Calendar
+                </p>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  Sync appointments with your calendar and prevent double-bookings.
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-lg p-3" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                When connected, your receptionist will:
+              </p>
+              <ul className="mt-2 space-y-1 text-xs" style={{ color: "var(--db-text-secondary)" }}>
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#22c55e" }}>&#10003;</span>
+                  Add new appointments to your Google Calendar
+                </li>
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#22c55e" }}>&#10003;</span>
+                  Check your calendar for conflicts before booking
+                </li>
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#22c55e" }}>&#10003;</span>
+                  Remove cancelled appointments from your calendar
+                </li>
+              </ul>
+            </div>
+
+            <button
+              onClick={handleConnect}
+              disabled={connecting}
+              className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
+              style={{ background: "#4285F4" }}
+            >
+              {connecting ? "Connecting..." : "Connect Google Calendar"}
+            </button>
+          </>
         )}
       </div>
     </Card>

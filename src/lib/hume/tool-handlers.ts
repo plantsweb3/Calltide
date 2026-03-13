@@ -226,6 +226,23 @@ async function handleBookAppointment(
     return { success: false, error: "Unable to book appointment. Please try again." };
   }
 
+  // Push to Google Calendar (fire-and-forget)
+  import("@/lib/calendar/google-calendar").then(({ createCalendarEvent, storeEventId }) => {
+    createCalendarEvent({
+      businessId: ctx.businessId,
+      summary: `${service} — ${callerName || "Customer"}`,
+      description: `Booked via ${biz.receptionistName || "Maria"}. Call ID: ${ctx.callId || "N/A"}`,
+      date,
+      time,
+    }).then((eventId) => {
+      if (eventId && appointment) {
+        storeEventId(appointment.id, eventId).catch((err) =>
+          reportError("Failed to store Google Calendar event ID", err, { businessId: ctx.businessId }),
+        );
+      }
+    }).catch((err) => reportError("Failed to push appointment to Google Calendar", err, { businessId: ctx.businessId }));
+  }).catch(() => {});
+
   // Send confirmation SMS to caller
   if (ctx.callerPhone) {
     await sendSMS({

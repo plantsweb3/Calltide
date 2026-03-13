@@ -31,6 +31,7 @@
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "framer-motion": "^12.34.3",
+    "googleapis": "^171.4.0",
     "hume": "^0.15.13",
     "next": "16.1.6",
     "react": "19.2.3",
@@ -46,9 +47,9 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/bcryptjs": "^2.4.6",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

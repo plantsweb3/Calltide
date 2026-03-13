@@ -64,12 +64,32 @@ export async function checkAvailability(
     );
 
   // Build a set of blocked time ranges (in minutes from midnight)
-  const blockedRanges = booked.map((apt) => {
+  const blockedRanges: Array<{ start: number; end: number }> = booked.map((apt) => {
     const [h, m] = apt.time.split(":").map(Number);
     const start = h * 60 + m;
     const end = start + (apt.duration || 60);
     return { start, end };
   });
+
+  // Also check Google Calendar busy times (if connected)
+  try {
+    const { getFreeBusy } = await import("@/lib/calendar/google-calendar");
+    const dayStart = `${date}T00:00:00`;
+    const dayEnd = `${date}T23:59:59`;
+    const gcalBusy = await getFreeBusy(biz.id, dayStart, dayEnd);
+
+    for (const busy of gcalBusy) {
+      const busyStart = new Date(busy.start);
+      const busyEnd = new Date(busy.end);
+      const startMin = busyStart.getHours() * 60 + busyStart.getMinutes();
+      const endMin = busyEnd.getHours() * 60 + busyEnd.getMinutes();
+      if (endMin > startMin) {
+        blockedRanges.push({ start: startMin, end: endMin });
+      }
+    }
+  } catch {
+    // Google Calendar unavailable — fall back to DB-only
+  }
 
   function isBlocked(slotStartMin: number, slotDurationMin: number): boolean {
     const slotEnd = slotStartMin + slotDurationMin;
