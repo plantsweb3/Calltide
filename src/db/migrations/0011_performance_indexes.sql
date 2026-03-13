@@ -1,43 +1,82 @@
 -- Performance indexes on foreign key columns used in JOINs and WHERE clauses
 CREATE INDEX IF NOT EXISTS idx_calls_business_id ON calls(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_calls_status ON calls(status);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_calls_created_at ON calls(created_at);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_appointments_business_id ON appointments(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(date);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_sms_messages_business_id ON sms_messages(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_call_qa_scores_business_id ON call_qa_scores(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_nps_responses_business_id ON nps_responses(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_referrals_referrer ON referrals(referrer_business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_activity_log_entity ON activity_log(entity_type, entity_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_churn_risk_scores_customer ON churn_risk_scores(customer_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_payment_events_business_id ON payment_events(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_dunning_state_business_id ON dunning_state(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_notifications_acknowledged ON notifications(acknowledged);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_notifications_source ON notifications(source);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_outreach_log_business_sent ON outreach_log(business_id, sent_at);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_leads_business_id ON leads(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_incidents_status ON incidents(status);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_subscription_events_business ON subscription_events(business_id);
+--> statement-breakpoint
 
 -- Additional FK indexes for remaining foreign key columns
 CREATE INDEX IF NOT EXISTS idx_calls_lead_id ON calls(lead_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_appointments_lead_id ON appointments(lead_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_appointments_call_id ON appointments(call_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_sms_messages_lead_id ON sms_messages(lead_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_sms_messages_call_id ON sms_messages(call_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_outbound_campaigns_business_id ON outbound_campaigns(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_campaign_contacts_campaign_id ON campaign_contacts(campaign_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_campaign_contacts_lead_id ON campaign_contacts(lead_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_prospect_audit_calls_prospect_id ON prospect_audit_calls(prospect_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_prospect_outreach_prospect_id ON prospect_outreach(prospect_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_demos_prospect_id ON demos(prospect_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_customer_notes_customer_id ON customer_notes(customer_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_escalations_call_id ON escalations(call_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_escalations_customer_id ON escalations(customer_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_call_qa_scores_call_id ON call_qa_scores(call_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_client_success_log_business_id ON client_success_log(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_help_articles_category_id ON help_articles(category_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_help_article_feedback_article_id ON help_article_feedback(article_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_incident_updates_incident_id ON incident_updates(incident_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_incident_notifications_incident_id ON incident_notifications(incident_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_client_costs_business_id ON client_costs(business_id);

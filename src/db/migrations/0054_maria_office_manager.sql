@@ -1,4 +1,4 @@
-CREATE TABLE chat_messages (
+CREATE TABLE IF NOT EXISTS chat_messages (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1,1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6)))),
   business_id TEXT NOT NULL REFERENCES businesses(id),
   role TEXT NOT NULL DEFAULT 'user',
@@ -9,8 +9,9 @@ CREATE TABLE chat_messages (
   token_count INTEGER DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
-CREATE TABLE business_context_notes (
+CREATE TABLE IF NOT EXISTS business_context_notes (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1,1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6)))),
   business_id TEXT NOT NULL REFERENCES businesses(id),
   category TEXT NOT NULL DEFAULT 'context',
@@ -20,8 +21,9 @@ CREATE TABLE business_context_notes (
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
-CREATE TABLE conversation_summaries (
+CREATE TABLE IF NOT EXISTS conversation_summaries (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1,1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6)))),
   business_id TEXT NOT NULL REFERENCES businesses(id),
   channel TEXT NOT NULL DEFAULT 'dashboard',
@@ -31,8 +33,9 @@ CREATE TABLE conversation_summaries (
   newest_message_at TEXT NOT NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
-CREATE TABLE weather_cache (
+CREATE TABLE IF NOT EXISTS weather_cache (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1,1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6)))),
   location_key TEXT NOT NULL,
   lat REAL NOT NULL,
@@ -41,15 +44,21 @@ CREATE TABLE weather_cache (
   expires_at TEXT NOT NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
-CREATE INDEX idx_chat_messages_business_created ON chat_messages(business_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_chat_messages_business_created ON chat_messages(business_id, created_at);
+--> statement-breakpoint
 
-CREATE INDEX idx_chat_messages_channel ON chat_messages(business_id, channel, created_at);
+CREATE INDEX IF NOT EXISTS idx_chat_messages_channel ON chat_messages(business_id, channel, created_at);
+--> statement-breakpoint
 
-CREATE INDEX idx_context_notes_business ON business_context_notes(business_id, category);
+CREATE INDEX IF NOT EXISTS idx_context_notes_business ON business_context_notes(business_id, category);
+--> statement-breakpoint
 
-CREATE INDEX idx_conv_summaries_business ON conversation_summaries(business_id, channel);
+CREATE INDEX IF NOT EXISTS idx_conv_summaries_business ON conversation_summaries(business_id, channel);
+--> statement-breakpoint
 
-CREATE INDEX idx_weather_cache_location ON weather_cache(location_key);
+CREATE INDEX IF NOT EXISTS idx_weather_cache_location ON weather_cache(location_key);
+--> statement-breakpoint
 
-CREATE INDEX idx_weather_cache_expires ON weather_cache(expires_at);
+CREATE INDEX IF NOT EXISTS idx_weather_cache_expires ON weather_cache(expires_at);

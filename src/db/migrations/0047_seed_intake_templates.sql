@@ -1,6 +1,5 @@
 -- Seed intake templates for 10 trades × 2 scope levels
 -- Migration: 0047_seed_intake_templates
-
 -- ═══ PAINT — RESIDENTIAL (6 questions) ═══
 INSERT INTO trade_intake_templates (trade_type, scope_level, question_order, question_key, question_text, question_text_es, field_type, options_json, required) VALUES
 ('paint', 'residential', 1, 'interior_exterior', 'Is this an interior job, exterior, or both?', '¿Es un trabajo de interior, exterior, o ambos?', 'select', '["interior","exterior","both"]', 1),

@@ -28,5 +28,6 @@ CREATE TABLE `agent_config` (
 	`updated_at` text DEFAULT (datetime('now')) NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `agent_config_agent_name_unique` ON `agent_config` (`agent_name`);--> statement-breakpoint
+CREATE UNIQUE INDEX `agent_config_agent_name_unique` ON `agent_config` (`agent_name`);
+--> statement-breakpoint
 ALTER TABLE `leads` ADD `sms_opt_out` integer DEFAULT false;

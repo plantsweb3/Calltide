@@ -6,7 +6,8 @@ CREATE TABLE `active_calls` (
 	`provider` text DEFAULT 'twilio'
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `active_calls_call_sid_unique` ON `active_calls` (`call_sid`);--> statement-breakpoint
+CREATE UNIQUE INDEX `active_calls_call_sid_unique` ON `active_calls` (`call_sid`);
+--> statement-breakpoint
 CREATE TABLE `capacity_alerts` (
 	`id` text PRIMARY KEY NOT NULL,
 	`provider` text NOT NULL,
@@ -176,7 +177,8 @@ CREATE TABLE `processed_stripe_events` (
 	`processed_at` text DEFAULT (datetime('now')) NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `processed_stripe_events_stripe_event_id_unique` ON `processed_stripe_events` (`stripe_event_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `processed_stripe_events_stripe_event_id_unique` ON `processed_stripe_events` (`stripe_event_id`);
+--> statement-breakpoint
 CREATE TABLE `scaling_playbook` (
 	`id` text PRIMARY KEY NOT NULL,
 	`tier` text NOT NULL,
@@ -201,7 +203,8 @@ CREATE TABLE `sms_opt_outs` (
 	`created_at` text DEFAULT (datetime('now'))
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `sms_opt_outs_phone_number_unique` ON `sms_opt_outs` (`phone_number`);--> statement-breakpoint
+CREATE UNIQUE INDEX `sms_opt_outs_phone_number_unique` ON `sms_opt_outs` (`phone_number`);
+--> statement-breakpoint
 CREATE TABLE `sub_processors` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
@@ -227,23 +230,42 @@ CREATE TABLE `subscription_events` (
 	FOREIGN KEY (`business_id`) REFERENCES `businesses`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-ALTER TABLE `businesses` ADD `tos_accepted_version` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `tos_accepted_at` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `privacy_accepted_version` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `privacy_accepted_at` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `dpa_accepted_version` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `dpa_accepted_at` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `data_deleted_at` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `data_retention_hold_until` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `stripe_customer_id` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `stripe_subscription_id` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `stripe_subscription_status` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `payment_status` text DEFAULT 'active';--> statement-breakpoint
-ALTER TABLE `businesses` ADD `last_payment_at` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `last_payment_amount` integer;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `next_billing_at` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `mrr` integer DEFAULT 49700;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `lifetime_revenue` integer DEFAULT 0;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `card_last4` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `card_exp_month` integer;--> statement-breakpoint
+ALTER TABLE `businesses` ADD `tos_accepted_version` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `tos_accepted_at` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `privacy_accepted_version` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `privacy_accepted_at` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `dpa_accepted_version` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `dpa_accepted_at` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `data_deleted_at` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `data_retention_hold_until` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `stripe_customer_id` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `stripe_subscription_id` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `stripe_subscription_status` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `payment_status` text DEFAULT 'active';
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `last_payment_at` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `last_payment_amount` integer;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `next_billing_at` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `mrr` integer DEFAULT 49700;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `lifetime_revenue` integer DEFAULT 0;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `card_last4` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `card_exp_month` integer;
+--> statement-breakpoint
 ALTER TABLE `businesses` ADD `card_exp_year` integer;

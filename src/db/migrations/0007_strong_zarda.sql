@@ -37,7 +37,8 @@ CREATE TABLE `help_articles` (
 	FOREIGN KEY (`category_id`) REFERENCES `help_categories`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `help_articles_slug_unique` ON `help_articles` (`slug`);--> statement-breakpoint
+CREATE UNIQUE INDEX `help_articles_slug_unique` ON `help_articles` (`slug`);
+--> statement-breakpoint
 CREATE TABLE `help_categories` (
 	`id` text PRIMARY KEY NOT NULL,
 	`slug` text NOT NULL,
@@ -52,7 +53,8 @@ CREATE TABLE `help_categories` (
 	`updated_at` text DEFAULT (datetime('now'))
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `help_categories_slug_unique` ON `help_categories` (`slug`);--> statement-breakpoint
+CREATE UNIQUE INDEX `help_categories_slug_unique` ON `help_categories` (`slug`);
+--> statement-breakpoint
 CREATE TABLE `help_search_misses` (
 	`id` text PRIMARY KEY NOT NULL,
 	`query` text NOT NULL,

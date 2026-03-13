@@ -16,5 +16,7 @@ CREATE TABLE IF NOT EXISTS demo_sessions (
   user_agent TEXT,
   estimated_monthly_loss INTEGER
 );
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_demo_sessions_ip ON demo_sessions(ip_hash, started_at);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_demo_sessions_type ON demo_sessions(business_type);

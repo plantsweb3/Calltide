@@ -3,7 +3,6 @@
 -- which silently skipped if the table already existed from 0009. This migration ensures
 -- all 18 columns from the current schema are present.
 -- active_calls is ephemeral (only tracks in-progress calls), so DROP + CREATE is safe.
-
 DROP TABLE IF EXISTS `active_calls`;
 --> statement-breakpoint
 CREATE TABLE `active_calls` (

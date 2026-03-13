@@ -1,4 +1,4 @@
-CREATE TABLE `knowledge_gaps` (
+CREATE TABLE IF NOT EXISTS `knowledge_gaps` (
 	`id` text PRIMARY KEY NOT NULL,
 	`business_id` text NOT NULL,
 	`call_id` text,

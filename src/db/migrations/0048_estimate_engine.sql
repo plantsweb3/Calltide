@@ -1,8 +1,8 @@
 -- Migration 0048: Dual-Mode Estimate Engine
 -- Adds pricing_ranges for structured estimates and job_cards for owner review
-
 -- Add estimate_mode to businesses
 ALTER TABLE businesses ADD COLUMN estimate_mode TEXT DEFAULT 'quick';
+--> statement-breakpoint
 
 -- Pricing ranges: supports both quick (flat min/max) and advanced (formula) modes
 CREATE TABLE IF NOT EXISTS pricing_ranges (
@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS pricing_ranges (
   updated_at TEXT DEFAULT (datetime('now')),
   UNIQUE(business_id, job_type_key)
 );
+--> statement-breakpoint
 
 -- Job cards: structured estimate summaries for owner review
 CREATE TABLE IF NOT EXISTS job_cards (
@@ -54,10 +55,15 @@ CREATE TABLE IF NOT EXISTS job_cards (
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
 -- Indexes for common queries
 CREATE INDEX IF NOT EXISTS idx_pricing_ranges_business ON pricing_ranges(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_pricing_ranges_trade ON pricing_ranges(business_id, trade_type);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_job_cards_business ON job_cards(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_job_cards_call ON job_cards(call_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_job_cards_status ON job_cards(business_id, status);

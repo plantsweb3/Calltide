@@ -1,5 +1,4 @@
 -- Live call monitoring infrastructure
-
 CREATE TABLE IF NOT EXISTS `active_calls` (
   `id` text PRIMARY KEY NOT NULL,
   `business_id` text NOT NULL,
@@ -20,9 +19,12 @@ CREATE TABLE IF NOT EXISTS `active_calls` (
   `metadata` text,
   FOREIGN KEY (`business_id`) REFERENCES `businesses`(`id`)
 );
+--> statement-breakpoint
 
 CREATE INDEX IF NOT EXISTS `idx_active_calls_status` ON `active_calls` (`status`);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS `idx_active_calls_business` ON `active_calls` (`business_id`);
+--> statement-breakpoint
 
 CREATE TABLE IF NOT EXISTS `call_peaks` (
   `id` text PRIMARY KEY NOT NULL,
@@ -34,5 +36,6 @@ CREATE TABLE IF NOT EXISTS `call_peaks` (
   `created_at` text DEFAULT (datetime('now')) NOT NULL,
   `updated_at` text DEFAULT (datetime('now')) NOT NULL
 );
+--> statement-breakpoint
 
 CREATE UNIQUE INDEX IF NOT EXISTS `idx_call_peaks_date` ON `call_peaks` (`date`);

@@ -43,7 +43,8 @@ CREATE TABLE `blog_posts` (
 	`updated_at` text DEFAULT (datetime('now')) NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `blog_posts_slug_unique` ON `blog_posts` (`slug`);--> statement-breakpoint
+CREATE UNIQUE INDEX `blog_posts_slug_unique` ON `blog_posts` (`slug`);
+--> statement-breakpoint
 CREATE TABLE `content_queue` (
 	`id` text PRIMARY KEY NOT NULL,
 	`platform` text NOT NULL,

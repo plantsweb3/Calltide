@@ -20,10 +20,14 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `created_at` text NOT NULL DEFAULT (datetime('now')),
   `updated_at` text NOT NULL DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
 CREATE UNIQUE INDEX IF NOT EXISTS `customers_business_phone_idx` ON `customers` (`business_id`, `phone`);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS `customers_business_idx` ON `customers` (`business_id`);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS `customers_business_last_call_idx` ON `customers` (`business_id`, `last_call_at`);
+--> statement-breakpoint
 
 -- CRM: Estimates table
 CREATE TABLE IF NOT EXISTS `estimates` (
@@ -45,15 +49,22 @@ CREATE TABLE IF NOT EXISTS `estimates` (
   `created_at` text NOT NULL DEFAULT (datetime('now')),
   `updated_at` text NOT NULL DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
 CREATE INDEX IF NOT EXISTS `estimates_business_status_idx` ON `estimates` (`business_id`, `status`);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS `estimates_next_followup_idx` ON `estimates` (`next_follow_up_at`);
+--> statement-breakpoint
 
 -- Add new columns to calls
 ALTER TABLE `calls` ADD COLUMN `outcome` text;
+--> statement-breakpoint
 ALTER TABLE `calls` ADD COLUMN `audio_url` text;
+--> statement-breakpoint
 ALTER TABLE `calls` ADD COLUMN `customer_id` text REFERENCES `customers`(`id`);
+--> statement-breakpoint
 
 -- Add new columns to businesses
 ALTER TABLE `businesses` ADD COLUMN `personality_notes` text;
+--> statement-breakpoint
 ALTER TABLE `businesses` ADD COLUMN `audio_retention_days` integer DEFAULT 90;

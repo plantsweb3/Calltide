@@ -10,3 +10,4 @@
 --   data_deletion_requests.status DEFAULT 'received'   NOT NULL
 --
 -- No SQL statements needed — existing rows already have defaults.
+SELECT 1;

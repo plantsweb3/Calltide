@@ -1,5 +1,4 @@
 -- Owner Response Loop: tracks owner replies to job card SMS + customer notifications
-
 CREATE TABLE IF NOT EXISTS owner_responses (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
   business_id TEXT NOT NULL REFERENCES businesses(id),
@@ -13,9 +12,12 @@ CREATE TABLE IF NOT EXISTS owner_responses (
   twilio_sid TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
-CREATE INDEX idx_owner_responses_job_card ON owner_responses(job_card_id);
-CREATE INDEX idx_owner_responses_business ON owner_responses(business_id);
+CREATE INDEX IF NOT EXISTS idx_owner_responses_job_card ON owner_responses(job_card_id);
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS idx_owner_responses_business ON owner_responses(business_id);
+--> statement-breakpoint
 
 CREATE TABLE IF NOT EXISTS customer_notifications (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
@@ -28,10 +30,14 @@ CREATE TABLE IF NOT EXISTS customer_notifications (
   twilio_sid TEXT,
   sent_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
-CREATE INDEX idx_customer_notifications_job_card ON customer_notifications(job_card_id);
-CREATE INDEX idx_customer_notifications_lead ON customer_notifications(lead_id);
+CREATE INDEX IF NOT EXISTS idx_customer_notifications_job_card ON customer_notifications(job_card_id);
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS idx_customer_notifications_lead ON customer_notifications(lead_id);
+--> statement-breakpoint
 
 -- Add expiration tracking to job_cards
 ALTER TABLE job_cards ADD COLUMN reminder_sent_at TEXT;
+--> statement-breakpoint
 ALTER TABLE job_cards ADD COLUMN expired_at TEXT;

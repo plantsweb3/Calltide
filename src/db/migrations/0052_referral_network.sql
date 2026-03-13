@@ -1,6 +1,5 @@
 -- Referral Network: cross-trade partner referrals between businesses
-
-CREATE TABLE business_partners (
+CREATE TABLE IF NOT EXISTS business_partners (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
   business_id TEXT NOT NULL REFERENCES businesses(id),
   partner_business_id TEXT REFERENCES businesses(id),
@@ -16,11 +15,14 @@ CREATE TABLE business_partners (
   updated_at TEXT DEFAULT (datetime('now')),
   UNIQUE(business_id, partner_phone)
 );
+--> statement-breakpoint
 
-CREATE INDEX idx_business_partners_business ON business_partners(business_id);
-CREATE INDEX idx_business_partners_trade ON business_partners(business_id, partner_trade);
+CREATE INDEX IF NOT EXISTS idx_business_partners_business ON business_partners(business_id);
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS idx_business_partners_trade ON business_partners(business_id, partner_trade);
+--> statement-breakpoint
 
-CREATE TABLE partner_referrals (
+CREATE TABLE IF NOT EXISTS partner_referrals (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
   referring_business_id TEXT NOT NULL REFERENCES businesses(id),
   partner_id TEXT NOT NULL REFERENCES business_partners(id),
@@ -34,6 +36,8 @@ CREATE TABLE partner_referrals (
   outcome TEXT DEFAULT 'pending',
   created_at TEXT DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
-CREATE INDEX idx_partner_referrals_business ON partner_referrals(referring_business_id);
-CREATE INDEX idx_partner_referrals_partner ON partner_referrals(partner_id);
+CREATE INDEX IF NOT EXISTS idx_partner_referrals_business ON partner_referrals(referring_business_id);
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS idx_partner_referrals_partner ON partner_referrals(partner_id);

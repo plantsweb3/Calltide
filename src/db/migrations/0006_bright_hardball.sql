@@ -52,10 +52,16 @@ CREATE TABLE `referrals` (
 	FOREIGN KEY (`referrer_business_id`) REFERENCES `businesses`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-ALTER TABLE `businesses` ADD `referral_code` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `health_score` integer DEFAULT 50;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `last_nps_score` integer;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `last_nps_date` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `onboarding_qa_grade` text;--> statement-breakpoint
-ALTER TABLE `businesses` ADD `onboarding_qa_complete_at` text;--> statement-breakpoint
+ALTER TABLE `businesses` ADD `referral_code` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `health_score` integer DEFAULT 50;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `last_nps_score` integer;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `last_nps_date` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `onboarding_qa_grade` text;
+--> statement-breakpoint
+ALTER TABLE `businesses` ADD `onboarding_qa_complete_at` text;
+--> statement-breakpoint
 CREATE UNIQUE INDEX `businesses_referral_code_unique` ON `businesses` (`referral_code`);

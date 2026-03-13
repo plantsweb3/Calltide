@@ -1,7 +1,6 @@
 -- Trade Intake Engine: structured qualifying questions per trade
 -- Migration: 0046_trade_intake_engine
-
-CREATE TABLE trade_intake_templates (
+CREATE TABLE IF NOT EXISTS trade_intake_templates (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
   trade_type TEXT NOT NULL,
   scope_level TEXT NOT NULL DEFAULT 'residential',
@@ -19,7 +18,7 @@ CREATE TABLE trade_intake_templates (
 );
 --> statement-breakpoint
 
-CREATE TABLE job_intakes (
+CREATE TABLE IF NOT EXISTS job_intakes (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
   business_id TEXT NOT NULL REFERENCES businesses(id),
   call_id TEXT REFERENCES calls(id),
@@ -35,7 +34,7 @@ CREATE TABLE job_intakes (
 );
 --> statement-breakpoint
 
-CREATE TABLE custom_intake_questions (
+CREATE TABLE IF NOT EXISTS custom_intake_questions (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
   business_id TEXT NOT NULL REFERENCES businesses(id),
   question_order INTEGER NOT NULL,
@@ -50,12 +49,12 @@ CREATE TABLE custom_intake_questions (
 );
 --> statement-breakpoint
 
-CREATE INDEX idx_trade_intake_templates_trade ON trade_intake_templates(trade_type, scope_level);
+CREATE INDEX IF NOT EXISTS idx_trade_intake_templates_trade ON trade_intake_templates(trade_type, scope_level);
 --> statement-breakpoint
-CREATE INDEX idx_job_intakes_business ON job_intakes(business_id);
+CREATE INDEX IF NOT EXISTS idx_job_intakes_business ON job_intakes(business_id);
 --> statement-breakpoint
-CREATE INDEX idx_job_intakes_call ON job_intakes(call_id);
+CREATE INDEX IF NOT EXISTS idx_job_intakes_call ON job_intakes(call_id);
 --> statement-breakpoint
-CREATE INDEX idx_job_intakes_lead ON job_intakes(lead_id);
+CREATE INDEX IF NOT EXISTS idx_job_intakes_lead ON job_intakes(lead_id);
 --> statement-breakpoint
-CREATE INDEX idx_custom_intake_questions_business ON custom_intake_questions(business_id);
+CREATE INDEX IF NOT EXISTS idx_custom_intake_questions_business ON custom_intake_questions(business_id);

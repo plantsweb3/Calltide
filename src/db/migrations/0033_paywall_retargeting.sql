@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS `paywall_emails` (
   `clicked_at` text,
   `created_at` text NOT NULL DEFAULT (datetime('now'))
 );
+--> statement-breakpoint
 
 -- Unsubscribe flag for paywall emails
 ALTER TABLE `businesses` ADD COLUMN `paywall_unsubscribed` integer DEFAULT false;
