@@ -2,7 +2,7 @@
   "crons": [
     { "path": "/api/capacity/real-time", "schedule": "0 5 * * *" },
     { "path": "/api/agents/health", "schedule": "0 4 * * *" },
-    { "path": "/api/agents/onboard", "schedule": "0 */3 * * *" },
+    { "path": "/api/agents/onboard", "schedule": "0 6 * * *" },
     { "path": "/api/capacity/snapshot", "schedule": "55 5 * * *" },
     { "path": "/api/financial/mrr-snapshot", "schedule": "0 6 * * *" },
     { "path": "/api/agents/qualify", "schedule": "0 8 * * *" },
