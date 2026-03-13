@@ -25,6 +25,7 @@ export function StaticNav({ lang, langHref }: StaticNavProps) {
           <Link href="/platform" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{labels.platform}</Link>
           <Link href="/pricing" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{labels.pricing}</Link>
           <Link href="/about" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{labels.about}</Link>
+          <Link href={lang === "en" ? "/blog" : "/es/blog"} className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Blog</Link>
           <Link href={lang === "en" ? "/help" : "/es/help"} className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{labels.help}</Link>
           <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{PHONE}</a>
         </div>

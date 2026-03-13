@@ -27,6 +27,9 @@ export function Nav({ lang, toggleLang, scrolled }: NavProps) {
           <a href="/about" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">
             {t.footer.about}
           </a>
+          <a href={lang === "en" ? "/blog" : "/es/blog"} className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">
+            Blog
+          </a>
           <a href={lang === "en" ? "/help" : "/es/help"} className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">
             {t.nav.help}
           </a>
@@ -58,6 +61,7 @@ export function Nav({ lang, toggleLang, scrolled }: NavProps) {
             <a href="/platform" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">{t.footer.platform}</a>
             <a href="/pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">{t.pricing.label}</a>
             <a href="/about" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">{t.footer.about}</a>
+            <a href={lang === "en" ? "/blog" : "/es/blog"} onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Blog</a>
             <a href={lang === "en" ? "/help" : "/es/help"} onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">{t.nav.help}</a>
             <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted">{PHONE}</a>
             <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">{t.nav.login}</a>
