@@ -12,6 +12,7 @@ import { SpotlightCard } from "@/components/marketing/SpotlightCard";
 import { Counter } from "@/components/marketing/Counter";
 import { ROICalculator } from "@/components/marketing/ROICalculator";
 import { FAQ } from "@/components/marketing/FAQ";
+import { MissedCallCalculator } from "@/components/marketing/MissedCallCalculator";
 import { MobileCTA } from "@/components/marketing/MobileCTA";
 import { Nav } from "@/components/marketing/Nav";
 import { Footer } from "@/components/marketing/Footer";
@@ -585,7 +586,10 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
         </section>
       )}
 
-      {/* ── 13. FINAL CTA ── */}
+      {/* ── 13. MISSED CALL CALCULATOR ── */}
+      <MissedCallCalculator lang={lang} />
+
+      {/* ── 14. FINAL CTA ── */}
       <section className="relative px-6 sm:px-8 py-24 sm:py-32 overflow-hidden dark-section grain-overlay">
         <Image src="/images/grit-texture.webp" alt="" fill className="object-cover object-center" loading="lazy" />
         <div className="grit-overlay-cta absolute inset-0" />

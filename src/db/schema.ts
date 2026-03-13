@@ -552,6 +552,27 @@ export const blogPosts = sqliteTable("blog_posts", {
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
 
+// ── Marketing Email Leads ──
+// Captures email leads from the website (missed call calculator, guides, etc.)
+
+export const marketingLeads = sqliteTable("marketing_leads", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  email: text("email").notNull(),
+  name: text("name"),
+  trade: text("trade"), // plumbing, hvac, electrical, etc.
+  source: text("source").notNull().default("calculator"), // calculator, guide, newsletter
+  estimatedMonthlyLoss: integer("estimated_monthly_loss"),
+  avgJobValue: integer("avg_job_value"),
+  missedCallsPerWeek: integer("missed_calls_per_week"),
+  language: text("language").default("en"),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  convertedToSetup: integer("converted_to_setup", { mode: "boolean" }).default(false),
+  convertedAt: text("converted_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
 export const auditRequests = sqliteTable("audit_requests", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   businessName: text("business_name").notNull(),
