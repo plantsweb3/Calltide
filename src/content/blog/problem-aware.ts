@@ -37,7 +37,7 @@ One missed call per day × 250 working days × $400 average job × 35% conversio
 
 An AI receptionist answers every call, 24/7, for $497/month. It's the cheapest insurance policy your business can buy.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -81,7 +81,7 @@ Una llamada perdida por día × 250 días × $400 trabajo promedio × 35% conver
 
 Una recepcionista AI contesta cada llamada, 24/7, por $497/mes.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 2 ════ */
   {
@@ -133,7 +133,7 @@ Capta's Maria answers 24/7, books appointments, detects emergencies, and speaks 
 
 Your voicemail is costing you $6,700/month in lost revenue. Replacing it with AI costs $497/month. The math is simple.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 2 ════ */
   {
@@ -172,7 +172,7 @@ María contesta cada llamada inmediatamente. Sin buzón. $497/mes fijo.
 
 Tu buzón te cuesta $6,700/mes en ingresos perdidos. Reemplazarlo con AI cuesta $497/mes.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 3 ════ */
   {
@@ -228,7 +228,7 @@ An AI receptionist like Capta's Maria answers every call. Your miss rate drops t
 
 For most contractors, the first week with Capta captures enough additional jobs to cover the entire month's cost.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 3 ════ */
   {
@@ -269,7 +269,7 @@ A $400 trabajo promedio y 35% conversión:
 
 María contesta cada llamada. Tu tasa de pérdida baja a efectivamente cero. Cobertura 24/7.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 4 ════ */
   {
@@ -331,7 +331,7 @@ Capta: **$5,964/year** ($497/month) or **$4,764/year** on the annual plan.
 
 That's **85-92% less** than a human receptionist with **4x the coverage hours**.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 4 ════ */
   {
@@ -371,7 +371,7 @@ Capta: **$5,964/año** ($497/mes) o **$4,764/año** en el plan anual.
 
 Eso es **85-92% menos** que una recepcionista humana con **4x las horas de cobertura**.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 5 ════ */
   {
@@ -418,7 +418,7 @@ Capta's AI receptionist solves all five problems:
 - **Real appointment booking** — books directly into your calendar
 - **Flat pricing** — $497/month always
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 5 ════ */
   {
@@ -458,7 +458,7 @@ Capta resuelve los cinco problemas:
 - **Reserva real de citas** — agenda directamente en tu calendario
 - **Precio fijo** — $497/mes siempre
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 6 ════ */
   {
@@ -504,7 +504,7 @@ Capta's AI receptionist Maria provides:
 
 From missed calls to captured jobs — without hiring a single person.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 6 ════ */
   {
@@ -541,7 +541,7 @@ En 2026, hay una mejor manera. Las recepcionistas AI contestan cada llamada, 24/
 
 María provee: contestación 24/7 bilingüe, reserva automática de citas, detección de emergencias, confirmaciones SMS, CRM completo, $497/mes fijo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 7 ════ */
   {
@@ -588,7 +588,7 @@ You don't need to be bilingual yourself. You need a phone system that is.
 
 Capta's AI receptionist Maria speaks fluent English and Spanish. When a Spanish-speaking homeowner calls, Maria handles the entire conversation naturally — booking appointments, capturing details, and sending SMS confirmations in Spanish.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 7 ════ */
   {
@@ -632,7 +632,7 @@ No necesitas ser bilingüe tú mismo. Necesitas un sistema telefónico que lo se
 
 María habla inglés y español con fluidez. Cuando un propietario hispanohablante llama, María maneja toda la conversación naturalmente.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 8 ════ */
   {
@@ -681,7 +681,7 @@ Capta's Maria answers after-hours calls just as effectively as daytime calls. Sh
 
 Your most profitable leads are calling right now. Nobody's answering.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 8 ════ */
   {
@@ -719,7 +719,7 @@ Un contratista que recibe 40 llamadas/semana envía 22 al buzón después de hor
 
 María contesta llamadas fuera de horario igual de efectivamente que las diurnas. Tus clientes más rentables están llamando ahora. Nadie contesta.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 9 ════ */
   {
@@ -763,7 +763,7 @@ Capta's Maria answers your phone like you have a dedicated receptionist — beca
 
 The playing field is level. Now compete on what actually matters: your work quality, your reputation, and your relationships.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 9 ════ */
   {
@@ -800,7 +800,7 @@ María contesta tu teléfono como si tuvieras una recepcionista dedicada. Cuesta
 
 El campo está nivelado. Ahora compite en lo que realmente importa: la calidad de tu trabajo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 10 ════ */
   {
@@ -853,7 +853,7 @@ You set the rules:
 
 The automation handles the volume. The personalization comes from your configuration.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 10 ════ */
   {
@@ -887,7 +887,7 @@ Una recepcionista AI a menudo se siente más personal que un servicio tradiciona
 
 María solo representa tu negocio. Conoce tus servicios y las necesidades de tus clientes. Eso es más personal, no menos.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 11 ════ */
   {
@@ -932,7 +932,7 @@ Get your missed call rate to under 5%. An AI receptionist like Capta achieves th
 
 Most contractors go from 35-50% missed call rate to under 2% the day they activate Capta.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 11 ════ */
   {
@@ -975,7 +975,7 @@ Tu negocio está encogiéndose activamente. Acción inmediata necesaria.
 
 Baja tu tasa a menos de 5%. Capta lo logra instantáneamente — $497/mes.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ════ EN 12 ════ */
   {
@@ -1025,7 +1025,7 @@ When you finish the job, check your dashboard. See every call, every booking, ev
 
 You become more productive. Your customers get better service. Everyone wins.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   /* ════ ES 12 ════ */
   {
@@ -1065,7 +1065,7 @@ María contesta cada llamada mientras tú te concentras en el trabajo. Sin inter
 
 Cuando terminas el trabajo, revisa tu panel. Ve cada llamada, cada reserva, cada mensaje. Responde a lo que necesita tu atención. Ignora lo que no.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
 ];
 

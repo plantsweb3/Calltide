@@ -89,7 +89,7 @@ You need to capture one small repair job per month to pay for the service ten ti
 
 Getting Maria set up for your roofing company takes about five minutes. Here is the process:
 
-1. **Sign up at capta.app.** Pick your plan: $497/month or $397/month on the annual plan ($4,764/year, saves $1,200).
+1. **Sign up at captahq.com.** Pick your plan: $497/month or $397/month on the annual plan ($4,764/year, saves $1,200).
 
 2. **Tell Maria about your business.** Enter your service area, the types of roofing work you do (residential, commercial, storm damage, new construction), your hours, and your scheduling preferences.
 
@@ -152,7 +152,7 @@ Storm season does not wait for you to climb down from the roof. Neither do your 
 
 Maria answers every call, books the appointment, texts you the details, and never takes a day off. For $497 a month, you will wonder how you ever ran your roofing business without her.
 
-**[Get Capta -->](https://capta.app)**`,
+**[Get Capta -->](https://captahq.com)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -243,7 +243,7 @@ Necesitas capturar un solo trabajo de reparacion pequena al mes para pagar el se
 
 Configurar a Maria para tu empresa de techos toma unos cinco minutos. Este es el proceso:
 
-1. **Registrate en capta.app.** Escoge tu plan: $497/mes o $397/mes en el plan anual ($4,764/ano, ahorra $1,200).
+1. **Registrate en captahq.com.** Escoge tu plan: $497/mes o $397/mes en el plan anual ($4,764/ano, ahorra $1,200).
 
 2. **Cuentale a Maria sobre tu negocio.** Ingresa tu area de servicio, los tipos de trabajo de techos que haces (residencial, comercial, dano por tormentas, construccion nueva), tus horarios y tus preferencias de programacion.
 
@@ -306,7 +306,7 @@ La temporada de tormentas no espera a que bajes del techo. Tus clientes tampoco.
 
 Maria contesta cada llamada, agenda la cita, te envia los detalles por texto y nunca se toma un dia libre. Por $497 al mes, te preguntaras como manejaste tu empresa de techos sin ella.
 
-**[Obtener Capta -->](https://capta.app)**`,
+**[Obtener Capta -->](https://captahq.com)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -397,7 +397,7 @@ Capta costs $497 per month. One additional interior room job per month more than
 
 Setting up Maria for your painting business takes five minutes:
 
-1. **Sign up at capta.app.** Choose $497/month or $397/month on the annual plan ($4,764/year, saves $1,200).
+1. **Sign up at captahq.com.** Choose $497/month or $397/month on the annual plan ($4,764/year, saves $1,200).
 
 2. **Configure your business profile.** Enter your service area, the types of painting work you do (interior, exterior, residential, commercial, cabinet refinishing, deck staining), your availability for estimates, and your scheduling preferences.
 
@@ -462,7 +462,7 @@ Every missed call is an estimate you never booked and a job you never closed. Yo
 
 Maria answers every call, books every estimate, and keeps your pipeline full so your crews stay busy and your revenue keeps growing. For $497 a month, she pays for herself before the paint dries on your first extra job.
 
-**[Get Capta -->](https://capta.app)**`,
+**[Get Capta -->](https://captahq.com)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -553,7 +553,7 @@ Capta cuesta $497 al mes. Un trabajo adicional de habitacion interior al mes mas
 
 Configurar a Maria para tu negocio de pintura toma cinco minutos:
 
-1. **Registrate en capta.app.** Escoge $497/mes o $397/mes en el plan anual ($4,764/ano, ahorra $1,200).
+1. **Registrate en captahq.com.** Escoge $497/mes o $397/mes en el plan anual ($4,764/ano, ahorra $1,200).
 
 2. **Configura tu perfil de negocio.** Ingresa tu area de servicio, los tipos de trabajos de pintura que haces (interior, exterior, residencial, comercial, refinado de gabinetes, tincion de decks), tu disponibilidad para presupuestos y tus preferencias de programacion.
 
@@ -618,7 +618,7 @@ Cada llamada perdida es un presupuesto que nunca agendaste y un trabajo que nunc
 
 Maria contesta cada llamada, agenda cada presupuesto y mantiene tu pipeline lleno para que tus cuadrillas se mantengan ocupadas y tus ingresos sigan creciendo. Por $497 al mes, se paga sola antes de que se seque la pintura de tu primer trabajo extra.
 
-**[Obtener Capta -->](https://capta.app)**`,
+**[Obtener Capta -->](https://captahq.com)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -713,7 +713,7 @@ Capta costs $497 per month. One additional small project per year more than cove
 
 Setting up Maria for your general contracting business takes five minutes:
 
-1. **Sign up at capta.app.** Choose $497/month or $397/month on the annual plan ($4,764/year, saves $1,200).
+1. **Sign up at captahq.com.** Choose $497/month or $397/month on the annual plan ($4,764/year, saves $1,200).
 
 2. **Configure your business profile.** Enter your service area, the types of projects you handle (renovations, additions, new construction, commercial, etc.), your consultation availability, and any specific intake questions you want Maria to ask.
 
@@ -781,7 +781,7 @@ You became a general contractor to build things, not to be chained to your phone
 
 Maria gives you a professional front office for $497 a month. She answers every call, books every consultation, and makes sure no opportunity slips through the cracks while you are doing what you do best.
 
-**[Get Capta -->](https://capta.app)**`,
+**[Get Capta -->](https://captahq.com)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -876,7 +876,7 @@ Capta cuesta $497 al mes. Un solo proyecto adicional pequeno al ano cubre mas de
 
 Configurar a Maria para tu negocio de contratacion general toma cinco minutos:
 
-1. **Registrate en capta.app.** Escoge $497/mes o $397/mes en el plan anual ($4,764/ano, ahorra $1,200).
+1. **Registrate en captahq.com.** Escoge $497/mes o $397/mes en el plan anual ($4,764/ano, ahorra $1,200).
 
 2. **Configura tu perfil de negocio.** Ingresa tu area de servicio, los tipos de proyectos que manejas (renovaciones, ampliaciones, construccion nueva, comercial, etc.), tu disponibilidad para consultas y cualquier pregunta especifica que quieras que Maria haga.
 
@@ -944,7 +944,7 @@ Te hiciste contratista general para construir cosas, no para estar encadenado a 
 
 Maria te da una oficina profesional por $497 al mes. Contesta cada llamada, agenda cada consulta y se asegura de que ninguna oportunidad se te escape mientras haces lo que mejor sabes hacer.
 
-**[Obtener Capta -->](https://capta.app)**`,
+**[Obtener Capta -->](https://captahq.com)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1054,7 +1054,7 @@ Capta costs $497 per month. Two additional general treatments per month cover th
 
 Setting up Maria for your pest control company takes about five minutes:
 
-1. **Sign up at capta.app.** Choose $497/month or $397/month on the annual plan ($4,764/year, saves $1,200).
+1. **Sign up at captahq.com.** Choose $497/month or $397/month on the annual plan ($4,764/year, saves $1,200).
 
 2. **Configure your business profile.** Enter your service area, the types of pest services you offer (general pest, termite, rodent, wildlife, bed bugs, mosquito, lawn pest), your availability, and your emergency response protocol.
 
@@ -1124,7 +1124,7 @@ Pests do not wait. Neither do the customers calling about them. When a homeowner
 
 Maria answers every call, books every appointment, flags every emergency, and captures every customer, even when you are in a crawl space, in an attic, or elbow-deep in a treatment. For $497 a month, you will never lose another customer to a missed call.
 
-**[Get Capta -->](https://capta.app)**`,
+**[Get Capta -->](https://captahq.com)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1234,7 +1234,7 @@ Capta cuesta $497 al mes. Dos tratamientos generales adicionales al mes cubren e
 
 Configurar a Maria para tu empresa de control de plagas toma unos cinco minutos:
 
-1. **Registrate en capta.app.** Escoge $497/mes o $397/mes en el plan anual ($4,764/ano, ahorra $1,200).
+1. **Registrate en captahq.com.** Escoge $497/mes o $397/mes en el plan anual ($4,764/ano, ahorra $1,200).
 
 2. **Configura tu perfil de negocio.** Ingresa tu area de servicio, los tipos de servicios de plagas que ofreces (plagas generales, termitas, roedores, vida silvestre, chinches de cama, mosquitos, plagas de jardin), tu disponibilidad y tu protocolo de respuesta de emergencia.
 
@@ -1304,7 +1304,7 @@ Las plagas no esperan. Tampoco los clientes que llaman por ellas. Cuando un duen
 
 Maria contesta cada llamada, agenda cada cita, marca cada emergencia y captura cada cliente, incluso cuando estas en un espacio de rastreo, en un atico o hasta los codos en un tratamiento. Por $497 al mes, nunca perderas otro cliente por una llamada perdida.
 
-**[Obtener Capta -->](https://capta.app)**`,
+**[Obtener Capta -->](https://captahq.com)**`,
   },
 ];
 

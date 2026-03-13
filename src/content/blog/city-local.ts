@@ -33,7 +33,7 @@ Capta's Maria speaks fluent English and Spanish. She doesn't translate — she c
 - **SMS confirmations** in English or Spanish
 - **30-day money-back guarantee**
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -68,7 +68,7 @@ Dos tercios de la población habla español en casa. María habla inglés y espa
 
 **$497/mes fijo. Garantía de 30 días.**
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 2. Houston ═══ */
   { title: "Best AI Receptionist for Contractors in Houston", slug: "best-ai-receptionist-contractors-houston", language: "en", category: "city-specific",
@@ -92,7 +92,7 @@ Houston is the largest city in Texas and the 4th largest in America. With 7+ mil
 
 Houston contractors need an answering solution that handles weather-driven surges without breaking the bank. Capta's flat $497/mo pricing means your post-hurricane phone bill is the same as a normal month. Maria answers 24/7 in English and Spanish, books appointments, and detects emergencies.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en Houston", slug: "mejor-recepcionista-ai-contratistas-houston", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI para Contratistas en Houston | Capta", metaDescription: "Contratistas en Houston enfrentan huracanes, inundaciones, y calor extremo. Recepcionista AI 24/7 con soporte bilingüe. $497/mes fijo.",
@@ -110,7 +110,7 @@ Houston es la ciudad más grande de Texas con 7+ millones en el metro, eventos c
 
 El precio fijo de $497/mes de Capta significa que tu factura post-huracán es igual que un mes normal. María contesta 24/7 en inglés y español.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 3. Dallas ═══ */
   { title: "Best AI Receptionist for Contractors in Dallas", slug: "best-ai-receptionist-contractors-dallas", language: "en", category: "city-specific",
@@ -130,7 +130,7 @@ The Dallas-Fort Worth metroplex is one of the fastest-growing regions in America
 
 The contractors winning in DFW are the ones who answer every call. With Capta's Maria handling your phone 24/7 in English and Spanish, you never miss a lead. $497/mo flat.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en Dallas", slug: "mejor-recepcionista-ai-contratistas-dallas", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI para Contratistas en Dallas | Capta", metaDescription: "DFW crece explosivamente con nueva construcción. Recepcionista AI maneja el volumen, agenda citas, habla inglés y español.",
@@ -148,7 +148,7 @@ El metroplex Dallas-Fort Worth es una de las regiones de mayor crecimiento en Am
 
 Los contratistas ganando en DFW son los que contestan cada llamada. María maneja tu teléfono 24/7 en inglés y español. $497/mes fijo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 4. Austin ═══ */
   { title: "Best AI Receptionist for Contractors in Austin", slug: "best-ai-receptionist-contractors-austin", language: "en", category: "city-specific",
@@ -168,7 +168,7 @@ Austin is the tech capital of Texas. Its homeowners are digitally savvy, expect 
 
 Austin homeowners google, compare, and call 3-5 contractors. The first one who answers gets the job. Capta's Maria ensures you're always that first answer. $497/mo flat.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en Austin", slug: "mejor-recepcionista-ai-contratistas-austin", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI para Contratistas en Austin | Capta", metaDescription: "Los propietarios de Austin esperan respuestas instantáneas. Recepcionista AI cumple sus expectativas mientras trabajas.",
@@ -186,7 +186,7 @@ Austin es la capital tecnológica de Texas. Sus propietarios esperan respuestas 
 
 Los propietarios de Austin llaman 3-5 contratistas. El primero que conteste gana. María asegura que siempre seas esa primera respuesta. $497/mes fijo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 5. El Paso ═══ */
   { title: "Best AI Receptionist for Contractors in El Paso", slug: "best-ai-receptionist-contractors-el-paso", language: "en", category: "city-specific",
@@ -210,7 +210,7 @@ In El Paso, a contractor without Spanish phone support is essentially invisible 
 
 Capta: $497/mo flat, 24/7 bilingual EN/ES, emergency detection, appointment booking, SMS confirmations.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en El Paso", slug: "mejor-recepcionista-ai-contratistas-el-paso", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI para Contratistas en El Paso | Capta", metaDescription: "El Paso es 83% hispano. Soporte bilingüe no es opcional — es esencial. Recepcionista AI habla inglés y español. $497/mes.",
@@ -224,7 +224,7 @@ María contesta en español naturalmente, no a través de software de traducció
 
 Capta: $497/mes fijo, 24/7 bilingüe EN/ES, detección de emergencias, reserva de citas.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 6. Miami ═══ */
   { title: "Best AI Receptionist for Contractors in Miami", slug: "best-ai-receptionist-contractors-miami", language: "en", category: "city-specific",
@@ -244,7 +244,7 @@ Miami is where hurricanes meet humidity and a 70% Hispanic population. For contr
 
 Capta: $497/mo flat (same price during hurricane season), 24/7 bilingual EN/ES, emergency detection. Maria speaks Spanish as naturally as English — essential in Miami.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en Miami", slug: "mejor-recepcionista-ai-contratistas-miami", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI para Contratistas en Miami | Capta", metaDescription: "Miami es 70% hispano con huracanes e humedad. Recepcionista AI bilingüe es esencial para contratistas. $497/mes fijo.",
@@ -256,7 +256,7 @@ Miami es donde los huracanes se encuentran con la humedad y una población 70% h
 
 Capta: $497/mes fijo (mismo precio en temporada de huracanes), 24/7 bilingüe EN/ES, detección de emergencias. María habla español tan naturalmente como inglés — esencial en Miami.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 7. Los Angeles ═══ */
   { title: "Best AI Receptionist for Contractors in Los Angeles", slug: "best-ai-receptionist-contractors-los-angeles", language: "en", category: "city-specific",
@@ -276,7 +276,7 @@ Los Angeles is the most competitive market for contractors in America. 13+ milli
 
 In LA, the difference between winning and losing is often just who answers the phone first. Maria answers every call, 24/7, in English and Spanish. $497/mo flat.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en Los Ángeles", slug: "mejor-recepcionista-ai-contratistas-los-angeles", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI Contratistas Los Ángeles | Capta", metaDescription: "LA es el mercado de contratistas más competitivo. 48% hispano. Recepcionista AI te da la ventaja. $497/mes fijo.",
@@ -288,7 +288,7 @@ Los Ángeles es el mercado más competitivo para contratistas en América. 13+ m
 
 En LA, la diferencia entre ganar y perder es quien contesta primero. María contesta cada llamada, 24/7, en inglés y español. $497/mes fijo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 8. Phoenix ═══ */
   { title: "Best AI Receptionist for Contractors in Phoenix", slug: "best-ai-receptionist-contractors-phoenix", language: "en", category: "city-specific",
@@ -308,7 +308,7 @@ Phoenix is where extreme heat meets explosive growth. When temperatures hit 115�
 
 Flat pricing means your August HVAC surge costs the same as January. María: 24/7, bilingual, $497/mo.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en Phoenix", slug: "mejor-recepcionista-ai-contratistas-phoenix", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI Contratistas en Phoenix | Capta", metaDescription: "Phoenix alcanza 46°C en verano. Las llamadas HVAC explotan. Recepcionista AI maneja el pico a precio fijo bilingüe. $497/mes.",
@@ -320,7 +320,7 @@ Phoenix es donde el calor extremo se encuentra con el crecimiento explosivo. Cua
 
 Precio fijo: tu pico de agosto cuesta igual que enero. María: 24/7, bilingüe, $497/mes.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 9. Denver ═══ */
   { title: "Best AI Receptionist for Contractors in Denver", slug: "best-ai-receptionist-contractors-denver", language: "en", category: "city-specific",
@@ -340,7 +340,7 @@ Denver has some of the most extreme weather swings in America. Blizzards in wint
 
 María: 24/7, bilingual EN/ES, flat $497/mo, emergency detection. Handles your spring hailstorm surge and winter heating emergencies equally.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en Denver", slug: "mejor-recepcionista-ai-contratistas-denver", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI Contratistas en Denver | Capta", metaDescription: "Los cambios climáticos extremos de Denver crean demanda todo el año. Recepcionista AI maneja picos con soporte bilingüe. $497/mes.",
@@ -352,7 +352,7 @@ Denver tiene cambios climáticos de los más extremos en América. Tormentas de 
 
 María: 24/7, bilingüe EN/ES, $497/mes fijo. Maneja tu pico de granizada en primavera y emergencias de calefacción en invierno.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 10. Chicago ═══ */
   { title: "Best AI Receptionist for Contractors in Chicago", slug: "best-ai-receptionist-contractors-chicago", language: "en", category: "city-specific",
@@ -372,7 +372,7 @@ Chicago's harsh winters make it one of the most demanding markets for HVAC and p
 
 Chicago contractors need a phone system that works as hard as they do. María: 24/7, bilingual, $497/mo flat.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en Chicago", slug: "mejor-recepcionista-ai-contratistas-chicago", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI Contratistas en Chicago | Capta", metaDescription: "Los inviernos severos de Chicago crean emergencias de calefacción. Casas antiguas significan trabajo constante. Recepcionista AI $497/mes.",
@@ -384,7 +384,7 @@ Los inviernos severos de Chicago lo hacen uno de los mercados más demandantes p
 
 Con 29%+ de comunidad hispana, el servicio bilingüe importa. María: 24/7, bilingüe, $497/mes fijo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 11. New York ═══ */
   { title: "Best AI Receptionist for Contractors in New York", slug: "best-ai-receptionist-contractors-new-york", language: "en", category: "city-specific",
@@ -405,7 +405,7 @@ New York is the most competitive and most expensive market for contractors in Am
 
 In NYC, missing a call isn't just losing a job — it's losing a job that could pay 2-3x what the same job costs elsewhere. Efficiency is everything. María: 24/7, bilingual, $497/mo flat.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en Nueva York", slug: "mejor-recepcionista-ai-contratistas-new-york", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI Contratistas Nueva York | Capta", metaDescription: "NYC es el mercado más competitivo de la Costa Este. La eficiencia es todo. Recepcionista AI contesta cada llamada. $497/mes.",
@@ -417,7 +417,7 @@ Nueva York es el mercado más competitivo y costoso para contratistas en Améric
 
 En NYC, perder una llamada es perder un trabajo que podría pagar 2-3x lo que cuesta en otro lado. María: 24/7, bilingüe, $497/mes fijo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   /* ═══ 12. Atlanta ═══ */
   { title: "Best AI Receptionist for Contractors in Atlanta", slug: "best-ai-receptionist-contractors-atlanta", language: "en", category: "city-specific",
@@ -437,7 +437,7 @@ Atlanta is one of the fastest-growing metro areas in America, with 6+ million re
 
 Atlanta contractors who answer every call capture the growth. María: 24/7, bilingual EN/ES, $497/mo flat, emergency detection, SMS confirmations.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Mejor Recepcionista AI para Contratistas en Atlanta", slug: "mejor-recepcionista-ai-contratistas-atlanta", language: "es", category: "city-specific",
     metaTitle: "Mejor Recepcionista AI Contratistas en Atlanta | Capta", metaDescription: "Atlanta crece con construcción nueva y población diversa. Recepcionista AI maneja el volumen con soporte bilingüe. $497/mes.",
@@ -449,7 +449,7 @@ Atlanta es una de las áreas metropolitanas de mayor crecimiento en América con
 
 Los contratistas de Atlanta que contestan cada llamada capturan el crecimiento. María: 24/7, bilingüe EN/ES, $497/mes fijo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
 ];
 

@@ -92,7 +92,7 @@ Nexa offers bilingual agents, but quality varies by who picks up. Per-minute pri
 
 For plumbing businesses, Capta is the clear winner. It's the only option built specifically for contractors, with emergency detection that understands plumbing urgency, bilingual support that captures the Spanish-speaking market, and flat pricing that doesn't punish you for getting more calls.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -189,7 +189,7 @@ Ofrece agentes bilingües, pero la calidad varía. Precio por minuto se acumula.
 
 Para negocios de plomería, Capta es la mejor opción. Es la única construida específicamente para contratistas, con detección de emergencias que entiende la urgencia de plomería, soporte bilingüe que captura el mercado hispanohablante, y precio fijo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -285,7 +285,7 @@ AI answering at lower price points. But no HVAC-specific intelligence, no biling
 
 HVAC companies need an answering solution that doesn't punish them for seasonal call surges. Capta's flat pricing means your July phone bill is the same as your March phone bill, and Maria handles emergency detection, bilingual calls, and appointment booking without missing a beat.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -365,7 +365,7 @@ AI a precios más bajos. Pero sin inteligencia específica para HVAC, sin biling
 
 Las empresas de HVAC necesitan una solución que no las castigue por picos estacionales. El precio fijo de Capta significa que tu factura de julio es igual que la de marzo, y María maneja emergencias, llamadas bilingües, y reservas sin fallar.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -460,7 +460,7 @@ Basic AI answering at lower prices. But no emergency classification, no bilingua
 
 For electrical contractors, Capta delivers the best combination of safety-aware call handling, bilingual support, and flat pricing. When a caller says "I smell burning near my panel," Maria knows that's an emergency — not a routine estimate request.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -532,7 +532,7 @@ Recepcionistas humanos excelentes. Pero caros y solo horario comercial.
 
 Para contratistas eléctricos, Capta ofrece la mejor combinación de manejo de llamadas consciente de seguridad, soporte bilingüe, y precio fijo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -612,7 +612,7 @@ Bilingual agents available, but quality varies. Per-minute pricing adds up durin
 
 For landscaping companies, Capta's flat pricing is a game-changer. When your call volume triples in April, your bill stays the same. Maria books estimates, handles recurring service inquiries, and captures Spanish-speaking customers your competitors miss.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -688,7 +688,7 @@ Agentes bilingües disponibles pero calidad variable. Cargos por minuto se acumu
 
 Para paisajistas, el precio fijo de Capta es un cambio de juego. Cuando las llamadas se triplican en abril, tu factura sigue igual. María agenda presupuestos y captura clientes hispanohablantes que tus competidores pierden.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -766,7 +766,7 @@ Good quality but per-call pricing is risky during surges. No roofing-specific kn
 
 Roofing is the trade where flat pricing matters most. One storm can generate weeks of calls. Capta's $497/mo means you capture every lead without worrying about a phone bill that's bigger than your first job.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -842,7 +842,7 @@ Cobertura 24/7 pero a $1.50-$2/minuto. Un pico post-tormenta podría costar $5,0
 
 El techado es el oficio donde el precio fijo importa más. Una tormenta puede generar semanas de llamadas. Los $497/mes de Capta significan que capturas cada cliente potencial sin preocuparte por una factura telefónica mayor que tu primer trabajo.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 

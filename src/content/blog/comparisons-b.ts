@@ -166,7 +166,7 @@ Capta is built for home service businesses: plumbing, HVAC, electrical, landscap
 
 Stop choosing between budget and capability. Maria answers every call, books every appointment, and speaks your customers' language — English and Spanish.
 
-**[Get Capta](https://capta.app)** today with a 30-day money-back guarantee. Setup takes 5 minutes, and Maria starts answering your calls immediately. Your customers are calling right now. Make sure someone picks up.`,
+**[Get Capta](https://captahq.com)** today with a 30-day money-back guarantee. Setup takes 5 minutes, and Maria starts answering your calls immediately. Your customers are calling right now. Make sure someone picks up.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -330,7 +330,7 @@ Depende de tu volumen. Si eres operador independiente con pocos clientes regular
 
 Deja de elegir entre presupuesto y capacidad. María contesta cada llamada, agenda cada cita y habla el idioma de tus clientes — inglés y español.
 
-**[Obtén Capta](https://capta.app)** hoy con garantía de devolución de 30 días. La configuración toma 5 minutos y María empieza a contestar tus llamadas de inmediato. Tus clientes están llamando ahora mismo. Asegúrate de que alguien conteste.`,
+**[Obtén Capta](https://captahq.com)** hoy con garantía de devolución de 30 días. La configuración toma 5 minutos y María empieza a contestar tus llamadas de inmediato. Tus clientes están llamando ahora mismo. Asegúrate de que alguien conteste.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -523,7 +523,7 @@ About 5 minutes. You enter your business information, set your service area and 
 
 Maria is ready to answer your next call — in English or Spanish. She'll book the appointment, confirm it via SMS, and alert you if it's urgent. No messages to check. No callbacks to make. No jobs to lose.
 
-**[Get Capta](https://capta.app)** with a 30-day money-back guarantee. Five minutes to set up. Unlimited calls from day one. Your customers deserve an answer every time they call.`,
+**[Get Capta](https://captahq.com)** with a 30-day money-back guarantee. Five minutes to set up. Unlimited calls from day one. Your customers deserve an answer every time they call.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -712,7 +712,7 @@ Sí. Usa Capta durante 30 días completos. Si no funciona para tu negocio, solic
 
 María está lista para contestar tu próxima llamada — en inglés o español. Agendará la cita, la confirmará por SMS y te alertará si es urgente. Sin mensajes que revisar. Sin llamadas que devolver. Sin trabajos que perder.
 
-**[Obtén Capta](https://capta.app)** con garantía de devolución de 30 días. Cinco minutos de configuración. Llamadas ilimitadas desde el primer día. Tus clientes merecen una respuesta cada vez que llaman.`,
+**[Obtén Capta](https://captahq.com)** con garantía de devolución de 30 días. Cinco minutos de configuración. Llamadas ilimitadas desde el primer día. Tus clientes merecen una respuesta cada vez que llaman.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -896,7 +896,7 @@ Nexa has been in business for years and has a solid reputation in the answering 
 
 María contesta cada llamada, en inglés y español, las 24 horas del día, los 7 días de la semana. Agenda citas, envía confirmaciones por SMS y detecta emergencias automáticamente — sin tiempos de espera, sin costos variables, sin inconsistencias.
 
-**[Get Capta](https://capta.app)** today with a 30-day money-back guarantee. Setup takes 5 minutes. Unlimited calls. Consistent quality. Predictable pricing. Your customers are calling — make sure Maria answers.`,
+**[Get Capta](https://captahq.com)** today with a 30-day money-back guarantee. Setup takes 5 minutes. Unlimited calls. Consistent quality. Predictable pricing. Your customers are calling — make sure Maria answers.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1080,7 +1080,7 @@ Nexa lleva años en el negocio y tiene una reputación sólida en la industria d
 
 María contesta cada llamada, en inglés y español, las 24 horas del día, los 7 días de la semana. Agenda citas, envía confirmaciones por SMS y detecta emergencias automáticamente — sin tiempos de espera, sin costos variables, sin inconsistencias.
 
-**[Obtén Capta](https://capta.app)** hoy con garantía de devolución de 30 días. La configuración toma 5 minutos. Llamadas ilimitadas. Calidad consistente. Precios predecibles. Tus clientes están llamando — asegúrate de que María conteste.`,
+**[Obtén Capta](https://captahq.com)** hoy con garantía de devolución de 30 días. La configuración toma 5 minutos. Llamadas ilimitadas. Calidad consistente. Precios predecibles. Tus clientes están llamando — asegúrate de que María conteste.`,
   },
 ];
 

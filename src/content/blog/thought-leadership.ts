@@ -51,7 +51,7 @@ The contractors who adopt AI phone answering first will have a structural advant
 
 This isn't speculation. It's already happening. Contractors using Capta report 15-25% more bookings within the first month.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -90,7 +90,7 @@ Las recepcionistas AI modernas: suenan naturales, entienden contexto y urgencia,
 
 Los contratistas que adopten AI primero tendrán ventaja estructural. Capturarán más clientes, agendarán más trabajos, y crecerán más rápido.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   { title: "Why AI Won't Replace Contractors — But It Will Replace Voicemail", slug: "why-ai-wont-replace-contractors-replace-voicemail", language: "en", category: "pillar",
     metaTitle: "AI Won't Replace Contractors — It Will Replace Voicemail | Capta",
@@ -134,7 +134,7 @@ Maria (Capta's AI receptionist) answers calls, books appointments, detects emerg
 
 This isn't about replacing human interaction. It's about replacing the worst part of your day (voicemail management) with something that actually works.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -164,7 +164,7 @@ Los mejores contratistas en 2026 ya lo descubrieron: AI maneja el teléfono, el 
 
 María contesta llamadas, agenda citas, detecta emergencias. Tú llegas, diagnosticas el problema, y lo arreglas. Todos ganan.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   { title: "How AI Is Changing How America Gets Home Repairs", slug: "how-ai-changing-america-home-repairs", language: "en", category: "pillar",
     metaTitle: "How AI Is Changing Home Repairs in America | Capta",
@@ -203,7 +203,7 @@ Contractors using AI phone answering report:
 
 The home repair industry is being reshaped not by big technology overhauls, but by a simple innovation: someone — or something — finally answers the phone.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Cómo AI Está Cambiando las Reparaciones del Hogar en América", slug: "como-ai-cambiando-reparaciones-hogar-america", language: "es", category: "pillar",
     metaTitle: "Cómo AI Está Cambiando Reparaciones del Hogar | Capta",
@@ -226,7 +226,7 @@ Una recepcionista AI le da a un negocio de una persona la misma experiencia tele
 
 Los contratistas usando AI reportan 15-25% más citas agendadas y 40% menos llamadas perdidas.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   { title: "The Small Business AI Revolution: What Contractors Need to Know", slug: "small-business-ai-revolution-contractors", language: "en", category: "pillar",
     metaTitle: "Small Business AI Revolution for Contractors | Capta",
@@ -266,7 +266,7 @@ AI for contractors is NOT:
 
 It's a tool. Like a power drill or a diagnostic meter. It makes you more efficient.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "La Revolución AI para Pequeños Negocios: Lo Que los Contratistas Deben Saber", slug: "revolucion-ai-pequenos-negocios-contratistas", language: "es", category: "pillar",
     metaTitle: "Revolución AI para Contratistas | Lo Que Debes Saber | Capta",
@@ -287,7 +287,7 @@ Estás perdiendo llamadas ahora mismo. Cada llamada perdida cuesta $140 en prome
 
 Sin implementación compleja. Sin curva de aprendizaje. Solo desvía tu teléfono y empieza a capturar clientes.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   { title: "Why the Best Contractors in 2026 Never Touch Their Phone", slug: "best-contractors-2026-never-touch-phone", language: "en", category: "pillar",
     metaTitle: "Best Contractors Never Touch Their Phone | 2026 | Capta",
@@ -327,7 +327,7 @@ By not answering the phone, these contractors answer MORE calls. Their AI recept
 
 Their answer rate goes from 50% (when they tried to do it themselves) to 99% (with AI). They capture more leads by touching the phone less.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Por Qué los Mejores Contratistas en 2026 Nunca Tocan Su Teléfono", slug: "mejores-contratistas-2026-nunca-tocan-telefono", language: "es", category: "pillar",
     metaTitle: "Los Mejores Contratistas Nunca Tocan Su Teléfono | Capta",
@@ -348,7 +348,7 @@ Al no contestar el teléfono ellos mismos, estos contratistas contestan MÁS lla
 
 Su tasa de respuesta pasa de 50% a 99%. Capturan más clientes tocando el teléfono menos.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   { title: "The Economics of Answering Every Call", slug: "economics-of-answering-every-call", language: "en", category: "pillar",
     metaTitle: "The Economics of Answering Every Call | ROI Analysis | Capta",
@@ -400,7 +400,7 @@ A contractor missing 12 calls/week who starts using Capta:
 - **Cost of Capta: $5,964/year**
 - **ROI: 1,362%**
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "La Economía de Contestar Cada Llamada", slug: "economia-contestar-cada-llamada", language: "es", category: "pillar",
     metaTitle: "La Economía de Contestar Cada Llamada | Análisis ROI | Capta",
@@ -430,7 +430,7 @@ Un contratista que pierde 12 llamadas/semana:
 - **Costo de Capta: $5,964/año**
 - **ROI: 1,362%**
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   { title: "From Missed Calls to Booked Jobs: A Contractor's AI Playbook", slug: "missed-calls-booked-jobs-contractor-ai-playbook", language: "en", category: "pillar",
     metaTitle: "Contractor's AI Playbook: Missed Calls to Booked Jobs | Capta",
@@ -484,7 +484,7 @@ Plus: every customer Maria booked is now a potential referral source. The compou
 
 Total effort: 10 minutes to start, 5 minutes/day to review.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "De Llamadas Perdidas a Trabajos Agendados: La Guía AI del Contratista", slug: "llamadas-perdidas-trabajos-agendados-guia-ai", language: "es", category: "pillar",
     metaTitle: "Guía AI del Contratista: Llamadas a Trabajos | Capta",
@@ -512,7 +512,7 @@ Más trabajos = más reseñas = mejor ranking en Google = más llamadas = más r
 3. Configura horarios y reglas de emergencia (3 minutos)
 4. Desvía tu línea (2 minutos)
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   { title: "The Bilingual Business Advantage Nobody's Talking About", slug: "bilingual-business-advantage-nobody-talking-about", language: "en", category: "pillar",
     metaTitle: "The Bilingual Business Advantage for Contractors | Capta",
@@ -553,7 +553,7 @@ Capta's AI receptionist Maria speaks fluent English and Spanish. Not translation
 
 For $497/month, you unlock a market segment your competitors can't access.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "La Ventaja Bilingüe que Nadie Está Aprovechando", slug: "ventaja-bilingue-nadie-aprovechando", language: "es", category: "pillar",
     metaTitle: "La Ventaja Bilingüe para Contratistas | Capta",
@@ -581,7 +581,7 @@ María habla inglés y español con fluidez. No es software de traducción — c
 
 Por $497/mes, desbloqueas un segmento de mercado que tus competidores no pueden acceder.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
   { title: "Why Your Phone System Is Your Most Important Employee", slug: "why-phone-system-most-important-employee", language: "en", category: "pillar",
     metaTitle: "Your Phone System Is Your Most Important Employee | Capta",
@@ -624,7 +624,7 @@ What if your phone system:
 
 That's what Capta's AI receptionist Maria does. She's your most reliable, most consistent, most cost-effective employee — and she only handles the phone.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.`,
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.`,
   },
   { title: "Por Qué Tu Sistema Telefónico Es Tu Empleado Más Importante", slug: "por-que-sistema-telefonico-empleado-mas-importante", language: "es", category: "pillar",
     metaTitle: "Tu Sistema Telefónico Es Tu Empleado Más Importante | Capta",
@@ -649,7 +649,7 @@ Como algo secundario. Buzón de voz. Llamadas perdidas. Conversaciones apuradas 
 
 María nunca pierde un turno (24/7), habla todos los idiomas de tus clientes, maneja cada llamada con la misma calidad, agenda citas sin supervisión, detecta emergencias, y cuesta menos que cualquier otro empleado.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.`,
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.`,
   },
 ];
 

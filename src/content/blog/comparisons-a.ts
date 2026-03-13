@@ -164,7 +164,7 @@ Capta offers a 30-day money-back guarantee. Try Maria on your real calls for a f
 
 ---
 
-Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—Maria answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://capta.app)
+Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—Maria answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -325,7 +325,7 @@ Capta ofrece una garantía de devolución de 30 días. Prueba a María con tus l
 
 ---
 
-¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantía de 30 días de Capta—María contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obtén Capta →](https://capta.app)
+¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantía de 30 días de Capta—María contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obtén Capta →](https://captahq.com)
 `,
   },
 
@@ -501,7 +501,7 @@ Maria can transfer calls to your cell or emergency line when she detects situati
 
 ---
 
-Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—Maria answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://capta.app)
+Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—Maria answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -667,7 +667,7 @@ María puede transferir llamadas a tu celular o línea de emergencia cuando dete
 
 ---
 
-¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantía de 30 días de Capta—María contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obtén Capta →](https://capta.app)
+¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantía de 30 días de Capta—María contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obtén Capta →](https://captahq.com)
 `,
   },
 
@@ -823,7 +823,7 @@ Five minutes. Capta uses an 8-step setup wizard. Enter your business details, se
 
 ---
 
-Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—Maria answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://capta.app)
+Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—Maria answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -979,7 +979,7 @@ Cinco minutos. Capta usa un asistente de configuración de 8 pasos. Ingresa los 
 
 ---
 
-¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantía de 30 días de Capta—María contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obtén Capta →](https://capta.app)
+¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantía de 30 días de Capta—María contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obtén Capta →](https://captahq.com)
 `,
   },
 
@@ -1140,7 +1140,7 @@ Capta books appointments directly and sends SMS confirmations automatically. You
 
 ---
 
-Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—Maria answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://capta.app)
+Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—Maria answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -1301,7 +1301,7 @@ Capta agenda citas directamente y envía confirmaciones por SMS automáticamente
 
 ---
 
-¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantía de 30 días de Capta—María contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obtén Capta →](https://capta.app)
+¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantía de 30 días de Capta—María contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obtén Capta →](https://captahq.com)
 `,
   },
 ];

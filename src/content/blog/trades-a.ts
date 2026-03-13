@@ -99,7 +99,7 @@ Generic call centers follow scripts. Maria has intelligence built for your trade
 
 Stop losing jobs to voicemail. Maria answers every call, books every appointment, and handles emergencies while you do what you do best — fix pipes.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -192,7 +192,7 @@ María revisa tu disponibilidad y agenda la cita al momento. El cliente recibe u
 
 Deja de perder trabajos al buzón de voz. María contesta cada llamada y agenda cada cita mientras tú haces lo que mejor sabes hacer.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -287,7 +287,7 @@ Average HVAC companies miss 30-40% of calls during peak season. At 40 calls/day 
 
 Capta costs $497/month. The math isn't close.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -364,7 +364,7 @@ Las empresas de HVAC promedio pierden 30-40% de llamadas en temporada alta:
 
 Capta cuesta $497/mes. La matemática no está ni cerca.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -450,7 +450,7 @@ Maria answers every call with your custom greeting. She understands electrical t
 
 Every electrician misses calls. Most accept it as part of the job. But each missed call is $150-$2,000 in lost revenue. An AI receptionist at $497/mo pays for itself with a single captured job.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -537,7 +537,7 @@ María contesta cada llamada, entiende terminología eléctrica, clasifica urgen
 
 Cada electricista pierde llamadas. Cada llamada perdida es $150-$2,000 en ingresos perdidos. Una recepcionista AI a $497/mes se paga sola con un solo trabajo capturado.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -624,7 +624,7 @@ You skip the hiring, training, payroll taxes, and management overhead. Maria nev
 
 Spring is coming. Every call you miss is a customer your competitor gets. Maria answers every call, books every estimate, and handles the seasonal rush while you focus on the work.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -704,7 +704,7 @@ La solución tradicional es contratar un administrador de oficina ($30K-$45K/añ
 
 La primavera viene. Cada llamada que pierdes es un cliente que se lleva tu competidor.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 

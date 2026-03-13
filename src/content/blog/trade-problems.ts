@@ -56,7 +56,7 @@ That's what Capta does. Maria, our AI receptionist, answers every call to your p
 
 Most plumbers who use Capta capture 10-20 additional jobs per month. Do the math on that.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -116,7 +116,7 @@ Eso es lo que hace Capta. María contesta cada llamada, agenda citas, detecta em
 
 **La matemática:** Si Capta captura solo 2 trabajos extra por mes a $350, ya se pagó sola. Todo lo demás es ganancia pura.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -191,7 +191,7 @@ When someone calls at 11 PM because their heat died, Maria:
 
 The after-hours calls you capture in the first week will likely cover the entire month's cost.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -249,7 +249,7 @@ Cuando alguien llama a las 11 PM porque su calefacción murió:
 
 **Costo:** $497/mes fijo. Mismo precio con 20 o 200 llamadas fuera de horario.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -320,7 +320,7 @@ Capta's Maria speaks fluent English and Spanish. Not translation software — ge
 
 A Spanish-speaking homeowner calling about "chispas en mi panel eléctrico" gets the same emergency detection, same appointment booking, same SMS confirmation as an English-speaking caller saying "sparks from my breaker box."
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -371,7 +371,7 @@ Un propietario hispanohablante que llama por "chispas en mi panel eléctrico" re
 
 **$497/mes fijo.** Sin cargos por minuto.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -449,7 +449,7 @@ When you remove the phone from your plate, you can:
 
 The landscaping companies growing fastest in 2026 aren't the ones with the biggest crews. They're the ones who systematized their phone and scheduling first.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -513,7 +513,7 @@ Cuando quitas el teléfono de tu plato, puedes:
 - Tomar más propiedades (crecer ingresos)
 - Dejar el negocio un día sin que se caiga
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -577,7 +577,7 @@ During storm season, Maria:
 
 That's not a typo. The ROI during storm season alone can be 500x-1,600x.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -639,7 +639,7 @@ Durante temporada de tormentas, María:
 - **Ingresos capturados con Capta: $240,000 - $800,000**
 - **Costo de Capta: $497/mes**
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -706,7 +706,7 @@ For pest control companies, Maria:
 
 Capta costs $497/month. Your first captured call pays for the month.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -763,7 +763,7 @@ Para control de plagas, María:
 
 Capta cuesta $497/mes. Tu primera llamada capturada paga el mes.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -831,7 +831,7 @@ Generic call centers don't understand construction. When a sub calls about a con
 
 Maria understands construction terminology and context. She captures the right information from each caller type and routes it appropriately.
 
-**[Get Capta →](https://capta.app)** or call (830) 521-7133.
+**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -895,7 +895,7 @@ Los centros de llamadas genéricos no entienden construcción. Cuando un sub lla
 
 María entiende terminología de construcción y captura la información correcta de cada tipo de llamada.
 
-**[Obtén Capta →](https://capta.app)** o llama al (830) 521-7133.
+**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
