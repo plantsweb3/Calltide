@@ -48,7 +48,7 @@ One missed call per day. That's modest for any busy contractor.
 - 87 × $450 average job = **$39,150 in direct losses**
 - Add referral and lifetime value: **$80,000-$120,000 total impact**
 
-For $497/month ($5,964/year), an AI receptionist answers every one of those calls.
+For a flat monthly fee, an AI receptionist answers every one of those calls. [See pricing →](https://captahq.com/pricing)
 
 That's a 6x-20x return on a phone solution. Not a marketing campaign with uncertain ROI. A phone that gets answered.
 
@@ -111,7 +111,7 @@ Una llamada perdida al día. Eso es modesto para cualquier contratista ocupado.
 - 250 × 35% conversión = 87 trabajos perdidos
 - 87 × $450 promedio = **$39,150 en pérdidas directas**
 
-Por $497/mes, una recepcionista AI contesta cada una de esas llamadas.
+Por una tarifa fija mensual, una recepcionista AI contesta cada una de esas llamadas. [Ver precios →](https://captahq.com/pricing)
 
 **[Mira cómo funciona →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=cascada-llamada)**
 
@@ -174,7 +174,7 @@ First impressions form in seconds. A voicemail greeting is your first impression
 
 Modern AI voice technology sounds natural, responds conversationally, and handles the entire interaction the caller wanted: explain the problem, get acknowledged, book a time.
 
-Capta's AI receptionist Maria replaces your voicemail with a real conversation. She answers in under 2 seconds, speaks English and Spanish, books appointments, and sends SMS confirmations — all for $497/month flat.
+Capta's AI receptionist Maria replaces your voicemail with a real conversation. She answers in under 2 seconds, speaks English and Spanish, books appointments, and sends SMS confirmations — all at a flat monthly rate with no per-call fees.
 
 Your voicemail converts 3% of callers. Maria converts 35-50%. The math writes itself.
 
@@ -230,7 +230,7 @@ De cada 100 personas que llegan a tu buzón:
 
 ## El Reemplazo
 
-María, la recepcionista AI de Capta, reemplaza tu buzón con una conversación real. Contesta en menos de 2 segundos, habla inglés y español, agenda citas, y envía confirmaciones SMS — todo por $497/mes fijo.
+María, la recepcionista AI de Capta, reemplaza tu buzón con una conversación real. Contesta en menos de 2 segundos, habla inglés y español, agenda citas, y envía confirmaciones SMS — todo por una tarifa fija mensual sin cargos por llamada.
 
 Tu buzón convierte 3% de las llamadas. María convierte 35-50%.
 
@@ -958,7 +958,7 @@ Monthly: $10,800-$28,400 in premium revenue. Your voicemail is intercepting your
 
 ## The Fix Is Simple
 
-Capta answers your phone 24/7 for $497/month flat. Maria doesn't charge overtime. She doesn't complain about 11 PM calls. She books the appointment, sends you an alert, and the customer gets an SMS confirmation.
+Capta answers your phone 24/7 at a flat monthly rate. Maria doesn't charge overtime. She doesn't complain about 11 PM calls. She books the appointment, sends you an alert, and the customer gets an SMS confirmation.
 
 You decide whether to respond tonight or first thing in the morning. Either way, the lead is captured.
 
@@ -1018,7 +1018,7 @@ A tasa de conversión del 44% y precios premium: esas 14-23 llamadas representan
 
 ## La Solución
 
-Capta contesta 24/7 por $497/mes fijo. María no cobra horas extra. Agenda la cita, te envía una alerta, y el cliente recibe confirmación SMS.
+Capta contesta 24/7 por una tarifa fija mensual. María no cobra horas extra. Agenda la cita, te envía una alerta, y el cliente recibe confirmación SMS.
 
 **[Empieza a capturar llamadas fuera de horario →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=fuera-horario)**
 
@@ -1475,7 +1475,7 @@ Capta's Maria handles your phone calls. All of them. You check your dashboard be
 
 The result: less stress, more focus, more completed jobs, more revenue. And ironically — more calls answered than when you were trying to do it yourself.
 
-**$497/month.** That's the cost of removing phone anxiety from your workday.
+**One flat monthly fee.** That's the cost of removing phone anxiety from your workday. [See what it costs →](https://captahq.com/pricing)
 
 **[Let Maria handle it →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=phone-anxiety)** — 30-day money-back guarantee.
 
@@ -1544,7 +1544,7 @@ María maneja tus llamadas. Todas. Tú revisas tu panel entre trabajos o al fina
 
 El resultado: menos estrés, más enfoque, más trabajos completados, más ingresos. E irónicamente — más llamadas contestadas que cuando intentabas hacerlo tú mismo.
 
-**$497/mes.** Ese es el costo de eliminar la ansiedad telefónica de tu día de trabajo.
+**Una tarifa fija mensual.** Ese es el costo de eliminar la ansiedad telefónica de tu día de trabajo. [Ver precios →](https://captahq.com/pricing)
 
 **[Deja que María lo maneje →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=ansiedad)** — garantía de 30 días.
 
