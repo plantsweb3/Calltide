@@ -50,6 +50,10 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().min(1).optional(),
   GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
 
+  // SEO / Indexing (optional)
+  NEXT_PUBLIC_GSC_VERIFICATION: z.string().min(1).optional(),
+  INDEXNOW_KEY: z.string().min(1).optional(),
+
   // Phase 2: Outreach Engine (optional)
   GOOGLE_PLACES_API_KEY: z.string().min(1).optional(),
   RESEND_API_KEY: z.string().min(1).optional(),

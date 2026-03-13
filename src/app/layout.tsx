@@ -69,6 +69,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
+          <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -92,6 +95,55 @@ export default function RootLayout({
                 availableLanguage: ["English", "Spanish"],
               },
               sameAs: [],
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "Capta",
+              alternateName: "Maria AI Receptionist",
+              description:
+                "AI receptionist that answers every business call 24/7 in English and Spanish. Built for home service contractors. Unlimited calls for $497/month.",
+              url: "https://captahq.com",
+              applicationCategory: "BusinessApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "AggregateOffer",
+                lowPrice: "397",
+                highPrice: "497",
+                priceCurrency: "USD",
+                offerCount: "2",
+              },
+              featureList: [
+                "24/7 AI call answering",
+                "Bilingual English and Spanish",
+                "Appointment booking with SMS confirmations",
+                "Built-in CRM with zero data entry",
+                "Emergency detection and live transfer",
+                "Call analytics dashboard",
+                "NPS surveys and referral program",
+                "30-day money-back guarantee",
+              ],
+              screenshot: "https://captahq.com/opengraph-image",
+              creator: {
+                "@type": "Organization",
+                name: "Capta",
+                url: "https://captahq.com",
+                founder: {
+                  "@type": "Person",
+                  name: "Ulysses Munoz",
+                },
+                address: {
+                  "@type": "PostalAddress",
+                  addressLocality: "San Antonio",
+                  addressRegion: "TX",
+                  addressCountry: "US",
+                },
+              },
             }),
           }}
         />

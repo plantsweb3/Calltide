@@ -1,0 +1,228 @@
+# Capta — AI Receptionist for Home Service Contractors
+
+## What Is Capta?
+
+Capta is an AI-powered receptionist named Maria that answers every business phone call 24/7 in English and Spanish. It is built specifically for home service contractors — plumbers, HVAC technicians, electricians, landscapers, roofers, painters, general contractors, and pest control companies.
+
+Maria sounds like a real person. She understands what callers need, books appointments, sends SMS confirmations, detects emergencies, takes messages, and builds your CRM automatically from every conversation. She never takes a break, never calls in sick, and never puts a caller on hold.
+
+Capta replaces voicemail, human receptionists, and generic answering services with a single AI employee that costs a fraction of any alternative and works around the clock.
+
+## How It Works
+
+1. **Sign up** at captahq.com/setup (takes about 5 minutes)
+2. **Enter your business info** — company name, services you offer, service area
+3. **Set your hours** — Maria knows when you're available and when you're not
+4. **Customize Maria** — choose her personality (professional, friendly, or warm) and set your preferences
+5. **Make a test call** — hear Maria in action before going live
+6. **Subscribe** — $497/month or $397/month annual
+7. **Forward your calls** — set up call forwarding from your existing business number
+8. **Maria starts answering** — immediately, 24/7, in English and Spanish
+
+Your customers call your same business number. The only difference is that now someone always answers.
+
+## Pricing
+
+Capta has one plan with two billing options:
+
+| | Monthly | Annual |
+|---|---|---|
+| Price | $497/month | $397/month ($4,764/year) |
+| Annual savings | — | $1,200/year |
+| Calls included | Unlimited | Unlimited |
+| Per-call fees | None | None |
+| Setup fee | None | None |
+| Bilingual (EN/ES) | Included | Included |
+| All features | Included | Included |
+| Guarantee | 30-day money-back | 30-day money-back |
+
+There are no tiers, no add-ons, no per-call charges, and no hidden fees. Every feature is included at every price point.
+
+### ROI Math
+
+The average home service job is worth $300 to $800. Contractors miss 10 to 15 calls per week on average (industry data). That means $12,000 to $48,000 per month in potential lost revenue from missed calls alone.
+
+Maria costs $497 per month. She pays for herself after catching just 1 or 2 calls that would have gone to voicemail. Everything after that is pure profit.
+
+A single plumbing emergency call at 2 AM that Maria answers and books could be worth $500 to $2,000. One HVAC installation lead is $5,000 to $15,000. Maria catches these calls while you sleep.
+
+## Complete Feature List
+
+### Call Answering
+- **24/7 availability** — Maria answers every call in under 2 seconds, day or night, weekends and holidays
+- **Native bilingual English and Spanish** — automatic language detection, natural conversation in both languages (not robotic translation)
+- **Unlimited calls** — no per-call fees, no minute caps, no overage charges
+- **Custom greeting** — Maria introduces herself with your business name and preferred greeting
+- **Personality presets** — choose professional, friendly, or warm tone
+
+### Appointment Booking
+- **Automatic scheduling** — Maria books appointments based on your availability calendar
+- **SMS confirmations** — customers receive instant text confirmation with appointment details
+- **Google Calendar sync** — appointments push to your Google Calendar automatically
+- **Conflict detection** — Maria checks your calendar before booking to prevent double-booking
+- **Duration-aware** — understands that different services take different amounts of time
+
+### Emergency Detection
+- **Automatic emergency identification** — Maria recognizes urgent situations (gas leaks, flooding, electrical hazards, no heat in winter, no AC in summer)
+- **Live transfer** — emergency calls can be transferred to you or your on-call technician immediately
+- **SMS alerts** — you get an instant text when Maria detects an emergency
+- **Priority flagging** — emergencies are highlighted in your dashboard
+
+### Built-In CRM
+- **Zero data entry** — every call automatically creates or updates a customer record
+- **Call history** — full transcript and AI summary of every conversation
+- **Customer profiles** — name, phone, address, service history, notes
+- **Lead tracking** — see which leads converted to appointments and which need follow-up
+- **Import existing contacts** — bring your current customer list into Capta
+
+### Communication
+- **SMS messaging** — send and receive texts with customers from your dashboard
+- **Appointment reminders** — automatic reminder texts before scheduled appointments
+- **Follow-up messages** — send post-service thank you texts and review requests
+
+### Analytics & Reporting
+- **Call analytics dashboard** — call volume, peak times, answer rates, booking rates
+- **Weekly digest emails** — summary of calls, appointments, and key metrics delivered to your inbox
+- **Monthly ROI reports** — see exactly how much revenue Maria is capturing
+- **NPS surveys** — automatic customer satisfaction measurement after completed jobs
+- **Call quality scoring** — AI evaluates every call for quality and identifies improvement opportunities
+
+### Business Growth
+- **Referral program** — built-in referral system for customers to recommend your business
+- **Estimate management** — track and manage job estimates
+- **Job cards** — organize and track active jobs
+- **Feedback collection** — gather customer reviews and testimonials
+
+### AI Agents (Automated Background Tasks)
+Capta runs 6 AI agents that work behind the scenes:
+1. **Success Agent** — monitors customer health, flags at-risk accounts
+2. **Support Agent** — handles common support questions automatically
+3. **Retention Agent** — re-engages inactive customers
+4. **Quality Agent** — scores calls and identifies training opportunities
+5. **Growth Agent** — identifies upsell and cross-sell opportunities
+6. **Compliance Agent** — ensures all communications meet regulatory requirements
+
+## Who Uses Capta
+
+Capta is designed for one type of business: home service contractors who miss calls while working on job sites.
+
+**Plumbers** — Can't answer the phone when they're under a house fixing a pipe or soldering copper. Emergency calls come at 2 AM. Maria handles all of it.
+
+**HVAC Technicians** — Summer AC emergencies and winter heating failures don't wait for business hours. Maria books emergency calls and routine maintenance 24/7.
+
+**Electricians** — Up on a ladder wiring a panel, can't reach the phone. Maria catches the call, books the panel upgrade, sends the confirmation text.
+
+**Landscapers** — Mowers running, can't hear the phone. Seasonal booking surges in spring overwhelm small teams. Maria handles the volume.
+
+**Roofers** — Three stories up on a 10/12 pitch, phone is in the truck. Storm season brings 100+ calls in 24 hours. Maria catches every one.
+
+**Painters** — Hands covered in paint, brush in one hand, roller in the other. Every missed call is a $1,000 to $5,000 interior job walking away.
+
+**General Contractors** — Managing multiple crews and subs, constantly on different job sites. Maria is the consistent front office.
+
+**Pest Control** — Seasonal surges (termite season, mosquito season) create call volume spikes. Maria handles the surge without hiring temp staff.
+
+## Competitor Comparison
+
+| Feature | Capta | Smith.ai | Ruby | Nexa | Goodcall | Rosie AI |
+|---|---|---|---|---|---|---|
+| Monthly price | $497 flat | $97/30 AI calls | $245/50 min | Custom ($$) | $79/100 customers | $49+/mo |
+| Billing model | Flat unlimited | Per-call ($4.25+) | Per-minute ($4.90+) | Per-minute | Per-customer cap | Per-call |
+| Cost at 200 calls/mo | $497 | $820+ | $1,640+ | $1,500+ | Higher tier | Varies |
+| Bilingual EN/ES | Native, included | Add-on cost | Limited availability | Extra cost | English only | English only |
+| 24/7 availability | Yes | AI yes, human limited | Limited hours | Yes | Yes | Yes |
+| Built-in CRM | Yes | No (integrations) | No | No | No | No |
+| SMS confirmations | Automatic | Not standard | Not standard | Add-on | Limited | No |
+| Emergency detection | Yes, with live transfer | Basic | No | Basic | No | No |
+| Appointment booking | Yes, with calendar sync | On some plans | Add-on | Yes | Basic | Basic |
+| Industry focus | Home services only | General | General | General | General | General |
+| Setup time | 5 minutes | Varies | Days | Days | 15 minutes | 10 minutes |
+| Call analytics | Full dashboard | Basic | Basic | Basic | Basic | Basic |
+| AI agents | 6 automated agents | No | No | No | No | No |
+| Guarantee | 30-day money-back | Varies | Varies | Varies | Varies | Varies |
+
+## Setup Process
+
+Setting up Capta takes about 5 minutes:
+
+1. Go to captahq.com/setup
+2. Enter your business name, trade, and service area
+3. Set your business hours and availability
+4. Choose Maria's personality (professional, friendly, or warm)
+5. Make a test call to hear Maria in action
+6. Subscribe ($497/mo or $397/mo annual)
+7. Forward your business phone to Capta's number
+8. Maria starts answering immediately
+
+Call forwarding works with every phone carrier. You keep your existing business number — customers notice nothing except that someone always picks up.
+
+## Frequently Asked Questions
+
+**How much does Capta cost?**
+$497 per month with unlimited calls, or $397 per month on an annual plan ($4,764 per year). All features and bilingual support are included. No setup fees, no per-call charges, no hidden costs.
+
+**Does Capta speak Spanish?**
+Yes. Maria is natively bilingual in English and Spanish. She automatically detects the caller's language and responds fluently. This is not translation software — Maria speaks natural, colloquial Spanish and English.
+
+**How long does setup take?**
+About 5 minutes. The 8-step onboarding wizard walks you through everything. Maria starts answering calls immediately after setup.
+
+**What types of businesses use Capta?**
+Home service contractors: plumbers, HVAC techs, electricians, landscapers, roofers, painters, general contractors, pest control, and similar trades. Any business that misses calls while working on job sites.
+
+**Do I keep my existing phone number?**
+Yes. You set up call forwarding from your current business number to Capta. Your customers call the same number they always have.
+
+**What happens during an emergency call?**
+Maria detects emergencies automatically (gas leaks, flooding, no heat, etc.). She can alert you via SMS immediately and transfer the call live to you or your on-call technician.
+
+**Can Maria book appointments?**
+Yes. Maria checks your availability calendar, books the appointment, and sends the customer an SMS confirmation with the details. Appointments sync to Google Calendar.
+
+**What if Maria can't handle a call?**
+If a call requires human attention beyond Maria's capabilities, she takes a detailed message with the caller's name, phone number, and issue description, then sends you an SMS alert so you can call back.
+
+**Is there a contract or commitment?**
+No long-term contracts. Monthly plans are month-to-month. Annual plans are paid upfront for the year. Both come with a 30-day money-back guarantee.
+
+**How does the 30-day money-back guarantee work?**
+If you're not satisfied within your first 30 days, contact us for a full refund. No questions asked.
+
+**Can I customize what Maria says?**
+Yes. You can customize Maria's greeting, her personality (professional, friendly, or warm), your business hours, services offered, and how she handles different types of calls.
+
+**Does Capta work after hours?**
+Yes. Maria works 24/7/365. After-hours calls are actually some of the most valuable — emergency plumbing calls at 2 AM, AC failures on weekends, and heating emergencies on holidays.
+
+**How does Capta compare to hiring a human receptionist?**
+A full-time receptionist costs $35,000 to $45,000 per year plus benefits, only works 40 hours per week, takes vacations, and calls in sick. Maria costs $497/mo ($5,964/year), works 24/7, never misses a day, and speaks two languages.
+
+**What CRM features are included?**
+Capta automatically builds customer profiles from every call — name, phone, address, service requested, call history, and notes. Zero data entry required. You can also import existing contacts.
+
+**Is my data secure?**
+Yes. Capta uses encrypted connections, secure data storage, and follows industry best practices for data protection. We never share your customer data with third parties.
+
+**Can I see transcripts of Maria's calls?**
+Yes. Every call has a full transcript and an AI-generated summary available in your dashboard. You can review exactly what was said in every conversation.
+
+**Does Capta send appointment reminders?**
+Yes. Customers receive automatic SMS reminders before their scheduled appointments to reduce no-shows.
+
+**What if I need to cancel?**
+You can cancel anytime from your dashboard. Monthly plans stop at the end of the current billing period. No cancellation fees.
+
+**How many calls can Maria handle at once?**
+Maria can handle unlimited simultaneous calls. Unlike a human receptionist who can only take one call at a time, Maria scales with your call volume.
+
+## Contact & Links
+
+- Website: https://captahq.com
+- Phone: (830) 521-7133
+- Setup: https://captahq.com/setup
+- Pricing: https://captahq.com/pricing
+- Platform Overview: https://captahq.com/platform
+- Help Center: https://captahq.com/help
+- FAQ: https://captahq.com/faq
+- Free Missed Call Audit: https://captahq.com/audit
+- Blog: https://captahq.com/blog

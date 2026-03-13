@@ -1,0 +1,63 @@
+# Capta
+
+> Capta is an AI receptionist named Maria that answers every business call 24/7 in English and Spanish. Built specifically for home service contractors — plumbers, HVAC techs, electricians, landscapers, roofers, painters, and general contractors. $497/month flat, unlimited calls, native bilingual included. 30-day money-back guarantee.
+
+## Product Overview
+
+- [How It Works](https://captahq.com/platform): Maria answers calls in under 2 seconds, books appointments, sends SMS confirmations, detects emergencies, and builds your CRM automatically.
+- [Pricing](https://captahq.com/pricing): $497/mo (monthly) or $397/mo (annual at $4,764/yr). Unlimited calls. No per-call fees. No setup fees.
+- [Platform](https://captahq.com/platform): Full dashboard with call analytics, CRM, appointment management, SMS, estimates, referral program, and weekly digest emails.
+- [About](https://captahq.com/about): Founded by Ulysses Munoz in San Antonio, TX. Built by a contractor's son who watched his dad miss calls on job sites.
+
+## Who It's For
+
+Capta is built exclusively for home service contractors:
+- Plumbers
+- HVAC technicians
+- Electricians
+- Landscapers
+- Roofers
+- Painters
+- General contractors
+- Pest control companies
+- Any trade business that misses calls while on job sites
+
+## Key Comparisons
+
+- [Capta vs Smith.ai](https://captahq.com/blog/capta-vs-smith-ai): Unlimited flat-rate vs per-call pricing. Native bilingual included vs add-on cost.
+- [Capta vs Ruby Receptionists](https://captahq.com/blog/capta-vs-ruby-receptionists): AI at $497/mo flat vs human at $245-$1,640/mo per-minute billing.
+- [Capta vs Goodcall](https://captahq.com/blog/capta-vs-goodcall): Unlimited customers vs 100-customer cap. Built-in CRM vs none.
+- [Capta vs Rosie AI](https://captahq.com/blog/capta-vs-rosie-ai): Trade-specific AI vs generic. Emergency detection vs basic routing.
+- [Capta vs Nexa](https://captahq.com/blog/capta-vs-nexa): Predictable pricing vs variable per-minute billing.
+- [Capta vs Dialzara](https://captahq.com/blog/capta-vs-dialzara): Native bilingual vs single-language. CRM included vs integrations required.
+- [Capta vs Jobber AI](https://captahq.com/blog/capta-vs-jobber-ai-receptionist): Standalone AI receptionist vs add-on feature.
+
+## Trade-Specific Use Cases
+
+- [AI Receptionist for Plumbers](https://captahq.com/blog/ai-receptionist-for-plumbing): Emergency leak calls at 2 AM, Maria answers and dispatches.
+- [AI Receptionist for HVAC](https://captahq.com/blog/ai-receptionist-for-hvac): Summer AC emergencies, after-hours booking, seasonal surge handling.
+- [AI Receptionist for Electricians](https://captahq.com/blog/ai-receptionist-for-electricians): Panel upgrades, safety calls, bilingual customer base.
+- [AI Receptionist for Landscapers](https://captahq.com/blog/ai-receptionist-for-landscaping): Seasonal booking surges, crew scheduling, estimate requests.
+- [AI Receptionist for Roofers](https://captahq.com/blog/ai-receptionist-for-roofers): Storm-season lead capture, insurance claim calls.
+
+## Free Tools
+
+- [Missed Call Audit](https://captahq.com/audit): Free analysis showing how many calls your business misses and how much revenue you're leaving on the table.
+
+## Help & Documentation
+
+- [Help Center](https://captahq.com/help): Guides for setup, call forwarding, dashboard features, billing, and troubleshooting.
+- [FAQ](https://captahq.com/faq): Answers to common questions about pricing, setup, bilingual support, and features.
+
+## Integrations
+
+- Google Calendar (two-way sync for appointments)
+- Stripe (billing and checkout)
+- Twilio (SMS confirmations and call routing)
+- Webhooks (connect to any system)
+
+## Contact
+
+- Website: https://captahq.com
+- Phone: (830) 521-7133
+- Setup: https://captahq.com/setup
