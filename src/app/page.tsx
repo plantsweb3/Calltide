@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 
 import { T, PHONE, PHONE_TEL, BOOKING_URL, type Lang } from "@/lib/marketing/translations";
 import { useScrolled, useScrollReveal } from "@/lib/marketing/hooks";
 import { HERO_FEATURE_ICONS, STEP_ICONS } from "@/components/marketing/icons";
+import Image from "next/image";
 import { SpotlightCard } from "@/components/marketing/SpotlightCard";
 import { Counter } from "@/components/marketing/Counter";
 import { ROICalculator } from "@/components/marketing/ROICalculator";
@@ -40,6 +41,21 @@ export default function LandingPage() {
   }, []);
 
   const t = T[lang];
+
+  // Fetch latest blog posts for internal linking
+  const [latestPosts, setLatestPosts] = useState<Array<{ slug: string; title: string; metaDescription: string | null; category: string | null; readingTimeMin: number | null; publishedAt: string | null }>>([]);
+  useEffect(() => {
+    fetch("/api/blog/latest")
+      .then((r) => r.json())
+      .then(setLatestPosts)
+      .catch(() => {});
+  }, []);
+
+  const CATEGORY_LABELS: Record<string, string> = useMemo(() => ({
+    pillar: "Pillar", "data-driven": "Data", comparison: "Comparison",
+    "city-specific": "Local", "problem-solution": "Guide", "buying-guide": "Buyer's Guide",
+    "vertical-specific": "By Trade", "pain-point": "Pain Point",
+  }), []);
 
   return (
     <div className="relative overflow-x-hidden">
@@ -78,7 +94,7 @@ export default function LandingPage() {
 
       {/* ── 1. HERO ── */}
       <section className="relative overflow-hidden grain-overlay">
-        <img src="/images/grit-hvac.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-center" fetchPriority="high" />
+        <Image src="/images/grit-hvac.webp" alt="" fill className="object-cover object-center" priority />
         <div className="hero-bg-overlay absolute inset-0" />
         <div className="section-fade-bottom" />
         <div className="relative z-10 mx-auto max-w-6xl px-6 sm:px-8 py-24 sm:py-32">
@@ -524,9 +540,54 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── 12. FINAL CTA ── */}
+      {/* ── 12. LATEST FROM THE BLOG ── */}
+      {latestPosts.length > 0 && (
+        <section className="bg-[#FBFBFC] px-6 sm:px-8 py-20 sm:py-24">
+          <div className="mx-auto max-w-5xl">
+            <div className="text-center">
+              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">
+                {lang === "en" ? "From the Blog" : "Del Blog"}
+              </p>
+              <h2 className="mt-4 text-[28px] font-extrabold leading-[1.1] tracking-tight text-charcoal sm:text-[36px]">
+                {lang === "en" ? "Tips for Growing Your Business" : "Consejos para Hacer Crecer tu Negocio"}
+              </h2>
+            </div>
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {latestPosts.map((post) => (
+                <a key={post.slug} href={`/blog/${post.slug}`} className="group">
+                  <div className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-6">
+                    <div className="flex items-center gap-2">
+                      {post.category && (
+                        <span className="rounded-full bg-amber/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber">
+                          {CATEGORY_LABELS[post.category] ?? post.category}
+                        </span>
+                      )}
+                      {post.readingTimeMin && (
+                        <span className="text-xs text-charcoal-light">{post.readingTimeMin} min read</span>
+                      )}
+                    </div>
+                    <h3 className="mt-3 text-base font-bold tracking-tight text-charcoal group-hover:text-amber transition-colors line-clamp-2">
+                      {post.title}
+                    </h3>
+                    {post.metaDescription && (
+                      <p className="mt-2 text-sm leading-relaxed text-charcoal-muted line-clamp-2">{post.metaDescription}</p>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+              <a href="/blog" className="text-sm font-semibold text-amber transition hover:underline">
+                {lang === "en" ? "Read all articles" : "Leer todos los artículos"} &rarr;
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── 13. FINAL CTA ── */}
       <section className="relative px-6 sm:px-8 py-24 sm:py-32 overflow-hidden dark-section grain-overlay">
-        <img src="/images/grit-texture.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-center" loading="lazy" />
+        <Image src="/images/grit-texture.webp" alt="" fill className="object-cover object-center" loading="lazy" />
         <div className="grit-overlay-cta absolute inset-0" />
         <div className="section-fade-top-dark" />
         <div className="relative z-10 mx-auto max-w-3xl text-center">

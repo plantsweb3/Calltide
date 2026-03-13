@@ -70,24 +70,38 @@ export default async function HelpArticlePage({ params }: { params: Promise<{ ca
 
   return (
     <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
-      {catSlug === "for-prospects" && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Article",
-              headline: article.title,
-              description: article.metaDescription || article.excerpt,
-              author: { "@type": "Organization", name: "Capta" },
-              publisher: { "@type": "Organization", name: "Capta", url: appUrl },
-              datePublished: article.publishedAt,
-              dateModified: article.updatedAt,
-              mainEntityOfPage: `${appUrl}/help/${catSlug}/${slug}`,
-            }),
-          }}
-        />
-      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: article.title,
+            description: article.metaDescription || article.excerpt,
+            inLanguage: "en",
+            author: { "@type": "Organization", name: "Capta", url: appUrl },
+            publisher: { "@type": "Organization", name: "Capta", url: appUrl, logo: { "@type": "ImageObject", url: `${appUrl}/icon-512.png` } },
+            datePublished: article.publishedAt,
+            dateModified: article.updatedAt,
+            mainEntityOfPage: `${appUrl}/help/${catSlug}/${slug}`,
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: appUrl },
+              { "@type": "ListItem", position: 2, name: "Help Center", item: `${appUrl}/help` },
+              { "@type": "ListItem", position: 3, name: category.name, item: `${appUrl}/help/${catSlug}` },
+              { "@type": "ListItem", position: 4, name: article.title },
+            ],
+          }),
+        }}
+      />
       <div className="mx-auto max-w-3xl px-4 py-10">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-1.5 text-sm" style={{ color: "#94A3B8" }}>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const PHONE = process.env.NEXT_PUBLIC_PHONE ?? "(830) 521-7133";
 const PHONE_TEL = `tel:${process.env.NEXT_PUBLIC_PHONE_TEL ?? "+18305217133"}`;
@@ -20,7 +21,7 @@ export function StaticNav({ lang, langHref }: StaticNavProps) {
   return (
     <nav className="sticky top-0 z-40 border-b border-cream-border bg-cream">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 sm:px-8 py-4">
-        <Link href="/"><img src="/images/logo-inline-navy.webp" alt="Capta" className="h-7 w-auto sm:h-8" /></Link>
+        <Link href="/"><Image src="/images/logo-inline-navy.webp" alt="Capta" width={120} height={32} className="h-7 w-auto sm:h-8" priority /></Link>
         <div className="hidden items-center gap-8 md:flex">
           <Link href="/platform" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{labels.platform}</Link>
           <Link href="/pricing" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{labels.pricing}</Link>

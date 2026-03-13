@@ -210,5 +210,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
   });
 
-  return [...staticPages, ...blogPages, ...helpPages];
+  // Trade landing pages
+  const tradeSlugs = ["plumbing", "hvac", "electrical", "roofing", "general-contracting", "restoration", "landscaping", "pest-control", "garage-door"];
+  const tradePages: MetadataRoute.Sitemap = tradeSlugs.map((slug) => ({
+    url: `${appUrl}/services/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  // City landing pages
+  const citySlugs = ["san-antonio", "houston", "dallas", "austin", "el-paso", "miami", "los-angeles", "phoenix", "denver", "chicago", "atlanta", "new-york"];
+  const cityPages: MetadataRoute.Sitemap = citySlugs.map((slug) => ({
+    url: `${appUrl}/locations/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...tradePages, ...cityPages, ...blogPages, ...helpPages];
 }

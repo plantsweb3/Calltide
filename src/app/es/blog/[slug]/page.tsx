@@ -15,6 +15,8 @@ import { StaticFooter } from "@/components/marketing/StaticFooter";
 import SetupCTA from "@/components/setup-cta";
 import type { Metadata } from "next";
 
+export const revalidate = 3600;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

@@ -5,7 +5,7 @@ import { eq, desc, and, sql } from "drizzle-orm";
 import { StaticNav } from "@/components/marketing/StaticNav";
 import { StaticFooter } from "@/components/marketing/StaticFooter";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 const POSTS_PER_PAGE = 12;
 
@@ -37,15 +37,17 @@ export const metadata = {
 export default async function BlogIndexPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; category?: string }>;
+  searchParams: Promise<{ page?: string; category?: string; q?: string }>;
 }) {
   const params = await searchParams;
   const page = Math.max(1, parseInt(params.page ?? "1", 10));
   const category = params.category;
+  const query = params.q?.trim();
   const offset = (page - 1) * POSTS_PER_PAGE;
 
   const conditions = [eq(blogPosts.published, true), eq(blogPosts.language, "en")];
   if (category) conditions.push(eq(blogPosts.category, category));
+  if (query) conditions.push(sql`(${blogPosts.title} LIKE ${'%' + query + '%'} OR ${blogPosts.metaDescription} LIKE ${'%' + query + '%'})`);
 
   const posts = await db
     .select()
@@ -74,8 +76,22 @@ export default async function BlogIndexPage({
           </p>
         </div>
 
+        {/* Search */}
+        <form action="/blog" method="get" className="mt-8 mx-auto max-w-md">
+          <div className="relative">
+            <input
+              type="search"
+              name="q"
+              defaultValue={query ?? ""}
+              placeholder="Search articles..."
+              className="w-full rounded-lg border border-cream-border bg-white px-4 py-2.5 pl-10 text-sm text-charcoal placeholder:text-charcoal-light focus:border-amber focus:outline-none focus:ring-1 focus:ring-amber"
+            />
+            <svg className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-charcoal-light" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="m21 21-4.35-4.35"/></svg>
+          </div>
+        </form>
+
         {/* Category filters */}
-        <div className="mt-10 flex flex-wrap justify-center gap-2">
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Link
             href="/blog"
             className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
