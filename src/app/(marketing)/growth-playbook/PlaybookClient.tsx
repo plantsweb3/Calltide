@@ -161,16 +161,35 @@ export function PlaybookLanding() {
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10">
                     <span className="text-2xl text-green-400">&#10003;</span>
                   </div>
-                  <h3 className="mt-4 text-lg font-bold text-white">Check your inbox</h3>
+                  <h3 className="mt-4 text-lg font-bold text-white">Your playbook is ready</h3>
                   <p className="mt-2 text-sm text-slate-400">
-                    The Blue Collar Growth Playbook is on the way.
+                    Click below to download. Also available in Spanish.
                   </p>
-                  <a
-                    href="/setup?utm_source=playbook&utm_medium=landing&utm_campaign=growth_playbook"
-                    className="cta-gold mt-6 inline-flex items-center gap-2 rounded-lg px-8 py-3.5 text-sm font-semibold text-white"
-                  >
-                    Get Capta &rarr;
-                  </a>
+                  <div className="mt-5 flex flex-col gap-3">
+                    <a
+                      href="/downloads/blue-collar-growth-playbook.pdf"
+                      download
+                      className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-lg px-8 py-3.5 text-sm font-semibold text-white"
+                    >
+                      Download Playbook (English) &darr;
+                    </a>
+                    <a
+                      href="/downloads/manual-de-crecimiento-para-contratistas.pdf"
+                      download
+                      className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/10 px-8 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/5"
+                    >
+                      Descargar en Espa&ntilde;ol &darr;
+                    </a>
+                  </div>
+                  <div className="mt-6 pt-5" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+                    <p className="text-xs text-slate-500">Ready to stop losing calls?</p>
+                    <a
+                      href="/setup?utm_source=playbook&utm_medium=landing&utm_campaign=growth_playbook"
+                      className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-amber transition hover:underline"
+                    >
+                      Get Capta &rarr;
+                    </a>
+                  </div>
                 </div>
               )}
             </div>
@@ -267,8 +286,21 @@ export function PlaybookLanding() {
               </button>
             </form>
           ) : (
-            <div className="mt-8 rounded-lg border border-green-500/20 bg-green-500/10 p-4">
-              <p className="text-sm font-semibold text-green-400">Check your inbox &mdash; the playbook is on the way.</p>
+            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              <a
+                href="/downloads/blue-collar-growth-playbook.pdf"
+                download
+                className="cta-gold cta-shimmer rounded-lg px-8 py-3.5 text-sm font-semibold text-white"
+              >
+                Download Playbook (EN) &darr;
+              </a>
+              <a
+                href="/downloads/manual-de-crecimiento-para-contratistas.pdf"
+                download
+                className="rounded-lg border border-white/10 px-8 py-3.5 text-sm font-medium text-slate-300 transition hover:bg-white/5"
+              >
+                Descargar (ES) &darr;
+              </a>
             </div>
           )}
         </div>

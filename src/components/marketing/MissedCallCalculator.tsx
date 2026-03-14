@@ -236,9 +236,16 @@ export function MissedCallCalculator({ lang }: Props) {
                   </form>
                 </div>
               ) : (
-                <div className="mt-6 rounded-lg border border-green-200 bg-green-50 p-4 text-center">
+                <div className="mt-6 rounded-lg border border-green-200 bg-green-50 p-5 text-center">
                   <p className="text-sm font-semibold text-green-800">{t.thanks}</p>
                   <p className="mt-1 text-xs text-green-700">{t.thanksSub}</p>
+                  <a
+                    href={lang === "es" ? "/downloads/manual-de-crecimiento-para-contratistas.pdf" : "/downloads/blue-collar-growth-playbook.pdf"}
+                    download
+                    className="cta-gold mt-4 inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white"
+                  >
+                    {lang === "es" ? "Descargar Playbook" : "Download Playbook"} &darr;
+                  </a>
                 </div>
               )}
 
