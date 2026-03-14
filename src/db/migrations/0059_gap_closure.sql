@@ -1,19 +1,21 @@
--- Customer scoring & custom fields
 ALTER TABLE customers ADD COLUMN lifetime_value INTEGER DEFAULT 0;
+--> statement-breakpoint
 ALTER TABLE customers ADD COLUMN tier TEXT DEFAULT 'new';
+--> statement-breakpoint
 ALTER TABLE customers ADD COLUMN complaint_count INTEGER DEFAULT 0;
+--> statement-breakpoint
 ALTER TABLE customers ADD COLUMN custom_fields TEXT DEFAULT '{}';
-
--- Technician support on appointments
+--> statement-breakpoint
 ALTER TABLE appointments ADD COLUMN technician_id TEXT;
-
--- Business config for payment links, custom field templates, and service durations
+--> statement-breakpoint
 ALTER TABLE businesses ADD COLUMN payment_link_url TEXT;
+--> statement-breakpoint
 ALTER TABLE businesses ADD COLUMN custom_field_templates TEXT DEFAULT '[]';
+--> statement-breakpoint
 ALTER TABLE businesses ADD COLUMN enable_thank_you_sms INTEGER DEFAULT 1;
+--> statement-breakpoint
 ALTER TABLE businesses ADD COLUMN service_durations TEXT DEFAULT '{}';
-
--- Technicians table for multi-tech dispatch
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS technicians (
   id TEXT PRIMARY KEY,
   business_id TEXT NOT NULL REFERENCES businesses(id),
@@ -28,8 +30,7 @@ CREATE TABLE IF NOT EXISTS technicians (
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-
--- Invoices table for customer billing
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS invoices (
   id TEXT PRIMARY KEY,
   business_id TEXT NOT NULL REFERENCES businesses(id),
@@ -48,8 +49,7 @@ CREATE TABLE IF NOT EXISTS invoices (
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-
--- Google reviews table for review monitoring
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS google_reviews (
   id TEXT PRIMARY KEY,
   business_id TEXT NOT NULL REFERENCES businesses(id),
@@ -64,13 +64,19 @@ CREATE TABLE IF NOT EXISTS google_reviews (
   fetched_at TEXT NOT NULL DEFAULT (datetime('now')),
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-
--- Indexes
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_technicians_business ON technicians(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_invoices_business ON invoices(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_invoices_customer ON invoices(customer_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_google_reviews_business ON google_reviews(business_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_google_reviews_rating ON google_reviews(business_id, rating);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_customers_tier ON customers(business_id, tier);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS idx_appointments_technician ON appointments(technician_id);
