@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import twilio from "twilio";
 import { db } from "@/db";
-import { businesses, leads, calls, smsMessages } from "@/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { businesses, leads, calls, smsMessages, appointments } from "@/db/schema";
+import { eq, and, desc, gte, sql } from "drizzle-orm";
 import { findOrCreateLead } from "@/lib/ai/context-builder";
 import { reportWarning, reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
@@ -15,7 +15,8 @@ import { normalizePhone } from "@/lib/compliance/sms";
 import { env } from "@/lib/env";
 import { getResend } from "@/lib/email/client";
 
-const OPT_OUT_KEYWORDS = ["stop", "unsubscribe", "cancel", "quit", "end", "optout", "opt out"];
+const OPT_OUT_KEYWORDS = ["stop", "unsubscribe", "quit", "end", "optout", "opt out"];
+const CANCEL_KEYWORDS = ["cancel", "cancelar"];
 const OPT_IN_KEYWORDS = ["start", "unstop", "subscribe", "opt in", "optin"];
 
 export async function POST(req: NextRequest) {
@@ -141,6 +142,78 @@ export async function POST(req: NextRequest) {
 
     console.log(`SMS opt-in recorded for lead ${lead.id}`);
     return twimlResponse("You have been re-subscribed to SMS messages. Reply STOP to unsubscribe.");
+  }
+
+  // Handle appointment CANCEL/CANCELAR replies from customers
+  if (!isOwner && CANCEL_KEYWORDS.some((kw) => normalizedBody === kw)) {
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      // Find the nearest upcoming confirmed appointment for this caller
+      const [upcomingAppt] = await db
+        .select({
+          id: appointments.id,
+          service: appointments.service,
+          date: appointments.date,
+          time: appointments.time,
+          leadId: appointments.leadId,
+          googleCalendarEventId: appointments.googleCalendarEventId,
+        })
+        .from(appointments)
+        .where(
+          and(
+            eq(appointments.businessId, biz.id),
+            eq(appointments.leadId, lead.id),
+            eq(appointments.status, "confirmed"),
+            gte(appointments.date, today),
+          ),
+        )
+        .orderBy(appointments.date, appointments.time)
+        .limit(1);
+
+      if (upcomingAppt) {
+        // Cancel the appointment
+        await db
+          .update(appointments)
+          .set({
+            status: "cancelled",
+            notes: "Cancelled via SMS reply",
+            updatedAt: new Date().toISOString(),
+          })
+          .where(eq(appointments.id, upcomingAppt.id));
+
+        // Delete from Google Calendar (fire-and-forget)
+        if (upcomingAppt.googleCalendarEventId) {
+          import("@/lib/calendar/google-calendar").then(({ deleteCalendarEvent }) => {
+            deleteCalendarEvent(biz.id, upcomingAppt.googleCalendarEventId!).catch((err) =>
+              reportError("Failed to delete Google Calendar event on SMS cancel", err),
+            );
+          }).catch(() => {});
+        }
+
+        // Notify business owner
+        sendSMS({
+          to: biz.ownerPhone,
+          from: biz.twilioNumber,
+          body: `Appointment cancelled via SMS: ${upcomingAppt.service} on ${upcomingAppt.date} at ${upcomingAppt.time}. Customer: ${from}`,
+          businessId: biz.id,
+          leadId: lead.id,
+          templateType: "owner_notify",
+        }).catch((err) =>
+          reportError("Cancel notification to owner failed", err, { extra: { businessId: biz.id } }),
+        );
+
+        const lang = lead.language || "en";
+        const confirmMsg = lang === "es"
+          ? `Su cita de ${upcomingAppt.service} para el ${upcomingAppt.date} a las ${upcomingAppt.time} ha sido cancelada. Si necesita reprogramar, llámenos.`
+          : `Your ${upcomingAppt.service} appointment on ${upcomingAppt.date} at ${upcomingAppt.time} has been cancelled. Call us if you'd like to reschedule.`;
+
+        return twimlResponse(confirmMsg);
+      }
+      // No upcoming appointment found — treat as general message, fall through
+    } catch (err) {
+      reportError("SMS CANCEL handler failed", err, { extra: { businessId: biz.id } });
+      // Fall through to regular SMS handling
+    }
   }
 
   // Handle inbound MMS photos — check BEFORE owner reply detection

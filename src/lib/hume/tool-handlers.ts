@@ -1,6 +1,6 @@
 import { db } from "@/db";
-import { appointments, calls, leads } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { appointments, calls, leads, customers } from "@/db/schema";
+import { eq, and, ne, desc, gte } from "drizzle-orm";
 import { z } from "zod";
 import { checkAvailability, bookSlot } from "@/lib/calendar/availability";
 import { getBusinessById } from "@/lib/ai/context-builder";
@@ -53,6 +53,21 @@ const referPartnerSchema = z.object({
   job_description: z.string().optional(),
 });
 
+const lookupAppointmentsSchema = z.object({
+  caller_phone: z.string().optional(),
+});
+
+const cancelAppointmentSchema = z.object({
+  appointment_id: z.string().min(1, "appointment_id is required"),
+  reason: z.string().optional(),
+});
+
+const rescheduleAppointmentSchema = z.object({
+  appointment_id: z.string().min(1, "appointment_id is required"),
+  new_date: z.string().min(1, "new_date is required"),
+  new_time: z.string().min(1, "new_time is required"),
+});
+
 interface ToolCallContext {
   businessId: string;
   callId?: string;
@@ -69,6 +84,9 @@ const TOOL_INTENT_MAP: Record<string, string> = {
   transfer_to_human: "transfer",
   submit_intake: "intake",
   refer_partner: "referral",
+  lookup_appointments: "booking",
+  cancel_appointment: "booking",
+  reschedule_appointment: "booking",
 };
 
 export async function dispatchToolCall(
@@ -95,6 +113,15 @@ export async function dispatchToolCall(
       break;
     case "refer_partner":
       result = await handleReferPartner(params, ctx);
+      break;
+    case "lookup_appointments":
+      result = await handleLookupAppointments(params, ctx);
+      break;
+    case "cancel_appointment":
+      result = await handleCancelAppointment(params, ctx);
+      break;
+    case "reschedule_appointment":
+      result = await handleRescheduleAppointment(params, ctx);
       break;
     default:
       return { success: false, error: `Unknown tool: ${toolName}` };
@@ -205,6 +232,18 @@ async function handleBookAppointment(
         return null; // Slot taken
       }
 
+      // Look up service duration from business config
+      const serviceDurations = biz.serviceDurations;
+      let duration = 60;
+      if (serviceDurations) {
+        const normalizedSvc = service.toLowerCase().trim();
+        const match = Object.entries(serviceDurations).find(
+          ([key]) => key.toLowerCase().trim() === normalizedSvc ||
+            normalizedSvc.includes(key.toLowerCase().trim()),
+        );
+        if (match) duration = match[1];
+      }
+
       const [created] = await tx.insert(appointments).values({
         businessId: ctx.businessId,
         leadId: ctx.leadId || "",
@@ -212,6 +251,7 @@ async function handleBookAppointment(
         service,
         date,
         time,
+        duration,
         status: "confirmed",
       }).returning();
 
@@ -583,4 +623,308 @@ async function handleReferPartner(
     reportError("Failed to process partner referral", err, { extra: { callId: ctx.callId } });
     return { success: false, error: "Failed to process referral" };
   }
+}
+
+async function handleLookupAppointments(
+  params: Record<string, unknown>,
+  ctx: ToolCallContext,
+): Promise<ToolResult> {
+  const parsed = lookupAppointmentsSchema.safeParse(params);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
+  }
+
+  const phone = parsed.data.caller_phone || ctx.callerPhone;
+  if (!phone) {
+    return {
+      success: false,
+      error: ctx.language === "es"
+        ? "No se pudo identificar su número de teléfono para buscar citas."
+        : "Could not identify your phone number to look up appointments.",
+    };
+  }
+
+  // Find the customer by phone
+  const [customer] = await db
+    .select({ id: customers.id })
+    .from(customers)
+    .where(and(eq(customers.businessId, ctx.businessId), eq(customers.phone, phone)))
+    .limit(1);
+
+  // Also look up lead by phone
+  const [lead] = await db
+    .select({ id: leads.id })
+    .from(leads)
+    .where(and(eq(leads.businessId, ctx.businessId), eq(leads.phone, phone)))
+    .limit(1);
+
+  if (!customer && !lead) {
+    return {
+      success: true,
+      data: {
+        appointments: [],
+        message: ctx.language === "es"
+          ? "No encontré citas asociadas a su número de teléfono."
+          : "I couldn't find any appointments associated with your phone number.",
+      },
+    };
+  }
+
+  // Find upcoming confirmed appointments for this caller
+  const today = new Date().toISOString().split("T")[0];
+  const upcomingAppointments = await db
+    .select({
+      id: appointments.id,
+      service: appointments.service,
+      date: appointments.date,
+      time: appointments.time,
+      status: appointments.status,
+    })
+    .from(appointments)
+    .where(
+      and(
+        eq(appointments.businessId, ctx.businessId),
+        lead ? eq(appointments.leadId, lead.id) : undefined,
+        eq(appointments.status, "confirmed"),
+        gte(appointments.date, today),
+      ),
+    )
+    .orderBy(appointments.date, appointments.time)
+    .limit(5);
+
+  if (upcomingAppointments.length === 0) {
+    return {
+      success: true,
+      data: {
+        appointments: [],
+        message: ctx.language === "es"
+          ? "No tiene citas próximas programadas."
+          : "You don't have any upcoming appointments scheduled.",
+      },
+    };
+  }
+
+  return {
+    success: true,
+    data: {
+      appointments: upcomingAppointments.map((a) => ({
+        id: a.id,
+        service: a.service,
+        date: a.date,
+        time: a.time,
+      })),
+      message: ctx.language === "es"
+        ? `Encontré ${upcomingAppointments.length} cita(s) próxima(s).`
+        : `I found ${upcomingAppointments.length} upcoming appointment(s).`,
+    },
+  };
+}
+
+async function handleCancelAppointment(
+  params: Record<string, unknown>,
+  ctx: ToolCallContext,
+): Promise<ToolResult> {
+  const parsed = cancelAppointmentSchema.safeParse(params);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
+  }
+  const { appointment_id: appointmentId, reason } = parsed.data;
+
+  // Find the appointment and verify it belongs to this business
+  const [appt] = await db
+    .select({
+      id: appointments.id,
+      service: appointments.service,
+      date: appointments.date,
+      time: appointments.time,
+      status: appointments.status,
+      googleCalendarEventId: appointments.googleCalendarEventId,
+    })
+    .from(appointments)
+    .where(and(eq(appointments.id, appointmentId), eq(appointments.businessId, ctx.businessId)))
+    .limit(1);
+
+  if (!appt) {
+    return {
+      success: false,
+      error: ctx.language === "es"
+        ? "No encontré esa cita."
+        : "I couldn't find that appointment.",
+    };
+  }
+
+  if (appt.status === "cancelled") {
+    return {
+      success: true,
+      data: {
+        message: ctx.language === "es"
+          ? "Esa cita ya fue cancelada."
+          : "That appointment has already been cancelled.",
+      },
+    };
+  }
+
+  // Cancel the appointment
+  await db
+    .update(appointments)
+    .set({
+      status: "cancelled",
+      notes: reason ? `Cancelled by caller: ${reason}` : "Cancelled by caller during call",
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(appointments.id, appointmentId));
+
+  // Delete from Google Calendar (fire-and-forget)
+  if (appt.googleCalendarEventId) {
+    import("@/lib/calendar/google-calendar").then(({ deleteCalendarEvent }) => {
+      deleteCalendarEvent(ctx.businessId, appt.googleCalendarEventId!).catch((err) =>
+        reportError("Failed to delete Google Calendar event on cancel", err),
+      );
+    }).catch(() => {});
+  }
+
+  // Notify business owner
+  const biz = await getBusinessById(ctx.businessId);
+  if (biz) {
+    const cancelMsg = `Appointment cancelled: ${appt.service} on ${appt.date} at ${appt.time}.${reason ? ` Reason: ${reason}` : ""}`;
+    await sendSMS({
+      to: biz.ownerPhone,
+      from: biz.twilioNumber,
+      body: getOwnerNotification({ businessName: biz.name, message: cancelMsg }, "en"),
+      businessId: ctx.businessId,
+      leadId: ctx.leadId,
+      callId: ctx.callId,
+      templateType: "owner_notify",
+    });
+  }
+
+  return {
+    success: true,
+    data: {
+      message: ctx.language === "es"
+        ? `Su cita de ${appt.service} para el ${appt.date} a las ${appt.time} ha sido cancelada. Se notificó al negocio.`
+        : `Your ${appt.service} appointment on ${appt.date} at ${appt.time} has been cancelled. The business has been notified.`,
+    },
+  };
+}
+
+async function handleRescheduleAppointment(
+  params: Record<string, unknown>,
+  ctx: ToolCallContext,
+): Promise<ToolResult> {
+  const parsed = rescheduleAppointmentSchema.safeParse(params);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
+  }
+  const { appointment_id: appointmentId, new_date: newDate, new_time: newTime } = parsed.data;
+
+  // Find the existing appointment
+  const [appt] = await db
+    .select({
+      id: appointments.id,
+      service: appointments.service,
+      date: appointments.date,
+      time: appointments.time,
+      status: appointments.status,
+      leadId: appointments.leadId,
+      googleCalendarEventId: appointments.googleCalendarEventId,
+    })
+    .from(appointments)
+    .where(and(eq(appointments.id, appointmentId), eq(appointments.businessId, ctx.businessId)))
+    .limit(1);
+
+  if (!appt) {
+    return {
+      success: false,
+      error: ctx.language === "es"
+        ? "No encontré esa cita."
+        : "I couldn't find that appointment.",
+    };
+  }
+
+  if (appt.status !== "confirmed") {
+    return {
+      success: false,
+      error: ctx.language === "es"
+        ? "Esa cita no se puede reprogramar porque no está activa."
+        : "That appointment can't be rescheduled because it's not active.",
+    };
+  }
+
+  const biz = await getBusinessById(ctx.businessId);
+  if (!biz) return { success: false, error: "Business not found" };
+
+  // Check availability for the new slot
+  const slots = await checkAvailability(biz, newDate, appt.service);
+  const slotAvailable = slots.some((s) => s.available && s.time === newTime);
+
+  if (!slotAvailable) {
+    return {
+      success: false,
+      error: ctx.language === "es"
+        ? `El horario ${newTime} del ${newDate} no está disponible. ¿Le gustaría intentar otra fecha u hora?`
+        : `The ${newTime} slot on ${newDate} isn't available. Would you like to try another date or time?`,
+    };
+  }
+
+  // Update the appointment to the new date/time
+  await db
+    .update(appointments)
+    .set({
+      date: newDate,
+      time: newTime,
+      notes: `Rescheduled from ${appt.date} at ${appt.time}`,
+      reminderSent: false, // Reset reminder for new date
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(appointments.id, appointmentId));
+
+  // Update Google Calendar event (fire-and-forget)
+  if (appt.googleCalendarEventId) {
+    import("@/lib/calendar/google-calendar").then(({ updateCalendarEvent }) => {
+      updateCalendarEvent(ctx.businessId, appt.googleCalendarEventId!, {
+        date: newDate,
+        time: newTime,
+      }).catch((err) =>
+        reportError("Failed to update Google Calendar event on reschedule", err),
+      );
+    }).catch(() => {});
+  }
+
+  // Send confirmation SMS to caller
+  if (ctx.callerPhone) {
+    await sendSMS({
+      to: ctx.callerPhone,
+      from: biz.twilioNumber,
+      body: getAppointmentConfirmation(
+        { businessName: biz.name, service: appt.service, date: newDate, time: newTime },
+        ctx.language,
+      ),
+      businessId: ctx.businessId,
+      leadId: ctx.leadId,
+      callId: ctx.callId,
+      templateType: "appointment_confirm",
+    });
+  }
+
+  // Notify business owner
+  const rescheduleMsg = `Appointment rescheduled: ${appt.service} moved from ${appt.date} at ${appt.time} to ${newDate} at ${newTime}.`;
+  await sendSMS({
+    to: biz.ownerPhone,
+    from: biz.twilioNumber,
+    body: getOwnerNotification({ businessName: biz.name, message: rescheduleMsg }, "en"),
+    businessId: ctx.businessId,
+    leadId: ctx.leadId,
+    callId: ctx.callId,
+    templateType: "owner_notify",
+  });
+
+  return {
+    success: true,
+    data: {
+      message: ctx.language === "es"
+        ? `Su cita de ${appt.service} ha sido reprogramada para el ${newDate} a las ${newTime}. Se envió un texto de confirmación.`
+        : `Your ${appt.service} appointment has been rescheduled to ${newDate} at ${newTime}. A confirmation text has been sent.`,
+    },
+  };
 }

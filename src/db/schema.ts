@@ -130,6 +130,11 @@ export const businesses = sqliteTable("businesses", {
   lastDigestSentAt: text("last_digest_sent_at"),
   // Estimate engine
   estimateMode: text("estimate_mode").default("quick"), // quick, advanced, both
+  // Gap closure
+  paymentLinkUrl: text("payment_link_url"), // e.g. Stripe payment link, Venmo, etc.
+  customFieldTemplates: text("custom_field_templates", { mode: "json" }).$type<Array<{ key: string; label: string; type: string }>>().default([]),
+  enableThankYouSms: integer("enable_thank_you_sms", { mode: "boolean" }).default(true),
+  serviceDurations: text("service_durations", { mode: "json" }).$type<Record<string, number>>().default({}), // e.g. {"drain cleaning": 45, "water heater install": 180}
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -271,7 +276,9 @@ export const appointments = sqliteTable("appointments", {
   duration: integer("duration").notNull().default(60), // minutes
   status: text("status").notNull().default("confirmed"), // confirmed, cancelled, completed, no_show
   notes: text("notes"),
+  technicianId: text("technician_id"),
   reminderSent: integer("reminder_sent", { mode: "boolean" }).default(false),
+  thankYouSent: integer("thank_you_sent", { mode: "boolean" }).default(false),
   googleCalendarEventId: text("google_calendar_event_id"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
@@ -335,6 +342,10 @@ export const customers = sqliteTable("customers", {
   lastCallAt: text("last_call_at"),
   firstCallAt: text("first_call_at"),
   isRepeat: integer("is_repeat", { mode: "boolean" }).default(false),
+  lifetimeValue: integer("lifetime_value").default(0),
+  tier: text("tier").default("new"), // new, loyal, vip, dormant, at-risk
+  complaintCount: integer("complaint_count").default(0),
+  customFields: text("custom_fields", { mode: "json" }).$type<Record<string, string>>().default({}),
   deletedAt: text("deleted_at"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
@@ -1563,4 +1574,53 @@ export const googleCalendarConnections = sqliteTable("google_calendar_connection
   connectedAt: text("connected_at").notNull().default(sql`(datetime('now'))`),
   lastSyncAt: text("last_sync_at"),
   syncEnabled: integer("sync_enabled", { mode: "boolean" }).notNull().default(true),
+});
+
+export const technicians = sqliteTable("technicians", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  name: text("name").notNull(),
+  phone: text("phone"),
+  email: text("email"),
+  skills: text("skills", { mode: "json" }).$type<string[]>().default([]),
+  googleCalendarId: text("google_calendar_id"),
+  isActive: integer("is_active", { mode: "boolean" }).default(true),
+  color: text("color"),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const invoices = sqliteTable("invoices", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  customerId: text("customer_id").references(() => customers.id),
+  appointmentId: text("appointment_id").references(() => appointments.id),
+  amount: real("amount").notNull(),
+  status: text("status").notNull().default("pending"), // pending, sent, paid, overdue, cancelled
+  dueDate: text("due_date"),
+  paidAt: text("paid_at"),
+  paymentMethod: text("payment_method"),
+  paymentLinkUrl: text("payment_link_url"),
+  notes: text("notes"),
+  smsSentAt: text("sms_sent_at"),
+  reminderCount: integer("reminder_count").default(0),
+  lastReminderAt: text("last_reminder_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const googleReviews = sqliteTable("google_reviews", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  reviewId: text("review_id"),
+  authorName: text("author_name"),
+  rating: integer("rating").notNull(),
+  text: text("text"),
+  reply: text("reply"),
+  replyDraft: text("reply_draft"),
+  replyStatus: text("reply_status").default("none"), // none, drafted, approved, posted
+  publishedAt: text("published_at"),
+  fetchedAt: text("fetched_at").notNull().default(sql`(datetime('now'))`),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });

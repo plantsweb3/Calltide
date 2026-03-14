@@ -414,6 +414,13 @@
       "when": 1776900000000,
       "tag": "0058_marketing_leads",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "6",
+      "when": 1777000000000,
+      "tag": "0059_gap_closure",
+      "breakpoints": true
     }
   ]
 }

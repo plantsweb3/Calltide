@@ -57,6 +57,7 @@ function toBizContext(biz: typeof businesses.$inferSelect): BusinessContext {
     hasPricingEnabled: biz.hasPricingEnabled ?? false,
     estimateMode: biz.estimateMode || "quick",
     accountId: biz.accountId || undefined,
+    serviceDurations: (biz.serviceDurations as Record<string, number>) || undefined,
   };
 }
 

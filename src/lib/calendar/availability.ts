@@ -98,13 +98,34 @@ export async function checkAvailability(
     );
   }
 
-  // Generate hourly slots within business hours
-  const slotDuration = 60; // minutes
+  // Determine slot duration based on service type
+  const serviceDurations = biz.serviceDurations || {};
+  const normalizedService = service?.toLowerCase().trim();
+  let slotDuration = 60; // default 60 minutes
+  if (normalizedService && serviceDurations) {
+    // Try exact match first, then partial match
+    const exactMatch = Object.entries(serviceDurations).find(
+      ([key]) => key.toLowerCase().trim() === normalizedService,
+    );
+    if (exactMatch) {
+      slotDuration = exactMatch[1];
+    } else {
+      const partialMatch = Object.entries(serviceDurations).find(
+        ([key]) => normalizedService.includes(key.toLowerCase().trim()) ||
+          key.toLowerCase().trim().includes(normalizedService),
+      );
+      if (partialMatch) {
+        slotDuration = partialMatch[1];
+      }
+    }
+  }
+
+  // Generate slots within business hours
   const slots: TimeSlot[] = [];
   const startMin = openHour * 60 + openMin;
   const endMin = closeHour * 60 + closeMin;
 
-  for (let min = startMin; min + slotDuration <= endMin; min += slotDuration) {
+  for (let min = startMin; min + slotDuration <= endMin; min += 60) {
     const h = Math.floor(min / 60);
     const m = min % 60;
     const time = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;

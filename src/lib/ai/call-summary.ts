@@ -1,9 +1,8 @@
 import { getHumeClient } from "@/lib/hume/client";
 import { getAnthropic, HAIKU_MODEL } from "@/lib/ai/client";
 import { db } from "@/db";
-import { calls } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { businesses } from "@/db/schema";
+import { calls, customers, businesses } from "@/db/schema";
+import { eq, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { triggerQaIfNewClient } from "@/lib/agents/qa";
 import { sendOwnerCallAlert, sendMissedCallTextBack } from "@/lib/notifications/post-call";
@@ -255,6 +254,48 @@ export async function processCallSummary(callId: string, chatId: string): Promis
     sendMissedCallTextBack(callId).catch((err) => {
       reportError("Missed call text-back failed", err, { extra: { callId } });
     });
+
+    // Complaint tracking: increment complaint count on negative sentiment (fire-and-forget)
+    if (sentiment === "negative" && callRecord?.customerId) {
+      import("@/db/schema").then(({ customers: customersTable }) => {
+        db.update(customersTable)
+          .set({
+            complaintCount: sql`COALESCE(${customersTable.complaintCount}, 0) + 1`,
+            updatedAt: new Date().toISOString(),
+          })
+          .where(eq(customersTable.id, callRecord.customerId!))
+          .catch((err) => reportError("Complaint count increment failed", err, { extra: { callId } }));
+      }).catch(() => {});
+
+      // Alert owner if 2+ complaints
+      if (callRecord.businessId) {
+        db.select({ complaintCount: customers.complaintCount, name: customers.name })
+          .from(customers)
+          .where(eq(customers.id, callRecord.customerId!))
+          .limit(1)
+          .then(([cust]) => {
+            if (cust && (cust.complaintCount || 0) >= 2) {
+              import("@/lib/twilio/sms").then(({ sendSMS: sendAlert }) => {
+                db.select({ ownerPhone: businesses.ownerPhone, twilioNumber: businesses.twilioNumber })
+                  .from(businesses)
+                  .where(eq(businesses.id, callRecord.businessId))
+                  .limit(1)
+                  .then(([biz]) => {
+                    if (biz) {
+                      sendAlert({
+                        to: biz.ownerPhone,
+                        from: biz.twilioNumber,
+                        body: `⚠️ Complaint alert: ${cust.name || "A customer"} has had ${(cust.complaintCount || 0) + 1} negative interactions. Consider a personal follow-up.`,
+                        businessId: callRecord.businessId,
+                        templateType: "owner_notify",
+                      }).catch(() => {});
+                    }
+                  });
+              });
+            }
+          }).catch(() => {});
+      }
+    }
 
     return { summary, sentiment, outcome, callerName, serviceRequested, transcript };
   } catch (error) {

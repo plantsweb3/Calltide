@@ -105,4 +105,5 @@ export interface BusinessContext {
   hasPricingEnabled?: boolean;
   estimateMode?: string;
   accountId?: string;
+  serviceDurations?: Record<string, number>; // service name → duration in minutes
 }

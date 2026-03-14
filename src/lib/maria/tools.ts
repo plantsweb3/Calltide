@@ -2,7 +2,7 @@ import { db } from "@/db";
 import {
   calls, leads, appointments, customers,
   jobCards, smsMessages, businessContextNotes,
-  businesses,
+  businesses, technicians, invoices,
 } from "@/db/schema";
 import { eq, and, desc, gte, sql, count, ne, or, like } from "drizzle-orm";
 import { z } from "zod";
@@ -238,6 +238,90 @@ export const MARIA_TOOLS: Anthropic.Tool[] = [
       required: [],
     },
   },
+  // 19. Manage technicians
+  {
+    name: "manage_technicians",
+    description: "Add, list, or remove technicians from the team. Use when the owner wants to add a tech, see their team, or remove someone.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        action: { type: "string", description: "'list', 'add', or 'remove'" },
+        name: { type: "string", description: "Tech name (for add)" },
+        phone: { type: "string", description: "Tech phone number (for add)" },
+        skills: { type: "string", description: "Comma-separated skills (for add)" },
+        technician_id: { type: "string", description: "Tech ID (for remove)" },
+      },
+      required: ["action"],
+    },
+  },
+  // 20. Create invoice
+  {
+    name: "create_invoice",
+    description: "Create an invoice for a customer and optionally send a payment link via SMS. Use when the owner wants to bill a customer or send a payment request.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        customer_phone: { type: "string", description: "Customer phone number" },
+        amount: { type: "number", description: "Invoice amount in dollars" },
+        description: { type: "string", description: "What the invoice is for" },
+        send_sms: { type: "boolean", description: "Send payment link via SMS (default true)" },
+      },
+      required: ["customer_phone", "amount"],
+    },
+  },
+  // 21. List invoices
+  {
+    name: "list_invoices",
+    description: "Get recent invoices with status. Use when asked about bills, payments, or outstanding invoices.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        status: { type: "string", description: "'pending', 'sent', 'paid', 'overdue', or 'all'" },
+        limit: { type: "number", description: "Number to return (default 10)" },
+      },
+      required: [],
+    },
+  },
+  // 22. Customer value report
+  {
+    name: "get_customer_report",
+    description: "Get a customer value report — VIP customers, at-risk accounts, dormant customers. Use when asked about customer health, churn risk, or top customers.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        tier: { type: "string", description: "'vip', 'loyal', 'at-risk', 'dormant', 'new', or 'all'" },
+      },
+      required: [],
+    },
+  },
+  // 23. Assign technician to appointment
+  {
+    name: "assign_technician",
+    description: "Assign a technician to an appointment. Use when the owner wants to dispatch a tech to a job or reassign an appointment.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        appointment_id: { type: "string", description: "The appointment ID" },
+        technician_id: { type: "string", description: "The technician ID to assign" },
+        notify: { type: "boolean", description: "Send SMS notification to the tech (default true)" },
+      },
+      required: ["appointment_id", "technician_id"],
+    },
+  },
+  // 24. Update customer field
+  {
+    name: "update_customer_field",
+    description: "Update a custom field on a customer record. Use when the owner wants to note something about a customer's property, equipment, warranty, or preferences.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        customer_phone: { type: "string", description: "Customer phone number to look up" },
+        field_name: { type: "string", description: "Field name (e.g. 'water_heater_model', 'gate_code', 'warranty_expires')" },
+        field_value: { type: "string", description: "Field value" },
+      },
+      required: ["customer_phone", "field_name", "field_value"],
+    },
+  },
 ];
 
 // ── Zod Schemas for Tool Params ──
@@ -314,6 +398,42 @@ const CallHistorySchema = z.object({
 const SmsHistorySchema = z.object({
   limit: z.number().min(1).max(30).optional(),
   phone: z.string().optional(),
+});
+
+const ManageTechniciansSchema = z.object({
+  action: z.enum(["list", "add", "remove"]),
+  name: z.string().optional(),
+  phone: z.string().optional(),
+  skills: z.string().optional(),
+  technician_id: z.string().optional(),
+});
+
+const CreateInvoiceSchema = z.object({
+  customer_phone: z.string().min(1),
+  amount: z.number().positive(),
+  description: z.string().optional(),
+  send_sms: z.boolean().optional(),
+});
+
+const ListInvoicesSchema = z.object({
+  status: z.enum(["pending", "sent", "paid", "overdue", "all"]).optional(),
+  limit: z.number().min(1).max(30).optional(),
+});
+
+const CustomerReportSchema = z.object({
+  tier: z.enum(["vip", "loyal", "at-risk", "dormant", "new", "all"]).optional(),
+});
+
+const AssignTechnicianSchema = z.object({
+  appointment_id: z.string().min(1),
+  technician_id: z.string().min(1),
+  notify: z.boolean().optional(),
+});
+
+const UpdateCustomerFieldSchema = z.object({
+  customer_phone: z.string().min(1),
+  field_name: z.string().min(1).max(100),
+  field_value: z.string().max(1000),
 });
 
 // ── Tool Handlers ──
@@ -429,6 +549,42 @@ export async function handleToolCall(
       case "activate_business":
         // No params to validate
         return await activateBusiness(businessId);
+
+      case "manage_technicians": {
+        const parsed = ManageTechniciansSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await manageTechnicians(businessId, parsed.data);
+      }
+
+      case "create_invoice": {
+        const parsed = CreateInvoiceSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await createInvoice(businessId, biz, parsed.data);
+      }
+
+      case "list_invoices": {
+        const parsed = ListInvoicesSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await listInvoices(businessId, parsed.data);
+      }
+
+      case "get_customer_report": {
+        const parsed = CustomerReportSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await getCustomerReport(businessId, parsed.data.tier);
+      }
+
+      case "assign_technician": {
+        const parsed = AssignTechnicianSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await assignTechnician(businessId, biz, parsed.data);
+      }
+
+      case "update_customer_field": {
+        const parsed = UpdateCustomerFieldSchema.safeParse(input);
+        if (!parsed.success) return JSON.stringify({ error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join(", ")}` });
+        return await updateCustomerField(businessId, parsed.data);
+      }
 
       default:
         return JSON.stringify({ error: `Unknown tool: ${toolName}` });
@@ -970,5 +1126,330 @@ async function activateBusiness(businessId: string): Promise<string> {
   return JSON.stringify({
     success: true,
     message: `${biz.name} is now active! I'll start answering calls immediately.`,
+  });
+}
+
+async function manageTechnicians(
+  businessId: string,
+  input: { action: string; name?: string; phone?: string; skills?: string; technician_id?: string },
+): Promise<string> {
+  if (input.action === "list") {
+    const techs = await db
+      .select()
+      .from(technicians)
+      .where(and(eq(technicians.businessId, businessId), eq(technicians.isActive, true)))
+      .orderBy(technicians.sortOrder);
+
+    if (techs.length === 0) {
+      return JSON.stringify({ techs: [], message: "No technicians added yet. Say 'add tech [name] [phone]' to add one." });
+    }
+
+    return JSON.stringify({
+      techs: techs.map((t) => ({
+        id: t.id,
+        name: t.name,
+        phone: t.phone,
+        skills: t.skills,
+      })),
+      count: techs.length,
+    });
+  }
+
+  if (input.action === "add") {
+    if (!input.name) return JSON.stringify({ error: "Tech name is required" });
+
+    const skillsList = input.skills ? input.skills.split(",").map((s) => s.trim()) : [];
+
+    const [tech] = await db.insert(technicians).values({
+      businessId,
+      name: input.name,
+      phone: input.phone || null,
+      skills: skillsList,
+    }).returning();
+
+    return JSON.stringify({
+      success: true,
+      tech: { id: tech.id, name: tech.name, phone: tech.phone },
+      message: `Added ${tech.name} to your team.`,
+    });
+  }
+
+  if (input.action === "remove") {
+    if (!input.technician_id) return JSON.stringify({ error: "technician_id is required to remove" });
+
+    await db
+      .update(technicians)
+      .set({ isActive: false, updatedAt: new Date().toISOString() })
+      .where(and(eq(technicians.id, input.technician_id), eq(technicians.businessId, businessId)));
+
+    return JSON.stringify({ success: true, message: "Technician removed from active team." });
+  }
+
+  return JSON.stringify({ error: "Invalid action. Use 'list', 'add', or 'remove'." });
+}
+
+async function createInvoice(
+  businessId: string,
+  biz: BusinessContext,
+  input: { customer_phone: string; amount: number; description?: string; send_sms?: boolean },
+): Promise<string> {
+  // Find or match customer
+  const [customer] = await db
+    .select()
+    .from(customers)
+    .where(and(eq(customers.businessId, businessId), eq(customers.phone, input.customer_phone)))
+    .limit(1);
+
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + 30);
+
+  // Look up business payment link
+  const [bizRecord] = await db
+    .select({ paymentLinkUrl: businesses.paymentLinkUrl })
+    .from(businesses)
+    .where(eq(businesses.id, businessId))
+    .limit(1);
+
+  const [invoice] = await db.insert(invoices).values({
+    businessId,
+    customerId: customer?.id || null,
+    amount: input.amount,
+    status: "pending",
+    dueDate: dueDate.toISOString().split("T")[0],
+    notes: input.description || null,
+    paymentLinkUrl: bizRecord?.paymentLinkUrl || null,
+  }).returning();
+
+  const shouldSendSms = input.send_sms !== false;
+
+  if (shouldSendSms && input.customer_phone) {
+    const { sendSMS } = await import("@/lib/twilio/sms");
+    const paymentLine = bizRecord?.paymentLinkUrl
+      ? `\n\nPay here: ${bizRecord.paymentLinkUrl}`
+      : "";
+
+    await sendSMS({
+      to: input.customer_phone,
+      from: biz.twilioNumber,
+      body: `Invoice from ${biz.name}: $${input.amount.toFixed(2)}${input.description ? ` for ${input.description}` : ""}.${paymentLine}\n\nDue by ${dueDate.toLocaleDateString("en-US")}.\n\nReply STOP to opt out`,
+      businessId,
+      templateType: "invoice",
+    });
+
+    await db
+      .update(invoices)
+      .set({ status: "sent", smsSentAt: new Date().toISOString() })
+      .where(eq(invoices.id, invoice.id));
+  }
+
+  return JSON.stringify({
+    success: true,
+    invoiceId: invoice.id,
+    amount: input.amount,
+    smsSent: shouldSendSms,
+    message: shouldSendSms
+      ? `Invoice for $${input.amount.toFixed(2)} sent to ${input.customer_phone}.`
+      : `Invoice for $${input.amount.toFixed(2)} created. Not sent yet.`,
+  });
+}
+
+async function listInvoices(
+  businessId: string,
+  input: { status?: string; limit?: number },
+): Promise<string> {
+  const limit = input.limit || 10;
+  const statusFilter = input.status && input.status !== "all"
+    ? eq(invoices.status, input.status)
+    : undefined;
+
+  const results = await db
+    .select({
+      id: invoices.id,
+      amount: invoices.amount,
+      status: invoices.status,
+      dueDate: invoices.dueDate,
+      notes: invoices.notes,
+      customerPhone: customers.phone,
+      customerName: customers.name,
+    })
+    .from(invoices)
+    .leftJoin(customers, eq(invoices.customerId, customers.id))
+    .where(
+      and(
+        eq(invoices.businessId, businessId),
+        statusFilter,
+      ),
+    )
+    .orderBy(desc(invoices.createdAt))
+    .limit(limit);
+
+  const totalPending = results.filter((i) => i.status === "pending" || i.status === "sent").reduce((sum, i) => sum + i.amount, 0);
+
+  return JSON.stringify({
+    invoices: results.map((i) => ({
+      id: i.id,
+      amount: i.amount,
+      status: i.status,
+      dueDate: i.dueDate,
+      description: i.notes,
+      customer: i.customerName || i.customerPhone || "Unknown",
+    })),
+    count: results.length,
+    totalOutstanding: totalPending,
+  });
+}
+
+async function getCustomerReport(
+  businessId: string,
+  tier?: string,
+): Promise<string> {
+  const tierFilter = tier && tier !== "all"
+    ? eq(customers.tier, tier)
+    : undefined;
+
+  const results = await db
+    .select({
+      id: customers.id,
+      name: customers.name,
+      phone: customers.phone,
+      tier: customers.tier,
+      lifetimeValue: customers.lifetimeValue,
+      totalAppointments: customers.totalAppointments,
+      complaintCount: customers.complaintCount,
+      lastCallAt: customers.lastCallAt,
+      tags: customers.tags,
+    })
+    .from(customers)
+    .where(
+      and(
+        eq(customers.businessId, businessId),
+        sql`${customers.deletedAt} IS NULL`,
+        tierFilter,
+      ),
+    )
+    .orderBy(desc(customers.lifetimeValue))
+    .limit(20);
+
+  // Summary counts
+  const tierCounts: Record<string, number> = {};
+  for (const c of results) {
+    const t = c.tier || "new";
+    tierCounts[t] = (tierCounts[t] || 0) + 1;
+  }
+
+  return JSON.stringify({
+    customers: results.map((c) => ({
+      name: c.name || "Unknown",
+      phone: c.phone,
+      tier: c.tier,
+      lifetimeValue: c.lifetimeValue,
+      appointments: c.totalAppointments,
+      complaints: c.complaintCount,
+      lastContact: c.lastCallAt,
+    })),
+    tierCounts,
+    count: results.length,
+  });
+}
+
+async function assignTechnician(
+  businessId: string,
+  biz: BusinessContext,
+  input: { appointment_id: string; technician_id: string; notify?: boolean },
+): Promise<string> {
+  // Verify technician exists and belongs to this business
+  const [tech] = await db
+    .select()
+    .from(technicians)
+    .where(and(eq(technicians.id, input.technician_id), eq(technicians.businessId, businessId), eq(technicians.isActive, true)))
+    .limit(1);
+
+  if (!tech) {
+    return JSON.stringify({ error: "Technician not found. Use 'list techs' to see your team." });
+  }
+
+  // Verify appointment exists
+  const [appt] = await db
+    .select()
+    .from(appointments)
+    .where(and(eq(appointments.id, input.appointment_id), eq(appointments.businessId, businessId)))
+    .limit(1);
+
+  if (!appt) {
+    return JSON.stringify({ error: "Appointment not found." });
+  }
+
+  // Assign the technician
+  await db
+    .update(appointments)
+    .set({
+      technicianId: input.technician_id,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(appointments.id, input.appointment_id));
+
+  // Notify the tech via SMS if requested and they have a phone
+  const shouldNotify = input.notify !== false;
+  if (shouldNotify && tech.phone) {
+    const { sendSMS } = await import("@/lib/twilio/sms");
+
+    // Look up customer info
+    const [lead] = await db
+      .select({ name: leads.name, phone: leads.phone })
+      .from(leads)
+      .where(eq(leads.id, appt.leadId))
+      .limit(1);
+
+    const customerInfo = lead?.name ? `Customer: ${lead.name}` : lead?.phone ? `Customer: ${lead.phone}` : "";
+
+    await sendSMS({
+      to: tech.phone,
+      from: biz.twilioNumber,
+      body: `New job assigned: ${appt.service} on ${appt.date} at ${appt.time}.${customerInfo ? `\n${customerInfo}` : ""}\n\n— ${biz.receptionistName || "Maria"} at ${biz.name}`,
+      businessId,
+      templateType: "tech_dispatch",
+    });
+  }
+
+  return JSON.stringify({
+    success: true,
+    techName: tech.name,
+    appointment: { service: appt.service, date: appt.date, time: appt.time },
+    notified: shouldNotify && !!tech.phone,
+    message: `Assigned ${tech.name} to ${appt.service} on ${appt.date} at ${appt.time}.${shouldNotify && tech.phone ? ` ${tech.name} has been notified via SMS.` : ""}`,
+  });
+}
+
+async function updateCustomerField(
+  businessId: string,
+  input: { customer_phone: string; field_name: string; field_value: string },
+): Promise<string> {
+  const [customer] = await db
+    .select()
+    .from(customers)
+    .where(and(eq(customers.businessId, businessId), eq(customers.phone, input.customer_phone)))
+    .limit(1);
+
+  if (!customer) {
+    return JSON.stringify({ error: `No customer found with phone ${input.customer_phone}.` });
+  }
+
+  const currentFields = (customer.customFields || {}) as Record<string, string>;
+  currentFields[input.field_name] = input.field_value;
+
+  await db
+    .update(customers)
+    .set({
+      customFields: currentFields,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(customers.id, customer.id));
+
+  return JSON.stringify({
+    success: true,
+    customer: customer.name || customer.phone,
+    field: input.field_name,
+    value: input.field_value,
+    message: `Updated ${input.field_name} to "${input.field_value}" for ${customer.name || customer.phone}.`,
   });
 }

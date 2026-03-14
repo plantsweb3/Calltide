@@ -5,6 +5,7 @@ import { businesses } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { reportWarning, reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+import { normalizePhone } from "@/lib/compliance/sms";
 
 /**
  * POST /api/webhooks/twilio/voice
@@ -56,6 +57,8 @@ export async function POST(req: NextRequest) {
       name: businesses.name,
       active: businesses.active,
       humeConfigId: businesses.humeConfigId,
+      ownerPhone: businesses.ownerPhone,
+      receptionistName: businesses.receptionistName,
     })
     .from(businesses)
     .where(and(eq(businesses.twilioNumber, calledNumber), eq(businesses.active, true)))
@@ -69,6 +72,27 @@ export async function POST(req: NextRequest) {
     return twimlSay(
       "Thank you for calling. This number is not currently active. Please try again later.",
     );
+  }
+
+  // Check if this is the business owner calling — route to owner voice mode
+  const isOwner = normalizePhone(callerNumber) === normalizePhone(biz.ownerPhone);
+  if (isOwner) {
+    const receptionistName = biz.receptionistName || "Maria";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+    // Use Gather with speech input to collect owner's spoken request, then process via Maria
+    const twiml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say language="en-US" voice="Polly.Joanna">Hi! This is ${escapeXml(receptionistName)}, your office manager. What can I help you with?</Say>
+  <Gather input="speech" speechTimeout="auto" action="${escapeXml(appUrl)}/api/webhooks/twilio/voice-owner?businessId=${escapeXml(biz.id)}" method="POST" language="en-US">
+  </Gather>
+  <Say language="en-US" voice="Polly.Joanna">I didn't catch that. Goodbye!</Say>
+  <Hangup/>
+</Response>`;
+
+    return new Response(twiml, {
+      status: 200,
+      headers: { "Content-Type": "text/xml" },
+    });
   }
 
   // Get Hume credentials
