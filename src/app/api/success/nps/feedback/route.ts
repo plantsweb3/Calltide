@@ -39,7 +39,9 @@ export async function POST(request: NextRequest) {
       .createHmac("sha256", secret)
       .update(`feedback:${businessId}`)
       .digest("hex");
-    if (token !== expectedToken) {
+    const tokenBuf = Buffer.from(token);
+    const expectedBuf = Buffer.from(expectedToken);
+    if (tokenBuf.length !== expectedBuf.length || !crypto.timingSafeEqual(tokenBuf, expectedBuf)) {
       return NextResponse.json({ error: "Invalid token" }, { status: 403 });
     }
 

@@ -146,13 +146,16 @@ export async function POST(req: NextRequest) {
   const todayStr = `${ctNow.getFullYear()}-${String(ctNow.getMonth() + 1).padStart(2, "0")}-${String(ctNow.getDate()).padStart(2, "0")}`;
 
   try {
-    // Increment total XP
-    await db.update(founderStreaks)
-      .set({
-        totalXp: sql`${founderStreaks.totalXp} + ${xpEarned}`,
-        updatedAt: new Date().toISOString(),
-      })
-      .where(eq(founderStreaks.streakType, "outreach"));
+    // Upsert + increment total XP (auto-creates row if missing)
+    await db.insert(founderStreaks)
+      .values({ streakType: "outreach", totalXp: xpEarned })
+      .onConflictDoUpdate({
+        target: founderStreaks.streakType,
+        set: {
+          totalXp: sql`${founderStreaks.totalXp} + ${xpEarned}`,
+          updatedAt: new Date().toISOString(),
+        },
+      });
 
     // Check if daily target hit (100 touches) for streak
     const [touchCount] = await db

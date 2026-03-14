@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import {
   businesses,
@@ -12,7 +12,10 @@ import { getConcurrentCallCount } from "@/lib/capacity/providers";
 import { projectBreachDate, estimatePeakConcurrent, estimateMonthlyCost } from "@/lib/capacity/modeling";
 import { reportError } from "@/lib/error-reporting";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!req.cookies.has("capta_admin")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     // Current concurrent calls
     const concurrent = await getConcurrentCallCount();

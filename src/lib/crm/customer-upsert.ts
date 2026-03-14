@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { calls, leads, customers } from "@/db/schema";
-import { eq, and, isNull } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 interface CallContext {
   callerName: string | null;
@@ -48,7 +48,7 @@ export async function upsertCustomerFromCall(callId: string, context: CallContex
     // Update existing customer
     customerId = existing.id;
     const updates: Record<string, unknown> = {
-      totalCalls: (existing.totalCalls || 0) + 1,
+      totalCalls: sql`${customers.totalCalls} + 1`,
       lastCallAt: now,
       isRepeat: true,
       updatedAt: now,
@@ -71,7 +71,7 @@ export async function upsertCustomerFromCall(callId: string, context: CallContex
 
     // Increment appointments if this call booked one
     if (call.outcome === "appointment_booked") {
-      updates.totalAppointments = (existing.totalAppointments || 0) + 1;
+      updates.totalAppointments = sql`${customers.totalAppointments} + 1`;
     }
 
     await db.update(customers).set(updates).where(eq(customers.id, existing.id));

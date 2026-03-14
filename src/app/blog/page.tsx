@@ -47,7 +47,10 @@ export default async function BlogIndexPage({
 
   const conditions = [eq(blogPosts.published, true), eq(blogPosts.language, "en")];
   if (category) conditions.push(eq(blogPosts.category, category));
-  if (query) conditions.push(sql`(${blogPosts.title} LIKE ${'%' + query + '%'} OR ${blogPosts.metaDescription} LIKE ${'%' + query + '%'})`);
+  if (query) {
+    const escaped = query.replace(/[%_]/g, "\\$&");
+    conditions.push(sql`(${blogPosts.title} LIKE ${'%' + escaped + '%'} OR ${blogPosts.metaDescription} LIKE ${'%' + escaped + '%'})`);
+  }
 
   const posts = await db
     .select()

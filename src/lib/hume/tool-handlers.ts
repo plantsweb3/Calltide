@@ -247,7 +247,7 @@ async function handleBookAppointment(
 
       const [created] = await tx.insert(appointments).values({
         businessId: ctx.businessId,
-        leadId: ctx.leadId || "",
+        leadId: ctx.leadId ?? "",
         callId: ctx.callId,
         service,
         date,

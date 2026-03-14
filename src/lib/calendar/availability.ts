@@ -30,10 +30,9 @@ export async function checkAvailability(
 
   const dayOfWeek = parsed
     .toLocaleDateString("en-US", {
-      weekday: "long",
+      weekday: "short",
       timeZone: biz.timezone,
-    })
-    .toLowerCase();
+    });
 
   const hours = biz.businessHours[dayOfWeek];
   if (!hours || hours.open === "closed") {

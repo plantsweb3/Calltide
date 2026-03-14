@@ -164,7 +164,7 @@ export async function POST(req: NextRequest) {
     entityType: "prospect",
     entityId: prospectId,
     title: `Audit request: ${businessName}`,
-    detail: `Phone: ${phone}, Type: ${businessType}, ETA: ${estimatedCallTime}`,
+    detail: `Phone: ***${phone.slice(-4)}, Type: ${businessType}, ETA: ${estimatedCallTime}`,
   });
 
   return NextResponse.json({

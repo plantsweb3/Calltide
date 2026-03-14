@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { setupSessions } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -8,6 +9,14 @@ import { cookies } from "next/headers";
 
 const COOKIE_NAME = "capta_setup";
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 days
+
+const sessionSchema = z.object({
+  utmSource: z.string().max(200).optional(),
+  utmMedium: z.string().max(200).optional(),
+  utmCampaign: z.string().max(500).optional(),
+  refCode: z.string().max(100).optional(),
+  language: z.enum(["en", "es"]).optional(),
+});
 
 /**
  * POST /api/setup/session
@@ -19,14 +28,12 @@ export async function POST(req: NextRequest) {
   if (!rl.success) return rateLimitResponse(rl);
 
   try {
-    const body = await req.json().catch(() => ({}));
-    const { utmSource, utmMedium, utmCampaign, refCode, language } = body as {
-      utmSource?: string;
-      utmMedium?: string;
-      utmCampaign?: string;
-      refCode?: string;
-      language?: string;
-    };
+    const raw = await req.json().catch(() => ({}));
+    const parsed = sessionSchema.safeParse(raw);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+    }
+    const { utmSource, utmMedium, utmCampaign, refCode, language } = parsed.data;
 
     const [session] = await db
       .insert(setupSessions)

@@ -83,9 +83,9 @@ export async function GET(req: NextRequest) {
     const activeClients = activeClientsResult[0]?.count ?? 0;
     const { level, nextLevelAt } = computeLevel(activeClients);
 
-    // MRR stored in cents — convert to dollars
-    const currentMrr = Math.round((latestMrr[0]?.mrr ?? 0) / 100);
-    const prevMrr = Math.round((lastWeekMrr[0]?.mrr ?? 0) / 100);
+    // revenueMetrics.mrr is stored in dollars
+    const currentMrr = latestMrr[0]?.mrr ?? 0;
+    const prevMrr = lastWeekMrr[0]?.mrr ?? 0;
     const mrrDelta = currentMrr - prevMrr;
 
     // Build pipeline object
