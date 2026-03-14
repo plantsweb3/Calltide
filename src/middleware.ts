@@ -61,6 +61,8 @@ async function verifyToken(token: string, secret: string): Promise<boolean> {
 function parseClientPayload(cookie: string): { businessId: string; accountId?: string } | null {
   const lastDot = cookie.lastIndexOf(".");
   if (lastDot === -1) return null;
+  // Guard against oversized payloads (cookies are typically < 4KB)
+  if (cookie.length > 8192) return null;
   try {
     const data = JSON.parse(atob(cookie.slice(0, lastDot)));
     if (data.exp && data.exp < Date.now()) return null;

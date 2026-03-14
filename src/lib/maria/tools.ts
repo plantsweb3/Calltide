@@ -1379,6 +1379,11 @@ async function assignTechnician(
     return JSON.stringify({ error: "Appointment not found." });
   }
 
+  // Only assign to active/confirmed appointments
+  if (appt.status === "cancelled" || appt.status === "completed") {
+    return JSON.stringify({ error: `Can't assign a technician to a ${appt.status} appointment.` });
+  }
+
   // Assign the technician
   await db
     .update(appointments)
@@ -1434,7 +1439,11 @@ async function updateCustomerField(
     return JSON.stringify({ error: `No customer found with phone ${input.customer_phone}.` });
   }
 
-  const currentFields = (customer.customFields || {}) as Record<string, string>;
+  // Safely parse customFields — ensure it's an object even if corrupted
+  let currentFields: Record<string, string> = {};
+  if (customer.customFields && typeof customer.customFields === "object" && !Array.isArray(customer.customFields)) {
+    currentFields = customer.customFields as Record<string, string>;
+  }
   currentFields[input.field_name] = input.field_value;
 
   await db

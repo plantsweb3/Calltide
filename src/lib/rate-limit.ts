@@ -25,6 +25,12 @@ function cleanupCache() {
   for (const [key, entry] of cache) {
     if (entry.resetAt < now) cache.delete(key);
   }
+  // Hard eviction: if still over limit, drop oldest entries
+  if (cache.size > MAX_CACHE_SIZE) {
+    const entries = [...cache.entries()].sort((a, b) => a[1].resetAt - b[1].resetAt);
+    const toRemove = entries.slice(0, cache.size - MAX_CACHE_SIZE);
+    for (const [key] of toRemove) cache.delete(key);
+  }
 }
 
 interface RateLimitConfig {

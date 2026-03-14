@@ -59,8 +59,8 @@ export async function GET(req: NextRequest) {
             .where(
               and(
                 eq(googleReviews.businessId, biz.id),
-                // Reviews created in the last 6 hours that haven't been alerted on
-                sql`${googleReviews.createdAt} >= datetime('now', '-6 hours')`,
+                // Only reviews that haven't been alerted on yet
+                sql`${googleReviews.alertedAt} IS NULL`,
               ),
             );
 
@@ -84,6 +84,12 @@ export async function GET(req: NextRequest) {
 
               alerts++;
             }
+
+            // Mark review as processed regardless of rating (prevents re-alerting)
+            await db
+              .update(googleReviews)
+              .set({ alertedAt: new Date().toISOString() })
+              .where(eq(googleReviews.id, review.id));
           }
         } catch (err) {
           errors++;

@@ -10,6 +10,7 @@ import { updateActiveCall } from "@/lib/monitoring/active-calls";
 import { reportError } from "@/lib/error-reporting";
 import { saveJobIntake, detectScopeLevel } from "@/lib/intake";
 import { findBestPartner, logReferral, notifyPartner, sendPartnerInfoToCaller } from "@/lib/referrals/partners";
+import { normalizePhone } from "@/lib/compliance/sms";
 import type { ToolResult, Language } from "@/types";
 
 // --- Zod schemas for tool parameters ---
@@ -634,8 +635,8 @@ async function handleLookupAppointments(
     return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
   }
 
-  const phone = parsed.data.caller_phone || ctx.callerPhone;
-  if (!phone) {
+  const rawPhone = parsed.data.caller_phone || ctx.callerPhone;
+  if (!rawPhone) {
     return {
       success: false,
       error: ctx.language === "es"
@@ -644,19 +645,23 @@ async function handleLookupAppointments(
     };
   }
 
-  // Find the customer by phone
+  const phone = normalizePhone(rawPhone);
+
+  // Find the customer by phone (try both normalized and raw)
   const [customer] = await db
     .select({ id: customers.id })
     .from(customers)
     .where(and(eq(customers.businessId, ctx.businessId), eq(customers.phone, phone)))
     .limit(1);
 
-  // Also look up lead by phone
-  const [lead] = await db
-    .select({ id: leads.id })
+  // Also look up lead by phone (try normalized)
+  const matchingLeads = await db
+    .select({ id: leads.id, phone: leads.phone })
     .from(leads)
-    .where(and(eq(leads.businessId, ctx.businessId), eq(leads.phone, phone)))
-    .limit(1);
+    .where(and(eq(leads.businessId, ctx.businessId)))
+    .limit(100);
+
+  const lead = matchingLeads.find((l) => l.phone && normalizePhone(l.phone) === phone);
 
   if (!customer && !lead) {
     return {
@@ -730,7 +735,7 @@ async function handleCancelAppointment(
   }
   const { appointment_id: appointmentId, reason } = parsed.data;
 
-  // Find the appointment and verify it belongs to this business
+  // Find the appointment and verify it belongs to this business AND this caller
   const [appt] = await db
     .select({
       id: appointments.id,
@@ -738,6 +743,7 @@ async function handleCancelAppointment(
       date: appointments.date,
       time: appointments.time,
       status: appointments.status,
+      leadId: appointments.leadId,
       googleCalendarEventId: appointments.googleCalendarEventId,
     })
     .from(appointments)
@@ -750,6 +756,16 @@ async function handleCancelAppointment(
       error: ctx.language === "es"
         ? "No encontré esa cita."
         : "I couldn't find that appointment.",
+    };
+  }
+
+  // Verify caller owns this appointment via leadId
+  if (ctx.leadId && appt.leadId && appt.leadId !== ctx.leadId) {
+    return {
+      success: false,
+      error: ctx.language === "es"
+        ? "No tiene permiso para cancelar esa cita."
+        : "You don't have permission to cancel that appointment.",
     };
   }
 
@@ -842,6 +858,16 @@ async function handleRescheduleAppointment(
     };
   }
 
+  // Verify caller owns this appointment via leadId
+  if (ctx.leadId && appt.leadId && appt.leadId !== ctx.leadId) {
+    return {
+      success: false,
+      error: ctx.language === "es"
+        ? "No tiene permiso para reprogramar esa cita."
+        : "You don't have permission to reschedule that appointment.",
+    };
+  }
+
   if (appt.status !== "confirmed") {
     return {
       success: false,
@@ -854,11 +880,51 @@ async function handleRescheduleAppointment(
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
 
-  // Check availability for the new slot
-  const slots = await checkAvailability(biz, newDate, appt.service);
-  const slotAvailable = slots.some((s) => s.available && s.time === newTime);
+  // Atomic reschedule: check availability + update in transaction to prevent double-booking
+  const rescheduleResult = await db.transaction(async (tx) => {
+    // Check for conflicts in the new slot
+    const conflicting = await tx
+      .select({ id: appointments.id })
+      .from(appointments)
+      .where(
+        and(
+          eq(appointments.businessId, ctx.businessId),
+          eq(appointments.date, newDate),
+          eq(appointments.time, newTime),
+          eq(appointments.status, "confirmed"),
+          ne(appointments.id, appointmentId), // Exclude current appointment
+        ),
+      )
+      .limit(1);
 
-  if (!slotAvailable) {
+    if (conflicting.length > 0) {
+      return { success: false as const, reason: "conflict" };
+    }
+
+    // Also check availability via calendar
+    const slots = await checkAvailability(biz, newDate, appt.service);
+    const slotAvailable = slots.some((s) => s.available && s.time === newTime);
+
+    if (!slotAvailable) {
+      return { success: false as const, reason: "unavailable" };
+    }
+
+    // Update the appointment to the new date/time
+    await tx
+      .update(appointments)
+      .set({
+        date: newDate,
+        time: newTime,
+        notes: `Rescheduled from ${appt.date} at ${appt.time}`,
+        reminderSent: false,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(appointments.id, appointmentId));
+
+    return { success: true as const };
+  });
+
+  if (!rescheduleResult.success) {
     return {
       success: false,
       error: ctx.language === "es"
@@ -866,18 +932,6 @@ async function handleRescheduleAppointment(
         : `The ${newTime} slot on ${newDate} isn't available. Would you like to try another date or time?`,
     };
   }
-
-  // Update the appointment to the new date/time
-  await db
-    .update(appointments)
-    .set({
-      date: newDate,
-      time: newTime,
-      notes: `Rescheduled from ${appt.date} at ${appt.time}`,
-      reminderSent: false, // Reset reminder for new date
-      updatedAt: new Date().toISOString(),
-    })
-    .where(eq(appointments.id, appointmentId));
 
   // Update Google Calendar event (fire-and-forget)
   if (appt.googleCalendarEventId) {

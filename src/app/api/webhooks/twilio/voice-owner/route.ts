@@ -29,10 +29,11 @@ export async function POST(req: NextRequest) {
 
   // Validate Twilio signature
   const signature = req.headers.get("x-twilio-signature") || "";
-  const url = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/twilio/voice-owner`;
   const fullUrl = new URL(req.url);
   const businessId = fullUrl.searchParams.get("businessId") || params.businessId || "";
-  const validationUrl = `${url}?businessId=${businessId}`;
+  // Use the canonical URL Twilio used to sign — must match exactly including query params
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+  const validationUrl = `${appUrl}/api/webhooks/twilio/voice-owner?businessId=${encodeURIComponent(businessId)}`;
 
   const valid = twilio.validateRequest(authToken, signature, validationUrl, params);
   if (!valid) {
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
   const speechResult = params.SpeechResult || "";
   const confidence = parseFloat(params.Confidence || "0");
 
-  if (!speechResult || confidence < 0.3) {
+  if (!speechResult || confidence < 0.5) {
     return twimlSay("I didn't quite catch that. Could you repeat that?", true, businessId);
   }
 

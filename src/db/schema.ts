@@ -1621,6 +1621,7 @@ export const googleReviews = sqliteTable("google_reviews", {
   replyDraft: text("reply_draft"),
   replyStatus: text("reply_status").default("none"), // none, drafted, approved, posted
   publishedAt: text("published_at"),
+  alertedAt: text("alerted_at"),
   fetchedAt: text("fetched_at").notNull().default(sql`(datetime('now'))`),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });

@@ -4,6 +4,7 @@ import { eq, and, isNull, inArray, sql } from "drizzle-orm";
 import { getBusinessHour } from "@/lib/timezone";
 
 export function normalizePhone(phone: string): string {
+  if (phone.length > 30) return phone.slice(0, 30).replace(/\D/g, "");
   return phone.replace(/\D/g, "").replace(/^1(\d{10})$/, "$1");
 }
 

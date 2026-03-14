@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { businesses, customers, appointments, calls, estimates } from "@/db/schema";
-import { eq, and, sql, count, gte } from "drizzle-orm";
+import { eq, and, sql, count } from "drizzle-orm";
+import { leads } from "@/db/schema";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
@@ -55,23 +56,31 @@ export async function GET(req: NextRequest) {
 
           const avgJobValue = biz.avgJobValue || 250;
 
+          // Batch: get appointment counts per customer phone to avoid N+1
+          const apptCounts = await db
+            .select({
+              phone: leads.phone,
+              total: count(),
+            })
+            .from(appointments)
+            .innerJoin(leads, eq(appointments.leadId, leads.id))
+            .where(
+              and(
+                eq(appointments.businessId, biz.id),
+                sql`${appointments.status} IN ('confirmed', 'completed')`,
+              ),
+            )
+            .groupBy(leads.phone);
+
+          // Build phone → count map
+          const phoneApptMap = new Map<string, number>();
+          for (const row of apptCounts) {
+            if (row.phone) phoneApptMap.set(row.phone, row.total);
+          }
+
           for (const customer of allCustomers) {
             try {
-              // Calculate lifetime value from completed appointments
-              const [apptCount] = await db
-                .select({ total: count() })
-                .from(appointments)
-                .where(
-                  and(
-                    eq(appointments.businessId, biz.id),
-                    sql`${appointments.leadId} IN (
-                      SELECT id FROM leads WHERE phone = ${customer.phone} AND business_id = ${biz.id}
-                    )`,
-                    sql`${appointments.status} IN ('confirmed', 'completed')`,
-                  ),
-                );
-
-              const totalAppts = apptCount?.total || 0;
+              const totalAppts = phoneApptMap.get(customer.phone || "") || 0;
               const lifetimeValue = totalAppts * avgJobValue;
 
               // Determine last contact date
@@ -83,7 +92,6 @@ export async function GET(req: NextRequest) {
               const previousTier = customer.tier;
 
               if (totalAppts >= 5 || lifetimeValue >= 2000) {
-                // Check if at-risk (was VIP but no recent contact)
                 if (lastContactDate < sixMonthsAgo) {
                   tier = "at-risk";
                 } else {
@@ -95,10 +103,11 @@ export async function GET(req: NextRequest) {
                 } else {
                   tier = "loyal";
                 }
+              } else if (lastContactDate < sixMonthsAgo && (previousTier === "loyal" || previousTier === "vip")) {
+                // Check at-risk BEFORE dormant: former VIP/loyal with 6+ months inactivity
+                tier = "at-risk";
               } else if (lastContactDate < twelveMonthsAgo) {
                 tier = "dormant";
-              } else if (lastContactDate < sixMonthsAgo && (previousTier === "loyal" || previousTier === "vip")) {
-                tier = "at-risk";
               } else {
                 tier = "new";
               }
