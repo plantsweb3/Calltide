@@ -1639,3 +1639,13 @@ export const googleReviews = sqliteTable("google_reviews", {
   fetchedAt: text("fetched_at").notNull().default(sql`(datetime('now'))`),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
+
+export const founderStreaks = sqliteTable("founder_streaks", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  streakType: text("streak_type").notNull().unique(), // 'outreach'
+  currentStreak: integer("current_streak").default(0),
+  longestStreak: integer("longest_streak").default(0),
+  lastHitDate: text("last_hit_date"), // YYYY-MM-DD
+  totalXp: integer("total_xp").default(0),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});

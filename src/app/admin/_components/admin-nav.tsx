@@ -52,7 +52,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
   const navSections: NavSection[] = [
     {
       items: [
-        { href: "/admin", label: "Mission Control", icon: <svg {...ip}><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg> },
+        { href: "/admin", label: "HQ", icon: <svg {...ip}><polygon points="12 2 2 7 12 12 22 7" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" /></svg> },
         { href: "/admin/live", label: "Live Monitor", badge: liveCallCount, badgeColor: "#22c55e", icon: <svg {...ip}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" fill="currentColor" /><path d="M12 2v4M12 18v4M2 12h4M18 12h4" /></svg> },
       ],
     },
@@ -68,6 +68,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
     {
       title: "Operations",
       items: [
+        { href: "/admin/ops-dashboard", label: "Ops Dashboard", icon: <svg {...ip}><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg> },
         { href: "/admin/agents", label: "Agents", icon: <svg {...ip}><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1.17A7 7 0 0 1 14 23h-4a7 7 0 0 1-6.83-4H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 12 2z" /><circle cx="9" cy="15" r="1" /><circle cx="15" cy="15" r="1" /></svg> },
         { href: "/admin/client-success", label: "Client Success", icon: <svg {...ip}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg> },
         { href: "/admin/feedback", label: "Feedback", icon: <svg {...ip}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg> },

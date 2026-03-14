@@ -1,123 +1,47 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { toast } from "sonner";
+import Link from "next/link";
 import MetricCard from "../_components/metric-card";
-import ActivityFeed from "../_components/activity-feed";
-import QuickActions from "../_components/quick-actions";
-import StatusBadge from "../_components/status-badge";
-import { MetricCardSkeleton } from "@/components/skeleton";
-import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import AnimatedCounter from "@/app/dashboard/_components/animated-counter";
 
-interface DashboardData {
-  prospects: { total: number; byStatus: Record<string, number> };
-  audit: { total: number; answered: number; missed: number };
-  outreach: { total: number; opened: number; clicked: number };
-  demos: { total: number; scheduled: number; completed: number; converted: number };
-  businesses: number;
-  calls: { total: number; completed: number };
-  compliance?: { totalConsents: number; dsarPending: number; dsarTotal: number; disclosureRate: number };
-  outbound?: { total: number; completed: number; answered: number; scheduled: number };
-  accounts?: { total: number; multiLocation: number; totalLocations: number; locationMrr: number };
+interface HQData {
+  xp: { today: number; allTime: number; level: number; nextLevelAt: number };
+  streak: { current: number; longest: number; lastHitDate: string | null };
+  metrics: { mrr: number; mrrDelta: number; pipeline: number; todayTouches: number; activeClients: number };
+  pipeline: {
+    fresh: PipelineStage;
+    contacted: PipelineStage;
+    interested: PipelineStage;
+    demo: PipelineStage;
+    won: PipelineStage;
+  };
+  todayActivity: Array<{ id: string; description: string; xp: number; createdAt: string }>;
+  action: { title: string; description: string; link: string };
 }
 
-interface MetricsData {
-  callsByDay: Array<{ date: string; count: number }>;
-  prospectsByDay: Array<{ date: string; count: number }>;
-  auditsByDay: Array<{ date: string; count: number }>;
+interface PipelineStage {
+  count: number;
+  top3: Array<{ id: string; name: string }>;
 }
 
-interface BillingData {
-  current: { mrr: number; arr: number; customerCount: number };
-  planMix?: Record<string, { count: number; mrr: number }>;
-}
-
-interface OpsData {
-  services: Array<{
-    serviceName: string;
-    status: string;
-    latencyMs: number | null;
-    uptimePct: number | null;
-  }>;
-}
-
-const tooltipStyle = {
-  background: "var(--db-surface)",
-  border: "1px solid var(--db-border)",
-  borderRadius: 8,
-  color: "var(--db-text)",
-  fontSize: 12,
-};
-
-interface NotificationItem {
-  id: string;
-  source: string;
-  severity: string;
-  title: string;
-  message: string;
-  actionUrl: string | null;
-  createdAt: string;
-}
-
-export default function AdminDashboardPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [metrics, setMetrics] = useState<MetricsData | null>(null);
-  const [billing, setBilling] = useState<BillingData | null>(null);
-  const [ops, setOps] = useState<OpsData | null>(null);
-  const [alerts, setAlerts] = useState<NotificationItem[]>([]);
-  const [crmStats, setCrmStats] = useState<{ totalCustomers: number; repeatRate: number; openEstimates: number; wonEstimateValue: number } | null>(null);
+export default function FounderHQPage() {
+  const [data, setData] = useState<HQData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [outreachPaused, setOutreachPaused] = useState<boolean | null>(null);
-  const [outreachToggling, setOutreachToggling] = useState(false);
 
-  const fetchAll = useCallback(() => {
+  const fetchData = useCallback(() => {
     setError(null);
-    fetch("/api/admin/dashboard")
+    fetch("/api/admin/founder-hq")
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
-      .catch(() => setError("Failed to load dashboard data"));
-    fetch("/api/admin/metrics?days=30")
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(setMetrics)
-      .catch(() => setError("Failed to load metrics"));
-    fetch("/api/admin/billing")
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((d) => { if (d.current) setBilling(d); })
-      .catch(() => setError("Failed to load billing data"));
-    fetch("/api/admin/ops")
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(setOps)
-      .catch(() => setError("Failed to load ops data"));
-    fetch("/api/notifications?unacknowledged=true&limit=10")
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((d) => setAlerts(d.items ?? []))
-      .catch(() => setError("Failed to load notifications"));
-    fetch("/api/admin/crm-stats")
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(setCrmStats)
-      .catch(() => setError("Failed to load CRM stats"));
-    fetch("/api/admin/agents/config")
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((configs: Array<{ agentName: string; enabled: boolean }>) => {
-        const qualify = configs.find((c) => c.agentName === "qualify");
-        setOutreachPaused(qualify ? !qualify.enabled : false);
-      })
-      .catch(() => setError("Failed to load agent config"));
+      .catch(() => setError("Failed to load HQ data"));
   }, []);
 
   useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   if (!data) {
     return (
@@ -125,23 +49,17 @@ export default function AdminDashboardPage() {
         {error ? (
           <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
             <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
-            <button
-              onClick={fetchAll}
-              className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-              style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
-            >
+            <button onClick={fetchData} className="rounded-lg px-3 py-1.5 text-xs font-medium" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}>
               Retry
             </button>
           </div>
         ) : (
           <div className="space-y-6">
-            <div>
-              <div className="animate-pulse rounded h-7 w-48 mb-2" style={{ background: "var(--db-border)" }} />
-              <div className="animate-pulse rounded h-4 w-64" style={{ background: "var(--db-border)" }} />
-            </div>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <MetricCardSkeleton key={i} />
+            <div className="animate-pulse rounded-xl h-16 w-full" style={{ background: "var(--db-border)" }} />
+            <div className="animate-pulse rounded-xl h-32 w-full" style={{ background: "var(--db-border)" }} />
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="animate-pulse rounded-xl h-24" style={{ background: "var(--db-border)" }} />
               ))}
             </div>
           </div>
@@ -150,384 +68,279 @@ export default function AdminDashboardPage() {
     );
   }
 
-  const funnelData = [
-    { name: "Scraped", value: data.prospects.byStatus["new"] ?? 0 },
-    { name: "Audited", value: data.prospects.byStatus["audit_complete"] ?? 0 },
-    { name: "Outreach", value: data.prospects.byStatus["outreach_active"] ?? 0 },
-    { name: "Demo", value: data.prospects.byStatus["demo_booked"] ?? 0 },
-    { name: "Converted", value: data.prospects.byStatus["converted"] ?? 0 },
-  ];
+  const touchesRemaining = Math.max(0, 100 - data.metrics.todayTouches);
+  const touchProgress = Math.min(100, (data.metrics.todayTouches / 100) * 100);
+  const levelProgress = data.xp.nextLevelAt > 0
+    ? Math.min(100, (data.metrics.activeClients / data.xp.nextLevelAt) * 100)
+    : 100;
+
+  // Running XP total for activity log
+  let runningXp = 0;
+  for (const a of data.todayActivity) runningXp += a.xp;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)" }}>
-          Mission Control
-        </h1>
-        <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Capta admin overview
-        </p>
-      </div>
-
-      {error && (
-        <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
-          <button
-            onClick={fetchAll}
-            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+      {/* Section A: Game Bar */}
+      <div
+        className="sticky top-0 z-10 rounded-xl p-4"
+        style={{
+          background: "var(--db-surface)",
+          border: "1px solid var(--db-border)",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        }}
+      >
+        <div className="flex flex-wrap items-center gap-4">
+          {/* Level Badge */}
+          <div
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold"
+            style={{
+              background: "linear-gradient(135deg, #D4A843, #C59A27)",
+              color: "#1B2A4A",
+              boxShadow: "0 2px 8px rgba(212,168,67,0.4)",
+            }}
           >
-            Retry
-          </button>
-        </div>
-      )}
+            {data.xp.level}
+          </div>
 
-      {/* Quick Actions */}
-      <QuickActions />
-
-      {/* Prospect Outreach Toggle */}
-      {outreachPaused !== null && (
-        <div
-          className="flex items-center justify-between rounded-xl p-4"
-          style={{
-            background: outreachPaused
-              ? "rgba(239,68,68,0.06)"
-              : "rgba(34,197,94,0.06)",
-            border: `1px solid ${outreachPaused ? "rgba(239,68,68,0.2)" : "rgba(34,197,94,0.2)"}`,
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <span
-              className="flex h-8 w-8 items-center justify-center rounded-full text-sm"
-              style={{
-                background: outreachPaused ? "rgba(239,68,68,0.12)" : "rgba(34,197,94,0.12)",
-                color: outreachPaused ? "#ef4444" : "#22c55e",
-              }}
-            >
-              {outreachPaused ? "\u23F8" : "\u25B6"}
-            </span>
-            <div>
-              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Prospect Outreach
-              </p>
-              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                {outreachPaused
-                  ? "Paused — the qualify agent is not sending outreach or booking demos"
-                  : "Active — the qualify agent is running daily, sending outreach and booking demos"}
-              </p>
+          {/* XP Progress Bar */}
+          <div className="flex-1 min-w-[120px]">
+            <div className="flex items-center justify-between text-xs mb-1">
+              <span style={{ color: "var(--db-text-muted)" }}>Level {data.xp.level}</span>
+              <span style={{ color: "var(--db-text-muted)" }}>
+                {data.metrics.activeClients}/{data.xp.nextLevelAt} clients
+              </span>
+            </div>
+            <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "var(--db-border)" }}>
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${levelProgress}%`,
+                  background: "linear-gradient(90deg, #D4A843, #E8C76A)",
+                }}
+              />
             </div>
           </div>
-          <button
-            disabled={outreachToggling}
-            onClick={async () => {
-              setOutreachToggling(true);
-              try {
-                const res = await fetch("/api/admin/agents/config", {
-                  method: "PATCH",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ agentName: "qualify", enabled: outreachPaused }),
-                });
-                if (res.ok) {
-                  setOutreachPaused(!outreachPaused);
-                  toast.success(outreachPaused ? "Prospect outreach resumed" : "Prospect outreach paused");
-                } else {
-                  toast.error("Failed to update outreach status");
-                }
-              } catch {
-                toast.error("Failed to update outreach status");
-              } finally {
-                setOutreachToggling(false);
-              }
-            }}
-            className="shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-all"
+
+          {/* Streak Counter */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span
+              className={`text-xl ${data.streak.current >= 7 ? "animate-pulse" : ""}`}
+              role="img"
+              aria-label="streak"
+            >
+              {data.streak.current >= 7 ? "\uD83D\uDD25" : "\uD83D\uDD25"}
+            </span>
+            <div className="text-center">
+              <p className="text-lg font-bold leading-none" style={{ color: data.streak.current >= 7 ? "#f59e0b" : "var(--db-text)" }}>
+                {data.streak.current}
+              </p>
+              <p className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>streak</p>
+            </div>
+          </div>
+
+          {/* Today's XP */}
+          <div className="shrink-0 rounded-lg px-3 py-1.5" style={{ background: "rgba(212,168,67,0.12)" }}>
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Today</p>
+            <p className="text-lg font-bold" style={{ color: "#D4A843" }}>
+              <AnimatedCounter value={data.xp.today} suffix=" XP" />
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Section B: "Do This Now" Action Card */}
+      <Link
+        href={data.action.link}
+        className="block rounded-xl p-5 transition-all hover:scale-[1.01]"
+        style={{
+          background: "var(--db-card)",
+          border: "2px solid #D4A843",
+          boxShadow: "0 0 20px rgba(212,168,67,0.1)",
+        }}
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "#D4A843" }}>
+              Do This Now
+            </p>
+            <h2 className="text-xl font-semibold" style={{ color: "var(--db-text)" }}>
+              {data.action.title}
+            </h2>
+            <p className="text-sm mt-1" style={{ color: "var(--db-text-muted)" }}>
+              {data.action.description}
+            </p>
+          </div>
+          <span
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg font-bold"
             style={{
-              background: outreachPaused ? "#22c55e" : "#ef4444",
-              color: "#fff",
-              opacity: outreachToggling ? 0.6 : 1,
+              background: "linear-gradient(135deg, #D4A843, #C59A27)",
+              color: "#1B2A4A",
             }}
           >
-            {outreachToggling
-              ? "Updating..."
-              : outreachPaused
-                ? "Resume Outreach"
-                : "Pause Outreach"}
-          </button>
+            &rarr;
+          </span>
         </div>
-      )}
+      </Link>
 
-      {/* Revenue + Core Metric cards */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      {/* Section C: The 5 Numbers */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <MetricCard
           label="MRR"
-          value={billing?.current?.mrr ?? 0}
+          value={data.metrics.mrr}
           prefix="$"
+          change={data.metrics.mrrDelta !== 0
+            ? `${data.metrics.mrrDelta > 0 ? "+" : ""}$${data.metrics.mrrDelta} this week`
+            : undefined}
+          changeType={data.metrics.mrrDelta > 0 ? "positive" : data.metrics.mrrDelta < 0 ? "negative" : "neutral"}
         />
         <MetricCard
-          label="ARR"
-          value={billing?.current?.arr ?? 0}
-          prefix="$"
+          label="Pipeline"
+          value={data.metrics.pipeline}
+          change="active prospects"
+          changeType="neutral"
         />
-        <MetricCard label="Active Clients" value={data.businesses} />
         <MetricCard
-          label="Client Calls (30d)"
-          value={data.calls.total}
+          label="Rule of 100"
+          value={data.metrics.todayTouches}
+          suffix="/100"
+          change={touchesRemaining > 0 ? `${touchesRemaining} to go` : "Target hit!"}
+          changeType={touchesRemaining === 0 ? "positive" : "neutral"}
         />
-        <MetricCard label="Total Prospects" value={data.prospects.total} />
-        <MetricCard label="Audit Calls" value={data.audit.total} />
-        <MetricCard label="Emails Sent" value={data.outreach.total} />
         <MetricCard
-          label="Demos Converted"
-          value={data.demos.converted}
-          change={
-            data.demos.total > 0
-              ? `${Math.round((data.demos.converted / data.demos.total) * 100)}% rate`
-              : undefined
-          }
-          changeType="positive"
+          label="Active Clients"
+          value={data.metrics.activeClients}
+        />
+        <MetricCard
+          label="Streak"
+          value={data.streak.current}
+          suffix={data.streak.current >= 7 ? " days \uD83D\uDD25" : " days"}
+          change={`Best: ${data.streak.longest}`}
+          changeType="neutral"
         />
       </div>
 
-      {/* Accounts & Locations */}
-      {data.accounts && data.accounts.total > 0 && (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <MetricCard label="Accounts" value={data.accounts.total} />
-          <MetricCard
-            label="Multi-Location"
-            value={data.accounts.multiLocation}
-            changeType={data.accounts.multiLocation > 0 ? "positive" : "neutral"}
-          />
-          <MetricCard label="Total Locations" value={data.accounts.totalLocations} />
-          <MetricCard
-            label="Location MRR"
-            value={data.accounts.locationMrr}
-            prefix="$"
-            changeType="positive"
-          />
+      {/* Rule of 100 Progress Bar */}
+      <div className="rounded-xl p-4" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+        <div className="flex items-center justify-between text-sm mb-2">
+          <span className="font-medium" style={{ color: "var(--db-text)" }}>Rule of 100</span>
+          <span style={{ color: touchesRemaining === 0 ? "#4ade80" : "var(--db-text-muted)" }}>
+            {data.metrics.todayTouches}/100 touches
+          </span>
         </div>
-      )}
-
-      {/* CRM Health */}
-      {crmStats && (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <MetricCard label="CRM Customers" value={crmStats.totalCustomers} />
-          <MetricCard
-            label="Repeat Rate"
-            value={crmStats.repeatRate}
-            suffix="%"
-            changeType={crmStats.repeatRate >= 30 ? "positive" : "neutral"}
-          />
-          <MetricCard label="Open Estimates" value={crmStats.openEstimates} />
-          <MetricCard
-            label="Won Estimates"
-            value={crmStats.wonEstimateValue}
-            prefix="$"
-            changeType="positive"
-          />
-        </div>
-      )}
-
-      {/* Plan Mix */}
-      {billing?.planMix && (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <MetricCard
-            label="Monthly Clients"
-            value={billing.planMix.monthly?.count ?? 0}
-          />
-          <MetricCard
-            label="Annual Clients"
-            value={billing.planMix.annual?.count ?? 0}
-            changeType="positive"
-          />
-          <MetricCard
-            label="Annual MRR"
-            value={Math.round((billing.planMix.annual?.mrr ?? 0) / 100)}
-            prefix="$"
-            changeType="positive"
-          />
-          <MetricCard
-            label="Annual %"
-            value={
-              (billing.planMix.monthly?.count ?? 0) + (billing.planMix.annual?.count ?? 0) > 0
-                ? Math.round(
-                    ((billing.planMix.annual?.count ?? 0) /
-                      ((billing.planMix.monthly?.count ?? 0) + (billing.planMix.annual?.count ?? 0))) *
-                      100,
-                  )
-                : 0
-            }
-            suffix="%"
-            changeType="positive"
-          />
-        </div>
-      )}
-
-      {/* Compliance */}
-      {data.compliance && (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <MetricCard label="Consent Records" value={data.compliance.totalConsents} />
-          <MetricCard
-            label="DSAR Pending"
-            value={data.compliance.dsarPending}
-            changeType={data.compliance.dsarPending > 0 ? "negative" : "positive"}
-          />
-          <MetricCard
-            label="Disclosure Rate"
-            value={data.compliance.disclosureRate}
-            suffix="%"
-            changeType={data.compliance.disclosureRate >= 95 ? "positive" : "negative"}
-          />
-          <MetricCard label="Total DSARs" value={data.compliance.dsarTotal} />
-        </div>
-      )}
-
-      {/* Outbound Calls */}
-      {data.outbound && data.outbound.total > 0 && (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <MetricCard label="Outbound Total" value={data.outbound.total} />
-          <MetricCard
-            label="Answered"
-            value={data.outbound.answered}
-            changeType="positive"
-          />
-          <MetricCard label="Completed" value={data.outbound.completed} />
-          <MetricCard
-            label="Scheduled"
-            value={data.outbound.scheduled}
-            changeType="neutral"
-          />
-        </div>
-      )}
-
-      {/* System Health Grid */}
-      {ops?.services && ops.services.length > 0 && (
-        <div>
-          <h2 className="mb-3 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
-            System Health
-          </h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-            {ops.services.map((svc) => (
-              <div
-                key={svc.serviceName}
-                className="rounded-lg p-3"
-                style={{
-                  background: "var(--db-card)",
-                  border: "1px solid var(--db-border)",
-                }}
-              >
-                <p className="truncate text-xs font-medium" style={{ color: "var(--db-text-secondary)" }}>
-                  {svc.serviceName}
-                </p>
-                <div className="mt-1.5">
-                  <StatusBadge status={svc.status} />
-                </div>
-                <div className="mt-2 flex items-center justify-between text-[10px]" style={{ color: "var(--db-text-muted)" }}>
-                  <span>{svc.latencyMs != null ? `${svc.latencyMs}ms` : "\u2014"}</span>
-                  <span>
-                    {svc.uptimePct != null ? `${svc.uptimePct.toFixed(1)}%` : "\u2014"}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Charts */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div
-          className="rounded-xl p-5"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-          }}
-        >
-          <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
-            Client Calls / Day
-          </h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={metrics?.callsByDay ?? []}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--db-border)" />
-              <XAxis
-                dataKey="date"
-                tick={{ fill: "var(--db-text-muted)", fontSize: 11 }}
-                tickFormatter={(d: string) => d.slice(5)}
-              />
-              <YAxis tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} />
-              <Tooltip contentStyle={tooltipStyle} />
-              <Area
-                type="monotone"
-                dataKey="count"
-                stroke="#C59A27"
-                fill="#C59A27"
-                fillOpacity={0.1}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div
-          className="rounded-xl p-5"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-          }}
-        >
-          <h3 className="mb-4 text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
-            Prospect Funnel
-          </h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={funnelData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--db-border)" />
-              <XAxis
-                dataKey="name"
-                tick={{ fill: "var(--db-text-muted)", fontSize: 11 }}
-              />
-              <YAxis tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} />
-              <Tooltip contentStyle={tooltipStyle} />
-              <Bar dataKey="value" fill="#C59A27" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Attention Required */}
-      <div>
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
-            Attention Required
-          </h2>
-          {alerts.length > 0 && (
-            <a href="/admin/notifications" className="text-xs font-medium" style={{ color: "var(--db-accent)" }}>
-              View all &rarr;
-            </a>
-          )}
-        </div>
-        {alerts.length === 0 ? (
+        <div className="h-3 rounded-full overflow-hidden" style={{ background: "var(--db-border)" }}>
           <div
-            className="rounded-xl p-4 text-center text-sm"
-            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text-muted)" }}
+            className="h-full rounded-full transition-all duration-700"
+            style={{
+              width: `${touchProgress}%`,
+              background: touchesRemaining === 0
+                ? "linear-gradient(90deg, #4ade80, #22c55e)"
+                : "linear-gradient(90deg, #D4A843, #E8C76A)",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Section D: Pipeline Funnel */}
+      <div>
+        <h2 className="text-sm font-medium mb-3" style={{ color: "var(--db-text-muted)" }}>
+          Sales Pipeline
+        </h2>
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1" style={{ scrollSnapType: "x mandatory" }}>
+          {(
+            [
+              { key: "fresh", label: "Fresh", color: "#94a3b8" },
+              { key: "contacted", label: "Contacted", color: "#60a5fa" },
+              { key: "interested", label: "Interested", color: "#D4A843" },
+              { key: "demo", label: "Demo Booked", color: "#a78bfa" },
+              { key: "won", label: "Won", color: "#4ade80" },
+            ] as const
+          ).map((stage, i) => {
+            const stageData = data.pipeline[stage.key];
+            return (
+              <div key={stage.key} className="flex items-center shrink-0" style={{ scrollSnapAlign: "start" }}>
+                <Link
+                  href={stage.key === "won" ? "/admin/clients" : "/admin/outreach"}
+                  className="rounded-xl p-4 transition-all hover:scale-[1.02]"
+                  style={{
+                    background: "var(--db-card)",
+                    border: "1px solid var(--db-border)",
+                    minWidth: 150,
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: stage.color }} />
+                    <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
+                      {stage.label}
+                    </span>
+                  </div>
+                  <p className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>
+                    {stageData.count}
+                  </p>
+                  {stageData.top3.length > 0 && (
+                    <div className="mt-2 space-y-0.5">
+                      {stageData.top3.map((p) => (
+                        <p key={p.id} className="truncate text-xs" style={{ color: "var(--db-text-muted)", maxWidth: 130 }}>
+                          {p.name}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </Link>
+                {i < 4 && (
+                  <span className="mx-1 text-lg shrink-0" style={{ color: "var(--db-border)" }}>
+                    &rsaquo;
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Section E: Today's Activity Log */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-medium" style={{ color: "var(--db-text-muted)" }}>
+            Today&apos;s Activity
+          </h2>
+          <span className="text-sm font-semibold" style={{ color: "#D4A843" }}>
+            <AnimatedCounter value={runningXp} suffix=" XP total" />
+          </span>
+        </div>
+        {data.todayActivity.length === 0 ? (
+          <div
+            className="rounded-xl p-6 text-center"
+            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
           >
-            All clear — nothing needs your attention
+            <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
+              No activity yet today. Start your outreach!
+            </p>
           </div>
         ) : (
-          <div className="space-y-2">
-            {alerts.slice(0, 5).map((n) => {
-              const color = n.severity === "emergency" ? "#ef4444" : n.severity === "critical" ? "#f59e0b" : n.severity === "warning" ? "#3b82f6" : "#94a3b8";
+          <div
+            className="rounded-xl overflow-hidden"
+            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", maxHeight: 400, overflowY: "auto" }}
+          >
+            {data.todayActivity.map((activity) => {
+              const ago = getRelativeTime(activity.createdAt);
               return (
                 <div
-                  key={n.id}
-                  className="flex items-center gap-3 rounded-lg p-3"
-                  style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+                  key={activity.id}
+                  className="flex items-center gap-3 px-4 py-3"
+                  style={{ borderBottom: "1px solid var(--db-border)" }}
                 >
-                  <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: color }} />
-                  <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase" style={{ background: `${color}15`, color }}>{n.source}</span>
-                  <span className="flex-1 truncate text-sm" style={{ color: "var(--db-text)" }}>{n.title}</span>
-                  <span className="text-[11px] shrink-0" style={{ color: "var(--db-text-muted)" }}>
-                    {new Date(n.createdAt).toLocaleDateString()}
+                  <span
+                    className="shrink-0 rounded-md px-2 py-0.5 text-xs font-bold"
+                    style={{ background: "rgba(212,168,67,0.12)", color: "#D4A843" }}
+                  >
+                    +{activity.xp} XP
                   </span>
-                  {n.actionUrl && (
-                    <a href={n.actionUrl} className="shrink-0 text-xs font-medium" style={{ color: "var(--db-accent)" }}>View</a>
-                  )}
+                  <span className="flex-1 truncate text-sm" style={{ color: "var(--db-text)" }}>
+                    {activity.description}
+                  </span>
+                  <span className="shrink-0 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                    {ago}
+                  </span>
                 </div>
               );
             })}
@@ -535,8 +348,25 @@ export default function AdminDashboardPage() {
         )}
       </div>
 
-      {/* Activity feed */}
-      <ActivityFeed />
+      {/* Quick link to ops dashboard */}
+      <div className="text-center">
+        <Link
+          href="/admin/ops-dashboard"
+          className="text-sm font-medium transition-colors hover:underline"
+          style={{ color: "var(--db-text-muted)" }}
+        >
+          View full Ops Dashboard &rarr;
+        </Link>
+      </div>
     </div>
   );
+}
+
+function getRelativeTime(isoStr: string): string {
+  const diff = Date.now() - new Date(isoStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  return `${hours}h ago`;
 }

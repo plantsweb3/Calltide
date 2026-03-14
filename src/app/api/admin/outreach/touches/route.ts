@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
-import { prospects, manualTouches } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { prospects, manualTouches, founderStreaks } from "@/db/schema";
+import { eq, sql } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
+import { computeTouchXp, computeStreakUpdate } from "@/lib/xp";
 
 const touchSchema = z.object({
   prospectId: z.string().min(1),
@@ -136,5 +137,53 @@ export async function POST(req: NextRequest) {
     detail: body.notes ?? undefined,
   });
 
-  return NextResponse.json({ touch, prospect: updatedProspect });
+  // Update XP + streak
+  const xpEarned = computeTouchXp(body.channel, body.outcome);
+  const todayStr = new Date().toISOString().slice(0, 10);
+
+  try {
+    // Increment total XP
+    await db.update(founderStreaks)
+      .set({
+        totalXp: sql`${founderStreaks.totalXp} + ${xpEarned}`,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(founderStreaks.streakType, "outreach"));
+
+    // Check if daily target hit (100 touches) for streak
+    const [touchCount] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(manualTouches)
+      .where(sql`${manualTouches.createdAt} >= ${todayStr}`);
+
+    if ((touchCount?.count ?? 0) >= 100) {
+      const [currentStreak] = await db
+        .select()
+        .from(founderStreaks)
+        .where(eq(founderStreaks.streakType, "outreach"))
+        .limit(1);
+
+      if (currentStreak) {
+        const update = computeStreakUpdate(
+          currentStreak.lastHitDate,
+          currentStreak.currentStreak ?? 0,
+          currentStreak.longestStreak ?? 0,
+          todayStr,
+        );
+
+        await db.update(founderStreaks)
+          .set({
+            currentStreak: update.currentStreak,
+            longestStreak: update.longestStreak,
+            lastHitDate: update.lastHitDate,
+            updatedAt: new Date().toISOString(),
+          })
+          .where(eq(founderStreaks.streakType, "outreach"));
+      }
+    }
+  } catch {
+    // Non-critical — don't fail the touch if XP/streak fails
+  }
+
+  return NextResponse.json({ touch, prospect: updatedProspect, xpEarned });
 }
