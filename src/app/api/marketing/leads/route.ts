@@ -8,7 +8,7 @@ const leadSchema = z.object({
   email: z.string().email().max(255),
   name: z.string().max(100).optional(),
   trade: z.string().max(50).optional(),
-  source: z.enum(["calculator", "guide", "newsletter"]).default("calculator"),
+  source: z.enum(["calculator", "playbook", "guide", "newsletter"]).default("calculator"),
   estimatedMonthlyLoss: z.number().int().positive().optional(),
   avgJobValue: z.number().int().positive().optional(),
   missedCallsPerWeek: z.number().int().min(0).optional(),
