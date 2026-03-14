@@ -11,15 +11,15 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-    const todayStr = todayStart.toISOString().slice(0, 10);
-    const todayISO = todayStart.toISOString();
+    // Use CT timezone for "today" boundaries
+    const ctNow = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Chicago" }));
+    const todayStr = `${ctNow.getFullYear()}-${String(ctNow.getMonth() + 1).padStart(2, "0")}-${String(ctNow.getDate()).padStart(2, "0")}`;
+    const todayISO = todayStr + "T00:00:00.000Z";
 
     // Get last week's date for MRR delta
-    const lastWeek = new Date();
-    lastWeek.setDate(lastWeek.getDate() - 7);
-    const lastWeekStr = lastWeek.toISOString().slice(0, 10);
+    const ctLastWeek = new Date(ctNow);
+    ctLastWeek.setDate(ctLastWeek.getDate() - 7);
+    const lastWeekStr = `${ctLastWeek.getFullYear()}-${String(ctLastWeek.getMonth() + 1).padStart(2, "0")}-${String(ctLastWeek.getDate()).padStart(2, "0")}`;
 
     const [
       streakRow,
@@ -83,8 +83,9 @@ export async function GET(req: NextRequest) {
     const activeClients = activeClientsResult[0]?.count ?? 0;
     const { level, nextLevelAt } = computeLevel(activeClients);
 
-    const currentMrr = latestMrr[0]?.mrr ?? 0;
-    const prevMrr = lastWeekMrr[0]?.mrr ?? 0;
+    // MRR stored in cents — convert to dollars
+    const currentMrr = Math.round((latestMrr[0]?.mrr ?? 0) / 100);
+    const prevMrr = Math.round((lastWeekMrr[0]?.mrr ?? 0) / 100);
     const mrrDelta = currentMrr - prevMrr;
 
     // Build pipeline object
@@ -114,14 +115,15 @@ export async function GET(req: NextRequest) {
     // Today's touches count
     const todayTouches = todayTouchRows.length;
 
-    // Build activity log with XP badges
+    // Build activity log with XP from metadata
     const todayActivity = todayActivityRows.map((a) => {
-      // Parse channel from title (format: "channel → outcome: Business Name")
-      const channelMatch = a.title.match(/^(\w+)\s*→/);
-      const outcomeMatch = a.title.match(/→\s*(\w+)/);
-      const channel = channelMatch?.[1] ?? "email";
-      const outcome = outcomeMatch?.[1] ?? "no_answer";
-      const xp = computeTouchXp(channel, outcome);
+      const meta = a.metadata as Record<string, unknown> | null;
+      const xp = typeof meta?.xp === "number"
+        ? meta.xp
+        : computeTouchXp(
+            (meta?.channel as string) ?? "email",
+            (meta?.outcome as string) ?? "no_answer",
+          );
       return {
         id: a.id,
         description: a.title,
@@ -130,8 +132,8 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    // Time-based action card
-    const hour = new Date().getHours();
+    // Time-based action card (CT timezone)
+    const hour = ctNow.getHours();
     const overdueCount = overdueFollowUps[0]?.count ?? 0;
 
     let action: { title: string; description: string; link: string };

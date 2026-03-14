@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import MetricCard from "../_components/metric-card";
 import AnimatedCounter from "@/app/dashboard/_components/animated-counter";
 
@@ -28,18 +29,37 @@ interface PipelineStage {
 export default function FounderHQPage() {
   const [data, setData] = useState<HQData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const prevData = useRef<HQData | null>(null);
 
   const fetchData = useCallback(() => {
     setError(null);
     fetch("/api/admin/founder-hq")
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(setData)
+      .then((newData: HQData) => {
+        const prev = prevData.current;
+        if (prev) {
+          // Milestone toasts
+          if (newData.metrics.todayTouches >= 100 && prev.metrics.todayTouches < 100) {
+            toast.success("Rule of 100 hit! You're on fire today.");
+          } else if (newData.metrics.todayTouches >= 50 && prev.metrics.todayTouches < 50) {
+            toast("Halfway there — 50 touches logged!");
+          }
+          if (newData.streak.current > prev.streak.current && newData.streak.current > 1) {
+            toast.success(`Streak extended to ${newData.streak.current} days!`);
+          }
+          if (newData.xp.level > prev.xp.level) {
+            toast.success(`Level up! You're now Level ${newData.xp.level}`);
+          }
+        }
+        prevData.current = newData;
+        setData(newData);
+      })
       .catch(() => setError("Failed to load HQ data"));
   }, []);
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 30000);
+    const interval = setInterval(fetchData, 60000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -128,7 +148,7 @@ export default function FounderHQPage() {
               role="img"
               aria-label="streak"
             >
-              {data.streak.current >= 7 ? "\uD83D\uDD25" : "\uD83D\uDD25"}
+              {data.streak.current >= 7 ? "\uD83D\uDD25\uD83D\uDD25" : "\uD83D\uDD25"}
             </span>
             <div className="text-center">
               <p className="text-lg font-bold leading-none" style={{ color: data.streak.current >= 7 ? "#f59e0b" : "var(--db-text)" }}>

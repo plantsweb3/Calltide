@@ -128,18 +128,22 @@ export async function POST(req: NextRequest) {
     .where(eq(prospects.id, body.prospectId))
     .limit(1);
 
-  // Log activity
+  // Compute XP before logging so we can store it in metadata
+  const xpEarned = computeTouchXp(body.channel, body.outcome);
+
+  // Log activity with XP in metadata
   await logActivity({
     type: "manual_touch",
     entityType: "prospect",
     entityId: body.prospectId,
     title: `${body.channel} → ${body.outcome}: ${prospect.businessName}`,
     detail: body.notes ?? undefined,
+    metadata: { xp: xpEarned, channel: body.channel, outcome: body.outcome },
   });
 
-  // Update XP + streak
-  const xpEarned = computeTouchXp(body.channel, body.outcome);
-  const todayStr = new Date().toISOString().slice(0, 10);
+  // Use CT timezone for "today" boundaries
+  const ctNow = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Chicago" }));
+  const todayStr = `${ctNow.getFullYear()}-${String(ctNow.getMonth() + 1).padStart(2, "0")}-${String(ctNow.getDate()).padStart(2, "0")}`;
 
   try {
     // Increment total XP
