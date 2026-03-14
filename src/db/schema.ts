@@ -395,8 +395,22 @@ export const prospects = sqliteTable("prospects", {
   notes: text("notes"),
   source: text("source").notNull().default("google_places"), // google_places, csv_import, manual
   smsOptOut: integer("sms_opt_out", { mode: "boolean" }).default(false),
+  outreachStatus: text("outreach_status").default("fresh"), // fresh, attempted, interested, follow_up, demo_booked, onboarded, not_interested, disqualified
+  nextFollowUpAt: text("next_follow_up_at"),
+  lastTouchAt: text("last_touch_at"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const manualTouches = sqliteTable("manual_touches", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  prospectId: text("prospect_id").notNull().references(() => prospects.id),
+  channel: text("channel").notNull(), // call, sms, email, dm, walk_in
+  outcome: text("outcome").notNull(), // interested, not_interested, no_answer, left_voicemail, circle_back, booked_demo, onboarded, wrong_number, gatekeeper
+  notes: text("notes"),
+  followUpAt: text("follow_up_at"),
+  durationSeconds: integer("duration_seconds"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
 export const prospectAuditCalls = sqliteTable("prospect_audit_calls", {
