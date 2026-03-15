@@ -219,6 +219,7 @@ export const DEMO_OVERVIEW = {
       { name: "Ana Rodriguez", phone: "+1 (512) 555-0421", totalCalls: 3 },
     ],
   },
+  afterHoursThisWeek: 7,
 };
 
 // ── Call Transcripts ──

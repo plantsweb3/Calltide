@@ -175,6 +175,8 @@ export const calls = sqliteTable("calls", {
   customerId: text("customer_id"),
   recordingDisclosed: integer("recording_disclosed", { mode: "boolean" }).default(false),
   aiDisclosed: integer("ai_disclosed", { mode: "boolean" }).default(false),
+  // After-hours
+  isAfterHours: integer("is_after_hours", { mode: "boolean" }).default(false),
   // Missed call recovery
   isAbandoned: integer("is_abandoned", { mode: "boolean" }).default(false),
   recoverySmsSentAt: text("recovery_sms_sent_at"),
@@ -471,7 +473,7 @@ export const activityLog = sqliteTable("activity_log", {
 
 export const customerNotes = sqliteTable("customer_notes", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  customerId: text("customer_id").notNull().references(() => businesses.id),
+  customerId: text("customer_id").notNull().references(() => customers.id),
   noteText: text("note_text").notNull(),
   createdBy: text("created_by").notNull().default("admin"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
@@ -502,7 +504,7 @@ export const revenueMetrics = sqliteTable("revenue_metrics", {
 
 export const churnRiskScores = sqliteTable("churn_risk_scores", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  customerId: text("customer_id").notNull().references(() => businesses.id),
+  customerId: text("customer_id").notNull().references(() => customers.id),
   score: integer("score").notNull().default(0), // 0-10
   factors: text("factors", { mode: "json" }).$type<string[]>().default([]),
   calculatedAt: text("calculated_at").notNull().default(sql`(datetime('now'))`),
@@ -511,7 +513,7 @@ export const churnRiskScores = sqliteTable("churn_risk_scores", {
 export const escalations = sqliteTable("escalations", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   callId: text("call_id").references(() => calls.id),
-  customerId: text("customer_id").notNull().references(() => businesses.id),
+  customerId: text("customer_id").notNull().references(() => customers.id),
   reason: text("reason").notNull(),
   resolutionStatus: text("resolution_status").notNull().default("open"), // open, in_progress, resolved
   assignedTo: text("assigned_to"),

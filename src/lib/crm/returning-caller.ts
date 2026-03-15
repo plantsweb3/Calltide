@@ -81,6 +81,13 @@ export async function getReturningCallerContext(
     parts.push(`Open estimates:\n${estLines}`);
   }
 
+  if (customer.tier && customer.tier !== "new") {
+    parts.push(`Customer tier: ${customer.tier.toUpperCase()}`);
+  }
+  if (customer.lifetimeValue && customer.lifetimeValue > 0) {
+    parts.push(`Lifetime value: $${customer.lifetimeValue}`);
+  }
+
   const name = customer.name || "the caller";
   let context = `[RETURNING CALLER: This is ${name}, a repeat customer who has called ${customer.totalCalls} times before. Greet them by name and reference their history when relevant.
 

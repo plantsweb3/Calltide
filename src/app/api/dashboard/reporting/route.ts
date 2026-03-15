@@ -126,6 +126,13 @@ export async function GET(req: NextRequest) {
       .where(and(eq(estimates.businessId, businessId), gte(estimates.createdAt, ninetyDaysStr)))
       .groupBy(estimates.status);
 
+    // ── Estimate close rate ──
+    const wonCount = estimatePipeline.find(e => e.status === "won")?.total ?? 0;
+    const lostCount = estimatePipeline.find(e => e.status === "lost")?.total ?? 0;
+    const closeRate = (wonCount + lostCount) > 0
+      ? Math.round((wonCount / (wonCount + lostCount)) * 100)
+      : null;
+
     // ── New vs repeat callers (last 30 days) ──
     const [callerStats] = await db
       .select({
@@ -151,6 +158,7 @@ export async function GET(req: NextRequest) {
       },
       topServices,
       estimatePipeline,
+      closeRate,
       callerStats: {
         total: callerStats?.total ?? 0,
         repeat: callerStats?.repeat ?? 0,
@@ -216,5 +224,6 @@ function getDemoReporting() {
       { status: "won", total: 12, value: 35000 }, { status: "lost", total: 3, value: 8000 },
     ],
     callerStats: { total: 45, repeat: 18, new: 27 },
+    closeRate: 80,
   };
 }

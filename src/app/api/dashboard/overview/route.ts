@@ -153,6 +153,19 @@ export async function GET(req: NextRequest) {
   // ── Enhanced metrics (wrapped so basic always returns) ──
   try {
 
+  // After-hours calls this week
+  const [afterHoursWeek] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, businessId),
+        eq(calls.isAfterHours, true),
+        sql`date(${calls.createdAt}) >= ${weekStartStr}`,
+        sql`date(${calls.createdAt}) <= ${weekEndStr}`,
+      ),
+    );
+
   // Revenue this month = appointments booked this month × avgJobValue
   const [appointmentsThisMonth] = await db
     .select({ count: count() })
@@ -609,6 +622,7 @@ export async function GET(req: NextRequest) {
     },
     customerInsights,
     abandonedCallRecovery,
+    afterHoursThisWeek: afterHoursWeek.count,
   });
 
   } catch (err) {

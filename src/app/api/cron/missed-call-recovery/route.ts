@@ -16,13 +16,13 @@ const RATE_LIMIT_HOURS = 24;
 /**
  * GET /api/cron/missed-call-recovery
  * Finds abandoned calls (< 15s) from 2+ minutes ago and sends recovery SMS.
- * Runs every 5 minutes.
+ * Runs every 10 minutes via Vercel cron.
  */
 export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
   if (authError) return authError;
 
-  return withCronMonitor("missed-call-recovery", "0 18 * * *", async () => {
+  return withCronMonitor("missed-call-recovery", "*/10 * * * *", async () => {
     const now = new Date();
 
     // Only look at calls from the last hour (avoid scanning entire table)

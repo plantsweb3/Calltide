@@ -79,6 +79,7 @@ interface Overview {
     topByCallCount: Array<{ name: string | null; phone: string; totalCalls: number }>;
   };
   healthScore?: number;
+  afterHoursThisWeek?: number;
   // Setup checklist data
   businessHours?: Record<string, { open?: string; close?: string; closed?: boolean }> | null;
   greeting?: string | null;
@@ -270,7 +271,7 @@ export default function OverviewPage() {
         </div>
 
         {/* Revenue Metric Cards */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <HealthScoreCard score={data.healthScore ?? 50} />
           <MetricCard
             label="Revenue Captured"
@@ -307,6 +308,12 @@ export default function OverviewPage() {
             value={data.appointmentsThisWeek}
             change="This week"
             changeType="neutral"
+          />
+          <MetricCard
+            label="After-Hours Calls"
+            value={data.afterHoursThisWeek ?? 0}
+            change="Answered this week"
+            changeType={data.afterHoursThisWeek ? "positive" : "neutral"}
           />
         </div>
 

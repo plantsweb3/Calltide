@@ -204,6 +204,13 @@ export async function POST(req: NextRequest) {
       const afterHoursNotice = getAfterHoursNotice(businessContext, lang);
       if (afterHoursNotice) {
         systemPrompt += afterHoursNotice;
+        // Flag the call as after-hours in DB (fire-and-forget)
+        if (metadata?.chat_group_id) {
+          db.update(calls)
+            .set({ isAfterHours: true })
+            .where(eq(calls.humeChatGroupId, metadata.chat_group_id))
+            .catch(() => { /* non-critical */ });
+        }
       }
     }
 
@@ -440,9 +447,9 @@ function buildAfterHoursPrompt(biz: BusinessContext, lang: Language): string {
     : "";
 
   if (lang === "es") {
-    return `\n\n[FUERA DE HORARIO: El negocio está actualmente CERRADO. Horario: ${hoursDisplay}. Ofrece tomar un mensaje y dile al llamante que le contactarán durante el horario laboral.${emergencyLine}]`;
+    return `\n\n[FUERA DE HORARIO: El negocio está actualmente CERRADO. Horario: ${hoursDisplay}. Al saludar al llamante, di: "Gracias por llamar a ${biz.name} fuera del horario de oficina. Soy ${biz.receptionistName || "Maria"}, y aún puedo ayudarle. Puedo tomar un mensaje, ayudar con una emergencia, o programar una cita para el próximo día hábil."${emergencyLine}]`;
   }
-  return `\n\n[AFTER HOURS: The business is currently CLOSED. Hours: ${hoursDisplay}. Offer to take a message and let the caller know someone will get back to them during business hours.${emergencyLine}]`;
+  return `\n\n[AFTER HOURS: The business is currently CLOSED. Hours: ${hoursDisplay}. When greeting the caller, say: "Thanks for calling ${biz.name} after hours. I'm ${biz.receptionistName || "Maria"}, and I can still help you. I can take a message, help with an emergency, or schedule an appointment for the next business day."${emergencyLine}]`;
 }
 
 /**

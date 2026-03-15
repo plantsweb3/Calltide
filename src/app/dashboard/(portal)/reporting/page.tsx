@@ -12,6 +12,7 @@ interface ReportingData {
   topServices: { service: string; total: number }[];
   estimatePipeline: { status: string; total: number; value: number }[];
   callerStats: { total: number; repeat: number; new: number };
+  closeRate: number | null;
 }
 
 export default function ReportingPage() {
@@ -232,6 +233,14 @@ export default function ReportingPage() {
             <p className="py-8 text-center text-sm" style={{ color: "var(--db-text-muted)" }}>No estimates yet</p>
           ) : (
             <div className="space-y-3">
+              {data.closeRate != null && (
+                <div className="rounded-lg p-3 mb-2 text-center" style={{ background: "var(--db-hover)" }}>
+                  <p className="text-2xl font-bold" style={{ color: data.closeRate >= 50 ? "#22c55e" : "var(--db-text)" }}>{data.closeRate}%</p>
+                  <p className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                    Close Rate ({data.estimatePipeline.find(e => e.status === "won")?.total ?? 0}/{(data.estimatePipeline.find(e => e.status === "won")?.total ?? 0) + (data.estimatePipeline.find(e => e.status === "lost")?.total ?? 0)} decided)
+                  </p>
+                </div>
+              )}
               {data.estimatePipeline.map((e) => (
                 <div key={e.status} className="flex items-center gap-3">
                   <span className="h-3 w-3 rounded-full" style={{ background: pipelineColors[e.status] ?? "var(--db-border)" }} />
