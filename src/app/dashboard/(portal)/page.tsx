@@ -296,6 +296,7 @@ export default function OverviewPage() {
             total={data.mariaSavedYou ?? data.revenueSaved ?? 0}
             breakdown={data.mariaSavedBreakdown}
             missedCallsRecoveredCount={data.missedCallsRecoveredCount ?? 0}
+            receptionistName={receptionistName}
           />
           <MetricCard
             label="Cost Per Lead"
@@ -584,10 +585,12 @@ function MariaSavedCard({
   total,
   breakdown,
   missedCallsRecoveredCount,
+  receptionistName,
 }: {
   total: number;
   breakdown?: Overview["mariaSavedBreakdown"];
   missedCallsRecoveredCount: number;
+  receptionistName: string;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -601,7 +604,7 @@ function MariaSavedCard({
       }}
     >
       <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-        Maria Saved You
+        {receptionistName} Saved You
       </p>
       <p className="mt-1 text-2xl font-bold" style={{ color: "#4ade80" }}>
         ${total.toLocaleString()}

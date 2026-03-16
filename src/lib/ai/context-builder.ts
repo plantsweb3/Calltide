@@ -58,6 +58,7 @@ function toBizContext(biz: typeof businesses.$inferSelect): BusinessContext {
     estimateMode: biz.estimateMode || "quick",
     accountId: biz.accountId || undefined,
     serviceDurations: (biz.serviceDurations as Record<string, number>) || undefined,
+    bufferMinutes: biz.bufferMinutes ?? 0,
   };
 }
 

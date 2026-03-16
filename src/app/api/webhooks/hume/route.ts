@@ -9,6 +9,7 @@ import { processCallSummary } from "@/lib/ai/call-summary";
 import type { HumeWebhookEvent, HumeChatStartedData, HumeChatEndedData, HumeToolCallData } from "@/types";
 import { reportError, reportWarning } from "@/lib/error-reporting";
 import { enqueueJob } from "@/lib/jobs/queue";
+import { sendBasicCallNotification } from "@/lib/notifications/post-call";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { trackCallStart, trackCallEnd, updateActiveCall } from "@/lib/monitoring/active-calls";
 
@@ -135,14 +136,15 @@ async function handleChatEnded(event: HumeWebhookEvent) {
       updatedAt: new Date().toISOString(),
     }).where(eq(calls.id, call.id));
 
-    // Rich owner notification + missed-call text-back are sent after summary generation
-    // in processCallSummary() via sendOwnerCallAlert() and sendMissedCallTextBack()
-
     // Generate AI summary from transcript (fire-and-forget, with retry on failure)
+    // Rich notifications are sent from processCallSummary when it succeeds.
+    // If it fails, we send a basic fallback notification so the owner is never left in the dark.
     processCallSummary(call.id, event.chat_id).catch(async (err) => {
       reportError("Background call summary failed", err, {
         extra: { callId: call.id, chatId: event.chat_id },
       });
+      // Fallback: send basic notification so owner knows about the call
+      sendBasicCallNotification(call.id, call.callerPhone, data.duration_seconds).catch(() => {});
       await enqueueJob("call_summary", { callId: call.id, chatId: event.chat_id }).catch(() => {});
     });
   }

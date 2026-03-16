@@ -6,6 +6,45 @@ import { env } from "@/lib/env";
 import { reportError } from "@/lib/error-reporting";
 
 /**
+ * Send a basic fallback notification when call summary generation fails.
+ * Ensures the owner always learns about every call, even if AI summary is unavailable.
+ */
+export async function sendBasicCallNotification(
+  callId: string,
+  callerPhone: string | null,
+  durationSeconds?: number,
+): Promise<void> {
+  const [call] = await db.select().from(calls).where(eq(calls.id, callId)).limit(1);
+  if (!call) return;
+
+  const [biz] = await db
+    .select()
+    .from(businesses)
+    .where(eq(businesses.id, call.businessId))
+    .limit(1);
+  if (!biz || !biz.ownerPhone) return;
+
+  const receptionistName = biz.receptionistName || "Maria";
+  const callerDisplay = callerPhone || call.callerPhone || "unknown number";
+  const duration = durationSeconds ? `${Math.ceil(durationSeconds / 60)}min` : "";
+
+  const message = `${receptionistName} handled a call from ${callerDisplay}${duration ? ` (${duration})` : ""}. Summary unavailable — check your dashboard for details. — Capta`;
+
+  try {
+    await sendSMS({
+      to: biz.ownerPhone,
+      from: biz.twilioNumber || env.TWILIO_PHONE_NUMBER,
+      body: message,
+      businessId: biz.id,
+      callId,
+      templateType: "owner_notify",
+    });
+  } catch (err) {
+    reportError("[post-call] Basic fallback notification failed", err, { businessId: biz.id });
+  }
+}
+
+/**
  * Send a rich owner SMS after call summary is generated.
  * Replaces the generic "Call handled" message with outcome-specific context.
  */

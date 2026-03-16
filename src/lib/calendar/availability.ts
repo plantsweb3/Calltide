@@ -67,7 +67,7 @@ export async function checkAvailability(
     const [h, m] = apt.time.split(":").map(Number);
     const start = h * 60 + m;
     const end = start + (apt.duration || 60);
-    return { start, end };
+    return { start, end: end + bufferMinutes };
   });
 
   // Also check Google Calendar busy times (if connected)
@@ -124,7 +124,10 @@ export async function checkAvailability(
   const startMin = openHour * 60 + openMin;
   const endMin = closeHour * 60 + closeMin;
 
-  for (let min = startMin; min + slotDuration <= endMin; min += 60) {
+  // Use buffer between appointments (travel time for field service)
+  const bufferMinutes = biz.bufferMinutes ?? 0;
+
+  for (let min = startMin; min + slotDuration <= endMin; min += slotDuration) {
     const h = Math.floor(min / 60);
     const m = min % 60;
     const time = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;

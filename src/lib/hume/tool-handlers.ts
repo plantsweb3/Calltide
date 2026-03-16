@@ -676,7 +676,8 @@ async function handleLookupAppointments(
   }
 
   // Find upcoming confirmed appointments for this caller
-  const today = new Date().toISOString().split("T")[0];
+  const biz = await getBusinessById(ctx.businessId);
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: biz?.timezone || "America/Chicago" });
   const upcomingAppointments = await db
     .select({
       id: appointments.id,

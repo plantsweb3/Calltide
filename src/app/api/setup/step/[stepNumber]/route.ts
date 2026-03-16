@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
-import { setupSessions, prospects } from "@/db/schema";
+import { setupSessions, prospects, businesses } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-reporting";
@@ -16,7 +16,7 @@ const stepSchemas: Record<number, z.ZodSchema> = {
     businessType: z.string().min(1).max(100),
     city: z.string().min(1).max(100),
     state: z.string().min(1).max(50),
-    services: z.array(z.string().max(200)).max(30).optional(),
+    services: z.array(z.string().max(200)).min(1, "Add at least one service").max(30),
   }),
   2: z.object({
     ownerName: z.string().min(1).max(200),
@@ -142,6 +142,22 @@ export async function PUT(
       .update(setupSessions)
       .set(updates)
       .where(eq(setupSessions.id, session.id));
+
+    // Step 2: Check for existing business with this email
+    if (step === 2) {
+      const email = data.ownerEmail as string;
+      const [existingBiz] = await db
+        .select({ id: businesses.id })
+        .from(businesses)
+        .where(eq(businesses.ownerEmail, email))
+        .limit(1);
+      if (existingBiz) {
+        return NextResponse.json(
+          { error: "An account with this email already exists. Please log in instead." },
+          { status: 409 },
+        );
+      }
+    }
 
     // Step 2: Create/update prospect for retargeting
     if (step === 2) {

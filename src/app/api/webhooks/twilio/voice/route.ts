@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
       humeConfigId: businesses.humeConfigId,
       ownerPhone: businesses.ownerPhone,
       receptionistName: businesses.receptionistName,
+      paymentStatus: businesses.paymentStatus,
     })
     .from(businesses)
     .where(and(eq(businesses.twilioNumber, calledNumber), eq(businesses.active, true)))
@@ -71,6 +72,13 @@ export async function POST(req: NextRequest) {
     });
     return twimlSay(
       "Thank you for calling. This number is not currently active. Please try again later.",
+    );
+  }
+
+  // If payment is suspended (grace period expired), don't connect to Hume
+  if (biz.paymentStatus === "suspended" || biz.paymentStatus === "canceled") {
+    return twimlSay(
+      `Thank you for calling ${escapeXml(biz.name)}. We're experiencing a temporary service interruption. Please try again later or contact the business directly.`,
     );
   }
 
@@ -135,8 +143,9 @@ export async function POST(req: NextRequest) {
  * Optionally records a voicemail after speaking.
  */
 function twimlSay(message: string, recordVoicemail = false): Response {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
   const voicemailTwiml = recordVoicemail
-    ? `<Record maxLength="120" playBeep="true" timeout="5" />`
+    ? `<Record maxLength="120" playBeep="true" timeout="5" recordingStatusCallback="${escapeXml(appUrl)}/api/webhooks/twilio/recording" recordingStatusCallbackMethod="POST" />`
     : "";
 
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>

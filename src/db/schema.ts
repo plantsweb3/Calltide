@@ -135,6 +135,7 @@ export const businesses = sqliteTable("businesses", {
   customFieldTemplates: text("custom_field_templates", { mode: "json" }).$type<Array<{ key: string; label: string; type: string }>>().default([]),
   enableThankYouSms: integer("enable_thank_you_sms", { mode: "boolean" }).default(true),
   serviceDurations: text("service_durations", { mode: "json" }).$type<Record<string, number>>().default({}), // e.g. {"drain cleaning": 45, "water heater install": 180}
+  bufferMinutes: integer("buffer_minutes").default(0), // travel time between appointments (e.g. 30)
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -177,6 +178,9 @@ export const calls = sqliteTable("calls", {
   aiDisclosed: integer("ai_disclosed", { mode: "boolean" }).default(false),
   // After-hours
   isAfterHours: integer("is_after_hours", { mode: "boolean" }).default(false),
+  // Voicemail
+  recordingUrl: text("recording_url"),
+  twilioCallSid: text("twilio_call_sid"),
   // Missed call recovery
   isAbandoned: integer("is_abandoned", { mode: "boolean" }).default(false),
   recoverySmsSentAt: text("recovery_sms_sent_at"),

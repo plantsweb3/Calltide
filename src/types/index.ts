@@ -106,4 +106,5 @@ export interface BusinessContext {
   estimateMode?: string;
   accountId?: string;
   serviceDurations?: Record<string, number>; // service name → duration in minutes
+  bufferMinutes?: number; // travel time between appointments
 }
