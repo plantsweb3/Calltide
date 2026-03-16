@@ -275,6 +275,36 @@ export async function GET(req: NextRequest) {
     );
   abandonedCallRecovery.smsSent = abandonedSmsSent.count;
 
+  // ── Enhanced "Maria Saved You" metric ──
+  // After-hours calls this month (would have gone to voicemail)
+  const [afterHoursMonth] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, businessId),
+        eq(calls.isAfterHours, true),
+        gte(calls.createdAt, monthStart),
+      ),
+    );
+
+  // Spanish calls this month (would have been missed by English-only staff)
+  const [spanishCallsMonth] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, businessId),
+        eq(calls.language, "es"),
+        gte(calls.createdAt, monthStart),
+      ),
+    );
+
+  // Unified "Maria saved you" = missed recovered + after-hours × 25% conversion + Spanish × 25% conversion
+  const afterHoursSaved = Math.round((afterHoursMonth.count) * avgJobValue * 0.25);
+  const spanishSaved = Math.round((spanishCallsMonth.count) * avgJobValue * 0.25);
+  const mariaSavedYou = revenueSaved + afterHoursSaved + spanishSaved;
+
   const monthlyPlanCost = 497;
   const roiMultiple = monthlyPlanCost > 0
     ? Math.round((revenueThisMonth / monthlyPlanCost) * 10) / 10
@@ -623,6 +653,14 @@ export async function GET(req: NextRequest) {
     customerInsights,
     abandonedCallRecovery,
     afterHoursThisWeek: afterHoursWeek.count,
+    mariaSavedYou,
+    mariaSavedBreakdown: {
+      missedRecovered: revenueSaved,
+      afterHours: afterHoursSaved,
+      afterHoursCount: afterHoursMonth.count,
+      spanish: spanishSaved,
+      spanishCount: spanishCallsMonth.count,
+    },
   });
 
   } catch (err) {

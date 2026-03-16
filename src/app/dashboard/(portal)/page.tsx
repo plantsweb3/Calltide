@@ -80,6 +80,14 @@ interface Overview {
   };
   healthScore?: number;
   afterHoursThisWeek?: number;
+  mariaSavedYou?: number;
+  mariaSavedBreakdown?: {
+    missedRecovered: number;
+    afterHours: number;
+    afterHoursCount: number;
+    spanish: number;
+    spanishCount: number;
+  };
   // Setup checklist data
   businessHours?: Record<string, { open?: string; close?: string; closed?: boolean }> | null;
   greeting?: string | null;
@@ -284,16 +292,10 @@ export default function OverviewPage() {
             }
             changeType={data.revenueChange != null && data.revenueChange > 0 ? "positive" : data.revenueChange != null && data.revenueChange < 0 ? "negative" : "neutral"}
           />
-          <MetricCard
-            label="Recovered from Missed"
-            value={data.revenueSaved!}
-            prefix="$"
-            change={
-              data.missedCallsRecoveredCount
-                ? `${data.missedCallsRecoveredCount} call${data.missedCallsRecoveredCount === 1 ? "" : "s"} saved`
-                : undefined
-            }
-            changeType="positive"
+          <MariaSavedCard
+            total={data.mariaSavedYou ?? data.revenueSaved ?? 0}
+            breakdown={data.mariaSavedBreakdown}
+            missedCallsRecoveredCount={data.missedCallsRecoveredCount ?? 0}
           />
           <MetricCard
             label="Cost Per Lead"
@@ -574,6 +576,75 @@ function HealthScoreCard({ score }: { score: number }) {
       <p className="mt-1 text-xs font-medium" style={{ color }}>
         {label}
       </p>
+    </div>
+  );
+}
+
+function MariaSavedCard({
+  total,
+  breakdown,
+  missedCallsRecoveredCount,
+}: {
+  total: number;
+  breakdown?: Overview["mariaSavedBreakdown"];
+  missedCallsRecoveredCount: number;
+}) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div
+      className="rounded-xl p-5"
+      style={{
+        background: "var(--db-card)",
+        border: "1px solid var(--db-border)",
+        boxShadow: "var(--db-card-shadow)",
+      }}
+    >
+      <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+        Maria Saved You
+      </p>
+      <p className="mt-1 text-2xl font-bold" style={{ color: "#4ade80" }}>
+        ${total.toLocaleString()}
+      </p>
+      {breakdown && total > 0 ? (
+        <>
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="mt-1 text-xs font-medium"
+            style={{ color: "var(--db-accent)" }}
+          >
+            {expanded ? "Hide breakdown" : "See breakdown"}
+          </button>
+          {expanded && (
+            <div className="mt-2 space-y-1.5 text-xs" style={{ color: "var(--db-text-secondary)" }}>
+              {breakdown.missedRecovered > 0 && (
+                <div className="flex justify-between">
+                  <span>Missed calls recovered ({missedCallsRecoveredCount})</span>
+                  <span className="font-medium">${breakdown.missedRecovered.toLocaleString()}</span>
+                </div>
+              )}
+              {breakdown.afterHours > 0 && (
+                <div className="flex justify-between">
+                  <span>After-hours calls ({breakdown.afterHoursCount})</span>
+                  <span className="font-medium">${breakdown.afterHours.toLocaleString()}</span>
+                </div>
+              )}
+              {breakdown.spanish > 0 && (
+                <div className="flex justify-between">
+                  <span>Spanish calls ({breakdown.spanishCount})</span>
+                  <span className="font-medium">${breakdown.spanish.toLocaleString()}</span>
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      ) : (
+        missedCallsRecoveredCount > 0 && (
+          <p className="mt-1 text-xs" style={{ color: "#4ade80" }}>
+            {missedCallsRecoveredCount} call{missedCallsRecoveredCount === 1 ? "" : "s"} saved
+          </p>
+        )
+      )}
     </div>
   );
 }

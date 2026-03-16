@@ -14,6 +14,7 @@ import { eq } from "drizzle-orm";
 import type { ChatCompletionRequest, SSEChunk, BusinessContext, Language } from "@/types";
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+import { isCurrentlyAfterHours } from "@/lib/calendar/after-hours";
 
 const CLAUDE_MODEL = process.env.CLAUDE_MODEL ?? SONNET_MODEL;
 const MAX_MESSAGES = 50; // Cap conversation history to prevent unbounded input
@@ -387,47 +388,11 @@ async function saveTranscript(
  */
 function getAfterHoursNotice(biz: BusinessContext, lang: Language): string | null {
   try {
-    const now = new Date();
-    // Get current day/time in the business timezone
-    const formatter = new Intl.DateTimeFormat("en-US", {
-      timeZone: biz.timezone,
-      weekday: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-    const parts = formatter.formatToParts(now);
-    const weekday = parts.find((p) => p.type === "weekday")?.value; // Mon, Tue, etc.
-    const hour = parts.find((p) => p.type === "hour")?.value || "0";
-    const minute = parts.find((p) => p.type === "minute")?.value || "0";
-    const currentMinutes = parseInt(hour) * 60 + parseInt(minute);
-
-    if (!weekday) return null;
-
-    const hours = biz.businessHours[weekday];
-    if (!hours) {
-      // No hours entry for this day = closed
+    if (isCurrentlyAfterHours(biz.businessHours, biz.timezone)) {
       return buildAfterHoursPrompt(biz, lang);
     }
-
-    // Check if explicitly closed
-    if ((hours as Record<string, unknown>).closed) {
-      return buildAfterHoursPrompt(biz, lang);
-    }
-
-    // Parse open/close times
-    const [openH, openM] = hours.open.split(":").map(Number);
-    const [closeH, closeM] = hours.close.split(":").map(Number);
-    const openMinutes = openH * 60 + openM;
-    const closeMinutes = closeH * 60 + closeM;
-
-    if (currentMinutes < openMinutes || currentMinutes >= closeMinutes) {
-      return buildAfterHoursPrompt(biz, lang);
-    }
-
     return null;
   } catch {
-    // If timezone parsing fails, don't inject anything
     return null;
   }
 }

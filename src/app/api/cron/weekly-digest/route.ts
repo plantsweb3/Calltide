@@ -22,36 +22,9 @@ import {
 import { getBusinessWeekRange } from "@/lib/timezone";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
+import { isAfterHours } from "@/lib/calendar/after-hours";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-/**
- * Determine if a call was after-hours based on the call timestamp and business hours.
- */
-function isAfterHours(
-  callCreatedAt: string,
-  businessHours: Record<string, { open: string; close: string; closed?: boolean }>,
-  timezone: string,
-): boolean {
-  const callDate = new Date(callCreatedAt);
-
-  // Get local day and time
-  const localDay = callDate.toLocaleDateString("en-US", { weekday: "long", timeZone: timezone }).toLowerCase();
-  const localTime = callDate.toLocaleTimeString("en-US", {
-    hour12: false,
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: timezone,
-  });
-
-  // Check various key formats: "monday", "Mon", etc.
-  const shortDay = callDate.toLocaleDateString("en-US", { weekday: "short", timeZone: timezone });
-  const hours = businessHours[localDay] || businessHours[shortDay];
-
-  if (!hours || hours.closed || hours.open === "closed") return true;
-  if (localTime < hours.open || localTime >= hours.close) return true;
-  return false;
-}
 
 export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);

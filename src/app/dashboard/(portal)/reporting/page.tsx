@@ -13,6 +13,12 @@ interface ReportingData {
   estimatePipeline: { status: string; total: number; value: number }[];
   callerStats: { total: number; repeat: number; new: number };
   closeRate: number | null;
+  outboundSummary?: {
+    total: number;
+    answered: number;
+    answerRate: number;
+    byType: { callType: string; total: number; answered: number }[];
+  };
 }
 
 export default function ReportingPage() {
@@ -293,6 +299,48 @@ export default function ReportingPage() {
           </div>
         </Card>
       </div>
+
+      {/* Row 4: Outbound Calls */}
+      {data.outboundSummary && data.outboundSummary.total > 0 && (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Card title="Outbound Calls">
+            <div className="space-y-4 py-2">
+              <div className="text-center">
+                <p className="text-3xl font-bold" style={{ color: "var(--db-accent)" }}>{data.outboundSummary.total}</p>
+                <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>Total Outbound (30 days)</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <StatMini label="Answered" value={data.outboundSummary.answered} />
+                <StatMini label="Answer Rate" value={data.outboundSummary.answerRate} />
+              </div>
+            </div>
+          </Card>
+          <Card title="Outbound by Type">
+            <div className="space-y-3">
+              {data.outboundSummary.byType.map((t) => {
+                const typeLabels: Record<string, string> = {
+                  appointment_reminder: "Reminders",
+                  estimate_followup: "Estimate Follow-ups",
+                  seasonal_reminder: "Seasonal",
+                };
+                return (
+                  <div key={t.callType} className="flex items-center gap-3">
+                    <span className="flex-1 text-sm" style={{ color: "var(--db-text)" }}>
+                      {typeLabels[t.callType] ?? t.callType.replace(/_/g, " ")}
+                    </span>
+                    <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
+                      {t.answered}/{t.total}
+                    </span>
+                    <span className="text-xs font-semibold" style={{ color: t.total > 0 ? "#22c55e" : "var(--db-text)" }}>
+                      {t.total > 0 ? Math.round((t.answered / t.total) * 100) : 0}%
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

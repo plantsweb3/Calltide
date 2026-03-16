@@ -19,6 +19,7 @@ import {
 } from "@/lib/emails/monthly-roi";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
+import { isAfterHours } from "@/lib/calendar/after-hours";
 
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
@@ -111,21 +112,11 @@ export async function GET(req: NextRequest) {
               ),
             );
 
-          // After-hours detection uses business hours — simplified: count calls outside 8am-6pm
           const bizHours = (biz.businessHours ?? {}) as Record<string, { open: string; close: string; closed?: boolean }>;
           const tz = biz.timezone || "America/Chicago";
-          let afterHoursCalls = 0;
-          for (const c of monthCalls) {
-            const callDate = new Date(c.createdAt);
-            const localDay = callDate.toLocaleDateString("en-US", { weekday: "short", timeZone: tz });
-            const localTime = callDate.toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit", timeZone: tz });
-            const hours = bizHours[localDay] || bizHours[localDay.toLowerCase()];
-            if (!hours || (hours as { closed?: boolean }).closed) {
-              afterHoursCalls++;
-            } else if (localTime < hours.open || localTime >= hours.close) {
-              afterHoursCalls++;
-            }
-          }
+          const afterHoursCalls = monthCalls.filter((c) =>
+            isAfterHours(c.createdAt, bizHours, tz),
+          ).length;
 
           const emergencyCalls = monthCalls.filter((c) => c.transferRequested).length;
           const spanishCalls = monthCalls.filter((c) => c.language === "es").length;

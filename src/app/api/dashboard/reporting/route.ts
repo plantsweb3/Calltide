@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { calls, appointments, customers, estimates } from "@/db/schema";
+import { calls, appointments, customers, estimates, outboundCalls } from "@/db/schema";
 import { eq, and, sql, gte, count, desc } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
@@ -133,6 +133,26 @@ export async function GET(req: NextRequest) {
       ? Math.round((wonCount / (wonCount + lostCount)) * 100)
       : null;
 
+    // ── Outbound call summary (last 30 days) ──
+    const outboundByType = await db
+      .select({
+        callType: outboundCalls.callType,
+        total: count(),
+        answered: sql<number>`sum(case when ${outboundCalls.status} = 'completed' then 1 else 0 end)`,
+      })
+      .from(outboundCalls)
+      .where(and(eq(outboundCalls.businessId, businessId), gte(outboundCalls.createdAt, thirtyDaysStr)))
+      .groupBy(outboundCalls.callType);
+
+    const outboundTotal = outboundByType.reduce((s, o) => s + o.total, 0);
+    const outboundAnswered = outboundByType.reduce((s, o) => s + (o.answered ?? 0), 0);
+    const outboundSummary = {
+      total: outboundTotal,
+      answered: outboundAnswered,
+      answerRate: outboundTotal > 0 ? Math.round((outboundAnswered / outboundTotal) * 100) : 0,
+      byType: outboundByType,
+    };
+
     // ── New vs repeat callers (last 30 days) ──
     const [callerStats] = await db
       .select({
@@ -159,6 +179,7 @@ export async function GET(req: NextRequest) {
       topServices,
       estimatePipeline,
       closeRate,
+      outboundSummary,
       callerStats: {
         total: callerStats?.total ?? 0,
         repeat: callerStats?.repeat ?? 0,
@@ -225,5 +246,15 @@ function getDemoReporting() {
     ],
     callerStats: { total: 45, repeat: 18, new: 27 },
     closeRate: 80,
+    outboundSummary: {
+      total: 34,
+      answered: 26,
+      answerRate: 76,
+      byType: [
+        { callType: "appointment_reminder", total: 18, answered: 15 },
+        { callType: "estimate_followup", total: 10, answered: 7 },
+        { callType: "seasonal_reminder", total: 6, answered: 4 },
+      ],
+    },
   };
 }

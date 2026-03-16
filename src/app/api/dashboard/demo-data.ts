@@ -220,6 +220,14 @@ export const DEMO_OVERVIEW = {
     ],
   },
   afterHoursThisWeek: 7,
+  mariaSavedYou: 4550,
+  mariaSavedBreakdown: {
+    missedRecovered: 1800,
+    afterHours: 1438,
+    afterHoursCount: 23,
+    spanish: 1312,
+    spanishCount: 21,
+  },
 };
 
 // ── Call Transcripts ──
