@@ -55,10 +55,8 @@ export default function ScrapeModal({
 
     if (res.ok) {
       setResult(data);
-      setTimeout(() => {
-        onComplete();
-        onClose();
-      }, 2000);
+      onComplete();
+      // Don't auto-close — let user scrape another vertical/city
     } else {
       setError(data.error || "Scrape failed");
     }
@@ -153,19 +151,43 @@ export default function ScrapeModal({
           )}
 
           {result && (
-            <div className="rounded-lg bg-green-500/10 px-3 py-2 text-sm text-green-400">
-              Found {result.total} places. Inserted: {result.inserted}, Skipped:{" "}
-              {result.skipped}
+            <div className="space-y-2">
+              <div className="rounded-lg bg-green-500/10 px-3 py-2 text-sm text-green-400">
+                Found {result.total} places. Inserted: {result.inserted}, Skipped:{" "}
+                {result.skipped} (duplicates)
+              </div>
+              {result.skipped > 0 && (
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  Skipped leads already exist in your database. To get more leads, try a different vertical or nearby city — Google caps results at ~60 per search.
+                </p>
+              )}
+              {result.inserted < 50 && (
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  Tip: Scrape 2-3 verticals in the same city to hit 100+ leads (e.g. plumbing + HVAC + electrician).
+                </p>
+              )}
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading || !city}
-            className="cta-gold w-full rounded-lg py-2.5 text-sm font-medium text-white disabled:opacity-50 transition-colors"
-          >
-            {loading ? "Scraping..." : "Start Scrape"}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={loading || !city}
+              className="cta-gold flex-1 rounded-lg py-2.5 text-sm font-medium text-white disabled:opacity-50 transition-colors"
+            >
+              {loading ? "Scraping..." : result ? "Scrape Another" : "Start Scrape"}
+            </button>
+            {result && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+                style={{ border: "1px solid var(--db-border)", color: "var(--db-text-muted)" }}
+              >
+                Done
+              </button>
+            )}
+          </div>
         </form>
       </div>
     </div>

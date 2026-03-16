@@ -77,6 +77,11 @@ export async function getNextStep(prospectId: string) {
   for (const step of sequence) {
     if (sentKeys.has(step.key)) continue;
 
+    // Skip email steps if prospect has no email (Google Places doesn't return emails)
+    if (step.channel === "email" && !prospect.email) continue;
+    // Skip SMS steps if prospect has no phone
+    if (step.channel === "sms" && !prospect.phone) continue;
+
     // Check if enough time has passed since the last outreach
     if (sentOutreach.length > 0) {
       const lastSent = sentOutreach[0].sentAt;

@@ -98,59 +98,59 @@ const SCRIPT_STEPS = [
   {
     num: 1,
     title: "Opener",
-    line: `Hey this is ___, quick one — are you guys still answering all your calls yourself or do you have an office handling it?`,
+    line: `Hey [NAME], how've you been? ... Hey listen, the reason I'm calling — I work with [TRADE] companies in [CITY] and most of them were losing a ton of jobs to missed calls. Wanted to see if that's something you deal with too.`,
   },
   {
     num: 2,
     title: "Pain",
-    line: `Most companies we talk to are missing a bunch of calls every week and don't even realize how many jobs that is. [Pause — let them respond]`,
+    line: `Yeah, so most [TRADE] guys we talk to are missing 15-30 calls a month and don't even realize it. That's $3K-$15K walking to a competitor every month. [Pause — let them respond]`,
   },
   {
     num: 3,
     title: "Position",
-    line: `So what we built is an AI front office for home service companies. It answers every call, texts the customer, books the job, follows up, and replaces answering services and CRMs. Most guys only need 1-2 extra jobs a month for it to pay for itself.`,
+    line: `So what we built is an AI front office that answers every call 24/7 in English and Spanish. It books the job right on the call, texts the customer, and follows up. Most guys only need 1-2 extra jobs a month and it pays for itself.`,
   },
   {
     num: 4,
     title: "Qualify",
-    line: `How many calls do you think you guys get in a normal day? And when you miss one, do you usually call back or does it just go to voicemail?`,
+    line: `How many calls do you think you guys get in a normal day? And when you miss one, what happens — do you call back or does it just go to voicemail?`,
   },
   {
     num: 5,
-    title: "Authority",
-    line: `Yeah that's exactly why most [TRADE] companies we work with switch to us. They don't realize how much money they're losing until they track missed calls.`,
+    title: "ROI Flip",
+    line: `So if even half those missed calls turned into booked jobs — at your average ticket, that's [$$] you're leaving on the table. Capta catches all of them for less than one lost job per month.`,
   },
   {
     num: 6,
     title: "Close",
-    line: `Look, I don't know if this makes sense for you yet, but I can show you exactly how other companies are using it. Takes like 5 minutes. You want me to show you later today or tomorrow?`,
+    line: `I can get you set up today and you'd be live by tomorrow morning. 30-day money-back guarantee, so there's zero risk. Want me to get you started?`,
   },
 ];
 
 const OBJECTION_HANDLERS = [
   {
     trigger: '"Not interested"',
-    response: `All good — quick question before I hang up. If you never missed another call again, would that be worth looking at or no?`,
+    response: `All good — quick question before I let you go. If you never missed another call again, would that be worth a 2-minute conversation or no?`,
   },
   {
     trigger: '"We have an answering service"',
-    response: `Yeah most of our customers had one. The difference is answering services take messages… ours actually books the job, follows up, and turns missed calls into revenue. That's why most of them switch.`,
+    response: `Yeah most of our customers had one. The difference is answering services take messages… ours actually books the job right on the call, follows up, and speaks Spanish. That's why most of them switch.`,
   },
   {
     trigger: '"Too expensive"',
-    response: `Totally fair. Most guys say that until they realize one extra job a month covers the whole thing. That's why I just show it first — then you can decide if it makes sense.`,
+    response: `Totally fair. What's your average job worth? [Let them answer] So one extra job a month covers the whole thing and everything after that is profit. Plus there's a 30-day money-back guarantee.`,
+  },
+  {
+    trigger: '"Send me info"',
+    response: `Absolutely — what's your best email? [Get it] Quick question so I send the right stuff — is the bigger issue missed calls after hours, or keeping up when the phone's ringing off the hook? [Engage, then:] I'll email you tonight. How about I call you [DAY] at [TIME] to walk through any questions? Takes 5 min.`,
+  },
+  {
+    trigger: "Gatekeeper / receptionist",
+    response: `Hey, maybe you can help me actually — I work with [TRADE] companies in [CITY] and help them stop losing calls to voicemail. Do you guys ever get complaints from customers who couldn't get through? [Let them talk] What's the best time to catch the owner?`,
   },
 ];
 
-const VOICEMAIL_SCRIPT = `Hey [NAME], this is ___ — I was trying to reach you real quick. We work with [TRADE] companies in [CITY] and I noticed you guys might be missing some calls when you're out on jobs.
-
-We built something that answers every call for you, books the appointment, and follows up with the customer automatically — so you never lose a job to a missed call again.
-
-Most guys only need one or two extra jobs a month and it pays for itself.
-
-I'll shoot you a quick email with more info — if it makes sense, I'd love to show you how it works. Takes about 5 minutes.
-
-Talk soon.`;
+const VOICEMAIL_SCRIPT = `Hey [NAME], it's Ulysses. I work with [TRADE] companies in [CITY] and help them stop losing calls to voicemail. Gimme a shout back when you get a sec — I'll also shoot you a quick text. Thanks.`;
 
 // ── Helpers ──
 
@@ -274,7 +274,7 @@ function CallScript({ collapsed, onToggle }: { collapsed: boolean; onToggle: () 
             <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider" style={{ color: "#f87171" }}>
               Objection Handlers
             </p>
-            <div className="grid grid-cols-1 gap-1.5 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-1.5 lg:grid-cols-2 xl:grid-cols-3">
               {OBJECTION_HANDLERS.map((o) => (
                 <div key={o.trigger} className="rounded-lg p-2.5" style={{ background: "rgba(248,113,113,0.05)", border: "1px solid rgba(248,113,113,0.1)" }}>
                   <p className="text-[10px] font-semibold" style={{ color: "#f87171" }}>
@@ -323,7 +323,7 @@ function VoicemailModal({
               Voicemail Script
             </h3>
             <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-              {prospect.businessName} — leave this voicemail, then they get a follow-up email
+              {prospect.businessName} — leave this voicemail, then auto follow-up via SMS + email
             </p>
           </div>
           <button onClick={onClose} className="rounded-lg p-1" style={{ color: "var(--db-text-muted)" }}>
@@ -357,7 +357,7 @@ function VoicemailModal({
             className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             style={{ background: "var(--db-accent)", color: "#fff" }}
           >
-            Log as No Answer & Queue Email
+            Log Voicemail & Start Follow-up Sequence
           </button>
         </div>
       </div>
@@ -419,9 +419,17 @@ function ExpandedRow({
     setShowVoicemailModal(true);
   }
 
-  function handleVoicemailConfirm() {
+  async function handleVoicemailConfirm() {
     setShowVoicemailModal(false);
-    logTouch(false, "no_answer", "Left voicemail + queued email outreach");
+    // Start automated SMS/email sequence for this prospect
+    try {
+      await fetch("/api/outreach/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prospectIds: [prospect.id] }),
+      });
+    } catch {}
+    logTouch(false, "left_voicemail", "Left voicemail + started automated follow-up sequence");
   }
 
   function copyPhone() {
