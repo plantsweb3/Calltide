@@ -382,6 +382,8 @@ function ExpandedRow({
   const [touches, setTouches] = useState<Touch[]>([]);
   const [copied, setCopied] = useState(false);
   const [showVoicemailModal, setShowVoicemailModal] = useState(false);
+  const [smsSending, setSmsSending] = useState(false);
+  const [smsSent, setSmsSent] = useState(false);
 
   useEffect(() => {
     fetch(`/api/admin/outreach/touches/${prospect.id}?limit=3`)
@@ -440,6 +442,24 @@ function ExpandedRow({
     }
   }
 
+  async function sendWarmupSms() {
+    if (!prospect.phone || smsSending || smsSent) return;
+    setSmsSending(true);
+    try {
+      const res = await fetch("/api/admin/outreach/sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prospectIds: [prospect.id] }),
+      });
+      if (res.ok) {
+        setSmsSent(true);
+        onLogged(true); // refresh stats
+      }
+    } finally {
+      setSmsSending(false);
+    }
+  }
+
   return (
     <>
       <div
@@ -455,17 +475,30 @@ function ExpandedRow({
             </p>
             <div className="mt-1 space-y-1">
               {prospect.phone && (
-                <button
-                  onClick={copyPhone}
-                  className="flex items-center gap-2 text-sm transition-colors"
-                  style={{ color: "var(--db-accent)" }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                  {prospect.phone}
-                  {copied && <span className="text-xs" style={{ color: "#4ade80" }}>Copied!</span>}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={copyPhone}
+                    className="flex items-center gap-2 text-sm transition-colors"
+                    style={{ color: "var(--db-accent)" }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                    </svg>
+                    {prospect.phone}
+                    {copied && <span className="text-xs" style={{ color: "#4ade80" }}>Copied!</span>}
+                  </button>
+                  <button
+                    onClick={sendWarmupSms}
+                    disabled={smsSending || smsSent}
+                    className="rounded px-2 py-0.5 text-[10px] font-medium transition-colors"
+                    style={{
+                      background: smsSent ? "rgba(74,222,128,0.15)" : "rgba(96,165,250,0.15)",
+                      color: smsSent ? "#4ade80" : "#60a5fa",
+                    }}
+                  >
+                    {smsSent ? "SMS Sent" : smsSending ? "Sending..." : "Send SMS"}
+                  </button>
+                </div>
               )}
               {prospect.email && (
                 <p className="flex items-center gap-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
@@ -680,6 +713,8 @@ export default function OutreachPage() {
   const [workedFilter, setWorkedFilter] = useState("");
   const [stats, setStats] = useState<Stats>({ today: 0, thisWeek: 0, followUpsDue: 0, interested: 0 });
   const [scriptCollapsed, setScriptCollapsed] = useState(false);
+  const [bulkSmsStatus, setBulkSmsStatus] = useState<"idle" | "sending" | "done">("idle");
+  const [bulkSmsResult, setBulkSmsResult] = useState<{ sent: number; skipped: number } | null>(null);
   const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const fetchProspects = useCallback(async () => {
@@ -735,6 +770,39 @@ export default function OutreachPage() {
         // and user continues through the list
       }
     });
+  }
+
+  async function sendBulkWarmupSms() {
+    if (bulkSmsStatus === "sending") return;
+    setBulkSmsStatus("sending");
+    setBulkSmsResult(null);
+
+    // Send to all fresh prospects on current page that have phones
+    const ids = prospects.filter((p) => p.phone).map((p) => p.id);
+    if (ids.length === 0) {
+      setBulkSmsStatus("idle");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/admin/outreach/sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prospectIds: ids }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setBulkSmsResult({ sent: data.sent, skipped: data.skipped });
+        setBulkSmsStatus("done");
+        fetchStats();
+        fetchProspects();
+        setTimeout(() => setBulkSmsStatus("idle"), 5000);
+      } else {
+        setBulkSmsStatus("idle");
+      }
+    } catch {
+      setBulkSmsStatus("idle");
+    }
   }
 
   // ── Column definitions per tab ──
@@ -805,11 +873,29 @@ export default function OutreachPage() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold">Outreach</h1>
-        <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Manual sales outreach — Rule of 100
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Outreach</h1>
+          <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
+            Manual sales outreach — Rule of 100
+          </p>
+        </div>
+        {tab === "fresh" && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={sendBulkWarmupSms}
+              disabled={bulkSmsStatus === "sending" || prospects.length === 0}
+              className="rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-40"
+              style={{ background: "#60a5fa", color: "#fff" }}
+            >
+              {bulkSmsStatus === "sending"
+                ? "Sending..."
+                : bulkSmsStatus === "done"
+                  ? `Sent ${bulkSmsResult?.sent ?? 0} SMS`
+                  : `Send Warm-up SMS to Page (${prospects.filter((p) => p.phone).length})`}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Sticky Call Script */}
