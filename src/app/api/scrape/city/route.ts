@@ -84,8 +84,10 @@ export async function POST(req: NextRequest) {
       skipped,
     });
   } catch (error) {
+    const message = error instanceof Error ? error.message : "Scrape failed";
+    console.error("[scrape/city] Error:", message);
     return NextResponse.json(
-      { error: "Scrape failed" },
+      { error: message },
       { status: 500 },
     );
   }
