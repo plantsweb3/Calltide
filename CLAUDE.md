@@ -34,9 +34,9 @@ src/
 │   └── page.tsx        # Landing page
 ├── components/         # Shared UI components
 ├── db/
-│   ├── schema.ts       # Drizzle schema (83 tables)
+│   ├── schema.ts       # Drizzle schema (98 tables)
 │   ├── index.ts        # DB connection
-│   └── migrations/     # SQL migrations (0000-0053)
+│   └── migrations/     # SQL migrations (0000-0069)
 ├── lib/
 │   ├── ai/             # System prompts, context builder, call summary
 │   ├── hume/           # Tool handlers, webhook verification
@@ -55,10 +55,10 @@ tests/
 ## Architecture Overview
 
 - `/app/(marketing)/*` — Public pages (homepage, pricing, platform, about, faq, blog, help, legal, status)
-- `/app/dashboard/*` — Client portal (20 pages: calls, appointments, CRM, estimates, billing, settings, referrals, partners, import, onboarding)
-- `/app/admin/*` — Admin portal (30 pages: mission control, clients, prospects, agents, campaigns, blog CMS, KB, compliance, financials, incidents)
-- `/app/api/*` — 212 API routes
-- `/src/db/*` — Drizzle schema (83 tables) + migrations
+- `/app/dashboard/*` — Client portal (21 pages: calls, appointments, CRM, estimates, billing, settings, referrals, partners, import, onboarding, SMS, feedback, reporting, job cards)
+- `/app/admin/*` — Admin portal (32 pages: Founder HQ, Ops Dashboard, clients, prospects, agents, campaigns, blog CMS, KB, compliance, financials, incidents, outreach)
+- `/app/api/*` — 250 API routes
+- `/src/db/*` — Drizzle schema (98 tables) + migrations
 - `/src/lib/*` — Shared utilities (auth, env, rate-limit, error-reporting)
 
 ## Authentication
@@ -73,10 +73,11 @@ tests/
 - Zod on all POST/PUT
 - Password login + magic link auth, middleware sessions
 - External: Twilio, Hume EVI, Stripe, Resend, Anthropic
-- 31 cron-scheduled routes (CRON_SECRET protected): 18 cron jobs, 6 AI agents, 3 capacity, 3 financial, 1 compliance
-- 212 API routes
+- 37 cron-scheduled routes (CRON_SECRET protected): 22 cron jobs, 6 AI agents, 3 capacity, 3 financial, 1 compliance, 2 outbound
+- 250 API routes
 - Demo mode with isolated data
-- Onboarding: 8-step wizard, paywall at step 6 (after test call), incomplete signups saved for retargeting
+- Onboarding: 6-step wizard (business info, contact, personality, FAQ, test call, paywall), incomplete signups saved for retargeting
+- Webhooks: 7 event types (appointment CRUD, call.completed, customer.created, estimate.created, message.taken), HMAC-SHA256 signed
 
 ### API Routes
 - All routes use Zod for input validation
@@ -87,7 +88,7 @@ tests/
 
 ### Database
 - Drizzle ORM with SQLite/Turso
-- Migrations in `src/db/migrations/` (numbered 0000-0053)
+- Migrations in `src/db/migrations/` (numbered 0000-0069)
 - Journal in `src/db/migrations/meta/_journal.json`
 - All tables defined in `src/db/schema.ts`
 
