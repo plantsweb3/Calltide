@@ -743,7 +743,10 @@ function SetupClient() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [tradeData, setTradeData] = useState<TradeData | null>(null);
 
-  // Speech preview
+  // Audio preview
+  const [previewPlaying, setPreviewPlaying] = useState(false);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Toast
   const [toastVisible, setToastVisible] = useState(false);
@@ -761,13 +764,68 @@ function SetupClient() {
   const toastInnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const submittingRef = useRef(false);
 
-  // Cleanup timers + speech on unmount
+  // Cleanup timers + audio on unmount
   useEffect(() => {
     return () => {
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       if (toastInnerTimerRef.current) clearTimeout(toastInnerTimerRef.current);
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
     };
   }, []);
+
+  const playGreetingPreview = useCallback(async () => {
+    // Stop if already playing
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+      setPreviewPlaying(false);
+      return;
+    }
+
+    setPreviewLoading(true);
+    try {
+      const res = await fetch("/api/setup/greeting-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessName: bizName || "your business",
+          personality: personalityPreset,
+          receptionistName: receptionistName || "Maria",
+          lang,
+        }),
+      });
+
+      if (!res.ok) return;
+
+      const contentType = res.headers.get("content-type") || "";
+      if (contentType.includes("audio")) {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audioRef.current = audio;
+        audio.onended = () => { setPreviewPlaying(false); audioRef.current = null; URL.revokeObjectURL(url); };
+        audio.onerror = () => { setPreviewPlaying(false); audioRef.current = null; URL.revokeObjectURL(url); };
+        setPreviewPlaying(true);
+        await audio.play();
+      } else {
+        // Fallback: browser SpeechSynthesis
+        const data = await res.json();
+        if (data.text && "speechSynthesis" in window) {
+          const utterance = new SpeechSynthesisUtterance(data.text);
+          utterance.lang = lang === "es" ? "es-MX" : "en-US";
+          utterance.rate = 0.95;
+          utterance.onend = () => setPreviewPlaying(false);
+          utterance.onerror = () => setPreviewPlaying(false);
+          setPreviewPlaying(true);
+          speechSynthesis.speak(utterance);
+        }
+      }
+    } catch {
+      // Silently fail — preview is nice-to-have
+    } finally {
+      setPreviewLoading(false);
+    }
+  }, [bizName, personalityPreset, receptionistName, lang]);
 
   // Clear form-level errors + autofocus first input on step change
   useEffect(() => {
@@ -1497,7 +1555,32 @@ function SetupClient() {
                     )}&rdquo;
                   </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={playGreetingPreview}
+                  disabled={previewLoading}
+                  style={{
+                    background: "none",
+                    border: "1px solid rgba(212,168,67,0.3)",
+                    borderRadius: 8,
+                    color: previewPlaying ? "#ef4444" : "#D4A843",
+                    padding: "6px 12px",
+                    fontSize: 13,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    transition: "all 0.2s",
+                    animation: previewPlaying ? "pulse 1.5s ease-in-out infinite" : undefined,
+                  }}
+                >
+                  {previewLoading ? "..." : previewPlaying ? "■" : "▶"} {previewPlaying ? (lang === "es" ? "Parar" : "Stop") : t.previewGreeting}
+                </button>
               </div>
+            )}
+            {receptionistName.trim() && (
+              <p style={{ color: "#64748b", fontSize: 12, textAlign: "center", margin: "4px 0 0" }}>{t.previewNote}</p>
             )}
           </div>
         )}
