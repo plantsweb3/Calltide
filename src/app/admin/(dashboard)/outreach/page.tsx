@@ -102,47 +102,47 @@ const SCRIPT_STEPS = [
   },
   {
     num: 2,
-    title: "Pain",
-    line: `Yeah, so most [TRADE] guys we talk to are missing 15-30 calls a month and don't even realize it. That's $3K-$15K walking to a competitor every month. [Pause — let them respond]`,
+    title: "Pain + Qualify",
+    line: `How many calls a day do you think you guys get? And when you miss one — like you're on a job or it's after hours — what happens? [Let them answer] Yeah, most [TRADE] guys we talk to are missing 15-30 a month and each one is $200-500 walking to a competitor.`,
   },
   {
     num: 3,
-    title: "Position",
-    line: `So what we built is an AI front office that answers every call 24/7 in English and Spanish. It books the job right on the call, texts the customer, and follows up. Most guys only need 1-2 extra jobs a month and it pays for itself.`,
+    title: "What It Does",
+    line: `So we built an AI front office — not an answering service. It actually books the job right on the call, gives pricing ballparks, sends the customer a confirmation text, and follows up on estimates automatically. Works 24/7, speaks English and Spanish. You can even text it from the job site and it manages your whole schedule.`,
   },
   {
     num: 4,
-    title: "Qualify",
-    line: `How many calls do you think you guys get in a normal day? And when you miss one, what happens — do you call back or does it just go to voicemail?`,
+    title: "The Extras",
+    line: `It also auto-texts missed callers back within 60 seconds, sends appointment reminders so people don't no-show, asks happy customers for Google reviews, and sends you a daily briefing of everything that happened. It's like having a full office manager for less than one lost job per month.`,
   },
   {
     num: 5,
     title: "ROI Flip",
-    line: `So if even half those missed calls turned into booked jobs — at your average ticket, that's [$$] you're leaving on the table. Capta catches all of them for less than one lost job per month.`,
+    line: `What's your average job worth? [Let them answer] So one extra booked job a month pays for the whole thing, and you're probably missing 15-30 calls. Everything after that first job is pure profit.`,
   },
   {
     num: 6,
     title: "Close",
-    line: `I can get you set up today and you'd be live by tomorrow morning. 30-day money-back guarantee, so there's zero risk. Want me to get you started?`,
+    line: `I can get you set up today and you'd be live by tomorrow morning. 30-day money-back guarantee, zero risk. Want me to get you started?`,
   },
 ];
 
 const OBJECTION_HANDLERS = [
   {
     trigger: '"Not interested"',
-    response: `All good — quick question before I let you go. If you never missed another call again, would that be worth a 2-minute conversation or no?`,
+    response: `All good — just so you know, this isn't an answering service. It books jobs on the call, follows up on estimates, sends review requests, and you can text it from the job site to manage your schedule. If any of that sounds useful, I'm around. If not, no worries.`,
   },
   {
     trigger: '"We have an answering service"',
-    response: `Yeah most of our customers had one. The difference is answering services take messages… ours actually books the job right on the call, follows up, and speaks Spanish. That's why most of them switch.`,
+    response: `Yeah most of our customers had one. The difference is answering services take messages — ours books the job right on the call, gives pricing, texts the customer a confirmation, follows up on open estimates, and speaks Spanish. Plus you can text it from the job site and it runs your calendar. That's why most of them switch.`,
   },
   {
     trigger: '"Too expensive"',
-    response: `Totally fair. What's your average job worth? [Let them answer] So one extra job a month covers the whole thing and everything after that is profit. Plus there's a 30-day money-back guarantee.`,
+    response: `What's your average job worth? [Let them answer] So one extra job a month covers the whole thing. And you're also getting automatic estimate follow-ups, Google review requests, appointment reminders, daily briefings, missed call recovery — you'd pay $2K+/mo for all that separately. Plus 30-day money-back guarantee.`,
   },
   {
     trigger: '"Send me info"',
-    response: `Absolutely — what's your best email? [Get it] Quick question so I send the right stuff — is the bigger issue missed calls after hours, or keeping up when the phone's ringing off the hook? [Engage, then:] I'll email you tonight. How about I call you [DAY] at [TIME] to walk through any questions? Takes 5 min.`,
+    response: `Absolutely — what's your best email? [Get it] Quick question so I send the right stuff — is the bigger issue after-hours calls, or keeping up during the day when you're on a job? [Engage, then:] I'll send you a quick overview tonight. How about I call you [DAY] at [TIME] to walk through it? Takes 5 min.`,
   },
   {
     trigger: "Gatekeeper / receptionist",
@@ -150,7 +150,7 @@ const OBJECTION_HANDLERS = [
   },
 ];
 
-const VOICEMAIL_SCRIPT = `Hey [NAME], it's Ulysses. I work with [TRADE] companies in [CITY] and help them stop losing calls to voicemail. Gimme a shout back when you get a sec — I'll also shoot you a quick text. Thanks.`;
+const VOICEMAIL_SCRIPT = `Hey [NAME], it's Ulysses. I work with [TRADE] companies in [CITY] — we built something that answers your phone 24/7 and actually books the job on the call instead of just taking a message. Gimme a shout back — I'll also shoot you a text. Thanks.`;
 
 // ── Helpers ──
 
@@ -221,7 +221,7 @@ function ProgressRing({ value, max }: { value: number; max: number }) {
 
 // ── SMS Template (copy-paste) ──
 
-const SMS_TEMPLATE = `Hey [BUSINESS] — this is Ulysses. I work with [TRADE] companies in the area and most of them were losing a bunch of jobs to missed calls without realizing it. We built an AI receptionist that answers 24/7, books the job, and speaks Spanish. Worth a quick chat? I'll try calling you in a bit.`;
+const SMS_TEMPLATE = `Hey [BUSINESS] — this is Ulysses. I work with [TRADE] companies in the area. We built an AI that answers your phone 24/7, books the job right on the call, follows up on estimates, sends review requests, and speaks Spanish. It's like a full office manager for less than one lost job/month. Worth a quick chat?`;
 
 function SmsTemplate({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const [copied, setCopied] = useState(false);

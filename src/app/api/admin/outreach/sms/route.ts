@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     }
 
     const trade = prospect.vertical?.toLowerCase().replace(/_/g, " ") || "service";
-    const body = `Hey ${prospect.businessName} — this is Ulysses with Capta. We help ${trade} companies stop losing jobs to missed calls. AI receptionist, answers 24/7, books appointments, speaks English + Spanish. Worth a quick chat? I'll try you in a bit. Reply STOP to opt out.`;
+    const body = `Hey ${prospect.businessName} — this is Ulysses with Capta. We built an AI receptionist for ${trade} businesses that actually books the job on the call — gives pricing, texts the customer a confirmation, follows up on open estimates, sends appointment reminders, and requests Google reviews. 24/7, English + Spanish. Like a full office manager for less than one lost job/month. Worth a quick chat? I'll try you in a bit. Reply STOP to opt out.`;
 
     try {
       const result = await sendProspectSms({

@@ -16,17 +16,17 @@ function tradeName(vertical?: string): string {
 const smsTemplates: Record<string, (businessName: string, vertical?: string) => string> = {
   // MISSED SEQUENCE — 3 SMS (days 0, 3, 7)
   missed_sms_1: (name, v) =>
-    `${name} — we just called and it went to voicemail. Every missed ${tradeName(v)} call = $200-500 lost. Capta answers 24/7 + books jobs for you. 30-day money-back guarantee. Interested? Reply YES. Reply STOP to opt out.`,
+    `${name} — we just called and it went to voicemail. Every missed ${tradeName(v)} call = $200-500 lost. Capta answers 24/7, books the job on the call, follows up on estimates, and speaks Spanish. Not an answering service — it actually books the work. Reply YES to learn more. STOP to opt out.`,
 
   missed_sms_2: (name, v) =>
-    `${name}, quick Q — how many ${tradeName(v)} calls go to voicemail when you're on a job? Capta catches them all, books appointments, speaks English + Spanish. 10-min demo? Reply YES or visit ${MARKETING_URL}. Reply STOP to opt out.`,
+    `${name} — how many ${tradeName(v)} calls go to voicemail when you're on a job? Capta catches them all, books appointments, sends reminders so customers don't no-show, and auto-requests Google reviews. Like a full office manager for less than one lost job/month. Reply YES or visit ${MARKETING_URL}. STOP to opt out.`,
 
   missed_sms_3: (name, v) =>
-    `Last text ${name}. If missed ${tradeName(v)} calls are costing you jobs, Capta fixes it for less than one lost job/month. 30-day money-back guarantee, zero risk. Reply YES to learn more. STOP to opt out.`,
+    `Last text ${name}. If missed ${tradeName(v)} calls are costing you jobs — Capta answers 24/7, books work on the call, chases open estimates, and you can text it from the job site to manage your schedule. 30-day money-back guarantee. Reply YES. STOP to opt out.`,
 
   // ANSWERED SEQUENCE — 1 SMS (day 3)
   answered_sms_1: (name, v) =>
-    `${name} — you answered when we called, nice! But what about nights + weekends? Capta handles after-hours ${tradeName(v)} calls so you never miss a job. Reply YES for a quick demo. STOP to opt out.`,
+    `${name} — you answered when we called, nice! But what about nights, weekends, and when you're on a job? Capta handles overflow ${tradeName(v)} calls, books the job on the call, follows up on estimates, and requests Google reviews automatically. Reply YES for a quick demo. STOP to opt out.`,
 };
 
 export function getSmsTemplate(

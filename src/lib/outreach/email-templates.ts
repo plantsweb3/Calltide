@@ -41,32 +41,32 @@ function ctaButton(text: string, url: string = MARKETING_URL): string {
 
 export const missedCallSequence = {
   missed_call_1: (businessName: string, email?: string, vertical?: string) => ({
-    subject: `${businessName} — that missed call could be $500`,
+    subject: `${businessName} — that missed call could be a $500 job`,
     html: baseLayout(`
       <p style="color:#475569;line-height:1.7;">
         We called <strong>${escapeHtml(businessName)}</strong> today and it went to voicemail.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        Every missed ${tradeName(vertical)} call costs you $200-500 in lost revenue. Most ${tradeName(vertical)} businesses miss 15-30 calls a month — that's up to $15K walking to a competitor.
+        Capta isn't an answering service — it actually <strong>books the job right on the call</strong>, gives pricing ballparks, texts the customer a confirmation, and follows up on open estimates automatically. 24/7, English + Spanish.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        Capta answers every call 24/7, books jobs, and speaks English + Spanish. 30-day money-back guarantee.
+        It also auto-texts missed callers back, sends appointment reminders, and requests Google reviews after completed jobs. Like a full office manager for less than one lost job/month. 30-day money-back guarantee.
       </p>
       ${ctaButton("See How It Works →")}
     `, email),
   }),
 
   missed_call_2: (businessName: string, email?: string, vertical?: string) => ({
-    subject: `$3K-$15K/mo in missed ${tradeName(vertical)} calls`,
+    subject: `${businessName} — what if your phone booked the job for you?`,
     html: baseLayout(`
       <p style="color:#475569;line-height:1.7;">
         Quick follow-up for ${escapeHtml(businessName)}.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        Other ${tradeName(vertical)} owners using Capta recover an average of 22 calls/month that used to go to voicemail — nights, weekends, and when they're on a job site.
+        Most ${tradeName(vertical)} owners we work with were missing 15-30 calls a month. Now their AI receptionist answers every one, books the appointment, and sends them a daily briefing of everything that happened — while they're on a job site.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        10-minute demo — we'll show you exactly how it works for ${tradeName(vertical)}. No commitment, 30-day money-back guarantee if you try it.
+        You can even text it to manage your schedule, check what jobs are booked, or block time off. No app needed. 30-day money-back guarantee.
       </p>
       ${ctaButton("Book a 10-Min Demo")}
     `, email),
@@ -79,7 +79,7 @@ export const missedCallSequence = {
         ${escapeHtml(businessName)} — when a homeowner calls for ${tradeName(vertical)} and nobody picks up, they call the next guy in Google.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        Capta makes sure that next guy is always you. AI receptionist, 24/7, bilingual. Books the job right on the call.
+        Capta makes sure that next guy is always you. Answers 24/7, books the job on the call, chases open estimates, sends Google review requests, and gives you a daily briefing via text. Bilingual.
       </p>
       <p style="color:#475569;line-height:1.7;">
         Reply to this email and I'll set up a quick walkthrough.
@@ -95,7 +95,7 @@ export const missedCallSequence = {
         Hey ${escapeHtml(businessName)} — this is my last email.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        If missed ${tradeName(vertical)} calls aren't a problem for you, ignore this. But if you're losing jobs to voicemail, Capta answers 24/7, books appointments, and pays for itself in 1-2 recovered jobs.
+        If you're losing ${tradeName(vertical)} jobs to voicemail, Capta answers 24/7 and actually books the work — not just takes a message. It follows up on estimates, sends appointment reminders, requests Google reviews, and you can manage everything by texting it from the job site. Pays for itself in 1-2 recovered jobs.
       </p>
       <p style="color:#475569;line-height:1.7;">
         30-day money-back guarantee — zero risk. Reply anytime.
@@ -111,32 +111,38 @@ export const missedCallSequence = {
 
 export const answeredSequence = {
   answered_1: (businessName: string, email?: string, vertical?: string) => ({
-    subject: `${businessName} — save $2K/mo on your receptionist`,
+    subject: `${businessName} — what happens when you can't pick up?`,
     html: baseLayout(`
       <p style="color:#475569;line-height:1.7;">
-        We called ${escapeHtml(businessName)} and someone picked up — nice. But what happens nights, weekends, and when the phone's ringing off the hook?
+        We called ${escapeHtml(businessName)} and someone picked up — nice. But what about nights, weekends, and when you're on a ${tradeName(vertical)} job?
       </p>
       <p style="color:#475569;line-height:1.7;">
-        Capta is an AI receptionist that handles overflow and after-hours ${tradeName(vertical)} calls — books jobs, takes messages, speaks Spanish. Fraction of the cost of another hire.
+        Capta isn't an answering service — it <strong>books the job on the call</strong>. Gives pricing, texts the customer a confirmation, and if they don't book, it follows up on the estimate automatically until they do. 24/7, English + Spanish.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        30-day money-back guarantee. See if it makes sense for you.
+        It also sends appointment reminders so customers don't no-show, requests Google reviews after completed jobs, and gives you a daily briefing via text. You can even text it from the job site to manage your schedule — no app needed. Like a full office manager for less than one lost job/month.
       </p>
-      ${ctaButton("Learn More →")}
+      <p style="color:#475569;line-height:1.7;">
+        30-day money-back guarantee.
+      </p>
+      ${ctaButton("See How It Works →")}
     `, email),
   }),
 
   answered_2: (businessName: string, email?: string, vertical?: string) => ({
-    subject: `What happens when ${businessName} can't answer?`,
+    subject: `${businessName} — 15-20 after-hours calls/month you're missing`,
     html: baseLayout(`
       <p style="color:#475569;line-height:1.7;">
-        Last follow-up — just wanted to make sure you saw this.
+        Last follow-up for ${escapeHtml(businessName)}.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        ${tradeName(vertical).charAt(0).toUpperCase() + tradeName(vertical).slice(1)} businesses using Capta catch 15-20 after-hours calls/month they used to miss. At $300+ per job, that's real money.
+        ${tradeName(vertical).charAt(0).toUpperCase() + tradeName(vertical).slice(1)} businesses using Capta catch 15-20 after-hours calls/month they used to miss. At $300+ per job, that's $4,500-6,000 in recovered revenue.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        Happy to do a 10-minute walkthrough if you're curious. Reply anytime.
+        Beyond just answering — it books the appointment on the call, chases open estimates, sends reminders so customers show up, auto-requests Google reviews, and texts you a daily briefing of everything that happened while you were on the job site. Bilingual.
+      </p>
+      <p style="color:#475569;line-height:1.7;">
+        Reply to this email and I'll show you how it works in 10 minutes. 30-day money-back guarantee.
       </p>
       <p style="color:${BRAND_COLOR};font-weight:600;">— Ulysses, Capta</p>
     `, email),
