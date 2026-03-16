@@ -37,7 +37,7 @@ interface GooglePlacesResponse {
 function extractCity(
   addressComponents?: AddressComponent[],
 ): string | undefined {
-  return addressComponents?.find((c) => c.types.includes("locality"))
+  return addressComponents?.find((c) => c.types?.includes("locality"))
     ?.longText;
 }
 
@@ -45,7 +45,7 @@ function extractState(
   addressComponents?: AddressComponent[],
 ): string | undefined {
   return addressComponents?.find((c) =>
-    c.types.includes("administrative_area_level_1"),
+    c.types?.includes("administrative_area_level_1"),
   )?.longText;
 }
 
