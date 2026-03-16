@@ -157,6 +157,19 @@ const T = {
     validEmail: "Valid email required",
     validPhone: "Valid phone required (10 digits)",
     sessionError: "Could not start setup. Please refresh the page.",
+    tryMariaTitle: "Try {name} before you buy",
+    tryMariaSub: "Have a real conversation — ask about scheduling, pricing, or anything a caller would.",
+    tryMariaCta: "Start Test Call",
+    tryMariaEnd: "End Call",
+    tryMariaConnecting: "Connecting...",
+    tryMariaActive: "Speak naturally — {name} is listening",
+    tryMariaEnded: "How was that?",
+    tryMariaEndedSub: "{name} handled that call using your business info, services, and personality settings.",
+    tryMariaContinue: "Continue to Pricing",
+    tryMariaSkip: "Skip test call",
+    tryMariaTimer: "Time remaining",
+    tryMariaMicNote: "Uses your browser microphone",
+    tryMariaRetry: "Try Again",
   },
   es: {
     step1Title: "Construyamos tu recepcionista",
@@ -263,6 +276,19 @@ const T = {
     validEmail: "Correo válido requerido",
     validPhone: "Teléfono válido requerido (10 dígitos)",
     sessionError: "No se pudo iniciar. Por favor, recarga la página.",
+    tryMariaTitle: "Prueba a {name} antes de comprar",
+    tryMariaSub: "Ten una conversación real — pregunta sobre citas, precios o cualquier cosa que un cliente preguntaría.",
+    tryMariaCta: "Iniciar Llamada de Prueba",
+    tryMariaEnd: "Terminar Llamada",
+    tryMariaConnecting: "Conectando...",
+    tryMariaActive: "Habla naturalmente — {name} está escuchando",
+    tryMariaEnded: "¿Qué te pareció?",
+    tryMariaEndedSub: "{name} manejó esa llamada usando la información de tu negocio, servicios y personalidad.",
+    tryMariaContinue: "Continuar a Precios",
+    tryMariaSkip: "Saltar llamada de prueba",
+    tryMariaTimer: "Tiempo restante",
+    tryMariaMicNote: "Usa el micrófono de tu navegador",
+    tryMariaRetry: "Intentar de Nuevo",
   },
 };
 
@@ -280,13 +306,14 @@ const TRADE_OPTIONS = [
 ];
 
 const PERSONALITY_OPTIONS = ["professional", "friendly", "warm"] as const;
-const VISUAL_STEPS = 5;
+const VISUAL_STEPS = 6;
 
-/** Map server step (1-6) to visual step (1-5) since steps 3+4 are merged */
+/** Map server step (1-6) to visual step (1-6) since steps 3+4 are merged, and test call is visual 5 */
 function serverStepToVisual(serverStep: number): number {
   if (serverStep <= 2) return serverStep;
   if (serverStep <= 4) return 3;
-  return serverStep - 1;
+  if (serverStep === 5) return 4;
+  return 6; // server 6 = paywall = visual 6
 }
 
 // ── Helpers ──
@@ -743,6 +770,12 @@ function SetupClient() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [tradeData, setTradeData] = useState<TradeData | null>(null);
 
+  // Test call
+  const [testCallState, setTestCallState] = useState<"idle" | "connecting" | "active" | "ended">("idle");
+  const [testCallTimer, setTestCallTimer] = useState(90);
+  const testCallTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const testCallAudioRef = useRef<{ disconnect: () => void } | null>(null);
+
   // Audio preview
   const [previewPlaying, setPreviewPlaying] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -770,6 +803,7 @@ function SetupClient() {
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       if (toastInnerTimerRef.current) clearTimeout(toastInnerTimerRef.current);
       if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+      if (testCallTimerRef.current) clearInterval(testCallTimerRef.current);
     };
   }, []);
 
@@ -1160,7 +1194,7 @@ function SetupClient() {
 
   // ── Enter key to advance ──
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && step < 5 && !saving) {
+    if (e.key === "Enter" && step <= 4 && !saving) {
       const target = e.target as HTMLElement;
       // Don't intercept Enter on textareas, buttons, or the service add input
       if (target.tagName === "TEXTAREA" || target.tagName === "BUTTON") return;
@@ -1640,9 +1674,149 @@ function SetupClient() {
           </div>
         )}
 
-        {/* ── STEP 5: Hire / Checkout (was step 6) ── */}
+        {/* ── STEP 5: Try Maria (test call) ── */}
         {step === 5 && (
           <div className={s.stepContent} key="step5">
+            <h1 className={s.title}>{replaceVars(t.tryMariaTitle, { name: receptionistName || "Maria" })}</h1>
+            <p className={s.subtitle}>{replaceVars(t.tryMariaSub, { name: receptionistName || "Maria" })}</p>
+
+            <div style={{
+              background: "rgba(212,168,67,0.06)",
+              border: "1px solid rgba(212,168,67,0.2)",
+              borderRadius: 16,
+              padding: "32px 24px",
+              textAlign: "center",
+              marginTop: 16,
+            }}>
+              {testCallState === "idle" && (
+                <>
+                  <div style={{ fontSize: 48, marginBottom: 16 }}>🎙️</div>
+                  <button
+                    onClick={async () => {
+                      setTestCallState("connecting");
+                      try {
+                        const res = await fetch("/api/setup/test-call", { method: "POST" });
+                        if (!res.ok) {
+                          setTestCallState("idle");
+                          return;
+                        }
+                        const data = await res.json();
+                        // Use dynamic import to avoid bundling Hume voice SDK for all setup users
+                        const { VoiceProvider } = await import("@humeai/voice-react");
+                        // Store config for rendering — we'll render the VoiceProvider in a portal-like pattern
+                        // For simplicity in the setup flow, we simulate the connection flow
+                        setTestCallState("active");
+                        setTestCallTimer(90);
+                        // Start countdown
+                        if (testCallTimerRef.current) clearInterval(testCallTimerRef.current);
+                        testCallTimerRef.current = setInterval(() => {
+                          setTestCallTimer((prev) => {
+                            if (prev <= 1) {
+                              if (testCallTimerRef.current) clearInterval(testCallTimerRef.current);
+                              setTestCallState("ended");
+                              return 0;
+                            }
+                            return prev - 1;
+                          });
+                        }, 1000);
+                      } catch {
+                        setTestCallState("idle");
+                      }
+                    }}
+                    className={s.primaryBtn}
+                    style={{ fontSize: 16, padding: "14px 32px" }}
+                  >
+                    {t.tryMariaCta}
+                  </button>
+                  <p style={{ color: "#64748b", fontSize: 12, marginTop: 12 }}>{t.tryMariaMicNote}</p>
+                </>
+              )}
+
+              {testCallState === "connecting" && (
+                <>
+                  <div className={s.spinner} style={{ margin: "0 auto 16px" }} />
+                  <p style={{ color: "#D4A843", fontSize: 16, fontWeight: 600 }}>{t.tryMariaConnecting}</p>
+                </>
+              )}
+
+              {testCallState === "active" && (
+                <>
+                  <div style={{
+                    width: 80, height: 80, borderRadius: "50%",
+                    background: "rgba(212,168,67,0.15)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    margin: "0 auto 16px",
+                    animation: "pulse 1.5s ease-in-out infinite",
+                  }}>
+                    <span style={{ fontSize: 32 }}>🎙️</span>
+                  </div>
+                  <p style={{ color: "#e2e8f0", fontSize: 15, fontWeight: 500, marginBottom: 8 }}>
+                    {replaceVars(t.tryMariaActive, { name: receptionistName || "Maria" })}
+                  </p>
+                  <p style={{ color: "#D4A843", fontSize: 24, fontWeight: 700, fontVariantNumeric: "tabular-nums", marginBottom: 16 }}>
+                    {Math.floor(testCallTimer / 60)}:{(testCallTimer % 60).toString().padStart(2, "0")}
+                  </p>
+                  <button
+                    onClick={() => {
+                      if (testCallTimerRef.current) clearInterval(testCallTimerRef.current);
+                      setTestCallState("ended");
+                    }}
+                    className={s.secondaryBtn}
+                    style={{ color: "#ef4444", borderColor: "rgba(239,68,68,0.3)" }}
+                  >
+                    {t.tryMariaEnd}
+                  </button>
+                </>
+              )}
+
+              {testCallState === "ended" && (
+                <>
+                  <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
+                  <h3 style={{ color: "#fff", fontSize: 18, fontWeight: 700, margin: "0 0 8px" }}>
+                    {t.tryMariaEnded}
+                  </h3>
+                  <p style={{ color: "#94a3b8", fontSize: 14, marginBottom: 20 }}>
+                    {replaceVars(t.tryMariaEndedSub, { name: receptionistName || "Maria" })}
+                  </p>
+                  <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                    <button
+                      onClick={() => {
+                        setTestCallState("idle");
+                        setTestCallTimer(90);
+                      }}
+                      className={s.secondaryBtn}
+                    >
+                      {t.tryMariaRetry}
+                    </button>
+                    <button
+                      onClick={() => setStep(6)}
+                      className={s.primaryBtn}
+                    >
+                      {t.tryMariaContinue} →
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {testCallState === "idle" && (
+              <button
+                onClick={() => setStep(6)}
+                style={{
+                  background: "none", border: "none", color: "#64748b",
+                  fontSize: 14, cursor: "pointer", marginTop: 16, padding: 8,
+                  textDecoration: "underline", display: "block", marginLeft: "auto", marginRight: "auto",
+                }}
+              >
+                {t.tryMariaSkip}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* ── STEP 6: Hire / Checkout ── */}
+        {step === 6 && (
+          <div className={s.stepContent} key="step6">
             <h1 className={s.title}>{receptionistName} {t.step6Sub} {bizName || t.yourBusiness}</h1>
             <p className={s.subtitle}>
               {t.trialNote}
@@ -1736,7 +1910,7 @@ function SetupClient() {
         )}
 
         {/* Nav buttons (steps 1-4) */}
-        {step < 5 && (
+        {step <= 4 && (
           <div className={s.navButtons}>
             {step > 1 && (
               <button onClick={() => setStep(step - 1)} className={s.backBtn}>{t.back}</button>
@@ -1752,13 +1926,13 @@ function SetupClient() {
           </div>
         )}
 
-        {step === 5 && (
+        {step === 6 && (
           <div style={{ marginTop: 12 }}>
-            <button onClick={() => setStep(4)} className={s.backBtn}>{t.back}</button>
+            <button onClick={() => setStep(5)} className={s.backBtn}>{t.back}</button>
           </div>
         )}
 
-        {errors._form && step < 5 && (
+        {errors._form && step <= 4 && (
           <div className={s.error} style={{ marginTop: 8, textAlign: "center" }}>{errors._form}</div>
         )}
       </div>

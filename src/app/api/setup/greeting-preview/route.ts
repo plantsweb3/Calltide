@@ -51,14 +51,8 @@ export async function POST(req: NextRequest) {
         ],
       });
 
-      const chunks: Buffer[] = [];
-      const reader = response.body.getReader();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(Buffer.from(value));
-      }
-      const audioBuffer = Buffer.concat(chunks);
+      const audioData = await response.arrayBuffer();
+      const audioBuffer = Buffer.from(audioData);
 
       return new NextResponse(audioBuffer, {
         status: 200,
