@@ -8,6 +8,7 @@ import WeeklySummary from "@/app/dashboard/_components/weekly-summary";
 import BusinessInsights from "@/app/dashboard/_components/business-insights";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import SetupChecklist from "@/app/dashboard/_components/setup-checklist";
+import DashboardTour from "@/components/dashboard-tour";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 import { IconSparkles, IconClock, IconTarget, IconParty } from "@/components/icons";
 import { IconPhone } from "@/components/marketing/icons";
@@ -93,6 +94,7 @@ interface Overview {
   greeting?: string | null;
   hasPricing?: boolean;
   setupChecklistDismissed?: boolean;
+  tourCompleted?: boolean;
   createdAt?: string;
 }
 
@@ -108,6 +110,7 @@ export default function OverviewPage() {
   const [data, setData] = useState<Overview | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
+  const [tourDismissed, setTourDismissed] = useState(false);
 
   useEffect(() => {
     fetch("/api/dashboard/overview")
@@ -492,7 +495,12 @@ export default function OverviewPage() {
         />
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Dashboard Tour */}
+      {data.tourCompleted === false && !tourDismissed && (
+        <DashboardTour onComplete={() => setTourDismissed(true)} />
+      )}
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" data-tour="overview-metrics">
         <MetricCard label={`${receptionistName}'s Calls Today`} value={data.callsToday} />
         <MetricCard label="Appointments This Week" value={data.appointmentsThisWeek} />
         <MetricCard

@@ -47,6 +47,7 @@ export const DEMO_OVERVIEW = {
   roiMultiple: 8.4,
   // Business
   businessName: "Garcia Plumbing & HVAC",
+  tourCompleted: true,
   // Weekly summary
   weeklySummary: {
     totalCalls: 23,

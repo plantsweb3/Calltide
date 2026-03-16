@@ -3,7 +3,11 @@
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PHONE, PHONE_TEL } from "@/lib/marketing/translations";
+import dynamic from "next/dynamic";
 import s from "./setup.module.css";
+
+const Confetti = dynamic(() => import("@/components/confetti"), { ssr: false });
+const First24Hours = dynamic(() => import("@/components/first-24-hours"), { ssr: false });
 
 // ── Types ──
 
@@ -1217,12 +1221,28 @@ function SetupClient() {
   if (showCelebration) {
     return (
       <div className={s.page}>
-        <div className={s.container} style={{ textAlign: "center", paddingTop: 80 }}>
+        <Confetti />
+        <div className={s.container} style={{ textAlign: "center", paddingTop: 60 }}>
           <div style={{ fontSize: 64, marginBottom: 24 }}>🎉</div>
           <h1 className={s.title} style={{ fontSize: 32 }}>
             {replaceVars(t.celebrationTitle, { name: receptionistName })}
           </h1>
-          <p className={s.subtitle}>{t.celebrationSub}</p>
+          <p className={s.subtitle}>
+            {lang === "en"
+              ? `Welcome! ${receptionistName} is ready to answer your calls 24/7 in English and Spanish.`
+              : `¡Bienvenido! ${receptionistName} está lista para contestar tus llamadas 24/7 en inglés y español.`}
+          </p>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", margin: "12px 0 8px" }}>
+            <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
+              ✓ {services.length || 0} {lang === "es" ? "servicios configurados" : "services configured"}
+            </span>
+            <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
+              ✓ {t.bilingualLabel}
+            </span>
+            <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
+              ✓ {lang === "es" ? "Disponible fuera de horario" : "After-hours coverage"}
+            </span>
+          </div>
 
           <div className={s.summaryCard}>
             <h3 style={{ color: "#D4A843", margin: "0 0 16px", fontSize: 16 }}>{t.configSummary}</h3>
@@ -1232,6 +1252,10 @@ function SetupClient() {
             {services.length > 0 && (
               <div className={s.summaryRow}><span className={s.summaryLabel}>{t.servicesLabel}:</span> <span>{services.slice(0, 4).join(", ")}{services.length > 4 ? ` +${services.length - 4}` : ""}</span></div>
             )}
+          </div>
+
+          <div style={{ marginTop: 24, textAlign: "left" }}>
+            <First24Hours lang={lang} />
           </div>
 
           <div className={s.card} style={{ marginTop: 24, padding: 20 }}>

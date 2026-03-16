@@ -122,6 +122,7 @@ export const businesses = sqliteTable("businesses", {
   ownerQuietHoursStart: text("owner_quiet_hours_start").default("21:00"),
   ownerQuietHoursEnd: text("owner_quiet_hours_end").default("08:00"),
   setupChecklistDismissed: integer("setup_checklist_dismissed", { mode: "boolean" }).default(false),
+  tourCompleted: integer("tour_completed", { mode: "boolean" }).default(false),
   // Public booking page
   bookingSlug: text("booking_slug").unique(),
   // Daily digest

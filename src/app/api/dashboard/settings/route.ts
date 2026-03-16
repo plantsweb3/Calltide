@@ -174,6 +174,10 @@ export async function PUT(req: NextRequest) {
       await db.update(businesses).set({ setupChecklistDismissed: true, updatedAt: new Date().toISOString() }).where(eq(businesses.id, businessId));
       return NextResponse.json({ success: true });
     }
+    if (obj.tourCompleted === true) {
+      await db.update(businesses).set({ tourCompleted: true, updatedAt: new Date().toISOString() }).where(eq(businesses.id, businessId));
+      return NextResponse.json({ success: true });
+    }
   }
 
   const result = settingsSchema.safeParse(body);

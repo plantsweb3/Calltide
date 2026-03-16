@@ -477,6 +477,13 @@
       "when": 1777800000000,
       "tag": "0067_lead_scoring",
       "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "6",
+      "when": 1777900000000,
+      "tag": "0068_tour_completed",
+      "breakpoints": true
     }
   ]
 }

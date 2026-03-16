@@ -1,0 +1,1 @@
+ALTER TABLE businesses ADD COLUMN tour_completed INTEGER DEFAULT 0;

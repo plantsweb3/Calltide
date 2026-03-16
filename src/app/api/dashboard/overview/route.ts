@@ -46,6 +46,7 @@ export async function GET(req: NextRequest) {
       greeting: businesses.greeting,
       hasPricingEnabled: businesses.hasPricingEnabled,
       setupChecklistDismissed: businesses.setupChecklistDismissed,
+      tourCompleted: businesses.tourCompleted,
       createdAt: businesses.createdAt,
       healthScore: businesses.healthScore,
       planType: businesses.planType,
@@ -149,6 +150,7 @@ export async function GET(req: NextRequest) {
     greeting: biz?.greeting,
     hasPricing: biz?.hasPricingEnabled ?? false,
     setupChecklistDismissed: biz?.setupChecklistDismissed ?? false,
+    tourCompleted: biz?.tourCompleted ?? false,
     createdAt: biz?.createdAt,
     healthScore: biz?.healthScore ?? 50,
   };
