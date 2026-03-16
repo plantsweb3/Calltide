@@ -421,7 +421,7 @@ export default function CallsPage() {
             with full transcripts and summaries.
           </p>
           <a
-            href="/dashboard/help/call-forwarding"
+            href="/dashboard/settings#general"
             className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
             style={{ background: "var(--db-accent)", color: "#fff" }}
           >

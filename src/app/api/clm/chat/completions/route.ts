@@ -63,7 +63,10 @@ export async function POST(req: NextRequest) {
   const humeKey = process.env.HUME_API_KEY;
   if (clmKey || humeKey) {
     const token = authHeader?.replace("Bearer ", "");
-    if (!token || (token !== clmKey && token !== humeKey)) {
+    const tokenBuf = token ? Buffer.from(token) : null;
+    const clmMatch = tokenBuf && clmKey && tokenBuf.length === Buffer.from(clmKey).length && timingSafeEqual(tokenBuf, Buffer.from(clmKey));
+    const humeMatch = tokenBuf && humeKey && tokenBuf.length === Buffer.from(humeKey).length && timingSafeEqual(tokenBuf, Buffer.from(humeKey));
+    if (!token || (!clmMatch && !humeMatch)) {
       return Response.json(
         { error: "Unauthorized" },
         { status: 401, headers: getCorsHeaders(req) }

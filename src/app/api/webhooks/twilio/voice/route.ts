@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import twilio from "twilio";
 import { db } from "@/db";
-import { businesses } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { businesses, calls } from "@/db/schema";
+import { eq, and, count } from "drizzle-orm";
 import { reportWarning, reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { normalizePhone } from "@/lib/compliance/sms";
@@ -121,11 +121,16 @@ export async function POST(req: NextRequest) {
   }
 
   // Concurrent call queuing: if business has >3 active calls, queue the caller
-  const concurrencyCheck = await rateLimit(`concurrent:${biz.id}`, {
-    limit: 3,
-    windowSeconds: 1800, // 30 min (call duration window)
-  });
-  if (!concurrencyCheck.success) {
+  const [activeCallCount] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, biz.id),
+        eq(calls.status, "in_progress"),
+      ),
+    );
+  if (activeCallCount && activeCallCount.count >= 3) {
     const receptionistName = biz.receptionistName || "Maria";
     // Return TwiML that plays hold music then retries after 30 seconds
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";

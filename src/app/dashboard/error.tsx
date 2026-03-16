@@ -38,7 +38,7 @@ export default function DashboardError({
           Something went wrong
         </p>
         <p style={{ marginTop: "0.5rem", color: "var(--db-text-muted)", fontSize: "0.875rem" }}>
-          {error.message || "An unexpected error occurred"}
+          An unexpected error occurred. Please try again or contact support.
         </p>
         <div style={{ marginTop: "1.5rem", display: "flex", gap: "0.75rem", justifyContent: "center" }}>
           <button

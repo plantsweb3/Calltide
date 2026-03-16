@@ -4,6 +4,9 @@ import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { getPriceId, type PlanType } from "@/lib/stripe-prices";
 import { reportError } from "@/lib/error-reporting";
 import { getStripe } from "@/lib/stripe/client";
+import { db } from "@/db";
+import { businesses } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
@@ -29,6 +32,20 @@ export async function POST(req: NextRequest) {
   }
 
   const { email, plan } = result.data;
+
+  // Prevent duplicate checkout for existing accounts
+  const [existing] = await db
+    .select({ id: businesses.id })
+    .from(businesses)
+    .where(eq(businesses.ownerEmail, email))
+    .limit(1);
+  if (existing) {
+    return NextResponse.json(
+      { error: "An account with this email already exists. Please log in to your dashboard." },
+      { status: 409 },
+    );
+  }
+
   const priceId = getPriceId(plan as PlanType);
 
   if (!priceId) {

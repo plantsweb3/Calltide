@@ -1365,6 +1365,12 @@ function OnboardingPage() {
                 <div className="mb-6 rounded-xl border-2 border-amber-200 bg-amber-50 p-6 text-center">
                   <p className="mb-1 text-xs font-medium uppercase tracking-wider text-amber-600">{t.herNumber}</p>
                   <p className="text-2xl font-bold text-gray-900 sm:text-3xl">{formatPhone(twilioNumber)}</p>
+                  <button
+                    onClick={() => { navigator.clipboard.writeText(twilioNumber); }}
+                    className="mt-2 inline-flex items-center gap-1 rounded-md bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 hover:bg-amber-200 transition-colors"
+                  >
+                    Copy Number
+                  </button>
                 </div>
 
                 <div className="mb-4">

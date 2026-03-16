@@ -218,7 +218,7 @@ export default function EstimatesPage() {
               Estimates are auto-created when callers request quotes through {receptionistName}.
             </p>
             <a
-              href="/dashboard/help/estimates"
+              href="/dashboard/settings#automations"
               className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
               style={{ background: "var(--db-accent)", color: "#fff" }}
             >

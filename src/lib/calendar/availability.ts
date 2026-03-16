@@ -28,13 +28,19 @@ export async function checkAvailability(
     return [];
   }
 
-  const dayOfWeek = parsed
+  const shortDay = parsed
     .toLocaleDateString("en-US", {
       weekday: "short",
       timeZone: biz.timezone,
     });
+  const longDay = parsed
+    .toLocaleDateString("en-US", {
+      weekday: "long",
+      timeZone: biz.timezone,
+    }).toLowerCase();
 
-  const hours = biz.businessHours[dayOfWeek];
+  // Support both "Mon" and "monday" key formats
+  const hours = biz.businessHours[shortDay] || biz.businessHours[longDay];
   if (!hours || hours.open === "closed") {
     return [];
   }
@@ -49,6 +55,9 @@ export async function checkAvailability(
       closeHour < 0 || closeHour > 23 || closeMin < 0 || closeMin > 59) {
     return [];
   }
+
+  // Use buffer between appointments (travel time for field service)
+  const bufferMinutes = biz.bufferMinutes ?? 0;
 
   // Fetch existing confirmed appointments for this business on this date
   const booked = await db
@@ -129,13 +138,20 @@ export async function checkAvailability(
   const startMin = openHour * 60 + openMin;
   const endMin = closeHour * 60 + closeMin;
 
-  // Use buffer between appointments (travel time for field service)
-  const bufferMinutes = biz.bufferMinutes ?? 0;
+  // Filter out past time slots for same-day bookings
+  const now = new Date();
+  const nowInTz = new Date(now.toLocaleString("en-US", { timeZone: biz.timezone }));
+  const todayStr = `${nowInTz.getFullYear()}-${String(nowInTz.getMonth() + 1).padStart(2, "0")}-${String(nowInTz.getDate()).padStart(2, "0")}`;
+  const isToday = date === todayStr;
+  const currentMinutes = isToday ? nowInTz.getHours() * 60 + nowInTz.getMinutes() : 0;
 
   for (let min = startMin; min + slotDuration <= endMin; min += slotDuration) {
     const h = Math.floor(min / 60);
     const m = min % 60;
     const time = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+
+    // Skip slots that have already passed today
+    if (isToday && min < currentMinutes) continue;
 
     slots.push({
       date,

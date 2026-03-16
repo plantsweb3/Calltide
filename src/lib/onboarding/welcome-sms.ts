@@ -73,8 +73,7 @@ export async function sendWelcomeSms(
     `Verizon: Dial *72 ${twilioNumber}\n` +
     `T-Mobile: Dial **21*${twilioNumber}#\n\n` +
     `Dashboard: ${appUrl}/dashboard\n` +
-    `Email: ${biz.ownerEmail}\n` +
-    `Password: ${password}\n\n` +
+    `Email: ${biz.ownerEmail}\n\n` +
     `Text me anytime — I'm here 24/7!`;
 
   await sendSMS({

@@ -4,6 +4,8 @@ import { calls, appointments, smsMessages, businesses, leads, estimates, custome
 import { eq, and, sql, gte, lte, count, desc, or, inArray, isNull } from "drizzle-orm";
 import { DEMO_BUSINESS_ID, DEMO_OVERVIEW } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
+import { getMrrForPlan } from "@/lib/stripe-prices";
+import type { PlanType } from "@/lib/stripe-prices";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -46,6 +48,7 @@ export async function GET(req: NextRequest) {
       setupChecklistDismissed: businesses.setupChecklistDismissed,
       createdAt: businesses.createdAt,
       healthScore: businesses.healthScore,
+      planType: businesses.planType,
     })
     .from(businesses)
     .where(eq(businesses.id, businessId))
@@ -305,7 +308,8 @@ export async function GET(req: NextRequest) {
   const spanishSaved = Math.round((spanishCallsMonth.count) * avgJobValue * 0.25);
   const mariaSavedYou = revenueSaved + afterHoursSaved + spanishSaved;
 
-  const monthlyPlanCost = 497;
+  const planType = (biz.planType === "annual" ? "annual" : "monthly") as PlanType;
+  const monthlyPlanCost = getMrrForPlan(planType) / 100; // cents → dollars
   const roiMultiple = monthlyPlanCost > 0
     ? Math.round((revenueThisMonth / monthlyPlanCost) * 10) / 10
     : 0;

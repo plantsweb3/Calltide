@@ -165,7 +165,7 @@ export default function PricingClient() {
             <span className={`text-sm font-medium transition-colors ${isAnnual ? "text-white" : "text-slate-500"}`}>Annual</span>
             {isAnnual && (
               <span className="rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80" }}>
-                Save $994/year
+                Save $1,200/year
               </span>
             )}
           </div>

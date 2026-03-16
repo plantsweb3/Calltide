@@ -167,6 +167,15 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
+  // Handle simple flag updates (e.g., dismiss setup checklist) without requiring all fields
+  if (typeof body === "object" && body !== null && Object.keys(body as Record<string, unknown>).length === 1) {
+    const obj = body as Record<string, unknown>;
+    if (obj.setupChecklistDismissed === true) {
+      await db.update(businesses).set({ setupChecklistDismissed: true, updatedAt: new Date().toISOString() }).where(eq(businesses.id, businessId));
+      return NextResponse.json({ success: true });
+    }
+  }
+
   const result = settingsSchema.safeParse(body);
   if (!result.success) {
     const firstError = result.error.issues[0];

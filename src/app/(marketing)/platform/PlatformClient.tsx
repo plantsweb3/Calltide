@@ -376,12 +376,13 @@ export default function PlatformClient() {
             })}
           </div>
 
-          {/* Screenshot placeholder */}
+          {/* Feature summary for active category */}
           <div
-            className="mt-14 flex items-center justify-center rounded-2xl p-16"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px dashed rgba(255,255,255,0.1)" }}
+            className="mt-14 rounded-2xl px-8 py-10 text-center"
+            style={{ background: "rgba(212,168,67,0.06)", border: "1px solid rgba(212,168,67,0.15)" }}
           >
-            <p className="text-sm text-slate-600">{t.screenshot} — {activeCategory.label}</p>
+            <p className="text-base font-semibold text-white">{activeCategory.label}</p>
+            <p className="mt-2 text-sm text-slate-400">{activeCategory.features.length} features included in your $497/mo plan</p>
           </div>
         </div>
       </section>

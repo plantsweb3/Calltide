@@ -151,7 +151,11 @@ export async function sendMissedCallTextBack(callId: string): Promise<void> {
   const bizName = biz.name;
   const fromNumber = biz.twilioNumber || env.TWILIO_PHONE_NUMBER;
 
-  const body = `Hi, this is ${bizName}. Sorry we missed your call — we're on a job right now. Can we call you back in the next 30 minutes? Reply YES to confirm. — Capta`;
+  // Send bilingual message — Spanish-first if business default is Spanish
+  const isSpanish = biz.defaultLanguage === "es";
+  const body = isSpanish
+    ? `Hola, le habla ${bizName}. Disculpe que no pudimos contestar su llamada — estamos en un trabajo. ¿Podemos llamarle en los próximos 30 minutos? Responda SI para confirmar. — Capta`
+    : `Hi, this is ${bizName}. Sorry we missed your call — we're on a job right now. Can we call you back in the next 30 minutes? Reply YES to confirm. — Capta`;
 
   try {
     await sendSMS({
@@ -163,6 +167,14 @@ export async function sendMissedCallTextBack(callId: string): Promise<void> {
       leadId: call.leadId || undefined,
       templateType: "missed_call_recovery",
     });
+
+    // Mark recovery sent so the cron job doesn't send a duplicate
+    await db.update(calls).set({
+      recoveryStatus: "sms_sent",
+      recoverySmsSentAt: new Date().toISOString(),
+      isAbandoned: true,
+      updatedAt: new Date().toISOString(),
+    }).where(eq(calls.id, callId));
   } catch (err) {
     reportError("[post-call] Missed call text-back failed", err, { businessId: biz.id });
   }
