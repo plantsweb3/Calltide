@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
     const [touchCount] = await db
       .select({ count: sql<number>`count(*)` })
       .from(manualTouches)
-      .where(sql`${manualTouches.createdAt} >= ${todayStr}`);
+      .where(sql`substr(${manualTouches.createdAt}, 1, 10) >= ${todayStr}`);
 
     if ((touchCount?.count ?? 0) >= 100) {
       const [currentStreak] = await db

@@ -9,33 +9,35 @@ export async function GET(req: NextRequest) {
   }
 
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+  // Use YYYY-MM-DD prefix for SQLite string comparison (handles both "T" and " " separators)
+  const todayPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
   // Monday of this week
   const dayOfWeek = now.getDay();
   const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-  const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - mondayOffset).toISOString();
+  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - mondayOffset);
+  const weekPrefix = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, "0")}-${String(monday.getDate()).padStart(2, "0")}`;
 
   const [todayResult] = await db
     .select({ count: sql<number>`count(*)` })
     .from(manualTouches)
-    .where(sql`${manualTouches.createdAt} >= ${todayStart}`);
+    .where(sql`substr(${manualTouches.createdAt}, 1, 10) >= ${todayPrefix}`);
 
   const [weekResult] = await db
     .select({ count: sql<number>`count(*)` })
     .from(manualTouches)
-    .where(sql`${manualTouches.createdAt} >= ${weekStart}`);
+    .where(sql`substr(${manualTouches.createdAt}, 1, 10) >= ${weekPrefix}`);
 
   const byChannel = await db
     .select({ channel: manualTouches.channel, count: sql<number>`count(*)` })
     .from(manualTouches)
-    .where(sql`${manualTouches.createdAt} >= ${weekStart}`)
+    .where(sql`substr(${manualTouches.createdAt}, 1, 10) >= ${weekPrefix}`)
     .groupBy(manualTouches.channel);
 
   const byOutcome = await db
     .select({ outcome: manualTouches.outcome, count: sql<number>`count(*)` })
     .from(manualTouches)
-    .where(sql`${manualTouches.createdAt} >= ${weekStart}`)
+    .where(sql`substr(${manualTouches.createdAt}, 1, 10) >= ${weekPrefix}`)
     .groupBy(manualTouches.outcome);
 
   const [followUpsDue] = await db
