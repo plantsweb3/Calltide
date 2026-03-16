@@ -19,12 +19,12 @@ export async function GET(req: NextRequest) {
   const weekPrefix = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, "0")}-${String(monday.getDate()).padStart(2, "0")}`;
 
   const [todayResult] = await db
-    .select({ count: sql<number>`count(*)` })
+    .select({ count: sql<number>`count(distinct ${manualTouches.prospectId})` })
     .from(manualTouches)
     .where(sql`substr(${manualTouches.createdAt}, 1, 10) >= ${todayPrefix}`);
 
   const [weekResult] = await db
-    .select({ count: sql<number>`count(*)` })
+    .select({ count: sql<number>`count(distinct ${manualTouches.prospectId})` })
     .from(manualTouches)
     .where(sql`substr(${manualTouches.createdAt}, 1, 10) >= ${weekPrefix}`);
 
