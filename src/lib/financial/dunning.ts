@@ -69,6 +69,34 @@ export async function startDunning(businessId: string, failureCode?: string) {
     .set({ paymentStatus: "past_due", updatedAt: new Date().toISOString() })
     .where(eq(businesses.id, businessId));
 
+  // Send immediate SMS notification about payment failure
+  try {
+    const [biz] = await db
+      .select({ ownerPhone: businesses.ownerPhone, twilioNumber: businesses.twilioNumber, defaultLanguage: businesses.defaultLanguage, planType: businesses.planType })
+      .from(businesses)
+      .where(eq(businesses.id, businessId))
+      .limit(1);
+
+    if (biz?.ownerPhone) {
+      const { display, displayEs } = getPlanAmount(biz.planType);
+      const appUrl = env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+      const isEs = biz.defaultLanguage === "es";
+
+      const smsBody = isEs
+        ? `Tu pago de Capta (${displayEs}) no se procesó. Actualiza tu tarjeta para evitar interrupciones: ${appUrl}/dashboard/billing — Capta`
+        : `Your Capta payment (${display}) failed to process. Update your card to avoid service interruption: ${appUrl}/dashboard/billing — Capta`;
+
+      const t = getTwilio();
+      await t.messages.create({
+        to: biz.ownerPhone,
+        from: biz.twilioNumber || env.TWILIO_PHONE_NUMBER,
+        body: smsBody,
+      });
+    }
+  } catch (err) {
+    reportError("[dunning] Payment failure SMS notification failed", err, { businessId });
+  }
+
   return state;
 }
 

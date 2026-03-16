@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Connect to Hume EVI via WebSocket stream
+  // Connect to Hume EVI via WebSocket stream (max 30 minutes per call)
   const humeWsUrl = `wss://api.hume.ai/v0/evi/twilio?config_id=${humeConfigId}&api_key=${humeApiKey}`;
 
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -130,6 +130,8 @@ export async function POST(req: NextRequest) {
       <Parameter name="direction" value="inbound" />
     </Stream>
   </Connect>
+  <Say language="en-US" voice="Polly.Joanna">Thank you for calling. If you need further assistance, please call back.</Say>
+  <Hangup/>
 </Response>`;
 
   return new Response(twiml, {

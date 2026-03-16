@@ -146,7 +146,7 @@ export default function OverviewPage() {
     data.appointmentsThisWeek === 0
   ) {
     const steps = [
-      { label: "Forward your business number", desc: "Set up call forwarding from your existing phone number to your Capta receptionist number.", href: "/dashboard/settings", icon: <IconPhone size={18} /> },
+      { label: "Forward your business number", desc: "Dial *72 then your Capta number (Verizon/landline), or *21* then number and # (AT&T/T-Mobile). Check your carrier's instructions for conditional forwarding.", href: "/dashboard/settings", icon: <IconPhone size={18} /> },
       { label: "Customize your receptionist", desc: "Set her name, greeting, personality, and the services you offer.", href: "/dashboard/settings", icon: <IconSparkles size={18} /> },
       { label: "Set your business hours", desc: "Tell her when you're available so she books appointments at the right times.", href: "/dashboard/settings", icon: <IconClock size={18} /> },
       { label: "Make a test call", desc: "Call your Capta number to hear how she handles a real conversation.", icon: <IconTarget size={18} /> },

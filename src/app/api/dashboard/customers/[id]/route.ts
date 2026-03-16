@@ -1,10 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
-import { customers, calls, appointments, smsMessages, leads } from "@/db/schema";
+import { customers, calls, appointments, estimates, smsMessages, leads } from "@/db/schema";
 import { eq, and, desc, isNull } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
-import { DEMO_BUSINESS_ID, DEMO_CUSTOMERS, DEMO_CALLS, DEMO_APPOINTMENTS_UPCOMING, DEMO_APPOINTMENTS_PAST, DEMO_SMS } from "../../demo-data";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
+import {
+  DEMO_BUSINESS_ID,
+  DEMO_CUSTOMERS,
+  DEMO_CALLS,
+  DEMO_APPOINTMENTS_UPCOMING,
+  DEMO_APPOINTMENTS_PAST,
+  DEMO_SMS,
+  DEMO_ESTIMATES,
+} from "../../demo-data";
+
+// ── Timeline types ──
+
+interface TimelineItem {
+  id: string;
+  type: "call" | "appointment" | "estimate" | "sms";
+  date: string; // ISO string for sorting
+  data: Record<string, unknown>;
+}
+
+// ── GET: Customer detail + unified timeline ──
 
 export async function GET(
   req: NextRequest,
@@ -15,27 +35,98 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const rl = await rateLimit(`customer-detail:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
+
   const { id } = await params;
 
+  // ── Demo mode ──
   if (businessId === DEMO_BUSINESS_ID) {
     const customer = DEMO_CUSTOMERS.find((c) => c.id === id);
     if (!customer) {
       return NextResponse.json({ error: "Customer not found" }, { status: 404 });
     }
-    // Match demo calls, appointments, and SMS by customer phone
-    const recentCalls = DEMO_CALLS
-      .filter((c) => c.callerPhone === customer.phone)
-      .map((c) => ({ id: c.id, status: c.status, duration: c.duration, language: c.language, summary: c.summary, sentiment: c.sentiment, outcome: null, createdAt: c.createdAt }));
-    const recentAppointments = [...DEMO_APPOINTMENTS_UPCOMING, ...DEMO_APPOINTMENTS_PAST]
-      .filter((a) => a.leadPhone === customer.phone)
-      .map((a) => ({ id: a.id, service: a.service, date: a.date, time: a.time, status: a.status, notes: a.notes }));
-    const recentSms = DEMO_SMS
-      .filter((s) => s.toNumber === customer.phone || s.fromNumber === customer.phone)
-      .map((s) => ({ id: s.id, direction: s.direction, body: s.body, templateType: s.templateType, createdAt: s.createdAt }));
 
-    return NextResponse.json({ customer, recentCalls, recentAppointments, recentSms });
+    const timeline: TimelineItem[] = [];
+
+    // Demo calls by phone
+    const demoCalls = DEMO_CALLS.filter((c) => c.callerPhone === customer.phone);
+    for (const c of demoCalls) {
+      timeline.push({
+        id: c.id,
+        type: "call",
+        date: c.createdAt,
+        data: {
+          status: c.status,
+          duration: c.duration,
+          language: c.language,
+          summary: c.summary,
+          sentiment: c.sentiment,
+          outcome: null,
+        },
+      });
+    }
+
+    // Demo appointments by phone
+    const demoAppts = [...DEMO_APPOINTMENTS_UPCOMING, ...DEMO_APPOINTMENTS_PAST].filter(
+      (a) => a.leadPhone === customer.phone
+    );
+    for (const a of demoAppts) {
+      timeline.push({
+        id: a.id,
+        type: "appointment",
+        date: `${a.date}T${a.time}:00`,
+        data: {
+          service: a.service,
+          date: a.date,
+          time: a.time,
+          status: a.status,
+          notes: a.notes,
+        },
+      });
+    }
+
+    // Demo estimates by customerId
+    const demoEstimates = DEMO_ESTIMATES.filter((e) => e.customerId === customer.id);
+    for (const e of demoEstimates) {
+      timeline.push({
+        id: e.id,
+        type: "estimate",
+        date: e.createdAt,
+        data: {
+          service: e.service,
+          description: e.description,
+          amount: e.amount,
+          status: e.status,
+          notes: e.notes,
+        },
+      });
+    }
+
+    // Demo SMS by phone
+    const demoSms = DEMO_SMS.filter(
+      (s) => s.toNumber === customer.phone || s.fromNumber === customer.phone
+    );
+    for (const s of demoSms) {
+      timeline.push({
+        id: s.id,
+        type: "sms",
+        date: s.createdAt,
+        data: {
+          direction: s.direction,
+          body: s.body,
+          templateType: s.templateType,
+        },
+      });
+    }
+
+    // Sort newest first
+    timeline.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    return NextResponse.json({ customer, timeline });
   }
 
+  // ── Real data ──
   try {
     const [customer] = await db
       .select()
@@ -47,15 +138,33 @@ export async function GET(
       return NextResponse.json({ error: "Customer not found" }, { status: 404 });
     }
 
-    // Fetch related data by matching phone number
-    const recentCalls = await db
+    const timeline: TimelineItem[] = [];
+
+    // Calls by customerId or callerPhone
+    const customerCalls = await db
       .select()
       .from(calls)
       .where(and(eq(calls.businessId, businessId), eq(calls.callerPhone, customer.phone)))
       .orderBy(desc(calls.createdAt))
-      .limit(20);
+      .limit(50);
 
-    // Find lead IDs for this phone to query appointments
+    for (const c of customerCalls) {
+      timeline.push({
+        id: c.id,
+        type: "call",
+        date: c.createdAt,
+        data: {
+          status: c.status,
+          duration: c.duration,
+          language: c.language,
+          summary: c.summary,
+          sentiment: c.sentiment,
+          outcome: c.outcome,
+        },
+      });
+    }
+
+    // Find lead IDs for this customer's phone to query appointments
     const leadRows = await db
       .select({ id: leads.id })
       .from(leads)
@@ -63,42 +172,87 @@ export async function GET(
 
     const leadIds = leadRows.map((l) => l.id);
 
-    let recentAppointments: typeof appointments.$inferSelect[] = [];
     if (leadIds.length > 0) {
-      // Query appointments for each lead
-      for (const leadId of leadIds.slice(0, 5)) {
+      for (const leadId of leadIds.slice(0, 10)) {
         const appts = await db
           .select()
           .from(appointments)
           .where(and(eq(appointments.businessId, businessId), eq(appointments.leadId, leadId)))
           .orderBy(desc(appointments.createdAt))
-          .limit(10);
-        recentAppointments = recentAppointments.concat(appts);
+          .limit(20);
+
+        for (const a of appts) {
+          timeline.push({
+            id: a.id,
+            type: "appointment",
+            date: `${a.date}T${a.time}:00`,
+            data: {
+              service: a.service,
+              date: a.date,
+              time: a.time,
+              status: a.status,
+              notes: a.notes,
+            },
+          });
+        }
       }
-      // Sort combined results
-      recentAppointments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      recentAppointments = recentAppointments.slice(0, 20);
     }
 
-    // SMS by phone number
-    const recentSms = await db
+    // Estimates by customerId
+    const customerEstimates = await db
+      .select()
+      .from(estimates)
+      .where(and(eq(estimates.businessId, businessId), eq(estimates.customerId, customer.id)))
+      .orderBy(desc(estimates.createdAt))
+      .limit(50);
+
+    for (const e of customerEstimates) {
+      timeline.push({
+        id: e.id,
+        type: "estimate",
+        date: e.createdAt,
+        data: {
+          service: e.service,
+          description: e.description,
+          amount: e.amount,
+          status: e.status,
+          notes: e.notes,
+        },
+      });
+    }
+
+    // SMS by phone
+    const customerSms = await db
       .select()
       .from(smsMessages)
       .where(and(eq(smsMessages.businessId, businessId), eq(smsMessages.toNumber, customer.phone)))
       .orderBy(desc(smsMessages.createdAt))
-      .limit(20);
+      .limit(50);
 
-    return NextResponse.json({
-      customer,
-      recentCalls,
-      recentAppointments,
-      recentSms,
-    });
+    for (const s of customerSms) {
+      timeline.push({
+        id: s.id,
+        type: "sms",
+        date: s.createdAt,
+        data: {
+          direction: s.direction,
+          body: s.body,
+          templateType: s.templateType,
+        },
+      });
+    }
+
+    // Sort newest first
+    timeline.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    return NextResponse.json({ customer, timeline });
   } catch (error) {
     reportError("Failed to fetch customer detail", error, { businessId });
     return NextResponse.json({ error: "Failed to fetch customer" }, { status: 500 });
   }
 }
+
+// ── PUT: Update customer fields ──
 
 const updateCustomerSchema = z.object({
   name: z.string().min(1).max(100).optional(),
@@ -155,6 +309,8 @@ export async function PUT(
     return NextResponse.json({ error: "Failed to update customer" }, { status: 500 });
   }
 }
+
+// ── DELETE: Soft-delete customer ──
 
 export async function DELETE(
   req: NextRequest,
