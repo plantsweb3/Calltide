@@ -26,6 +26,9 @@ export async function GET(req: NextRequest) {
     case "fresh":
       conditions.push(sql`coalesce(${prospects.outreachStatus}, 'fresh') = 'fresh'`);
       break;
+    case "awaiting":
+      conditions.push(eq(prospects.outreachStatus, "awaiting"));
+      break;
     case "follow_ups":
       conditions.push(eq(prospects.outreachStatus, "follow_up"));
       break;
@@ -56,6 +59,9 @@ export async function GET(req: NextRequest) {
   switch (tab) {
     case "fresh":
       orderBy = desc(prospects.leadScore);
+      break;
+    case "awaiting":
+      orderBy = desc(prospects.lastTouchAt);
       break;
     case "follow_ups":
       orderBy = asc(prospects.nextFollowUpAt);

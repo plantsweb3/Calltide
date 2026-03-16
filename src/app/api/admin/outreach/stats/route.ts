@@ -50,6 +50,11 @@ export async function GET(req: NextRequest) {
     .from(prospects)
     .where(eq(prospects.outreachStatus, "interested"));
 
+  const [awaiting] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(prospects)
+    .where(eq(prospects.outreachStatus, "awaiting"));
+
   return NextResponse.json({
     today: todayResult?.count ?? 0,
     thisWeek: weekResult?.count ?? 0,
@@ -57,5 +62,6 @@ export async function GET(req: NextRequest) {
     byOutcome: byOutcome.map((r) => ({ outcome: r.outcome, count: r.count })),
     followUpsDue: followUpsDue?.count ?? 0,
     interested: interested?.count ?? 0,
+    awaiting: awaiting?.count ?? 0,
   });
 }

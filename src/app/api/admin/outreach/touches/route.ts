@@ -19,6 +19,7 @@ const touchSchema = z.object({
     "onboarded",
     "wrong_number",
     "gatekeeper",
+    "awaiting_response",
   ]),
   notes: z.string().optional(),
   followUpAt: z.string().optional(),
@@ -28,7 +29,8 @@ const touchSchema = z.object({
 // Outcome → outreach_status transition map
 function getNewOutreachStatus(
   outcome: string,
-  currentStatus: string | null
+  currentStatus: string | null,
+  channel?: string,
 ): string | null {
   switch (outcome) {
     case "interested":
@@ -43,12 +45,22 @@ function getNewOutreachStatus(
       return "not_interested";
     case "wrong_number":
       return "disqualified";
+    case "awaiting_response":
+      // Don't downgrade from interested/follow_up/demo_booked
+      if (currentStatus === "interested" || currentStatus === "follow_up" || currentStatus === "demo_booked") {
+        return null;
+      }
+      return "awaiting";
     case "no_answer":
     case "left_voicemail":
     case "gatekeeper":
       // Don't downgrade from interested or follow_up
       if (currentStatus === "interested" || currentStatus === "follow_up" || currentStatus === "demo_booked") {
         return null; // no change
+      }
+      // SMS/Email/DM "no_answer" → awaiting (they might still reply)
+      if (channel === "sms" || channel === "email" || channel === "dm") {
+        return "awaiting";
       }
       return "attempted";
     default:
@@ -95,7 +107,7 @@ export async function POST(req: NextRequest) {
     .returning();
 
   // Compute status transition
-  const newStatus = getNewOutreachStatus(body.outcome, prospect.outreachStatus);
+  const newStatus = getNewOutreachStatus(body.outcome, prospect.outreachStatus, body.channel);
   const updates: Record<string, unknown> = {
     lastTouchAt: now,
     updatedAt: now,

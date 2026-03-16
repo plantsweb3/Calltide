@@ -42,12 +42,14 @@ interface Stats {
   thisWeek: number;
   followUpsDue: number;
   interested: number;
+  awaiting: number;
 }
 
-type Tab = "fresh" | "follow_ups" | "interested" | "worked";
+type Tab = "fresh" | "awaiting" | "follow_ups" | "interested" | "worked";
 
 const TABS: { key: Tab; label: string }[] = [
   { key: "fresh", label: "Fresh" },
+  { key: "awaiting", label: "Awaiting Response" },
   { key: "follow_ups", label: "Follow-ups" },
   { key: "interested", label: "Interested" },
   { key: "worked", label: "Worked" },
@@ -83,6 +85,7 @@ const FOLLOW_UP_PRESETS = [
 
 const outreachStatusColors: Record<string, { bg: string; text: string }> = {
   fresh: { bg: "rgba(148,163,184,0.15)", text: "#94a3b8" },
+  awaiting: { bg: "rgba(251,191,36,0.15)", text: "#fbbf24" },
   attempted: { bg: "rgba(96,165,250,0.15)", text: "#60a5fa" },
   interested: { bg: "rgba(74,222,128,0.15)", text: "#4ade80" },
   follow_up: { bg: "rgba(251,191,36,0.15)", text: "#fbbf24" },
@@ -497,8 +500,8 @@ function ExpandedRow({
     if (channel === "call") {
       setShowVoicemailModal(true);
     } else {
-      // For SMS/Email/DM, just set the outcome directly (no voicemail modal)
-      setOutcome("no_answer");
+      // For SMS/Email/DM — "sent, awaiting response"
+      setOutcome("awaiting_response");
     }
   }
 
@@ -674,17 +677,17 @@ function ExpandedRow({
                   {o.label}
                 </button>
               ))}
-              {/* No Response — voicemail modal for calls, sets "no_answer" outcome for SMS/Email/DM */}
+              {/* No Response — voicemail modal for calls, "awaiting_response" for SMS/Email/DM */}
               <button
                 onClick={handleNoResponse}
                 className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
                 style={{
-                  background: outcome === "no_answer" && channel !== "call" ? "#fb923c" : "var(--db-hover)",
-                  color: outcome === "no_answer" && channel !== "call" ? "#fff" : "#fb923c",
-                  border: "1px dashed #fb923c",
+                  background: outcome === "awaiting_response" ? "#fbbf24" : "var(--db-hover)",
+                  color: outcome === "awaiting_response" ? "#000" : "#fb923c",
+                  border: outcome === "awaiting_response" ? "1px solid #fbbf24" : "1px dashed #fb923c",
                 }}
               >
-                No Response
+                {channel === "call" ? "No Response" : "Awaiting Response"}
               </button>
             </div>
           </div>
@@ -792,7 +795,7 @@ export default function OutreachPage() {
   const [pagination, setPagination] = useState({ page: 1, limit: 50, total: 0, totalPages: 0 });
   const [search, setSearch] = useState("");
   const [workedFilter, setWorkedFilter] = useState("");
-  const [stats, setStats] = useState<Stats>({ today: 0, thisWeek: 0, followUpsDue: 0, interested: 0 });
+  const [stats, setStats] = useState<Stats>({ today: 0, thisWeek: 0, followUpsDue: 0, interested: 0, awaiting: 0 });
   const [scriptCollapsed, setScriptCollapsed] = useState(false);
   const [smsCollapsed, setSmsCollapsed] = useState(false);
   const [bulkSmsStatus, setBulkSmsStatus] = useState<"idle" | "sending" | "done">("idle");
@@ -948,6 +951,7 @@ export default function OutreachPage() {
 
   const columns =
     tab === "fresh" ? freshColumns :
+    tab === "awaiting" ? workedColumns :
     tab === "follow_ups" ? followUpColumns :
     tab === "interested" ? interestedColumns :
     workedColumns;
@@ -1022,20 +1026,28 @@ export default function OutreachPage() {
       {/* Tabs + search */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex gap-1 rounded-lg p-1" style={{ background: "var(--db-hover)" }}>
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => handleTabChange(t.key)}
-              className="rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
-              style={{
-                background: tab === t.key ? "var(--db-card)" : "transparent",
-                color: tab === t.key ? "var(--db-text)" : "var(--db-text-muted)",
-                boxShadow: tab === t.key ? "0 1px 2px rgba(0,0,0,0.1)" : "none",
-              }}
-            >
-              {t.label}
-            </button>
-          ))}
+          {TABS.map((t) => {
+            const badge = t.key === "awaiting" ? stats.awaiting : t.key === "interested" ? stats.interested : t.key === "follow_ups" ? stats.followUpsDue : 0;
+            return (
+              <button
+                key={t.key}
+                onClick={() => handleTabChange(t.key)}
+                className="rounded-md px-3 py-1.5 text-sm font-medium transition-colors flex items-center gap-1.5"
+                style={{
+                  background: tab === t.key ? "var(--db-card)" : "transparent",
+                  color: tab === t.key ? "var(--db-text)" : "var(--db-text-muted)",
+                  boxShadow: tab === t.key ? "0 1px 2px rgba(0,0,0,0.1)" : "none",
+                }}
+              >
+                {t.label}
+                {badge > 0 && (
+                  <span className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none" style={{ background: "var(--db-accent)", color: "#fff" }}>
+                    {badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
         <div className="flex gap-2">
           <input
