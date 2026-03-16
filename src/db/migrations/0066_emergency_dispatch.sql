@@ -1,0 +1,1 @@
+ALTER TABLE technicians ADD COLUMN is_on_call INTEGER DEFAULT 0;

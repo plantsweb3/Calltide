@@ -82,6 +82,23 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Spam detection: block callers who call >3 times in 5 minutes
+  const normalizedCaller = normalizePhone(callerNumber);
+  if (normalizedCaller && !normalizePhone(biz.ownerPhone).includes(normalizedCaller)) {
+    const spamCheck = await rateLimit(`spam:${biz.id}:${normalizedCaller}`, {
+      limit: 3,
+      windowSeconds: 300,
+    });
+    if (!spamCheck.success) {
+      reportWarning("Spam call blocked — rapid repeat caller", {
+        callSid,
+        businessId: biz.id,
+        timestamp: new Date().toISOString(),
+      });
+      return twimlSay("We're sorry, please try again later.");
+    }
+  }
+
   // Check if this is the business owner calling — route to owner voice mode
   const isOwner = normalizePhone(callerNumber) === normalizePhone(biz.ownerPhone);
   if (isOwner) {
@@ -98,6 +115,27 @@ export async function POST(req: NextRequest) {
 </Response>`;
 
     return new Response(twiml, {
+      status: 200,
+      headers: { "Content-Type": "text/xml" },
+    });
+  }
+
+  // Concurrent call queuing: if business has >3 active calls, queue the caller
+  const concurrencyCheck = await rateLimit(`concurrent:${biz.id}`, {
+    limit: 3,
+    windowSeconds: 1800, // 30 min (call duration window)
+  });
+  if (!concurrencyCheck.success) {
+    const receptionistName = biz.receptionistName || "Maria";
+    // Return TwiML that plays hold music then retries after 30 seconds
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+    const queueTwiml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say language="en-US" voice="Polly.Joanna">Thank you for calling ${escapeXml(biz.name)}. This is ${escapeXml(receptionistName)}. All of our lines are currently busy. Please hold and I'll be with you shortly.</Say>
+  <Pause length="20"/>
+  <Redirect method="POST">${escapeXml(appUrl)}/api/webhooks/twilio/voice</Redirect>
+</Response>`;
+    return new Response(queueTwiml, {
       status: 200,
       headers: { "Content-Type": "text/xml" },
     });

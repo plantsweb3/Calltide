@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { calls, appointments, customers, estimates, outboundCalls } from "@/db/schema";
+import { calls, appointments, customers, estimates, outboundCalls, callQaScores } from "@/db/schema";
 import { eq, and, sql, gte, count, desc } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
@@ -162,6 +162,93 @@ export async function GET(req: NextRequest) {
       .from(customers)
       .where(and(eq(customers.businessId, businessId), gte(customers.lastCallAt, thirtyDaysStr)));
 
+    // ── AI coaching insights (QA scores last 30 days) ──
+    const qaScores = await db
+      .select({
+        score: callQaScores.score,
+        breakdown: callQaScores.breakdown,
+        flags: callQaScores.flags,
+        fixRecommendation: callQaScores.fixRecommendation,
+      })
+      .from(callQaScores)
+      .where(and(eq(callQaScores.businessId, businessId), gte(callQaScores.createdAt, thirtyDaysStr)));
+
+    const avgQaScore = qaScores.length > 0
+      ? Math.round(qaScores.reduce((s, q) => s + q.score, 0) / qaScores.length)
+      : null;
+
+    // Aggregate breakdown averages
+    const breakdownTotals = { greeting: 0, languageMatch: 0, needCapture: 0, actionTaken: 0, accuracy: 0, sentiment: 0 };
+    let breakdownCount = 0;
+    for (const q of qaScores) {
+      if (q.breakdown) {
+        breakdownTotals.greeting += q.breakdown.greeting;
+        breakdownTotals.languageMatch += q.breakdown.languageMatch;
+        breakdownTotals.needCapture += q.breakdown.needCapture;
+        breakdownTotals.actionTaken += q.breakdown.actionTaken;
+        breakdownTotals.accuracy += q.breakdown.accuracy;
+        breakdownTotals.sentiment += q.breakdown.sentiment;
+        breakdownCount++;
+      }
+    }
+    const avgBreakdown = breakdownCount > 0
+      ? {
+          greeting: Math.round(breakdownTotals.greeting / breakdownCount),
+          languageMatch: Math.round(breakdownTotals.languageMatch / breakdownCount),
+          needCapture: Math.round(breakdownTotals.needCapture / breakdownCount),
+          actionTaken: Math.round(breakdownTotals.actionTaken / breakdownCount),
+          accuracy: Math.round(breakdownTotals.accuracy / breakdownCount),
+          sentiment: Math.round(breakdownTotals.sentiment / breakdownCount),
+        }
+      : null;
+
+    // Find weakest area for coaching suggestion
+    let coachingSuggestion: string | null = null;
+    if (avgBreakdown) {
+      const areas = Object.entries(avgBreakdown) as [string, number][];
+      const weakest = areas.reduce((min, curr) => curr[1] < min[1] ? curr : min);
+      const areaLabels: Record<string, string> = {
+        greeting: "greeting quality",
+        languageMatch: "language matching",
+        needCapture: "capturing customer needs",
+        actionTaken: "taking appropriate action",
+        accuracy: "information accuracy",
+        sentiment: "customer sentiment handling",
+      };
+      if (weakest[1] < 80) {
+        coachingSuggestion = `Focus on improving ${areaLabels[weakest[0]] || weakest[0]} (avg: ${weakest[1]}%)`;
+      }
+    }
+
+    // Common flags
+    const flagCounts: Record<string, number> = {};
+    for (const q of qaScores) {
+      if (q.flags) {
+        for (const flag of q.flags) {
+          flagCounts[flag] = (flagCounts[flag] ?? 0) + 1;
+        }
+      }
+    }
+    const topFlags = Object.entries(flagCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([flag, count]) => ({ flag, count }));
+
+    // Recent fix recommendations
+    const recentRecs = qaScores
+      .filter((q) => q.fixRecommendation)
+      .slice(0, 3)
+      .map((q) => q.fixRecommendation!);
+
+    const aiCoaching = {
+      avgScore: avgQaScore,
+      totalScored: qaScores.length,
+      avgBreakdown,
+      coachingSuggestion,
+      topFlags,
+      recentRecommendations: recentRecs,
+    };
+
     return NextResponse.json({
       callsByHour: padHours(callsByHour),
       callsByDay: padDays(callsByDay),
@@ -185,6 +272,7 @@ export async function GET(req: NextRequest) {
         repeat: callerStats?.repeat ?? 0,
         new: (callerStats?.total ?? 0) - (callerStats?.repeat ?? 0),
       },
+      aiCoaching,
     });
   } catch (error) {
     reportError("Reporting API error", error as Error);
@@ -254,6 +342,27 @@ function getDemoReporting() {
         { callType: "appointment_reminder", total: 18, answered: 15 },
         { callType: "estimate_followup", total: 10, answered: 7 },
         { callType: "seasonal_reminder", total: 6, answered: 4 },
+      ],
+    },
+    aiCoaching: {
+      avgScore: 87,
+      totalScored: 92,
+      avgBreakdown: {
+        greeting: 92,
+        languageMatch: 95,
+        needCapture: 85,
+        actionTaken: 88,
+        accuracy: 82,
+        sentiment: 90,
+      },
+      coachingSuggestion: "Focus on improving information accuracy (avg: 82%)",
+      topFlags: [
+        { flag: "pricing_question_deferred", count: 8 },
+        { flag: "long_hold_time", count: 4 },
+      ],
+      recentRecommendations: [
+        "Add pricing information for common services to knowledge base",
+        "Improve emergency detection for HVAC-specific terms",
       ],
     },
   };

@@ -631,6 +631,32 @@ export async function GET(req: NextRequest) {
     topByCallCount: topCustomers,
   };
 
+  // ── Booking rate ──
+  // Calls where caller wanted to schedule (booked or estimate) vs total completed calls
+  const [bookedCalls] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, businessId),
+        or(eq(calls.outcome, "appointment_booked"), eq(calls.outcome, "estimate_requested")),
+        gte(calls.createdAt, monthStart),
+      ),
+    );
+  const [completedCalls] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, businessId),
+        eq(calls.status, "completed"),
+        gte(calls.createdAt, monthStart),
+      ),
+    );
+  const bookingRate = completedCalls.count > 0
+    ? Math.round((bookedCalls.count / completedCalls.count) * 100)
+    : null;
+
   return NextResponse.json({
     ...basicResponse,
     // Enhanced fields
@@ -653,6 +679,7 @@ export async function GET(req: NextRequest) {
     customerInsights,
     abandonedCallRecovery,
     afterHoursThisWeek: afterHoursWeek.count,
+    bookingRate,
     mariaSavedYou,
     mariaSavedBreakdown: {
       missedRecovered: revenueSaved,

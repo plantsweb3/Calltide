@@ -216,6 +216,66 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Handle appointment confirmation replies (YES/CONFIRM in response to reminder SMS)
+  const CONFIRM_KEYWORDS = ["yes", "confirm", "confirmed", "si", "sí", "confirmo", "confirmado"];
+  if (!isOwner && CONFIRM_KEYWORDS.some((kw) => normalizedBody === kw || normalizedBody === kw + "!")) {
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      const [upcomingAppt] = await db
+        .select({
+          id: appointments.id,
+          service: appointments.service,
+          date: appointments.date,
+          time: appointments.time,
+          reminderSent: appointments.reminderSent,
+        })
+        .from(appointments)
+        .where(
+          and(
+            eq(appointments.businessId, biz.id),
+            eq(appointments.leadId, lead.id),
+            eq(appointments.status, "confirmed"),
+            gte(appointments.date, today),
+          ),
+        )
+        .orderBy(appointments.date, appointments.time)
+        .limit(1);
+
+      if (upcomingAppt && upcomingAppt.reminderSent) {
+        // Mark as customer-confirmed
+        await db
+          .update(appointments)
+          .set({
+            notes: (upcomingAppt as { notes?: string | null }).notes
+              ? `${(upcomingAppt as { notes?: string | null }).notes} | Confirmed via SMS`
+              : "Confirmed via SMS",
+            updatedAt: new Date().toISOString(),
+          })
+          .where(eq(appointments.id, upcomingAppt.id));
+
+        // Notify owner
+        sendSMS({
+          to: biz.ownerPhone,
+          from: biz.twilioNumber,
+          body: `✅ Appointment confirmed via SMS: ${upcomingAppt.service} on ${upcomingAppt.date} at ${upcomingAppt.time}. Customer: ${from}`,
+          businessId: biz.id,
+          leadId: lead.id,
+          templateType: "owner_notify",
+        }).catch((err) =>
+          reportError("Confirmation notification to owner failed", err, { extra: { businessId: biz.id } }),
+        );
+
+        const lang = lead.language || "en";
+        const msg = lang === "es"
+          ? `¡Gracias! Su cita de ${upcomingAppt.service} el ${upcomingAppt.date} a las ${upcomingAppt.time} está confirmada.`
+          : `Thank you! Your ${upcomingAppt.service} appointment on ${upcomingAppt.date} at ${upcomingAppt.time} is confirmed.`;
+        return twimlResponse(msg);
+      }
+    } catch (err) {
+      reportError("SMS CONFIRM handler failed", err, { extra: { businessId: biz.id } });
+    }
+  }
+
   // Handle inbound MMS photos — check BEFORE owner reply detection
   const rawNumMedia = parseInt(params.NumMedia || "0", 10);
   const numMedia = Number.isNaN(rawNumMedia) ? 0 : Math.min(Math.max(rawNumMedia, 0), 10);

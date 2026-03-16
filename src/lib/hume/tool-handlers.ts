@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { appointments, calls, leads, customers } from "@/db/schema";
+import { appointments, calls, leads, customers, technicians } from "@/db/schema";
 import { eq, and, ne, desc, gte } from "drizzle-orm";
 import { z } from "zod";
 import { checkAvailability, bookSlot } from "@/lib/calendar/availability";
@@ -8,6 +8,7 @@ import { sendSMS } from "@/lib/twilio/sms";
 import { getAppointmentConfirmation, getOwnerNotification } from "@/lib/sms-templates";
 import { updateActiveCall } from "@/lib/monitoring/active-calls";
 import { reportError } from "@/lib/error-reporting";
+import { logActivity } from "@/lib/activity";
 import { saveJobIntake, detectScopeLevel } from "@/lib/intake";
 import { findBestPartner, logReferral, notifyPartner, sendPartnerInfoToCaller } from "@/lib/referrals/partners";
 import { normalizePhone } from "@/lib/compliance/sms";
@@ -354,7 +355,15 @@ async function handleTakeMessage(
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
 
-  const isEmergency = message.startsWith("[EMERGENCY]");
+  // Detect emergency via explicit tag or keyword scan
+  const EMERGENCY_KEYWORDS = [
+    "emergency", "urgent", "gas leak", "flooding", "flood",
+    "no heat", "no hot water", "pipe burst", "water leak",
+    "fire", "carbon monoxide", "sewage backup", "no power", "electrical fire",
+  ];
+  const messageLower = message.toLowerCase();
+  const isEmergency = message.startsWith("[EMERGENCY]") ||
+    EMERGENCY_KEYWORDS.some((kw) => messageLower.includes(kw));
 
   // Update lead name and append notes (preserve previous messages)
   if (ctx.leadId) {
@@ -387,7 +396,89 @@ async function handleTakeMessage(
     templateType: "owner_notify",
   });
 
+  // Emergency dispatch: notify on-call technicians
+  let dispatched = false;
+  if (isEmergency) {
+    try {
+      const onCallTechs = await db
+        .select({ id: technicians.id, name: technicians.name, phone: technicians.phone })
+        .from(technicians)
+        .where(
+          and(
+            eq(technicians.businessId, ctx.businessId),
+            eq(technicians.isActive, true),
+            eq(technicians.isOnCall, true),
+          )
+        );
+
+      const callerDisplay = callerName || "Unknown caller";
+      const phoneDisplay = ctx.callerPhone || "No phone provided";
+
+      for (const tech of onCallTechs) {
+        if (!tech.phone) continue;
+
+        await sendSMS({
+          to: tech.phone,
+          from: biz.twilioNumber,
+          body: [
+            `🚨 EMERGENCY DISPATCH 🚨`,
+            `Business: ${biz.name}`,
+            `Customer: ${callerDisplay}`,
+            `Phone: ${phoneDisplay}`,
+            `Problem: ${message}`,
+            `Please respond ASAP.`,
+          ].join("\n"),
+          businessId: ctx.businessId,
+          callId: ctx.callId,
+          templateType: "emergency_dispatch",
+        });
+
+        dispatched = true;
+      }
+
+      if (dispatched) {
+        // Notify owner that technicians have been dispatched
+        const techNames = onCallTechs.filter((t) => t.phone).map((t) => t.name).join(", ");
+        await sendSMS({
+          to: biz.ownerPhone,
+          from: biz.twilioNumber,
+          body: `Emergency dispatch sent to on-call technician(s): ${techNames}. Customer: ${callerDisplay} (${phoneDisplay}).`,
+          businessId: ctx.businessId,
+          callId: ctx.callId,
+          templateType: "owner_notify",
+        });
+
+        await logActivity({
+          type: "emergency_dispatch",
+          entityType: "call",
+          entityId: ctx.callId,
+          title: `Emergency dispatch: ${callerDisplay}`,
+          detail: `Dispatched to: ${techNames}. Problem: ${message}`,
+          metadata: {
+            businessId: ctx.businessId,
+            callerPhone: ctx.callerPhone,
+            technicianNames: techNames,
+          },
+        });
+      }
+    } catch (err) {
+      reportError("Emergency dispatch failed", err, { businessId: ctx.businessId, extra: { callId: ctx.callId } });
+    }
+  }
+
   const ownerName = biz.ownerName || (ctx.language === "es" ? "el dueño" : "the owner");
+
+  // Adjust response if technicians were dispatched
+  if (dispatched) {
+    return {
+      success: true,
+      data: {
+        message: ctx.language === "es"
+          ? `Hemos enviado un técnico de emergencia. ${ownerName} también ha sido notificado.`
+          : `We've dispatched an emergency technician. ${ownerName} has also been notified.`,
+      },
+    };
+  }
 
   return {
     success: true,

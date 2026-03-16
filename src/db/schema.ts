@@ -349,7 +349,8 @@ export const customers = sqliteTable("customers", {
   firstCallAt: text("first_call_at"),
   isRepeat: integer("is_repeat", { mode: "boolean" }).default(false),
   lifetimeValue: integer("lifetime_value").default(0),
-  tier: text("tier").default("new"), // new, loyal, vip, dormant, at-risk
+  leadScore: integer("lead_score").default(0), // 0-100, computed by lead-scoring cron
+  tier: text("tier").default("new"), // new, hot, warm, cold, dormant, loyal, vip, at-risk
   complaintCount: integer("complaint_count").default(0),
   customFields: text("custom_fields", { mode: "json" }).$type<Record<string, string>>().default({}),
   deletedAt: text("deleted_at"),
@@ -1605,6 +1606,7 @@ export const technicians = sqliteTable("technicians", {
   skills: text("skills", { mode: "json" }).$type<string[]>().default([]),
   googleCalendarId: text("google_calendar_id"),
   isActive: integer("is_active", { mode: "boolean" }).default(true),
+  isOnCall: integer("is_on_call", { mode: "boolean" }).default(false),
   color: text("color"),
   sortOrder: integer("sort_order").default(0),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
