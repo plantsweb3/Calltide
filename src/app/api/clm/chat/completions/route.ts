@@ -4,7 +4,7 @@ import { getBusinessByPhone, detectLanguage, buildIntakeContext } from "@/lib/ai
 import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
 import { getReturningCallerContext } from "@/lib/crm/returning-caller";
 import { buildSystemPrompt } from "@/lib/ai/system-prompts";
-import { buildPricingContext } from "@/lib/ai/pricing-context";
+import { buildPricingContext, buildPricingJustification } from "@/lib/ai/pricing-context";
 import { getCustomResponsesForPrompt } from "@/lib/receptionist/custom-responses";
 import { recordCallDisclosures } from "@/lib/compliance/consent";
 import { detectEmergency } from "@/lib/emergency";
@@ -114,6 +114,10 @@ export async function POST(req: NextRequest) {
     if (businessContext?.hasPricingEnabled) {
       try {
         pricingContext = await buildPricingContext(businessContext.id);
+        // Append trade-specific pricing justification factors
+        if (pricingContext) {
+          pricingContext += buildPricingJustification(businessContext.type, lang);
+        }
       } catch {
         // Non-critical — continue without pricing
       }

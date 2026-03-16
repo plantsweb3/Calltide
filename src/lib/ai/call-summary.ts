@@ -16,7 +16,7 @@ type CallOutcome = "appointment_booked" | "estimate_requested" | "message_taken"
 
 interface SummaryResult {
   summary: string;
-  sentiment: "positive" | "neutral" | "negative";
+  sentiment: "positive" | "neutral" | "negative" | "frustrated" | "confused";
   outcome: CallOutcome;
   callerName: string | null;
   serviceRequested: string | null;
@@ -58,7 +58,7 @@ interface KnowledgeGap {
 
 interface GeneratedSummary {
   summary: string;
-  sentiment: "positive" | "neutral" | "negative";
+  sentiment: "positive" | "neutral" | "negative" | "frustrated" | "confused";
   outcome: CallOutcome;
   callerName: string | null;
   serviceRequested: string | null;
@@ -81,7 +81,7 @@ async function generateSummary(transcript: TranscriptLine[]): Promise<GeneratedS
         content: `Analyze this phone call transcript between an AI receptionist and a caller. Extract:
 
 1. A concise 1-3 sentence summary of what happened.
-2. The overall caller sentiment: "positive", "neutral", or "negative".
+2. The overall caller sentiment: "positive", "neutral", "negative", "frustrated", or "confused".
 3. The call outcome — pick the best match:
    - "appointment_booked" — caller scheduled an appointment
    - "estimate_requested" — caller asked for a quote/estimate/pricing
@@ -95,7 +95,7 @@ async function generateSummary(transcript: TranscriptLine[]): Promise<GeneratedS
 6. Knowledge gaps — questions the caller asked where the AI was unsure or couldn't provide a definitive answer. Look for phrases like "I'll have to check on that", "I'm not sure about that", "let me have the owner get back to you", "I don't have that information", or any hedging/deflection. Return each gap as {question, aiResponse} — the caller's actual question and the AI's uncertain response. Empty array if none.
 
 Respond in this exact JSON format only, no other text:
-{"summary":"...","sentiment":"positive|neutral|negative","outcome":"appointment_booked|estimate_requested|message_taken|transfer|info_only|spam|unknown","callerName":"string or null","serviceRequested":"string or null","knowledgeGaps":[{"question":"...","aiResponse":"..."}]}
+{"summary":"...","sentiment":"positive|neutral|negative|frustrated|confused","outcome":"appointment_booked|estimate_requested|message_taken|transfer|info_only|spam|unknown","callerName":"string or null","serviceRequested":"string or null","knowledgeGaps":[{"question":"...","aiResponse":"..."}]}
 
 Transcript:
 ${transcriptText}`,
@@ -107,7 +107,7 @@ ${transcriptText}`,
 
   try {
     const parsed = JSON.parse(text);
-    const sentiment = ["positive", "neutral", "negative"].includes(parsed.sentiment)
+    const sentiment = ["positive", "neutral", "negative", "frustrated", "confused"].includes(parsed.sentiment)
       ? parsed.sentiment
       : "neutral";
     const validOutcomes: CallOutcome[] = ["appointment_booked", "estimate_requested", "message_taken", "transfer", "info_only", "spam", "unknown"];

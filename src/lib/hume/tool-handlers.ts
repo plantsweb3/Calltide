@@ -480,6 +480,21 @@ async function handleTakeMessage(
     };
   }
 
+  // Emergency but no on-call techs — provide safety instructions
+  if (isEmergency) {
+    const { getEmergencySafetyInstructions } = await import("@/lib/receptionist/emergency-instructions");
+    const safetyTip = getEmergencySafetyInstructions(message, ctx.language);
+    const safetyLine = safetyTip ? ` ${safetyTip}` : "";
+    return {
+      success: true,
+      data: {
+        message: ctx.language === "es"
+          ? `He notificado a ${ownerName} con prioridad de emergencia.${safetyLine} Si hay peligro inmediato, por favor llame al 911.`
+          : `I've notified ${ownerName} as emergency priority.${safetyLine} If there's immediate danger, please call 911.`,
+      },
+    };
+  }
+
   return {
     success: true,
     data: {
