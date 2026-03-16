@@ -219,6 +219,82 @@ function ProgressRing({ value, max }: { value: number; max: number }) {
   );
 }
 
+// ── SMS Template (copy-paste) ──
+
+const SMS_TEMPLATE = `Hey [BUSINESS] — this is Ulysses. I work with [TRADE] companies in the area and most of them were losing a bunch of jobs to missed calls without realizing it. We built an AI receptionist that answers 24/7, books the job, and speaks Spanish. Worth a quick chat? I'll try calling you in a bit.`;
+
+function SmsTemplate({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(SMS_TEMPLATE);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <div
+      className="rounded-xl overflow-hidden transition-all duration-300"
+      style={{
+        background: "var(--db-card)",
+        border: "1px solid var(--db-border)",
+        boxShadow: "var(--db-card-shadow)",
+      }}
+    >
+      <button
+        onClick={onToggle}
+        className="flex w-full items-center justify-between px-4 py-2.5 text-left"
+        style={{ borderBottom: collapsed ? "none" : "1px solid var(--db-border)" }}
+      >
+        <div className="flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
+            SMS Template
+          </span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(96,165,250,0.15)", color: "#60a5fa" }}>
+            copy & paste
+          </span>
+        </div>
+        <svg
+          width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--db-text-muted)" strokeWidth="2"
+          style={{ transform: collapsed ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+
+      {!collapsed && (
+        <div className="px-4 py-3 space-y-2">
+          <div
+            className="rounded-lg p-3 text-sm leading-relaxed cursor-pointer select-all"
+            style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+            onClick={handleCopy}
+          >
+            {SMS_TEMPLATE}
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+              Replace <strong>[BUSINESS]</strong> and <strong>[TRADE]</strong> before sending. Click message to copy.
+            </p>
+            <button
+              onClick={handleCopy}
+              className="rounded px-3 py-1 text-xs font-medium transition-colors"
+              style={{
+                background: copied ? "rgba(74,222,128,0.15)" : "rgba(96,165,250,0.15)",
+                color: copied ? "#4ade80" : "#60a5fa",
+              }}
+            >
+              {copied ? "Copied!" : "Copy"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Sticky Call Script ──
 
 function CallScript({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
@@ -713,6 +789,7 @@ export default function OutreachPage() {
   const [workedFilter, setWorkedFilter] = useState("");
   const [stats, setStats] = useState<Stats>({ today: 0, thisWeek: 0, followUpsDue: 0, interested: 0 });
   const [scriptCollapsed, setScriptCollapsed] = useState(false);
+  const [smsCollapsed, setSmsCollapsed] = useState(false);
   const [bulkSmsStatus, setBulkSmsStatus] = useState<"idle" | "sending" | "done">("idle");
   const [bulkSmsResult, setBulkSmsResult] = useState<{ sent: number; skipped: number } | null>(null);
   const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -898,8 +975,9 @@ export default function OutreachPage() {
         )}
       </div>
 
-      {/* Sticky Call Script */}
-      <div className="sticky top-0 z-10">
+      {/* Sticky SMS Template + Call Script */}
+      <div className="sticky top-0 z-10 space-y-2">
+        <SmsTemplate collapsed={smsCollapsed} onToggle={() => setSmsCollapsed(!smsCollapsed)} />
         <CallScript collapsed={scriptCollapsed} onToggle={() => setScriptCollapsed(!scriptCollapsed)} />
       </div>
 
