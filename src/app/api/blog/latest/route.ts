@@ -3,7 +3,7 @@ import { blogPosts } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const posts = await db

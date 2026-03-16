@@ -5,7 +5,7 @@ import { eq, desc, and, sql } from "drizzle-orm";
 import { StaticNav } from "@/components/marketing/StaticNav";
 import { StaticFooter } from "@/components/marketing/StaticFooter";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 const POSTS_PER_PAGE = 12;
 

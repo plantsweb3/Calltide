@@ -10,7 +10,7 @@ import SetupCTA from "@/components/setup-cta";
 import { sanitizeHtml } from "@/lib/sanitize-html";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: Promise<{ slug: string }>;

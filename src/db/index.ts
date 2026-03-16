@@ -7,10 +7,16 @@ let database: ReturnType<typeof drizzle<typeof schema>> | null = null;
 
 function getDb() {
   if (!database) {
-    client = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
-      authToken: process.env.TURSO_AUTH_TOKEN!,
-    });
+    const url = process.env.TURSO_DATABASE_URL;
+    if (!url) {
+      // During build/prerender without DB configured, use in-memory SQLite
+      client = createClient({ url: "file::memory:" });
+    } else {
+      client = createClient({
+        url,
+        authToken: process.env.TURSO_AUTH_TOKEN!,
+      });
+    }
     database = drizzle(client, { schema });
   }
   return database;
