@@ -16,7 +16,7 @@ import type { ToolResult, Language } from "@/types";
 // --- Zod schemas for tool parameters ---
 
 const checkAvailabilitySchema = z.object({
-  date: z.string().min(1, "date is required"),
+  date: z.string().min(1, "date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "date must be YYYY-MM-DD format"),
   service: z.string().optional(),
 });
 
@@ -156,6 +156,21 @@ async function handleCheckAvailability(
 
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
+
+  // Prevent booking in the past
+  const bizToday = new Date().toLocaleDateString("en-CA", { timeZone: biz.timezone });
+  if (date < bizToday) {
+    return {
+      success: true,
+      data: {
+        available: false,
+        message: ctx.language === "es"
+          ? `La fecha ${date} ya pasó. ¿Le gustaría consultar disponibilidad para una fecha futura?`
+          : `The date ${date} is in the past. Would you like to check availability for a future date?`,
+        slots: [],
+      },
+    };
+  }
 
   const slots = await checkAvailability(biz, date, service);
   const available = slots.filter((s) => s.available);
@@ -881,9 +896,22 @@ async function handleRescheduleAppointment(
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
 
-  // Atomic reschedule: check availability + update in transaction to prevent double-booking
+  // Check availability OUTSIDE transaction to avoid holding DB connection during Google Calendar API call
+  const slots = await checkAvailability(biz, newDate, appt.service);
+  const slotAvailable = slots.some((s) => s.available && s.time === newTime);
+
+  if (!slotAvailable) {
+    return {
+      success: false,
+      error: ctx.language === "es"
+        ? `El horario ${newTime} del ${newDate} no está disponible. ¿Le gustaría intentar otra fecha u hora?`
+        : `The ${newTime} slot on ${newDate} isn't available. Would you like to try another date or time?`,
+    };
+  }
+
+  // Atomic reschedule: DB conflict check + update in transaction to prevent double-booking
   const rescheduleResult = await db.transaction(async (tx) => {
-    // Check for conflicts in the new slot
+    // Check for conflicts in the new slot (DB-level double-booking prevention)
     const conflicting = await tx
       .select({ id: appointments.id })
       .from(appointments)
@@ -900,14 +928,6 @@ async function handleRescheduleAppointment(
 
     if (conflicting.length > 0) {
       return { success: false as const, reason: "conflict" };
-    }
-
-    // Also check availability via calendar
-    const slots = await checkAvailability(biz, newDate, appt.service);
-    const slotAvailable = slots.some((s) => s.available && s.time === newTime);
-
-    if (!slotAvailable) {
-      return { success: false as const, reason: "unavailable" };
     }
 
     // Update the appointment to the new date/time

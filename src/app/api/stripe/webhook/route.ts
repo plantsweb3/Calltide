@@ -104,7 +104,17 @@ export async function POST(request: Request) {
         message: `Event ${event.id} (${event.type}) failed to process. Error: ${err instanceof Error ? err.message : "Unknown"}. Customer data may not have been created.`,
         actionUrl: "/admin/ops",
       }).catch(() => {});
-      // Still return 200 — we've recorded the event, don't want Stripe to retry
+
+      // For critical events (checkout, payment), return 500 so Stripe retries
+      const criticalEvents = ["checkout.session.completed", "invoice.payment_succeeded", "invoice.payment_failed"];
+      if (criticalEvents.includes(event.type)) {
+        // Remove from processed events so retry is allowed
+        await db.delete(processedStripeEvents)
+          .where(eq(processedStripeEvents.stripeEventId, event.id))
+          .catch(() => {});
+        return NextResponse.json({ error: "Handler failed" }, { status: 500 });
+      }
+      // Non-critical events: return 200 to prevent unnecessary retries
     }
   }
 

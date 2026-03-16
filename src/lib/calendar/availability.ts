@@ -86,8 +86,13 @@ export async function checkAvailability(
         blockedRanges.push({ start: startMin, end: endMin });
       }
     }
-  } catch {
-    // Google Calendar unavailable — fall back to DB-only
+  } catch (err) {
+    // Google Calendar unavailable — fall back to DB-only availability
+    const { reportWarning } = await import("@/lib/error-reporting");
+    reportWarning("Google Calendar unavailable — using DB-only availability", {
+      businessId: biz.id,
+      error: err instanceof Error ? err.message : String(err),
+    });
   }
 
   function isBlocked(slotStartMin: number, slotDurationMin: number): boolean {

@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
   const speechResult = params.SpeechResult || "";
   const confidence = parseFloat(params.Confidence || "0");
 
-  if (!speechResult || confidence < 0.5) {
+  if (!speechResult || confidence < 0.3) {
     return twimlSay("I didn't quite catch that. Could you repeat that?", true, businessId);
   }
 

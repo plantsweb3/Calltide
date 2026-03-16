@@ -89,9 +89,10 @@ async function handleChatStarted(event: HumeWebhookEvent) {
     return;
   }
 
-  // Find or create lead
+  // Find or create lead — only if phone is a valid number (10+ digits)
   let leadId: string | undefined;
-  if (callerPhone) {
+  const normalizedCaller = callerPhone?.replace(/\D/g, "");
+  if (callerPhone && normalizedCaller && normalizedCaller.length >= 10) {
     const lead = await findOrCreateLead(businessId, callerPhone);
     leadId = lead.id;
   }
