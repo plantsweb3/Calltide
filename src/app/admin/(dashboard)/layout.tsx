@@ -33,7 +33,7 @@ export default function DashboardLayout({
             <path d="M3 6h18M3 12h18M3 18h18" />
           </svg>
         </button>
-        <img src="/images/logo-inline-navy.webp" alt="Capta" className="ml-3 h-6 w-auto" />
+        <img src="/images/logo-inline-white.webp" alt="Capta" className="ml-3 h-6 w-auto" />
       </div>
 
       <main

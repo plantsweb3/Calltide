@@ -168,7 +168,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
         {/* Header */}
         <div className="flex h-14 items-center justify-between px-6">
           <div className="flex items-center">
-            <img src="/images/logo-inline-navy.webp" alt="Capta" className="h-6 w-auto" />
+            <img src="/images/logo-inline-white.webp" alt="Capta" className="h-6 w-auto" />
             <span
               className="ml-2 rounded px-1.5 py-0.5 text-[10px] font-medium"
               style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
