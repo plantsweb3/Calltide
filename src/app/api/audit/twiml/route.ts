@@ -25,10 +25,11 @@ export async function POST(req: NextRequest) {
     return new Response("Forbidden", { status: 403 });
   }
 
-  // 3-second pause then hangup — just enough to detect if a human answers
+  // Brief message so we don't sound like a spam robocall, then hangup.
+  // Twilio's machineDetection already determined answered vs voicemail before this plays.
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Pause length="3"/>
+  <Say language="en-US" voice="Polly.Joanna">Sorry, wrong number! Have a good day.</Say>
   <Hangup/>
 </Response>`;
 

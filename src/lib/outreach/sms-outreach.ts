@@ -7,19 +7,35 @@ import { logActivity } from "@/lib/activity";
 
 const MARKETING_URL = env.NEXT_PUBLIC_MARKETING_URL ?? "https://captahq.com";
 
-const smsTemplates: Record<string, (businessName: string) => string> = {
-  missed_sms_1: (name) =>
-    `Hi ${name}! We just tried calling and couldn't get through. Capta is an AI receptionist that makes sure you never miss a call again — 24/7, bilingual. Interested? Reply YES for a quick demo. Reply STOP to opt out.`,
-  missed_sms_2: (name) =>
-    `Hey ${name}, just following up. Missing calls = missing revenue. Our AI answers, books appointments & takes messages for you. 10-min demo? Reply YES or visit ${MARKETING_URL}. Reply STOP to opt out.`,
+/** Humanize vertical name. "plumbing" → "plumbing", null → "service" */
+function tradeName(vertical?: string): string {
+  if (!vertical) return "service";
+  return vertical.toLowerCase().replace(/_/g, " ");
+}
+
+const smsTemplates: Record<string, (businessName: string, vertical?: string) => string> = {
+  // MISSED SEQUENCE — 3 SMS (days 0, 3, 7)
+  missed_sms_1: (name, v) =>
+    `${name} — we just called and it went to voicemail. Every missed ${tradeName(v)} call = $200-500 lost. Capta answers 24/7 + books jobs for you. 30-day money-back guarantee. Interested? Reply YES. Reply STOP to opt out.`,
+
+  missed_sms_2: (name, v) =>
+    `${name}, quick Q — how many ${tradeName(v)} calls go to voicemail when you're on a job? Capta catches them all, books appointments, speaks English + Spanish. 10-min demo? Reply YES or visit ${MARKETING_URL}. Reply STOP to opt out.`,
+
+  missed_sms_3: (name, v) =>
+    `Last text ${name}. If missed ${tradeName(v)} calls are costing you jobs, Capta fixes it for less than one lost job/month. 30-day money-back guarantee, zero risk. Reply YES to learn more. STOP to opt out.`,
+
+  // ANSWERED SEQUENCE — 1 SMS (day 3)
+  answered_sms_1: (name, v) =>
+    `${name} — you answered when we called, nice! But what about nights + weekends? Capta handles after-hours ${tradeName(v)} calls so you never miss a job. Reply YES for a quick demo. STOP to opt out.`,
 };
 
 export function getSmsTemplate(
   key: string,
   businessName: string,
+  vertical?: string,
 ): string | null {
   const factory = smsTemplates[key];
-  return factory ? factory(businessName) : null;
+  return factory ? factory(businessName, vertical) : null;
 }
 
 export async function sendProspectSms(params: {

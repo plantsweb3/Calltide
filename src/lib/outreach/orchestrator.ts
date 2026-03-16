@@ -8,25 +8,39 @@ import { logActivity } from "@/lib/activity";
 
 /**
  * Sequence state machine — decides what to send next based on:
- * - prospect.status
  * - prospect.auditResult (answered | missed | voicemail | failed)
- * - what outreach has already been sent
+ * - what outreach has already been sent + timing
  *
- * Missed call flow:  SMS1 → (wait 1d) → Email1 → (wait 2d) → Email2 → (wait 3d) → Email3
- * Answered flow:     Email1 only
- * Voicemail flow:    same as missed
+ * Missed call flow (7 touches over 14 days):
+ *   SMS1 (day 0) → Email1 (day 1) → SMS2 (day 3) → Email2 (day 5)
+ *   → SMS3 (day 7) → Email3 (day 10) → Email4 breakup (day 14)
+ *
+ * Answered flow (3 touches over 7 days):
+ *   Email1 (day 1) → SMS1 (day 3) → Email2 breakup (day 7)
+ *
+ * Voicemail flow: same as missed
  */
 
-const MISSED_SEQUENCE = [
+type SequenceStep = {
+  channel: "sms" | "email";
+  key: string;
+  delayDays: number;
+};
+
+const MISSED_SEQUENCE: SequenceStep[] = [
   { channel: "sms", key: "missed_sms_1", delayDays: 0 },
   { channel: "email", key: "missed_call_1", delayDays: 1 },
   { channel: "sms", key: "missed_sms_2", delayDays: 3 },
   { channel: "email", key: "missed_call_2", delayDays: 5 },
-  { channel: "email", key: "missed_call_3", delayDays: 7 },
+  { channel: "sms", key: "missed_sms_3", delayDays: 7 },
+  { channel: "email", key: "missed_call_3", delayDays: 10 },
+  { channel: "email", key: "missed_call_4", delayDays: 14 },
 ];
 
-const ANSWERED_SEQUENCE = [
+const ANSWERED_SEQUENCE: SequenceStep[] = [
   { channel: "email", key: "answered_1", delayDays: 1 },
+  { channel: "sms", key: "answered_sms_1", delayDays: 3 },
+  { channel: "email", key: "answered_2", delayDays: 7 },
 ];
 
 function getSequence(auditResult: string | null) {
@@ -67,14 +81,14 @@ export async function getNextStep(prospectId: string) {
     if (sentOutreach.length > 0) {
       const lastSent = sentOutreach[0].sentAt;
       if (daysSince(lastSent) < step.delayDays) {
-        return { status: "waiting", nextStep: step, prospect };
+        return { status: "waiting" as const, nextStep: step, prospect };
       }
     }
 
-    return { status: "ready", nextStep: step, prospect };
+    return { status: "ready" as const, nextStep: step, prospect };
   }
 
-  return { status: "complete", prospect };
+  return { status: "complete" as const, prospect };
 }
 
 export async function executeNextStep(
@@ -91,11 +105,13 @@ export async function executeNextStep(
 
   if (!nextStep) return { success: false, error: "No next step" };
 
+  const vertical = prospect.vertical || undefined;
+
   if (nextStep.channel === "email") {
     if (!prospect.email) {
       return { success: false, error: "No email address" };
     }
-    const template = getEmailTemplate(nextStep.key, prospect.businessName, prospect.email);
+    const template = getEmailTemplate(nextStep.key, prospect.businessName, prospect.email, vertical);
     if (!template) return { success: false, error: `Template not found: ${nextStep.key}` };
 
     const emailResult = await sendOutreachEmail({
@@ -115,7 +131,7 @@ export async function executeNextStep(
     if (!prospect.phone) {
       return { success: false, error: "No phone number" };
     }
-    const body = getSmsTemplate(nextStep.key, prospect.businessName);
+    const body = getSmsTemplate(nextStep.key, prospect.businessName, vertical);
     if (!body) return { success: false, error: `SMS template not found: ${nextStep.key}` };
 
     const smsResult = await sendProspectSms({
