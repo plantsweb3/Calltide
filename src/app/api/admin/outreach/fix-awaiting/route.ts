@@ -1,0 +1,68 @@
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/db";
+import { prospects, manualTouches } from "@/db/schema";
+import { eq, and, sql } from "drizzle-orm";
+
+/**
+ * POST /api/admin/outreach/fix-awaiting
+ *
+ * One-time fix: move prospects with outreachStatus="attempted" that were
+ * texted today to "awaiting", and ensure they have a touch logged.
+ */
+export async function POST(req: NextRequest) {
+  if (!req.cookies.has("capta_admin")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Find all prospects that are "attempted" and were created/updated today
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const stuckProspects = await db
+    .select()
+    .from(prospects)
+    .where(
+      and(
+        eq(prospects.outreachStatus, "attempted"),
+        sql`${prospects.updatedAt} >= ${todayStart.toISOString()}`
+      )
+    );
+
+  let fixed = 0;
+
+  for (const prospect of stuckProspects) {
+    // Move to awaiting
+    await db
+      .update(prospects)
+      .set({
+        outreachStatus: "awaiting",
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(prospects.id, prospect.id));
+
+    // Check if they already have a touch logged today
+    const [existingTouch] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(manualTouches)
+      .where(
+        and(
+          eq(manualTouches.prospectId, prospect.id),
+          sql`${manualTouches.createdAt} >= ${todayStart.toISOString()}`
+        )
+      );
+
+    // If no touch exists, create one
+    if ((existingTouch?.count ?? 0) === 0) {
+      await db.insert(manualTouches).values({
+        prospectId: prospect.id,
+        channel: "sms",
+        outcome: "awaiting_response",
+        notes: "SMS sent (backfilled)",
+      });
+    }
+
+    fixed++;
+  }
+
+  return NextResponse.json({ fixed, prospects: stuckProspects.map((p) => p.businessName) });
+}
