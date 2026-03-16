@@ -1649,6 +1649,53 @@ export const googleReviews = sqliteTable("google_reviews", {
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
+// ── Webhooks & Integrations ──
+
+export const webhookEndpoints = sqliteTable("webhook_endpoints", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull(),
+  url: text("url").notNull(),
+  events: text("events", { mode: "json" }).notNull().$type<string[]>().default([]),
+  secret: text("secret").notNull(),
+  status: text("status").notNull().default("active"), // active | paused
+  failureCount: integer("failure_count").default(0),
+  lastSuccessAt: text("last_success_at"),
+  lastFailureAt: text("last_failure_at"),
+  lastFailureReason: text("last_failure_reason"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const webhookDeliveries = sqliteTable("webhook_deliveries", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  endpointId: text("endpoint_id").notNull(),
+  event: text("event").notNull(),
+  payload: text("payload", { mode: "json" }).notNull().$type<Record<string, unknown>>().default({}),
+  status: text("status").notNull().default("pending"), // pending | delivered | failed
+  httpStatus: integer("http_status"),
+  attempts: integer("attempts").default(0),
+  maxAttempts: integer("max_attempts").default(5),
+  nextRetryAt: text("next_retry_at"),
+  lastError: text("last_error"),
+  deliveredAt: text("delivered_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const integrationConnections = sqliteTable("integration_connections", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull(),
+  provider: text("provider").notNull(), // zapier | servicetitan | jobber
+  status: text("status").notNull().default("connected"), // connected | disconnected | error
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  tokenExpiresAt: text("token_expires_at"),
+  externalAccountId: text("external_account_id"),
+  syncConfig: text("sync_config", { mode: "json" }).$type<Record<string, unknown>>().default({}),
+  lastSyncAt: text("last_sync_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
 export const founderStreaks = sqliteTable("founder_streaks", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   streakType: text("streak_type").notNull().unique(), // 'outreach'

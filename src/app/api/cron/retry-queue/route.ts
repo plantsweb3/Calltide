@@ -74,6 +74,13 @@ export async function GET(req: NextRequest) {
           });
         },
 
+        webhook_delivery: async (payload) => {
+          const { deliverWebhook } = await import("@/lib/webhooks/dispatcher");
+          const deliveryId = payload.deliveryId as string;
+          if (!deliveryId) throw new Error("Missing deliveryId");
+          await deliverWebhook(deliveryId);
+        },
+
         email_send: async (payload) => {
           const resend = getResend();
           const from = payload.from as string;

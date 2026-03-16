@@ -42,7 +42,7 @@ export async function autoCreateEstimate(callId: string, serviceRequested: strin
   const now = new Date();
   const followUpAt = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
 
-  await db.insert(estimates).values({
+  const [created] = await db.insert(estimates).values({
     businessId: call.businessId,
     customerId: customer.id,
     callId: call.id,
@@ -50,7 +50,19 @@ export async function autoCreateEstimate(callId: string, serviceRequested: strin
     description: call.summary || undefined,
     status: "new",
     nextFollowUpAt: followUpAt,
-  });
+  }).returning();
+
+  // Fire webhook (fire-and-forget)
+  import("@/lib/webhooks/dispatcher").then(({ dispatchWebhook }) => {
+    dispatchWebhook(call.businessId, "estimate.created", {
+      estimateId: created.id,
+      customerId: customer.id,
+      service,
+      description: call.summary || null,
+      followUpAt,
+      callId: call.id,
+    }).catch(() => {});
+  }).catch(() => {});
 
   // Increment totalEstimates on customer
   await db.update(customers).set({

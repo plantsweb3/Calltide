@@ -92,6 +92,18 @@ export async function upsertCustomerFromCall(callId: string, context: CallContex
     }).returning();
 
     customerId = created.id;
+
+    // Fire webhook for new customer (fire-and-forget)
+    import("@/lib/webhooks/dispatcher").then(({ dispatchWebhook }) => {
+      dispatchWebhook(call.businessId, "customer.created", {
+        customerId: created.id,
+        phone,
+        name,
+        language: call.language || "en",
+        source: "inbound_call",
+        callId,
+      }).catch(() => {});
+    }).catch(() => {});
   }
 
   // Link call to customer

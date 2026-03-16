@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import { CaptaSpinnerInline } from "@/components/capta-spinner";
+import WebhookManager from "@/components/webhook-manager";
 
 interface BusinessHourEntry {
   open: string;
@@ -2127,6 +2128,7 @@ export default function SettingsPage() {
       {activeTab === "integrations" && <>
 
       <GoogleCalendarSection />
+      <WebhookManager />
 
       </>}
 

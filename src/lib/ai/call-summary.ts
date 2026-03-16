@@ -164,6 +164,23 @@ export async function processCallSummary(callId: string, chatId: string): Promis
 
     console.log("Call summary generated:", { callId, sentiment, outcome, lines: transcript.length });
 
+    // Fire webhook (fire-and-forget)
+    const [callForWebhook] = await db.select({ businessId: calls.businessId, duration: calls.duration }).from(calls).where(eq(calls.id, callId)).limit(1);
+    if (callForWebhook) {
+      import("@/lib/webhooks/dispatcher").then(({ dispatchWebhook }) => {
+        dispatchWebhook(callForWebhook.businessId, "call.completed", {
+          callId,
+          summary,
+          sentiment,
+          outcome,
+          callerName,
+          serviceRequested,
+          duration: callForWebhook.duration,
+          transcriptLines: transcript.length,
+        }).catch(() => {});
+      }).catch(() => {});
+    }
+
     // Trigger QA scoring (fire-and-forget) — use data already in memory
     const [callRecord] = await db.select().from(calls).where(eq(calls.id, callId)).limit(1);
     if (callRecord) {

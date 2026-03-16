@@ -331,6 +331,19 @@ async function handleBookAppointment(
     templateType: "owner_notify",
   });
 
+  // Fire webhook (fire-and-forget)
+  import("@/lib/webhooks/dispatcher").then(({ dispatchWebhook }) => {
+    dispatchWebhook(ctx.businessId, "appointment.created", {
+      appointmentId: appointment.id,
+      service,
+      date,
+      time,
+      callerName,
+      callerPhone: ctx.callerPhone,
+      callId: ctx.callId,
+    }).catch(() => {});
+  }).catch(() => {});
+
   return {
     success: true,
     data: {
@@ -485,6 +498,14 @@ async function handleTakeMessage(
     const { getEmergencySafetyInstructions } = await import("@/lib/receptionist/emergency-instructions");
     const safetyTip = getEmergencySafetyInstructions(message, ctx.language);
     const safetyLine = safetyTip ? ` ${safetyTip}` : "";
+
+    // Fire webhook (fire-and-forget)
+    import("@/lib/webhooks/dispatcher").then(({ dispatchWebhook }) => {
+      dispatchWebhook(ctx.businessId, "message.taken", {
+        callerName, message, isEmergency: true, callId: ctx.callId,
+      }).catch(() => {});
+    }).catch(() => {});
+
     return {
       success: true,
       data: {
@@ -494,6 +515,13 @@ async function handleTakeMessage(
       },
     };
   }
+
+  // Fire webhook (fire-and-forget)
+  import("@/lib/webhooks/dispatcher").then(({ dispatchWebhook }) => {
+    dispatchWebhook(ctx.businessId, "message.taken", {
+      callerName, message, isEmergency: false, callId: ctx.callId,
+    }).catch(() => {});
+  }).catch(() => {});
 
   return {
     success: true,
@@ -936,6 +964,18 @@ async function handleCancelAppointment(
     });
   }
 
+  // Fire webhook (fire-and-forget)
+  import("@/lib/webhooks/dispatcher").then(({ dispatchWebhook }) => {
+    dispatchWebhook(ctx.businessId, "appointment.cancelled", {
+      appointmentId,
+      service: appt.service,
+      date: appt.date,
+      time: appt.time,
+      reason: reason || null,
+      callId: ctx.callId,
+    }).catch(() => {});
+  }).catch(() => {});
+
   return {
     success: true,
     data: {
@@ -1099,6 +1139,19 @@ async function handleRescheduleAppointment(
     callId: ctx.callId,
     templateType: "owner_notify",
   });
+
+  // Fire webhook (fire-and-forget)
+  import("@/lib/webhooks/dispatcher").then(({ dispatchWebhook }) => {
+    dispatchWebhook(ctx.businessId, "appointment.rescheduled", {
+      appointmentId,
+      service: appt.service,
+      previousDate: appt.date,
+      previousTime: appt.time,
+      newDate,
+      newTime,
+      callId: ctx.callId,
+    }).catch(() => {});
+  }).catch(() => {});
 
   return {
     success: true,
