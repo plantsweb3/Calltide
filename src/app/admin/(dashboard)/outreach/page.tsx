@@ -494,7 +494,12 @@ function ExpandedRow({
   }
 
   function handleNoResponse() {
-    setShowVoicemailModal(true);
+    if (channel === "call") {
+      setShowVoicemailModal(true);
+    } else {
+      // For SMS/Email/DM, just set the outcome directly (no voicemail modal)
+      setOutcome("no_answer");
+    }
   }
 
   async function handleVoicemailConfirm() {
@@ -669,13 +674,13 @@ function ExpandedRow({
                   {o.label}
                 </button>
               ))}
-              {/* No Response — special button */}
+              {/* No Response — voicemail modal for calls, sets "no_answer" outcome for SMS/Email/DM */}
               <button
                 onClick={handleNoResponse}
                 className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
                 style={{
-                  background: "var(--db-hover)",
-                  color: "#fb923c",
+                  background: outcome === "no_answer" && channel !== "call" ? "#fb923c" : "var(--db-hover)",
+                  color: outcome === "no_answer" && channel !== "call" ? "#fff" : "#fb923c",
                   border: "1px dashed #fb923c",
                 }}
               >
