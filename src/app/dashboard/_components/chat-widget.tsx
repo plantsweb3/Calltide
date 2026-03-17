@@ -447,10 +447,11 @@ export default function ChatWidget() {
             {/* Input — clean, no border gimmicks */}
             <div className="px-4 pb-4 pt-2">
               <div
-                className="flex items-end gap-2 rounded-2xl px-3.5 py-2.5"
+                className="flex items-center gap-2 rounded-2xl px-4 py-1"
                 style={{
                   background: "var(--db-surface)",
                   border: "1px solid var(--db-border)",
+                  minHeight: "44px",
                 }}
               >
                 <textarea
@@ -460,14 +461,14 @@ export default function ChatWidget() {
                   onKeyDown={handleKeyDown}
                   placeholder={`Message ${receptionistName}...`}
                   rows={1}
-                  className="flex-1 resize-none bg-transparent text-[13px] leading-[1.4] outline-none border-none shadow-none placeholder:text-[var(--db-text-muted)] focus:outline-none focus:ring-0 focus:border-none"
-                  style={{ color: "var(--db-text)", maxHeight: "80px", WebkitAppearance: "none" }}
+                  className="flex-1 resize-none bg-transparent text-[13px] leading-[20px] outline-none border-none shadow-none placeholder:text-[var(--db-text-muted)] focus:outline-none focus:ring-0 focus:border-none"
+                  style={{ color: "var(--db-text)", maxHeight: "80px", WebkitAppearance: "none", padding: "10px 0" }}
                   disabled={sending}
                 />
                 <button
                   onClick={handleSend}
                   disabled={!hasInput || sending}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-200"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-all duration-200"
                   style={{
                     background: hasInput && !sending ? "#D4A843" : "transparent",
                     color: hasInput && !sending ? "#0f1729" : "var(--db-text-muted)",
@@ -476,7 +477,7 @@ export default function ChatWidget() {
                   }}
                   aria-label="Send message"
                 >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
                 </button>
