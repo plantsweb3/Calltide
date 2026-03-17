@@ -152,25 +152,36 @@ export default function ChatWidget() {
     }
   }
 
+  const hasInput = input.trim().length > 0;
+
   return (
     <>
       {/* Floating button */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg transition-transform hover:scale-105"
+          className="chat-fab fixed z-50 flex items-center gap-2.5 rounded-full px-5 py-3.5 shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_30px_rgba(212,168,67,0.3)]"
           style={{
             bottom: "1.5rem",
             right: "4.5rem",
-            background: "linear-gradient(135deg, #1B2A4A, #2a3d6a)",
+            background: "linear-gradient(135deg, #1B2A4A 0%, #2a3d6a 100%)",
             color: "#fff",
+            border: "1px solid rgba(212, 168, 67, 0.2)",
           }}
           aria-label={`Chat with ${receptionistName}`}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
-          <span className="text-sm font-medium hidden sm:inline">Ask {receptionistName}</span>
+          {/* Gold accent ring */}
+          <div className="relative flex h-6 w-6 items-center justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            {/* Online pulse */}
+            <span className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+            </span>
+          </div>
+          <span className="text-sm font-medium hidden sm:inline tracking-wide">Ask {receptionistName}</span>
         </button>
       )}
 
@@ -179,49 +190,74 @@ export default function ChatWidget() {
         <>
           {/* Backdrop on mobile */}
           <div
-            className="fixed inset-0 z-50 bg-black/30 md:bg-transparent md:pointer-events-none"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm md:bg-black/20 md:backdrop-blur-none"
             onClick={() => setOpen(false)}
+            style={{ animation: "fadeIn 0.2s ease-out" }}
           />
           <aside
             className="fixed right-0 top-0 z-50 flex h-screen w-full max-w-[420px] flex-col"
             style={{
-              background: "var(--db-surface)",
+              background: "var(--db-bg)",
               borderLeft: "1px solid var(--db-border)",
-              animation: "slideInRight 0.2s ease-out",
+              animation: "slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+              boxShadow: "-8px 0 30px rgba(0, 0, 0, 0.15)",
             }}
             role="dialog"
             aria-label={`Chat with ${receptionistName}`}
           >
-            {/* Header */}
+            {/* Header — frosted glass */}
             <div
-              className="flex items-center gap-3 px-4 py-3"
+              className="relative flex items-center gap-3.5 px-5 py-4"
               style={{
-                borderBottom: "1px solid var(--db-border)",
-                background: "linear-gradient(135deg, #1B2A4A, #2a3d6a)",
+                background: "linear-gradient(135deg, #1B2A4A 0%, #223358 50%, #2a3d6a 100%)",
+                borderBottom: "1px solid rgba(212, 168, 67, 0.15)",
               }}
             >
-              {/* Avatar */}
-              <div
-                className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold"
-                style={{ background: "rgba(212, 168, 67, 0.2)", color: "#D4A843" }}
-              >
-                {receptionistName[0]}
+              {/* Avatar with gold ring */}
+              <div className="relative">
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(212, 168, 67, 0.25), rgba(212, 168, 67, 0.1))",
+                    color: "#D4A843",
+                    boxShadow: "0 0 0 2px rgba(212, 168, 67, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2)",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  {receptionistName[0]}
+                </div>
+                {/* Online indicator */}
+                <span
+                  className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full"
+                  style={{ background: "#1B2A4A", padding: "2px" }}
+                >
+                  <span className="h-full w-full rounded-full bg-emerald-400" />
+                </span>
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-white">{receptionistName}</p>
-                <p className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-semibold text-white tracking-tight">{receptionistName}</p>
+                <p className="text-xs font-medium" style={{ color: "rgba(212, 168, 67, 0.8)" }}>
                   Your AI Office Manager
                 </p>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="rounded-lg p-1 transition-colors"
-                style={{ color: "rgba(255,255,255,0.6)" }}
-                onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}
+                className="flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200"
+                style={{
+                  color: "rgba(255,255,255,0.5)",
+                  background: "rgba(255,255,255,0.05)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#fff";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "rgba(255,255,255,0.5)";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                }}
                 aria-label="Close chat"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -229,78 +265,145 @@ export default function ChatWidget() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+            <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
               {/* Loading state */}
               {!loaded && (
-                <div className="flex items-center justify-center py-8">
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" style={{ color: "var(--db-text-muted)" }} />
-                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Loading conversation...</p>
+                <div className="flex items-center justify-center py-12">
+                  <div className="flex flex-col items-center gap-3">
+                    <div
+                      className="h-6 w-6 animate-spin rounded-full border-2 border-t-transparent"
+                      style={{ borderColor: "rgba(212, 168, 67, 0.3)", borderTopColor: "transparent" }}
+                    />
+                    <p className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
+                      Loading conversation...
+                    </p>
                   </div>
                 </div>
               )}
 
               {/* Load error */}
               {loaded && loadError && messages.length === 0 && (
-                <div className="flex items-center justify-center py-8">
+                <div className="flex items-center justify-center py-12">
                   <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
                     Couldn&apos;t load chat history. You can still send messages.
                   </p>
                 </div>
               )}
 
-              {/* Greeting */}
-              {loaded && messages.length === 0 && greeting && !loadError && (
-                <div className="flex gap-2">
+              {/* Empty state with suggestions */}
+              {loaded && messages.length === 0 && !loadError && (
+                <div className="chat-msg-enter flex flex-col items-center py-8">
+                  {/* Large avatar */}
                   <div
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-0.5"
-                    style={{ background: "rgba(212, 168, 67, 0.15)", color: "#D4A843" }}
+                    className="mb-4 flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(212, 168, 67, 0.2), rgba(212, 168, 67, 0.05))",
+                      color: "#D4A843",
+                      boxShadow: "0 0 0 3px rgba(212, 168, 67, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1)",
+                    }}
                   >
                     {receptionistName[0]}
                   </div>
-                  <div
-                    className="rounded-xl rounded-tl-sm px-3 py-2 max-w-[85%]"
-                    style={{ background: "var(--db-hover)", color: "var(--db-text)" }}
-                  >
-                    <p className="text-sm">{greeting}</p>
+                  {greeting ? (
+                    <p className="text-sm text-center mb-6 max-w-[280px] leading-relaxed" style={{ color: "var(--db-text)" }}>
+                      {greeting}
+                    </p>
+                  ) : (
+                    <p className="text-sm text-center mb-6 max-w-[280px] leading-relaxed" style={{ color: "var(--db-text-muted)" }}>
+                      Ask me anything about your calls, appointments, customers, or business.
+                    </p>
+                  )}
+                  {/* Quick action chips */}
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {[
+                      "What\u2019s my schedule today?",
+                      "How many calls this week?",
+                      "Any missed calls?",
+                    ].map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        onClick={() => {
+                          setInput(suggestion);
+                          setTimeout(() => inputRef.current?.focus(), 50);
+                        }}
+                        className="rounded-full px-3.5 py-2 text-xs font-medium transition-all duration-200"
+                        style={{
+                          background: "var(--db-surface)",
+                          color: "var(--db-text-muted)",
+                          border: "1px solid var(--db-border)",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = "rgba(212, 168, 67, 0.4)";
+                          e.currentTarget.style.color = "#D4A843";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = "var(--db-border)";
+                          e.currentTarget.style.color = "var(--db-text-muted)";
+                        }}
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
 
-              {messages.map((msg) => (
+              {messages.map((msg, idx) => (
                 <div
                   key={msg.id}
-                  className={`flex gap-2 ${msg.role === "user" ? "justify-end" : ""}`}
+                  className={`chat-msg-enter flex gap-3 ${msg.role === "user" ? "justify-end" : ""}`}
+                  style={{ animationDelay: `${Math.min(idx * 30, 200)}ms` }}
                 >
                   {msg.role === "assistant" && (
                     <div
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-0.5"
-                      style={{ background: "rgba(212, 168, 67, 0.15)", color: "#D4A843" }}
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-1"
+                      style={{
+                        background: "linear-gradient(135deg, rgba(212, 168, 67, 0.2), rgba(212, 168, 67, 0.08))",
+                        color: "#D4A843",
+                      }}
                     >
                       {receptionistName[0]}
                     </div>
                   )}
-                  <div className="max-w-[85%]">
+                  <div className="max-w-[80%]">
                     <div
-                      className={`rounded-xl px-3 py-2 ${
+                      className={`rounded-2xl px-4 py-2.5 ${
                         msg.role === "user"
-                          ? "rounded-tr-sm"
-                          : "rounded-tl-sm"
+                          ? "rounded-br-md"
+                          : "rounded-bl-md"
                       }`}
                       style={
                         msg.role === "user"
-                          ? { background: "#1B2A4A", color: "#fff" }
-                          : { background: "var(--db-hover)", color: "var(--db-text)" }
+                          ? {
+                              background: "linear-gradient(135deg, #D4A843 0%, #c49a3a 100%)",
+                              color: "#0f1729",
+                              boxShadow: "0 2px 8px rgba(212, 168, 67, 0.25)",
+                            }
+                          : {
+                              background: "var(--db-surface)",
+                              color: "var(--db-text)",
+                              border: "1px solid var(--db-border)",
+                              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.06)",
+                            }
                       }
                     >
-                      <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                      <p className="text-[13.5px] leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                     </div>
-                    <div className="flex items-center gap-2 mt-0.5 px-1">
-                      <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                    <div className="flex items-center gap-2 mt-1.5 px-1">
+                      <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)", opacity: 0.7 }}>
                         {formatTime(msg.createdAt)}
                       </span>
                       {msg.toolsUsed && msg.toolsUsed.length > 0 && (
-                        <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                        <span
+                          className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium"
+                          style={{
+                            background: "rgba(212, 168, 67, 0.1)",
+                            color: "#D4A843",
+                          }}
+                        >
+                          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                          </svg>
                           {msg.toolsUsed.map((t) => t.replace(/_/g, " ").replace("get ", "")).join(", ")}
                         </span>
                       )}
@@ -311,21 +414,27 @@ export default function ChatWidget() {
 
               {/* Typing indicator */}
               {sending && (
-                <div className="flex gap-2">
+                <div className="chat-msg-enter flex gap-3">
                   <div
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-0.5"
-                    style={{ background: "rgba(212, 168, 67, 0.15)", color: "#D4A843" }}
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-1"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(212, 168, 67, 0.2), rgba(212, 168, 67, 0.08))",
+                      color: "#D4A843",
+                    }}
                   >
                     {receptionistName[0]}
                   </div>
                   <div
-                    className="rounded-xl rounded-tl-sm px-3 py-2"
-                    style={{ background: "var(--db-hover)" }}
+                    className="rounded-2xl rounded-bl-md px-4 py-3"
+                    style={{
+                      background: "var(--db-surface)",
+                      border: "1px solid var(--db-border)",
+                    }}
                   >
-                    <div className="flex gap-1">
+                    <div className="flex items-center gap-1.5">
                       <span className="typing-dot" style={{ animationDelay: "0ms" }} />
-                      <span className="typing-dot" style={{ animationDelay: "150ms" }} />
-                      <span className="typing-dot" style={{ animationDelay: "300ms" }} />
+                      <span className="typing-dot" style={{ animationDelay: "160ms" }} />
+                      <span className="typing-dot" style={{ animationDelay: "320ms" }} />
                     </div>
                   </div>
                 </div>
@@ -334,16 +443,22 @@ export default function ChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
+            {/* Input area */}
             <div
-              className="px-4 py-3"
-              style={{ borderTop: "1px solid var(--db-border)" }}
+              className="px-5 py-4"
+              style={{
+                borderTop: "1px solid var(--db-border)",
+                background: "var(--db-bg)",
+              }}
             >
               <div
-                className="flex items-end gap-2 rounded-xl px-3 py-2"
+                className="chat-input-wrap flex items-end gap-2 rounded-2xl px-4 py-3 transition-all duration-200"
                 style={{
-                  background: "var(--db-hover)",
-                  border: "1px solid var(--db-border)",
+                  background: "var(--db-surface)",
+                  border: `1.5px solid ${hasInput ? "rgba(212, 168, 67, 0.4)" : "var(--db-border)"}`,
+                  boxShadow: hasInput
+                    ? "0 0 0 3px rgba(212, 168, 67, 0.08), 0 2px 8px rgba(0, 0, 0, 0.06)"
+                    : "0 2px 8px rgba(0, 0, 0, 0.04)",
                 }}
               >
                 <textarea
@@ -353,7 +468,7 @@ export default function ChatWidget() {
                   onKeyDown={handleKeyDown}
                   placeholder={`Message ${receptionistName}...`}
                   rows={1}
-                  className="flex-1 resize-none bg-transparent text-sm outline-none"
+                  className="flex-1 resize-none bg-transparent text-sm leading-relaxed outline-none"
                   style={{
                     color: "var(--db-text)",
                     maxHeight: "100px",
@@ -362,22 +477,27 @@ export default function ChatWidget() {
                 />
                 <button
                   onClick={handleSend}
-                  disabled={!input.trim() || sending}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all"
+                  disabled={!hasInput || sending}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-200"
                   style={{
-                    background: input.trim() && !sending ? "#1B2A4A" : "transparent",
-                    color: input.trim() && !sending ? "#fff" : "var(--db-text-muted)",
-                    opacity: input.trim() && !sending ? 1 : 0.4,
+                    background: hasInput && !sending
+                      ? "linear-gradient(135deg, #D4A843, #c49a3a)"
+                      : "transparent",
+                    color: hasInput && !sending ? "#0f1729" : "var(--db-text-muted)",
+                    opacity: hasInput && !sending ? 1 : 0.3,
+                    boxShadow: hasInput && !sending
+                      ? "0 2px 8px rgba(212, 168, 67, 0.3)"
+                      : "none",
+                    transform: hasInput && !sending ? "scale(1)" : "scale(0.9)",
                   }}
                   aria-label="Send message"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13" />
-                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
                 </button>
               </div>
-              <p className="mt-1 text-center text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+              <p className="mt-2 text-center text-[10px] font-medium tracking-wide" style={{ color: "var(--db-text-muted)", opacity: 0.6 }}>
                 {receptionistName} can look up your calls, appointments, customers, and more
               </p>
             </div>
@@ -387,24 +507,46 @@ export default function ChatWidget() {
             @keyframes slideInRight {
               from {
                 transform: translateX(100%);
+                opacity: 0.8;
               }
               to {
                 transform: translateX(0);
+                opacity: 1;
+              }
+            }
+            @keyframes fadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            .chat-msg-enter {
+              animation: msgSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+            @keyframes msgSlideUp {
+              from {
+                opacity: 0;
+                transform: translateY(8px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
               }
             }
             .typing-dot {
-              width: 6px;
-              height: 6px;
+              width: 7px;
+              height: 7px;
               border-radius: 50%;
               background: var(--db-text-muted);
-              animation: typingBounce 1s infinite;
+              opacity: 0.6;
+              animation: typingPulse 1.4s ease-in-out infinite;
             }
-            @keyframes typingBounce {
+            @keyframes typingPulse {
               0%, 60%, 100% {
                 transform: translateY(0);
+                opacity: 0.4;
               }
               30% {
-                transform: translateY(-4px);
+                transform: translateY(-5px);
+                opacity: 0.9;
               }
             }
           `}</style>
