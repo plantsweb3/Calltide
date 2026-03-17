@@ -27,6 +27,13 @@ export default function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
+  // Hide help FAB when chat is open
+  useEffect(() => {
+    const helpFab = document.querySelector("[data-help-fab]") as HTMLElement | null;
+    if (helpFab) helpFab.style.display = open ? "none" : "";
+    return () => { if (helpFab) helpFab.style.display = ""; };
+  }, [open]);
+
   // Load chat history when opened
   useEffect(() => {
     if (!open || loaded) return;
@@ -52,19 +59,16 @@ export default function ChatWidget() {
     return () => controller.abort();
   }, [open, loaded]);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     if (open) scrollToBottom();
   }, [messages, open, scrollToBottom]);
 
-  // Focus input when opened
   useEffect(() => {
     if (open && loaded) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [open, loaded]);
 
-  // Escape key closes the panel
   useEffect(() => {
     if (!open) return;
     function handleEscape(e: KeyboardEvent) {
@@ -74,7 +78,6 @@ export default function ChatWidget() {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [open]);
 
-  // Cleanup inflight request on unmount
   useEffect(() => {
     return () => abortRef.current?.abort();
   }, []);
@@ -86,12 +89,10 @@ export default function ChatWidget() {
     setInput("");
     setSending(true);
 
-    // Abort any previous inflight request
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
-    // Add user message optimistically
     const userMsg: Message = {
       id: `temp-${Date.now()}`,
       role: "user",
@@ -124,7 +125,7 @@ export default function ChatWidget() {
       const errorMsg: Message = {
         id: `err-${Date.now()}`,
         role: "assistant",
-        content: "Sorry, I couldn't process that. Please try again.",
+        content: "Sorry, I couldn\u2019t process that. Please try again.",
         createdAt: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, errorMsg]);
@@ -160,104 +161,133 @@ export default function ChatWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="chat-fab fixed z-50 flex items-center gap-2.5 rounded-full px-5 py-3.5 shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_30px_rgba(212,168,67,0.3)]"
+          className="fixed z-50 flex items-center gap-2.5 rounded-full px-5 py-3 shadow-lg transition-all duration-300 hover:shadow-xl active:scale-95"
           style={{
             bottom: "1.5rem",
             right: "4.5rem",
-            background: "linear-gradient(135deg, #1B2A4A 0%, #2a3d6a 100%)",
+            background: "linear-gradient(135deg, #1B2A4A 0%, #243356 100%)",
             color: "#fff",
-            border: "1px solid rgba(212, 168, 67, 0.2)",
           }}
           aria-label={`Chat with ${receptionistName}`}
         >
-          {/* Gold accent ring */}
-          <div className="relative flex h-6 w-6 items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="relative">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
-            {/* Online pulse */}
-            <span className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5">
+            <span className="absolute -right-1 -top-1 flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
             </span>
           </div>
-          <span className="text-sm font-medium hidden sm:inline tracking-wide">Ask {receptionistName}</span>
+          <span className="text-[13px] font-medium hidden sm:inline">Ask {receptionistName}</span>
         </button>
       )}
 
       {/* Chat panel */}
       {open && (
         <>
-          {/* Backdrop on mobile */}
           <div
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm md:bg-black/20 md:backdrop-blur-none"
+            className="fixed inset-0 z-50 md:pointer-events-none"
             onClick={() => setOpen(false)}
-            style={{ animation: "fadeIn 0.2s ease-out" }}
+            style={{
+              background: "rgba(0,0,0,0.3)",
+              animation: "chatFadeIn 0.15s ease-out",
+            }}
           />
           <aside
             className="fixed right-0 top-0 z-50 flex h-screen w-full max-w-[420px] flex-col"
             style={{
               background: "var(--db-bg)",
               borderLeft: "1px solid var(--db-border)",
-              animation: "slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-              boxShadow: "-8px 0 30px rgba(0, 0, 0, 0.15)",
+              animation: "chatSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+              boxShadow: "-4px 0 24px rgba(0, 0, 0, 0.12)",
             }}
             role="dialog"
             aria-label={`Chat with ${receptionistName}`}
           >
-            {/* Header — frosted glass */}
+            {/* Header */}
             <div
-              className="relative flex items-center gap-3.5 px-5 py-4"
+              className="flex items-center gap-3 px-5 py-3.5"
               style={{
-                background: "linear-gradient(135deg, #1B2A4A 0%, #223358 50%, #2a3d6a 100%)",
-                borderBottom: "1px solid rgba(212, 168, 67, 0.15)",
+                background: "linear-gradient(135deg, #1B2A4A 0%, #243356 100%)",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
               }}
             >
-              {/* Avatar with gold ring */}
+              {/* Avatar */}
               <div className="relative">
                 <div
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold"
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold"
                   style={{
-                    background: "linear-gradient(135deg, rgba(212, 168, 67, 0.25), rgba(212, 168, 67, 0.1))",
+                    background: "rgba(212, 168, 67, 0.15)",
                     color: "#D4A843",
-                    boxShadow: "0 0 0 2px rgba(212, 168, 67, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2)",
-                    letterSpacing: "0.5px",
+                    border: "1.5px solid rgba(212, 168, 67, 0.25)",
                   }}
                 >
                   {receptionistName[0]}
                 </div>
-                {/* Online indicator */}
                 <span
-                  className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full"
+                  className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full"
                   style={{ background: "#1B2A4A", padding: "2px" }}
                 >
-                  <span className="h-full w-full rounded-full bg-emerald-400" />
+                  <span className="block h-full w-full rounded-full bg-emerald-400" />
                 </span>
               </div>
+
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-semibold text-white tracking-tight">{receptionistName}</p>
-                <p className="text-xs font-medium" style={{ color: "rgba(212, 168, 67, 0.8)" }}>
-                  Your AI Office Manager
+                <p className="text-[14px] font-semibold text-white leading-tight">{receptionistName}</p>
+                <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.45)" }}>
+                  AI Office Manager
                 </p>
               </div>
+
+              {/* Help button in header */}
               <button
-                onClick={() => setOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200"
-                style={{
-                  color: "rgba(255,255,255,0.5)",
-                  background: "rgba(255,255,255,0.05)",
+                onClick={() => {
+                  // Find and click the help FAB to open help panel
+                  const helpFab = document.querySelector("[data-help-fab]") as HTMLElement | null;
+                  if (helpFab) {
+                    setOpen(false);
+                    setTimeout(() => helpFab.click(), 100);
+                  } else {
+                    window.open("/help", "_blank");
+                  }
                 }}
+                className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-150"
+                style={{ color: "rgba(255,255,255,0.35)", background: "rgba(255,255,255,0.05)" }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = "#fff";
+                  e.currentTarget.style.color = "rgba(255,255,255,0.7)";
                   e.currentTarget.style.background = "rgba(255,255,255,0.1)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "rgba(255,255,255,0.5)";
+                  e.currentTarget.style.color = "rgba(255,255,255,0.35)";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                }}
+                aria-label="Help articles"
+                title="Help articles"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </button>
+
+              {/* Close */}
+              <button
+                onClick={() => setOpen(false)}
+                className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-150"
+                style={{ color: "rgba(255,255,255,0.35)", background: "rgba(255,255,255,0.05)" }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "rgba(255,255,255,0.7)";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "rgba(255,255,255,0.35)";
                   e.currentTarget.style.background = "rgba(255,255,255,0.05)";
                 }}
                 aria-label="Close chat"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -266,55 +296,43 @@ export default function ChatWidget() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
-              {/* Loading state */}
               {!loaded && (
-                <div className="flex items-center justify-center py-12">
-                  <div className="flex flex-col items-center gap-3">
-                    <div
-                      className="h-6 w-6 animate-spin rounded-full border-2 border-t-transparent"
-                      style={{ borderColor: "rgba(212, 168, 67, 0.3)", borderTopColor: "transparent" }}
-                    />
-                    <p className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
-                      Loading conversation...
-                    </p>
-                  </div>
+                <div className="flex items-center justify-center py-16">
+                  <div
+                    className="h-5 w-5 animate-spin rounded-full border-2 border-t-transparent"
+                    style={{ borderColor: "var(--db-border)", borderTopColor: "transparent" }}
+                  />
                 </div>
               )}
 
-              {/* Load error */}
               {loaded && loadError && messages.length === 0 && (
-                <div className="flex items-center justify-center py-12">
+                <div className="flex items-center justify-center py-16">
                   <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
                     Couldn&apos;t load chat history. You can still send messages.
                   </p>
                 </div>
               )}
 
-              {/* Empty state with suggestions */}
+              {/* Empty state */}
               {loaded && messages.length === 0 && !loadError && (
-                <div className="chat-msg-enter flex flex-col items-center py-8">
-                  {/* Large avatar */}
+                <div className="flex flex-col items-center pt-12 pb-4">
                   <div
-                    className="mb-4 flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold"
+                    className="mb-5 flex h-14 w-14 items-center justify-center rounded-full text-xl font-semibold"
                     style={{
-                      background: "linear-gradient(135deg, rgba(212, 168, 67, 0.2), rgba(212, 168, 67, 0.05))",
+                      background: "rgba(212, 168, 67, 0.1)",
                       color: "#D4A843",
-                      boxShadow: "0 0 0 3px rgba(212, 168, 67, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1)",
+                      border: "1.5px solid rgba(212, 168, 67, 0.15)",
                     }}
                   >
                     {receptionistName[0]}
                   </div>
-                  {greeting ? (
-                    <p className="text-sm text-center mb-6 max-w-[280px] leading-relaxed" style={{ color: "var(--db-text)" }}>
-                      {greeting}
-                    </p>
-                  ) : (
-                    <p className="text-sm text-center mb-6 max-w-[280px] leading-relaxed" style={{ color: "var(--db-text-muted)" }}>
-                      Ask me anything about your calls, appointments, customers, or business.
-                    </p>
-                  )}
-                  {/* Quick action chips */}
-                  <div className="flex flex-wrap justify-center gap-2">
+                  <p className="text-sm text-center mb-1 font-medium" style={{ color: "var(--db-text)" }}>
+                    {greeting || `How can I help?`}
+                  </p>
+                  <p className="text-xs text-center mb-8 max-w-[260px]" style={{ color: "var(--db-text-muted)" }}>
+                    Ask about calls, appointments, customers, or your business.
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-2 max-w-[320px]">
                     {[
                       "What\u2019s my schedule today?",
                       "How many calls this week?",
@@ -326,15 +344,15 @@ export default function ChatWidget() {
                           setInput(suggestion);
                           setTimeout(() => inputRef.current?.focus(), 50);
                         }}
-                        className="rounded-full px-3.5 py-2 text-xs font-medium transition-all duration-200"
+                        className="rounded-full px-3 py-1.5 text-[12px] transition-colors duration-150"
                         style={{
                           background: "var(--db-surface)",
                           color: "var(--db-text-muted)",
                           border: "1px solid var(--db-border)",
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.borderColor = "rgba(212, 168, 67, 0.4)";
-                          e.currentTarget.style.color = "#D4A843";
+                          e.currentTarget.style.borderColor = "var(--db-text-muted)";
+                          e.currentTarget.style.color = "var(--db-text)";
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.borderColor = "var(--db-border)";
@@ -351,59 +369,49 @@ export default function ChatWidget() {
               {messages.map((msg, idx) => (
                 <div
                   key={msg.id}
-                  className={`chat-msg-enter flex gap-3 ${msg.role === "user" ? "justify-end" : ""}`}
-                  style={{ animationDelay: `${Math.min(idx * 30, 200)}ms` }}
+                  className={`chatMsgIn flex gap-2.5 ${msg.role === "user" ? "justify-end" : ""}`}
+                  style={{ animationDelay: `${Math.min(idx * 20, 150)}ms` }}
                 >
                   {msg.role === "assistant" && (
                     <div
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-1"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold mt-0.5"
                       style={{
-                        background: "linear-gradient(135deg, rgba(212, 168, 67, 0.2), rgba(212, 168, 67, 0.08))",
+                        background: "rgba(212, 168, 67, 0.1)",
                         color: "#D4A843",
                       }}
                     >
                       {receptionistName[0]}
                     </div>
                   )}
-                  <div className="max-w-[80%]">
+                  <div className={`max-w-[80%] ${msg.role === "user" ? "flex flex-col items-end" : ""}`}>
                     <div
-                      className={`rounded-2xl px-4 py-2.5 ${
-                        msg.role === "user"
-                          ? "rounded-br-md"
-                          : "rounded-bl-md"
+                      className={`rounded-2xl px-3.5 py-2.5 ${
+                        msg.role === "user" ? "rounded-br-md" : "rounded-bl-md"
                       }`}
                       style={
                         msg.role === "user"
                           ? {
-                              background: "linear-gradient(135deg, #D4A843 0%, #c49a3a 100%)",
+                              background: "linear-gradient(135deg, #D4A843, #bf9438)",
                               color: "#0f1729",
-                              boxShadow: "0 2px 8px rgba(212, 168, 67, 0.25)",
                             }
                           : {
                               background: "var(--db-surface)",
                               color: "var(--db-text)",
                               border: "1px solid var(--db-border)",
-                              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.06)",
                             }
                       }
                     >
-                      <p className="text-[13.5px] leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                      <p className="text-[13px] leading-[1.5] whitespace-pre-wrap">{msg.content}</p>
                     </div>
-                    <div className="flex items-center gap-2 mt-1.5 px-1">
-                      <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)", opacity: 0.7 }}>
+                    <div className="flex items-center gap-1.5 mt-1 px-1">
+                      <span className="text-[10px]" style={{ color: "var(--db-text-muted)", opacity: 0.6 }}>
                         {formatTime(msg.createdAt)}
                       </span>
                       {msg.toolsUsed && msg.toolsUsed.length > 0 && (
                         <span
-                          className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium"
-                          style={{
-                            background: "rgba(212, 168, 67, 0.1)",
-                            color: "#D4A843",
-                          }}
+                          className="text-[9px] font-medium rounded-full px-1.5 py-0.5"
+                          style={{ background: "rgba(212, 168, 67, 0.08)", color: "rgba(212, 168, 67, 0.7)" }}
                         >
-                          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                          </svg>
                           {msg.toolsUsed.map((t) => t.replace(/_/g, " ").replace("get ", "")).join(", ")}
                         </span>
                       )}
@@ -412,29 +420,22 @@ export default function ChatWidget() {
                 </div>
               ))}
 
-              {/* Typing indicator */}
               {sending && (
-                <div className="chat-msg-enter flex gap-3">
+                <div className="chatMsgIn flex gap-2.5">
                   <div
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-1"
-                    style={{
-                      background: "linear-gradient(135deg, rgba(212, 168, 67, 0.2), rgba(212, 168, 67, 0.08))",
-                      color: "#D4A843",
-                    }}
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold mt-0.5"
+                    style={{ background: "rgba(212, 168, 67, 0.1)", color: "#D4A843" }}
                   >
                     {receptionistName[0]}
                   </div>
                   <div
                     className="rounded-2xl rounded-bl-md px-4 py-3"
-                    style={{
-                      background: "var(--db-surface)",
-                      border: "1px solid var(--db-border)",
-                    }}
+                    style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
                   >
-                    <div className="flex items-center gap-1.5">
-                      <span className="typing-dot" style={{ animationDelay: "0ms" }} />
-                      <span className="typing-dot" style={{ animationDelay: "160ms" }} />
-                      <span className="typing-dot" style={{ animationDelay: "320ms" }} />
+                    <div className="flex items-center gap-1">
+                      <span className="chatDot" style={{ animationDelay: "0ms" }} />
+                      <span className="chatDot" style={{ animationDelay: "160ms" }} />
+                      <span className="chatDot" style={{ animationDelay: "320ms" }} />
                     </div>
                   </div>
                 </div>
@@ -443,22 +444,13 @@ export default function ChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input area */}
-            <div
-              className="px-5 py-4"
-              style={{
-                borderTop: "1px solid var(--db-border)",
-                background: "var(--db-bg)",
-              }}
-            >
+            {/* Input — clean, no border gimmicks */}
+            <div className="px-4 pb-4 pt-2">
               <div
-                className="chat-input-wrap flex items-end gap-2 rounded-2xl px-4 py-3 transition-all duration-200"
+                className="flex items-end gap-2 rounded-2xl px-3.5 py-2.5"
                 style={{
                   background: "var(--db-surface)",
-                  border: `1.5px solid ${hasInput ? "rgba(212, 168, 67, 0.4)" : "var(--db-border)"}`,
-                  boxShadow: hasInput
-                    ? "0 0 0 3px rgba(212, 168, 67, 0.08), 0 2px 8px rgba(0, 0, 0, 0.06)"
-                    : "0 2px 8px rgba(0, 0, 0, 0.04)",
+                  border: "1px solid var(--db-border)",
                 }}
               >
                 <textarea
@@ -468,86 +460,60 @@ export default function ChatWidget() {
                   onKeyDown={handleKeyDown}
                   placeholder={`Message ${receptionistName}...`}
                   rows={1}
-                  className="flex-1 resize-none bg-transparent text-sm leading-relaxed outline-none"
-                  style={{
-                    color: "var(--db-text)",
-                    maxHeight: "100px",
-                  }}
+                  className="flex-1 resize-none bg-transparent text-[13px] leading-[1.4] outline-none placeholder:text-[var(--db-text-muted)]"
+                  style={{ color: "var(--db-text)", maxHeight: "80px" }}
                   disabled={sending}
                 />
                 <button
                   onClick={handleSend}
                   disabled={!hasInput || sending}
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-200"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-200"
                   style={{
-                    background: hasInput && !sending
-                      ? "linear-gradient(135deg, #D4A843, #c49a3a)"
-                      : "transparent",
+                    background: hasInput && !sending ? "#D4A843" : "transparent",
                     color: hasInput && !sending ? "#0f1729" : "var(--db-text-muted)",
-                    opacity: hasInput && !sending ? 1 : 0.3,
-                    boxShadow: hasInput && !sending
-                      ? "0 2px 8px rgba(212, 168, 67, 0.3)"
-                      : "none",
-                    transform: hasInput && !sending ? "scale(1)" : "scale(0.9)",
+                    opacity: hasInput && !sending ? 1 : 0.25,
+                    transform: `scale(${hasInput && !sending ? 1 : 0.85})`,
                   }}
                   aria-label="Send message"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
                 </button>
               </div>
-              <p className="mt-2 text-center text-[10px] font-medium tracking-wide" style={{ color: "var(--db-text-muted)", opacity: 0.6 }}>
+              <p className="mt-1.5 text-center text-[10px]" style={{ color: "var(--db-text-muted)", opacity: 0.5 }}>
                 {receptionistName} can look up your calls, appointments, customers, and more
               </p>
             </div>
           </aside>
 
           <style jsx>{`
-            @keyframes slideInRight {
-              from {
-                transform: translateX(100%);
-                opacity: 0.8;
-              }
-              to {
-                transform: translateX(0);
-                opacity: 1;
-              }
+            @keyframes chatSlideIn {
+              from { transform: translateX(100%); }
+              to { transform: translateX(0); }
             }
-            @keyframes fadeIn {
+            @keyframes chatFadeIn {
               from { opacity: 0; }
               to { opacity: 1; }
             }
-            .chat-msg-enter {
-              animation: msgSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+            .chatMsgIn {
+              animation: chatMsgSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
             }
-            @keyframes msgSlideUp {
-              from {
-                opacity: 0;
-                transform: translateY(8px);
-              }
-              to {
-                opacity: 1;
-                transform: translateY(0);
-              }
+            @keyframes chatMsgSlide {
+              from { opacity: 0; transform: translateY(6px); }
+              to { opacity: 1; transform: translateY(0); }
             }
-            .typing-dot {
-              width: 7px;
-              height: 7px;
+            .chatDot {
+              width: 6px;
+              height: 6px;
               border-radius: 50%;
               background: var(--db-text-muted);
-              opacity: 0.6;
-              animation: typingPulse 1.4s ease-in-out infinite;
+              opacity: 0.4;
+              animation: chatDotBounce 1.4s ease-in-out infinite;
             }
-            @keyframes typingPulse {
-              0%, 60%, 100% {
-                transform: translateY(0);
-                opacity: 0.4;
-              }
-              30% {
-                transform: translateY(-5px);
-                opacity: 0.9;
-              }
+            @keyframes chatDotBounce {
+              0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+              30% { transform: translateY(-4px); opacity: 0.7; }
             }
           `}</style>
         </>
