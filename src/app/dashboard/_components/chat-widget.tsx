@@ -460,8 +460,8 @@ export default function ChatWidget() {
                   onKeyDown={handleKeyDown}
                   placeholder={`Message ${receptionistName}...`}
                   rows={1}
-                  className="flex-1 resize-none bg-transparent text-[13px] leading-[1.4] outline-none placeholder:text-[var(--db-text-muted)]"
-                  style={{ color: "var(--db-text)", maxHeight: "80px" }}
+                  className="flex-1 resize-none bg-transparent text-[13px] leading-[1.4] outline-none border-none shadow-none placeholder:text-[var(--db-text-muted)] focus:outline-none focus:ring-0 focus:border-none"
+                  style={{ color: "var(--db-text)", maxHeight: "80px", WebkitAppearance: "none" }}
                   disabled={sending}
                 />
                 <button
@@ -488,6 +488,12 @@ export default function ChatWidget() {
           </aside>
 
           <style jsx>{`
+            aside textarea, aside textarea:focus, aside textarea:focus-visible {
+              outline: none !important;
+              border: none !important;
+              box-shadow: none !important;
+              -webkit-appearance: none;
+            }
             @keyframes chatSlideIn {
               from { transform: translateX(100%); }
               to { transform: translateX(0); }
