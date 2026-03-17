@@ -5,6 +5,8 @@ import DataTable, { type Column } from "@/components/data-table";
 import AppointmentCalendar from "@/app/dashboard/_components/appointment-calendar";
 import { TableSkeleton } from "@/components/skeleton";
 import ExportCsvButton from "@/app/dashboard/_components/csv-export";
+import Button from "@/components/ui/button";
+import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 
 interface Appointment {
   id: string;
@@ -56,13 +58,6 @@ export default function AppointmentsPage() {
     });
   }
 
-  const statusColors: Record<string, { bg: string; text: string }> = {
-    confirmed: { bg: "rgba(74,222,128,0.1)", text: "#4ade80" },
-    cancelled: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
-    completed: { bg: "rgba(96,165,250,0.1)", text: "#60a5fa" },
-    no_show: { bg: "rgba(251,191,36,0.1)", text: "#fbbf24" },
-  };
-
   const columns: Column<Appointment>[] = [
     {
       key: "dateTime",
@@ -81,17 +76,9 @@ export default function AppointmentsPage() {
     {
       key: "status",
       label: "Status",
-      render: (row) => {
-        const c = statusColors[row.status] || { bg: "var(--db-hover)", text: "var(--db-text-secondary)" };
-        return (
-          <span
-            className="rounded-full px-2 py-0.5 text-xs font-medium"
-            style={{ background: c.bg, color: c.text }}
-          >
-            {row.status.replace(/_/g, " ")}
-          </span>
-        );
-      },
+      render: (row) => (
+        <StatusBadge label={row.status} variant={statusToVariant(row.status)} />
+      ),
     },
   ];
 
@@ -99,7 +86,7 @@ export default function AppointmentsPage() {
     <div>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1
-          className="text-2xl font-semibold"
+          className="text-2xl font-semibold tracking-tight"
           style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
         >
           Appointments
@@ -184,13 +171,9 @@ export default function AppointmentsPage() {
       {error && (
         <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
           <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
-          <button
-            onClick={fetchAppointments}
-            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
-          >
+          <Button variant="danger" size="sm" onClick={fetchAppointments}>
             Retry
-          </button>
+          </Button>
         </div>
       )}
 
@@ -199,14 +182,7 @@ export default function AppointmentsPage() {
       )}
 
       {!loading && appointments.length === 0 && (
-        <div
-          className="rounded-xl p-12 text-center"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            boxShadow: "var(--db-card-shadow)",
-          }}
-        >
+        <div className="db-card rounded-xl p-12 text-center">
           <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
             <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
           </svg>

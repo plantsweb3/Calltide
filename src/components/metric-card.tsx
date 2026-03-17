@@ -23,26 +23,19 @@ export default function MetricCard({
 }: MetricCardProps) {
   const changeColor =
     changeType === "positive"
-      ? "#4ade80"
+      ? "var(--db-success)"
       : changeType === "negative"
-        ? "#f87171"
+        ? "var(--db-danger)"
         : "var(--db-text-muted)";
 
   const isNumber = typeof value === "number";
 
   return (
-    <div
-      className="rounded-xl p-5 transition-colors duration-300"
-      style={{
-        background: "var(--db-card)",
-        border: "1px solid var(--db-border)",
-        boxShadow: "var(--db-card-shadow)",
-      }}
-    >
+    <div className="db-card p-5">
       <p className="text-sm font-medium" style={{ color: "var(--db-text-secondary)" }}>
         {label}
       </p>
-      <p className="mt-2 text-3xl font-semibold" style={{ color: "var(--db-text)" }}>
+      <p className="mt-2 text-3xl font-semibold tracking-tight" style={{ color: "var(--db-text)" }}>
         {isNumber ? (
           <AnimatedCounter value={value} prefix={prefix} suffix={suffix} decimals={decimals} />
         ) : (
@@ -50,7 +43,7 @@ export default function MetricCard({
         )}
       </p>
       {change && (
-        <p className="mt-1 text-sm" style={{ color: changeColor }}>
+        <p className="mt-1.5 text-xs font-medium" style={{ color: changeColor }}>
           {change}
         </p>
       )}

@@ -69,13 +69,13 @@ export default function ReportingPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold" style={{ color: "var(--db-text)" }}>Reporting</h1>
+          <h1 className="text-xl font-bold tracking-tight" style={{ color: "var(--db-text)" }}>Reporting</h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>Last 30 days of call analytics and business insights.</p>
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-grid">
         <SummaryCard label="Total Calls" value={totalCalls.toString()} sub="Last 30 days" />
         <SummaryCard label="Busiest Hour" value={formatHour(busiestHour.hour)} sub={`${busiestHour.total} calls`} />
         <SummaryCard label="Busiest Day" value={busiestDay.label} sub={`${busiestDay.total} calls`} />
@@ -347,7 +347,7 @@ export default function ReportingPage() {
 
 function SummaryCard({ label, value, sub, accent }: { label: string; value: string; sub: string; accent?: boolean }) {
   return (
-    <div className="rounded-xl p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+    <div className="db-card rounded-xl p-5">
       <p className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{label}</p>
       <p className="mt-1 text-2xl font-bold" style={{ color: accent ? "var(--db-accent)" : "var(--db-text)" }}>{value}</p>
       <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>{sub}</p>
@@ -357,7 +357,7 @@ function SummaryCard({ label, value, sub, accent }: { label: string; value: stri
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+    <div className="db-card rounded-xl p-5">
       <h3 className="text-sm font-semibold mb-4" style={{ color: "var(--db-text)" }}>{title}</h3>
       {children}
     </div>

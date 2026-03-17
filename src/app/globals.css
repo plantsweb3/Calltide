@@ -527,6 +527,14 @@ select:focus-visible,
   --db-accent: #C59A27;
   --db-accent-hover: #A17D1F;
   --db-card-shadow: none;
+  --db-success: #4ade80;
+  --db-success-bg: rgba(74,222,128,0.12);
+  --db-danger: #f87171;
+  --db-danger-bg: rgba(248,113,113,0.12);
+  --db-warning: #fbbf24;
+  --db-warning-bg: rgba(251,191,36,0.12);
+  --db-info: #60a5fa;
+  --db-info-bg: rgba(96,165,250,0.12);
 }
 
 [data-theme="light"] {
@@ -542,20 +550,123 @@ select:focus-visible,
   --db-accent: #C59A27;
   --db-accent-hover: #A17D1F;
   --db-card-shadow: 0px 4px 16px rgba(15, 23, 42, 0.08), 0px 12px 32px rgba(15, 23, 42, 0.06);
+  --db-success: #16a34a;
+  --db-success-bg: rgba(22,163,74,0.08);
+  --db-danger: #dc2626;
+  --db-danger-bg: rgba(220,38,38,0.08);
+  --db-warning: #d97706;
+  --db-warning-bg: rgba(217,119,6,0.08);
+  --db-info: #2563eb;
+  --db-info-bg: rgba(37,99,235,0.08);
+}
+
+/* ── Sidebar — Always Dark ── */
+:root {
+  --sidebar-bg: #0f172a;
+  --sidebar-text: #94a3b8;
+  --sidebar-text-active: #f1f5f9;
+  --sidebar-hover: rgba(30,41,59,0.5);
+  --sidebar-accent: #C59A27;
+  --sidebar-section: #475569;
+  --sidebar-border: rgba(30,41,59,0.6);
+  --sidebar-active-bg: rgba(197,154,39,0.08);
 }
 
 /* ── Dashboard Animations ── */
 @keyframes slide-in-right {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
-
 .animate-slide-in-right {
   animation: slide-in-right 0.3s ease-out;
+}
+
+/* Page entrance animation */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: page-enter 0.35s ease-out;
+}
+
+/* Staggered entrance for grid children */
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.stagger-grid > * {
+  animation: stagger-in 0.4s ease-out both;
+}
+.stagger-grid > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-grid > *:nth-child(2) { animation-delay: 60ms; }
+.stagger-grid > *:nth-child(3) { animation-delay: 120ms; }
+.stagger-grid > *:nth-child(4) { animation-delay: 180ms; }
+.stagger-grid > *:nth-child(5) { animation-delay: 240ms; }
+.stagger-grid > *:nth-child(6) { animation-delay: 300ms; }
+
+/* Modal animations */
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modal-content-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-backdrop {
+  animation: modal-backdrop-in 0.2s ease-out;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.modal-content {
+  animation: modal-content-in 0.25s ease-out;
+}
+
+/* Dashboard card with hover elevation */
+.db-card {
+  background: var(--db-card);
+  border: 1px solid var(--db-border);
+  box-shadow: var(--db-card-shadow);
+  border-radius: 0.75rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.db-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+[data-theme="dark"] .db-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile card layout for tables */
+@media (max-width: 767px) {
+  .mobile-cards thead { display: none; }
+  .mobile-cards tbody { display: flex; flex-direction: column; gap: 8px; }
+  .mobile-cards tr {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--db-border);
+    border-radius: 0.75rem;
+    background: var(--db-card);
+  }
+  .mobile-cards td {
+    border: none !important;
+    padding: 0 !important;
+    white-space: normal !important;
+  }
+  .mobile-cards td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--db-text-muted);
+    margin-bottom: 2px;
+  }
 }
 
 /* ── Section Fade Utilities ── */

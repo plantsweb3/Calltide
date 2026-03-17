@@ -7,6 +7,8 @@ import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-nam
 import { TableSkeleton } from "@/components/skeleton";
 import AudioPlayer from "@/app/dashboard/_components/audio-player";
 import ExportCsvButton from "@/app/dashboard/_components/csv-export";
+import Button from "@/components/ui/button";
+import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 
 interface TranscriptLine {
   speaker: "ai" | "caller";
@@ -49,12 +51,6 @@ interface Call {
   recoveryTimeline?: RecoveryStep[] | null;
 }
 
-const statusColors: Record<string, { bg: string; text: string }> = {
-  completed: { bg: "rgba(74,222,128,0.1)", text: "#4ade80" },
-  missed: { bg: "rgba(251,191,36,0.1)", text: "#fbbf24" },
-  failed: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
-  in_progress: { bg: "rgba(96,165,250,0.1)", text: "#60a5fa" },
-};
 
 interface OutboundCall {
   id: string;
@@ -67,14 +63,6 @@ interface OutboundCall {
   createdAt?: string;
 }
 
-const outboundStatusColors: Record<string, { bg: string; text: string }> = {
-  scheduled: { bg: "rgba(96,165,250,0.1)", text: "#60a5fa" },
-  initiated: { bg: "rgba(251,191,36,0.1)", text: "#fbbf24" },
-  completed: { bg: "rgba(74,222,128,0.1)", text: "#4ade80" },
-  failed: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
-  retry: { bg: "rgba(251,191,36,0.1)", text: "#fbbf24" },
-  consent_blocked: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
-};
 
 const callTypeLabels: Record<string, string> = {
   appointment_reminder: "Appointment Reminder",
@@ -228,37 +216,23 @@ export default function CallsPage() {
       key: "sentiment",
       label: "Sentiment",
       render: (row) => {
-        if (!row.sentiment) return <span style={{ color: "var(--db-text-muted)" }}>—</span>;
-        const sentimentColors: Record<string, { bg: string; text: string }> = {
-          positive: { bg: "rgba(74,222,128,0.1)", text: "#4ade80" },
-          neutral: { bg: "rgba(148,163,184,0.1)", text: "#94a3b8" },
-          negative: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
+        if (!row.sentiment) return <span style={{ color: "var(--db-text-muted)" }}>---</span>;
+        const sentimentVariant: Record<string, "success" | "neutral" | "danger"> = {
+          positive: "success",
+          neutral: "neutral",
+          negative: "danger",
         };
-        const c = sentimentColors[row.sentiment] || { bg: "var(--db-hover)", text: "var(--db-text-secondary)" };
         return (
-          <span
-            className="rounded-full px-2 py-0.5 text-xs font-medium"
-            style={{ background: c.bg, color: c.text }}
-          >
-            {row.sentiment}
-          </span>
+          <StatusBadge label={row.sentiment} variant={sentimentVariant[row.sentiment] ?? "neutral"} />
         );
       },
     },
     {
       key: "status",
       label: "Outcome",
-      render: (row) => {
-        const c = statusColors[row.status] || { bg: "var(--db-hover)", text: "var(--db-text-secondary)" };
-        return (
-          <span
-            className="rounded-full px-2 py-0.5 text-xs font-medium"
-            style={{ background: c.bg, color: c.text }}
-          >
-            {row.status.replace(/_/g, " ")}
-          </span>
-        );
-      },
+      render: (row) => (
+        <StatusBadge label={row.status} variant={statusToVariant(row.status)} />
+      ),
     },
   ];
 
@@ -267,7 +241,7 @@ export default function CallsPage() {
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           <h1
-            className="text-2xl font-semibold"
+            className="text-2xl font-semibold tracking-tight"
             style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
           >
             Calls
@@ -332,10 +306,7 @@ export default function CallsPage() {
           {outboundLoading ? (
             <TableSkeleton rows={4} />
           ) : outboundCalls.length === 0 ? (
-            <div
-              className="rounded-xl p-12 text-center"
-              style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
-            >
+            <div className="db-card rounded-xl p-12 text-center">
               <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>No outbound calls yet</p>
               <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
                 Enable outbound calling in Settings to let {receptionistName} make appointment reminders, estimate follow-ups, and seasonal reminder calls.
@@ -344,28 +315,20 @@ export default function CallsPage() {
           ) : (
             <div className="space-y-2">
               {outboundCalls.map((c) => {
-                const sc = outboundStatusColors[c.status] ?? { bg: "var(--db-hover)", text: "var(--db-text-secondary)" };
                 return (
                   <div
                     key={c.id}
-                    className="flex items-center gap-3 rounded-xl px-4 py-3"
-                    style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+                    className="db-card flex items-center gap-3 rounded-xl px-4 py-3"
                   >
-                    <span
-                      className="rounded px-2 py-0.5 text-[10px] font-semibold shrink-0"
-                      style={{ background: sc.bg, color: sc.text }}
-                    >
-                      {callTypeLabels[c.callType] ?? c.callType}
-                    </span>
+                    <StatusBadge
+                      label={callTypeLabels[c.callType] ?? c.callType}
+                      variant={statusToVariant(c.status)}
+                      className="shrink-0"
+                    />
                     <span className="flex-1 text-sm" style={{ color: "var(--db-text)" }}>
                       {formatPhone(c.customerPhone)}
                     </span>
-                    <span
-                      className="rounded-full px-2 py-0.5 text-xs font-medium"
-                      style={{ background: sc.bg, color: sc.text }}
-                    >
-                      {c.outcome ?? c.status}
-                    </span>
+                    <StatusBadge label={c.outcome ?? c.status} variant={statusToVariant(c.status)} />
                     {c.duration != null && (
                       <span className="text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
                         {formatDuration(c.duration)}
@@ -387,13 +350,9 @@ export default function CallsPage() {
       {error && (
         <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
           <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
-          <button
-            onClick={fetchCalls}
-            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
-          >
+          <Button variant="danger" size="sm" onClick={fetchCalls}>
             Retry
-          </button>
+          </Button>
         </div>
       )}
 
@@ -402,14 +361,7 @@ export default function CallsPage() {
       )}
 
       {!loading && calls.length === 0 && !search && (
-        <div
-          className="rounded-xl p-12 text-center"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            boxShadow: "var(--db-card-shadow)",
-          }}
-        >
+        <div className="db-card rounded-xl p-12 text-center">
           <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
           </svg>
@@ -432,13 +384,7 @@ export default function CallsPage() {
       )}
 
       {!loading && calls.length === 0 && search && (
-        <div
-          className="rounded-xl p-12 text-center"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-          }}
-        >
+        <div className="db-card rounded-xl p-12 text-center">
           <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
             No calls matching &ldquo;{search}&rdquo;
           </p>
@@ -464,36 +410,21 @@ export default function CallsPage() {
               {/* Call Insights Badges */}
               <div className="flex flex-wrap items-center gap-2">
                 {row.sentiment && (
-                  <span
-                    className="rounded-full px-2.5 py-0.5 text-xs font-medium"
-                    style={{
-                      background: row.sentiment === "positive" ? "rgba(74,222,128,0.1)"
-                        : row.sentiment === "negative" ? "rgba(248,113,113,0.1)"
-                        : "rgba(148,163,184,0.1)",
-                      color: row.sentiment === "positive" ? "#4ade80"
-                        : row.sentiment === "negative" ? "#f87171"
-                        : "#94a3b8",
-                    }}
-                  >
-                    {row.sentiment === "positive" ? "Positive" : row.sentiment === "negative" ? "Negative" : "Neutral"}
-                  </span>
+                  <StatusBadge
+                    label={row.sentiment}
+                    variant={row.sentiment === "positive" ? "success" : row.sentiment === "negative" ? "danger" : "neutral"}
+                  />
                 )}
                 {row.outcome && (
-                  <span
-                    className="rounded-full px-2.5 py-0.5 text-xs font-medium"
-                    style={{
-                      background: row.outcome === "appointment_booked" ? "rgba(96,165,250,0.1)"
-                        : row.outcome === "message_taken" ? "rgba(251,191,36,0.1)"
-                        : row.outcome === "transfer" ? "rgba(168,85,247,0.1)"
-                        : "rgba(148,163,184,0.1)",
-                      color: row.outcome === "appointment_booked" ? "#60a5fa"
-                        : row.outcome === "message_taken" ? "#fbbf24"
-                        : row.outcome === "transfer" ? "#a855f7"
-                        : "#94a3b8",
-                    }}
-                  >
-                    {row.outcome.replace(/_/g, " ")}
-                  </span>
+                  <StatusBadge
+                    label={row.outcome}
+                    variant={
+                      row.outcome === "appointment_booked" ? "info"
+                        : row.outcome === "message_taken" ? "warning"
+                        : row.outcome === "transfer" ? "accent"
+                        : "neutral"
+                    }
+                  />
                 )}
                 {row.duration != null && (
                   <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
@@ -599,35 +530,16 @@ export default function CallsPage() {
                     >
                       Job Intake
                     </p>
-                    <span
-                      className="rounded-full px-2 py-0.5 text-[10px] font-medium"
-                      style={{
-                        background: intake.intakeComplete ? "rgba(74,222,128,0.1)" : "rgba(251,191,36,0.1)",
-                        color: intake.intakeComplete ? "#4ade80" : "#fbbf24",
-                      }}
-                    >
-                      {intake.intakeComplete ? "Complete" : "Partial"}
-                    </span>
-                    <span
-                      className="rounded-full px-2 py-0.5 text-[10px] font-medium capitalize"
-                      style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa" }}
-                    >
-                      {intake.scopeLevel}
-                    </span>
+                    <StatusBadge
+                      label={intake.intakeComplete ? "Complete" : "Partial"}
+                      variant={intake.intakeComplete ? "success" : "warning"}
+                    />
+                    <StatusBadge label={intake.scopeLevel} variant="info" />
                     {intake.urgency !== "normal" && (
-                      <span
-                        className="rounded-full px-2 py-0.5 text-[10px] font-medium capitalize"
-                        style={{
-                          background: intake.urgency === "emergency" ? "rgba(248,113,113,0.1)"
-                            : intake.urgency === "urgent" ? "rgba(251,191,36,0.1)"
-                            : "rgba(148,163,184,0.1)",
-                          color: intake.urgency === "emergency" ? "#f87171"
-                            : intake.urgency === "urgent" ? "#fbbf24"
-                            : "#94a3b8",
-                        }}
-                      >
-                        {intake.urgency}
-                      </span>
+                      <StatusBadge
+                        label={intake.urgency}
+                        variant={intake.urgency === "emergency" ? "danger" : intake.urgency === "urgent" ? "warning" : "neutral"}
+                      />
                     )}
                   </div>
                   {intake.scopeDescription && (
@@ -657,19 +569,20 @@ export default function CallsPage() {
 
               {/* View transcript button */}
               {(row.transcript || row.summary) && (
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedCall(row);
                   }}
-                  className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
                   style={{
                     background: "rgba(197,154,39,0.12)",
                     color: "var(--db-accent)",
                   }}
                 >
                   {row.transcript ? "View Full Transcript" : "View Call Details"}
-                </button>
+                </Button>
               )}
 
               {!row.summary && (

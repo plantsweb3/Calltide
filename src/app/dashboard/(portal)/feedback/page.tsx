@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import CaptaSpinner from "@/components/capta-spinner";
+import Button from "@/components/ui/button";
+import StatusBadge from "@/components/ui/status-badge";
 
 interface FeedbackItem {
   id: string;
@@ -42,12 +44,12 @@ const CATEGORY_OPTIONS = [
   { value: "other", label: "Other" },
 ];
 
-const STATUS_COLORS: Record<string, string> = {
-  new: "#3b82f6",
-  acknowledged: "#8b5cf6",
-  in_progress: "#f59e0b",
-  resolved: "#22c55e",
-  declined: "#94a3b8",
+const FEEDBACK_STATUS_VARIANT: Record<string, "info" | "accent" | "warning" | "success" | "neutral"> = {
+  new: "info",
+  acknowledged: "accent",
+  in_progress: "warning",
+  resolved: "success",
+  declined: "neutral",
 };
 
 export default function ClientFeedbackPage() {
@@ -122,19 +124,18 @@ export default function ClientFeedbackPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>Feedback & Reviews</h1>
+          <h1 className="text-2xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>Feedback & Reviews</h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
             Manage customer reviews and share ideas with our team.
           </p>
         </div>
         {tab === "feedback" && (
-          <button
+          <Button
+            variant={showForm ? "secondary" : "primary"}
             onClick={() => setShowForm(!showForm)}
-            className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
-            style={{ background: "var(--db-accent)" }}
           >
             {showForm ? "Cancel" : "New Feedback"}
-          </button>
+          </Button>
         )}
       </div>
 
@@ -165,7 +166,7 @@ export default function ClientFeedbackPage() {
           )}
 
           {showForm && (
-            <form onSubmit={handleSubmit} className="space-y-4 rounded-lg p-5" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+            <form onSubmit={handleSubmit} className="db-card space-y-4 rounded-lg p-5">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Type</label>
@@ -227,40 +228,29 @@ export default function ClientFeedbackPage() {
                 <p className="text-sm" style={{ color: "#ef4444" }}>{formError}</p>
               )}
 
-              <button
-                type="submit"
-                disabled={submitting}
-                className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity disabled:opacity-50"
-                style={{ background: "var(--db-accent)" }}
-              >
+              <Button type="submit" disabled={submitting}>
                 {submitting ? "Submitting..." : "Submit Feedback"}
-              </button>
+              </Button>
             </form>
           )}
 
           {/* Feedback list */}
           <div className="space-y-3">
             {items.length === 0 ? (
-              <div className="rounded-lg p-8 text-center" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+              <div className="db-card rounded-lg p-8 text-center">
                 <p style={{ color: "var(--db-text-muted)" }}>No feedback submitted yet. Share your first idea!</p>
               </div>
             ) : (
               items.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-lg p-4"
-                  style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+                  className="db-card rounded-lg p-4"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <h3 className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{item.title}</h3>
-                        <span
-                          className="rounded-full px-2 py-0.5 text-[10px] font-medium"
-                          style={{ background: `${STATUS_COLORS[item.status] ?? "#94a3b8"}20`, color: STATUS_COLORS[item.status] ?? "#94a3b8" }}
-                        >
-                          {item.status.replace(/_/g, " ")}
-                        </span>
+                        <StatusBadge label={item.status} variant={FEEDBACK_STATUS_VARIANT[item.status] ?? "neutral"} />
                       </div>
                       <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
                         {item.type.replace(/_/g, " ")} &middot; {item.category} &middot; {new Date(item.createdAt).toLocaleDateString()}
@@ -348,25 +338,24 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
     } catch {}
   }
 
-  const REPLY_STATUS_COLORS: Record<string, string> = {
-    none: "#94a3b8",
-    drafted: "#f59e0b",
-    approved: "#22c55e",
-    posted: "#3b82f6",
+  const REPLY_STATUS_VARIANT: Record<string, "neutral" | "warning" | "success" | "info"> = {
+    none: "neutral",
+    drafted: "warning",
+    approved: "success",
+    posted: "info",
   };
 
   return (
     <div className="space-y-3">
       {reviews.length === 0 ? (
-        <div className="rounded-lg p-8 text-center" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+        <div className="db-card rounded-lg p-8 text-center">
           <p style={{ color: "var(--db-text-muted)" }}>No reviews yet. Reviews will appear here when imported or synced.</p>
         </div>
       ) : (
         reviews.map((review) => (
           <div
             key={review.id}
-            className="rounded-lg p-4"
-            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+            className="db-card rounded-lg p-4"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
@@ -378,12 +367,7 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
                     {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
                   </span>
                   {review.replyStatus !== "none" && (
-                    <span
-                      className="rounded-full px-2 py-0.5 text-[10px] font-medium"
-                      style={{ background: `${REPLY_STATUS_COLORS[review.replyStatus]}20`, color: REPLY_STATUS_COLORS[review.replyStatus] }}
-                    >
-                      {review.replyStatus}
-                    </span>
+                    <StatusBadge label={review.replyStatus} variant={REPLY_STATUS_VARIANT[review.replyStatus] ?? "neutral"} />
                   )}
                 </div>
                 {review.publishedAt && (
@@ -401,14 +385,13 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
               {/* Actions */}
               <div className="flex shrink-0 gap-2">
                 {(!review.replyDraft || review.replyStatus === "none") && (
-                  <button
+                  <Button
+                    size="sm"
                     onClick={() => generateDraft(review.id)}
                     disabled={drafting === review.id}
-                    className="rounded-lg px-3 py-1.5 text-xs font-medium transition-opacity disabled:opacity-50"
-                    style={{ background: "var(--db-accent)", color: "white" }}
                   >
                     {drafting === review.id ? "Generating..." : "Generate Reply"}
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
@@ -429,20 +412,12 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
                       style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
                     />
                     <div className="flex gap-2">
-                      <button
-                        onClick={() => saveEdit(review.id)}
-                        className="rounded-lg px-3 py-1 text-xs font-medium text-white"
-                        style={{ background: "var(--db-accent)" }}
-                      >
+                      <Button size="sm" onClick={() => saveEdit(review.id)}>
                         Save
-                      </button>
-                      <button
-                        onClick={() => { setEditing(null); setEditText(""); }}
-                        className="rounded-lg px-3 py-1 text-xs font-medium"
-                        style={{ color: "var(--db-text-muted)" }}
-                      >
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => { setEditing(null); setEditText(""); }}>
                         Cancel
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ) : (
@@ -450,28 +425,20 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
                     <p className="text-sm" style={{ color: "var(--db-text)" }}>{review.replyDraft}</p>
                     {review.replyStatus === "drafted" && (
                       <div className="mt-2 flex gap-2">
-                        <button
-                          onClick={() => approveDraft(review.id)}
-                          className="rounded-lg px-3 py-1 text-xs font-medium text-white"
-                          style={{ background: "#22c55e" }}
-                        >
+                        <Button size="sm" onClick={() => approveDraft(review.id)} style={{ background: "#22c55e", color: "#fff" }}>
                           Approve
-                        </button>
-                        <button
-                          onClick={() => { setEditing(review.id); setEditText(review.replyDraft || ""); }}
-                          className="rounded-lg px-3 py-1 text-xs font-medium"
-                          style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
-                        >
+                        </Button>
+                        <Button size="sm" variant="secondary" onClick={() => { setEditing(review.id); setEditText(review.replyDraft || ""); }}>
                           Edit
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
                           onClick={() => generateDraft(review.id)}
                           disabled={drafting === review.id}
-                          className="rounded-lg px-3 py-1 text-xs font-medium disabled:opacity-50"
-                          style={{ color: "var(--db-text-muted)" }}
                         >
                           {drafting === review.id ? "Regenerating..." : "Regenerate"}
-                        </button>
+                        </Button>
                       </div>
                     )}
                   </>

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import Button from "@/components/ui/button";
+import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 
 interface ReferralData {
   referralCode: string | null;
@@ -18,14 +20,6 @@ interface ReferralData {
     createdAt: string;
   }>;
 }
-
-const STATUS_STYLES: Record<string, { bg: string; color: string }> = {
-  pending: { bg: "rgba(148,163,184,0.15)", color: "#94a3b8" },
-  signed_up: { bg: "rgba(96,165,250,0.15)", color: "#60a5fa" },
-  activated: { bg: "rgba(74,222,128,0.15)", color: "#4ade80" },
-  churned: { bg: "rgba(248,113,113,0.15)", color: "#f87171" },
-  expired: { bg: "rgba(148,163,184,0.15)", color: "#94a3b8" },
-};
 
 export default function ReferralsPage() {
   const [data, setData] = useState<ReferralData | null>(null);
@@ -84,7 +78,7 @@ export default function ReferralsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>
+        <h1 className="text-2xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>
           Referral Program
         </h1>
         <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
@@ -93,10 +87,7 @@ export default function ReferralsPage() {
       </div>
 
       {/* Referral Code + Link */}
-      <div
-        className="rounded-xl p-6 space-y-4"
-        style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
-      >
+      <div className="db-card rounded-xl p-6 space-y-4">
         {data.referralCode ? (
           <>
             <div>
@@ -110,13 +101,13 @@ export default function ReferralsPage() {
                 >
                   {data.referralCode}
                 </code>
-                <button
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onClick={() => copyToClipboard(data.referralCode!, "code")}
-                  className="rounded-lg px-3 py-2 text-sm transition-colors"
-                  style={{ background: "var(--db-hover)", color: "var(--db-text-secondary)", border: "1px solid var(--db-border)" }}
                 >
                   {copied === "code" ? "Copied!" : "Copy"}
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -132,13 +123,13 @@ export default function ReferralsPage() {
                   className="flex-1 rounded-lg px-4 py-2.5 text-sm font-mono"
                   style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
                 />
-                <button
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onClick={() => data.shareLink && copyToClipboard(data.shareLink, "link")}
-                  className="rounded-lg px-3 py-2 text-sm transition-colors"
-                  style={{ background: "var(--db-hover)", color: "var(--db-text-secondary)", border: "1px solid var(--db-border)" }}
                 >
                   {copied === "link" ? "Copied!" : "Copy"}
-                </button>
+                </Button>
               </div>
             </div>
           </>
@@ -150,7 +141,7 @@ export default function ReferralsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 stagger-grid">
         {[
           { label: "Referred", value: data.stats.totalReferred },
           { label: "Active", value: data.stats.active },
@@ -158,8 +149,7 @@ export default function ReferralsPage() {
         ].map((stat) => (
           <div
             key={stat.label}
-            className="rounded-xl p-4 text-center"
-            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+            className="db-card rounded-xl p-4 text-center"
           >
             <p className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>
               {stat.value}
@@ -191,20 +181,13 @@ export default function ReferralsPage() {
               </thead>
               <tbody>
                 {data.referrals.map((ref) => {
-                  const style = STATUS_STYLES[ref.status] ?? STATUS_STYLES.pending;
                   return (
                     <tr key={ref.id} style={{ borderTop: "1px solid var(--db-border)" }}>
                       <td className="px-4 py-3 tabular-nums" style={{ color: "var(--db-text-secondary)" }}>
                         {new Date(ref.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-3">
-                        <span
-                          className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium"
-                          style={{ background: style.bg, color: style.color }}
-                        >
-                          <span className="h-1.5 w-1.5 rounded-full" style={{ background: style.color }} />
-                          {ref.status.replace(/_/g, " ")}
-                        </span>
+                        <StatusBadge label={ref.status} variant={statusToVariant(ref.status)} dot />
                       </td>
                       <td className="px-4 py-3" style={{ color: "var(--db-text-secondary)" }}>
                         {ref.creditApplied ? (

@@ -160,7 +160,7 @@ export default function OverviewPage() {
         <div>
           <h1
             className="text-2xl font-semibold"
-            style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+            style={{ color: "var(--db-text)" }}
           >
             {getGreeting()}, welcome to Capta
           </h1>
@@ -171,7 +171,7 @@ export default function OverviewPage() {
 
         <div
           className="rounded-xl p-6"
-          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", boxShadow: "var(--db-card-shadow)" }}
+          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
         >
           <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
             Quick Setup
@@ -197,7 +197,7 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 stagger-grid">
           <MetricCard label="Calls Today" value={0} />
           <MetricCard label="This Week" value={0} change="Appointments" changeType="neutral" />
           <MetricCard label="Missed Saved" value={0} />
@@ -215,7 +215,7 @@ export default function OverviewPage() {
         <div>
           <h1
             className="text-2xl font-semibold"
-            style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+            style={{ color: "var(--db-text)" }}
           >
             {getGreeting()}, {data.businessName?.split(" ")[0] || "there"}
           </h1>
@@ -282,7 +282,7 @@ export default function OverviewPage() {
         </div>
 
         {/* Revenue Metric Cards */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 stagger-grid">
           <HealthScoreCard score={data.healthScore ?? 50} />
           <MetricCard
             label="Revenue Captured"
@@ -339,7 +339,7 @@ export default function OverviewPage() {
             {data.estimatePipeline && (
               <div
                 className="rounded-xl p-5"
-                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", boxShadow: "var(--db-card-shadow)" }}
+                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
               >
                 <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
                   Estimate Pipeline
@@ -373,7 +373,7 @@ export default function OverviewPage() {
             {data.customerInsights && (
               <div
                 className="rounded-xl p-5"
-                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", boxShadow: "var(--db-card-shadow)" }}
+                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
               >
                 <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
                   Customer Insights
@@ -425,12 +425,7 @@ export default function OverviewPage() {
           <div className="lg:col-span-2">
             {/* Quick Stats */}
             <div
-              className="rounded-xl p-5 transition-colors duration-300"
-              style={{
-                background: "var(--db-card)",
-                border: "1px solid var(--db-border)",
-                boxShadow: "var(--db-card-shadow)",
-              }}
+              className="db-card p-5"
             >
               <h3
                 className="mb-4 text-sm font-semibold uppercase tracking-wider"
@@ -471,7 +466,7 @@ export default function OverviewPage() {
       <div>
         <h1
           className="text-2xl font-semibold"
-          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+          style={{ color: "var(--db-text)" }}
         >
           {getGreeting()}, {data.businessName || "there"}!
         </h1>
@@ -500,7 +495,7 @@ export default function OverviewPage() {
         <DashboardTour onComplete={() => setTourDismissed(true)} />
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" data-tour="overview-metrics">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-grid" data-tour="overview-metrics">
         <MetricCard label={`${receptionistName}'s Calls Today`} value={data.callsToday} />
         <MetricCard label="Appointments This Week" value={data.appointmentsThisWeek} />
         <MetricCard
@@ -545,12 +540,7 @@ function HealthScoreCard({ score }: { score: number }) {
 
   return (
     <div
-      className="rounded-xl p-5 flex flex-col items-center justify-center"
-      style={{
-        background: "var(--db-card)",
-        border: "1px solid var(--db-border)",
-        boxShadow: "var(--db-card-shadow)",
-      }}
+      className="db-card p-5 flex flex-col items-center justify-center"
     >
       <p
         className="text-xs font-semibold uppercase tracking-wider mb-2"
@@ -603,14 +593,7 @@ function MariaSavedCard({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div
-      className="rounded-xl p-5"
-      style={{
-        background: "var(--db-card)",
-        border: "1px solid var(--db-border)",
-        boxShadow: "var(--db-card-shadow)",
-      }}
-    >
+    <div className="db-card p-5">
       <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
         {receptionistName} Saved You
       </p>

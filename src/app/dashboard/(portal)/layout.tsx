@@ -21,7 +21,6 @@ export default function PortalLayout({
   const pathname = usePathname();
 
   useEffect(() => {
-    // Check session validity (password change invalidation)
     let cancelled = false;
     async function checkSession() {
       try {
@@ -42,7 +41,6 @@ export default function PortalLayout({
   }, [router]);
 
   useEffect(() => {
-    // Skip redirect check for settings page (allow access during onboarding)
     if (pathname === "/dashboard/settings") {
       setOnboardingChecked(true);
       return;
@@ -57,7 +55,6 @@ export default function PortalLayout({
           return;
         }
         const data = await res.json();
-        // Redirect to onboarding if not completed (handles all non-completed statuses)
         if (!cancelled && data.onboardingStatus !== "completed" && !data.onboardingCompletedAt) {
           const resumeStep = data.onboardingStep ?? 1;
           router.replace(`/dashboard/onboarding?step=${resumeStep}`);
@@ -84,35 +81,39 @@ export default function PortalLayout({
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen" style={{ background: "var(--db-bg)" }}>
       <ClientNav open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Mobile header */}
+      {/* Mobile header — dark to match sidebar */}
       <div
-        className="fixed top-0 left-0 right-0 z-30 flex h-14 items-center px-4 backdrop-blur-sm md:hidden"
+        className="fixed top-0 left-0 right-0 z-30 flex h-14 items-center px-4 md:hidden"
         style={{
-          background: "color-mix(in srgb, var(--db-surface) 90%, transparent)",
-          borderBottom: "1px solid var(--db-border)",
+          background: "var(--sidebar-bg)",
+          borderBottom: "1px solid var(--sidebar-border)",
         }}
       >
         <button
           onClick={() => setSidebarOpen(true)}
           className="rounded-lg p-2 transition-colors"
-          style={{ color: "var(--db-text-secondary)" }}
+          style={{ color: "var(--sidebar-text)" }}
           aria-label="Open menu"
         >
           <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M3 6h18M3 12h18M3 18h18" />
           </svg>
         </button>
-        <img src="/images/logo-inline-navy.webp" alt="Capta" className="ml-3 h-6 w-auto" />
+        <img src="/images/logo-inline-white.webp" alt="Capta" className="ml-3 h-6 w-auto" />
       </div>
 
-      <main
-        className="min-w-0 flex-1 p-4 pt-[4.5rem] md:ml-60 md:p-6 md:pt-6"
-      >
-        <PaymentBanner />
-        <ErrorBoundary>{children}</ErrorBoundary>
+      <main className="min-w-0 flex-1 pt-[4.5rem] md:ml-60 md:pt-0">
+        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+          <PaymentBanner />
+          <ErrorBoundary>
+            <div className="page-enter">
+              {children}
+            </div>
+          </ErrorBoundary>
+        </div>
       </main>
 
       <ChatWidget />

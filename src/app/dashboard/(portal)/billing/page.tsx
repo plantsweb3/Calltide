@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import Button from "@/components/ui/button";
+import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 
 interface BillingData {
   plan: string;
@@ -94,7 +96,7 @@ export default function BillingPage() {
     <div className="space-y-6">
       <div>
         <h1
-          className="text-2xl font-semibold"
+          className="text-2xl font-semibold tracking-tight"
           style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
         >
           Billing
@@ -127,14 +129,9 @@ export default function BillingPage() {
             </p>
           </div>
           {data.hasStripeCustomer && (
-            <button
-              onClick={openPortal}
-              disabled={portalLoading}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-white"
-              style={{ background: "#ef4444" }}
-            >
+            <Button variant="danger" onClick={openPortal} disabled={portalLoading}>
               {portalLoading ? "Loading..." : "Update Payment"}
-            </button>
+            </Button>
           )}
         </div>
       )}
@@ -171,27 +168,20 @@ export default function BillingPage() {
                 <span>$5,964/yr &rarr; $4,764/yr</span>
               </div>
             </div>
-            <button
+            <Button
+              size="lg"
               onClick={() => setShowSwitchConfirm(true)}
               disabled={switchLoading}
-              className="shrink-0 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
-              style={{ background: "var(--db-accent)" }}
+              className="shrink-0"
             >
               {switchLoading ? "Switching..." : "Switch to Annual"}
-            </button>
+            </Button>
           </div>
         </div>
       )}
 
       {/* Plan Card */}
-      <div
-        className="rounded-xl p-5"
-        style={{
-          background: "var(--db-card)",
-          border: "1px solid var(--db-border)",
-          boxShadow: "var(--db-card-shadow)",
-        }}
-      >
+      <div className="db-card rounded-xl p-5">
         <h3
           className="mb-4 text-sm font-semibold uppercase tracking-wider"
           style={{ color: "var(--db-text-muted)" }}
@@ -205,12 +195,7 @@ export default function BillingPage() {
                 {data.plan}
               </p>
               {data.planType === "annual" && (
-                <span
-                  className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase"
-                  style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
-                >
-                  Annual
-                </span>
+                <StatusBadge label="Annual" variant="success" />
               )}
             </div>
             <p className="text-2xl font-bold mt-1" style={{ color: "var(--db-accent)" }}>
@@ -220,20 +205,13 @@ export default function BillingPage() {
               </span>
             </p>
           </div>
-          <StatusPill status={data.status} />
+          <StatusBadge label={data.status.replace(/_/g, " ")} variant={statusToVariant(data.status)} dot />
         </div>
       </div>
 
       {/* Locations Breakdown */}
       {(data.locationCount ?? 1) > 1 && (
-        <div
-          className="rounded-xl p-5"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            boxShadow: "var(--db-card-shadow)",
-          }}
-        >
+        <div className="db-card rounded-xl p-5">
           <h3
             className="mb-4 text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
@@ -264,14 +242,7 @@ export default function BillingPage() {
       )}
 
       {/* Payment Method */}
-      <div
-        className="rounded-xl p-5"
-        style={{
-          background: "var(--db-card)",
-          border: "1px solid var(--db-border)",
-          boxShadow: "var(--db-card-shadow)",
-        }}
-      >
+      <div className="db-card rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
           <h3
             className="text-sm font-semibold uppercase tracking-wider"
@@ -280,14 +251,9 @@ export default function BillingPage() {
             Payment Method
           </h3>
           {data.hasStripeCustomer && (
-            <button
-              onClick={openPortal}
-              disabled={portalLoading}
-              className="text-xs font-medium"
-              style={{ color: "var(--db-accent)" }}
-            >
+            <Button variant="ghost" size="sm" onClick={openPortal} disabled={portalLoading}>
               {portalLoading ? "Loading..." : "Update"}
-            </button>
+            </Button>
           )}
         </div>
         {data.cardLast4 ? (
@@ -316,14 +282,7 @@ export default function BillingPage() {
 
       {/* Next Billing */}
       {data.nextBillingAt && (
-        <div
-          className="rounded-xl p-5"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            boxShadow: "var(--db-card-shadow)",
-          }}
-        >
+        <div className="db-card rounded-xl p-5">
           <h3
             className="mb-2 text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
@@ -343,14 +302,7 @@ export default function BillingPage() {
 
       {/* Invoice History */}
       {data.invoices.length > 0 && (
-        <div
-          className="rounded-xl p-5"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            boxShadow: "var(--db-card-shadow)",
-          }}
-        >
+        <div className="db-card rounded-xl p-5">
           <h3
             className="mb-4 text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
@@ -377,13 +329,7 @@ export default function BillingPage() {
                   <span className="text-sm font-mono font-medium" style={{ color: "var(--db-text)" }}>
                     {fmt(inv.amount ?? 0)}
                   </span>
-                  <span
-                    className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
-                    style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
-                  >
-                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: "#4ade80" }} />
-                    Paid
-                  </span>
+                  <StatusBadge label="Paid" variant="success" dot />
                 </div>
               </div>
             ))}
@@ -394,25 +340,16 @@ export default function BillingPage() {
       {/* Manage Billing */}
       {data.hasStripeCustomer && (
         <div className="flex justify-center">
-          <button
-            onClick={openPortal}
-            disabled={portalLoading}
-            className="rounded-xl px-6 py-3 text-sm font-medium transition-colors"
-            style={{
-              background: "var(--db-accent)",
-              color: "#ffffff",
-            }}
-          >
+          <Button size="lg" onClick={openPortal} disabled={portalLoading}>
             {portalLoading ? "Opening Portal..." : "Manage Billing in Stripe"}
-          </button>
+          </Button>
         </div>
       )}
 
       {/* Switch to Annual Confirmation */}
       {showSwitchConfirm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: "rgba(0,0,0,0.6)" }}
+          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setShowSwitchConfirm(false)}
           onKeyDown={(e) => { if (e.key === "Escape") setShowSwitchConfirm(false); }}
           role="dialog"
@@ -420,8 +357,7 @@ export default function BillingPage() {
           aria-labelledby="switch-confirm-title"
         >
           <div
-            className="w-full max-w-md rounded-xl p-6 space-y-4"
-            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+            className="modal-content db-card w-full max-w-md rounded-xl p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="switch-confirm-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
@@ -432,22 +368,16 @@ export default function BillingPage() {
               <p>This saves you <strong style={{ color: "#4ade80" }}>$1,200/year</strong>.</p>
             </div>
             <div className="flex items-center justify-end gap-3 pt-2">
-              <button
-                onClick={() => setShowSwitchConfirm(false)}
-                className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-                style={{ color: "var(--db-text-secondary)" }}
-              >
+              <Button variant="ghost" onClick={() => setShowSwitchConfirm(false)}>
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 autoFocus
                 onClick={() => { setShowSwitchConfirm(false); switchToAnnual(); }}
                 disabled={switchLoading}
-                className="rounded-lg px-5 py-2 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
-                style={{ background: "var(--db-accent)" }}
               >
                 {switchLoading ? "Switching..." : "Confirm Switch"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -456,22 +386,3 @@ export default function BillingPage() {
   );
 }
 
-function StatusPill({ status }: { status: string }) {
-  const config: Record<string, { bg: string; color: string; label: string }> = {
-    active: { bg: "rgba(74,222,128,0.1)", color: "#4ade80", label: "Active" },
-    past_due: { bg: "rgba(248,113,113,0.1)", color: "#f87171", label: "Past Due" },
-    grace_period: { bg: "rgba(251,191,36,0.1)", color: "#fbbf24", label: "Grace Period" },
-    suspended: { bg: "rgba(248,113,113,0.1)", color: "#f87171", label: "Suspended" },
-    canceled: { bg: "rgba(248,113,113,0.1)", color: "#f87171", label: "Canceled" },
-  };
-  const c = config[status] ?? config.active;
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-      style={{ background: c.bg, color: c.color }}
-    >
-      <span className="h-1.5 w-1.5 rounded-full" style={{ background: c.color }} />
-      {c.label}
-    </span>
-  );
-}

@@ -7,6 +7,9 @@ import { toast } from "sonner";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 import { TableSkeleton } from "@/components/skeleton";
 import ExportCsvButton from "@/app/dashboard/_components/csv-export";
+import DataTable, { type Column } from "@/components/data-table";
+import Button from "@/components/ui/button";
+import StatusBadge from "@/components/ui/status-badge";
 
 interface Customer {
   id: string;
@@ -33,7 +36,6 @@ export default function CustomersPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
-
   const [error, setError] = useState<string | null>(null);
 
   const fetchCustomers = useCallback(async () => {
@@ -56,17 +58,11 @@ export default function CustomersPage() {
     }
   }, [page, search]);
 
-  useEffect(() => {
-    fetchCustomers();
-  }, [fetchCustomers]);
+  useEffect(() => { fetchCustomers(); }, [fetchCustomers]);
 
-  // Debounced search
   const [searchInput, setSearchInput] = useState("");
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearch(searchInput);
-      setPage(1);
-    }, 300);
+    const timer = setTimeout(() => { setSearch(searchInput); setPage(1); }, 300);
     return () => clearTimeout(timer);
   }, [searchInput]);
 
@@ -82,11 +78,78 @@ export default function CustomersPage() {
     return p;
   }
 
+  const columns: Column<Customer>[] = [
+    {
+      key: "name",
+      label: "Name",
+      render: (c) => (
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+            {c.name || "Unknown"}
+          </span>
+          {c.isRepeat && <StatusBadge label="Repeat" variant="accent" />}
+        </div>
+      ),
+    },
+    {
+      key: "phone",
+      label: "Phone",
+      render: (c) => (
+        <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
+          {formatPhone(c.phone)}
+        </span>
+      ),
+    },
+    {
+      key: "totalCalls",
+      label: "Calls",
+      render: (c) => (
+        <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{c.totalCalls}</span>
+      ),
+    },
+    {
+      key: "totalAppointments",
+      label: "Appts",
+      render: (c) => (
+        <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{c.totalAppointments}</span>
+      ),
+    },
+    {
+      key: "lastCallAt",
+      label: "Last Call",
+      render: (c) => (
+        <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{formatDate(c.lastCallAt)}</span>
+      ),
+    },
+    {
+      key: "tags",
+      label: "Tags",
+      render: (c) => (
+        <div className="flex gap-1">
+          {(c.tags || []).slice(0, 3).map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full px-2 py-0.5 text-[10px] font-medium"
+              style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
+            >
+              {tag}
+            </span>
+          ))}
+          {(c.tags || []).length > 3 && (
+            <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+              +{c.tags.length - 3}
+            </span>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)", fontFamily: "var(--font-body), system-ui, sans-serif" }}>
+          <h1 className="text-2xl font-semibold tracking-tight" style={{ color: "var(--db-text)" }}>
             Customers
           </h1>
           <p className="text-sm mt-1" style={{ color: "var(--db-text-muted)" }}>
@@ -98,7 +161,7 @@ export default function CustomersPage() {
             href="/dashboard/import?type=customers"
             className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
             style={{
-              background: "var(--db-surface)",
+              background: "var(--db-hover)",
               border: "1px solid var(--db-border)",
               color: "var(--db-text-muted)",
             }}
@@ -123,13 +186,9 @@ export default function CustomersPage() {
             ]}
             filename="customers"
           />
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
-            style={{ background: "var(--db-accent)" }}
-          >
+          <Button onClick={() => setShowAddModal(true)}>
             + Add Customer
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -150,166 +209,52 @@ export default function CustomersPage() {
       </div>
 
       {error && (
-        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
-          <button
-            onClick={fetchCustomers}
-            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
-          >
-            Retry
-          </button>
+        <div className="db-card mb-4 flex items-center justify-between p-4" style={{ borderColor: "var(--db-danger)" }}>
+          <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
+          <Button variant="danger" size="sm" onClick={fetchCustomers}>Retry</Button>
         </div>
       )}
 
-      {/* Table */}
       {loading && customers.length === 0 && !error ? (
         <TableSkeleton rows={6} />
-      ) : (
-      <div
-        className="overflow-hidden rounded-xl border"
-        style={{ borderColor: "var(--db-border)", background: "var(--db-surface)" }}
-      >
-        {customers.length === 0 ? (
-          <div className="py-16 text-center">
-            <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-            <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
-              {search ? "No customers match your search" : "No customers yet"}
-            </p>
-            <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
-              {search
-                ? "Try a different search term."
-                : `Your customer list builds automatically as ${receptionistName} takes calls.`}
-            </p>
-            {!search && (
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
-                style={{ background: "var(--db-accent)", color: "#fff", cursor: "pointer", border: "none" }}
-              >
-                Add Customer Manually
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-              </button>
-            )}
-          </div>
-        ) : (
-          <table className="w-full">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--db-border)" }}>
-                {["Name", "Phone", "Calls", "Appts", "Last Call", "Tags"].map((h) => (
-                  <th
-                    key={h}
-                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                    style={{ color: "var(--db-text-muted)" }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {customers.map((c) => (
-                <tr
-                  key={c.id}
-                  className="cursor-pointer transition-colors"
-                  style={{ borderBottom: "1px solid var(--db-border)" }}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`View customer ${c.name || "Unknown"}`}
-                  onClick={() => router.push(`/dashboard/customers/${c.id}`)}
-                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); router.push(`/dashboard/customers/${c.id}`); } }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--db-hover)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                >
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                        {c.name || "Unknown"}
-                      </span>
-                      {c.isRepeat && (
-                        <span
-                          className="rounded px-1.5 py-0.5 text-[10px] font-medium"
-                          style={{ background: "var(--db-accent)", color: "#fff" }}
-                        >
-                          REPEAT
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                    {formatPhone(c.phone)}
-                  </td>
-                  <td className="px-4 py-3 text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                    {c.totalCalls}
-                  </td>
-                  <td className="px-4 py-3 text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                    {c.totalAppointments}
-                  </td>
-                  <td className="px-4 py-3 text-sm" style={{ color: "var(--db-text-muted)" }}>
-                    {formatDate(c.lastCallAt)}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1">
-                      {(c.tags || []).slice(0, 3).map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded px-1.5 py-0.5 text-[10px]"
-                          style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                      {(c.tags || []).length > 3 && (
-                        <span className="rounded px-1.5 py-0.5 text-[10px]" style={{ color: "var(--db-text-muted)" }}>
-                          +{c.tags.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      )}
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between">
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-            className="rounded-lg px-3 py-1.5 text-sm disabled:opacity-40"
-            style={{ background: "var(--db-hover)", color: "var(--db-text)" }}
-          >
-            Previous
-          </button>
-          <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Page {page} of {totalPages}
-          </span>
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
-            className="rounded-lg px-3 py-1.5 text-sm disabled:opacity-40"
-            style={{ background: "var(--db-hover)", color: "var(--db-text)" }}
-          >
-            Next
-          </button>
+      ) : customers.length === 0 ? (
+        <div className="db-card py-16 text-center">
+          <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
+            {search ? "No customers match your search" : "No customers yet"}
+          </p>
+          <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
+            {search
+              ? "Try a different search term."
+              : `Your customer list builds automatically as ${receptionistName} takes calls.`}
+          </p>
+          {!search && (
+            <Button className="mt-4" onClick={() => setShowAddModal(true)}>
+              Add Customer Manually
+            </Button>
+          )}
         </div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={customers}
+          onRowClick={(c) => router.push(`/dashboard/customers/${c.id}`)}
+          pagination={totalPages > 1 ? {
+            page,
+            totalPages,
+            total,
+            onPageChange: setPage,
+          } : undefined}
+          emptyMessage={search ? "No customers match your search" : "No customers yet"}
+        />
       )}
 
-      {/* Add Customer Modal */}
       {showAddModal && (
         <AddCustomerModal
           onClose={() => setShowAddModal(false)}
-          onCreated={() => {
-            setShowAddModal(false);
-            fetchCustomers();
-          }}
+          onCreated={() => { setShowAddModal(false); fetchCustomers(); }}
         />
       )}
     </div>
@@ -352,13 +297,18 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose} onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop"
+      style={{ background: "rgba(0,0,0,0.5)" }}
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
+    >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-customer-title"
-        className="w-full max-w-md rounded-xl p-6"
-        style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
+        className="modal-content w-full max-w-md rounded-xl p-6"
+        style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="add-customer-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>
@@ -399,24 +349,14 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
               style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
             />
           </div>
-          {error && <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>}
+          {error && <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>}
           <div className="flex gap-2 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-lg px-4 py-2 text-sm"
-              style={{ background: "var(--db-hover)", color: "var(--db-text)" }}
-            >
+            <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="flex-1 rounded-lg px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-              style={{ background: "var(--db-accent)" }}
-            >
+            </Button>
+            <Button type="submit" disabled={saving} className="flex-1">
               {saving ? "Saving..." : "Add Customer"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
