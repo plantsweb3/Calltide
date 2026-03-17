@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import Button from "@/components/ui/button";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
+import PageHeader from "@/components/page-header";
 
 interface ReferralData {
   referralCode: string | null;
@@ -77,14 +78,10 @@ export default function ReferralsPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>
-          Referral Program
-        </h1>
-        <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Refer a business &rarr; they get 50% off first month &rarr; you get 1 month free ($497 credit)
-        </p>
-      </div>
+      <PageHeader
+        title="Referral Program"
+        description="Refer a business → they get 50% off first month → you get 1 month free ($497 credit)"
+      />
 
       {/* Referral Code + Link */}
       <div className="db-card rounded-xl p-6 space-y-4">

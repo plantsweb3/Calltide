@@ -6,6 +6,9 @@ import { TableSkeleton } from "@/components/skeleton";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 import Button from "@/components/ui/button";
 import StatusBadge from "@/components/ui/status-badge";
+import PageHeader from "@/components/page-header";
+import EmptyState from "@/components/empty-state";
+import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 
 interface SmsMessage {
   id: string;
@@ -129,35 +132,46 @@ export default function SmsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1
-          className="text-2xl font-semibold tracking-tight"
-          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
-        >
-          SMS Log
-        </h1>
-        <input
-          type="text"
-          placeholder="Search by phone number..."
-          defaultValue={search}
-          onChange={(e) => {
-            const val = e.target.value;
-            clearTimeout(searchTimer.current);
-            searchTimer.current = setTimeout(() => {
-              setSearch(val);
-              setPage(1);
-            }, 300);
-          }}
-          className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-64"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            color: "var(--db-text)",
-          }}
-          onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-          onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
-        />
-      </div>
+      <PageHeader
+        title="SMS Log"
+        actions={
+          <>
+            <input
+              type="text"
+              placeholder="Search by phone number..."
+              defaultValue={search}
+              onChange={(e) => {
+                const val = e.target.value;
+                clearTimeout(searchTimer.current);
+                searchTimer.current = setTimeout(() => {
+                  setSearch(val);
+                  setPage(1);
+                }, 300);
+              }}
+              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-64"
+              style={{
+                background: "var(--db-card)",
+                border: "1px solid var(--db-border)",
+                color: "var(--db-text)",
+              }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+            />
+            <ExportCsvButton
+              data={messages}
+              columns={[
+                { header: "Date", accessor: (r) => r.createdAt },
+                { header: "Direction", accessor: (r) => r.direction },
+                { header: "From", accessor: (r) => r.fromNumber },
+                { header: "To", accessor: (r) => r.toNumber },
+                { header: "Message", accessor: (r) => r.body },
+                { header: "Status", accessor: (r) => r.status },
+              ]}
+              filename="sms"
+            />
+          </>
+        }
+      />
 
       {error && (
         <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
@@ -173,25 +187,16 @@ export default function SmsPage() {
       )}
 
       {!loading && messages.length === 0 && !search && (
-        <div className="db-card rounded-xl p-12 text-center">
-          <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
-          <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
-            No messages yet
-          </p>
-          <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
-            SMS confirmations and reminders will show up here as {receptionistName} handles calls.
-          </p>
-          <a
-            href="/dashboard/settings#notifications"
-            className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
-            style={{ background: "var(--db-accent)", color: "#fff" }}
-          >
-            View SMS Settings
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
-        </div>
+        <EmptyState
+          icon={
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          }
+          title="No messages yet"
+          description={`SMS confirmations and reminders will show up here as ${receptionistName} handles calls.`}
+          action={{ label: "View SMS Settings", href: "/dashboard/settings#notifications" }}
+        />
       )}
 
       {!loading && messages.length === 0 && search && (

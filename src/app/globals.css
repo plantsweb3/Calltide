@@ -623,6 +623,17 @@ select:focus-visible,
   animation: modal-content-in 0.25s ease-out;
 }
 
+/* Dashboard button variants */
+.db-btn[data-variant="primary"] { background: var(--db-accent); color: #fff; }
+.db-btn[data-variant="secondary"] { background: var(--db-hover); border: 1px solid var(--db-border); color: var(--db-text); }
+.db-btn[data-variant="ghost"] { background: transparent; color: var(--db-text-muted); }
+.db-btn[data-variant="danger"] { background: var(--db-danger-bg); color: var(--db-danger); }
+
+.db-btn[data-variant="primary"]:hover:not(:disabled) { background: var(--db-accent-hover); }
+.db-btn[data-variant="secondary"]:hover:not(:disabled) { background: var(--db-border); }
+.db-btn[data-variant="ghost"]:hover:not(:disabled) { background: var(--db-hover); color: var(--db-text); }
+.db-btn[data-variant="danger"]:hover:not(:disabled) { background: var(--db-danger); color: #fff; }
+
 /* Dashboard card with hover elevation */
 .db-card {
   background: var(--db-card);

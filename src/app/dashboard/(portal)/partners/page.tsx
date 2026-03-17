@@ -3,6 +3,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import Button from "@/components/ui/button";
+import ConfirmDialog from "@/components/confirm-dialog";
+import EmptyState from "@/components/empty-state";
+import PageHeader from "@/components/page-header";
 
 interface Partner {
   id: string;
@@ -86,6 +90,8 @@ export default function PartnersPage() {
   const [formLanguage, setFormLanguage] = useState("en");
   const [formRelationship, setFormRelationship] = useState("trusted");
   const [formNotes, setFormNotes] = useState("");
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -182,6 +188,7 @@ export default function PartnersPage() {
   }
 
   async function handleDelete(id: string) {
+    setDeleteLoading(true);
     try {
       const res = await fetch(`/api/dashboard/partners/${id}`, { method: "DELETE" });
       if (!res.ok) {
@@ -192,6 +199,9 @@ export default function PartnersPage() {
       fetchData();
     } catch {
       toast.error("Failed to remove partner");
+    } finally {
+      setDeleteLoading(false);
+      setDeleteConfirmId(null);
     }
   }
 
@@ -199,25 +209,15 @@ export default function PartnersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>
-            Referral Partners
-          </h1>
-          <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Add trusted partners so Maria can refer callers who need services you don&apos;t offer
-          </p>
-        </div>
-        {tab === "partners" && !showForm && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-            style={{ background: "var(--db-accent)", color: "#fff" }}
-          >
-            + Add Partner
-          </button>
-        )}
-      </div>
+      <PageHeader
+        title="Referral Partners"
+        description="Add trusted partners so your receptionist can refer callers who need services you don't offer"
+        actions={
+          tab === "partners" && !showForm ? (
+            <Button onClick={() => setShowForm(true)}>+ Add Partner</Button>
+          ) : undefined
+        }
+      />
 
       {/* Tabs */}
       <div className="flex gap-1 rounded-lg p-1" style={{ background: "var(--db-surface)" }}>
@@ -413,20 +413,20 @@ export default function PartnersPage() {
                       )}
                     </div>
                     <div className="flex gap-1">
-                      <button
+                      <Button
+                        variant="secondary"
+                        size="sm"
                         onClick={() => startEdit(p)}
-                        className="rounded-md px-2.5 py-1.5 text-xs transition-colors"
-                        style={{ color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }}
                       >
                         Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(p.id)}
-                        className="rounded-md px-2.5 py-1.5 text-xs transition-colors"
-                        style={{ color: "#f87171", border: "1px solid rgba(248,113,113,0.3)" }}
+                      </Button>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => setDeleteConfirmId(p.id)}
                       >
                         Remove
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 );
@@ -440,14 +440,15 @@ export default function PartnersPage() {
       {tab === "referrals" && (
         <div>
           {referrals.length === 0 ? (
-            <div
-              className="rounded-xl p-8 text-center"
-              style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
-            >
-              <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-                No referrals yet. When Maria refers a caller to one of your partners, it&apos;ll show up here.
-              </p>
-            </div>
+            <EmptyState
+              icon={
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" y1="8" x2="19" y2="14" /><line x1="22" y1="11" x2="16" y2="11" />
+                </svg>
+              }
+              title="No referrals yet"
+              description="When your receptionist refers a caller to one of your partners, it'll show up here."
+            />
           ) : (
             <div
               className="rounded-xl overflow-hidden"
@@ -503,6 +504,17 @@ export default function PartnersPage() {
           )}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteConfirmId}
+        title="Remove Partner?"
+        description="This will remove the partner from your referral network. Existing referral history will be preserved."
+        confirmLabel="Remove Partner"
+        variant="danger"
+        loading={deleteLoading}
+        onConfirm={() => { if (deleteConfirmId) handleDelete(deleteConfirmId); }}
+        onCancel={() => setDeleteConfirmId(null)}
+      />
     </div>
   );
 }

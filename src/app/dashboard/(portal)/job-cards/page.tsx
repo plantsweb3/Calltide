@@ -2,6 +2,10 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { TableSkeleton } from "@/components/skeleton";
+import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import PageHeader from "@/components/page-header";
+import EmptyState from "@/components/empty-state";
+import Button from "@/components/ui/button";
 
 interface OwnerResponse {
   id: string;
@@ -89,6 +93,7 @@ const CONFIDENCE_COLORS: Record<string, { bg: string; text: string }> = {
 };
 
 export default function JobCardsPage() {
+  const receptionistName = useReceptionistName();
   const [cards, setCards] = useState<JobCard[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -98,6 +103,7 @@ export default function JobCardsPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [photos, setPhotos] = useState<Record<string, Attachment[]>>({});
+  const [search, setSearch] = useState("");
 
   // Lazy-load photos when a card with photos is expanded
   useEffect(() => {
@@ -171,19 +177,33 @@ export default function JobCardsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)", fontFamily: "var(--font-body), system-ui, sans-serif" }}>
-          Job Cards
-        </h1>
-        {stats != null && (
-          <div className="flex items-center gap-4 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            <span>Response rate: <strong style={{ color: "var(--db-text)" }}>{stats.responseRate}%</strong></span>
-            {stats.avgResponseTimeMinutes != null && (
-              <span>Avg response: <strong style={{ color: "var(--db-text)" }}>{stats.avgResponseTimeMinutes}min</strong></span>
+      <PageHeader
+        title="Job Cards"
+        actions={
+          <div className="flex items-center gap-3">
+            <input
+              type="text"
+              placeholder="Search jobs..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-52"
+              style={{
+                background: "var(--db-card)",
+                border: "1px solid var(--db-border)",
+                color: "var(--db-text)",
+              }}
+            />
+            {stats != null && (
+              <div className="hidden sm:flex items-center gap-4 text-sm" style={{ color: "var(--db-text-muted)" }}>
+                <span>Response rate: <strong style={{ color: "var(--db-text)" }}>{stats.responseRate}%</strong></span>
+                {stats.avgResponseTimeMinutes != null && (
+                  <span>Avg response: <strong style={{ color: "var(--db-text)" }}>{stats.avgResponseTimeMinutes}min</strong></span>
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
+        }
+      />
 
       {/* Filter chips */}
       <div className="flex flex-wrap gap-2 mb-6">
@@ -215,13 +235,25 @@ export default function JobCardsPage() {
       {loading ? (
         <TableSkeleton rows={5} columns={5} />
       ) : cards.length === 0 ? (
-        <div className="text-center py-16" style={{ color: "var(--db-text-muted)" }}>
-          <p className="text-lg mb-2">No job cards yet</p>
-          <p className="text-sm">Job cards are created automatically when Maria completes an intake during a call.</p>
-        </div>
+        <EmptyState
+          icon={
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+          }
+          title="No job cards yet"
+          description={`Job cards are created automatically when ${receptionistName} completes an intake during a call.`}
+        />
       ) : (
         <div className="space-y-3">
-          {cards.map((card) => {
+          {cards.filter((c) => {
+            if (!search) return true;
+            const s = search.toLowerCase();
+            return (c.callerName || "").toLowerCase().includes(s) ||
+              (c.callerPhone || "").toLowerCase().includes(s) ||
+              (c.scopeDescription || "").toLowerCase().includes(s) ||
+              (c.jobTypeLabel || "").toLowerCase().includes(s);
+          }).map((card) => {
             const expanded = expandedId === card.id;
             const sc = STATUS_COLORS[card.status || "pending_review"] || STATUS_COLORS.pending_review;
             const cc = CONFIDENCE_COLORS[card.estimateConfidence || "no_match"] || CONFIDENCE_COLORS.no_match;
@@ -437,36 +469,26 @@ export default function JobCardsPage() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-6">
-          <button
+        <div className="flex justify-center items-center gap-2 mt-6">
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1.5 rounded text-sm"
-            style={{
-              background: "var(--db-surface)",
-              color: page === 1 ? "var(--db-text-muted)" : "var(--db-text)",
-              border: "1px solid var(--db-border)",
-              opacity: page === 1 ? 0.5 : 1,
-            }}
           >
             Previous
-          </button>
+          </Button>
           <span className="px-3 py-1.5 text-sm" style={{ color: "var(--db-text-muted)" }}>
             Page {page} of {totalPages}
           </span>
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-3 py-1.5 rounded text-sm"
-            style={{
-              background: "var(--db-surface)",
-              color: page === totalPages ? "var(--db-text-muted)" : "var(--db-text)",
-              border: "1px solid var(--db-border)",
-              opacity: page === totalPages ? 0.5 : 1,
-            }}
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
     </div>

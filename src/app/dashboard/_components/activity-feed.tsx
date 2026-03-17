@@ -1,5 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import EmptyState from "@/components/empty-state";
+
 interface FeedEvent {
   id: string;
   time: string;
@@ -86,6 +89,44 @@ function EventIcon({ type, urgent, recovered }: { type: string; urgent?: boolean
 }
 
 export default function ActivityFeed({ events }: { events: FeedEvent[] }) {
+  const router = useRouter();
+
+  function getRoute(type: string): string {
+    if (type.startsWith("call")) return "/dashboard/calls";
+    if (type.startsWith("sms")) return "/dashboard/sms";
+    if (type.startsWith("appointment")) return "/dashboard/appointments";
+    return "/dashboard";
+  }
+
+  if (events.length === 0) {
+    return (
+      <div
+        className="rounded-xl p-5 transition-colors duration-300"
+        style={{
+          background: "var(--db-card)",
+          border: "1px solid var(--db-border)",
+          boxShadow: "var(--db-card-shadow)",
+        }}
+      >
+        <h3
+          className="mb-4 text-sm font-semibold uppercase tracking-wider"
+          style={{ color: "var(--db-text-muted)" }}
+        >
+          Recent Activity
+        </h3>
+        <EmptyState
+          icon={
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+            </svg>
+          }
+          title="No recent activity"
+          description="Activity will appear here as your receptionist handles calls and books appointments."
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       className="rounded-xl p-5 transition-colors duration-300"
@@ -103,7 +144,12 @@ export default function ActivityFeed({ events }: { events: FeedEvent[] }) {
       </h3>
       <div className="space-y-0">
         {events.map((evt, i) => (
-          <div key={evt.id} className="flex gap-3 py-3" style={{ borderTop: i > 0 ? "1px solid var(--db-border-light)" : "none" }}>
+          <div
+            key={evt.id}
+            className="flex gap-3 py-3 cursor-pointer transition-colors rounded-lg px-1 -mx-1"
+            style={{ borderTop: i > 0 ? "1px solid var(--db-border-light)" : "none" }}
+            onClick={() => router.push(getRoute(evt.type))}
+          >
             <div className="flex flex-col items-center">
               <EventIcon type={evt.type} urgent={evt.urgent} recovered={evt.recovered} />
             </div>

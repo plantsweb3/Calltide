@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import Button from "@/components/ui/button";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
+import PageHeader from "@/components/page-header";
 
 interface BillingData {
   plan: string;
@@ -94,17 +95,10 @@ export default function BillingPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1
-          className="text-2xl font-semibold tracking-tight"
-          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
-        >
-          Billing
-        </h1>
-        <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Manage your subscription and payment method
-        </p>
-      </div>
+      <PageHeader
+        title="Billing"
+        description="Manage your subscription and payment method"
+      />
 
       {/* Past Due Banner */}
       {isPastDue && (

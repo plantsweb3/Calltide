@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 import DataTable, { type Column } from "@/components/data-table";
 import AppointmentCalendar from "@/app/dashboard/_components/appointment-calendar";
 import { TableSkeleton } from "@/components/skeleton";
 import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 import Button from "@/components/ui/button";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
+import PageHeader from "@/components/page-header";
+import ConfirmDialog from "@/components/confirm-dialog";
+import DateRangePicker, { type DateRange } from "@/components/date-range-picker";
+import EmptyState from "@/components/empty-state";
 
 interface Appointment {
   id: string;
@@ -21,12 +26,62 @@ interface Appointment {
   leadPhone: string | null;
 }
 
+function formatDateTime(date: string, time: string): string {
+  const d = new Date(`${date}T${time}`);
+  return d.toLocaleString(undefined, {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function formatPhone(phone: string | null): string {
+  if (!phone) return "-";
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 11 && digits[0] === "1") {
+    return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+  }
+  if (digits.length === 10) {
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+  return phone;
+}
+
+function toISO(d: Date): string {
+  return d.toISOString().split("T")[0];
+}
+
+const STATUS_ACTIONS: Record<string, { label: string; status: string; variant: "primary" | "danger" }[]> = {
+  pending: [
+    { label: "Confirm", status: "confirmed", variant: "primary" },
+    { label: "Cancel", status: "cancelled", variant: "danger" },
+  ],
+  confirmed: [
+    { label: "Complete", status: "completed", variant: "primary" },
+    { label: "No-Show", status: "no_show", variant: "danger" },
+    { label: "Cancel", status: "cancelled", variant: "danger" },
+  ],
+};
+
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [filter, setFilter] = useState<"upcoming" | "past">("upcoming");
   const [view, setView] = useState<"calendar" | "list">("calendar");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Appointment | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{ status: string; label: string } | null>(null);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const now = new Date();
+  const thirtyDaysAgo = new Date(now);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: toISO(thirtyDaysAgo),
+    to: toISO(now),
+  });
 
   const fetchAppointments = useCallback(async () => {
     setLoading(true);
@@ -47,15 +102,43 @@ export default function AppointmentsPage() {
     fetchAppointments();
   }, [fetchAppointments]);
 
-  function formatDateTime(date: string, time: string): string {
-    const d = new Date(`${date}T${time}`);
-    return d.toLocaleString(undefined, {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  // Client-side date filter for list view
+  const filteredAppointments = appointments.filter((a) => {
+    if (filter === "upcoming") return true; // Calendar shows all upcoming
+    return a.date >= dateRange.from && a.date <= dateRange.to;
+  });
+
+  async function updateStatus(apptId: string, newStatus: string) {
+    setActionLoading(true);
+    try {
+      const res = await fetch("/api/dashboard/appointments", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: apptId, status: newStatus }),
+      });
+      if (!res.ok) throw new Error("Failed to update appointment");
+      toast.success(`Appointment ${newStatus.replace(/_/g, " ")}`);
+      // Update local state
+      setAppointments((prev) =>
+        prev.map((a) => (a.id === apptId ? { ...a, status: newStatus } : a))
+      );
+      if (selected?.id === apptId) {
+        setSelected((prev) => prev ? { ...prev, status: newStatus } : null);
+      }
+      setConfirmAction(null);
+    } catch {
+      toast.error("Failed to update appointment status");
+    } finally {
+      setActionLoading(false);
+    }
+  }
+
+  function handleAction(action: { status: string; label: string }) {
+    if (action.status === "cancelled" || action.status === "no_show") {
+      setConfirmAction(action);
+    } else {
+      updateStatus(selected!.id, action.status);
+    }
   }
 
   const columns: Column<Appointment>[] = [
@@ -64,14 +147,11 @@ export default function AppointmentsPage() {
       label: "Date & Time",
       render: (row) => formatDateTime(row.date, row.time),
     },
-    {
-      key: "service",
-      label: "Service",
-    },
+    { key: "service", label: "Service" },
     {
       key: "caller",
       label: "Caller",
-      render: (row) => row.leadName || row.leadPhone || "-",
+      render: (row) => row.leadName || formatPhone(row.leadPhone),
     },
     {
       key: "status",
@@ -80,136 +160,247 @@ export default function AppointmentsPage() {
         <StatusBadge label={row.status} variant={statusToVariant(row.status)} />
       ),
     },
+    {
+      key: "actions",
+      label: "",
+      render: (row) => {
+        const actions = STATUS_ACTIONS[row.status];
+        if (!actions) return null;
+        return (
+          <div className="flex items-center gap-1">
+            {actions.map((a) => (
+              <Button
+                key={a.status}
+                size="sm"
+                variant={a.variant === "danger" ? "ghost" : "primary"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelected(row);
+                  if (a.status === "cancelled" || a.status === "no_show") {
+                    setConfirmAction(a);
+                  } else {
+                    updateStatus(row.id, a.status);
+                  }
+                }}
+              >
+                {a.label}
+              </Button>
+            ))}
+          </div>
+        );
+      },
+    },
   ];
 
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1
-          className="text-2xl font-semibold tracking-tight"
-          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
-        >
-          Appointments
-        </h1>
-        <div className="flex items-center gap-3">
-          <ExportCsvButton
-            data={appointments}
-            columns={[
-              { header: "Date", accessor: (r) => r.date },
-              { header: "Time", accessor: (r) => r.time },
-              { header: "Service", accessor: (r) => r.service },
-              { header: "Customer", accessor: (r) => r.leadName || r.leadPhone },
-              { header: "Status", accessor: (r) => r.status },
-              { header: "Notes", accessor: (r) => r.notes },
-            ]}
-            filename="appointments"
-          />
-          {/* View toggle */}
-          {filter === "upcoming" && (
-            <div
-              className="flex rounded-lg overflow-hidden"
-              style={{ border: "1px solid var(--db-border)" }}
-            >
+      <PageHeader
+        title="Appointments"
+        actions={
+          <div className="flex items-center gap-3">
+            {filter === "past" && (
+              <DateRangePicker value={dateRange} onChange={setDateRange} />
+            )}
+            <ExportCsvButton
+              data={filteredAppointments}
+              columns={[
+                { header: "Date", accessor: (r) => r.date },
+                { header: "Time", accessor: (r) => r.time },
+                { header: "Service", accessor: (r) => r.service },
+                { header: "Customer", accessor: (r) => r.leadName || r.leadPhone },
+                { header: "Status", accessor: (r) => r.status },
+                { header: "Notes", accessor: (r) => r.notes },
+              ]}
+              filename="appointments"
+            />
+            {filter === "upcoming" && (
+              <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
+                <button
+                  onClick={() => setView("calendar")}
+                  className="px-3 py-2 transition-colors"
+                  style={{
+                    background: view === "calendar" ? "var(--db-accent)" : "var(--db-card)",
+                    color: view === "calendar" ? "#fff" : "var(--db-text-muted)",
+                  }}
+                  title="Calendar view"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setView("list")}
+                  className="px-3 py-2 transition-colors"
+                  style={{
+                    background: view === "list" ? "var(--db-accent)" : "var(--db-card)",
+                    color: view === "list" ? "#fff" : "var(--db-text-muted)",
+                  }}
+                  title="List view"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
+                  </svg>
+                </button>
+              </div>
+            )}
+            <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
               <button
-                onClick={() => setView("calendar")}
-                className="px-3 py-2 transition-colors"
+                onClick={() => { setFilter("upcoming"); setView("calendar"); }}
+                className="px-4 py-2 text-sm font-medium transition-colors"
                 style={{
-                  background: view === "calendar" ? "var(--db-accent)" : "var(--db-card)",
-                  color: view === "calendar" ? "#fff" : "var(--db-text-muted)",
+                  background: filter === "upcoming" ? "var(--db-accent)" : "var(--db-card)",
+                  color: filter === "upcoming" ? "#fff" : "var(--db-text-muted)",
                 }}
-                title="Calendar view"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
+                Upcoming
               </button>
               <button
-                onClick={() => setView("list")}
-                className="px-3 py-2 transition-colors"
+                onClick={() => { setFilter("past"); setView("list"); }}
+                className="px-4 py-2 text-sm font-medium transition-colors"
                 style={{
-                  background: view === "list" ? "var(--db-accent)" : "var(--db-card)",
-                  color: view === "list" ? "#fff" : "var(--db-text-muted)",
+                  background: filter === "past" ? "var(--db-accent)" : "var(--db-card)",
+                  color: filter === "past" ? "#fff" : "var(--db-text-muted)",
                 }}
-                title="List view"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
-                </svg>
+                Past
               </button>
             </div>
-          )}
-
-          {/* Filter toggle */}
-          <div
-            className="flex rounded-lg overflow-hidden"
-            style={{ border: "1px solid var(--db-border)" }}
-          >
-            <button
-              onClick={() => { setFilter("upcoming"); setView("calendar"); }}
-              className="px-4 py-2 text-sm font-medium transition-colors"
-              style={{
-                background: filter === "upcoming" ? "var(--db-accent)" : "var(--db-card)",
-                color: filter === "upcoming" ? "#fff" : "var(--db-text-muted)",
-              }}
-            >
-              Upcoming
-            </button>
-            <button
-              onClick={() => { setFilter("past"); setView("list"); }}
-              className="px-4 py-2 text-sm font-medium transition-colors"
-              style={{
-                background: filter === "past" ? "var(--db-accent)" : "var(--db-card)",
-                color: filter === "past" ? "#fff" : "var(--db-text-muted)",
-              }}
-            >
-              Past
-            </button>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {error && (
         <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
           <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
-          <Button variant="danger" size="sm" onClick={fetchAppointments}>
-            Retry
-          </Button>
+          <Button variant="danger" size="sm" onClick={fetchAppointments}>Retry</Button>
         </div>
       )}
 
-      {loading && appointments.length === 0 && !error && (
-        <TableSkeleton rows={5} />
-      )}
+      {loading && appointments.length === 0 && !error && <TableSkeleton rows={5} />}
 
       {!loading && appointments.length === 0 && (
-        <div className="db-card rounded-xl p-12 text-center">
-          <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
-            <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-          </svg>
-          <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
-            No {filter} appointments
-          </p>
-          <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
-            When your AI receptionist books appointments, they&apos;ll appear here.
-          </p>
-          <a
-            href="/dashboard/settings#receptionist"
-            className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
-            style={{ background: "var(--db-accent)", color: "#fff" }}
+        <EmptyState
+          icon={
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          }
+          title={`No ${filter} appointments`}
+          description="When your AI receptionist books appointments, they'll appear here."
+          action={{ label: "Customize Scheduling", href: "/dashboard/settings#receptionist" }}
+        />
+      )}
+
+      {filteredAppointments.length > 0 && view === "calendar" && filter === "upcoming" && (
+        <AppointmentCalendar
+          appointments={filteredAppointments}
+          onSelect={(appt) => setSelected(appt)}
+        />
+      )}
+
+      {filteredAppointments.length > 0 && (view === "list" || filter === "past") && (
+        <DataTable
+          columns={columns}
+          data={filteredAppointments}
+          onRowClick={(row) => setSelected(row)}
+        />
+      )}
+
+      {/* Appointment Detail Modal */}
+      {selected && !confirmAction && (
+        <div
+          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelected(null)}
+          onKeyDown={(e) => { if (e.key === "Escape") setSelected(null); }}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="modal-content db-card w-full max-w-lg rounded-xl p-6 space-y-5"
+            onClick={(e) => e.stopPropagation()}
           >
-            Customize Scheduling
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+                  {selected.service}
+                </h3>
+                <p className="text-sm mt-1" style={{ color: "var(--db-text-muted)" }}>
+                  {formatDateTime(selected.date, selected.time)}
+                  {selected.duration > 0 && ` \u00B7 ${selected.duration} min`}
+                </p>
+              </div>
+              <button
+                onClick={() => setSelected(null)}
+                className="p-1 rounded-lg transition-colors"
+                style={{ color: "var(--db-text-muted)" }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-medium uppercase tracking-wider w-20" style={{ color: "var(--db-text-muted)" }}>Status</span>
+                <StatusBadge label={selected.status} variant={statusToVariant(selected.status)} dot />
+              </div>
+              {(selected.leadName || selected.leadPhone) && (
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-medium uppercase tracking-wider w-20" style={{ color: "var(--db-text-muted)" }}>Customer</span>
+                  <span className="text-sm" style={{ color: "var(--db-text)" }}>
+                    {selected.leadName || ""}{selected.leadName && selected.leadPhone ? " \u00B7 " : ""}{formatPhone(selected.leadPhone)}
+                  </span>
+                </div>
+              )}
+              {selected.notes && (
+                <div>
+                  <span className="text-xs font-medium uppercase tracking-wider block mb-1" style={{ color: "var(--db-text-muted)" }}>Notes</span>
+                  <p className="text-sm rounded-lg p-3" style={{ background: "var(--db-hover)", color: "var(--db-text-secondary)" }}>
+                    {selected.notes}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Action buttons */}
+            {STATUS_ACTIONS[selected.status] && (
+              <div className="flex items-center gap-2 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
+                {STATUS_ACTIONS[selected.status].map((action) => (
+                  <Button
+                    key={action.status}
+                    variant={action.variant}
+                    onClick={() => handleAction(action)}
+                    disabled={actionLoading}
+                  >
+                    {action.label}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {appointments.length > 0 && view === "calendar" && filter === "upcoming" && (
-        <AppointmentCalendar appointments={appointments} />
-      )}
-
-      {appointments.length > 0 && (view === "list" || filter === "past") && (
-        <DataTable columns={columns} data={appointments} />
-      )}
+      {/* Confirm destructive action */}
+      <ConfirmDialog
+        open={!!confirmAction}
+        title={`${confirmAction?.label} Appointment?`}
+        description={
+          confirmAction?.status === "cancelled"
+            ? "This will cancel the appointment. The customer will be notified via SMS."
+            : "This will mark the appointment as a no-show."
+        }
+        confirmLabel={confirmAction?.label || "Confirm"}
+        variant="danger"
+        loading={actionLoading}
+        onConfirm={() => {
+          if (selected && confirmAction) {
+            updateStatus(selected.id, confirmAction.status);
+          }
+        }}
+        onCancel={() => setConfirmAction(null)}
+      />
     </div>
   );
 }

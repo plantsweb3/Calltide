@@ -10,6 +10,7 @@ import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 import DataTable, { type Column } from "@/components/data-table";
 import Button from "@/components/ui/button";
 import StatusBadge from "@/components/ui/status-badge";
+import PageHeader from "@/components/page-header";
 
 interface Customer {
   id: string;
@@ -147,50 +148,46 @@ export default function CustomersPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight" style={{ color: "var(--db-text)" }}>
-            Customers
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "var(--db-text-muted)" }}>
-            {total} total customers
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            href="/dashboard/import?type=customers"
-            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-            style={{
-              background: "var(--db-hover)",
-              border: "1px solid var(--db-border)",
-              color: "var(--db-text-muted)",
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="17 8 12 3 7 8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
-            </svg>
-            Import CSV
-          </Link>
-          <ExportCsvButton
-            data={customers}
-            columns={[
-              { header: "Name", accessor: (r) => r.name },
-              { header: "Phone", accessor: (r) => r.phone },
-              { header: "Email", accessor: (r) => r.email },
-              { header: "Calls", accessor: (r) => r.totalCalls },
-              { header: "Appointments", accessor: (r) => r.totalAppointments },
-              { header: "Last Call", accessor: (r) => r.lastCallAt },
-              { header: "Tags", accessor: (r) => r.tags.join("; ") },
-            ]}
-            filename="customers"
-          />
-          <Button onClick={() => setShowAddModal(true)}>
-            + Add Customer
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Customers"
+        description={`${total} total customers`}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/dashboard/import?type=customers"
+              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+              style={{
+                background: "var(--db-hover)",
+                border: "1px solid var(--db-border)",
+                color: "var(--db-text-muted)",
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              Import CSV
+            </Link>
+            <ExportCsvButton
+              data={customers}
+              columns={[
+                { header: "Name", accessor: (r) => r.name },
+                { header: "Phone", accessor: (r) => r.phone },
+                { header: "Email", accessor: (r) => r.email },
+                { header: "Calls", accessor: (r) => r.totalCalls },
+                { header: "Appointments", accessor: (r) => r.totalAppointments },
+                { header: "Last Call", accessor: (r) => r.lastCallAt },
+                { header: "Tags", accessor: (r) => r.tags.join("; ") },
+              ]}
+              filename="customers"
+            />
+            <Button onClick={() => setShowAddModal(true)}>
+              + Add Customer
+            </Button>
+          </div>
+        }
+      />
 
       {/* Search */}
       <div className="mb-4">

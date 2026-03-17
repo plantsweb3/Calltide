@@ -7,6 +7,8 @@ import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-nam
 import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import Button from "@/components/ui/button";
+import DataTable, { type Column } from "@/components/data-table";
+import PageHeader from "@/components/page-header";
 
 interface Estimate {
   id: string;
@@ -61,6 +63,7 @@ export default function EstimatesPage() {
   const [wonAmount, setWonAmount] = useState("");
   const [lostReason, setLostReason] = useState("no_response");
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   const fetchEstimates = useCallback(async () => {
     setLoading(true);
@@ -132,23 +135,37 @@ export default function EstimatesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: "var(--db-text)" }}>
-          Estimates Pipeline
-        </h1>
-        <ExportCsvButton
-          data={estimates}
-          columns={[
-            { header: "Customer", accessor: (r) => r.customerName || r.customerPhone },
-            { header: "Service", accessor: (r) => r.service },
-            { header: "Amount", accessor: (r) => r.amount },
-            { header: "Status", accessor: (r) => r.status },
-            { header: "Created", accessor: (r) => r.createdAt },
-            { header: "Notes", accessor: (r) => r.notes },
-          ]}
-          filename="estimates"
-        />
-      </div>
+      <PageHeader
+        title="Estimates Pipeline"
+        actions={
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Search by customer..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-52"
+              style={{
+                background: "var(--db-card)",
+                border: "1px solid var(--db-border)",
+                color: "var(--db-text)",
+              }}
+            />
+            <ExportCsvButton
+              data={estimates}
+              columns={[
+                { header: "Customer", accessor: (r) => r.customerName || r.customerPhone },
+                { header: "Service", accessor: (r) => r.service },
+                { header: "Amount", accessor: (r) => r.amount },
+                { header: "Status", accessor: (r) => r.status },
+                { header: "Created", accessor: (r) => r.createdAt },
+                { header: "Notes", accessor: (r) => r.notes },
+              ]}
+              filename="estimates"
+            />
+          </div>
+        }
+      />
 
       {/* Pipeline Summary Cards */}
       <div className="grid grid-cols-2 gap-3 mb-6 sm:grid-cols-5 stagger-grid">
@@ -202,130 +219,88 @@ export default function EstimatesPage() {
           </p>
         </div>
       ) : (
-        <div className="db-card overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--db-border)" }}>
-                {["Customer", "Service", "Amount", "Status", "Created", "Next Follow-Up"].map((h) => (
-                  <th
-                    key={h}
-                    className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider"
-                    style={{ color: "var(--db-text-muted)" }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {estimates.map((est) => {
-                const isExpanded = expandedId === est.id;
-                return (
-                  <tr key={est.id}>
-                    <td colSpan={6} className="p-0">
-                      <div
-                        className="flex flex-col sm:grid cursor-pointer transition-colors px-4 py-3"
-                        style={{
-                          gridTemplateColumns: "1fr 1fr 0.7fr 0.7fr 0.7fr 0.8fr",
-                          borderBottom: "1px solid var(--db-border-light)",
-                        }}
-                        role="button"
-                        tabIndex={0}
-                        aria-expanded={isExpanded}
-                        onClick={() => setExpandedId(isExpanded ? null : est.id)}
-                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpandedId(isExpanded ? null : est.id); } }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                      >
-                        <div className="flex items-center justify-between sm:contents">
-                          <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                            {est.customerName || "Unknown"}
-                          </span>
-                          <StatusBadge label={est.status} variant={statusToVariant(est.status)} />
-                        </div>
-                        <span className="text-sm hidden sm:block" style={{ color: "var(--db-text-secondary)" }}>
-                          {est.service || "—"}
-                        </span>
-                        <span className="text-sm font-medium hidden sm:block" style={{ color: "var(--db-text)" }}>
-                          {formatCurrency(est.amount)}
-                        </span>
-                        <span className="hidden sm:block" />
-                        <div className="flex items-center gap-3 mt-1 sm:mt-0 sm:contents">
-                          <span className="text-xs sm:text-sm sm:hidden" style={{ color: "var(--db-text-muted)" }}>
-                            {est.service ? `${est.service} · ` : ""}{formatCurrency(est.amount)}
-                          </span>
-                          <span className="text-xs sm:hidden" style={{ color: "var(--db-text-muted)" }}>
-                            {formatDate(est.createdAt)}
-                          </span>
-                        </div>
-                        <span className="text-sm hidden sm:block" style={{ color: "var(--db-text-muted)" }}>
-                          {formatDate(est.createdAt)}
-                        </span>
-                        <span className="text-sm hidden sm:block" style={{ color: "var(--db-text-muted)" }}>
-                          {formatDate(est.nextFollowUpAt)}
-                        </span>
-                      </div>
-
-                      {isExpanded && (
-                        <div
-                          className="px-6 py-4 space-y-3"
-                          style={{ background: "var(--db-hover)", borderBottom: "1px solid var(--db-border)" }}
-                        >
-                          {est.description && (
-                            <p className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{est.description}</p>
-                          )}
-                          {est.notes && (
-                            <p className="text-sm italic" style={{ color: "var(--db-text-muted)" }}>Notes: {est.notes}</p>
-                          )}
-                          <div className="flex items-center gap-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
-                            <span>Follow-ups sent: {est.followUpCount}</span>
-                            {est.lastFollowUpAt && <span>Last: {formatDate(est.lastFollowUpAt)}</span>}
-                            {est.customerPhone && <span>Phone: {est.customerPhone}</span>}
-                          </div>
-
-                          <div className="flex gap-2 pt-2">
-                            {["new", "sent", "follow_up"].includes(est.status) && (
-                              <>
-                                <Button size="sm" onClick={() => setConfirmFollowUpId(est.id)}>
-                                  Send Follow-Up
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => { setShowWonModal(est.id); setWonAmount(est.amount?.toString() || ""); }}
-                                  style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
-                                >
-                                  Mark Won
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="danger"
-                                  onClick={() => setShowLostModal(est.id)}
-                                >
-                                  Mark Lost
-                                </Button>
-                              </>
-                            )}
-                            {est.status === "won" && est.wonAt && (
-                              <span className="text-xs font-medium" style={{ color: "var(--db-success)" }}>
-                                Won on {formatDate(est.wonAt)} — {formatCurrency(est.amount)}
-                              </span>
-                            )}
-                            {est.status === "lost" && (
-                              <span className="text-xs font-medium" style={{ color: "var(--db-danger)" }}>
-                                Lost: {est.lostReason?.replace(/_/g, " ") || "no reason"}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={[
+            {
+              key: "customerName",
+              label: "Customer",
+              render: (row) => (
+                <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                  {row.customerName || "Unknown"}
+                </span>
+              ),
+            },
+            {
+              key: "service",
+              label: "Service",
+              render: (row) => <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{row.service || "\u2014"}</span>,
+            },
+            {
+              key: "amount",
+              label: "Amount",
+              render: (row) => <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{formatCurrency(row.amount)}</span>,
+            },
+            {
+              key: "status",
+              label: "Status",
+              render: (row) => <StatusBadge label={row.status} variant={statusToVariant(row.status)} />,
+            },
+            {
+              key: "createdAt",
+              label: "Created",
+              render: (row) => <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{formatDate(row.createdAt)}</span>,
+            },
+            {
+              key: "nextFollowUpAt",
+              label: "Next Follow-Up",
+              render: (row) => <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{formatDate(row.nextFollowUpAt)}</span>,
+            },
+          ] as Column<Estimate>[]}
+          data={estimates.filter((e) =>
+            !search || (e.customerName || "").toLowerCase().includes(search.toLowerCase())
+          )}
+          expandedContent={(est) => (
+            <div className="space-y-3">
+              {est.description && (
+                <p className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{est.description}</p>
+              )}
+              {est.notes && (
+                <p className="text-sm italic" style={{ color: "var(--db-text-muted)" }}>Notes: {est.notes}</p>
+              )}
+              <div className="flex items-center gap-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                <span>Follow-ups sent: {est.followUpCount}</span>
+                {est.lastFollowUpAt && <span>Last: {formatDate(est.lastFollowUpAt)}</span>}
+                {est.customerPhone && <span>Phone: {est.customerPhone}</span>}
+              </div>
+              <div className="flex gap-2 pt-2">
+                {["new", "sent", "follow_up"].includes(est.status) && (
+                  <>
+                    <Button size="sm" onClick={() => setConfirmFollowUpId(est.id)}>Send Follow-Up</Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => { setShowWonModal(est.id); setWonAmount(est.amount?.toString() || ""); }}
+                      style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
+                    >
+                      Mark Won
+                    </Button>
+                    <Button size="sm" variant="danger" onClick={() => setShowLostModal(est.id)}>Mark Lost</Button>
+                  </>
+                )}
+                {est.status === "won" && est.wonAt && (
+                  <span className="text-xs font-medium" style={{ color: "var(--db-success)" }}>
+                    Won on {formatDate(est.wonAt)} — {formatCurrency(est.amount)}
+                  </span>
+                )}
+                {est.status === "lost" && (
+                  <span className="text-xs font-medium" style={{ color: "var(--db-danger)" }}>
+                    Lost: {est.lostReason?.replace(/_/g, " ") || "no reason"}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+        />
       )}
 
       {/* Follow-Up Confirmation */}

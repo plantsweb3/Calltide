@@ -9,6 +9,8 @@ import AudioPlayer from "@/app/dashboard/_components/audio-player";
 import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 import Button from "@/components/ui/button";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
+import PageHeader from "@/components/page-header";
+import EmptyState from "@/components/empty-state";
 
 interface TranscriptLine {
   speaker: "ai" | "caller";
@@ -238,109 +240,125 @@ export default function CallsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          <h1
-            className="text-2xl font-semibold tracking-tight"
-            style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
-          >
-            Calls
-          </h1>
-          <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
-            {(["inbound", "outbound"] as const).map((t) => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className="px-3 py-1.5 text-xs font-medium transition-colors"
-                style={{
-                  background: tab === t ? "var(--db-accent)" : "var(--db-card)",
-                  color: tab === t ? "#fff" : "var(--db-text-secondary)",
-                }}
-              >
-                {t === "inbound" ? "Inbound" : "Outbound"}
-              </button>
-            ))}
-          </div>
-        </div>
-        {tab === "inbound" && (
+      <PageHeader
+        title="Calls"
+        actions={
           <div className="flex items-center gap-2">
-            <input
-              type="text"
-              placeholder="Search by phone or name..."
-              defaultValue={search}
-              onChange={(e) => {
-                const val = e.target.value;
-                clearTimeout(searchTimer.current);
-                searchTimer.current = setTimeout(() => {
-                  setSearch(val);
-                  setPage(1);
-                }, 300);
-              }}
-              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-64"
-              style={{
-                background: "var(--db-card)",
-                border: "1px solid var(--db-border)",
-                color: "var(--db-text)",
-              }}
-              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
-            />
-            <ExportCsvButton
-              data={calls}
-              columns={[
-                { header: "Date", accessor: (r) => r.createdAt },
-                { header: "Caller", accessor: (r) => r.leadName || r.callerPhone },
-                { header: "Duration (s)", accessor: (r) => r.duration },
-                { header: "Status", accessor: (r) => r.status },
-                { header: "Sentiment", accessor: (r) => r.sentiment },
-                { header: "Summary", accessor: (r) => r.summary },
-              ]}
-              filename="calls"
-            />
+            <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
+              {(["inbound", "outbound"] as const).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  className="px-3 py-1.5 text-xs font-medium transition-colors"
+                  style={{
+                    background: tab === t ? "var(--db-accent)" : "var(--db-card)",
+                    color: tab === t ? "#fff" : "var(--db-text-secondary)",
+                  }}
+                >
+                  {t === "inbound" ? "Inbound" : "Outbound"}
+                </button>
+              ))}
+            </div>
+            {tab === "inbound" && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Search by phone or name..."
+                  defaultValue={search}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    clearTimeout(searchTimer.current);
+                    searchTimer.current = setTimeout(() => {
+                      setSearch(val);
+                      setPage(1);
+                    }, 300);
+                  }}
+                  className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-64"
+                  style={{
+                    background: "var(--db-card)",
+                    border: "1px solid var(--db-border)",
+                    color: "var(--db-text)",
+                  }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+                />
+                <ExportCsvButton
+                  data={calls}
+                  columns={[
+                    { header: "Date", accessor: (r) => r.createdAt },
+                    { header: "Caller", accessor: (r) => r.leadName || r.callerPhone },
+                    { header: "Duration (s)", accessor: (r) => r.duration },
+                    { header: "Status", accessor: (r) => r.status },
+                    { header: "Sentiment", accessor: (r) => r.sentiment },
+                    { header: "Summary", accessor: (r) => r.summary },
+                  ]}
+                  filename="calls"
+                />
+              </>
+            )}
           </div>
-        )}
-      </div>
+        }
+      />
 
       {tab === "outbound" && (
         <div>
           {outboundLoading ? (
             <TableSkeleton rows={4} />
           ) : outboundCalls.length === 0 ? (
-            <div className="db-card rounded-xl p-12 text-center">
-              <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>No outbound calls yet</p>
-              <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
-                Enable outbound calling in Settings to let {receptionistName} make appointment reminders, estimate follow-ups, and seasonal reminder calls.
-              </p>
-            </div>
+            <EmptyState
+              icon={
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72" />
+                  <polyline points="15 2 20 2 20 7" /><line x1="14" y1="9" x2="20" y2="2" />
+                </svg>
+              }
+              title="No outbound calls yet"
+              description={`Enable outbound calling in Settings to let ${receptionistName} make appointment reminders, estimate follow-ups, and seasonal reminder calls.`}
+              action={{ label: "Outbound Settings", href: "/dashboard/settings#outbound" }}
+            />
           ) : (
-            <div className="space-y-2">
-              {outboundCalls.map((c) => {
-                return (
-                  <div
-                    key={c.id}
-                    className="db-card flex items-center gap-3 rounded-xl px-4 py-3"
-                  >
-                    <StatusBadge
-                      label={callTypeLabels[c.callType] ?? c.callType}
-                      variant={statusToVariant(c.status)}
-                      className="shrink-0"
-                    />
-                    <span className="flex-1 text-sm" style={{ color: "var(--db-text)" }}>
-                      {formatPhone(c.customerPhone)}
+            <DataTable
+              columns={[
+                {
+                  key: "callType" as keyof OutboundCall,
+                  label: "Type",
+                  render: (row: OutboundCall) => (
+                    <StatusBadge label={callTypeLabels[row.callType] ?? row.callType} variant={statusToVariant(row.status)} />
+                  ),
+                },
+                {
+                  key: "customerPhone" as keyof OutboundCall,
+                  label: "Phone",
+                  render: (row: OutboundCall) => (
+                    <span className="text-sm" style={{ color: "var(--db-text)" }}>{formatPhone(row.customerPhone)}</span>
+                  ),
+                },
+                {
+                  key: "status" as keyof OutboundCall,
+                  label: "Outcome",
+                  render: (row: OutboundCall) => (
+                    <StatusBadge label={row.outcome ?? row.status} variant={statusToVariant(row.status)} />
+                  ),
+                },
+                {
+                  key: "duration" as keyof OutboundCall,
+                  label: "Duration",
+                  render: (row: OutboundCall) => (
+                    <span className="text-sm tabular-nums" style={{ color: "var(--db-text-muted)" }}>
+                      {row.duration != null ? formatDuration(row.duration) : "\u2014"}
                     </span>
-                    <StatusBadge label={c.outcome ?? c.status} variant={statusToVariant(c.status)} />
-                    {c.duration != null && (
-                      <span className="text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
-                        {formatDuration(c.duration)}
-                      </span>
-                    )}
-                    <span className="text-xs shrink-0" style={{ color: "var(--db-text-muted)" }}>
-                      {formatDate(c.scheduledFor)}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+                  ),
+                },
+                {
+                  key: "scheduledFor" as keyof OutboundCall,
+                  label: "Scheduled",
+                  render: (row: OutboundCall) => (
+                    <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{formatDate(row.scheduledFor)}</span>
+                  ),
+                },
+              ] as Column<OutboundCall>[]}
+              data={outboundCalls}
+            />
           )}
         </div>
       )}
@@ -361,26 +379,16 @@ export default function CallsPage() {
       )}
 
       {!loading && calls.length === 0 && !search && (
-        <div className="db-card rounded-xl p-12 text-center">
-          <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-          </svg>
-          <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
-            No calls yet
-          </p>
-          <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
-            When your AI receptionist handles calls, they&apos;ll show up here
-            with full transcripts and summaries.
-          </p>
-          <a
-            href="/dashboard/settings#general"
-            className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all"
-            style={{ background: "var(--db-accent)", color: "#fff" }}
-          >
-            Set Up Call Forwarding
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
-        </div>
+        <EmptyState
+          icon={
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+          }
+          title="No calls yet"
+          description="When your AI receptionist handles calls, they'll show up here with full transcripts and summaries."
+          action={{ label: "Set Up Call Forwarding", href: "/dashboard/settings#general" }}
+        />
       )}
 
       {!loading && calls.length === 0 && search && (

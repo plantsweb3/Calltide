@@ -9,6 +9,8 @@ interface Appointment {
   time: string;
   duration: number;
   status: string;
+  notes: string | null;
+  createdAt: string;
   leadName: string | null;
   leadPhone: string | null;
 }
@@ -89,8 +91,10 @@ function getTodayIndex(weekDays: { date: string; isToday: boolean }[]): number {
 
 export default function AppointmentCalendar({
   appointments,
+  onSelect,
 }: {
   appointments: Appointment[];
+  onSelect?: (appt: Appointment) => void;
 }) {
   const MAX_WEEK_OFFSET = 13; // +/-3 months
   const [weekOffset, setWeekOffset] = useState(0);
@@ -140,13 +144,14 @@ export default function AppointmentCalendar({
     return (
       <div
         key={appt.id}
-        className="rounded-md px-2 py-1.5 mb-1 cursor-default transition-opacity"
+        className={`rounded-md px-2 py-1.5 mb-1 transition-all ${onSelect ? "cursor-pointer hover:brightness-110 hover:shadow-sm" : "cursor-default"}`}
         style={{
           background: c.bg,
           borderLeft: `3px solid ${c.border}`,
           opacity: isCancelled ? 0.6 : 1,
         }}
         title={`${appt.service} \u2014 ${formatTime(appt.time)}${appt.leadName ? ` \u2014 ${appt.leadName}` : ""} (${appt.status})`}
+        onClick={() => onSelect?.(appt)}
       >
         <p
           className="text-[11px] font-medium truncate"

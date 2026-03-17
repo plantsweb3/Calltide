@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import CaptaSpinner from "@/components/capta-spinner";
 import Button from "@/components/ui/button";
 import StatusBadge from "@/components/ui/status-badge";
+import PageHeader from "@/components/page-header";
+import EmptyState from "@/components/empty-state";
 
 interface FeedbackItem {
   id: string;
@@ -122,22 +124,20 @@ export default function ClientFeedbackPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>Feedback & Reviews</h1>
-          <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Manage customer reviews and share ideas with our team.
-          </p>
-        </div>
-        {tab === "feedback" && (
-          <Button
-            variant={showForm ? "secondary" : "primary"}
-            onClick={() => setShowForm(!showForm)}
-          >
-            {showForm ? "Cancel" : "New Feedback"}
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        title="Feedback & Reviews"
+        description="Manage customer reviews and share ideas with our team."
+        actions={
+          tab === "feedback" ? (
+            <Button
+              variant={showForm ? "secondary" : "primary"}
+              onClick={() => setShowForm(!showForm)}
+            >
+              {showForm ? "Cancel" : "New Feedback"}
+            </Button>
+          ) : undefined
+        }
+      />
 
       {/* Tabs */}
       <div className="flex gap-1 rounded-lg p-1" style={{ background: "var(--db-hover)" }}>
@@ -237,9 +237,17 @@ export default function ClientFeedbackPage() {
           {/* Feedback list */}
           <div className="space-y-3">
             {items.length === 0 ? (
-              <div className="db-card rounded-lg p-8 text-center">
-                <p style={{ color: "var(--db-text-muted)" }}>No feedback submitted yet. Share your first idea!</p>
-              </div>
+              <EmptyState
+                icon={
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    <line x1="9" y1="10" x2="9.01" y2="10" /><line x1="15" y1="10" x2="15.01" y2="10" />
+                  </svg>
+                }
+                title="No feedback yet"
+                description="Share your first idea or feature request with our team."
+                action={{ label: "New Feedback", onClick: () => setShowForm(true) }}
+              />
             ) : (
               items.map((item) => (
                 <div
@@ -348,9 +356,15 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
   return (
     <div className="space-y-3">
       {reviews.length === 0 ? (
-        <div className="db-card rounded-lg p-8 text-center">
-          <p style={{ color: "var(--db-text-muted)" }}>No reviews yet. Reviews will appear here when imported or synced.</p>
-        </div>
+        <EmptyState
+          icon={
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          }
+          title="No reviews yet"
+          description="Reviews will appear here when imported or synced."
+        />
       ) : (
         reviews.map((review) => (
           <div

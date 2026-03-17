@@ -4,6 +4,9 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PageSkeleton } from "@/components/skeleton";
+import Button from "@/components/ui/button";
+import ConfirmDialog from "@/components/confirm-dialog";
+import TagEditor from "@/components/tag-editor";
 
 // ── Types ──
 
@@ -24,6 +27,7 @@ interface Customer {
   isRepeat: boolean;
   lifetimeValue: number;
   tier: string;
+  leadScore: number | null;
 }
 
 interface TimelineItem {
@@ -320,6 +324,8 @@ export default function CustomerDetailPage() {
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchCustomer = useCallback(async () => {
     setLoading(true);
@@ -363,6 +369,34 @@ export default function CustomerDetailPage() {
     }
     setSaving(false);
     setEditingField(null);
+  }
+
+  async function saveTags(newTags: string[]) {
+    try {
+      const res = await fetch(`/api/dashboard/customers/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tags: newTags }),
+      });
+      if (!res.ok) throw new Error("Save failed");
+      setCustomer((prev) => prev ? { ...prev, tags: newTags } : prev);
+      toast.success("Tags updated");
+    } catch {
+      toast.error("Failed to save tags");
+    }
+  }
+
+  async function deleteCustomer() {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/dashboard/customers/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Delete failed");
+      toast.success("Customer deleted");
+      router.push("/dashboard/customers");
+    } catch {
+      toast.error("Failed to delete customer");
+      setDeleting(false);
+    }
   }
 
   if (loading) {
@@ -462,6 +496,20 @@ export default function CustomerDetailPage() {
                   {tierLabel(customer.tier)}
                 </span>
               )}
+              {customer.leadScore != null && (
+                <span className="flex items-center gap-1.5 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  <span className="inline-block w-16 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--db-hover)" }}>
+                    <span
+                      className="block h-full rounded-full"
+                      style={{
+                        width: `${customer.leadScore}%`,
+                        background: customer.leadScore >= 70 ? "#4ade80" : customer.leadScore >= 40 ? "#fbbf24" : "#f87171",
+                      }}
+                    />
+                  </span>
+                  {customer.leadScore}
+                </span>
+              )}
             </div>
             <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
               {customer.phone}
@@ -469,17 +517,16 @@ export default function CustomerDetailPage() {
               {customer.address && ` \u00B7 ${customer.address}`}
             </p>
           </div>
-          <div className="flex gap-2 flex-wrap">
-            {(customer.tags || []).map((tag) => (
-              <span
-                key={tag}
-                className="rounded px-2 py-0.5 text-xs"
-                style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
+            Delete
+          </Button>
         </div>
 
         {/* Stats row */}
@@ -500,7 +547,7 @@ export default function CustomerDetailPage() {
 
         {/* Editable fields */}
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          {(["name", "email", "address", "notes"] as const).map((field) => {
+          {(["name", "phone", "email", "address", "notes"] as const).map((field) => {
             const isEditing = editingField === field;
             const value = isEditing ? (editValues[field] ?? "") : (customer[field] || "");
             return (
@@ -542,6 +589,12 @@ export default function CustomerDetailPage() {
               </div>
             );
           })}
+          <div>
+            <label className="block text-xs font-medium uppercase mb-1" style={{ color: "var(--db-text-muted)" }}>
+              Tags
+            </label>
+            <TagEditor tags={customer.tags || []} onChange={saveTags} />
+          </div>
         </div>
       </div>
 
@@ -590,10 +643,19 @@ export default function CustomerDetailPage() {
               return (
                 <div
                   key={`${item.type}-${item.id}`}
-                  className="flex gap-3 p-4 transition-colors"
+                  className="flex gap-3 p-4 transition-colors cursor-pointer"
                   style={{
                     borderBottom: "1px solid var(--db-border)",
                     borderLeft: `3px solid ${config.borderColor}`,
+                  }}
+                  onClick={() => {
+                    const routes: Record<string, string> = {
+                      call: "/dashboard/calls",
+                      appointment: "/dashboard/appointments",
+                      estimate: "/dashboard/estimates",
+                      sms: "/dashboard/sms",
+                    };
+                    router.push(routes[item.type] || "/dashboard");
                   }}
                 >
                   {/* Icon */}
@@ -618,6 +680,17 @@ export default function CustomerDetailPage() {
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        title="Delete Customer?"
+        description="This will permanently remove this customer and all their associated data. This action cannot be undone."
+        confirmLabel="Delete Customer"
+        variant="danger"
+        loading={deleting}
+        onConfirm={deleteCustomer}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
     </div>
   );
 }

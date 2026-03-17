@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import MetricCard from "@/components/metric-card";
+import PageHeader from "@/components/page-header";
+import DateRangePicker, { type DateRange } from "@/components/date-range-picker";
+import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 
 interface ReportingData {
   callsByHour: { hour: number; total: number }[];
@@ -21,33 +26,39 @@ interface ReportingData {
   };
 }
 
+function toISO(d: Date): string { return d.toISOString().split("T")[0]; }
+
 export default function ReportingPage() {
   const [data, setData] = useState<ReportingData | null>(null);
   const [loading, setLoading] = useState(true);
+  const now = new Date();
+  const thirtyDaysAgo = new Date(now);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+  const [dateRange, setDateRange] = useState<DateRange>({ from: toISO(thirtyDaysAgo), to: toISO(now) });
 
   useEffect(() => {
-    fetch("/api/dashboard/reporting")
+    setLoading(true);
+    const params = new URLSearchParams({ from: dateRange.from, to: dateRange.to });
+    fetch(`/api/dashboard/reporting?${params}`)
       .then((r) => r.json())
       .then(setData)
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [dateRange]);
 
   if (loading) {
     return (
-      <div className="p-6">
-        <h1 className="text-xl font-bold" style={{ color: "var(--db-text)" }}>Reporting</h1>
-        <div className="mt-8 flex items-center justify-center py-20">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" style={{ color: "var(--db-accent)" }} />
-        </div>
+      <div>
+        <PageHeader title="Reporting" />
+        <LoadingSpinner message="Loading analytics..." />
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="p-6">
-        <h1 className="text-xl font-bold" style={{ color: "var(--db-text)" }}>Reporting</h1>
+      <div>
+        <PageHeader title="Reporting" />
         <p className="mt-4 text-sm" style={{ color: "var(--db-text-muted)" }}>Unable to load reporting data.</p>
       </div>
     );
@@ -66,25 +77,31 @@ export default function ReportingPage() {
   const pipelineColors: Record<string, string> = { new: "#3B82F6", sent: "#F59E0B", follow_up: "#8B5CF6", won: "#10B981", lost: "#EF4444" };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight" style={{ color: "var(--db-text)" }}>Reporting</h1>
-          <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>Last 30 days of call analytics and business insights.</p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Reporting"
+        description="Call analytics and business insights"
+        actions={
+          <div className="flex items-center gap-2">
+            <DateRangePicker value={dateRange} onChange={setDateRange} />
+            <ExportCsvButton
+              data={data.callsByHour.map((h) => ({ hour: formatHour(h.hour), calls: h.total }))}
+              columns={[
+                { header: "Hour", accessor: (r: { hour: string }) => r.hour },
+                { header: "Calls", accessor: (r: { calls: number }) => r.calls },
+              ]}
+              filename="reporting"
+            />
+          </div>
+        }
+      />
 
       {/* Summary Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-grid">
-        <SummaryCard label="Total Calls" value={totalCalls.toString()} sub="Last 30 days" />
-        <SummaryCard label="Busiest Hour" value={formatHour(busiestHour.hour)} sub={`${busiestHour.total} calls`} />
-        <SummaryCard label="Busiest Day" value={busiestDay.label} sub={`${busiestDay.total} calls`} />
-        <SummaryCard
-          label="Recovery Rate"
-          value={`${data.recoveryStats.rate}%`}
-          sub={`${data.recoveryStats.recovered}/${data.recoveryStats.totalMissed} recovered`}
-          accent
-        />
+        <MetricCard label="Total Calls" value={totalCalls} />
+        <MetricCard label="Busiest Hour" value={formatHour(busiestHour.hour)} />
+        <MetricCard label="Busiest Day" value={busiestDay.label} />
+        <MetricCard label="Recovery Rate" value={data.recoveryStats.rate} suffix="%" />
       </div>
 
       {/* Row 1: Calls by Hour + Calls by Day */}
@@ -341,16 +358,6 @@ export default function ReportingPage() {
           </Card>
         </div>
       )}
-    </div>
-  );
-}
-
-function SummaryCard({ label, value, sub, accent }: { label: string; value: string; sub: string; accent?: boolean }) {
-  return (
-    <div className="db-card rounded-xl p-5">
-      <p className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{label}</p>
-      <p className="mt-1 text-2xl font-bold" style={{ color: accent ? "var(--db-accent)" : "var(--db-text)" }}>{value}</p>
-      <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>{sub}</p>
     </div>
   );
 }
