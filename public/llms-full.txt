@@ -165,7 +165,7 @@ $497 per month with unlimited calls, or $397 per month on an annual plan ($4,764
 Yes. Maria is natively bilingual in English and Spanish. She automatically detects the caller's language and responds fluently. This is not translation software — Maria speaks natural, colloquial Spanish and English.
 
 **How long does setup take?**
-About 5 minutes. The 8-step onboarding wizard walks you through everything. Maria starts answering calls immediately after setup.
+About 5 minutes. The 6-step onboarding wizard walks you through everything. Maria starts answering calls immediately after setup.
 
 **What types of businesses use Capta?**
 Home service contractors: plumbers, HVAC techs, electricians, landscapers, roofers, painters, general contractors, pest control, and similar trades. Any business that misses calls while working on job sites.

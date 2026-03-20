@@ -65,8 +65,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Session not found" }, { status: 404 });
     }
 
-    if (!session.ownerEmail) {
-      return NextResponse.json({ error: "Please complete step 2 first" }, { status: 400 });
+    const missing: string[] = [];
+    if (!session.businessName?.trim()) missing.push("business name");
+    if (!session.ownerEmail?.trim()) missing.push("email");
+    if (!session.ownerName?.trim()) missing.push("name");
+    if (!session.ownerPhone?.trim()) missing.push("phone number");
+    if (missing.length > 0) {
+      return NextResponse.json(
+        { error: `Please complete your profile first. Missing: ${missing.join(", ")}.` },
+        { status: 400 },
+      );
     }
 
     // Save selected plan
@@ -84,7 +92,7 @@ export async function POST(req: NextRequest) {
 
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
-      customer_email: session.ownerEmail,
+      customer_email: session.ownerEmail!,
       payment_method_collection: "always",
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
@@ -95,7 +103,7 @@ export async function POST(req: NextRequest) {
         },
       },
       metadata: {
-        email: session.ownerEmail,
+        email: session.ownerEmail!,
         source: "setup_page",
         plan,
         setupSessionId: session.id,

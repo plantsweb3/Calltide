@@ -77,8 +77,9 @@ export async function PUT(
 
   const result = schema.safeParse(body);
   if (!result.success) {
+    const messages = result.error.issues.map((i) => i.message).join(". ");
     return NextResponse.json(
-      { error: result.error.issues[0].message },
+      { error: messages },
       { status: 400 },
     );
   }
@@ -153,7 +154,7 @@ export async function PUT(
         .limit(1);
       if (existingBiz) {
         return NextResponse.json(
-          { error: "An account with this email already exists. Please log in instead." },
+          { error: "An account with this email already exists.", loginUrl: "/dashboard/login" },
           { status: 409 },
         );
       }

@@ -99,7 +99,7 @@ This matters more than most contractors realize. The trades are seasonal. HVAC c
 
 ### Setup and Onboarding
 
-Capta's setup takes 5 minutes through an 8-step wizard. Enter your business name, choose your services, set your hours, and forward your number. Maria starts answering calls immediately. No training period, no scripts to write, no integration headaches.
+Capta's setup takes 5 minutes through an 6-step wizard. Enter your business name, choose your services, set your hours, and forward your number. Maria starts answering calls immediately. No training period, no scripts to write, no integration headaches.
 
 Smith.ai's onboarding requires more configuration. You'll need to define call handling scripts, set up integrations with your calendar and CRM, and go through a training period where the receptionists learn your business. For their human plans, this can take days or weeks before the team handles your calls smoothly.
 
@@ -362,7 +362,7 @@ The final push was a Spanish-speaking customer who called three times, couldn't 
 
 ## Week 1: The Switch
 
-**Monday morning.** We signed up for Capta at 6:47 AM before heading to a job site. The 8-step setup wizard took about 5 minutes. Business name, services we offer (HVAC and plumbing), service area, business hours, emergency protocols. We forwarded our number to Capta's line.
+**Monday morning.** We signed up for Capta at 6:47 AM before heading to a job site. The 6-step setup wizard took about 5 minutes. Business name, services we offer (HVAC and plumbing), service area, business hours, emergency protocols. We forwarded our number to Capta's line.
 
 Maria started answering calls at 7:02 AM.
 

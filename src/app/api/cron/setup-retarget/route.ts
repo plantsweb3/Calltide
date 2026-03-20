@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { getResend } from "@/lib/email/client";
 import { setupSessions, setupRetargetEmails } from "@/db/schema";
-import { and, eq, isNotNull, ne } from "drizzle-orm";
+import { and, eq, isNotNull, ne, gte } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { logActivity } from "@/lib/activity";
 import {
@@ -104,6 +104,26 @@ export async function GET(req: NextRequest) {
       }
 
       if (!emailToSend) {
+        skipped++;
+        continue;
+      }
+
+      // Idempotency: check no email was sent for this session+step in the last hour
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      const [recentlySent] = await db
+        .select({ id: setupRetargetEmails.id })
+        .from(setupRetargetEmails)
+        .where(
+          and(
+            eq(setupRetargetEmails.setupSessionId, session.id),
+            eq(setupRetargetEmails.emailNumber, emailToSend),
+            ne(setupRetargetEmails.status, "failed"),
+            gte(setupRetargetEmails.sentAt, oneHourAgo),
+          ),
+        )
+        .limit(1);
+
+      if (recentlySent) {
         skipped++;
         continue;
       }

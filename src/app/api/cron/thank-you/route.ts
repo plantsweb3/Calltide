@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, appointments, leads } from "@/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { businesses, appointments, leads, smsOptOuts } from "@/db/schema";
+import { eq, and, sql, isNull } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { sendSMS } from "@/lib/twilio/sms";
-import { canSendSms } from "@/lib/compliance/sms";
+import { canSendSms, normalizePhone } from "@/lib/compliance/sms";
 import { getBusinessDateRange } from "@/lib/timezone";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
@@ -66,6 +66,24 @@ export async function GET(req: NextRequest) {
                 .limit(1);
 
               if (!lead?.phone || lead.smsOptOut) {
+                skipped++;
+                continue;
+              }
+
+              // Check global SMS opt-out table (smsOptOuts)
+              const normalizedLeadPhone = normalizePhone(lead.phone);
+              const [globalOptOut] = await db
+                .select({ id: smsOptOuts.id })
+                .from(smsOptOuts)
+                .where(
+                  and(
+                    eq(smsOptOuts.phoneNumber, normalizedLeadPhone),
+                    isNull(smsOptOuts.reoptedInAt),
+                  ),
+                )
+                .limit(1);
+
+              if (globalOptOut) {
                 skipped++;
                 continue;
               }

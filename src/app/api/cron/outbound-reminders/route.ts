@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { appointments, leads, businesses, customers, outboundCalls } from "@/db/schema";
-import { eq, and, sql, gte } from "drizzle-orm";
+import { appointments, leads, businesses, customers, outboundCalls, smsOptOuts } from "@/db/schema";
+import { eq, and, sql, gte, isNull } from "drizzle-orm";
+import { normalizePhone } from "@/lib/compliance/sms";
 import { scheduleOutboundCall } from "@/lib/outbound/engine";
 import { reportError } from "@/lib/error-reporting";
 import { getBusinessDateRange, localDateToUtc } from "@/lib/timezone";
@@ -90,6 +91,24 @@ export async function GET(req: NextRequest) {
             .where(eq(leads.id, apt.leadId));
 
           if (!lead?.phone) {
+            skipped++;
+            continue;
+          }
+
+          // Check global SMS/call opt-out table (smsOptOuts)
+          const normalizedLeadPhone = normalizePhone(lead.phone);
+          const [globalOptOut] = await db
+            .select({ id: smsOptOuts.id })
+            .from(smsOptOuts)
+            .where(
+              and(
+                eq(smsOptOuts.phoneNumber, normalizedLeadPhone),
+                isNull(smsOptOuts.reoptedInAt),
+              ),
+            )
+            .limit(1);
+
+          if (globalOptOut) {
             skipped++;
             continue;
           }

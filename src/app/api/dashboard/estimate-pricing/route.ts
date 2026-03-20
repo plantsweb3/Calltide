@@ -16,7 +16,15 @@ const createSchema = z.object({
   minPrice: z.number().min(0).optional().nullable(),
   maxPrice: z.number().min(0).optional().nullable(),
   unit: z.enum(["per_job", "per_hour", "per_sqft", "per_unit", "per_room"]).default("per_job"),
-  formulaJson: z.any().optional().nullable(),
+  formulaJson: z.object({
+    base_rate: z.number(),
+    base_unit: z.string(),
+    base_unit_variable: z.string(),
+    additional_rates: z.array(z.object({ rate: z.number(), unit: z.string(), variable: z.string(), label: z.string() })),
+    multipliers: z.array(z.object({ label: z.string(), value: z.number(), condition: z.string() })),
+    variables_needed: z.array(z.string()),
+    margin_range: z.tuple([z.number(), z.number()]),
+  }).optional().nullable(),
   sortOrder: z.number().int().min(0).default(0),
 });
 

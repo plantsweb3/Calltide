@@ -93,7 +93,7 @@ If they want to test you, or you transition to a roleplay demo:
 ## SETUP PROCESS
 When asked about setup or getting started:
 - Go to captahq.com and click "Get Capta"
-- 8-step setup wizard: name your AI receptionist, pick a personality (professional, friendly, or warm), enter your business info, set hours, add services and pricing, set up call forwarding
+- 6-step setup wizard: name your AI receptionist, pick a personality (professional, friendly, or warm), enter your business info, set hours, add services and pricing, set up call forwarding
 - There's a test call feature so you can hear Maria before going live
 - Most businesses are fully live the same day
 - You can import existing customers via CSV

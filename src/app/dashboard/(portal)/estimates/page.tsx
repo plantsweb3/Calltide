@@ -314,11 +314,12 @@ export default function EstimatesPage() {
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="follow-up-dialog-title"
             className="modal-content w-full max-w-sm rounded-xl p-6"
             style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-2" style={{ color: "var(--db-text)" }}>Send Follow-Up SMS?</h3>
+            <h3 id="follow-up-dialog-title" className="text-lg font-semibold mb-2" style={{ color: "var(--db-text)" }}>Send Follow-Up SMS?</h3>
             <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>This will send a follow-up text message to the customer.</p>
             <div className="flex gap-2">
               <Button variant="secondary" className="flex-1" onClick={() => setConfirmFollowUpId(null)}>Cancel</Button>
@@ -339,11 +340,12 @@ export default function EstimatesPage() {
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="won-dialog-title"
             className="modal-content w-full max-w-sm rounded-xl p-6"
             style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>Mark as Won</h3>
+            <h3 id="won-dialog-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>Mark as Won</h3>
             <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Final Amount ($)</label>
             <input
               type="number"
@@ -382,11 +384,12 @@ export default function EstimatesPage() {
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="lost-dialog-title"
             className="modal-content w-full max-w-sm rounded-xl p-6"
             style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>Mark as Lost</h3>
+            <h3 id="lost-dialog-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>Mark as Lost</h3>
             <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Reason</label>
             <select
               value={lostReason}

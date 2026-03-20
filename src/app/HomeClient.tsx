@@ -16,8 +16,9 @@ import { MissedCallCalculator } from "@/components/marketing/MissedCallCalculato
 import { MobileCTA } from "@/components/marketing/MobileCTA";
 import { Nav } from "@/components/marketing/Nav";
 import { Footer } from "@/components/marketing/Footer";
+import ErrorBoundary from "@/components/error-boundary";
 
-const MariaDemoWidget = dynamic(() => import("@/components/marketing/MariaDemoWidget"), { ssr: false });
+const MariaDemoWidget = dynamic(() => import("@/components/marketing/MariaDemoWidget"), { ssr: false, loading: () => null });
 
 /* ═══════════════════════════════════════════════════════════════
    PAGE
@@ -137,7 +138,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
             <div className="md:col-span-2 relative">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(212,145,10,0.15),transparent_70%)]" />
               <div className="relative rounded-2xl p-6" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(16px)" }}>
-                <MariaDemoWidget lang={lang} phoneTel={PHONE_TEL} />
+                <ErrorBoundary fallback={null}><MariaDemoWidget lang={lang} phoneTel={PHONE_TEL} /></ErrorBoundary>
               </div>
             </div>
           </div>

@@ -775,10 +775,11 @@ function SetupClient() {
   const [tradeData, setTradeData] = useState<TradeData | null>(null);
 
   // Test call
-  const [testCallState, setTestCallState] = useState<"idle" | "connecting" | "active" | "ended">("idle");
+  const [testCallState, setTestCallState] = useState<"idle" | "connecting" | "active" | "ended" | "error">("idle");
   const [testCallTimer, setTestCallTimer] = useState(90);
   const testCallTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const testCallAudioRef = useRef<{ disconnect: () => void } | null>(null);
+  const testCallConnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Audio preview
   const [previewPlaying, setPreviewPlaying] = useState(false);
@@ -793,9 +794,12 @@ function SetupClient() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [authState, setAuthState] = useState<"pending" | "success" | "failed">("pending");
   const [credentials, setCredentials] = useState<{ email: string; password: string } | null>(null);
+  const [passwordCopied, setPasswordCopied] = useState(false);
+  const [pollAttempt, setPollAttempt] = useState(0);
 
   // Errors — per-field errors only, cleared per-field
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loginUrl, setLoginUrl] = useState<string | null>(null);
 
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastInnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -808,6 +812,7 @@ function SetupClient() {
       if (toastInnerTimerRef.current) clearTimeout(toastInnerTimerRef.current);
       if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
       if (testCallTimerRef.current) clearInterval(testCallTimerRef.current);
+      if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
     };
   }, []);
 
@@ -909,6 +914,7 @@ function SetupClient() {
         const RETRY_DELAY = 3000; // 3s between attempts
         for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
           if (abortController.signal.aborted) return;
+          setPollAttempt(attempt + 1);
           try {
             const authRes = await fetch("/api/setup/auth", {
               method: "POST",
@@ -1085,8 +1091,10 @@ function SetupClient() {
         if (!res.ok) {
           const err = await res.json().catch(() => ({ error: "Save failed" }));
           setErrors((prev) => ({ ...prev, _form: err.error || "Save failed" }));
+          if (err.loginUrl) setLoginUrl(err.loginUrl);
           return false;
         }
+        setLoginUrl(null);
         return true;
       } catch {
         setErrors((prev) => ({ ...prev, _form: "Network error" }));
@@ -1264,7 +1272,27 @@ function SetupClient() {
               {replaceVars(t.whatsNextDesc, { name: receptionistName })}
             </p>
             {authState === "pending" && (
-              <p style={{ color: "#D4A843", fontSize: 14 }}>{t.authenticating}</p>
+              <div>
+                <p style={{ color: "#D4A843", fontSize: 14 }}>
+                  {t.authenticating} {pollAttempt > 0 && <span style={{ color: "#94a3b8" }}>({pollAttempt}/10)</span>}
+                </p>
+                {pollAttempt >= 5 && (
+                  <div style={{ marginTop: 12 }}>
+                    <p style={{ color: "#94a3b8", fontSize: 13, marginBottom: 8 }}>
+                      {lang === "en"
+                        ? "Payment processing is taking longer than expected. Click below to check status."
+                        : "El procesamiento del pago está tomando más tiempo de lo esperado. Haz clic para verificar."}
+                    </p>
+                    <button
+                      className={s.secondaryBtn}
+                      style={{ fontSize: 13 }}
+                      onClick={() => window.location.reload()}
+                    >
+                      {lang === "en" ? "Check Payment Status" : "Verificar Estado del Pago"}
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
             {authState === "success" && (
               <>
@@ -1276,9 +1304,31 @@ function SetupClient() {
                     <p style={{ color: "#e2e8f0", fontSize: 13, margin: "0 0 4px" }}>
                       <span style={{ color: "#94a3b8" }}>Email:</span> {credentials.email}
                     </p>
-                    <p style={{ color: "#e2e8f0", fontSize: 13, margin: 0 }}>
+                    <p style={{ color: "#e2e8f0", fontSize: 13, margin: 0, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                       <span style={{ color: "#94a3b8" }}>{lang === "en" ? "Password:" : "Contraseña:"}</span>{" "}
                       <code style={{ background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: 4, fontFamily: "monospace" }}>{credentials.password}</code>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(credentials.password).then(() => {
+                            setPasswordCopied(true);
+                            setTimeout(() => setPasswordCopied(false), 2000);
+                          });
+                        }}
+                        style={{
+                          background: passwordCopied ? "rgba(16,185,129,0.2)" : "rgba(212,168,67,0.2)",
+                          border: `1px solid ${passwordCopied ? "rgba(16,185,129,0.4)" : "rgba(212,168,67,0.4)"}`,
+                          borderRadius: 4,
+                          color: passwordCopied ? "#10b981" : "#D4A843",
+                          fontSize: 12,
+                          padding: "2px 8px",
+                          cursor: "pointer",
+                          fontWeight: 600,
+                          transition: "all 0.2s",
+                        }}
+                      >
+                        {passwordCopied ? (lang === "en" ? "Copied!" : "¡Copiado!") : (lang === "en" ? "Copy" : "Copiar")}
+                      </button>
                     </p>
                   </div>
                 )}
@@ -1718,10 +1768,16 @@ function SetupClient() {
                   <button
                     onClick={async () => {
                       setTestCallState("connecting");
+                      // 15-second timeout for connecting state
+                      if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
+                      testCallConnectTimeoutRef.current = setTimeout(() => {
+                        setTestCallState((current) => current === "connecting" ? "error" : current);
+                      }, 15000);
                       try {
                         const res = await fetch("/api/setup/test-call", { method: "POST" });
                         if (!res.ok) {
-                          setTestCallState("idle");
+                          if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
+                          setTestCallState("error");
                           return;
                         }
                         const data = await res.json();
@@ -1729,6 +1785,7 @@ function SetupClient() {
                         const { VoiceProvider } = await import("@humeai/voice-react");
                         // Store config for rendering — we'll render the VoiceProvider in a portal-like pattern
                         // For simplicity in the setup flow, we simulate the connection flow
+                        if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
                         setTestCallState("active");
                         setTestCallTimer(90);
                         // Start countdown
@@ -1744,7 +1801,8 @@ function SetupClient() {
                           });
                         }, 1000);
                       } catch {
-                        setTestCallState("idle");
+                        if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
+                        setTestCallState("error");
                       }
                     }}
                     className={s.primaryBtn}
@@ -1753,6 +1811,29 @@ function SetupClient() {
                     {t.tryMariaCta}
                   </button>
                   <p style={{ color: "#64748b", fontSize: 12, marginTop: 12 }}>{t.tryMariaMicNote}</p>
+                </>
+              )}
+
+              {testCallState === "error" && (
+                <>
+                  <div style={{ fontSize: 48, marginBottom: 12 }}>⚠️</div>
+                  <p style={{ color: "#e2e8f0", fontSize: 15, fontWeight: 600, marginBottom: 8 }}>
+                    {lang === "en" ? "Voice system unavailable. You can skip this step." : "Sistema de voz no disponible. Puedes omitir este paso."}
+                  </p>
+                  <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 16 }}>
+                    <button
+                      onClick={() => { setTestCallState("idle"); }}
+                      className={s.secondaryBtn}
+                    >
+                      {t.tryMariaRetry}
+                    </button>
+                    <button
+                      onClick={() => setStep(6)}
+                      className={s.primaryBtn}
+                    >
+                      {lang === "en" ? "Skip Test Call" : "Omitir Llamada de Prueba"} →
+                    </button>
+                  </div>
                 </>
               )}
 
@@ -1957,7 +2038,17 @@ function SetupClient() {
         )}
 
         {errors._form && step <= 4 && (
-          <div className={s.error} style={{ marginTop: 8, textAlign: "center" }}>{errors._form}</div>
+          <div className={s.error} style={{ marginTop: 8, textAlign: "center" }}>
+            {errors._form}
+            {loginUrl && (
+              <>
+                {" "}
+                <a href={loginUrl} style={{ color: "#D4A843", textDecoration: "underline", fontWeight: 600 }}>
+                  {lang === "en" ? "Log in here" : "Inicia sesión aquí"}
+                </a>
+              </>
+            )}
+          </div>
         )}
       </div>
     </div>

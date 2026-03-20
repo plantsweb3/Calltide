@@ -115,6 +115,12 @@ export default function CallsPage() {
     fetchCalls();
   }, [fetchCalls]);
 
+  // Reset search and page when switching tabs
+  useEffect(() => {
+    setSearch("");
+    setPage(1);
+  }, [tab]);
+
   useEffect(() => {
     if (tab === "outbound" && outboundCalls.length === 0) {
       setOutboundLoading(true);
@@ -262,6 +268,7 @@ export default function CallsPage() {
             {tab === "inbound" && (
               <>
                 <input
+                  key={tab}
                   type="text"
                   placeholder="Search by phone or name..."
                   defaultValue={search}

@@ -12,7 +12,7 @@ import {
   customerNotes,
   callQaScores,
 } from "@/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, lt } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
@@ -33,8 +33,28 @@ export async function GET(req: NextRequest) {
   return withCronMonitor("data-deletion", "0 2 * * *", async () => {
     let processed = 0;
     let errors = 0;
+    let unstuck = 0;
 
     try {
+      // Reset stuck requests: if "processing" for more than 1 hour, revert to "verified"
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      const stuckResult = await db
+        .update(dataDeletionRequests)
+        .set({
+          status: "verified",
+          processingStartedAt: null,
+        })
+        .where(
+          and(
+            eq(dataDeletionRequests.status, "processing"),
+            lt(dataDeletionRequests.processingStartedAt, oneHourAgo),
+          ),
+        );
+      unstuck = stuckResult.rowsAffected ?? 0;
+      if (unstuck > 0) {
+        console.log(`[data-deletion] Reset ${unstuck} stuck processing request(s) back to verified`);
+      }
+
       // Find all verified requests ready for processing
       const pending = await db
         .select()
@@ -187,6 +207,7 @@ export async function GET(req: NextRequest) {
         success: true,
         processed,
         errors,
+        unstuck,
         total: pending.length,
       });
     } catch (err) {

@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const page = Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1"));
+  const page = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1")), 10000);
   const limit = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") || "20")), 100);
   const search = req.nextUrl.searchParams.get("search") || "";
   const offset = (page - 1) * limit;

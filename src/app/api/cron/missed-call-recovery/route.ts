@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, calls, leads, outreachLog } from "@/db/schema";
+import { businesses, calls, leads, outreachLog, smsOptOuts } from "@/db/schema";
 import { eq, and, lt, gte, sql, isNull } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { sendSMS } from "@/lib/twilio/sms";
-import { canSendSms } from "@/lib/compliance/sms";
+import { canSendSms, normalizePhone } from "@/lib/compliance/sms";
 import { env } from "@/lib/env";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
@@ -143,6 +143,24 @@ export async function GET(req: NextRequest) {
               skipped++;
               continue;
             }
+          }
+
+          // Check global SMS opt-out table (smsOptOuts)
+          const normalizedCallerPhone = normalizePhone(call.callerPhone);
+          const [globalOptOut] = await db
+            .select({ id: smsOptOuts.id })
+            .from(smsOptOuts)
+            .where(
+              and(
+                eq(smsOptOuts.phoneNumber, normalizedCallerPhone),
+                isNull(smsOptOuts.reoptedInAt),
+              ),
+            )
+            .limit(1);
+
+          if (globalOptOut) {
+            skipped++;
+            continue;
           }
 
           // TCPA compliance check (use business timezone for quiet hours)

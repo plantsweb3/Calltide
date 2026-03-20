@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { businesses, appointments, leads, reviewRequests, outreachLog } from "@/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { businesses, appointments, leads, reviewRequests, outreachLog, smsOptOuts, smsMessages } from "@/db/schema";
+import { eq, and, sql, isNull, gte } from "drizzle-orm";
+import { normalizePhone } from "@/lib/compliance/sms";
 import { reportError } from "@/lib/error-reporting";
 import { sendSMS } from "@/lib/twilio/sms";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
@@ -60,9 +61,6 @@ export async function GET(req: NextRequest) {
           ),
         );
 
-      // Cache daily send counts per business
-      const dailySendCounts = new Map<string, number>();
-
       for (const biz of activeBiz) {
         try {
           // Find completed appointments where updatedAt falls in the 2-4 hour window
@@ -84,27 +82,21 @@ export async function GET(req: NextRequest) {
 
           if (completedAppts.length === 0) continue;
 
-          // Check daily rate limit for this business
-          let dailyCount = dailySendCounts.get(biz.id);
-          if (dailyCount === undefined) {
-            const [countResult] = await db
-              .select({ count: sql<number>`COUNT(*)` })
-              .from(reviewRequests)
-              .where(
-                and(
-                  eq(reviewRequests.businessId, biz.id),
-                  eq(reviewRequests.status, "sent"),
-                  sql`${reviewRequests.sentAt} >= ${todayStart}`,
-                ),
-              );
-            dailyCount = countResult?.count ?? 0;
-            dailySendCounts.set(biz.id, dailyCount);
-          }
-
           for (const appt of completedAppts) {
             try {
-              // Enforce daily rate limit
-              const currentCount = dailySendCounts.get(biz.id) ?? 0;
+              // Enforce daily rate limit — query DB each time for accuracy across Vercel instances
+              const [dailyCountResult] = await db
+                .select({ count: sql<number>`COUNT(*)` })
+                .from(smsMessages)
+                .where(
+                  and(
+                    eq(smsMessages.businessId, biz.id),
+                    eq(smsMessages.templateType, "review_request"),
+                    eq(smsMessages.status, "sent"),
+                    gte(smsMessages.createdAt, todayStart),
+                  ),
+                );
+              const currentCount = dailyCountResult?.count ?? 0;
               if (currentCount >= MAX_REVIEW_REQUESTS_PER_DAY) {
                 rateLimited++;
                 continue;
@@ -140,8 +132,26 @@ export async function GET(req: NextRequest) {
                 continue;
               }
 
-              // Check SMS opt-out
+              // Check SMS opt-out (lead-level)
               if (lead.smsOptOut) {
+                skipped++;
+                continue;
+              }
+
+              // Check global SMS opt-out table (smsOptOuts)
+              const normalizedLeadPhone = normalizePhone(lead.phone);
+              const [globalOptOut] = await db
+                .select({ id: smsOptOuts.id })
+                .from(smsOptOuts)
+                .where(
+                  and(
+                    eq(smsOptOuts.phoneNumber, normalizedLeadPhone),
+                    isNull(smsOptOuts.reoptedInAt),
+                  ),
+                )
+                .limit(1);
+
+              if (globalOptOut) {
                 skipped++;
                 continue;
               }
@@ -207,7 +217,6 @@ export async function GET(req: NextRequest) {
                   channel: "sms",
                 });
 
-                dailySendCounts.set(biz.id, (dailySendCounts.get(biz.id) ?? 0) + 1);
                 sent++;
               } else {
                 // Record failed attempt

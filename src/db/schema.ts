@@ -1070,7 +1070,7 @@ export const usedMagicTokens = sqliteTable("used_magic_tokens", {
 
 export const outreachLog = sqliteTable("outreach_log", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  businessId: text("business_id").notNull(),
+  businessId: text("business_id").notNull().references(() => businesses.id),
   source: text("source").notNull(), // dunning, churn_agent, success_agent, nudge_agent, incident
   channel: text("channel").notNull(), // email, sms
   sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
@@ -1186,7 +1186,7 @@ export const rateLimitEntries = sqliteTable("rate_limit_entries", {
 
 export const clientFeedback = sqliteTable("client_feedback", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  businessId: text("business_id").notNull(),
+  businessId: text("business_id").notNull().references(() => businesses.id),
   type: text("type").notNull().default("feedback"), // feedback | feature_request | bug_report
   category: text("category").notNull().default("general"), // general | calls | billing | appointments | sms | other
   title: text("title").notNull(),
@@ -1573,7 +1573,7 @@ export const weatherCache = sqliteTable("weather_cache", {
 
 export const knowledgeGaps = sqliteTable("knowledge_gaps", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  businessId: text("business_id").notNull(),
+  businessId: text("business_id").notNull().references(() => businesses.id),
   callId: text("call_id"),
   question: text("question").notNull(),
   aiResponse: text("ai_response"),
@@ -1653,7 +1653,7 @@ export const googleReviews = sqliteTable("google_reviews", {
 
 export const webhookEndpoints = sqliteTable("webhook_endpoints", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  businessId: text("business_id").notNull(),
+  businessId: text("business_id").notNull().references(() => businesses.id),
   url: text("url").notNull(),
   events: text("events", { mode: "json" }).notNull().$type<string[]>().default([]),
   secret: text("secret").notNull(),
@@ -1683,7 +1683,7 @@ export const webhookDeliveries = sqliteTable("webhook_deliveries", {
 
 export const integrationConnections = sqliteTable("integration_connections", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  businessId: text("business_id").notNull(),
+  businessId: text("business_id").notNull().references(() => businesses.id),
   provider: text("provider").notNull(), // zapier | servicetitan | jobber
   status: text("status").notNull().default("connected"), // connected | disconnected | error
   accessToken: text("access_token"),

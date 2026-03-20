@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 
 const dayEnum = z.enum([
@@ -155,6 +156,9 @@ export async function PUT(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`settings-write:${businessId}`, { limit: 30, windowSeconds: 60 });
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ success: true, message: "Demo mode — changes not saved" });

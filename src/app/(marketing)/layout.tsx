@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Nav } from "@/components/marketing/Nav";
 import { Footer } from "@/components/marketing/Footer";
 import { useScrolled } from "@/lib/marketing/hooks";
@@ -16,12 +16,10 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
   }, []);
 
   // Restore language on mount
-  useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("capta-lang");
-      if (saved === "en" || saved === "es") setLang(saved);
-    }
-  });
+  useEffect(() => {
+    const saved = localStorage.getItem("capta-lang");
+    if (saved === "en" || saved === "es") setLang(saved);
+  }, []);
 
   return (
     <div className="relative overflow-x-hidden">

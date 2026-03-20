@@ -48,7 +48,7 @@ const faqSchema = {
       name: "How long does setup take?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "About 5 to 10 minutes. Capta has an 8-step onboarding wizard that walks you through entering your business info, setting your hours, and forwarding your calls. Maria starts answering immediately after setup.",
+        text: "About 5 to 10 minutes. Capta has an 6-step onboarding wizard that walks you through entering your business info, setting your hours, and forwarding your calls. Maria starts answering immediately after setup.",
       },
     },
     {

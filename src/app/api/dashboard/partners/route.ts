@@ -96,6 +96,10 @@ export async function POST(req: NextRequest) {
   }
 
   const data = result.data;
+  const normalizedPhone = data.partnerPhone.replace(/\D/g, "");
+  if (normalizedPhone.length < 10) {
+    return NextResponse.json({ error: "Phone number must have at least 10 digits" }, { status: 400 });
+  }
 
   try {
     const [created] = await db
@@ -104,7 +108,7 @@ export async function POST(req: NextRequest) {
         businessId,
         partnerName: data.partnerName,
         partnerTrade: data.partnerTrade,
-        partnerPhone: data.partnerPhone.replace(/\D/g, ""),
+        partnerPhone: normalizedPhone,
         partnerContactName: data.partnerContactName ?? null,
         partnerEmail: data.partnerEmail ?? null,
         language: data.language,

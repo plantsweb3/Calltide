@@ -76,10 +76,19 @@ export async function POST(req: NextRequest) {
   const rl = await rateLimit(`dashboard-invoices-create:${businessId}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
 
-  const body = await req.json();
+  let body;
+  try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }, { status: 400 }); }
   const parsed = createInvoiceSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues.map((i) => i.message).join(", ") }, { status: 400 });
+  }
+
+  // Verify customerId belongs to this business (prevent IDOR)
+  if (parsed.data.customerId) {
+    const [cust] = await db.select({ id: customers.id }).from(customers)
+      .where(and(eq(customers.id, parsed.data.customerId), eq(customers.businessId, businessId)))
+      .limit(1);
+    if (!cust) return NextResponse.json({ error: "Customer not found" }, { status: 404 });
   }
 
   const dueDate = parsed.data.dueDate || (() => {

@@ -44,7 +44,8 @@ export async function POST(req: NextRequest) {
   const rl = await rateLimit(`dashboard-techs-create:${businessId}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
 
-  const body = await req.json();
+  let body;
+  try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }, { status: 400 }); }
   const parsed = createTechSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues.map((i) => i.message).join(", ") }, { status: 400 });
