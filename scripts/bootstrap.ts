@@ -138,15 +138,8 @@ async function bootstrap() {
     }
   }
 
-  // ── Step 4: Hume Configuration ──
-  header("Step 4: Hume EVI Configuration");
-  log("Hume tools...");
-  run("npx tsx scripts/setup-hume-tools.ts", "Hume tool definitions");
-  log("Hume config...");
-  run("npx tsx scripts/setup-hume-config.ts", "Hume EVI config");
-
-  // ── Step 5: Verification ──
-  header("Step 5: Build Verification");
+  // ── Step 4: Build Verification ──
+  header("Step 4: Build Verification");
   if (!run("npx next build", "Next.js production build")) {
     console.error("  Build failed. Fix errors above before deploying.");
     process.exit(1);
@@ -155,15 +148,15 @@ async function bootstrap() {
   // ── Summary ──
   header("Bootstrap Complete");
   log("Database:   migrated + seeded");
-  log("Hume:       configured");
   log("Build:      passing");
   console.log("\n  Next steps:");
   log("1. Deploy to Vercel (vercel deploy --prod)");
   log("2. Set env vars in Vercel dashboard");
   log("3. Configure Stripe webhook → {APP_URL}/api/stripe/webhook");
-  log("4. Configure Hume webhook  → {APP_URL}/api/hume/webhook");
-  log("5. Verify crons fire correctly in /admin/agents");
-  log("6. Make a test call to verify end-to-end pipeline");
+  log("4. Configure ElevenLabs post-call webhook → {APP_URL}/api/webhooks/elevenlabs");
+  log("5. Run: npx tsx scripts/migrate-to-elevenlabs.ts");
+  log("6. Verify crons fire correctly in /admin/agents");
+  log("7. Make a test call to verify end-to-end pipeline");
   console.log("");
 }
 

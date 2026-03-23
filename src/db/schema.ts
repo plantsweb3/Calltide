@@ -184,6 +184,9 @@ export const calls = sqliteTable("calls", {
   isAfterHours: integer("is_after_hours", { mode: "boolean" }).default(false),
   // Voicemail
   recordingUrl: text("recording_url"),
+  // ElevenLabs analytics
+  costCents: integer("cost_cents"), // Call cost in cents
+  latencyMs: integer("latency_ms"), // Average response latency in ms
   twilioCallSid: text("twilio_call_sid"),
   // Missed call recovery
   isAbandoned: integer("is_abandoned", { mode: "boolean" }).default(false),

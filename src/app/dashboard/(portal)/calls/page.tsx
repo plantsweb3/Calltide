@@ -47,6 +47,9 @@ interface Call {
   sentiment: string | null;
   outcome: string | null;
   audioUrl: string | null;
+  recordingUrl?: string | null;
+  costCents?: number | null;
+  latencyMs?: number | null;
   createdAt: string;
   leadName: string | null;
   transcript?: TranscriptLine[] | null;
@@ -468,7 +471,7 @@ export default function CallsPage() {
               )}
 
               {/* Audio recording */}
-              {row.audioUrl && (
+              {(row.audioUrl || row.recordingUrl) && (
                 <div className="space-y-1">
                   <p
                     className="text-xs font-medium uppercase tracking-wider"
@@ -476,7 +479,7 @@ export default function CallsPage() {
                   >
                     Recording
                   </p>
-                  <AudioPlayer src={row.audioUrl} />
+                  <AudioPlayer src={(row.audioUrl || row.recordingUrl)!} />
                 </div>
               )}
 

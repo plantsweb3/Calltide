@@ -33,6 +33,7 @@ interface SettingsData {
   memberSince: string;
   receptionistName: string;
   personalityPreset: string;
+  voiceId: string;
   enableWeeklyDigest: boolean;
   digestDeliveryMethod: string;
   enableDailySummary: boolean;
@@ -643,6 +644,40 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+      </Card>
+
+      {/* ── Section: Voice ── */}
+      <Card title={`${rName}'s Voice`}>
+        <p className="text-sm mb-3" style={{ color: "var(--db-text-muted)" }}>
+          Choose how {rName} sounds on calls.
+        </p>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {[
+            { id: "EXAVITQu4vr4xnSDxMaL", name: "Sarah", desc: "Professional" },
+            { id: "jBpfAFnaylXS5xpurlZD", name: "Lily", desc: "Friendly" },
+            { id: "onwK4e9ZLuTAKqWW03F9", name: "Daniel", desc: "Warm" },
+            { id: "pFZP5JQG7iQjIQuC4Bku", name: "Rachel", desc: "Clear" },
+          ].map((voice) => (
+            <button
+              key={voice.id}
+              onClick={() => {
+                setField("voiceId", voice.id);
+                handleBlur("voiceId", voice.id);
+              }}
+              className="flex flex-col items-center rounded-lg p-3 text-center transition-all"
+              style={{
+                border: `2px solid ${data.voiceId === voice.id ? "#D4A843" : "var(--db-border)"}`,
+                background: data.voiceId === voice.id ? "rgba(212,168,67,0.08)" : "var(--db-bg)",
+              }}
+            >
+              <p className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>{voice.name}</p>
+              <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>{voice.desc}</p>
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
+          Voice changes take effect on the next call.
+        </p>
       </Card>
 
       {/* ── Section: Special Instructions ── */}

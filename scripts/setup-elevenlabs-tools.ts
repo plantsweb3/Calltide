@@ -18,7 +18,7 @@ if (!WEBHOOK_SECRET) {
 
 /**
  * Server tool definitions for ElevenLabs agents.
- * These match the Zod schemas in src/lib/hume/tool-handlers.ts.
+ * These match the Zod schemas in src/lib/voice/tool-handlers.ts.
  */
 export const TOOL_DEFINITIONS = [
   {

@@ -552,12 +552,12 @@ async function handleTransferToHuman(
       updatedAt: new Date().toISOString(),
     }).where(eq(calls.id, ctx.callId));
 
-    // Update live monitoring — look up hume session from call record
-    const [callRecord] = await db.select({ humeChitChatId: calls.humeChitChatId })
+    // Update live monitoring
+    const [callRecord] = await db.select({ twilioCallSid: calls.twilioCallSid })
       .from(calls).where(eq(calls.id, ctx.callId)).limit(1);
-    if (callRecord?.humeChitChatId) {
+    if (callRecord?.twilioCallSid) {
       updateActiveCall(
-        { humeSessionId: callRecord.humeChitChatId },
+        { twilioCallSid: callRecord.twilioCallSid },
         {
           status: "transferring",
           currentIntent: isEmergency ? "emergency" : "transfer",
@@ -567,14 +567,79 @@ async function handleTransferToHuman(
     }
   }
 
-  // Notify the business owner
+  // Get business info for transfer
   const biz = await getBusinessById(ctx.businessId);
-  if (biz) {
-    const prefix = isEmergency ? "EMERGENCY - " : "";
-    const suffix = isEmergency ? " CALL THEM BACK IMMEDIATELY." : " Please call them back.";
-    const smsBody = `${prefix}Transfer requested from ${ctx.callerPhone || "unknown caller"}${reason ? `: ${reason}` : ""}.${suffix}`;
+  if (!biz) {
+    return {
+      success: false,
+      error: "Unable to look up business for transfer",
+    };
+  }
+
+  // Attempt warm transfer via Twilio conference
+  const twilioSid = process.env.TWILIO_ACCOUNT_SID;
+  const twilioToken = process.env.TWILIO_AUTH_TOKEN;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+  let warmTransferInitiated = false;
+
+  if (twilioSid && twilioToken && biz.ownerPhone && biz.twilioNumber && ctx.callId) {
+    try {
+      // Look up the original call's Twilio SID
+      const [callRecord] = await db.select({ twilioCallSid: calls.twilioCallSid })
+        .from(calls).where(eq(calls.id, ctx.callId)).limit(1);
+
+      if (callRecord?.twilioCallSid) {
+        const twilio = (await import("twilio")).default;
+        const twilioClient = twilio(twilioSid, twilioToken);
+        const confName = `transfer-${ctx.callId}`;
+        const callerDisplay = ctx.callerPhone || "a caller";
+        const briefing = isEmergency
+          ? `Emergency transfer. ${callerDisplay} needs immediate help. ${reason ? `Reason: ${reason.replace("[EMERGENCY]", "").trim()}` : ""}`
+          : `Incoming transfer from ${callerDisplay}. ${reason || "The caller requested to speak with you."}`;
+
+        // Call the owner with a briefing, then join them to a conference
+        await twilioClient.calls.create({
+          to: biz.ownerPhone,
+          from: biz.twilioNumber,
+          twiml: `<Response><Say voice="Polly.Joanna">${briefing} Connecting you now.</Say><Dial><Conference>${confName}</Conference></Dial></Response>`,
+          statusCallback: `${appUrl}/api/webhooks/twilio/status`,
+          statusCallbackMethod: "POST",
+        });
+
+        // Move the original caller into the same conference
+        await twilioClient.calls(callRecord.twilioCallSid).update({
+          twiml: `<Response><Say voice="Polly.Joanna">${ctx.language === "es" ? "Conectándole ahora. Un momento." : "Connecting you now. One moment."}</Say><Dial><Conference>${confName}</Conference></Dial></Response>`,
+        });
+
+        warmTransferInitiated = true;
+      }
+    } catch (err) {
+      reportError("Warm transfer failed, falling back to SMS", err, {
+        extra: { businessId: ctx.businessId, callId: ctx.callId },
+      });
+    }
+  }
+
+  // Always send SMS notification (backup even if warm transfer works)
+  const prefix = isEmergency ? "EMERGENCY - " : "";
+  const suffix = warmTransferInitiated
+    ? " Warm transfer initiated — they should be on the line."
+    : isEmergency ? " CALL THEM BACK IMMEDIATELY." : " Please call them back.";
+  const smsBody = `${prefix}Transfer requested from ${ctx.callerPhone || "unknown caller"}${reason ? `: ${reason}` : ""}.${suffix}`;
+
+  await sendSMS({
+    to: biz.ownerPhone,
+    from: biz.twilioNumber,
+    body: smsBody,
+    businessId: ctx.businessId,
+    leadId: ctx.leadId,
+    callId: ctx.callId,
+    templateType: "owner_notify",
+  });
+
+  if (isEmergency && biz.emergencyPhone) {
     await sendSMS({
-      to: biz.ownerPhone,
+      to: biz.emergencyPhone,
       from: biz.twilioNumber,
       body: smsBody,
       businessId: ctx.businessId,
@@ -582,19 +647,17 @@ async function handleTransferToHuman(
       callId: ctx.callId,
       templateType: "owner_notify",
     });
+  }
 
-    // Also SMS the emergency phone if set and this is an emergency transfer
-    if (isEmergency && biz.emergencyPhone) {
-      await sendSMS({
-        to: biz.emergencyPhone,
-        from: biz.twilioNumber,
-        body: smsBody,
-        businessId: ctx.businessId,
-        leadId: ctx.leadId,
-        callId: ctx.callId,
-        templateType: "owner_notify",
-      });
-    }
+  if (warmTransferInitiated) {
+    return {
+      success: true,
+      data: {
+        message: ctx.language === "es"
+          ? "Estoy conectándole con el dueño ahora mismo. Un momento por favor."
+          : "I'm connecting you with the owner right now. One moment please.",
+      },
+    };
   }
 
   if (isEmergency) {

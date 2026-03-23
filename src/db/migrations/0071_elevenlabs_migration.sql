@@ -10,3 +10,7 @@ CREATE INDEX IF NOT EXISTS idx_calls_elevenlabs_conversation_id ON calls(elevenl
 
 -- Add voice_id to setup_sessions for voice selection during onboarding
 ALTER TABLE setup_sessions ADD COLUMN voice_id TEXT;
+
+-- Analytics columns for call metrics
+ALTER TABLE calls ADD COLUMN cost_cents INTEGER;
+ALTER TABLE calls ADD COLUMN latency_ms INTEGER;

@@ -30,7 +30,7 @@ function rateLimit(ip: string, prefix: string, limit: number): boolean {
   return true;
 }
 
-const HUME_TOKEN_RL_LIMIT = 5; // strict limit for token endpoint
+const VOICE_TOKEN_RL_LIMIT = 5; // strict limit for token endpoint
 const ADMIN_RL_LIMIT = 200;
 const DASHBOARD_RL_LIMIT = 200; // higher — dashboards make many parallel fetches
 
@@ -270,7 +270,7 @@ async function middlewareCore(req: NextRequest): Promise<NextResponse> {
     pathname.startsWith("/api/receptionist") ||
     pathname.startsWith("/api/dashboard") ||
     pathname === "/api/stripe/portal" ||
-    pathname === "/api/hume/token"
+    pathname === "/api/voice/token"
   ) {
     // Allow auth endpoints through without cookie
     if (pathname.startsWith("/api/dashboard/auth")) return NextResponse.next();
@@ -282,9 +282,9 @@ async function middlewareCore(req: NextRequest): Promise<NextResponse> {
       }
     }
 
-    // For /api/hume/token, apply strict rate limiting and also accept admin cookie
-    if (pathname === "/api/hume/token") {
-      if (!rateLimit(getIp(req), "hume-token", HUME_TOKEN_RL_LIMIT)) {
+    // For /api/voice/token, apply strict rate limiting and also accept admin cookie
+    if (pathname === "/api/voice/token") {
+      if (!rateLimit(getIp(req), "voice-token", VOICE_TOKEN_RL_LIMIT)) {
         return NextResponse.json({ error: "Too many requests" }, { status: 429 });
       }
       const adminPassword = process.env.ADMIN_PASSWORD;
@@ -333,7 +333,7 @@ export const config = {
     "/api/notifications/:path*",
     "/api/receptionist/:path*",
     "/api/stripe/portal",
-    "/api/hume/token",
+    "/api/voice/token",
     "/api/outbound/call",
     "/api/compliance/sms-optout",
   ],

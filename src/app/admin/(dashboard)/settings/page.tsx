@@ -262,7 +262,7 @@ export default function SettingsPage() {
           <div className="space-y-3">
             {[
               { name: "Twilio", envVar: "TWILIO_ACCOUNT_SID" },
-              { name: "Hume AI", envVar: "HUME_API_KEY" },
+              { name: "ElevenLabs", envVar: "ELEVENLABS_API_KEY" },
               { name: "Anthropic", envVar: "ANTHROPIC_API_KEY" },
               { name: "Google Places", envVar: "GOOGLE_PLACES_API_KEY" },
               { name: "Resend", envVar: "RESEND_API_KEY" },

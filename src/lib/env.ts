@@ -4,10 +4,6 @@ const envSchema = z.object({
   TURSO_DATABASE_URL: z.string().url(),
   TURSO_AUTH_TOKEN: z.string().min(1),
 
-  HUME_API_KEY: z.string().min(1).optional(),
-  HUME_SECRET_KEY: z.string().min(1).optional(),
-  HUME_CONFIG_ID: z.string().min(1).optional(),
-
   ELEVENLABS_API_KEY: z.string().min(1),
   ELEVENLABS_WEBHOOK_SECRET: z.string().min(1),
   ELEVENLABS_DEMO_AGENT_ID: z.string().min(1).optional(),
@@ -25,15 +21,11 @@ const envSchema = z.object({
   NEXT_PUBLIC_PHONE_TEL: z.string().min(1).optional(),    // tel: format: "+18305217133"
   NEXT_PUBLIC_BOOKING_URL: z.string().url().optional(),   // e.g. "https://cal.com/capta/onboarding"
   NEXT_PUBLIC_MARKETING_URL: z.string().url().optional(), // e.g. "https://captahq.com"
-  NEXT_PUBLIC_HUME_CONFIG_ID: z.string().min(1).optional(),
-
   // Outreach email sender
   OUTREACH_FROM_EMAIL: z.string().min(1).optional(),      // e.g. "Capta <hello@contact.captahq.com>"
 
   // AI model
   CLAUDE_MODEL: z.string().min(1).optional(),             // defaults to claude-sonnet-4-5-20250929
-  CLM_API_KEY: z.string().min(16).optional(),               // Auth key for legacy CLM endpoint (deprecated)
-
   // Owner contact
   OWNER_EMAIL: z.string().email(),
   OWNER_PHONE: z.string().min(10),

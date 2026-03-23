@@ -54,7 +54,7 @@ async function seed() {
 
   // ── 2. System Health Logs (6 services × 24 entries) ──
   console.log("Seeding system health logs...");
-  const services = ["Hume Voice AI", "Twilio Voice", "Twilio SMS", "Turso DB", "Anthropic API", "Resend Email"];
+  const services = ["ElevenLabs Voice AI", "Twilio Voice", "Twilio SMS", "Turso DB", "Anthropic API", "Resend Email"];
 
   for (const service of services) {
     for (let h = 23; h >= 0; h--) {

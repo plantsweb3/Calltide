@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { dispatchToolCall } from "@/lib/hume/tool-handlers";
+import { dispatchToolCall } from "@/lib/voice/tool-handlers";
 import { db } from "@/db";
 import { calls } from "@/db/schema";
 import { eq, and } from "drizzle-orm";

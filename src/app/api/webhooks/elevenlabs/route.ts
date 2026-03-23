@@ -21,9 +21,11 @@ interface ElevenLabsPostCallEvent {
   conversation_id: string;
   agent_id: string;
   transcript: ElevenLabsTranscriptEntry[];
+  recording_url?: string;
   metadata?: {
     call_duration_secs?: number;
     cost?: number;
+    latency_ms?: number;
   };
   analysis?: {
     summary?: string;
@@ -129,6 +131,10 @@ export async function POST(req: NextRequest) {
     status: "completed",
     duration: durationSeconds,
     elevenlabsConversationId: conversationId,
+    transcript,
+    recordingUrl: event.recording_url || null,
+    costCents: metadata?.cost ? Math.round(metadata.cost * 100) : null,
+    latencyMs: metadata?.latency_ms ?? null,
     updatedAt: new Date().toISOString(),
   }).where(eq(calls.id, call.id));
 

@@ -19,7 +19,7 @@ async function seed() {
     ownerPhone: "+12105551234",
     ownerEmail: "carlos@rodriguezplumbing.com",
     twilioNumber: process.env.TWILIO_PHONE_NUMBER || "+12105550000",
-    humeConfigId: process.env.HUME_CONFIG_ID || "",
+    // ElevenLabs agent will be created via syncAgent() after seeding
     services: [
       "Emergency Plumbing",
       "Drain Cleaning",

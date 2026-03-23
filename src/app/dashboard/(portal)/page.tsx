@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import MetricCard from "@/components/metric-card";
 import AnimatedCounter from "@/app/dashboard/_components/animated-counter";
 import ActivityFeed from "@/app/dashboard/_components/activity-feed";
@@ -98,6 +98,19 @@ interface Overview {
   createdAt?: string;
 }
 
+interface ActiveCall {
+  id: string;
+  callerPhone: string;
+  customerName: string | null;
+  isReturningCaller: boolean;
+  direction: string;
+  language: string;
+  status: string;
+  currentIntent: string | null;
+  startedAt: string;
+  durationSeconds: number;
+}
+
 function getGreeting(): string {
   const h = new Date().getHours();
   if (h < 12) return "Good morning";
@@ -111,13 +124,24 @@ export default function OverviewPage() {
   const [error, setError] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
   const [tourDismissed, setTourDismissed] = useState(false);
+  const [activeCalls, setActiveCalls] = useState<ActiveCall[]>([]);
+
+  const fetchActiveCalls = useCallback(() => {
+    fetch("/api/dashboard/active-calls")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d?.activeCalls) setActiveCalls(d.activeCalls); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     fetch("/api/dashboard/overview")
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => setError("Failed to load dashboard data"));
-  }, []);
+    fetchActiveCalls();
+    const interval = setInterval(fetchActiveCalls, 10000);
+    return () => clearInterval(interval);
+  }, [fetchActiveCalls]);
 
   if (error) {
     return (
@@ -223,6 +247,57 @@ export default function OverviewPage() {
             Here&apos;s how {receptionistName} is performing
           </p>
         </div>
+
+        {/* Live Call Indicator */}
+        {activeCalls.length > 0 && (
+          <div
+            className="rounded-xl p-4"
+            style={{
+              background: "rgba(74,222,128,0.06)",
+              border: "1px solid rgba(74,222,128,0.2)",
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+              </span>
+              <span className="text-sm font-semibold" style={{ color: "#4ade80" }}>
+                {activeCalls.length} active call{activeCalls.length > 1 ? "s" : ""} right now
+              </span>
+            </div>
+            <div className="space-y-1.5">
+              {activeCalls.map((call) => {
+                const elapsed = call.startedAt
+                  ? Math.floor((Date.now() - new Date(call.startedAt).getTime()) / 1000)
+                  : call.durationSeconds || 0;
+                const mins = Math.floor(elapsed / 60);
+                const secs = elapsed % 60;
+                return (
+                  <div key={call.id} className="flex items-center gap-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                    <span className="font-medium" style={{ color: "var(--db-text)" }}>
+                      {call.customerName || call.callerPhone || "Unknown"}
+                    </span>
+                    {call.isReturningCaller && (
+                      <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={{ background: "rgba(99,102,241,0.1)", color: "rgb(129,140,248)" }}>
+                        returning
+                      </span>
+                    )}
+                    {call.currentIntent && (
+                      <span className="text-[10px] uppercase tracking-wide" style={{ color: "var(--db-text-muted)" }}>
+                        {call.currentIntent}
+                      </span>
+                    )}
+                    <span className="ml-auto tabular-nums">
+                      {mins}:{secs.toString().padStart(2, "0")}
+                    </span>
+                    {call.language === "es" && <span>🇲🇽</span>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* First Call Celebration */}
         {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} receptionistName={receptionistName} />}
