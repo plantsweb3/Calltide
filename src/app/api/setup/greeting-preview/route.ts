@@ -7,11 +7,12 @@ import { PERSONALITY_PRESETS, type PersonalityPreset } from "@/lib/receptionist/
 import { reportError } from "@/lib/error-reporting";
 
 const schema = z.object({
-  businessName: z.string().min(1).max(200),
-  personality: z.enum(["professional", "friendly", "warm"]),
-  receptionistName: z.string().min(1).max(50),
+  businessName: z.string().min(1).max(200).optional(),
+  personality: z.enum(["professional", "friendly", "warm"]).optional(),
+  receptionistName: z.string().min(1).max(50).optional(),
   lang: z.enum(["en", "es"]).default("en"),
-  voiceId: z.string().optional(),
+  voiceId: z.string().max(50).optional(),
+  text: z.string().min(1).max(500).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -31,16 +32,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
   }
 
-  const { businessName, personality, receptionistName, lang, voiceId } = parsed.data;
+  const { businessName, personality, receptionistName, lang, voiceId, text } = parsed.data;
 
-  const preset = PERSONALITY_PRESETS[personality as PersonalityPreset] || PERSONALITY_PRESETS.friendly;
-  const greetingText = preset.greetingTemplate[lang](receptionistName, businessName);
+  // Direct text TTS mode (voice preview)
+  let greetingText: string;
+  if (text) {
+    greetingText = text;
+  } else if (businessName && personality && receptionistName) {
+    const preset = PERSONALITY_PRESETS[personality as PersonalityPreset] || PERSONALITY_PRESETS.friendly;
+    greetingText = preset.greetingTemplate[lang](receptionistName, businessName);
+  } else {
+    return NextResponse.json({ error: "Provide text or businessName+personality+receptionistName" }, { status: 400 });
+  }
 
   // Try ElevenLabs TTS
   if (process.env.ELEVENLABS_API_KEY) {
     try {
       const client = getElevenLabsClient();
-      const resolvedVoiceId = voiceId || VOICE_MAP[personality] || VOICE_MAP.friendly;
+      const resolvedVoiceId = voiceId || (personality && VOICE_MAP[personality]) || VOICE_MAP.friendly;
 
       const audioStream = await client.textToSpeech.convert(resolvedVoiceId, {
         text: greetingText,

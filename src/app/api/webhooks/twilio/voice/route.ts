@@ -213,7 +213,7 @@ export async function POST(req: NextRequest) {
     businessId: biz.id,
     callerPhone: callerNumber || "unknown",
     direction: "inbound",
-    humeSessionId: callSid, // Use callSid as session identifier
+    sessionId: callSid,
   }).catch((err) => reportError("Active call tracking failed", err, { businessId: biz.id }));
 
   // Connect to ElevenLabs via WebSocket stream

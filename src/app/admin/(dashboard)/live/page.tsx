@@ -17,7 +17,7 @@ interface ActiveCall {
   callType: string | null;
   language: string;
   twilioCallSid: string | null;
-  humeSessionId: string | null;
+  sessionId: string | null;
   startedAt: string;
   lastActivityAt: string;
   status: string;

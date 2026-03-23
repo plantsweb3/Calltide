@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
   });
 
   // Remove from active calls (fire-and-forget)
-  trackCallEnd({ humeSessionId: call.twilioCallSid || conversationId }).catch((err) =>
+  trackCallEnd({ sessionId: call.twilioCallSid || conversationId }).catch((err) =>
     reportError("Active call cleanup failed", err),
   );
 

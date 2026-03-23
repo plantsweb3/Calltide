@@ -92,6 +92,7 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
   const l = LABELS[lang];
 
   const conversation = useConversation({
+    micMuted: muted,
     onConnect: () => {
       setState("active");
     },
@@ -103,17 +104,17 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
         setState("idle");
       }
     },
-    onError: (err) => {
-      console.error("Demo voice error:", err);
+    onError: (message) => {
+      console.error("Demo voice error:", message);
       if (state === "connecting") {
         setError(l.errorGeneric);
         setState("idle");
       }
     },
-    onMessage: (message) => {
-      if (message.message) {
-        const role = message.source === "ai" ? "assistant" : "user";
-        const content = message.message;
+    onMessage: (msg) => {
+      if (msg.message) {
+        const role = msg.role === "agent" ? "assistant" : "user";
+        const content = msg.message;
         transcriptRef.current.push({ role, content });
         setRecentMessages((prev) => [...prev, { role, content }].slice(-4));
       }

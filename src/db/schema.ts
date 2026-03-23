@@ -258,7 +258,7 @@ export const activeCalls = sqliteTable("active_calls", {
   callType: text("call_type"),
   language: text("language").default("en"),
   twilioCallSid: text("twilio_call_sid"),
-  humeSessionId: text("hume_session_id"),
+  sessionId: text("session_id"),
   startedAt: text("started_at").notNull().default(sql`(datetime('now'))`),
   lastActivityAt: text("last_activity_at").notNull().default(sql`(datetime('now'))`),
   status: text("status").default("ringing").notNull(),

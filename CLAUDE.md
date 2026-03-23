@@ -2,13 +2,13 @@
 
 ## Project Overview
 
-Capta is an AI-powered bilingual (EN/ES) receptionist platform for home service businesses. It handles inbound calls via Hume EVI voice AI, books appointments, takes messages, handles emergencies, and provides a full client + admin portal.
+Capta is an AI-powered bilingual (EN/ES) receptionist platform for home service businesses. It handles inbound calls via ElevenLabs Conversational AI, books appointments, takes messages, handles emergencies, and provides a full client + admin portal.
 
 ## Tech Stack
 
 - **Framework:** Next.js 16 App Router, TypeScript
 - **Database:** Drizzle ORM with SQLite/Turso (libsql)
-- **Voice AI:** Hume EVI (WebSocket-based voice conversations)
+- **Voice AI:** ElevenLabs Conversational AI (Twilio WebSocket bridge, per-business agents)
 - **LLM:** Anthropic Claude (call summaries, QA scoring, content generation)
 - **SMS/Calls:** Twilio
 - **Email:** Resend
@@ -27,7 +27,7 @@ src/
 │   ├── api/
 │   │   ├── admin/      # Admin API routes (cookie auth via middleware)
 │   │   ├── dashboard/  # Client API routes (x-business-id injection via middleware)
-│   │   ├── webhooks/   # Hume + Twilio webhooks
+│   │   ├── webhooks/   # ElevenLabs + Twilio webhooks
 │   │   ├── stripe/     # Stripe webhook + portal
 │   │   ├── agents/     # Background AI agents (cron-triggered)
 │   │   └── ...
@@ -39,7 +39,8 @@ src/
 │   └── migrations/     # SQL migrations (0000-0069)
 ├── lib/
 │   ├── ai/             # System prompts, context builder, call summary
-│   ├── hume/           # Tool handlers, webhook verification
+│   ├── elevenlabs/     # Client, agent config, agent sync
+│   ├── voice/          # Tool handlers (9 customer-facing tools)
 │   ├── receptionist/   # Personality presets, custom responses, trade profiles
 │   ├── rate-limit.ts   # Turso-backed rate limiter with in-memory L1 cache
 │   ├── error-reporting.ts  # Sentry integration
@@ -72,7 +73,7 @@ tests/
 
 - Zod on all POST/PUT
 - Password login + magic link auth, middleware sessions
-- External: Twilio, Hume EVI, Stripe, Resend, Anthropic
+- External: Twilio, ElevenLabs, Stripe, Resend, Anthropic
 - 37 cron-scheduled routes (CRON_SECRET protected): 22 cron jobs, 6 AI agents, 3 capacity, 3 financial, 1 compliance, 2 outbound
 - 250 API routes
 - Demo mode with isolated data
@@ -88,7 +89,7 @@ tests/
 
 ### Database
 - Drizzle ORM with SQLite/Turso
-- Migrations in `src/db/migrations/` (numbered 0000-0069)
+- Migrations in `src/db/migrations/` (numbered 0000-0072)
 - Journal in `src/db/migrations/meta/_journal.json`
 - All tables defined in `src/db/schema.ts`
 
@@ -145,6 +146,8 @@ ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers.
 - **Receptionist name is dynamic:** Use `biz.receptionistName || "Maria"` — never hardcode "María"
 - **Rate limiting is async:** All `rateLimit()` calls require `await`
 - **No PII in logs:** Never log phone numbers, emails, or customer data
-- **Hume SDK typing issue:** `src/lib/ai/call-summary.ts` line 31 has a known `Page<ReturnChatEvent>` typing workaround — do not try to fix
 - **Anthropic API key:** May be invalid/placeholder — agents and AI features gracefully degrade via `isAnthropicConfigured()`
+- **ElevenLabs agent sync:** Each business gets its own ElevenLabs agent. `syncAgent()` in `src/lib/elevenlabs/sync-agent.ts` creates/updates agents when business settings change.
+- **Voice tools:** 9 customer-facing tools dispatched via webhook from ElevenLabs to `/api/webhooks/elevenlabs/tools`. Tool handlers in `src/lib/voice/tool-handlers.ts`.
+- **Post-call webhook:** ElevenLabs fires `post_call_transcription` to `/api/webhooks/elevenlabs`. Stores transcript, recording URL, cost, latency.
 - All 20 features ship at the $497/mo Core tier — no feature gating

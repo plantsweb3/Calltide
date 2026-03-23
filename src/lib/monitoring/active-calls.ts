@@ -11,7 +11,7 @@ export async function trackCallStart(params: {
   callerPhone: string;
   direction: "inbound" | "outbound";
   twilioCallSid?: string;
-  humeSessionId?: string;
+  sessionId?: string;
   callType?: string;
   language?: string;
 }) {
@@ -50,7 +50,7 @@ export async function trackCallStart(params: {
     isReturningCaller: isReturning,
     direction: params.direction,
     twilioCallSid: params.twilioCallSid,
-    humeSessionId: params.humeSessionId,
+    sessionId: params.sessionId,
     callType: params.callType,
     language: params.language ?? "en",
     status: "in_progress",
@@ -64,7 +64,7 @@ export async function trackCallStart(params: {
  * Update an active call's intent / metadata during the call.
  */
 export async function updateActiveCall(
-  identifier: { twilioCallSid?: string; humeSessionId?: string },
+  identifier: { twilioCallSid?: string; sessionId?: string },
   updates: {
     currentIntent?: string;
     callType?: string;
@@ -73,8 +73,8 @@ export async function updateActiveCall(
     durationSeconds?: number;
   },
 ) {
-  const condition = identifier.humeSessionId
-    ? eq(activeCalls.humeSessionId, identifier.humeSessionId)
+  const condition = identifier.sessionId
+    ? eq(activeCalls.sessionId, identifier.sessionId)
     : identifier.twilioCallSid
       ? eq(activeCalls.twilioCallSid, identifier.twilioCallSid)
       : null;
@@ -96,10 +96,10 @@ export async function updateActiveCall(
  */
 export async function trackCallEnd(identifier: {
   twilioCallSid?: string;
-  humeSessionId?: string;
+  sessionId?: string;
 }) {
-  const condition = identifier.humeSessionId
-    ? eq(activeCalls.humeSessionId, identifier.humeSessionId)
+  const condition = identifier.sessionId
+    ? eq(activeCalls.sessionId, identifier.sessionId)
     : identifier.twilioCallSid
       ? eq(activeCalls.twilioCallSid, identifier.twilioCallSid)
       : null;

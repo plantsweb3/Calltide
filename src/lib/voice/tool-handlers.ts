@@ -132,10 +132,10 @@ export async function dispatchToolCall(
   // Update active call intent for live monitoring (fire-and-forget, non-transfer tools only)
   const intent = TOOL_INTENT_MAP[toolName];
   if (intent && toolName !== "transfer_to_human" && ctx.callId) {
-    const [cr] = await db.select({ humeChitChatId: calls.humeChitChatId })
+    const [cr] = await db.select({ convId: calls.elevenlabsConversationId, sid: calls.twilioCallSid })
       .from(calls).where(eq(calls.id, ctx.callId)).limit(1);
-    if (cr?.humeChitChatId) {
-      updateActiveCall({ humeSessionId: cr.humeChitChatId }, {
+    if (cr) {
+      updateActiveCall({ sessionId: cr.sid || cr.convId || undefined }, {
         currentIntent: intent,
         callType: intent,
       }).catch((err) => reportError("Failed to update active call intent", err));

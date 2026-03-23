@@ -727,6 +727,46 @@ export default function SetupClientWrapper() {
   );
 }
 
+function SetupVoicePreview({ voiceId, name, lang }: { voiceId: string; name: string; lang: Lang }) {
+  const [playing, setPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const play = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (playing) {
+      audioRef.current?.pause();
+      setPlaying(false);
+      return;
+    }
+    setPlaying(true);
+    try {
+      const sampleText = lang === "es"
+        ? `Hola, gracias por llamar. Esta es una demostración de la voz de ${name}.`
+        : `Hi, thanks for calling! This is a preview of the ${name} voice.`;
+      const res = await fetch("/api/setup/greeting-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ voiceId, text: sampleText }),
+      });
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => { setPlaying(false); URL.revokeObjectURL(url); };
+      audio.play();
+    } catch {
+      setPlaying(false);
+    }
+  };
+
+  return (
+    <button onClick={play} style={{ marginTop: 4, fontSize: 12, fontWeight: 500, color: playing ? "#D4A843" : "#94a3b8", background: "none", border: "none", cursor: "pointer" }}>
+      {playing ? (lang === "es" ? "Detener" : "Stop") : (lang === "es" ? "Escuchar" : "Preview")}
+    </button>
+  );
+}
+
 function SetupClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -1661,16 +1701,18 @@ function SetupClient() {
                 { id: "onwK4e9ZLuTAKqWW03F9", name: "Daniel", desc: lang === "es" ? "Cálido" : "Warm" },
                 { id: "pFZP5JQG7iQjIQuC4Bku", name: "Rachel", desc: lang === "es" ? "Clara" : "Clear" },
               ].map((voice) => (
-                <button
-                  key={voice.id}
-                  onClick={() => setSelectedVoiceId(voice.id)}
-                  className={`${s.cardSelectable} ${selectedVoiceId === voice.id ? s.cardSelected : ""}`}
-                  style={{ textAlign: "center", padding: "14px 12px" }}
-                  aria-pressed={selectedVoiceId === voice.id}
-                >
-                  <div style={{ color: "#fff", fontWeight: 600, marginBottom: 2 }}>{voice.name}</div>
-                  <div style={{ color: "#94a3b8", fontSize: 13 }}>{voice.desc}</div>
-                </button>
+                <div key={voice.id} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <button
+                    onClick={() => setSelectedVoiceId(voice.id)}
+                    className={`${s.cardSelectable} ${selectedVoiceId === voice.id ? s.cardSelected : ""}`}
+                    style={{ textAlign: "center", padding: "14px 12px", width: "100%" }}
+                    aria-pressed={selectedVoiceId === voice.id}
+                  >
+                    <div style={{ color: "#fff", fontWeight: 600, marginBottom: 2 }}>{voice.name}</div>
+                    <div style={{ color: "#94a3b8", fontSize: 13 }}>{voice.desc}</div>
+                  </button>
+                  <SetupVoicePreview voiceId={voice.id} name={voice.name} lang={lang} />
+                </div>
               ))}
             </div>
 
