@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { env } from "@/lib/env";
 import { reportError } from "@/lib/error-reporting";
+import { enqueueJob } from "@/lib/jobs/queue";
 
 /**
  * Send a basic fallback notification when call summary generation fails.
@@ -40,7 +41,15 @@ export async function sendBasicCallNotification(
       templateType: "owner_notify",
     });
   } catch (err) {
-    reportError("[post-call] Basic fallback notification failed", err, { businessId: biz.id });
+    reportError("[post-call] Basic fallback notification failed, enqueuing retry", err, { businessId: biz.id });
+    await enqueueJob("email_send", {
+      type: "sms_retry",
+      to: biz.ownerPhone,
+      from: biz.twilioNumber || env.TWILIO_PHONE_NUMBER,
+      body: message,
+      businessId: biz.id,
+      callId,
+    }).catch(() => {});
   }
 }
 
@@ -116,7 +125,15 @@ export async function sendOwnerCallAlert(callId: string): Promise<void> {
       templateType: "owner_notify",
     });
   } catch (err) {
-    reportError("[post-call] Owner alert SMS failed", err, { businessId: biz.id });
+    reportError("[post-call] Owner alert SMS failed, enqueuing retry", err, { businessId: biz.id });
+    await enqueueJob("email_send", {
+      type: "sms_retry",
+      to: biz.ownerPhone,
+      from: biz.twilioNumber || env.TWILIO_PHONE_NUMBER,
+      body: message,
+      businessId: biz.id,
+      callId,
+    }).catch(() => {});
   }
 }
 

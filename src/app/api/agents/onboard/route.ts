@@ -86,7 +86,7 @@ function decideNudge(params: {
   skippedSteps: number[];
   hasFirstCall: boolean;
   hasFirstAppointment: boolean;
-  hasHumeConfig: boolean;
+  hasVoiceAgent: boolean;
   hasBusinessHours: boolean;
   ownerName: string;
   bizName: string;
@@ -233,7 +233,7 @@ export async function GET(req: NextRequest) {
       skippedSteps,
       hasFirstCall: milestones.hasFirstCall,
       hasFirstAppointment: milestones.hasFirstAppointment,
-      hasHumeConfig: milestones.hasHumeConfig,
+      hasVoiceAgent: milestones.hasVoiceAgent,
       hasBusinessHours: milestones.hasBusinessHours,
       ownerName: client.ownerName,
       bizName: client.name,
@@ -390,19 +390,19 @@ async function checkOnboardingMilestones(
       .then((rows) => rows[0]?.count ?? 0),
   ]);
 
-  const hasHumeConfig = !!client.elevenlabsAgentId || !!client.humeConfigId;
+  const hasVoiceAgent = !!client.elevenlabsAgentId || !!client.humeConfigId;
   const hasBusinessHours =
     !!client.businessHours &&
     typeof client.businessHours === "object" &&
     Object.keys(client.businessHours as Record<string, unknown>).length > 0;
 
   return {
-    hasHumeConfig,
+    hasVoiceAgent,
     hasBusinessHours,
     hasFirstCall: callCount > 0,
     hasFirstAppointment: aptCount > 0,
     totalCalls: callCount,
-    allComplete: hasHumeConfig && hasBusinessHours && callCount > 0 && aptCount > 0,
+    allComplete: hasVoiceAgent && hasBusinessHours && callCount > 0 && aptCount > 0,
   };
 }
 

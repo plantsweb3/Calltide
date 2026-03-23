@@ -22,20 +22,20 @@ const createClientSchema = z.object({
 
 export async function GET() {
   const [businessRows, accountRows, callStatsRows, aptStatsRows] = await Promise.all([
-    db.select().from(businesses),
-    db.select().from(accounts),
+    db.select().from(businesses).limit(10000),
+    db.select().from(accounts).limit(10000),
     db.select({
       businessId: calls.businessId,
       totalCalls: sql<number>`count(*)`,
       completedCalls: sql<number>`sum(case when ${calls.status} = 'completed' then 1 else 0 end)`,
       missedCalls: sql<number>`sum(case when ${calls.status} = 'missed' then 1 else 0 end)`,
-    }).from(calls).groupBy(calls.businessId),
+    }).from(calls).groupBy(calls.businessId).limit(10000),
     db.select({
       businessId: appointments.businessId,
       totalAppointments: sql<number>`count(*)`,
       confirmed: sql<number>`sum(case when ${appointments.status} = 'confirmed' then 1 else 0 end)`,
       completed: sql<number>`sum(case when ${appointments.status} = 'completed' then 1 else 0 end)`,
-    }).from(appointments).groupBy(appointments.businessId),
+    }).from(appointments).groupBy(appointments.businessId).limit(10000),
   ]);
 
   const accountMap = new Map(accountRows.map((a) => [a.id, a]));

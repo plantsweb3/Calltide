@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { businesses, customers, appointments, calls, estimates } from "@/db/schema";
-import { eq, and, sql, count } from "drizzle-orm";
+import { eq, and, sql, count, gt } from "drizzle-orm";
 import { leads } from "@/db/schema";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
@@ -44,16 +44,6 @@ export async function GET(req: NextRequest) {
 
       for (const biz of activeBiz) {
         try {
-          const allCustomers = await db
-            .select()
-            .from(customers)
-            .where(
-              and(
-                eq(customers.businessId, biz.id),
-                sql`${customers.deletedAt} IS NULL`,
-              ),
-            );
-
           const avgJobValue = biz.avgJobValue || 250;
 
           // Batch: get appointment counts per customer phone to avoid N+1
@@ -78,7 +68,27 @@ export async function GET(req: NextRequest) {
             if (row.phone) phoneApptMap.set(row.phone, row.total);
           }
 
-          for (const customer of allCustomers) {
+          // Paginate customers to avoid unbounded memory usage
+          let cursor = "";
+          const PAGE_SIZE = 1000;
+          while (true) {
+            const page = await db
+              .select()
+              .from(customers)
+              .where(
+                and(
+                  eq(customers.businessId, biz.id),
+                  sql`${customers.deletedAt} IS NULL`,
+                  cursor ? gt(customers.id, cursor) : undefined,
+                ),
+              )
+              .orderBy(customers.id)
+              .limit(PAGE_SIZE);
+
+            if (page.length === 0) break;
+            cursor = page[page.length - 1].id;
+
+          for (const customer of page) {
             try {
               const totalAppts = phoneApptMap.get(customer.phone || "") || 0;
               const lifetimeValue = totalAppts * avgJobValue;
@@ -153,6 +163,9 @@ export async function GET(req: NextRequest) {
               reportError(`[customer-scoring] Error for customer ${customer.id}`, err);
             }
           }
+
+            if (page.length < PAGE_SIZE) break;
+          } // end while
         } catch (err) {
           errors++;
           reportError(`[customer-scoring] Error for business ${biz.id}`, err);

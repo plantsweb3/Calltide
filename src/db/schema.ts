@@ -29,7 +29,7 @@ export const businesses = sqliteTable("businesses", {
   type: text("type").notNull(), // e.g. "plumbing", "dental", "salon"
   ownerName: text("owner_name").notNull(),
   ownerPhone: text("owner_phone").notNull(),
-  ownerEmail: text("owner_email"),
+  ownerEmail: text("owner_email"), // Not unique — duplicates possible if same owner has multiple businesses. Adding a unique constraint risks breaking existing data.
   twilioNumber: text("twilio_number").notNull(),
   humeConfigId: text("hume_config_id"),
   elevenlabsAgentId: text("elevenlabs_agent_id"),

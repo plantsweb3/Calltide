@@ -22,7 +22,6 @@ import {
 import { getBusinessWeekRange } from "@/lib/timezone";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
-import { isAfterHours } from "@/lib/calendar/after-hours";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -88,9 +87,9 @@ export async function GET(req: NextRequest) {
 
           // ── Aggregate metrics for this week ──
 
-          // All calls this week
-          const weekCalls = await db
-            .select()
+          // Total calls this week
+          const [callResult] = await db
+            .select({ count: sql<number>`COUNT(*)` })
             .from(calls)
             .where(
               and(
@@ -99,18 +98,35 @@ export async function GET(req: NextRequest) {
                 lt(calls.createdAt, lastWeek.end),
               ),
             );
-
-          const totalCalls = weekCalls.length;
+          const totalCalls = callResult?.count ?? 0;
 
           // After-hours calls
-          const afterHoursCalls = weekCalls.filter((c) =>
-            isAfterHours(c.createdAt, bizHours, tz),
-          ).length;
+          const [afterHoursResult] = await db
+            .select({ count: sql<number>`COUNT(*)` })
+            .from(calls)
+            .where(
+              and(
+                eq(calls.businessId, biz.id),
+                gte(calls.createdAt, lastWeek.start),
+                lt(calls.createdAt, lastWeek.end),
+                sql`${calls.isAfterHours} = 1`,
+              ),
+            );
+          const afterHoursCalls = afterHoursResult?.count ?? 0;
 
-          // Emergency calls (transfer requested or outcome contains emergency context)
-          const emergencyCalls = weekCalls.filter(
-            (c) => c.transferRequested,
-          ).length;
+          // Emergency calls (transfer requested)
+          const [emergencyResult] = await db
+            .select({ count: sql<number>`COUNT(*)` })
+            .from(calls)
+            .where(
+              and(
+                eq(calls.businessId, biz.id),
+                gte(calls.createdAt, lastWeek.start),
+                lt(calls.createdAt, lastWeek.end),
+                eq(calls.transferRequested, true),
+              ),
+            );
+          const emergencyCalls = emergencyResult?.count ?? 0;
 
           // Appointments booked this week
           const [apptResult] = await db
@@ -143,20 +159,29 @@ export async function GET(req: NextRequest) {
           const avgJobValue = getAvgJobValue(biz.type, biz.avgJobValue);
           const estimatedRevenue = appointmentsBooked * avgJobValue;
 
-          // Busiest day
-          const callsByDay: Record<string, number> = {};
-          for (const c of weekCalls) {
-            const d = new Date(c.createdAt);
-            const dayName = DAY_NAMES[d.getDay()];
-            callsByDay[dayName] = (callsByDay[dayName] ?? 0) + 1;
-          }
+          // Busiest day (aggregate via SQL to avoid loading all calls)
+          const dayRows = await db
+            .select({
+              dayOfWeek: sql<number>`CAST(strftime('%w', ${calls.createdAt}) AS INTEGER)`,
+              dayCount: sql<number>`COUNT(*)`,
+            })
+            .from(calls)
+            .where(
+              and(
+                eq(calls.businessId, biz.id),
+                gte(calls.createdAt, lastWeek.start),
+                lt(calls.createdAt, lastWeek.end),
+              ),
+            )
+            .groupBy(sql`strftime('%w', ${calls.createdAt})`)
+            .orderBy(sql`COUNT(*) DESC`)
+            .limit(1);
+
           let busiestDay = "—";
           let busiestDayCount = 0;
-          for (const [day, count] of Object.entries(callsByDay)) {
-            if (count > busiestDayCount) {
-              busiestDay = day;
-              busiestDayCount = count;
-            }
+          if (dayRows.length > 0) {
+            busiestDay = DAY_NAMES[dayRows[0].dayOfWeek] ?? "—";
+            busiestDayCount = dayRows[0].dayCount;
           }
 
           // Previous week calls for WoW comparison

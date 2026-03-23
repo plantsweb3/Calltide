@@ -175,7 +175,7 @@ export default async function HelpArticlePage({ params }: { params: Promise<{ ca
                 className="mt-5 inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:brightness-110"
                 style={{ background: "#C59A27" }}
               >
-                Get Started Free
+                Get Capta &rarr;
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Link>
             </div>

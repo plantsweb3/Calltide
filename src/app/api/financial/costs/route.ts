@@ -26,11 +26,12 @@ export async function POST(request: NextRequest) {
     let processed = 0;
 
     for (const biz of activeBiz) {
-      // Query call data for previous month
+      // Query call data for previous month (use actual tracked cost from ElevenLabs webhook)
       const [callData] = await db
         .select({
           totalMinutes: sql<number>`COALESCE(SUM(${calls.duration}), 0) / 60.0`,
           callCount: sql<number>`COUNT(*)`,
+          voiceCost: sql<number>`COALESCE(SUM(${calls.costCents}), 0)`,
         })
         .from(calls)
         .where(
@@ -43,6 +44,7 @@ export async function POST(request: NextRequest) {
 
       const minutes = callData?.totalMinutes ?? 0;
       const callCount = callData?.callCount ?? 0;
+      const voiceCostActual = callData?.voiceCost ?? 0;
 
       // Query SMS count for the month
       const [smsData] = await db
@@ -59,9 +61,9 @@ export async function POST(request: NextRequest) {
         );
       const smsCount = smsData?.smsCount ?? 0;
 
-      // Estimate costs (in cents)
+      // Costs (in cents): actual ElevenLabs cost from webhook, Twilio estimate, Anthropic estimate
       const twilioCost = Math.round(minutes * 1.3 + smsCount * 0.79); // $0.013/min + $0.0079/SMS
-      const humeCost = Math.round(minutes * 5); // $0.05/min = 5 cents
+      const humeCost = voiceCostActual; // Actual ElevenLabs cost tracked via webhook metadata
       const anthropicCost = Math.round(callCount * 3); // $0.03/call = 3 cents
       const totalCost = twilioCost + humeCost + anthropicCost;
       const revenue = biz.mrr ?? 49700;

@@ -1,9 +1,9 @@
 export const PROVIDER_LIMITS = {
-  hume: {
-    planName: "Pro",
-    concurrentLimit: 10,
-    monthlyMinutes: 1200,
-    costPerOverageMinute: 0.06,
+  elevenlabs: {
+    planName: "Scale",
+    concurrentLimit: 15,
+    monthlyCharacters: 2_000_000,
+    costPerOverageChar: 0.00030,
   },
   anthropic: {
     tier: 2,

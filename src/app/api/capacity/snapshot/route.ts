@@ -5,7 +5,7 @@ import { eq, sql } from "drizzle-orm";
 import { determineTier, PROVIDER_LIMITS } from "@/lib/capacity/config";
 import {
   getTwilioMetrics,
-  getHumeMetrics,
+  getElevenLabsMetrics,
   getAnthropicMetrics,
   getTursoMetrics,
   getConcurrentCallCount,
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     // Collect provider metrics
     const twilio = await getTwilioMetrics(today);
-    const hume = await getHumeMetrics();
+    const hume = await getElevenLabsMetrics();
     const anthropic = await getAnthropicMetrics();
     const turso = await getTursoMetrics();
     const concurrent = await getConcurrentCallCount();
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       callsToday: twilio.callsToday,
       peakConcurrent: concurrent,
       humeMinutesMtd: hume.minutesUsedMtd,
-      humePlanMinutes: hume.planMinutes,
+      humePlanMinutes: hume.planCharacters,
       humeConcurrentPeak: hume.concurrentPeak,
       humeConcurrentLimit: hume.concurrentLimit,
       anthropicTokensMtd: anthropic.tokensUsedMtd,
@@ -61,13 +61,13 @@ export async function POST(request: NextRequest) {
     // Run threshold checks
     await checkThresholds([
       {
-        provider: "Hume",
-        metric: "monthly_minutes",
+        provider: "ElevenLabs",
+        metric: "monthly_characters",
         currentValue: hume.minutesUsedMtd,
-        limitValue: hume.planMinutes,
+        limitValue: hume.planCharacters,
       },
       {
-        provider: "Hume",
+        provider: "ElevenLabs",
         metric: "concurrent_connections",
         currentValue: concurrent,
         limitValue: hume.concurrentLimit,

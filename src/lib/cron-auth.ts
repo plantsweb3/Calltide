@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 export function verifyCronAuth(req: NextRequest): NextResponse | null {
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret) {
-    return NextResponse.json({ error: "Not configured" }, { status: 500 });
+    return NextResponse.json({ error: "Not configured" }, { status: 401 });
   }
 
   const authHeader = req.headers.get("authorization") ?? "";

@@ -124,20 +124,23 @@ export async function buildIntakeContext(businessId: string, tradeType: string, 
 
 /**
  * Find or create a lead by phone number for a business.
+ * Uses INSERT ... ON CONFLICT to avoid race conditions with concurrent calls.
  */
 export async function findOrCreateLead(businessId: string, phone: string) {
+  const [created] = await db
+    .insert(leads)
+    .values({ businessId, phone, source: "inbound_call" })
+    .onConflictDoNothing()
+    .returning();
+
+  if (created) return created;
+
+  // Conflict means the row already exists — re-select it
   const [existing] = await db
     .select()
     .from(leads)
     .where(and(eq(leads.businessId, businessId), eq(leads.phone, phone)))
     .limit(1);
 
-  if (existing) return existing;
-
-  const [created] = await db
-    .insert(leads)
-    .values({ businessId, phone, source: "inbound_call" })
-    .returning();
-
-  return created;
+  return existing;
 }

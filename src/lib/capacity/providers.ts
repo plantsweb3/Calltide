@@ -9,9 +9,9 @@ export interface TwilioMetrics {
   successRate: number;
 }
 
-export interface HumeMetrics {
+export interface ElevenLabsMetrics {
   minutesUsedMtd: number;
-  planMinutes: number;
+  planCharacters: number;
   concurrentPeak: number;
   concurrentLimit: number;
 }
@@ -53,7 +53,7 @@ export async function getTwilioMetrics(date: string): Promise<TwilioMetrics> {
   };
 }
 
-export async function getHumeMetrics(): Promise<HumeMetrics> {
+export async function getElevenLabsMetrics(): Promise<ElevenLabsMetrics> {
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
@@ -71,9 +71,9 @@ export async function getHumeMetrics(): Promise<HumeMetrics> {
 
   return {
     minutesUsedMtd: minuteData?.totalMinutes ?? 0,
-    planMinutes: PROVIDER_LIMITS.hume.monthlyMinutes,
+    planCharacters: PROVIDER_LIMITS.elevenlabs.monthlyCharacters,
     concurrentPeak: concurrent?.count ?? 0,
-    concurrentLimit: PROVIDER_LIMITS.hume.concurrentLimit,
+    concurrentLimit: PROVIDER_LIMITS.elevenlabs.concurrentLimit,
   };
 }
 
@@ -171,10 +171,10 @@ export async function getConcurrentCallCount(): Promise<number> {
 }
 
 export async function cleanupStaleCalls(): Promise<number> {
-  const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+  const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
   const stale = await db
     .delete(activeCalls)
-    .where(lt(activeCalls.startedAt, thirtyMinAgo))
+    .where(lt(activeCalls.startedAt, tenMinAgo))
     .returning();
   return stale.length;
 }

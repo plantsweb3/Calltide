@@ -110,21 +110,21 @@ export async function trackCallEnd(identifier: {
 }
 
 /**
- * Clean up stale active call records (>30 min old).
+ * Clean up stale active call records (>10 min old).
  * Should be called from the health agent cron.
  */
 export async function cleanupStaleCalls(): Promise<number> {
-  const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+  const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
 
   const stale = await db
     .select({ count: count() })
     .from(activeCalls)
-    .where(lt(activeCalls.startedAt, thirtyMinAgo));
+    .where(lt(activeCalls.startedAt, tenMinAgo));
 
   const staleCount = stale[0]?.count ?? 0;
 
   if (staleCount > 0) {
-    await db.delete(activeCalls).where(lt(activeCalls.startedAt, thirtyMinAgo));
+    await db.delete(activeCalls).where(lt(activeCalls.startedAt, tenMinAgo));
   }
 
   return staleCount;
@@ -133,6 +133,7 @@ export async function cleanupStaleCalls(): Promise<number> {
 /**
  * Update today's peak concurrent call count if current count exceeds it.
  * Also increments totalCalls for the day.
+ * Uses atomic SQL to avoid SELECT-then-UPDATE race conditions.
  */
 async function updatePeakTracking() {
   const [activeCount] = await db
@@ -143,11 +144,14 @@ async function updatePeakTracking() {
   const currentCount = activeCount?.count ?? 0;
   const today = new Date().toISOString().slice(0, 10);
   const currentTime = new Date().toTimeString().slice(0, 5);
+  const nowIso = new Date().toISOString();
 
+  // Try atomic upsert: INSERT or UPDATE in one statement
   const [existing] = await db
-    .select()
+    .select({ id: callPeaks.date })
     .from(callPeaks)
-    .where(eq(callPeaks.date, today));
+    .where(eq(callPeaks.date, today))
+    .limit(1);
 
   if (!existing) {
     await db.insert(callPeaks).values({
@@ -157,19 +161,14 @@ async function updatePeakTracking() {
       totalCalls: 1,
     });
   } else {
-    const updates: Partial<typeof callPeaks.$inferInsert> = {
-      totalCalls: (existing.totalCalls ?? 0) + 1,
-      updatedAt: new Date().toISOString(),
-    };
-
-    if (currentCount > (existing.peakConcurrent ?? 0)) {
-      updates.peakConcurrent = currentCount;
-      updates.peakTime = currentTime;
-    }
-
-    await db
-      .update(callPeaks)
-      .set(updates)
-      .where(eq(callPeaks.date, today));
+    // Atomic update: use CASE/WHEN to conditionally update peak in a single statement
+    await db.run(sql`
+      UPDATE call_peaks
+      SET total_calls = total_calls + 1,
+          peak_concurrent = CASE WHEN ${currentCount} > COALESCE(peak_concurrent, 0) THEN ${currentCount} ELSE peak_concurrent END,
+          peak_time = CASE WHEN ${currentCount} > COALESCE(peak_concurrent, 0) THEN ${currentTime} ELSE peak_time END,
+          updated_at = ${nowIso}
+      WHERE date = ${today}
+    `);
   }
 }

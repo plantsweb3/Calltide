@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { timingSafeEqual } from "crypto";
+import { timingSafeEqual, createHash } from "crypto";
 import { env } from "@/lib/env";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
@@ -48,9 +48,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Admin auth not configured" }, { status: 500 });
   }
 
-  const a = Buffer.from(parsed.data.password);
-  const b = Buffer.from(env.ADMIN_PASSWORD);
-  if (a.length !== b.length || !timingSafeEqual(a, b)) {
+  const a = createHash("sha256").update(parsed.data.password).digest();
+  const b = createHash("sha256").update(env.ADMIN_PASSWORD).digest();
+  if (!timingSafeEqual(a, b)) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 

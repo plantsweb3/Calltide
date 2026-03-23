@@ -323,16 +323,20 @@ function serverStepToVisual(serverStep: number): number {
 
 // ── Helpers ──
 
-function formatPhone(value: string): string {
+function formatPhone(value: string): { formatted: string; error?: string } {
   // Strip country code prefix (+1) if present
   let digits = value.replace(/\D/g, "");
   if (digits.length === 11 && digits.startsWith("1")) {
     digits = digits.slice(1);
   }
-  digits = digits.slice(0, 10);
-  if (digits.length <= 3) return digits;
-  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  if (digits.length > 10) {
+    return { formatted: value, error: "Phone number cannot exceed 10 digits" };
+  }
+  let formatted: string;
+  if (digits.length <= 3) formatted = digits;
+  else if (digits.length <= 6) formatted = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  else formatted = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  return { formatted };
 }
 
 function isValidEmail(email: string): boolean {
@@ -993,6 +997,8 @@ function SetupClient() {
       const canceled = searchParams.get("canceled");
       const stepParam = searchParams.get("step");
       const tokenParam = searchParams.get("token");
+      const voiceParam = searchParams.get("voice");
+      if (voiceParam) setSelectedVoiceId(voiceParam);
 
       // Try to load existing session
       try {
@@ -1182,6 +1188,7 @@ function SetupClient() {
         if (!bizType) { setFieldError("bizType", t.required); hasError = true; }
         if (!city.trim()) { setFieldError("city", t.required); hasError = true; }
         if (!state.trim()) { setFieldError("state", t.required); hasError = true; }
+        if (services.length === 0) { setFieldError("services", t.required); hasError = true; }
         if (hasError) return;
         const ok = await saveStep(1, { businessName: bizName.trim(), businessType: bizType, city: city.trim(), state: state.trim(), services });
         if (!ok) return;
@@ -1619,7 +1626,11 @@ function SetupClient() {
                 className={`${s.input} ${errors.ownerPhone ? s.inputError : ""}`}
                 placeholder={t.phonePlaceholder}
                 value={ownerPhone}
-                onChange={(e) => { setOwnerPhone(formatPhone(e.target.value)); clearFieldError("ownerPhone"); }}
+                onChange={(e) => {
+                  const { formatted, error } = formatPhone(e.target.value);
+                  if (error) { setFieldError("ownerPhone", error); } else { clearFieldError("ownerPhone"); }
+                  setOwnerPhone(formatted);
+                }}
               />
               {errors.ownerPhone && <span className={s.error}>{errors.ownerPhone}</span>}
             </div>

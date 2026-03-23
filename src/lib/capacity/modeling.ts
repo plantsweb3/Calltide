@@ -34,7 +34,7 @@ export function estimatePeakConcurrent(
 }
 
 export function estimateMonthlyCost(activeClients: number): {
-  hume: number;
+  elevenlabs: number;
   anthropic: number;
   twilio: number;
   turso: number;
@@ -44,18 +44,18 @@ export function estimateMonthlyCost(activeClients: number): {
   const callsPerMonth = activeClients * 10 * 30; // 10 calls/client/day
   const minutesPerMonth = callsPerMonth * 2.5; // 2.5 min avg
 
-  const hume = Math.round(minutesPerMonth * 5); // $0.05/min = 5 cents
+  const elevenlabs = Math.round(callsPerMonth * 8); // ~$0.08/call avg (ElevenLabs per-conversation pricing)
   const anthropic = Math.round(callsPerMonth * 3); // $0.03/call = 3 cents
   const twilio = Math.round(minutesPerMonth * 1.3 + callsPerMonth * 0.5); // voice + SMS
   const turso = activeClients <= 50 ? 500 : activeClients <= 500 ? 2900 : 9900; // plan tiers
   const vercel = activeClients <= 50 ? 0 : 2000;
 
   return {
-    hume,
+    elevenlabs,
     anthropic,
     twilio,
     turso,
     vercel,
-    total: hume + anthropic + twilio + turso + vercel,
+    total: elevenlabs + anthropic + twilio + turso + vercel,
   };
 }

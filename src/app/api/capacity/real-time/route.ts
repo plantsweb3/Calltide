@@ -13,13 +13,13 @@ export async function POST(request: NextRequest) {
     // 1. Get concurrent call count
     const concurrent = await getConcurrentCallCount();
 
-    // 2. Check against Hume concurrent limit
+    // 2. Check against ElevenLabs concurrent limit
     await checkThresholds([
       {
-        provider: "Hume",
+        provider: "ElevenLabs",
         metric: "concurrent_connections",
         currentValue: concurrent,
-        limitValue: PROVIDER_LIMITS.hume.concurrentLimit,
+        limitValue: PROVIDER_LIMITS.elevenlabs.concurrentLimit,
       },
     ]);
 
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       ok: true,
       concurrent,
-      limit: PROVIDER_LIMITS.hume.concurrentLimit,
+      limit: PROVIDER_LIMITS.elevenlabs.concurrentLimit,
       staleRemoved,
     });
   } catch (err) {

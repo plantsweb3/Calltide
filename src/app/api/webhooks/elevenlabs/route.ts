@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
 import { db } from "@/db";
-import { calls } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { businesses, calls } from "@/db/schema";
+import { eq, and, desc } from "drizzle-orm";
 import { processCallSummary } from "@/lib/ai/call-summary";
 import { reportError, reportWarning } from "@/lib/error-reporting";
 import { enqueueJob } from "@/lib/jobs/queue";
@@ -123,21 +123,28 @@ export async function POST(req: NextRequest) {
     .where(eq(calls.elevenlabsConversationId, conversationId))
     .limit(1);
 
-  // If not found by conversationId, try to match by twilioCallSid or recent in_progress call
-  if (!call) {
-    // Try to find the most recent in_progress call for this agent's business
-    // Update it with the conversationId
-    const [recentCall] = await db
-      .select()
-      .from(calls)
-      .where(eq(calls.status, "in_progress"))
+  // If not found by conversationId, look up the business via agent_id, then find the most recent in_progress call for that business
+  if (!call && event.agent_id) {
+    const [biz] = await db
+      .select({ id: businesses.id })
+      .from(businesses)
+      .where(eq(businesses.elevenlabsAgentId, event.agent_id))
       .limit(1);
 
-    if (recentCall) {
-      await db.update(calls).set({
-        elevenlabsConversationId: conversationId,
-      }).where(eq(calls.id, recentCall.id));
-      call = { ...recentCall, elevenlabsConversationId: conversationId };
+    if (biz) {
+      const [recentCall] = await db
+        .select()
+        .from(calls)
+        .where(and(eq(calls.businessId, biz.id), eq(calls.status, "in_progress")))
+        .orderBy(desc(calls.createdAt))
+        .limit(1);
+
+      if (recentCall) {
+        await db.update(calls).set({
+          elevenlabsConversationId: conversationId,
+        }).where(eq(calls.id, recentCall.id));
+        call = { ...recentCall, elevenlabsConversationId: conversationId };
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { estimates, customers, businesses } from "@/db/schema";
+import { estimates, customers, businesses, leads } from "@/db/schema";
 import { eq, and, lte, lt, inArray, count } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { canSendSms } from "@/lib/compliance/sms";
@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
   if (authError) return authError;
 
+  try {
   return withCronMonitor("estimate-followup", "30 15 * * *", async () => {
     const now = new Date();
     const nowStr = now.toISOString();
@@ -40,7 +41,11 @@ export async function GET(req: NextRequest) {
           const [biz] = await db.select().from(businesses).where(eq(businesses.id, est.businessId)).limit(1);
           if (!biz) continue;
 
-          // TCPA check
+          // Lead-level opt-out check
+          const [lead] = await db.select().from(leads).where(and(eq(leads.businessId, est.businessId), eq(leads.phone, customer.phone))).limit(1);
+          if (lead?.smsOptOut) continue;
+
+          // TCPA check (global smsOptOuts table + quiet hours)
           const smsCheck = await canSendSms(customer.phone);
           if (!smsCheck.allowed) continue;
 
@@ -117,4 +122,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Cron failed" }, { status: 500 });
     }
   });
+  } catch (err) {
+    reportError("[estimate-followup] Outer error", err);
+    return NextResponse.json({ error: "Cron failed" }, { status: 500 });
+  }
 }

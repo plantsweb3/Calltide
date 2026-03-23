@@ -112,7 +112,7 @@ function StatusTab({ data }: { data: any }) {
   const concurrentColor = concurrentPct >= 85 ? "#ef4444" : concurrentPct >= 70 ? "#f59e0b" : "#4ade80";
 
   const providers = [
-    { name: "Hume", status: getProviderStatus(data.snapshot?.humeMinutesMtd, data.providerLimits?.hume?.monthlyMinutes) },
+    { name: "ElevenLabs", status: getProviderStatus(data.snapshot?.humeMinutesMtd, data.providerLimits?.elevenlabs?.monthlyCharacters) },
     { name: "Anthropic", status: getProviderStatus(data.snapshot?.anthropicSpendMtd, data.providerLimits?.anthropic?.monthlySpendLimit) },
     { name: "Turso", status: getProviderStatus(data.snapshot?.tursoRowReadsMtd, data.providerLimits?.turso?.rowReadLimit) },
     { name: "Twilio", status: data.snapshot?.twilioSuccessRate >= 99 ? "operational" : data.snapshot?.twilioSuccessRate >= 95 ? "degraded" : "down" },
@@ -181,8 +181,8 @@ function UtilizationTab({ data }: { data: any }) {
   const limits = data.providerLimits;
 
   const metrics = [
-    { provider: "Hume", metric: "Monthly Minutes", current: snapshot?.humeMinutesMtd ?? 0, limit: limits?.hume?.monthlyMinutes ?? 1200, unit: "min" },
-    { provider: "Hume", metric: "Concurrent Limit", current: data.concurrent, limit: limits?.hume?.concurrentLimit ?? 10, unit: "" },
+    { provider: "ElevenLabs", metric: "Monthly Characters", current: snapshot?.humeMinutesMtd ?? 0, limit: limits?.elevenlabs?.monthlyCharacters ?? 2000000, unit: "chars" },
+    { provider: "ElevenLabs", metric: "Concurrent Limit", current: data.concurrent, limit: limits?.elevenlabs?.concurrentLimit ?? 15, unit: "" },
     { provider: "Anthropic", metric: "Monthly Spend", current: snapshot?.anthropicSpendMtd ?? 0, limit: limits?.anthropic?.monthlySpendLimit ?? 50000, unit: "¢", isCents: true },
     { provider: "Turso", metric: "Row Reads", current: snapshot?.tursoRowReadsMtd ?? 0, limit: limits?.turso?.rowReadLimit ?? 2500000000, unit: "" },
     { provider: "Turso", metric: "Row Writes", current: snapshot?.tursoRowWritesMtd ?? 0, limit: limits?.turso?.rowWriteLimit ?? 10000000, unit: "" },
@@ -213,7 +213,7 @@ function UtilizationTab({ data }: { data: any }) {
       })}
 
       {(data.snapshots?.length ?? 0) > 1 && (
-        <ChartCard title="Hume Minutes (MTD) — Last 30 Days">
+        <ChartCard title="ElevenLabs Usage (MTD) — Last 30 Days">
           <ResponsiveContainer width="100%" height={250}>
             <AreaChart data={(data.snapshots ?? []).slice(-30)}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--db-border)" />
@@ -295,10 +295,10 @@ function GrowthTab({ data }: { data: any }) {
 
 function CostsTab({ data }: { data: any }) {
   if (!data) return null;
-  const cost = data.costEstimate ?? { hume: 0, anthropic: 0, twilio: 0, turso: 0, vercel: 0, total: 0 };
+  const cost = data.costEstimate ?? { elevenlabs: 0, anthropic: 0, twilio: 0, turso: 0, vercel: 0, total: 0 };
 
   const breakdown = [
-    { provider: "Hume", cost: cost.hume, color: "#C59A27" },
+    { provider: "ElevenLabs", cost: cost.elevenlabs, color: "#C59A27" },
     { provider: "Anthropic", cost: cost.anthropic, color: "#8b5cf6" },
     { provider: "Twilio", cost: cost.twilio, color: "#ef4444" },
     { provider: "Turso", cost: cost.turso, color: "#3b82f6" },
@@ -309,12 +309,12 @@ function CostsTab({ data }: { data: any }) {
   const projections = [10, 25, 50, 100, 200, 500, 1000].map((clients) => {
     const callsPerMonth = clients * 10 * 30;
     const minutes = callsPerMonth * 2.5;
-    const h = Math.round(minutes * 5);
+    const el = Math.round(minutes * 8);
     const a = Math.round(callsPerMonth * 3);
     const t = Math.round(minutes * 1.3 + callsPerMonth * 0.5);
     const tu = clients <= 50 ? 500 : clients <= 500 ? 2900 : 9900;
     const v = clients <= 50 ? 0 : 2000;
-    const total = h + a + t + tu + v;
+    const total = el + a + t + tu + v;
     const revenue = clients * 49700;
     return { id: String(clients), clients, total, revenue, margin: revenue - total, marginPct: revenue > 0 ? ((revenue - total) / revenue * 100) : 0 };
   });

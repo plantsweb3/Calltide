@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { setupSessions, setupRetargetEmails } from "@/db/schema";
-import { and, eq, lt, inArray, isNull, or } from "drizzle-orm";
+import { setupSessions, setupRetargetEmails, usedMagicTokens } from "@/db/schema";
+import { and, eq, lt, inArray, isNull, or, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { verifyCronAuth } from "@/lib/cron-auth";
 
@@ -60,9 +60,21 @@ export async function GET(req: NextRequest) {
       .delete(setupSessions)
       .where(inArray(setupSessions.id, sessionIds));
 
+    // Clean up expired magic login tokens (older than 24 hours)
+    let expiredTokens = 0;
+    try {
+      const tokenResult = await db
+        .delete(usedMagicTokens)
+        .where(lt(usedMagicTokens.createdAt, sql`datetime('now', '-24 hours')`));
+      expiredTokens = tokenResult.rowsAffected ?? 0;
+    } catch (err) {
+      reportError("Magic token cleanup failed", err);
+    }
+
     return NextResponse.json({
       success: true,
       deleted: oldSessions.length,
+      expiredTokensDeleted: expiredTokens,
     });
   } catch (error) {
     reportError("Setup cleanup cron error", error);

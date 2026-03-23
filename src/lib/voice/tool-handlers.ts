@@ -1,6 +1,6 @@
 import { db } from "@/db";
-import { appointments, calls, leads, customers, technicians } from "@/db/schema";
-import { eq, and, ne, desc, gte } from "drizzle-orm";
+import { appointments, calls, leads, customers, technicians, smsOptOuts } from "@/db/schema";
+import { eq, and, ne, desc, gte, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { checkAvailability, bookSlot } from "@/lib/calendar/availability";
 import { getBusinessById } from "@/lib/ai/context-builder";
@@ -214,7 +214,7 @@ async function handleBookAppointment(
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
 
-  // Try to book the slot
+  // Early availability check (the transactional conflict check below is the real double-booking guard)
   const bookResult = await bookSlot(biz, date, time, service);
   if (!bookResult.success) {
     return {
@@ -429,6 +429,14 @@ async function handleTakeMessage(
 
       for (const tech of onCallTechs) {
         if (!tech.phone) continue;
+
+        // Respect SMS opt-out
+        const [optOut] = await db
+          .select({ id: smsOptOuts.id })
+          .from(smsOptOuts)
+          .where(and(eq(smsOptOuts.phoneNumber, normalizePhone(tech.phone)), isNull(smsOptOuts.reoptedInAt)))
+          .limit(1);
+        if (optOut) continue;
 
         await sendSMS({
           to: tech.phone,

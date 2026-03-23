@@ -66,12 +66,12 @@ export async function GET(req: NextRequest) {
     const dayOfMonth = new Date().getDate();
     const breachProjections = [
       {
-        id: "hume-minutes",
-        provider: "Hume",
+        id: "elevenlabs-minutes",
+        provider: "ElevenLabs",
         metric: "Monthly Minutes",
         current: latestSnapshot?.humeMinutesMtd ?? 0,
-        limit: PROVIDER_LIMITS.hume.monthlyMinutes,
-        breachDate: projectBreachDate(latestSnapshot?.humeMinutesMtd ?? 0, PROVIDER_LIMITS.hume.monthlyMinutes, dayOfMonth)?.toISOString() ?? null,
+        limit: PROVIDER_LIMITS.elevenlabs.monthlyCharacters,
+        breachDate: projectBreachDate(latestSnapshot?.humeMinutesMtd ?? 0, PROVIDER_LIMITS.elevenlabs.monthlyCharacters, dayOfMonth)?.toISOString() ?? null,
       },
       {
         id: "anthropic-spend",
@@ -99,7 +99,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       concurrent,
-      concurrentLimit: PROVIDER_LIMITS.hume.concurrentLimit,
+      concurrentLimit: PROVIDER_LIMITS.elevenlabs.concurrentLimit,
       activeClients,
       tier,
       snapshot: latestSnapshot ?? null,

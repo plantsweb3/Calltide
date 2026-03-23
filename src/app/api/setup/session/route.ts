@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
 import { setupSessions } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-reporting";
 import { cookies } from "next/headers";
@@ -35,6 +35,24 @@ export async function POST(req: NextRequest) {
     }
     const { utmSource, utmMedium, utmCampaign, refCode, language } = parsed.data;
 
+    // Check for existing incomplete session from cookie before creating a new one
+    const cookieStore = await cookies();
+    const existingToken = cookieStore.get(COOKIE_NAME)?.value;
+    if (existingToken) {
+      const [existingSession] = await db
+        .select()
+        .from(setupSessions)
+        .where(and(eq(setupSessions.token, existingToken), eq(setupSessions.status, "active")))
+        .limit(1);
+      if (existingSession) {
+        return NextResponse.json({
+          token: existingSession.token,
+          currentStep: existingSession.currentStep,
+          language: existingSession.language,
+        });
+      }
+    }
+
     const [session] = await db
       .insert(setupSessions)
       .values({
@@ -46,7 +64,6 @@ export async function POST(req: NextRequest) {
       })
       .returning();
 
-    const cookieStore = await cookies();
     cookieStore.set(COOKIE_NAME, session.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

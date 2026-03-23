@@ -54,9 +54,9 @@ export async function POST(request: NextRequest) {
 
     // Breach projections
     const dayOfMonth = new Date().getDate();
-    const humeBreachDate = projectBreachDate(
+    const elevenlabsBreachDate = projectBreachDate(
       latest?.humeMinutesMtd ?? 0,
-      PROVIDER_LIMITS.hume.monthlyMinutes,
+      PROVIDER_LIMITS.elevenlabs.monthlyCharacters,
       dayOfMonth,
     );
 
@@ -64,8 +64,8 @@ export async function POST(request: NextRequest) {
     const costs = estimateMonthlyCost(activeClients);
 
     // Build email HTML
-    const humePct = PROVIDER_LIMITS.hume.monthlyMinutes > 0
-      ? (((latest?.humeMinutesMtd ?? 0) / PROVIDER_LIMITS.hume.monthlyMinutes) * 100).toFixed(1)
+    const elevenlabsPct = PROVIDER_LIMITS.elevenlabs.monthlyCharacters > 0
+      ? (((latest?.humeMinutesMtd ?? 0) / PROVIDER_LIMITS.elevenlabs.monthlyCharacters) * 100).toFixed(1)
       : "0";
     const anthropicPct = PROVIDER_LIMITS.anthropic.monthlySpendLimit > 0
       ? (((latest?.anthropicSpendMtd ?? 0) / PROVIDER_LIMITS.anthropic.monthlySpendLimit) * 100).toFixed(1)
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     </tr>
     <tr>
       <td style="padding:10px;font-weight:600;color:#475569;border:1px solid #E2E8F0;">Peak Concurrent</td>
-      <td style="padding:10px;color:#1A1D24;border:1px solid #E2E8F0;">${latest?.peakConcurrent ?? 0} / ${PROVIDER_LIMITS.hume.concurrentLimit}</td>
+      <td style="padding:10px;color:#1A1D24;border:1px solid #E2E8F0;">${latest?.peakConcurrent ?? 0} / ${PROVIDER_LIMITS.elevenlabs.concurrentLimit}</td>
     </tr>
   </table>
 
@@ -107,9 +107,9 @@ export async function POST(request: NextRequest) {
       <th style="padding:8px;text-align:right;color:#475569;border:1px solid #E2E8F0;">% Used</th>
     </tr>
     <tr>
-      <td style="padding:8px;border:1px solid #E2E8F0;">Hume</td>
-      <td style="padding:8px;border:1px solid #E2E8F0;">Monthly Minutes</td>
-      <td style="padding:8px;text-align:right;border:1px solid #E2E8F0;color:${Number(humePct) > 85 ? '#ef4444' : Number(humePct) > 70 ? '#f59e0b' : '#4ade80'};">${humePct}%</td>
+      <td style="padding:8px;border:1px solid #E2E8F0;">ElevenLabs</td>
+      <td style="padding:8px;border:1px solid #E2E8F0;">Monthly Characters</td>
+      <td style="padding:8px;text-align:right;border:1px solid #E2E8F0;color:${Number(elevenlabsPct) > 85 ? '#ef4444' : Number(elevenlabsPct) > 70 ? '#f59e0b' : '#4ade80'};">${elevenlabsPct}%</td>
     </tr>
     <tr style="background:#F8FAFC;">
       <td style="padding:8px;border:1px solid #E2E8F0;">Anthropic</td>
@@ -123,10 +123,10 @@ export async function POST(request: NextRequest) {
     </tr>
   </table>
 
-  ${humeBreachDate ? `
+  ${elevenlabsBreachDate ? `
   <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:12px;margin-bottom:24px;">
     <p style="color:#92400e;font-weight:600;margin:0;">Projected Breach</p>
-    <p style="color:#92400e;margin:4px 0 0;">Hume monthly minutes projected to hit limit by ${humeBreachDate.toLocaleDateString("en", { month: "short", day: "numeric" })}.</p>
+    <p style="color:#92400e;margin:4px 0 0;">ElevenLabs monthly usage projected to hit limit by ${elevenlabsBreachDate.toLocaleDateString("en", { month: "short", day: "numeric" })}.</p>
   </div>` : ""}
 
   ${alerts.length > 0 ? `

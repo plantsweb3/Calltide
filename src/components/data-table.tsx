@@ -29,6 +29,8 @@ interface DataTableProps<T extends { id: string }> {
   expandedContent?: (row: T) => React.ReactNode;
   onRowClick?: (row: T) => void;
   emptyMessage?: string;
+  prevLabel?: string;
+  nextLabel?: string;
 }
 
 export default function DataTable<T extends { id: string }>({
@@ -45,6 +47,8 @@ export default function DataTable<T extends { id: string }>({
   expandedContent,
   onRowClick,
   emptyMessage = "No data",
+  prevLabel = "Prev",
+  nextLabel = "Next",
 }: DataTableProps<T>) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -83,7 +87,7 @@ export default function DataTable<T extends { id: string }>({
             background: "var(--db-hover)",
           }}
         >
-          <span className="text-xs font-medium" style={{ color: "var(--db-text-secondary)" }}>
+          <span className="text-xs font-medium" style={{ color: "var(--db-text-secondary)" }} aria-live="polite">
             {selected.length} selected
           </span>
           {bulkActions.map((action) => (
@@ -123,6 +127,8 @@ export default function DataTable<T extends { id: string }>({
                   }`}
                   style={{ color: "var(--db-text-muted)" }}
                   onClick={() => col.sortable && onSort?.(col.key)}
+                  aria-sort={col.sortable && sortBy === col.key ? (sortOrder === "asc" ? "ascending" : "descending") : undefined}
+                  aria-label={col.sortable ? `Sort by ${col.label}` : undefined}
                 >
                   <span className="flex items-center gap-1">
                     {col.label}
@@ -156,6 +162,8 @@ export default function DataTable<T extends { id: string }>({
                       expandedId === row.id ? "var(--db-hover)" : "transparent",
                   }}
                   tabIndex={isClickable ? 0 : undefined}
+                  aria-label={isClickable ? `Row ${row.id}` : undefined}
+                  role={isClickable ? "button" : undefined}
                   onMouseEnter={(e) => {
                     if (expandedId !== row.id)
                       e.currentTarget.style.background = "var(--db-hover)";
@@ -234,8 +242,9 @@ export default function DataTable<T extends { id: string }>({
               size="sm"
               onClick={() => pagination.onPageChange(pagination.page - 1)}
               disabled={pagination.page <= 1}
+              aria-label="Previous page"
             >
-              Prev
+              {prevLabel}
             </Button>
             <span className="px-2 text-xs tabular-nums font-medium" style={{ color: "var(--db-text-muted)" }}>
               {pagination.page} / {pagination.totalPages}
@@ -245,8 +254,9 @@ export default function DataTable<T extends { id: string }>({
               size="sm"
               onClick={() => pagination.onPageChange(pagination.page + 1)}
               disabled={pagination.page >= pagination.totalPages}
+              aria-label="Next page"
             >
-              Next
+              {nextLabel}
             </Button>
           </div>
         </div>
