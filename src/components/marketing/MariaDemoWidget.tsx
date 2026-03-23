@@ -7,6 +7,13 @@ import CaptaSpinner from "@/components/capta-spinner";
 type DemoState = "idle" | "connecting" | "active" | "ended";
 type Lang = "en" | "es";
 
+const DEMO_VOICES = [
+  { id: "EXAVITQu4vr4xnSDxMaL", name: "Sarah", desc: { en: "Professional & polished", es: "Profesional y pulida" }, gender: "female" },
+  { id: "jBpfAFnaylXS5xpurlZD", name: "Lily", desc: { en: "Friendly & approachable", es: "Amigable y accesible" }, gender: "female" },
+  { id: "onwK4e9ZLuTAKqWW03F9", name: "Daniel", desc: { en: "Warm & caring", es: "Cálido y atento" }, gender: "male" },
+  { id: "pFZP5JQG7iQjIQuC4Bku", name: "Rachel", desc: { en: "Clear & confident", es: "Clara y segura" }, gender: "female" },
+] as const;
+
 interface ConversionData {
   businessType: string | null;
   businessName: string | null;
@@ -85,6 +92,9 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
   const [elapsed, setElapsed] = useState(0);
   const [muted, setMuted] = useState(false);
   const [conversionData, setConversionData] = useState<ConversionData | null>(null);
+  const [selectedVoice, setSelectedVoice] = useState<string>(DEMO_VOICES[0].id);
+  const [previewingVoice, setPreviewingVoice] = useState<string | null>(null);
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const startTimeRef = useRef<number>(0);
   const timerRef = useRef<ReturnType<typeof setInterval>>(null);
   const transcriptRef = useRef<{ role: string; content: string }[]>([]);
@@ -154,7 +164,45 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
     }
   }, [elapsed, state]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const handlePreviewVoice = useCallback(async (voiceId: string) => {
+    // Stop any current preview
+    if (previewAudioRef.current) {
+      previewAudioRef.current.pause();
+      previewAudioRef.current = null;
+    }
+    if (previewingVoice === voiceId) {
+      setPreviewingVoice(null);
+      return;
+    }
+    setPreviewingVoice(voiceId);
+    try {
+      const sampleText = lang === "es"
+        ? "Hola, gracias por llamar. Soy Maria, en qué puedo ayudarte hoy?"
+        : "Hi there, thanks for calling. I'm Maria, how can I help you today?";
+      const res = await fetch("/api/setup/greeting-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: sampleText, voiceId, lang }),
+      });
+      if (!res.ok) { setPreviewingVoice(null); return; }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      previewAudioRef.current = audio;
+      audio.onended = () => { setPreviewingVoice(null); URL.revokeObjectURL(url); };
+      audio.play();
+    } catch {
+      setPreviewingVoice(null);
+    }
+  }, [previewingVoice, lang]);
+
   const handleStart = useCallback(async () => {
+    // Stop any voice preview
+    if (previewAudioRef.current) {
+      previewAudioRef.current.pause();
+      previewAudioRef.current = null;
+      setPreviewingVoice(null);
+    }
     setError("");
     setState("connecting");
 
@@ -170,15 +218,18 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
 
       setSessionId(data.sessionId);
 
-      // Connect using ElevenLabs signed URL
+      // Connect using ElevenLabs signed URL with voice override
       await conversation.startSession({
         signedUrl: data.signedUrl,
+        overrides: {
+          tts: { voiceId: selectedVoice },
+        },
       });
     } catch {
       setError(l.errorGeneric);
       setState("idle");
     }
-  }, [conversation, l]);
+  }, [conversation, l, selectedVoice]);
 
   const handleEnd = useCallback(async () => {
     try { await conversation.endSession(); } catch { /* ignore */ }
@@ -227,6 +278,39 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
           </div>
           <h3 className="text-xl font-bold tracking-tight text-white">{l.idleTitle}</h3>
           <p className="mt-2 text-sm leading-relaxed text-slate-400">{l.idleSub}</p>
+        </div>
+
+        {/* Voice picker */}
+        <div className="space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
+            {lang === "en" ? "Choose Maria's voice" : "Elige la voz de Maria"}
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {DEMO_VOICES.map((v) => (
+              <button
+                key={v.id}
+                onClick={() => setSelectedVoice(v.id)}
+                className="group relative rounded-lg px-3 py-2.5 text-left text-sm transition-all"
+                style={{
+                  background: selectedVoice === v.id ? "rgba(197,154,39,0.15)" : "rgba(255,255,255,0.04)",
+                  border: selectedVoice === v.id ? "1px solid rgba(197,154,39,0.4)" : "1px solid rgba(255,255,255,0.06)",
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-white">{v.name}</span>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handlePreviewVoice(v.id); }}
+                    className="text-xs text-slate-500 transition hover:text-[#C59A27]"
+                  >
+                    {previewingVoice === v.id
+                      ? (lang === "en" ? "Stop" : "Parar")
+                      : "▶"}
+                  </button>
+                </div>
+                <span className="text-xs text-slate-400">{v.desc[lang]}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {error ? (
@@ -425,7 +509,7 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
       )}
 
       <a
-        href="/setup"
+        href={`/setup${selectedVoice !== DEMO_VOICES[0].id ? `?voice=${selectedVoice}` : ""}`}
         className="block w-full rounded-lg px-6 py-4 text-center text-base font-semibold text-white transition-all hover:brightness-110"
         style={{ background: "linear-gradient(135deg, #C59A27, #A17D1F)" }}
       >

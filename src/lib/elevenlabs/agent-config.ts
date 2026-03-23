@@ -165,7 +165,8 @@ export function buildAgentConfig({ biz, voiceId }: BuildAgentConfigParams) {
       agent: {
         prompt: {
           prompt: systemPrompt,
-          llm: "claude-3-7-sonnet" as const,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          llm: "claude-sonnet-4" as any,
           temperature: 0,
           tools,
         },
