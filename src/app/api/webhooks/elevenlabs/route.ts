@@ -19,8 +19,8 @@ interface ElevenLabsTranscriptEntry {
 interface ElevenLabsPostCallEvent {
   type: string;
   conversation_id: string;
-  agent_id: string;
-  transcript: ElevenLabsTranscriptEntry[];
+  agent_id?: string;
+  transcript?: ElevenLabsTranscriptEntry[];
   recording_url?: string;
   metadata?: {
     call_duration_secs?: number;
@@ -31,6 +31,11 @@ interface ElevenLabsPostCallEvent {
     summary?: string;
     evaluation_criteria_results?: Record<string, unknown>;
   };
+  // Audio event fields
+  audio_url?: string;
+  // Call initiation failure fields
+  error?: string;
+  phone_number?: string;
 }
 
 /**
@@ -80,8 +85,31 @@ export async function POST(req: NextRequest) {
 
   console.log(`[elevenlabs] webhook: ${event.type} conversationId=${event.conversation_id}`);
 
+  // ── Handle call initiation failures ──
+  if (event.type === "call_initiation_failure") {
+    reportError("ElevenLabs call initiation failure", new Error(event.error || "Unknown"), {
+      extra: { conversationId: event.conversation_id, phone: event.phone_number },
+    });
+    return Response.json({ ok: true });
+  }
+
+  // ── Handle audio webhook — store recording URL on existing call ──
+  if (event.type === "post_call_audio") {
+    if (event.audio_url) {
+      const [audioCall] = await db
+        .select({ id: calls.id })
+        .from(calls)
+        .where(eq(calls.elevenlabsConversationId, event.conversation_id))
+        .limit(1);
+      if (audioCall) {
+        await db.update(calls).set({ recordingUrl: event.audio_url }).where(eq(calls.id, audioCall.id));
+        console.log(`[elevenlabs] audio stored for call ${audioCall.id}`);
+      }
+    }
+    return Response.json({ ok: true });
+  }
+
   if (event.type !== "post_call_transcription") {
-    // Acknowledge but ignore other event types
     return Response.json({ ok: true });
   }
 
@@ -121,7 +149,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Convert ElevenLabs transcript format to our format
-  const transcript = rawTranscript.map((entry) => ({
+  const transcript = (rawTranscript || []).map((entry) => ({
     speaker: (entry.role === "agent" ? "ai" : "caller") as "ai" | "caller",
     text: entry.message,
   }));
