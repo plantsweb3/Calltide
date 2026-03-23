@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchAccessToken } from "hume";
 import { db } from "@/db";
 import { setupSessions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { buildSetupTestPrompt } from "@/lib/receptionist/setup-test-prompt";
 import { PERSONALITY_PRESETS, type PersonalityPreset } from "@/lib/receptionist/personalities";
+import { getElevenLabsClient } from "@/lib/elevenlabs/client";
+import { VOICE_MAP } from "@/lib/elevenlabs/agent-config";
 import { cookies } from "next/headers";
 
 const COOKIE_NAME = "capta_setup";
+const DEMO_AGENT_ID = process.env.ELEVENLABS_DEMO_AGENT_ID;
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -37,15 +39,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Complete steps 1-3 first" }, { status: 400 });
   }
 
-  // Get Hume access token
-  const apiKey = process.env.HUME_API_KEY;
-  const secretKey = process.env.HUME_SECRET_KEY;
-  if (!apiKey || !secretKey) {
+  // Get ElevenLabs signed URL
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey || !DEMO_AGENT_ID) {
     return NextResponse.json({ error: "Voice system not configured" }, { status: 500 });
   }
 
-  const accessToken = await fetchAccessToken({ apiKey, secretKey });
-  if (!accessToken) {
+  let signedUrl: string;
+  try {
+    const client = getElevenLabsClient();
+    const response = await client.conversationalAi.getSignedUrl({
+      agent_id: DEMO_AGENT_ID,
+    });
+    signedUrl = response.signed_url;
+  } catch {
     return NextResponse.json({ error: "Failed to initialize voice connection" }, { status: 500 });
   }
 
@@ -67,10 +74,10 @@ export async function POST(req: NextRequest) {
   }, lang);
 
   return NextResponse.json({
-    accessToken,
-    configId: process.env.NEXT_PUBLIC_HUME_CONFIG_ID,
+    signedUrl,
     systemPrompt,
     greeting: preset.greetingTemplate[lang](name, bizName),
+    voiceId: VOICE_MAP[presetKey] || VOICE_MAP.friendly,
     maxDuration: 120,
   });
 }

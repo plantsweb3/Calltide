@@ -13,6 +13,7 @@ import { recordConsent } from "@/lib/compliance/consent";
 import { logActivity } from "@/lib/activity";
 import { createNotification } from "@/lib/notifications";
 import { enqueueJob } from "@/lib/jobs/queue";
+import { syncAgent } from "@/lib/elevenlabs/sync-agent";
 import { generateBookingSlug } from "@/lib/booking-slug";
 
 interface CreateBusinessFromSetupParams {
@@ -161,6 +162,7 @@ export async function createBusinessFromSetup(
           : undefined,
       receptionistName: setupSession.receptionistName || "Maria",
       personalityPreset: setupSession.personalityPreset || "friendly",
+      elevenlabsVoiceId: setupSession.voiceId || undefined,
       defaultLanguage: setupSession.language || "en",
       stripeCustomerId: customerId,
       stripeSubscriptionId: subscriptionId,
@@ -300,6 +302,11 @@ export async function createBusinessFromSetup(
   provisionTwilioNumber(businessId).catch(async (err) => {
     reportError("Failed to auto-provision Twilio (setup)", err, { extra: { businessId } });
     await enqueueJob("twilio_provision", { businessId }).catch(() => {});
+  });
+
+  // Create ElevenLabs voice agent
+  syncAgent(businessId).catch((err) => {
+    reportError("Failed to create ElevenLabs agent (setup)", err, { extra: { businessId } });
   });
 
   return { businessId, isExisting: false };

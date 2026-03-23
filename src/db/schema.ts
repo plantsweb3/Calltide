@@ -32,6 +32,8 @@ export const businesses = sqliteTable("businesses", {
   ownerEmail: text("owner_email"),
   twilioNumber: text("twilio_number").notNull(),
   humeConfigId: text("hume_config_id"),
+  elevenlabsAgentId: text("elevenlabs_agent_id"),
+  elevenlabsVoiceId: text("elevenlabs_voice_id"),
   services: text("services", { mode: "json" }).notNull().$type<string[]>(),
   businessHours: text("business_hours", { mode: "json" }).notNull().$type<Record<string, { open: string; close: string }>>(),
   timezone: text("timezone").notNull().default("America/Chicago"),
@@ -161,6 +163,7 @@ export const calls = sqliteTable("calls", {
   leadId: text("lead_id").references(() => leads.id),
   humeChitChatId: text("hume_chat_id"),
   humeChatGroupId: text("hume_chat_group_id"),
+  elevenlabsConversationId: text("elevenlabs_conversation_id"),
   direction: text("direction").notNull().default("inbound"), // inbound, outbound
   callerPhone: text("caller_phone"),
   calledPhone: text("called_phone"),
@@ -1248,8 +1251,9 @@ export const setupSessions = sqliteTable("setup_sessions", {
   ownerPhone: text("owner_phone"),
   // Step 3: Receptionist name
   receptionistName: text("receptionist_name"),
-  // Step 4: Personality
+  // Step 4: Personality + voice
   personalityPreset: text("personality_preset"),
+  voiceId: text("voice_id"),
   // Step 5: FAQ + off-limits
   faqAnswers: text("faq_answers", { mode: "json" }).$type<Record<string, string>>(),
   offLimits: text("off_limits", { mode: "json" }).$type<Record<string, boolean>>(),

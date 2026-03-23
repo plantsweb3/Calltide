@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
+import { syncAgent } from "@/lib/elevenlabs/sync-agent";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 
@@ -251,6 +252,9 @@ export async function PUT(req: NextRequest) {
     title: `Settings updated for ${sanitized.name}`,
     detail: "Client updated business settings via self-service portal",
   });
+
+  // Sync ElevenLabs voice agent with updated settings
+  syncAgent(businessId).catch(() => {});
 
   // Return updated business
   const [updated] = await db

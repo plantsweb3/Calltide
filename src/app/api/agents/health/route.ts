@@ -147,9 +147,9 @@ async function runHealthChecks(): Promise<HealthCheck[]> {
   ];
 
   // Expensive checks: only run if last healthy check was >4 hours ago
-  const [anthropicRecent, humeRecent] = await Promise.all([
+  const [anthropicRecent, elevenLabsRecent] = await Promise.all([
     wasRecentlyCheckedHealthy("Anthropic"),
-    wasRecentlyCheckedHealthy("Hume"),
+    wasRecentlyCheckedHealthy("ElevenLabs"),
   ]);
 
   const expensiveChecks: Promise<HealthCheck>[] = [];
@@ -157,8 +157,8 @@ async function runHealthChecks(): Promise<HealthCheck[]> {
   if (!anthropicRecent) {
     expensiveChecks.push(checkAnthropic());
   }
-  if (!humeRecent) {
-    expensiveChecks.push(checkHume());
+  if (!elevenLabsRecent) {
+    expensiveChecks.push(checkElevenLabs());
   }
 
   return Promise.all([...alwaysChecks, ...expensiveChecks]);
@@ -190,26 +190,27 @@ async function checkTwilio(): Promise<HealthCheck> {
   }
 }
 
-async function checkHume(): Promise<HealthCheck> {
+async function checkElevenLabs(): Promise<HealthCheck> {
   const start = Date.now();
-  if (!env.HUME_API_KEY) {
-    return { name: "Hume", statusCode: 0, responseTimeMs: 0, healthy: false, error: "HUME_API_KEY not set" };
+  const apiKey = env.ELEVENLABS_API_KEY;
+  if (!apiKey) {
+    return { name: "ElevenLabs", statusCode: 0, responseTimeMs: 0, healthy: false, error: "ELEVENLABS_API_KEY not set" };
   }
   try {
-    const resp = await fetch("https://api.hume.ai/v0/evi/chats", {
+    const resp = await fetch("https://api.elevenlabs.io/v1/user", {
       method: "GET",
-      headers: { "X-Hume-Api-Key": env.HUME_API_KEY },
+      headers: { "xi-api-key": apiKey },
       signal: AbortSignal.timeout(10000),
     });
     return {
-      name: "Hume",
+      name: "ElevenLabs",
       statusCode: resp.status,
       responseTimeMs: Date.now() - start,
       healthy: resp.status < 500,
     };
   } catch (error) {
     return {
-      name: "Hume",
+      name: "ElevenLabs",
       statusCode: 0,
       responseTimeMs: Date.now() - start,
       healthy: false,
@@ -290,7 +291,7 @@ const REQUIRED_ENV_VARS = [
   "TWILIO_ACCOUNT_SID",
   "TWILIO_AUTH_TOKEN",
   "TWILIO_PHONE_NUMBER",
-  "HUME_API_KEY",
+  "ELEVENLABS_API_KEY",
   "STRIPE_SECRET_KEY",
   "STRIPE_WEBHOOK_SECRET",
   "NEXT_PUBLIC_APP_URL",

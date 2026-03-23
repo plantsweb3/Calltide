@@ -14,7 +14,7 @@ interface ServiceCheck {
 /**
  * GET /api/cron/service-health
  *
- * Pings external services (Twilio, Hume, Stripe, Resend, Turso)
+ * Pings external services (Twilio, ElevenLabs, Stripe, Resend, Turso)
  * and reports degraded/down status to Sentry.
  * Run every 5 minutes via cron.
  */
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
   return withCronMonitor("service-health", "*/5 * * * *", async () => {
     const checks: ServiceCheck[] = await Promise.all([
       checkTwilio(),
-      checkHume(),
+      checkElevenLabs(),
       checkStripe(),
       checkResend(),
       checkTurso(),
@@ -115,18 +115,18 @@ async function checkTwilio(): Promise<ServiceCheck> {
   return { name: "Twilio", status: "ok", latencyMs };
 }
 
-async function checkHume(): Promise<ServiceCheck> {
-  const apiKey = process.env.HUME_API_KEY;
-  if (!apiKey) return { name: "Hume", status: "down", latencyMs: 0, error: "Not configured" };
+async function checkElevenLabs(): Promise<ServiceCheck> {
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey) return { name: "ElevenLabs", status: "down", latencyMs: 0, error: "Not configured" };
 
   const { ok, latencyMs, error } = await timedFetch(
-    "https://api.hume.ai/v0/evi/configs",
-    { headers: { "X-Hume-Api-Key": apiKey } },
+    "https://api.elevenlabs.io/v1/user",
+    { headers: { "xi-api-key": apiKey } },
   );
 
-  if (!ok) return { name: "Hume", status: "down", latencyMs, error: error || "API returned error" };
-  if (latencyMs > LATENCY_THRESHOLD) return { name: "Hume", status: "degraded", latencyMs };
-  return { name: "Hume", status: "ok", latencyMs };
+  if (!ok) return { name: "ElevenLabs", status: "down", latencyMs, error: error || "API returned error" };
+  if (latencyMs > LATENCY_THRESHOLD) return { name: "ElevenLabs", status: "degraded", latencyMs };
+  return { name: "ElevenLabs", status: "ok", latencyMs };
 }
 
 async function checkStripe(): Promise<ServiceCheck> {

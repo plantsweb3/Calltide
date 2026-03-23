@@ -1,17 +1,19 @@
 import { NextRequest } from "next/server";
 import twilio from "twilio";
 import { db } from "@/db";
-import { businesses, calls } from "@/db/schema";
+import { businesses, calls, leads } from "@/db/schema";
 import { eq, and, count } from "drizzle-orm";
 import { reportWarning, reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { normalizePhone } from "@/lib/compliance/sms";
+import { getElevenLabsClient } from "@/lib/elevenlabs/client";
+import { trackCallStart } from "@/lib/monitoring/active-calls";
 
 /**
  * POST /api/webhooks/twilio/voice
  *
  * Twilio hits this URL when an inbound call arrives on a provisioned number.
- * Returns TwiML that connects the caller to Hume EVI via <Connect><Stream>.
+ * Returns TwiML that connects the caller to ElevenLabs via <Connect><Stream>.
  */
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -56,7 +58,7 @@ export async function POST(req: NextRequest) {
       id: businesses.id,
       name: businesses.name,
       active: businesses.active,
-      humeConfigId: businesses.humeConfigId,
+      elevenlabsAgentId: businesses.elevenlabsAgentId,
       ownerPhone: businesses.ownerPhone,
       receptionistName: businesses.receptionistName,
       paymentStatus: businesses.paymentStatus,
@@ -75,7 +77,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // If payment is suspended (grace period expired), don't connect to Hume
+  // If payment is suspended (grace period expired), don't connect
   if (biz.paymentStatus === "suspended" || biz.paymentStatus === "canceled") {
     return twimlSay(
       `Thank you for calling ${escapeXml(biz.name)}. We're experiencing a temporary service interruption. Please try again later or contact the business directly.`,
@@ -146,12 +148,12 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Get Hume credentials
-  const humeConfigId = biz.humeConfigId || process.env.HUME_CONFIG_ID;
-  const humeApiKey = process.env.HUME_API_KEY;
+  // Get ElevenLabs agent ID
+  const agentId = biz.elevenlabsAgentId;
+  const elevenlabsApiKey = process.env.ELEVENLABS_API_KEY;
 
-  if (!humeConfigId || !humeApiKey) {
-    reportError("Hume not configured for inbound call", null, {
+  if (!agentId || !elevenlabsApiKey) {
+    reportError("ElevenLabs not configured for inbound call", null, {
       extra: { businessId: biz.id, callSid },
     });
     return twimlSay(
@@ -160,17 +162,73 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Connect to Hume EVI via WebSocket stream (max 30 minutes per call)
-  const humeWsUrl = `wss://api.hume.ai/v0/evi/twilio?config_id=${humeConfigId}&api_key=${humeApiKey}`;
+  // Create call record in DB before connecting (ElevenLabs has no "call started" webhook)
+  // Find or create lead
+  let leadId: string | undefined;
+  const normalizedCallerForLead = callerNumber?.replace(/\D/g, "");
+  if (callerNumber && normalizedCallerForLead && normalizedCallerForLead.length >= 10) {
+    const { findOrCreateLead } = await import("@/lib/ai/context-builder");
+    const lead = await findOrCreateLead(biz.id, callerNumber);
+    leadId = lead.id;
+  }
+
+  // Get signed URL for this agent's conversation
+  let conversationId: string | undefined;
+  let streamUrl: string;
+
+  try {
+    const client = getElevenLabsClient();
+    const signedUrlResponse = await client.conversationalAi.getSignedUrl({
+      agent_id: agentId,
+    });
+    streamUrl = signedUrlResponse.signed_url;
+
+    // Extract conversation ID from signed URL if available
+    // The signed URL connects via WebSocket; conversation ID comes from the session
+    conversationId = undefined; // Will be set via post-call webhook
+  } catch (err) {
+    reportError("Failed to get ElevenLabs signed URL", err, {
+      extra: { businessId: biz.id, agentId },
+    });
+    return twimlSay(
+      "Thank you for calling. We are unable to take your call right now. Please leave a message after the tone.",
+      true,
+    );
+  }
+
+  // Create call record
+  const [callRecord] = await db.insert(calls).values({
+    businessId: biz.id,
+    leadId,
+    direction: "inbound",
+    callerPhone: callerNumber,
+    calledPhone: calledNumber,
+    status: "in_progress",
+    twilioCallSid: callSid,
+    elevenlabsConversationId: conversationId,
+  }).returning({ id: calls.id });
+
+  // Track active call for live monitoring (fire-and-forget)
+  trackCallStart({
+    businessId: biz.id,
+    callerPhone: callerNumber || "unknown",
+    direction: "inbound",
+    humeSessionId: callSid, // Use callSid as session identifier
+  }).catch((err) => reportError("Active call tracking failed", err, { businessId: biz.id }));
+
+  // Connect to ElevenLabs via WebSocket stream
+  // ElevenLabs Twilio integration uses: wss://api.elevenlabs.io/v1/convai/twilio/inbound
+  const elevenLabsWsUrl = `wss://api.elevenlabs.io/v1/convai/twilio/inbound?agent_id=${agentId}`;
 
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Connect>
-    <Stream url="${escapeXml(humeWsUrl)}">
-      <Parameter name="called_phone" value="${escapeXml(calledNumber)}" />
+    <Stream url="${escapeXml(elevenLabsWsUrl)}">
+      <Parameter name="xi-api-key" value="${escapeXml(elevenlabsApiKey)}" />
       <Parameter name="caller_phone" value="${escapeXml(callerNumber)}" />
+      <Parameter name="called_phone" value="${escapeXml(calledNumber)}" />
       <Parameter name="business_id" value="${escapeXml(biz.id)}" />
-      <Parameter name="direction" value="inbound" />
+      <Parameter name="call_id" value="${escapeXml(callRecord.id)}" />
     </Stream>
   </Connect>
   <Say language="en-US" voice="Polly.Joanna">Thank you for calling. If you need further assistance, please call back.</Say>

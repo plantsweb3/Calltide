@@ -12,9 +12,7 @@ import { execSync } from "child_process";
 const REQUIRED_ENV = [
   "TURSO_DATABASE_URL",
   "TURSO_AUTH_TOKEN",
-  "HUME_API_KEY",
-  "HUME_SECRET_KEY",
-  "HUME_CONFIG_ID",
+  "ELEVENLABS_API_KEY",
   "ANTHROPIC_API_KEY",
   "TWILIO_ACCOUNT_SID",
   "TWILIO_AUTH_TOKEN",

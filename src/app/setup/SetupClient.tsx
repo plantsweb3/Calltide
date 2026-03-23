@@ -27,6 +27,7 @@ interface SetupSession {
   ownerPhone: string | null;
   receptionistName: string | null;
   personalityPreset: string | null;
+  voiceId: string | null;
   faqAnswers: Record<string, string> | null;
   offLimits: Record<string, boolean> | null;
   selectedPlan: string | null;
@@ -764,6 +765,7 @@ function SetupClient() {
 
   // Step 4
   const [personalityPreset, setPersonalityPreset] = useState("friendly");
+  const [selectedVoiceId, setSelectedVoiceId] = useState("");
 
   // Step 5
   const [faqAnswers, setFaqAnswers] = useState<Record<string, string>>({});
@@ -835,6 +837,7 @@ function SetupClient() {
           personality: personalityPreset,
           receptionistName: receptionistName || "Maria",
           lang,
+          voiceId: selectedVoiceId || undefined,
         }),
       });
 
@@ -1024,6 +1027,7 @@ function SetupClient() {
       }
     }
     if (sess.personalityPreset) setPersonalityPreset(sess.personalityPreset);
+    if (sess.voiceId) setSelectedVoiceId(sess.voiceId);
     if (sess.faqAnswers) setFaqAnswers(sess.faqAnswers);
     if (sess.offLimits) setOffLimits(sess.offLimits);
     if (sess.selectedPlan === "monthly" || sess.selectedPlan === "annual") {
@@ -1158,7 +1162,7 @@ function SetupClient() {
         setSaving(true);
         const okName = await saveStep(3, { receptionistName: receptionistName.trim() });
         if (!okName) return;
-        const okPers = await saveStep(4, { personalityPreset });
+        const okPers = await saveStep(4, { personalityPreset, voiceId: selectedVoiceId || undefined });
         if (!okPers) return;
         const personalityLabel = personalityPreset === "professional" ? t.professional.toLowerCase() : personalityPreset === "warm" ? t.warm.toLowerCase() : t.friendly.toLowerCase();
         showToastAndAdvance({ title: replaceVars(t.toast4, { name: receptionistName, personality: personalityLabel }) }, 4);
@@ -1648,6 +1652,28 @@ function SetupClient() {
               })}
             </div>
 
+            {/* Voice selection */}
+            <h3 style={{ color: "#fff", fontWeight: 600, fontSize: 16, margin: "28px 0 12px" }}>{lang === "es" ? "Voz" : "Voice"}</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              {[
+                { id: "EXAVITQu4vr4xnSDxMaL", name: "Sarah", desc: lang === "es" ? "Profesional" : "Professional" },
+                { id: "jBpfAFnaylXS5xpurlZD", name: "Lily", desc: lang === "es" ? "Amigable" : "Friendly" },
+                { id: "onwK4e9ZLuTAKqWW03F9", name: "Daniel", desc: lang === "es" ? "Cálido" : "Warm" },
+                { id: "pFZP5JQG7iQjIQuC4Bku", name: "Rachel", desc: lang === "es" ? "Clara" : "Clear" },
+              ].map((voice) => (
+                <button
+                  key={voice.id}
+                  onClick={() => setSelectedVoiceId(voice.id)}
+                  className={`${s.cardSelectable} ${selectedVoiceId === voice.id ? s.cardSelected : ""}`}
+                  style={{ textAlign: "center", padding: "14px 12px" }}
+                  aria-pressed={selectedVoiceId === voice.id}
+                >
+                  <div style={{ color: "#fff", fontWeight: 600, marginBottom: 2 }}>{voice.name}</div>
+                  <div style={{ color: "#94a3b8", fontSize: 13 }}>{voice.desc}</div>
+                </button>
+              ))}
+            </div>
+
             {/* Greeting preview bubble */}
             {receptionistName.trim() && (
               <div className={s.previewBubble}>
@@ -1781,10 +1807,7 @@ function SetupClient() {
                           return;
                         }
                         const data = await res.json();
-                        // Use dynamic import to avoid bundling Hume voice SDK for all setup users
-                        const { VoiceProvider } = await import("@humeai/voice-react");
-                        // Store config for rendering — we'll render the VoiceProvider in a portal-like pattern
-                        // For simplicity in the setup flow, we simulate the connection flow
+                        // Connection established — start the test call session
                         if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
                         setTestCallState("active");
                         setTestCallTimer(90);

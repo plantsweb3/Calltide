@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
+import { syncAgent } from "@/lib/elevenlabs/sync-agent";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 
 const progressSchema = z.object({
@@ -190,6 +191,9 @@ export async function PUT(req: NextRequest) {
         ? `Skipped steps: ${skipped.join(", ")}`
         : "All steps completed",
     });
+
+    // Create/update ElevenLabs voice agent
+    syncAgent(businessId).catch(() => {});
   }
 
   await db

@@ -6,12 +6,11 @@ import { eq } from "drizzle-orm";
 import { reportWarning } from "@/lib/error-reporting";
 import { buildOutboundPrompt, type OutboundCallType } from "@/lib/outbound/prompts";
 import { appointments, estimates } from "@/db/schema";
-import type { BusinessContext } from "@/types";
 
 /**
  * TwiML endpoint for outbound calls.
  * When Twilio connects the outbound call, this endpoint returns TwiML
- * that connects the call to Hume EVI via <Connect><Stream>.
+ * that connects the call to ElevenLabs via <Connect><Stream>.
  */
 export async function POST(
   req: NextRequest,
@@ -121,12 +120,11 @@ export async function POST(
   // Build the outbound system prompt for context
   const systemPrompt = buildOutboundPrompt(promptParams);
 
-  // Use Hume EVI via <Connect><Stream> for voice AI
-  // The Hume config ID can be per-business or the global default
-  const humeConfigId = biz.humeConfigId || process.env.HUME_CONFIG_ID;
-  const humeApiKey = process.env.HUME_API_KEY;
+  // Use ElevenLabs for voice AI
+  const agentId = biz.elevenlabsAgentId;
+  const elevenlabsApiKey = process.env.ELEVENLABS_API_KEY;
 
-  if (!humeConfigId || !humeApiKey) {
+  if (!agentId || !elevenlabsApiKey) {
     // Fallback: simple TwiML greeting without AI
     const lang = call.language === "es" ? "es-MX" : "en-US";
     const greeting =
@@ -144,15 +142,15 @@ export async function POST(
     return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
   }
 
-  // Connect to Hume EVI via WebSocket stream
-  // Hume's telephony integration accepts Twilio <Stream> connections
-  const humeWsUrl = `wss://api.hume.ai/v0/evi/twilio?config_id=${humeConfigId}&api_key=${humeApiKey}`;
+  // Connect to ElevenLabs via WebSocket stream
+  const elevenLabsWsUrl = `wss://api.elevenlabs.io/v1/convai/twilio/inbound?agent_id=${agentId}`;
 
   // Pass outbound context as custom parameters in the stream
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Connect>
-    <Stream url="${escapeXml(humeWsUrl)}">
+    <Stream url="${escapeXml(elevenLabsWsUrl)}">
+      <Parameter name="xi-api-key" value="${escapeXml(elevenlabsApiKey)}" />
       <Parameter name="outbound_call_id" value="${escapeXml(outboundCallId)}" />
       <Parameter name="business_id" value="${escapeXml(call.businessId)}" />
       <Parameter name="call_type" value="${escapeXml(call.callType)}" />

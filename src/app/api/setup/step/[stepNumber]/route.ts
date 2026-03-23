@@ -28,6 +28,7 @@ const stepSchemas: Record<number, z.ZodSchema> = {
   }),
   4: z.object({
     personalityPreset: z.enum(["professional", "friendly", "warm"]),
+    voiceId: z.string().max(50).optional(),
   }),
   5: z.object({
     faqAnswers: z.record(z.string(), z.string().max(500)).optional(),
@@ -132,6 +133,7 @@ export async function PUT(
       updates.receptionistName = data.receptionistName;
     } else if (step === 4) {
       updates.personalityPreset = data.personalityPreset;
+      if (data.voiceId) updates.voiceId = data.voiceId;
     } else if (step === 5) {
       if (data.faqAnswers) updates.faqAnswers = data.faqAnswers;
       if (data.offLimits) updates.offLimits = data.offLimits;

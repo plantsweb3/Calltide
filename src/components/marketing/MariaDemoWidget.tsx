@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { VoiceProvider, useVoice, VoiceReadyState } from "@humeai/voice-react";
+import { useConversation } from "@elevenlabs/react";
 import CaptaSpinner from "@/components/capta-spinner";
 
 type DemoState = "idle" | "connecting" | "active" | "ended";
@@ -78,8 +78,7 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
-  const { connect, disconnect, readyState, messages, sendUserInput } = useVoice();
+export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?: Lang; phoneTel?: string }) {
   const [state, setState] = useState<DemoState>("idle");
   const [error, setError] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -89,8 +88,37 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
   const startTimeRef = useRef<number>(0);
   const timerRef = useRef<ReturnType<typeof setInterval>>(null);
   const transcriptRef = useRef<{ role: string; content: string }[]>([]);
-  const mariaSpokeRef = useRef(false);
+  const [recentMessages, setRecentMessages] = useState<{ role: string; content: string }[]>([]);
   const l = LABELS[lang];
+
+  const conversation = useConversation({
+    onConnect: () => {
+      setState("active");
+    },
+    onDisconnect: () => {
+      if (state === "active") {
+        handleEnd();
+      } else if (state === "connecting") {
+        setError(l.errorGeneric);
+        setState("idle");
+      }
+    },
+    onError: (err) => {
+      console.error("Demo voice error:", err);
+      if (state === "connecting") {
+        setError(l.errorGeneric);
+        setState("idle");
+      }
+    },
+    onMessage: (message) => {
+      if (message.message) {
+        const role = message.source === "ai" ? "assistant" : "user";
+        const content = message.message;
+        transcriptRef.current.push({ role, content });
+        setRecentMessages((prev) => [...prev, { role, content }].slice(-4));
+      }
+    },
+  });
 
   // Track elapsed time
   useEffect(() => {
@@ -107,59 +135,13 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
     };
   }, [state]);
 
-  // Track messages for transcript
-  useEffect(() => {
-    const filtered = messages.filter(
-      (m): m is typeof m & { message: { role: string; content: string } } =>
-        "message" in m &&
-        typeof (m as { message?: { content?: string } }).message?.content === "string",
-    );
-    transcriptRef.current = filtered.map((m) => ({
-      role: m.message.role,
-      content: m.message.content,
-    }));
-  }, [messages]);
-
-  // Update state based on readyState
-  useEffect(() => {
-    if (readyState === VoiceReadyState.OPEN && state === "connecting") {
-      setState("active");
-      mariaSpokeRef.current = false;
-    } else if (readyState === VoiceReadyState.CLOSED && state === "active") {
-      handleEnd();
-    } else if (readyState === VoiceReadyState.CLOSED && state === "connecting") {
-      setError(l.errorGeneric);
-      setState("idle");
-    }
-  }, [readyState]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // If Maria doesn't speak within 3s of connecting, nudge her with a user message
-  useEffect(() => {
-    if (state !== "active") return;
-    const nudge = setTimeout(() => {
-      if (!mariaSpokeRef.current) {
-        try { sendUserInput("Hello"); } catch { /* ignore */ }
-      }
-    }, 3000);
-    return () => clearTimeout(nudge);
-  }, [state]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Track when Maria first speaks
-  useEffect(() => {
-    if (messages.some((m) => "message" in m && (m as { message: { role: string } }).message.role === "assistant")) {
-      mariaSpokeRef.current = true;
-    }
-  }, [messages]);
-
   // Connection timeout — if stuck in "connecting" for 15s, abort
   useEffect(() => {
     if (state !== "connecting") return;
     const timeout = setTimeout(() => {
-      if (readyState !== VoiceReadyState.OPEN) {
-        try { disconnect(); } catch { /* ignore */ }
-        setError(l.errorGeneric);
-        setState("idle");
-      }
+      try { conversation.endSession(); } catch { /* ignore */ }
+      setError(l.errorGeneric);
+      setState("idle");
     }, 15_000);
     return () => clearTimeout(timeout);
   }, [state]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -187,24 +169,18 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
 
       setSessionId(data.sessionId);
 
-      await connect({
-        auth: { type: "accessToken" as const, value: data.accessToken },
-        configId: data.configId,
-        sessionSettings: {
-          type: "session_settings" as const,
-          systemPrompt: data.systemPrompt,
-        },
+      // Connect using ElevenLabs signed URL
+      await conversation.startSession({
+        signedUrl: data.signedUrl,
       });
     } catch {
       setError(l.errorGeneric);
       setState("idle");
     }
-  }, [connect, l]);
+  }, [conversation, l]);
 
   const handleEnd = useCallback(async () => {
-    if (readyState === VoiceReadyState.OPEN) {
-      disconnect();
-    }
+    try { await conversation.endSession(); } catch { /* ignore */ }
     setState("ended");
 
     if (sessionId) {
@@ -224,7 +200,7 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
         // Non-critical — conversion card just won't show trade-specific data
       }
     }
-  }, [sessionId, readyState, disconnect]);
+  }, [sessionId, conversation]);
 
   const handleReset = useCallback(() => {
     setState("idle");
@@ -232,17 +208,9 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
     setElapsed(0);
     setConversionData(null);
     setError("");
+    setRecentMessages([]);
     transcriptRef.current = [];
-    mariaSpokeRef.current = false;
   }, []);
-
-  const recentMessages = messages
-    .filter(
-      (m): m is typeof m & { message: { role: string; content: string } } =>
-        "message" in m &&
-        typeof (m as { message?: { content?: string } }).message?.content === "string",
-    )
-    .slice(-4);
 
   // ── IDLE STATE ──
   if (state === "idle") {
@@ -375,13 +343,13 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
         {recentMessages.length > 0 && (
           <div className="max-h-36 space-y-2 overflow-y-auto rounded-lg bg-black/40 p-3">
             {recentMessages.map((msg, i) => {
-              const isAI = msg.message.role === "assistant";
+              const isAI = msg.role === "assistant";
               return (
                 <div key={i} className={`text-sm ${isAI ? "text-slate-200" : "text-slate-400"}`}>
                   <span className={`text-xs font-medium ${isAI ? "text-[#C59A27]" : "text-slate-500"}`}>
                     {isAI ? "Maria" : lang === "en" ? "You" : "Tú"}:
                   </span>{" "}
-                  {msg.message.content}
+                  {msg.content}
                 </div>
               );
             })}
@@ -471,16 +439,5 @@ function DemoWidgetInner({ lang, phoneTel }: { lang: Lang; phoneTel: string }) {
         {l.endedRetry} &rarr;
       </button>
     </div>
-  );
-}
-
-export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?: Lang; phoneTel?: string }) {
-  return (
-    <VoiceProvider
-      onError={(err) => console.error("Demo voice error:", err)}
-      onClose={() => {}}
-    >
-      <DemoWidgetInner lang={lang} phoneTel={phoneTel} />
-    </VoiceProvider>
   );
 }

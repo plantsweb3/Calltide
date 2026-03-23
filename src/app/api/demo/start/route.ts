@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchAccessToken } from "hume";
 import { createHash } from "crypto";
 import { db } from "@/db";
 import { demoSessions } from "@/db/schema";
 import { eq, gte, and } from "drizzle-orm";
 import { sql } from "drizzle-orm";
-import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+import { rateLimit, getClientIp, RATE_LIMITS } from "@/lib/rate-limit";
 import { buildDemoSystemPrompt } from "@/lib/receptionist/demo-system-prompt";
+import { getElevenLabsClient } from "@/lib/elevenlabs/client";
 
 const DAILY_CAP = 50;
+const DEMO_AGENT_ID = process.env.ELEVENLABS_DEMO_AGENT_ID;
 
 function hashIp(ip: string): string {
   return createHash("sha256").update(ip + (process.env.CRON_SECRET || "salt")).digest("hex").slice(0, 16);
@@ -64,15 +65,20 @@ export async function POST(req: NextRequest) {
       ),
     );
 
-  // Get Hume access token
-  const apiKey = process.env.HUME_API_KEY;
-  const secretKey = process.env.HUME_SECRET_KEY;
-  if (!apiKey || !secretKey) {
+  // Get ElevenLabs signed URL
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey || !DEMO_AGENT_ID) {
     return NextResponse.json({ error: "Voice system not configured" }, { status: 500 });
   }
 
-  const accessToken = await fetchAccessToken({ apiKey, secretKey });
-  if (!accessToken) {
+  let signedUrl: string;
+  try {
+    const client = getElevenLabsClient();
+    const response = await client.conversationalAi.getSignedUrl({
+      agent_id: DEMO_AGENT_ID,
+    });
+    signedUrl = response.signed_url;
+  } catch {
     return NextResponse.json({ error: "Failed to initialize voice connection" }, { status: 500 });
   }
 
@@ -84,9 +90,7 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     sessionId: session.id,
-    accessToken,
-    configId: process.env.NEXT_PUBLIC_HUME_CONFIG_ID,
-    systemPrompt: buildDemoSystemPrompt(),
+    signedUrl,
     maxDuration: 300,
     greeting: "Hey there! I'm Maria. I'm the AI receptionist behind Capta — I answer calls for home service businesses in English and Spanish, 24 hours a day. I'd love to show you how I'd work for YOUR business specifically. Mind if I ask you a couple quick questions?",
   });

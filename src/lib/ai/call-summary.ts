@@ -1,4 +1,3 @@
-import { getHumeClient } from "@/lib/hume/client";
 import { getAnthropic, HAIKU_MODEL } from "@/lib/ai/client";
 import { db } from "@/db";
 import { calls, customers, businesses } from "@/db/schema";
@@ -21,31 +20,6 @@ interface SummaryResult {
   callerName: string | null;
   serviceRequested: string | null;
   transcript: TranscriptLine[];
-}
-
-/**
- * Fetch the transcript from Hume's chat events API.
- */
-async function fetchTranscript(chatId: string): Promise<TranscriptLine[]> {
-  const client = getHumeClient();
-  const transcript: TranscriptLine[] = [];
-
-  const page = await client.empathicVoice.chats.listChatEvents(chatId, {
-    pageSize: 100,
-    ascendingOrder: true,
-  });
-
-  for await (const event of page) {
-    if (!event.messageText) continue;
-
-    if (event.role === "USER") {
-      transcript.push({ speaker: "caller", text: event.messageText });
-    } else if (event.role === "AGENT") {
-      transcript.push({ speaker: "ai", text: event.messageText });
-    }
-  }
-
-  return transcript;
 }
 
 /**
@@ -140,15 +114,39 @@ ${transcriptText}`,
 }
 
 /**
- * Process a completed call: fetch transcript, generate summary, update DB.
- * This is designed to be called fire-and-forget after a call ends.
+ * Process a completed call: generate summary from transcript, update DB.
+ * Accepts transcript directly (from ElevenLabs post-call webhook).
+ * Falls back to fetching from Hume API if transcript not provided (legacy).
  */
-export async function processCallSummary(callId: string, chatId: string): Promise<SummaryResult | null> {
+export async function processCallSummary(
+  callId: string,
+  conversationId: string,
+  providedTranscript?: TranscriptLine[],
+): Promise<SummaryResult | null> {
   try {
-    const transcript = await fetchTranscript(chatId);
+    let transcript: TranscriptLine[];
+
+    if (providedTranscript && providedTranscript.length > 0) {
+      transcript = providedTranscript;
+    } else {
+      // Legacy: try fetching from ElevenLabs conversation API
+      try {
+        const { getElevenLabsClient } = await import("@/lib/elevenlabs/client");
+        const client = getElevenLabsClient();
+        const conversation = await client.conversationalAi.getConversation(conversationId);
+        transcript = (conversation.transcript || []).map((entry) => ({
+          speaker: (entry.role === "agent" ? "ai" : "caller") as "ai" | "caller",
+          text: entry.message || "",
+        }));
+      } catch {
+        // If ElevenLabs fetch also fails, return null
+        console.log("No transcript available for call", { callId, conversationId });
+        return null;
+      }
+    }
 
     if (transcript.length === 0) {
-      console.log("No transcript found for call", { callId, chatId });
+      console.log("No transcript found for call", { callId, conversationId });
       return null;
     }
 
@@ -320,7 +318,7 @@ export async function processCallSummary(callId: string, chatId: string): Promis
     return { summary, sentiment, outcome, callerName, serviceRequested, transcript };
   } catch (error) {
     reportError("Failed to generate call summary", error, {
-      extra: { callId, chatId },
+      extra: { callId, conversationId },
     });
     return null;
   }

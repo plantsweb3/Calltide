@@ -374,7 +374,7 @@ export async function GET(req: NextRequest) {
 // ── Milestone Checking (uses client object to avoid redundant biz fetch) ──
 
 async function checkOnboardingMilestones(
-  client: { id: string; humeConfigId?: string | null; businessHours?: unknown },
+  client: { id: string; humeConfigId?: string | null; elevenlabsAgentId?: string | null; businessHours?: unknown },
 ) {
   // Combine call + appointment counts into a single parallel batch
   const [callCount, aptCount] = await Promise.all([
@@ -390,7 +390,7 @@ async function checkOnboardingMilestones(
       .then((rows) => rows[0]?.count ?? 0),
   ]);
 
-  const hasHumeConfig = !!client.humeConfigId;
+  const hasHumeConfig = !!client.elevenlabsAgentId || !!client.humeConfigId;
   const hasBusinessHours =
     !!client.businessHours &&
     typeof client.businessHours === "object" &&
