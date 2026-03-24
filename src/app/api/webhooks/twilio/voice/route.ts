@@ -172,6 +172,21 @@ export async function POST(req: NextRequest) {
     leadId = lead.id;
   }
 
+  // Build repeat caller context for personalized greeting
+  let callerContext: string | null = null;
+  if (callerNumber) {
+    try {
+      const { buildCallerContext } = await import("@/lib/voice/caller-context");
+      callerContext = await buildCallerContext(biz.id, callerNumber);
+    } catch (err) {
+      // Non-fatal — proceed without caller context
+      reportWarning("Failed to build caller context", {
+        businessId: biz.id,
+        error: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }
+
   // Get signed URL for this agent's conversation
   let conversationId: string | undefined;
   let streamUrl: string;
@@ -229,6 +244,7 @@ export async function POST(req: NextRequest) {
       <Parameter name="called_phone" value="${escapeXml(calledNumber)}" />
       <Parameter name="business_id" value="${escapeXml(biz.id)}" />
       <Parameter name="call_id" value="${escapeXml(callRecord.id)}" />
+      <Parameter name="caller_context" value="${escapeXml(callerContext || '')}" />
     </Stream>
   </Connect>
   <Say language="en-US" voice="Polly.Joanna">Thank you for calling. If you need further assistance, please call back.</Say>

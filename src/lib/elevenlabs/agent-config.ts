@@ -124,6 +124,12 @@ function buildToolDefinitions(appUrl: string, webhookSecret: string) {
       new_date: { type: "string", description: "New date in YYYY-MM-DD format" },
       new_time: { type: "string", description: "New time (e.g. '2:00 PM')" },
     }, ["appointment_id", "new_date", "new_time"]),
+
+    webhook("schedule_callback", "Schedule a callback for the caller at a specific time. Use this when the caller prefers to be called back instead of waiting, or when calling after business hours.", {
+      callback_time: { type: "string", description: "When to call back (e.g. '9:00 AM tomorrow', '2:00 PM on Monday')" },
+      caller_name: { type: "string", description: "Name of the caller" },
+      reason: { type: "string", description: "Why they're calling / what they need help with" },
+    }, ["callback_time"]),
   ];
 }
 
@@ -175,6 +181,7 @@ export function buildAgentConfig({ biz, voiceId }: BuildAgentConfigParams) {
         dynamic_variables: {
           dynamic_variable_placeholders: {
             business_id: biz.id,
+            caller_context: "", // Default empty — overridden per-call via Stream parameter
           },
         },
       },
