@@ -40,7 +40,7 @@ const faqSchema = {
       name: "Does Capta speak Spanish?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. Maria, Capta's AI receptionist, is natively bilingual in English and Spanish. She automatically detects the caller's language and responds fluently. This is not a translation layer — Maria speaks natural, colloquial Spanish and English.",
+        text: "Yes. Capta's AI receptionist is natively bilingual in English and Spanish. She automatically detects the caller's language and responds fluently. This is not a translation layer — she speaks natural, colloquial Spanish and English.",
       },
     },
     {
@@ -48,7 +48,7 @@ const faqSchema = {
       name: "How long does setup take?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "About 5 to 10 minutes. Capta has an 6-step onboarding wizard that walks you through entering your business info, setting your hours, and forwarding your calls. Maria starts answering immediately after setup.",
+        text: "About 5 to 10 minutes. Capta has an 6-step onboarding wizard that walks you through entering your business info, setting your hours, and forwarding your calls. Your receptionist starts answering immediately after setup.",
       },
     },
     {
@@ -56,7 +56,7 @@ const faqSchema = {
       name: "What types of businesses use Capta?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Capta is built for home service contractors including plumbers, HVAC technicians, electricians, landscapers, roofers, painters, general contractors, and pest control companies. Any business that misses calls while working on job sites benefits from Maria.",
+        text: "Capta is built for home service contractors including plumbers, HVAC technicians, electricians, landscapers, roofers, painters, general contractors, and pest control companies. Any business that misses calls while working on job sites benefits from Capta.",
       },
     },
     {
@@ -80,7 +80,7 @@ const faqSchema = {
       name: "How does Capta compare to Ruby Receptionists?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Ruby uses human receptionists billed per-minute starting at $245/month for 50 minutes (~15 calls). At 200 calls per month, Ruby costs $1,640+. Capta costs $497/month for unlimited calls. Ruby has limited bilingual availability and limited hours. Capta's Maria is natively bilingual and works 24/7.",
+        text: "Ruby uses human receptionists billed per-minute starting at $245/month for 50 minutes (~15 calls). At 200 calls per month, Ruby costs $1,640+. Capta costs $497/month for unlimited calls. Ruby has limited bilingual availability and limited hours. Capta is natively bilingual and works 24/7.",
       },
     },
     {
@@ -88,7 +88,7 @@ const faqSchema = {
       name: "How does Capta compare to hiring a human receptionist?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "A full-time receptionist costs $35,000 to $45,000 per year plus benefits, only works 40 hours per week, takes vacations, and calls in sick. Maria costs $497/month ($5,964/year), works 24/7/365, never misses a day, speaks two languages, and handles unlimited simultaneous calls.",
+        text: "A full-time receptionist costs $35,000 to $45,000 per year plus benefits, only works 40 hours per week, takes vacations, and calls in sick. Capta costs $497/month ($5,964/year), works 24/7/365, never misses a day, speaks two languages, and handles unlimited simultaneous calls.",
       },
     },
     {
@@ -96,15 +96,15 @@ const faqSchema = {
       name: "What happens if there's an emergency call?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Maria detects emergency keywords like gas leak, burst pipe, flooding, or fire and immediately transfers the call to your designated emergency contact number. She also sends you an SMS alert. You set the rules for what qualifies as an emergency.",
+        text: "She detects emergency keywords like gas leak, burst pipe, flooding, or fire and immediately transfers the call to your designated emergency contact number. She also sends you an SMS alert. You set the rules for what qualifies as an emergency.",
       },
     },
     {
       "@type": "Question",
-      name: "Does Maria actually book appointments?",
+      name: "Does she actually book appointments?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. Maria books appointments in real-time based on your availability calendar. Callers get an instant SMS confirmation with the appointment details. Appointments sync to Google Calendar automatically.",
+        text: "Yes. She books appointments in real-time based on your availability calendar. Callers get an instant SMS confirmation with the appointment details. Appointments sync to Google Calendar automatically.",
       },
     },
     {
@@ -117,7 +117,7 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Can I customize what Maria says?",
+      name: "Can I customize what she says?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "Yes. You choose her name, personality (professional, friendly, or warm), greeting, and train her with custom responses for your specific services. She'll learn your business hours, service area, pricing ranges, and how you want different situations handled.",
@@ -128,7 +128,7 @@ const faqSchema = {
       name: "What if a caller hangs up before completing the call?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Maria auto-texts them within 60 seconds with a friendly message and a link to continue the conversation. Most callers re-engage, recovering jobs that would otherwise go to a competitor.",
+        text: "She auto-texts them within 60 seconds with a friendly message and a link to continue the conversation. Most callers re-engage, recovering jobs that would otherwise go to a competitor.",
       },
     },
     {
@@ -141,10 +141,10 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Can Maria handle multiple calls at the same time?",
+      name: "Can she handle multiple calls at the same time?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. Unlike a human receptionist who can only take one call at a time, Maria handles unlimited simultaneous calls. No busy signals, no hold music, no missed calls.",
+        text: "Yes. Unlike a human receptionist who can only take one call at a time, Capta handles unlimited simultaneous calls. No busy signals, no hold music, no missed calls.",
       },
     },
     {
@@ -157,7 +157,7 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Can Maria generate estimates?",
+      name: "Can she generate estimates?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "Yes. She collects job details during the call — problem type, property info, urgency — then generates a price range based on your pricing rules. The estimate is texted to you for one-tap approval before being sent to the customer.",
@@ -168,7 +168,7 @@ const faqSchema = {
       name: "Does Capta work after hours?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. Maria works 24/7/365. After-hours calls are actually some of the most valuable — emergency plumbing at 2 AM, AC failures on weekends, heating emergencies on holidays. Maria catches all of them.",
+        text: "Yes. Your receptionist works 24/7/365. After-hours calls are actually some of the most valuable — emergency plumbing at 2 AM, AC failures on weekends, heating emergencies on holidays. She catches all of them.",
       },
     },
     {

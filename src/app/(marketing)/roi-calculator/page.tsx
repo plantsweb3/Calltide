@@ -229,8 +229,8 @@ export default function ROICalculatorPage() {
             See How Much Revenue You&apos;re Losing to Missed Calls
           </h1>
           <p className="reveal mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-400">
-            Plug in your numbers. See the math. Decide if Maria pays for
-            herself.
+            Plug in your numbers. See the math. Decide if Capta pays for
+            itself.
           </p>
         </div>
       </section>
@@ -434,7 +434,7 @@ export default function ROICalculatorPage() {
                   {calculations.jobsToBreakEven}
                 </p>
                 <p className="mt-3 text-base text-slate-300">
-                  If Maria books just{" "}
+                  If Capta books just{" "}
                   <span className="font-extrabold text-white">
                     {calculations.jobsToBreakEven} job
                     {calculations.jobsToBreakEven !== 1 ? "s" : ""}
@@ -546,7 +546,7 @@ export default function ROICalculatorPage() {
               and can&apos;t book jobs.
             </p>
             <p className="text-lg text-slate-400">
-              Maria costs{" "}
+              Capta costs{" "}
               <span className="font-semibold text-white">$497/month</span>,
               answers 24/7, books appointments, generates estimates, and never
               calls in sick.
@@ -565,7 +565,7 @@ export default function ROICalculatorPage() {
             Stop losing revenue. Start today.
           </h2>
           <p className="reveal mt-5 text-lg text-slate-400">
-            Maria pays for herself after just{" "}
+            Capta pays for itself after just{" "}
             {calculations.jobsToBreakEven} booked job
             {calculations.jobsToBreakEven !== 1 ? "s" : ""}.
           </p>

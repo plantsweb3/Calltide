@@ -26,53 +26,53 @@ interface ConversionData {
 
 const LABELS = {
   en: {
-    idleTitle: "Talk to Maria",
-    idleSub: "Want to see how Maria handles your calls? Talk to her right now — no signup, no email. Just a conversation.",
-    idleCta: "Talk to Maria Now",
+    idleTitle: "Talk to Your Receptionist",
+    idleSub: "Want to see how she handles your calls? Talk to her right now — no signup, no email. Just a conversation.",
+    idleCta: "Start a Conversation",
     idleCallCta: "Or call her",
-    connectingTitle: "Maria is getting ready...",
+    connectingTitle: "Getting ready...",
     activeListening: "Listening... speak naturally",
     activeEnd: "End Conversation",
     activeMute: "Mute",
     activeUnmute: "Unmute",
-    endedTitle: "Ready to Hire Maria",
-    endedTitleBiz: "Ready to Hire Maria for",
+    endedTitle: "Ready to Get Started?",
+    endedTitleBiz: "Ready to Get Capta for",
     endedTrade: "Your trade",
     endedLoss: "Estimated missed-call cost",
-    endedPayback: "Maria pays for herself after",
+    endedPayback: "Capta pays for itself after",
     endedCalls: "calls",
     endedCta: "Get Capta",
-    endedCtaSub: "Maria will be live in 5 minutes",
-    endedRetry: "Talk to Maria again",
+    endedCtaSub: "Your receptionist will be live in 5 minutes",
+    endedRetry: "Talk again",
     micNote: "Uses your browser microphone",
     elapsed: "Elapsed",
-    errorBusy: "Maria's busy right now. Get Capta to talk to her anytime.",
+    errorBusy: "She's busy right now. Get Capta to talk to her anytime.",
     errorGeneric: "Could not connect. Please try again.",
     trySpanish: "Try speaking Spanish — she'll switch instantly.",
     perMonth: "/mo",
   },
   es: {
-    idleTitle: "Habla con Maria",
-    idleSub: "¿Quieres ver cómo Maria maneja tus llamadas? Habla con ella ahora — sin registro, sin correo. Solo una conversación.",
-    idleCta: "Habla con Maria Ahora",
+    idleTitle: "Habla con Tu Recepcionista",
+    idleSub: "¿Quieres ver cómo maneja tus llamadas? Habla con ella ahora — sin registro, sin correo. Solo una conversación.",
+    idleCta: "Iniciar Conversación",
     idleCallCta: "O llámala",
-    connectingTitle: "Maria se está preparando...",
+    connectingTitle: "Preparándose...",
     activeListening: "Escuchando... habla naturalmente",
     activeEnd: "Terminar Conversación",
     activeMute: "Silenciar",
     activeUnmute: "Activar",
-    endedTitle: "¿Lista para Contratar a Maria?",
-    endedTitleBiz: "¿Lista para Contratar a Maria para",
+    endedTitle: "¿Lista para Empezar?",
+    endedTitleBiz: "¿Lista para Obtener Capta para",
     endedTrade: "Tu industria",
     endedLoss: "Costo estimado de llamadas perdidas",
-    endedPayback: "Maria se paga sola después de",
+    endedPayback: "Capta se paga solo después de",
     endedCalls: "llamadas",
     endedCta: "Obtén Capta",
-    endedCtaSub: "Maria estará activa en 5 minutos",
-    endedRetry: "Habla con Maria de nuevo",
+    endedCtaSub: "Tu recepcionista estará activa en 5 minutos",
+    endedRetry: "Hablar de nuevo",
     micNote: "Usa el micrófono de tu navegador",
     elapsed: "Tiempo",
-    errorBusy: "Maria está ocupada ahora. Obtén Capta para hablar con ella cuando quieras.",
+    errorBusy: "Está ocupada ahora. Obtén Capta para hablar con ella cuando quieras.",
     errorGeneric: "No se pudo conectar. Inténtalo de nuevo.",
     trySpanish: "Intenta hablar en español — ella cambia al instante.",
     perMonth: "/mes",
@@ -177,8 +177,8 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
     setPreviewingVoice(voiceId);
     try {
       const sampleText = lang === "es"
-        ? "Hola, gracias por llamar. Soy Maria, en qué puedo ayudarte hoy?"
-        : "Hi there, thanks for calling. I'm Maria, how can I help you today?";
+        ? "Hola, gracias por llamar. ¿En qué puedo ayudarte hoy?"
+        : "Hi there, thanks for calling. How can I help you today?";
       const res = await fetch("/api/setup/greeting-preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -283,7 +283,7 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
         {/* Voice picker */}
         <div className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
-            {lang === "en" ? "Choose Maria's voice" : "Elige la voz de Maria"}
+            {lang === "en" ? "Choose a voice" : "Elige una voz"}
           </p>
           <div className="grid grid-cols-2 gap-2">
             {DEMO_VOICES.map((v) => (
@@ -432,7 +432,7 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
               return (
                 <div key={i} className={`text-sm ${isAI ? "text-slate-200" : "text-slate-400"}`}>
                   <span className={`text-xs font-medium ${isAI ? "text-[#C59A27]" : "text-slate-500"}`}>
-                    {isAI ? "Maria" : lang === "en" ? "You" : "Tú"}:
+                    {isAI ? "AI" : lang === "en" ? "You" : "Tú"}:
                   </span>{" "}
                   {msg.content}
                 </div>

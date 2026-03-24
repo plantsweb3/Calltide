@@ -120,7 +120,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
                     {t.hero.cta} &rarr;
                   </a>
                   <a href={PHONE_TEL} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
-                    {lang === "en" ? "Or call her" : "O llámala"}: {PHONE} &rarr;
+                    {lang === "en" ? "Or call us" : "O llámanos"}: {PHONE} &rarr;
                   </a>
                 </div>
 
@@ -341,7 +341,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
                       <span className="text-sm font-bold text-amber">M</span>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-charcoal">Maria</p>
+                      <p className="text-sm font-semibold text-charcoal">{lang === "en" ? "Your Receptionist" : "Tu Recepcionista"}</p>
                       <p className="text-[11px] text-charcoal-muted">{lang === "en" ? "AI Office Manager" : "Gerente de Oficina IA"}</p>
                     </div>
                   </div>

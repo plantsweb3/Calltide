@@ -64,7 +64,7 @@ const FAQS = [
     a: "We walk you through everything. Most businesses are live in 24 hours.",
   },
   {
-    q: "Can Maria generate estimates?",
+    q: "Can she generate estimates?",
     a: "Yes. She collects job details during the call, generates a price range based on your pricing rules, and texts it to you for one-tap approval before sending it to the customer.",
   },
   {
@@ -140,7 +140,7 @@ export default function PricingClient() {
             One Plan. Everything Included.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-400">
-            No tiers. No upsells. No hidden fees. Just Maria, answering your phone.
+            No tiers. No upsells. No hidden fees. Just your AI receptionist, answering your phone.
           </p>
         </div>
       </section>
@@ -261,7 +261,7 @@ export default function PricingClient() {
             An answering service costs <span className="font-semibold text-white">$700–$1,600/month</span>.
           </p>
           <p className="text-lg text-slate-400">
-            Maria costs <span className="font-semibold text-white">$497/month</span>. And she never calls in sick.
+            Capta costs <span className="font-semibold text-white">$497/month</span>. And she never calls in sick.
           </p>
         </div>
       </section>
@@ -304,10 +304,10 @@ export default function PricingClient() {
       <section className="px-6 sm:px-8 py-16 sm:py-20" style={{ background: "#111a2e" }}>
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-            Maria pays for herself after just 2 answered calls.
+            Capta pays for itself after just 2 answered calls.
           </p>
           <p className="mt-5 text-base text-slate-400">
-            Or call her yourself:{" "}
+            Or call us:{" "}
             <a href={PHONE_TEL} className="font-semibold transition hover:underline" style={{ color: "#d4a843" }}>
               {PHONE}
             </a>
@@ -322,7 +322,7 @@ export default function PricingClient() {
             30-Day Money-Back Guarantee
           </h2>
           <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-slate-400">
-            If Maria doesn&apos;t pay for herself in missed-call revenue within 30 days, you pay nothing.
+            If Capta doesn&apos;t pay for itself in missed-call revenue within 30 days, you pay nothing.
           </p>
 
           {/* Trust icons */}

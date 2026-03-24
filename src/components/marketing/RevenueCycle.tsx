@@ -6,7 +6,7 @@ type Lang = "en" | "es";
 
 const STEPS_EN = [
   { icon: "phone-missed", label: "Missed Call" },
-  { icon: "headset", label: "Maria Answers" },
+  { icon: "headset", label: "Capta Answers" },
   { icon: "globe", label: "Detects Language" },
   { icon: "calendar", label: "Books Appointment" },
   { icon: "file-text", label: "Generates Estimate" },
@@ -21,7 +21,7 @@ const STEPS_EN = [
 
 const STEPS_ES = [
   { icon: "phone-missed", label: "Llamada Perdida" },
-  { icon: "headset", label: "Maria Contesta" },
+  { icon: "headset", label: "Capta Contesta" },
   { icon: "globe", label: "Detecta Idioma" },
   { icon: "calendar", label: "Agenda Cita" },
   { icon: "file-text", label: "Genera Cotizacion" },
