@@ -12,6 +12,7 @@ import { getStripe } from "@/lib/stripe/client";
 import { getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
 import { createBusinessFromSetup } from "@/lib/onboarding/create-business";
 import { sendWelcomeSms } from "@/lib/onboarding/welcome-sms";
+import { sendWelcomeEmail } from "@/lib/onboarding/welcome-email";
 
 const SETUP_COOKIE = "capta_setup";
 const CLIENT_COOKIE = "capta_client";
@@ -229,10 +230,17 @@ async function generateCredentialsAndRespond(
       .where(eq(accounts.id, account.id));
   }
 
-  // Dispatch welcome SMS (fire-and-forget)
+  // Dispatch welcome SMS + email (fire-and-forget)
   if (generatedPassword) {
     sendWelcomeSms(businessId, generatedPassword).catch((err) =>
       reportError("[setup/auth] Welcome SMS failed", err, { extra: { businessId } }),
+    );
+    sendWelcomeEmail({
+      businessId,
+      email: biz.ownerEmail || "",
+      generatedPassword,
+    }).catch((err) =>
+      reportError("[setup/auth] Welcome email failed", err, { extra: { businessId } }),
     );
   }
 

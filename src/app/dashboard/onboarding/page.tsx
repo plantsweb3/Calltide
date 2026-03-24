@@ -150,7 +150,15 @@ const T = {
     conditionalTip: "Tip: Ask for 'conditional forwarding' — forwards only when busy or unanswered.",
     forwardingDone: "I've set up call forwarding",
     testVerify: "Call your business number now to verify she answers",
+    activateCta: "Activate My Receptionist",
+    activating: "Activating...",
+    testSetup: "Test Your Setup",
+    testSetupDesc: "We'll call your Capta number to verify everything is working.",
+    testCalling: "Calling...",
+    testSuccess: "Test call placed! Check your phone.",
+    testError: "Could not place test call. Try again.",
     isLive: "is LIVE!",
+    celebrationSub: "Your AI receptionist is now answering calls.",
     goToDashboard: "Go to Dashboard",
     trainHer: "Train Her",
     viewCalls: "View Call History",
@@ -267,7 +275,15 @@ const T = {
     conditionalTip: "Tip: Pide 'desvío condicional' — solo desvía cuando estés ocupado.",
     forwardingDone: "Ya configuré el desvío de llamadas",
     testVerify: "Llama a tu número de negocio para verificar que ella contesta",
+    activateCta: "Activar Mi Recepcionista",
+    activating: "Activando...",
+    testSetup: "Probar Tu Configuración",
+    testSetupDesc: "Llamaremos a tu número de Capta para verificar que todo funciona.",
+    testCalling: "Llamando...",
+    testSuccess: "¡Llamada de prueba realizada! Revisa tu teléfono.",
+    testError: "No se pudo realizar la llamada de prueba. Intenta de nuevo.",
     isLive: "¡está EN LÍNEA!",
+    celebrationSub: "Tu recepcionista de IA ahora está contestando llamadas.",
     goToDashboard: "Ir al Panel",
     trainHer: "Entrénala",
     viewCalls: "Ver Llamadas",
@@ -407,6 +423,8 @@ function OnboardingPage() {
   const [carrierTab, setCarrierTab] = useState<typeof CARRIER_TABS[number]>("att");
   const [forwardingDone, setForwardingDone] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [activating, setActivating] = useState(false);
+  const [testForwardingStatus, setTestForwardingStatus] = useState<"idle" | "calling" | "success" | "error">("idle");
 
   const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const t = T[lang];
@@ -689,13 +707,43 @@ function OnboardingPage() {
     setCheckoutLoading(false);
   }, [planToggle, saveProgress]);
 
-  // ── Step 8: Complete & confetti ──
-  const handleComplete = useCallback(async () => {
-    setShowConfetti(true);
-    await saveProgress(8);
-    trackCompleteRegistration();
-    redirectTimerRef.current = setTimeout(() => router.push("/dashboard"), 6000);
+  // ── Step 8: Activate & celebration ──
+  const handleActivate = useCallback(async () => {
+    setActivating(true);
+    try {
+      const res = await fetch("/api/dashboard/activate", { method: "POST" });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Activation failed" }));
+        setErrors({ activate: err.error || "Activation failed" });
+        return;
+      }
+      setShowConfetti(true);
+      await saveProgress(8);
+      trackCompleteRegistration();
+      redirectTimerRef.current = setTimeout(() => router.push("/dashboard"), 8000);
+    } catch {
+      setErrors({ activate: "Something went wrong" });
+    } finally {
+      setActivating(false);
+    }
   }, [saveProgress, router]);
+
+  // ── Test forwarding call ──
+  const handleTestForwarding = useCallback(async () => {
+    setTestForwardingStatus("calling");
+    try {
+      const res = await fetch("/api/dashboard/test-forwarding", { method: "POST" });
+      if (!res.ok) {
+        setTestForwardingStatus("error");
+        return;
+      }
+      setTestForwardingStatus("success");
+      setTimeout(() => setTestForwardingStatus("idle"), 8000);
+    } catch {
+      setTestForwardingStatus("error");
+      setTimeout(() => setTestForwardingStatus("idle"), 5000);
+    }
+  }, []);
 
   const handleIndustryChange = useCallback((value: string) => {
     setIndustry(value);
@@ -1399,21 +1447,47 @@ function OnboardingPage() {
                 </label>
 
                 {forwardingDone && (
-                  <p className="mb-4 text-xs text-gray-500 italic">{t.testVerify}</p>
+                  <>
+                    <p className="mb-4 text-xs text-gray-500 italic">{t.testVerify}</p>
+
+                    {/* Test Your Setup */}
+                    <div className="mb-4 rounded-lg border border-gray-100 bg-gray-50 p-4">
+                      <p className="mb-2 text-sm font-medium text-gray-700">{t.testSetup}</p>
+                      <p className="mb-3 text-xs text-gray-500">{t.testSetupDesc}</p>
+                      <button
+                        onClick={handleTestForwarding}
+                        disabled={testForwardingStatus === "calling"}
+                        className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition-colors disabled:opacity-50"
+                      >
+                        {testForwardingStatus === "calling" ? t.testCalling : t.testSetup}
+                      </button>
+                      {testForwardingStatus === "success" && (
+                        <p className="mt-2 text-xs font-medium text-green-600">{t.testSuccess}</p>
+                      )}
+                      {testForwardingStatus === "error" && (
+                        <p className="mt-2 text-xs font-medium text-red-500">{t.testError}</p>
+                      )}
+                    </div>
+                  </>
                 )}
               </>
             ) : (
               <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-center">
-                <p className="text-sm text-gray-500">{lang === "es" ? "Tu número está siendo configurado." : "Your phone number is being set up."}</p>
+                <p className="text-sm text-gray-500">{lang === "es" ? "Tu numero esta siendo configurado." : "Your phone number is being set up."}</p>
               </div>
             )}
 
+            {errors.activate && <ErrorBanner message={errors.activate} />}
+
             <div className="mt-8 flex items-center justify-between">
               <button onClick={goBack} className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50">{t.back}</button>
-              <button onClick={handleComplete} disabled={saving}
+              <button
+                onClick={handleActivate}
+                disabled={activating}
                 className="rounded-lg px-6 py-2.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #C59A27, #D4A82E)" }}>
-                {saving ? t.saving : t.next}
+                style={{ background: "linear-gradient(135deg, #C59A27, #D4A82E)" }}
+              >
+                {activating ? t.activating : t.activateCta}
               </button>
             </div>
           </div>
@@ -1422,35 +1496,128 @@ function OnboardingPage() {
         {/* Confetti / Celebration */}
         {step === 8 && showConfetti && (
           <div className="flex flex-1 flex-col items-center justify-center text-center">
-            <div className="mb-6 text-5xl">&#127881;</div>
-            <h1 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">
-              {rName} {t.isLive}
+            {/* Confetti-style animation */}
+            <style jsx>{`
+              @keyframes celebrationPulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+              }
+              @keyframes confettiFloat {
+                0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+                100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+              }
+              @keyframes shimmer {
+                0% { background-position: -200% center; }
+                100% { background-position: 200% center; }
+              }
+              @keyframes fadeInUp {
+                0% { opacity: 0; transform: translateY(20px); }
+                100% { opacity: 1; transform: translateY(0); }
+              }
+              .celebration-card {
+                animation: celebrationPulse 3s ease-in-out infinite, fadeInUp 0.6s ease-out;
+              }
+              .celebration-title {
+                animation: fadeInUp 0.6s ease-out 0.2s both;
+              }
+              .celebration-sub {
+                animation: fadeInUp 0.6s ease-out 0.4s both;
+              }
+              .celebration-actions {
+                animation: fadeInUp 0.6s ease-out 0.6s both;
+              }
+              .gold-shimmer {
+                background: linear-gradient(90deg, #C59A27, #F0D78C, #D4A843, #F0D78C, #C59A27);
+                background-size: 200% auto;
+                animation: shimmer 3s linear infinite;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+              }
+              .confetti-dot {
+                position: fixed;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 50;
+              }
+            `}</style>
+
+            {/* Confetti particles */}
+            {Array.from({ length: 30 }).map((_, i) => (
+              <div
+                key={i}
+                className="confetti-dot"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `-${Math.random() * 20}px`,
+                  background: ["#D4A843", "#C59A27", "#10b981", "#3b82f6", "#ef4444", "#8b5cf6"][i % 6],
+                  width: `${4 + Math.random() * 8}px`,
+                  height: `${4 + Math.random() * 8}px`,
+                  borderRadius: Math.random() > 0.5 ? "50%" : "2px",
+                  animation: `confettiFloat ${2 + Math.random() * 3}s ease-out ${Math.random() * 2}s forwards`,
+                }}
+              />
+            ))}
+
+            <div className="mb-6 text-6xl" style={{ animation: "fadeInUp 0.4s ease-out" }}>&#127881;</div>
+
+            <h1 className="celebration-title mb-2 text-3xl font-extrabold sm:text-4xl">
+              <span className="gold-shimmer">{rName} {t.isLive}</span>
             </h1>
-            <p className="mb-6 text-lg text-gray-500">
-              {lang === "es" ? "Lista para contestar tu próxima llamada." : "Ready to answer your next call."}
+            <p className="celebration-sub mb-8 text-lg text-gray-500">
+              {t.celebrationSub}
             </p>
 
-            <div className="mb-8 w-full max-w-sm rounded-xl border-2 border-amber-200 bg-amber-50 p-6">
-              <div className="mb-3 flex h-14 w-14 mx-auto items-center justify-center rounded-full bg-amber-100">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+            <div className="celebration-card mb-8 w-full max-w-sm overflow-hidden rounded-2xl shadow-xl" style={{ border: "2px solid #D4A843" }}>
+              <div style={{ background: "linear-gradient(135deg, #1B2A4A, #243656)", padding: "32px 24px", textAlign: "center" }}>
+                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full" style={{ background: "linear-gradient(135deg, #D4A843, #F0D78C)" }}>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1B2A4A" strokeWidth="2" strokeLinecap="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <p className="text-2xl font-bold text-white">{rName}</p>
+                <p className="mt-1 text-sm capitalize" style={{ color: "#D4A843" }}>{personalityPreset} {lang === "es" ? "personalidad" : "personality"}</p>
+                {twilioNumber && <p className="mt-3 text-sm font-mono text-gray-300">{formatPhone(twilioNumber)}</p>}
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold text-green-400" style={{ background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)" }}>
+                  <div className="h-2.5 w-2.5 rounded-full bg-green-400" style={{ boxShadow: "0 0 8px rgba(16,185,129,0.6)", animation: "celebrationPulse 2s ease-in-out infinite" }} />
+                  {lang === "es" ? "EN LINEA" : "LIVE"}
+                </div>
               </div>
-              <p className="text-lg font-bold text-gray-900">{rName}</p>
-              <p className="text-sm text-gray-500 capitalize">{personalityPreset} {lang === "es" ? "personalidad" : "personality"}</p>
-              {twilioNumber && <p className="mt-2 text-sm text-gray-600">{formatPhone(twilioNumber)}</p>}
-              <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                <div className="h-2 w-2 rounded-full bg-green-500" />
-                {lang === "es" ? "EN LÍNEA" : "LIVE"}
+              <div style={{ background: "#f8f9fa", padding: "16px 24px" }}>
+                <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <span style={{ color: "#10b981" }}>&#10003;</span> {lang === "es" ? "24/7" : "24/7"}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span style={{ color: "#10b981" }}>&#10003;</span> {lang === "es" ? "Bilingue" : "Bilingual"}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span style={{ color: "#10b981" }}>&#10003;</span> {lang === "es" ? "Agendamiento" : "Booking"}
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <button onClick={() => router.push("/dashboard")} className="rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:scale-[1.02]"
-                style={{ background: "linear-gradient(135deg, #C59A27, #D4A82E)" }}>{t.goToDashboard}</button>
-              <button onClick={() => router.push("/dashboard/settings")} className="rounded-lg border border-amber-300 bg-amber-50 px-6 py-3 text-sm font-semibold text-amber-700 hover:bg-amber-100">{t.trainHer}</button>
-              <button onClick={() => router.push("/dashboard/calls")} className="rounded-lg border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50">{t.viewCalls}</button>
+            <div className="celebration-actions flex flex-col gap-3 sm:flex-row">
+              <button onClick={() => router.push("/dashboard")}
+                className="rounded-lg px-8 py-3 text-sm font-bold text-white transition-all hover:scale-[1.02]"
+                style={{ background: "linear-gradient(135deg, #C59A27, #D4A82E)", boxShadow: "0 4px 14px rgba(212,168,67,0.4)" }}>
+                {t.goToDashboard}
+              </button>
+              <button onClick={() => router.push("/dashboard/settings")}
+                className="rounded-lg border-2 border-amber-300 bg-amber-50 px-6 py-3 text-sm font-semibold text-amber-700 hover:bg-amber-100 transition-colors">
+                {t.trainHer}
+              </button>
+              <button onClick={() => router.push("/dashboard/calls")}
+                className="rounded-lg border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                {t.viewCalls}
+              </button>
             </div>
 
-            <p className="mt-6 text-xs text-gray-400">{t.redirecting}</p>
+            <p className="mt-8 text-xs text-gray-400">{t.redirecting}</p>
           </div>
         )}
       </main>

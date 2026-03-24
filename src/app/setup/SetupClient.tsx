@@ -35,6 +35,7 @@ interface SetupSession {
   maxStepReached: number;
   status: string;
   language: string;
+  timezone?: string | null;
 }
 
 interface TradeData {
@@ -798,6 +799,15 @@ function SetupClient() {
   const [newService, setNewService] = useState("");
   const servicesLoadedRef = useRef(false);
 
+  // Step 1 (timezone)
+  const [timezone, setTimezone] = useState(() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || "America/Chicago";
+    } catch {
+      return "America/Chicago";
+    }
+  });
+
   // Step 2
   const [ownerName, setOwnerName] = useState("");
   const [ownerEmail, setOwnerEmail] = useState("");
@@ -1079,6 +1089,9 @@ function SetupClient() {
     if (sess.selectedPlan === "monthly" || sess.selectedPlan === "annual") {
       setPlanToggle(sess.selectedPlan);
     }
+    if (sess.timezone) {
+      setTimezone(sess.timezone);
+    }
   }
 
   // ── Trade data fetching ──
@@ -1190,7 +1203,7 @@ function SetupClient() {
         if (!state.trim()) { setFieldError("state", t.required); hasError = true; }
         if (services.length === 0) { setFieldError("services", t.required); hasError = true; }
         if (hasError) return;
-        const ok = await saveStep(1, { businessName: bizName.trim(), businessType: bizType, city: city.trim(), state: state.trim(), services });
+        const ok = await saveStep(1, { businessName: bizName.trim(), businessType: bizType, city: city.trim(), state: state.trim(), services, timezone });
         if (!ok) return;
         showToastAndAdvance({ title: replaceVars(t.toast1, { biz: bizName.trim() }) }, 2);
       } else if (step === 2) {
@@ -1223,7 +1236,7 @@ function SetupClient() {
     } finally {
       submittingRef.current = false;
     }
-  }, [step, bizName, bizType, city, state, services, ownerName, ownerEmail, ownerPhone, receptionistName, personalityPreset, faqAnswers, offLimits, saveStep, showToastAndAdvance, setFieldError, t]);
+  }, [step, bizName, bizType, city, state, services, timezone, ownerName, ownerEmail, ownerPhone, receptionistName, personalityPreset, faqAnswers, offLimits, saveStep, showToastAndAdvance, setFieldError, t]);
 
   // ── Checkout ──
   const handleCheckout = useCallback(async () => {
@@ -1531,6 +1544,23 @@ function SetupClient() {
                 />
                 {errors.state && <span className={s.error}>{errors.state}</span>}
               </div>
+            </div>
+
+            <div className={s.field}>
+              <label className={s.label} htmlFor="timezone">{lang === "es" ? "Zona Horaria" : "Time Zone"}</label>
+              <select
+                id="timezone"
+                className={s.select}
+                value={timezone}
+                onChange={(e) => setTimezone(e.target.value)}
+              >
+                <option value="America/New_York">{lang === "es" ? "Este (Nueva York)" : "Eastern (New York)"}</option>
+                <option value="America/Chicago">{lang === "es" ? "Central (Chicago)" : "Central (Chicago)"}</option>
+                <option value="America/Denver">{lang === "es" ? "Montana (Denver)" : "Mountain (Denver)"}</option>
+                <option value="America/Los_Angeles">{lang === "es" ? "Pacifico (Los Angeles)" : "Pacific (Los Angeles)"}</option>
+                <option value="America/Phoenix">{lang === "es" ? "Arizona (sin horario de verano)" : "Arizona (no DST)"}</option>
+                <option value="Pacific/Honolulu">{lang === "es" ? "Hawaii" : "Hawaii"}</option>
+              </select>
             </div>
 
             {/* Services — always show so "Other" users can add services */}

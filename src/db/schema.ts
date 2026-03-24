@@ -195,6 +195,7 @@ export const calls = sqliteTable("calls", {
   // Repeat caller context
   callerContextUsed: integer("caller_context_used", { mode: "boolean" }).default(false),
   followUpCreated: integer("follow_up_created", { mode: "boolean" }).default(false),
+  voicemailTranscript: text("voicemail_transcript"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -1286,6 +1287,7 @@ export const setupSessions = sqliteTable("setup_sessions", {
   refCode: text("ref_code"),
   // Locale
   language: text("language").notNull().default("en"),
+  timezone: text("timezone").default("America/Chicago"),
   // Timestamps
   lastActiveAt: text("last_active_at").notNull().default(sql`(datetime('now'))`),
   convertedAt: text("converted_at"),
@@ -1627,6 +1629,9 @@ export const technicians = sqliteTable("technicians", {
   isOnCall: integer("is_on_call", { mode: "boolean" }).default(false),
   color: text("color"),
   sortOrder: integer("sort_order").default(0),
+  isUnavailable: integer("is_unavailable", { mode: "boolean" }).default(false),
+  unavailableReason: text("unavailable_reason"),
+  unavailableUntil: text("unavailable_until"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -1826,4 +1831,36 @@ export const founderStreaks = sqliteTable("founder_streaks", {
   lastHitDate: text("last_hit_date"), // YYYY-MM-DD
   totalXp: integer("total_xp").default(0),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Migration 0076: Customer Journey Gap Closure ──
+
+export const cancellationFeedback = sqliteTable("cancellation_feedback", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  reason: text("reason").notNull(), // too_expensive, not_enough_value, switching_competitor, going_manual, seasonal_business, other
+  rating: integer("rating"), // 1-5
+  feedback: text("feedback"),
+  recoveryOfferShown: integer("recovery_offer_shown", { mode: "boolean" }).default(false),
+  recoveryOfferAccepted: integer("recovery_offer_accepted", { mode: "boolean" }).default(false),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const winBackEmails = sqliteTable("win_back_emails", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  emailNumber: integer("email_number").notNull(), // 1, 2, or 3
+  sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
+  openedAt: text("opened_at"),
+  clickedAt: text("clicked_at"),
+  reactivated: integer("reactivated", { mode: "boolean" }).default(false),
+});
+
+export const usageAlerts = sqliteTable("usage_alerts", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  alertType: text("alert_type").notNull(), // usage_drop, no_calls, card_expiring
+  sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
+  metricValue: text("metric_value"),
+  acknowledged: integer("acknowledged", { mode: "boolean" }).default(false),
 });

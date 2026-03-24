@@ -121,13 +121,11 @@ export async function createBusinessFromSetup(
   const accountId = crypto.randomUUID();
   const now = new Date().toISOString();
 
-  const defaultHours: Record<string, { open: string; close: string }> = {
-    Mon: { open: "08:00", close: "17:00" },
-    Tue: { open: "08:00", close: "17:00" },
-    Wed: { open: "08:00", close: "17:00" },
-    Thu: { open: "08:00", close: "17:00" },
-    Fri: { open: "08:00", close: "17:00" },
-  };
+  // Sync business hours from FAQ "hours" answer if parseable
+  const businessHours = parseBusinessHoursFromSetup(setupSession);
+
+  // Sync timezone from setup data
+  const timezone = resolveTimezone(setupSession);
 
   await db.insert(accounts).values({
     id: accountId,
@@ -155,7 +153,8 @@ export async function createBusinessFromSetup(
       ownerEmail: email,
       twilioNumber: "", // Provisioned async below
       services: setupSession.services || [],
-      businessHours: defaultHours,
+      businessHours: businessHours,
+      timezone,
       serviceArea:
         setupSession.city && setupSession.state
           ? `${setupSession.city}, ${setupSession.state}`
@@ -310,6 +309,192 @@ export async function createBusinessFromSetup(
   });
 
   return { businessId, isExisting: false };
+}
+
+// ── Helpers: Parse business hours from setup session ──
+
+const DEFAULT_HOURS: Record<string, { open: string; close: string }> = {
+  Mon: { open: "08:00", close: "17:00" },
+  Tue: { open: "08:00", close: "17:00" },
+  Wed: { open: "08:00", close: "17:00" },
+  Thu: { open: "08:00", close: "17:00" },
+  Fri: { open: "08:00", close: "17:00" },
+};
+
+const VALID_TIMEZONES = [
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "America/Phoenix",
+  "Pacific/Honolulu",
+  "America/Anchorage",
+  "America/Detroit",
+  "America/Indiana/Indianapolis",
+  "America/Kentucky/Louisville",
+];
+
+/**
+ * Attempt to parse business hours from the setup session's FAQ answers.
+ * Tries to extract day-time patterns from free-text like "Mon-Fri 8am-5pm, Sat 9am-1pm".
+ * Falls back to default Mon-Fri 8-5 if unparseable.
+ */
+function parseBusinessHoursFromSetup(
+  setupSession: { faqAnswers: Record<string, string> | null },
+): Record<string, { open: string; close: string }> {
+  const hoursText = (setupSession.faqAnswers as Record<string, string> | null)?.hours;
+  if (!hoursText) return DEFAULT_HOURS;
+
+  try {
+    const hours = { ...DEFAULT_HOURS };
+    const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const DAY_ALIASES: Record<string, string[]> = {
+      Mon: ["mon", "monday", "lun", "lunes"],
+      Tue: ["tue", "tues", "tuesday", "mar", "martes"],
+      Wed: ["wed", "wednesday", "mie", "miercoles", "miércoles"],
+      Thu: ["thu", "thur", "thurs", "thursday", "jue", "jueves"],
+      Fri: ["fri", "friday", "vie", "viernes"],
+      Sat: ["sat", "saturday", "sab", "sábado", "sabado"],
+      Sun: ["sun", "sunday", "dom", "domingo"],
+    };
+
+    // Normalize text
+    const text = hoursText.toLowerCase().trim();
+
+    // Try to find time-range patterns: "8am-5pm" or "8:00am-5:00pm"
+    const timePattern = /(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s*[-–to]+\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/gi;
+
+    // Detect "Mon-Fri" range patterns followed by times
+    const segments = text.split(/[,;]+/).map((s) => s.trim()).filter(Boolean);
+
+    for (const segment of segments) {
+      // Check for "closed" markers
+      const isClosed = /closed|cerrado/i.test(segment);
+
+      // Find which days this segment applies to
+      const affectedDays: string[] = [];
+
+      // Check for day ranges (Mon-Fri)
+      const rangeMatch = segment.match(/([a-záéíóúñü]+)\s*[-–]+\s*([a-záéíóúñü]+)/i);
+      if (rangeMatch) {
+        const startDay = findDay(rangeMatch[1], DAY_ALIASES, DAYS);
+        const endDay = findDay(rangeMatch[2], DAY_ALIASES, DAYS);
+        if (startDay !== -1 && endDay !== -1) {
+          for (let i = startDay; i <= endDay; i++) {
+            affectedDays.push(DAYS[i]);
+          }
+        }
+      }
+
+      // Check for individual day mentions
+      if (affectedDays.length === 0) {
+        for (const day of DAYS) {
+          for (const alias of DAY_ALIASES[day]) {
+            if (segment.includes(alias)) {
+              affectedDays.push(day);
+              break;
+            }
+          }
+        }
+      }
+
+      if (affectedDays.length === 0) continue;
+
+      if (isClosed) {
+        // Mark as closed — no hours
+        for (const day of affectedDays) {
+          delete hours[day];
+        }
+        continue;
+      }
+
+      // Extract time range
+      const timeMatch = segment.match(timePattern);
+      if (timeMatch) {
+        // Reset pattern lastIndex
+        timePattern.lastIndex = 0;
+        const fullMatch = timePattern.exec(segment);
+        if (fullMatch) {
+          const open24 = parseTimeTo24(fullMatch[1]);
+          const close24 = parseTimeTo24(fullMatch[2]);
+          if (open24 && close24) {
+            for (const day of affectedDays) {
+              hours[day] = { open: open24, close: close24 };
+            }
+          }
+        }
+      }
+    }
+
+    // If we managed to parse at least 1 day, use it; otherwise fall back
+    if (Object.keys(hours).length > 0) return hours;
+    return DEFAULT_HOURS;
+  } catch {
+    return DEFAULT_HOURS;
+  }
+}
+
+function findDay(text: string, aliases: Record<string, string[]>, days: string[]): number {
+  const lower = text.toLowerCase().trim();
+  for (let i = 0; i < days.length; i++) {
+    if (aliases[days[i]].some((a) => lower.startsWith(a) || a.startsWith(lower))) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+/**
+ * Parse a time string like "8am", "8:30pm", "17:00" into "HH:MM" 24-hour format.
+ */
+function parseTimeTo24(time: string): string | null {
+  const cleaned = time.trim().toLowerCase();
+
+  // Already 24h format: "17:00"
+  const h24Match = cleaned.match(/^(\d{1,2}):(\d{2})$/);
+  if (h24Match) {
+    const h = parseInt(h24Match[1], 10);
+    const m = parseInt(h24Match[2], 10);
+    if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
+      return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+    }
+  }
+
+  // 12h format: "8am", "8:30pm", "8 am", "8:30 pm"
+  const ampmMatch = cleaned.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/);
+  if (ampmMatch) {
+    let h = parseInt(ampmMatch[1], 10);
+    const m = parseInt(ampmMatch[2] || "0", 10);
+    const isPm = ampmMatch[3] === "pm";
+
+    if (h === 12) h = isPm ? 12 : 0;
+    else if (isPm) h += 12;
+
+    if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
+      return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Resolve timezone from setup session data.
+ * Checks for explicit timezone field, falls back to "America/Chicago".
+ */
+function resolveTimezone(
+  setupSession: Record<string, unknown>,
+): string {
+  // Check if there's a timezone stored directly on the session
+  const tz = setupSession.timezone as string | undefined;
+  if (tz && VALID_TIMEZONES.includes(tz)) return tz;
+
+  // Check common timezone names that might come through
+  if (typeof tz === "string" && tz.startsWith("America/") || typeof tz === "string" && tz.startsWith("Pacific/")) {
+    return tz;
+  }
+
+  return "America/Chicago";
 }
 
 async function recordConsentForCheckout(businessId: string): Promise<void> {

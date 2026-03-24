@@ -17,6 +17,7 @@ const stepSchemas: Record<number, z.ZodSchema> = {
     city: z.string().min(1).max(100),
     state: z.string().min(1).max(50),
     services: z.array(z.string().max(200)).min(1, "Add at least one service").max(30),
+    timezone: z.string().max(50).optional(),
   }),
   2: z.object({
     ownerName: z.string().min(1).max(200),
@@ -125,6 +126,7 @@ export async function PUT(
       updates.city = data.city;
       updates.state = data.state;
       if (data.services) updates.services = data.services;
+      if (data.timezone) updates.timezone = data.timezone;
     } else if (step === 2) {
       updates.ownerName = data.ownerName;
       updates.ownerEmail = data.ownerEmail;
