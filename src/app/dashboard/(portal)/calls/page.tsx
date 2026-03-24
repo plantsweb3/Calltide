@@ -91,6 +91,13 @@ export default function CallsPage() {
   const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [intakeCache, setIntakeCache] = useState<Record<string, IntakeData[]>>({});
 
+  // Filter state
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterOutcome, setFilterOutcome] = useState("");
+  const [filterLanguage, setFilterLanguage] = useState("");
+  const [filterDateFrom, setFilterDateFrom] = useState("");
+  const [filterDateTo, setFilterDateTo] = useState("");
+
   const fetchCalls = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -100,6 +107,11 @@ export default function CallsPage() {
         limit: "20",
       });
       if (search) params.set("search", search);
+      if (filterStatus) params.set("status", filterStatus);
+      if (filterOutcome) params.set("outcome", filterOutcome);
+      if (filterLanguage) params.set("language", filterLanguage);
+      if (filterDateFrom) params.set("dateFrom", filterDateFrom);
+      if (filterDateTo) params.set("dateTo", filterDateTo);
 
       const res = await fetch(`/api/dashboard/calls?${params}`);
       if (!res.ok) throw new Error("Failed to load calls");
@@ -112,7 +124,7 @@ export default function CallsPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, search]);
+  }, [page, search, filterStatus, filterOutcome, filterLanguage, filterDateFrom, filterDateTo]);
 
   useEffect(() => {
     fetchCalls();
@@ -374,6 +386,108 @@ export default function CallsPage() {
       )}
 
       {tab === "inbound" && (<>
+
+      {/* Filter Bar */}
+      <div
+        className="flex flex-wrap items-center gap-2 mb-4 p-3 rounded-xl"
+        style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
+      >
+        <div className="flex items-center gap-1.5">
+          <label className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+            From
+          </label>
+          <input
+            type="date"
+            value={filterDateFrom}
+            onChange={(e) => { setFilterDateFrom(e.target.value); setPage(1); }}
+            className="rounded-lg px-2 py-1.5 text-xs outline-none"
+            style={{
+              background: "var(--db-card)",
+              border: "1px solid var(--db-border)",
+              color: "var(--db-text)",
+            }}
+          />
+        </div>
+        <div className="flex items-center gap-1.5">
+          <label className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+            To
+          </label>
+          <input
+            type="date"
+            value={filterDateTo}
+            onChange={(e) => { setFilterDateTo(e.target.value); setPage(1); }}
+            className="rounded-lg px-2 py-1.5 text-xs outline-none"
+            style={{
+              background: "var(--db-card)",
+              border: "1px solid var(--db-border)",
+              color: "var(--db-text)",
+            }}
+          />
+        </div>
+        <select
+          value={filterStatus}
+          onChange={(e) => { setFilterStatus(e.target.value); setPage(1); }}
+          className="rounded-lg px-2 py-1.5 text-xs outline-none"
+          style={{
+            background: "var(--db-card)",
+            border: "1px solid var(--db-border)",
+            color: "var(--db-text)",
+          }}
+        >
+          <option value="">All Statuses</option>
+          <option value="completed">Completed</option>
+          <option value="missed">Missed</option>
+          <option value="voicemail">Voicemail</option>
+          <option value="in_progress">In Progress</option>
+        </select>
+        <select
+          value={filterOutcome}
+          onChange={(e) => { setFilterOutcome(e.target.value); setPage(1); }}
+          className="rounded-lg px-2 py-1.5 text-xs outline-none"
+          style={{
+            background: "var(--db-card)",
+            border: "1px solid var(--db-border)",
+            color: "var(--db-text)",
+          }}
+        >
+          <option value="">All Outcomes</option>
+          <option value="appointment_booked">Booked Appointment</option>
+          <option value="estimate_requested">Estimate Requested</option>
+          <option value="message_taken">Message Taken</option>
+          <option value="transfer">Transferred</option>
+          <option value="no_action">No Action</option>
+        </select>
+        <select
+          value={filterLanguage}
+          onChange={(e) => { setFilterLanguage(e.target.value); setPage(1); }}
+          className="rounded-lg px-2 py-1.5 text-xs outline-none"
+          style={{
+            background: "var(--db-card)",
+            border: "1px solid var(--db-border)",
+            color: "var(--db-text)",
+          }}
+        >
+          <option value="">All Languages</option>
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+        </select>
+        {(filterStatus || filterOutcome || filterLanguage || filterDateFrom || filterDateTo) && (
+          <button
+            onClick={() => {
+              setFilterStatus("");
+              setFilterOutcome("");
+              setFilterLanguage("");
+              setFilterDateFrom("");
+              setFilterDateTo("");
+              setPage(1);
+            }}
+            className="rounded-lg px-2 py-1.5 text-xs font-medium transition-colors"
+            style={{ color: "var(--db-accent)" }}
+          >
+            Clear Filters
+          </button>
+        )}
+      </div>
 
       {error && (
         <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>

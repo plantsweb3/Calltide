@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { calls, leads, smsMessages, appointments } from "@/db/schema";
-import { eq, and, or, like, desc, count, sql, inArray } from "drizzle-orm";
+import { eq, and, or, like, desc, count, sql, inArray, gte, lte } from "drizzle-orm";
 import { DEMO_BUSINESS_ID, DEMO_CALLS, DEMO_TRANSCRIPTS, DEMO_RECOVERY_TIMELINES } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
 
@@ -14,18 +14,28 @@ export async function GET(req: NextRequest) {
   const page = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1")), 10000);
   const limit = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") || "20")), 100);
   const search = req.nextUrl.searchParams.get("search") || "";
+  const status = req.nextUrl.searchParams.get("status") || "";
+  const dateFrom = req.nextUrl.searchParams.get("dateFrom") || "";
+  const dateTo = req.nextUrl.searchParams.get("dateTo") || "";
+  const outcome = req.nextUrl.searchParams.get("outcome") || "";
+  const language = req.nextUrl.searchParams.get("language") || "";
   const offset = (page - 1) * limit;
 
   if (businessId === DEMO_BUSINESS_ID) {
     let filtered = DEMO_CALLS;
     if (search) {
       const q = search.toLowerCase();
-      filtered = DEMO_CALLS.filter(
+      filtered = filtered.filter(
         (c) =>
           c.callerPhone?.toLowerCase().includes(q) ||
           c.leadName?.toLowerCase().includes(q),
       );
     }
+    if (status) filtered = filtered.filter((c) => c.status === status);
+    if (outcome) filtered = filtered.filter((c) => "outcome" in c && c.outcome === outcome);
+    if (language) filtered = filtered.filter((c) => c.language === language);
+    if (dateFrom) filtered = filtered.filter((c) => c.createdAt >= dateFrom);
+    if (dateTo) filtered = filtered.filter((c) => c.createdAt <= dateTo + "T23:59:59");
     const total = filtered.length;
     const paged = filtered.slice(offset, offset + limit).map((c) => ({
       ...c,
@@ -41,18 +51,39 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const baseWhere = eq(calls.businessId, businessId);
+    const conditions = [eq(calls.businessId, businessId)];
 
-    const escaped = search.replace(/[%_]/g, "\\$&");
-    const searchCondition = search
-      ? and(
-          baseWhere,
-          or(
-            like(calls.callerPhone, `%${escaped}%`),
-            like(leads.name, `%${escaped}%`),
-          ),
-        )
-      : baseWhere;
+    if (search) {
+      const escaped = search.replace(/[%_]/g, "\\$&");
+      conditions.push(
+        or(
+          like(calls.callerPhone, `%${escaped}%`),
+          like(leads.name, `%${escaped}%`),
+        )!,
+      );
+    }
+
+    if (status) {
+      conditions.push(eq(calls.status, status));
+    }
+
+    if (outcome) {
+      conditions.push(eq(calls.outcome, outcome));
+    }
+
+    if (language) {
+      conditions.push(eq(calls.language, language));
+    }
+
+    if (dateFrom) {
+      conditions.push(gte(calls.createdAt, dateFrom));
+    }
+
+    if (dateTo) {
+      conditions.push(lte(calls.createdAt, dateTo + "T23:59:59"));
+    }
+
+    const searchCondition = and(...conditions);
 
     const [totalResult] = await db
       .select({ count: count() })

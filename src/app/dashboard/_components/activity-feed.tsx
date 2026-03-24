@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import EmptyState from "@/components/empty-state";
 
 interface FeedEvent {
@@ -89,8 +89,6 @@ function EventIcon({ type, urgent, recovered }: { type: string; urgent?: boolean
 }
 
 export default function ActivityFeed({ events }: { events: FeedEvent[] }) {
-  const router = useRouter();
-
   function getRoute(type: string): string {
     if (type.startsWith("call")) return "/dashboard/calls";
     if (type.startsWith("sms")) return "/dashboard/sms";
@@ -144,11 +142,13 @@ export default function ActivityFeed({ events }: { events: FeedEvent[] }) {
       </h3>
       <div className="space-y-0">
         {events.map((evt, i) => (
-          <div
+          <Link
             key={evt.id}
-            className="flex gap-3 py-3 cursor-pointer transition-colors rounded-lg px-1 -mx-1"
+            href={getRoute(evt.type)}
+            className="flex gap-3 py-3 cursor-pointer transition-colors duration-150 rounded-lg px-2 -mx-2 no-underline"
             style={{ borderTop: i > 0 ? "1px solid var(--db-border-light)" : "none" }}
-            onClick={() => router.push(getRoute(evt.type))}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
           >
             <div className="flex flex-col items-center">
               <EventIcon type={evt.type} urgent={evt.urgent} recovered={evt.recovered} />
@@ -196,7 +196,7 @@ export default function ActivityFeed({ events }: { events: FeedEvent[] }) {
             <span className="shrink-0 text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
               {formatTime(evt.time)}
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

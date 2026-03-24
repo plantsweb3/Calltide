@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { invoices, customers } from "@/db/schema";
-import { eq, and, or, like, desc, count, sql } from "drizzle-orm";
+import { eq, and, or, like, desc, count, sql, gte, lte } from "drizzle-orm";
 import { rateLimit, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { z } from "zod";
 import { reportError } from "@/lib/error-reporting";
@@ -23,6 +23,8 @@ export async function GET(req: NextRequest) {
   const status = searchParams.get("status");
   const search = searchParams.get("search")?.trim() || "";
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+  const dateFrom = searchParams.get("dateFrom") || "";
+  const dateTo = searchParams.get("dateTo") || "";
 
   try {
     const conditions = [eq(invoices.businessId, businessId)];
@@ -40,6 +42,14 @@ export async function GET(req: NextRequest) {
           like(invoices.invoiceNumber, `%${escaped}%`),
         )!
       );
+    }
+
+    if (dateFrom) {
+      conditions.push(gte(invoices.createdAt, dateFrom));
+    }
+
+    if (dateTo) {
+      conditions.push(lte(invoices.createdAt, dateTo + "T23:59:59"));
     }
 
     const where = and(...conditions);

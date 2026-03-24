@@ -150,6 +150,10 @@ export default function InvoicesPage() {
   const [editCustomerId, setEditCustomerId] = useState("");
   const [editSaving, setEditSaving] = useState(false);
 
+  // Date filter state
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
   /* ─── Data fetching ─── */
 
   const fetchInvoices = useCallback(async () => {
@@ -158,6 +162,8 @@ export default function InvoicesPage() {
       const params = new URLSearchParams();
       if (activeTab !== "all") params.set("status", activeTab);
       if (search) params.set("search", search);
+      if (dateFrom) params.set("dateFrom", dateFrom);
+      if (dateTo) params.set("dateTo", dateTo);
       params.set("page", page.toString());
 
       const res = await fetch(`/api/dashboard/invoices?${params}`);
@@ -172,7 +178,7 @@ export default function InvoicesPage() {
     } finally {
       setLoading(false);
     }
-  }, [activeTab, search, page]);
+  }, [activeTab, search, page, dateFrom, dateTo]);
 
   useEffect(() => { fetchInvoices(); }, [fetchInvoices]);
 
@@ -595,8 +601,45 @@ export default function InvoicesPage() {
           );
         })}
 
-        {/* Search */}
-        <div className="ml-auto flex-shrink-0">
+        {/* Date Range + Search */}
+        <div className="ml-auto flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1">
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
+              className="rounded-lg px-2 py-1.5 text-xs outline-none"
+              style={{
+                background: "var(--db-card)",
+                border: "1px solid var(--db-border)",
+                color: "var(--db-text)",
+              }}
+              title="From date"
+            />
+            <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>-</span>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
+              className="rounded-lg px-2 py-1.5 text-xs outline-none"
+              style={{
+                background: "var(--db-card)",
+                border: "1px solid var(--db-border)",
+                color: "var(--db-text)",
+              }}
+              title="To date"
+            />
+            {(dateFrom || dateTo) && (
+              <button
+                onClick={() => { setDateFrom(""); setDateTo(""); setPage(1); }}
+                className="text-xs font-medium px-1.5"
+                style={{ color: "var(--db-accent)" }}
+                title="Clear date filter"
+              >
+                Clear
+              </button>
+            )}
+          </div>
           <input
             type="text"
             placeholder="Search invoices..."

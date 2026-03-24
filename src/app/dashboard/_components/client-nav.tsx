@@ -152,11 +152,24 @@ interface ClientNavProps {
   onClose: () => void;
 }
 
+interface NavBadges {
+  followUps: number;
+  dispatch: number;
+  invoices: number;
+}
+
+const BADGE_HREF_MAP: Record<keyof NavBadges, string> = {
+  followUps: "/dashboard/follow-ups",
+  dispatch: "/dashboard/dispatch",
+  invoices: "/dashboard/invoices",
+};
+
 export default function ClientNav({ open, onClose }: ClientNavProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const [aiStatus, setAiStatus] = useState<string>("active");
+  const [badges, setBadges] = useState<NavBadges>({ followUps: 0, dispatch: 0, invoices: 0 });
 
   useEffect(() => {
     if (!open) return;
@@ -170,6 +183,19 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => setAiStatus(d.status ?? "active"))
       .catch(() => setAiStatus("active"));
+  }, []);
+
+  // Fetch nav badge counts and poll every 60 seconds
+  useEffect(() => {
+    function fetchBadges() {
+      fetch("/api/dashboard/nav-badges")
+        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+        .then((d: NavBadges) => setBadges(d))
+        .catch(() => {});
+    }
+    fetchBadges();
+    const interval = setInterval(fetchBadges, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const statusConfig: Record<string, { color: string; pulse: boolean; label: string }> = {
@@ -260,6 +286,13 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
                       ? pathname === "/dashboard"
                       : pathname.startsWith(item.href);
 
+                  // Determine badge count for this nav item
+                  const badgeCount = (Object.entries(BADGE_HREF_MAP) as [keyof NavBadges, string][])
+                    .find(([, href]) => href === item.href)
+                    ?.[0]
+                    ? badges[(Object.entries(BADGE_HREF_MAP) as [keyof NavBadges, string][]).find(([, href]) => href === item.href)![0]]
+                    : 0;
+
                   return (
                     <Link
                       key={item.href}
@@ -286,7 +319,23 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
                         }
                       }}
                     >
-                      <span style={{ color: isActive ? "var(--sidebar-accent)" : "var(--sidebar-text)" }}>{item.icon}</span>
+                      <span className="relative" style={{ color: isActive ? "var(--sidebar-accent)" : "var(--sidebar-text)" }}>
+                        {item.icon}
+                        {badgeCount > 0 && (
+                          <span
+                            className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center rounded-full text-[9px] font-bold leading-none"
+                            style={{
+                              background: "#ef4444",
+                              color: "#fff",
+                              minWidth: "16px",
+                              height: "16px",
+                              padding: "0 4px",
+                            }}
+                          >
+                            {badgeCount > 99 ? "99+" : badgeCount}
+                          </span>
+                        )}
+                      </span>
                       {item.label}
                     </Link>
                   );

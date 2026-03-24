@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import MetricCard from "@/components/metric-card";
 import AnimatedCounter from "@/app/dashboard/_components/animated-counter";
 import ActivityFeed from "@/app/dashboard/_components/activity-feed";
@@ -12,6 +13,13 @@ import DashboardTour from "@/components/dashboard-tour";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 import { IconSparkles, IconClock, IconTarget, IconParty } from "@/components/icons";
 import { IconPhone } from "@/components/marketing/icons";
+
+interface ActionItems {
+  overdueInvoices: number;
+  unassignedToday: number;
+  urgentFollowUps: number;
+  expiredEstimates: number;
+}
 
 interface Overview {
   callsToday: number;
@@ -125,6 +133,7 @@ export default function OverviewPage() {
   const [dismissed, setDismissed] = useState(false);
   const [tourDismissed, setTourDismissed] = useState(false);
   const [activeCalls, setActiveCalls] = useState<ActiveCall[]>([]);
+  const [actionItems, setActionItems] = useState<ActionItems | null>(null);
 
   const fetchActiveCalls = useCallback(() => {
     fetch("/api/dashboard/active-calls")
@@ -138,6 +147,10 @@ export default function OverviewPage() {
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => setError("Failed to load dashboard data"));
+    fetch("/api/dashboard/action-items")
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((d: ActionItems) => setActionItems(d))
+      .catch(() => {});
     fetchActiveCalls();
     const interval = setInterval(fetchActiveCalls, 10000);
     return () => clearInterval(interval);
@@ -398,6 +411,9 @@ export default function OverviewPage() {
           />
         </div>
 
+        {/* Action Required */}
+        <ActionRequiredSection items={actionItems} />
+
         {/* Activity Feed + Weekly Summary */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           <div className="lg:col-span-3">
@@ -582,6 +598,9 @@ export default function OverviewPage() {
         <MetricCard label="Total Calls" value={data.totalCalls} />
       </div>
 
+      {/* Action Required */}
+      <ActionRequiredSection items={actionItems} />
+
       {/* Activity Feed + Weekly Summary (when available) */}
       {(data.activityFeed || data.weeklySummary) && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
@@ -605,6 +624,131 @@ export default function OverviewPage() {
           bilingualStats={data.bilingualStats}
         />
       )}
+    </div>
+  );
+}
+
+function ActionRequiredSection({ items }: { items: ActionItems | null }) {
+  if (!items) return null;
+
+  const cards: {
+    key: string;
+    count: number;
+    label: string;
+    href: string;
+    priority: "urgent" | "medium";
+    icon: React.ReactNode;
+  }[] = [];
+
+  if (items.overdueInvoices > 0) {
+    cards.push({
+      key: "overdue",
+      count: items.overdueInvoices,
+      label: `Overdue invoice${items.overdueInvoices > 1 ? "s" : ""}`,
+      href: "/dashboard/invoices",
+      priority: "urgent",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+      ),
+    });
+  }
+
+  if (items.unassignedToday > 0) {
+    cards.push({
+      key: "unassigned",
+      count: items.unassignedToday,
+      label: `Unassigned appointment${items.unassignedToday > 1 ? "s" : ""} today`,
+      href: "/dashboard/dispatch",
+      priority: "urgent",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+        </svg>
+      ),
+    });
+  }
+
+  if (items.urgentFollowUps > 0) {
+    cards.push({
+      key: "followups",
+      count: items.urgentFollowUps,
+      label: `Urgent follow-up${items.urgentFollowUps > 1 ? "s" : ""}`,
+      href: "/dashboard/follow-ups",
+      priority: "urgent",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="9 11 12 14 22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+        </svg>
+      ),
+    });
+  }
+
+  if (items.expiredEstimates > 0) {
+    cards.push({
+      key: "estimates",
+      count: items.expiredEstimates,
+      label: `Expired estimate${items.expiredEstimates > 1 ? "s" : ""}`,
+      href: "/dashboard/estimates",
+      priority: "medium",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
+        </svg>
+      ),
+    });
+  }
+
+  if (cards.length === 0) return null;
+
+  return (
+    <div>
+      <h3
+        className="mb-3 text-sm font-semibold uppercase tracking-wider"
+        style={{ color: "var(--db-text-muted)" }}
+      >
+        Action Required
+      </h3>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((card) => (
+          <Link
+            key={card.key}
+            href={card.href}
+            className="rounded-xl p-4 transition-all duration-200"
+            style={{
+              background: "var(--db-card)",
+              border: "1px solid var(--db-border)",
+              borderLeft: `3px solid ${card.priority === "urgent" ? "var(--db-danger)" : "var(--db-warning)"}`,
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--db-card)"; }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                style={{
+                  background: card.priority === "urgent" ? "rgba(239,68,68,0.1)" : "rgba(245,158,11,0.1)",
+                  color: card.priority === "urgent" ? "var(--db-danger)" : "var(--db-warning)",
+                }}
+              >
+                {card.icon}
+              </div>
+              <div className="min-w-0">
+                <p
+                  className="text-lg font-bold"
+                  style={{ color: card.priority === "urgent" ? "var(--db-danger)" : "var(--db-warning)" }}
+                >
+                  {card.count}
+                </p>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  {card.label}
+                </p>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
