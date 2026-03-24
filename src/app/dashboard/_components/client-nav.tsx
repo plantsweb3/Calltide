@@ -54,6 +54,26 @@ const navGroups: { label?: string; items: NavItem[] }[] = [
     ],
   },
   {
+    label: "Operations",
+    items: [
+      {
+        href: "/dashboard/dispatch",
+        label: "Dispatch",
+        icon: <svg {...iconProps}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>,
+      },
+      {
+        href: "/dashboard/team",
+        label: "Team",
+        icon: <svg {...iconProps}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" y1="8" x2="19" y2="14" /><line x1="22" y1="11" x2="16" y2="11" /></svg>,
+      },
+      {
+        href: "/dashboard/follow-ups",
+        label: "Follow-ups",
+        icon: <svg {...iconProps}><polyline points="9 11 12 14 22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></svg>,
+      },
+    ],
+  },
+  {
     label: "Business",
     items: [
       {
@@ -76,6 +96,16 @@ const navGroups: { label?: string; items: NavItem[] }[] = [
         href: "/dashboard/job-cards",
         label: "Job Cards",
         icon: <svg {...iconProps}><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M9 3v18" /><path d="M13 8h5" /><path d="M13 12h5" /><path d="M13 16h5" /></svg>,
+      },
+      {
+        href: "/dashboard/dispatch",
+        label: "Dispatch",
+        icon: <svg {...iconProps}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>,
+      },
+      {
+        href: "/dashboard/team",
+        label: "Team",
+        icon: <svg {...iconProps}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>,
       },
     ],
   },

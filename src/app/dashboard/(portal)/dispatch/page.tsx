@@ -1,0 +1,689 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
+import PageHeader from "@/components/page-header";
+import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
+import Button from "@/components/ui/button";
+import EmptyState from "@/components/empty-state";
+import ConfirmDialog from "@/components/confirm-dialog";
+
+/* ── Types ── */
+
+interface DispatchAppointment {
+  id: string;
+  service: string;
+  date: string;
+  time: string;
+  duration: number;
+  status: string;
+  notes: string | null;
+  technicianId: string | null;
+  customerName: string | null;
+  customerPhone: string | null;
+  customerAddress: string | null;
+}
+
+interface Technician {
+  id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  skills: string[];
+  isActive: boolean;
+  isOnCall: boolean;
+  color: string | null;
+  appointments: DispatchAppointment[];
+}
+
+/* ── Helpers ── */
+
+function formatTime12h(time: string): string {
+  const [h, m] = time.split(":").map(Number);
+  const period = h >= 12 ? "PM" : "AM";
+  const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return `${hour12}:${String(m).padStart(2, "0")} ${period}`;
+}
+
+function formatPhone(phone: string | null): string {
+  if (!phone) return "";
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 11 && digits[0] === "1") {
+    return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+  }
+  if (digits.length === 10) {
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+  return phone;
+}
+
+function toDateString(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+function formatDateLabel(date: string): string {
+  const d = new Date(date + "T12:00:00");
+  return d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+}
+
+const DEFAULT_COLORS = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899", "#14B8A6", "#F97316"];
+
+function getTechColor(tech: Technician, index: number): string {
+  return tech.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length];
+}
+
+/* ── Main Component ── */
+
+export default function DispatchPage() {
+  const [date, setDate] = useState(toDateString(new Date()));
+  const [technicians, setTechnicians] = useState<Technician[]>([]);
+  const [unassigned, setUnassigned] = useState<DispatchAppointment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Assign modal
+  const [assignAppt, setAssignAppt] = useState<DispatchAppointment | null>(null);
+  const [assignLoading, setAssignLoading] = useState(false);
+
+  // Notify
+  const [notifyLoading, setNotifyLoading] = useState<string | null>(null);
+  const [sendAllLoading, setSendAllLoading] = useState(false);
+
+  // Selected appointment detail
+  const [selectedAppt, setSelectedAppt] = useState<DispatchAppointment | null>(null);
+
+  const fetchDispatch = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/dashboard/dispatch?date=${date}`);
+      if (!res.ok) throw new Error("Failed to load dispatch data");
+      const data = await res.json();
+      setTechnicians(data.technicians);
+      setUnassigned(data.unassigned);
+    } catch {
+      setError("Failed to load dispatch data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [date]);
+
+  useEffect(() => {
+    fetchDispatch();
+  }, [fetchDispatch]);
+
+  function navigateDate(delta: number) {
+    const d = new Date(date + "T12:00:00");
+    d.setDate(d.getDate() + delta);
+    setDate(toDateString(d));
+  }
+
+  function goToToday() {
+    setDate(toDateString(new Date()));
+  }
+
+  async function handleAssign(appointmentId: string, technicianId: string | null) {
+    setAssignLoading(true);
+    try {
+      const res = await fetch(`/api/dashboard/appointments/${appointmentId}/assign`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ technicianId }),
+      });
+      if (!res.ok) throw new Error("Failed to assign");
+      toast.success(technicianId ? "Technician assigned" : "Technician unassigned");
+      setAssignAppt(null);
+      fetchDispatch();
+    } catch {
+      toast.error("Failed to assign technician");
+    } finally {
+      setAssignLoading(false);
+    }
+  }
+
+  async function handleNotify(techId: string) {
+    setNotifyLoading(techId);
+    try {
+      const res = await fetch("/api/dashboard/dispatch/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ technicianId: techId, date }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to send");
+      }
+      const data = await res.json();
+      toast.success(`Schedule sent (${data.jobCount} jobs)`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to send schedule");
+    } finally {
+      setNotifyLoading(null);
+    }
+  }
+
+  async function handleSendAll() {
+    const techsWithJobs = technicians.filter((t) => t.appointments.length > 0 && t.phone);
+    if (techsWithJobs.length === 0) {
+      toast.error("No technicians with jobs and phone numbers to notify");
+      return;
+    }
+
+    setSendAllLoading(true);
+    let sent = 0;
+    for (const tech of techsWithJobs) {
+      try {
+        const res = await fetch("/api/dashboard/dispatch/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ technicianId: tech.id, date }),
+        });
+        if (res.ok) sent++;
+      } catch {
+        // Continue to next
+      }
+    }
+    toast.success(`Schedules sent to ${sent} of ${techsWithJobs.length} technicians`);
+    setSendAllLoading(false);
+  }
+
+  const isToday = date === toDateString(new Date());
+  const totalJobs = technicians.reduce((sum, t) => sum + t.appointments.length, 0) + unassigned.length;
+
+  return (
+    <div>
+      <PageHeader
+        title="Dispatch Board"
+        description={`${totalJobs} job${totalJobs !== 1 ? "s" : ""} ${isToday ? "today" : `on ${formatDateLabel(date)}`}`}
+        actions={
+          <div className="flex items-center gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleSendAll}
+              disabled={sendAllLoading || technicians.every((t) => t.appointments.length === 0)}
+            >
+              {sendAllLoading ? "Sending..." : "Send All Schedules"}
+            </Button>
+          </div>
+        }
+      />
+
+      {/* Date Navigation */}
+      <div
+        className="flex items-center justify-between rounded-xl px-4 py-3 mb-6"
+        style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+      >
+        <button
+          onClick={() => navigateDate(-1)}
+          className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+          style={{ color: "var(--db-text-muted)" }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          Prev
+        </button>
+
+        <div className="flex items-center gap-3">
+          <h2 className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
+            {formatDateLabel(date)}
+          </h2>
+          {!isToday && (
+            <button
+              onClick={goToToday}
+              className="rounded-md px-2 py-1 text-xs font-medium transition-colors"
+              style={{ background: "var(--db-accent)", color: "#fff" }}
+            >
+              Today
+            </button>
+          )}
+        </div>
+
+        <button
+          onClick={() => navigateDate(1)}
+          className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+          style={{ color: "var(--db-text-muted)" }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+        >
+          Next
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <Button variant="danger" size="sm" onClick={fetchDispatch}>Retry</Button>
+        </div>
+      )}
+
+      {/* Loading */}
+      {loading && (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-xl p-4 animate-pulse" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
+              <div className="h-4 w-32 rounded mb-3" style={{ background: "var(--db-hover)" }} />
+              <div className="space-y-2">
+                <div className="h-16 rounded-lg" style={{ background: "var(--db-hover)" }} />
+                <div className="h-16 rounded-lg" style={{ background: "var(--db-hover)" }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!loading && technicians.length === 0 && unassigned.length === 0 && (
+        <EmptyState
+          icon={
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          }
+          title="No technicians yet"
+          description="Add your team members to start dispatching jobs."
+          action={{ label: "Add Team", href: "/dashboard/team" }}
+        />
+      )}
+
+      {/* Dispatch Grid */}
+      {!loading && (technicians.length > 0 || unassigned.length > 0) && (
+        <div className="space-y-6">
+          {/* Unassigned jobs */}
+          {unassigned.length > 0 && (
+            <div
+              className="rounded-xl overflow-hidden"
+              style={{ border: "2px dashed var(--db-border)" }}
+            >
+              <div
+                className="flex items-center justify-between px-4 py-3"
+                style={{ background: "var(--db-hover)" }}
+              >
+                <div className="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-warning, #f59e0b)" }}>
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                  <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
+                    Unassigned ({unassigned.length})
+                  </span>
+                </div>
+              </div>
+              <div className="p-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {unassigned.map((appt) => (
+                  <AppointmentCard
+                    key={appt.id}
+                    appointment={appt}
+                    borderColor="var(--db-border)"
+                    onAssign={() => setAssignAppt(appt)}
+                    onClick={() => setSelectedAppt(appt)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Technician columns */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {technicians.map((tech, idx) => {
+              const color = getTechColor(tech, idx);
+              return (
+                <div
+                  key={tech.id}
+                  className="rounded-xl overflow-hidden"
+                  style={{ border: `1px solid var(--db-border)`, background: "var(--db-card)" }}
+                >
+                  {/* Technician Header */}
+                  <div
+                    className="px-4 py-3"
+                    style={{ borderBottom: `2px solid ${color}` }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className="h-3 w-3 rounded-full flex-shrink-0"
+                          style={{ background: color }}
+                        />
+                        <div>
+                          <h3 className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
+                            {tech.name}
+                          </h3>
+                          {tech.phone && (
+                            <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
+                              {formatPhone(tech.phone)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {tech.isOnCall && (
+                          <span
+                            className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
+                            style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444" }}
+                          >
+                            On Call
+                          </span>
+                        )}
+                        <span
+                          className="text-xs font-medium px-2 py-0.5 rounded-full"
+                          style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
+                        >
+                          {tech.appointments.length} job{tech.appointments.length !== 1 ? "s" : ""}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Skills */}
+                    {tech.skills && tech.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {tech.skills.slice(0, 3).map((skill) => (
+                          <span
+                            key={skill}
+                            className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                            style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {tech.skills.length > 3 && (
+                          <span
+                            className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                            style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
+                          >
+                            +{tech.skills.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Notify button */}
+                    {tech.appointments.length > 0 && tech.phone && (
+                      <button
+                        onClick={() => handleNotify(tech.id)}
+                        disabled={notifyLoading === tech.id}
+                        className="mt-2 flex items-center gap-1 text-xs font-medium transition-colors"
+                        style={{ color: "var(--db-accent)" }}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M22 2L11 13" /><path d="M22 2L15 22 11 13 2 9z" />
+                        </svg>
+                        {notifyLoading === tech.id ? "Sending..." : "Send schedule"}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Appointments */}
+                  <div className="p-3 space-y-2 min-h-[80px]">
+                    {tech.appointments.length === 0 ? (
+                      <p className="text-xs text-center py-4" style={{ color: "var(--db-text-muted)" }}>
+                        No jobs scheduled
+                      </p>
+                    ) : (
+                      tech.appointments.map((appt) => (
+                        <AppointmentCard
+                          key={appt.id}
+                          appointment={appt}
+                          borderColor={color}
+                          onClick={() => setSelectedAppt(appt)}
+                        />
+                      ))
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Assign Modal */}
+      {assignAppt && (
+        <div
+          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => !assignLoading && setAssignAppt(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="assign-dialog-title"
+        >
+          <div
+            className="modal-content db-card w-full max-w-md rounded-xl p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="assign-dialog-title" className="text-lg font-semibold mb-1" style={{ color: "var(--db-text)" }}>
+              Assign Technician
+            </h3>
+            <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
+              {assignAppt.service} at {formatTime12h(assignAppt.time)}
+              {assignAppt.customerName ? ` - ${assignAppt.customerName}` : ""}
+            </p>
+
+            <div className="space-y-1.5 max-h-64 overflow-y-auto">
+              {technicians.map((tech, idx) => (
+                <button
+                  key={tech.id}
+                  onClick={() => handleAssign(assignAppt.id, tech.id)}
+                  disabled={assignLoading}
+                  className="flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-left transition-colors"
+                  style={{ border: "1px solid var(--db-border)" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                >
+                  <span
+                    className="h-2.5 w-2.5 rounded-full flex-shrink-0"
+                    style={{ background: getTechColor(tech, idx) }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate" style={{ color: "var(--db-text)" }}>{tech.name}</p>
+                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                      {tech.appointments.length} job{tech.appointments.length !== 1 ? "s" : ""} today
+                      {tech.skills?.length ? ` \u00B7 ${tech.skills.slice(0, 2).join(", ")}` : ""}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-4 flex justify-end">
+              <Button variant="ghost" size="sm" onClick={() => setAssignAppt(null)} disabled={assignLoading}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Appointment Detail Modal */}
+      {selectedAppt && !assignAppt && (
+        <div
+          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedAppt(null)}
+          onKeyDown={(e) => { if (e.key === "Escape") setSelectedAppt(null); }}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="modal-content db-card w-full max-w-lg rounded-xl p-6 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+                  {selectedAppt.service}
+                </h3>
+                <p className="text-sm mt-1" style={{ color: "var(--db-text-muted)" }}>
+                  {formatTime12h(selectedAppt.time)}
+                  {selectedAppt.duration > 0 && ` \u00B7 ${selectedAppt.duration} min`}
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedAppt(null)}
+                className="p-1 rounded-lg transition-colors"
+                style={{ color: "var(--db-text-muted)" }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <DetailRow label="Status">
+                <StatusBadge label={selectedAppt.status} variant={statusToVariant(selectedAppt.status)} dot />
+              </DetailRow>
+              {selectedAppt.customerName && (
+                <DetailRow label="Customer">
+                  <span className="text-sm" style={{ color: "var(--db-text)" }}>
+                    {selectedAppt.customerName}
+                    {selectedAppt.customerPhone ? ` \u00B7 ${formatPhone(selectedAppt.customerPhone)}` : ""}
+                  </span>
+                </DetailRow>
+              )}
+              {selectedAppt.customerAddress && (
+                <DetailRow label="Address">
+                  <span className="text-sm" style={{ color: "var(--db-text)" }}>{selectedAppt.customerAddress}</span>
+                </DetailRow>
+              )}
+              {selectedAppt.notes && (
+                <div>
+                  <span className="text-xs font-medium uppercase tracking-wider block mb-1" style={{ color: "var(--db-text-muted)" }}>Notes</span>
+                  <p className="text-sm rounded-lg p-3" style={{ background: "var(--db-hover)", color: "var(--db-text)" }}>
+                    {selectedAppt.notes}
+                  </p>
+                </div>
+              )}
+              {selectedAppt.technicianId && (
+                <DetailRow label="Assigned">
+                  <span className="text-sm" style={{ color: "var(--db-text)" }}>
+                    {technicians.find((t) => t.id === selectedAppt.technicianId)?.name || "Unknown"}
+                  </span>
+                </DetailRow>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 pt-3" style={{ borderTop: "1px solid var(--db-border)" }}>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  setSelectedAppt(null);
+                  setAssignAppt(selectedAppt);
+                }}
+              >
+                {selectedAppt.technicianId ? "Reassign" : "Assign Tech"}
+              </Button>
+              {selectedAppt.technicianId && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    handleAssign(selectedAppt.id, null);
+                    setSelectedAppt(null);
+                  }}
+                >
+                  Unassign
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Subcomponents ── */
+
+function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-xs font-medium uppercase tracking-wider w-20 flex-shrink-0" style={{ color: "var(--db-text-muted)" }}>{label}</span>
+      {children}
+    </div>
+  );
+}
+
+interface AppointmentCardProps {
+  appointment: DispatchAppointment;
+  borderColor: string;
+  onAssign?: () => void;
+  onClick?: () => void;
+}
+
+function AppointmentCard({ appointment, borderColor, onAssign, onClick }: AppointmentCardProps) {
+  return (
+    <div
+      className="rounded-lg p-3 transition-all cursor-pointer"
+      style={{
+        background: "var(--db-surface, var(--db-bg))",
+        borderLeft: `3px solid ${borderColor}`,
+        border: `1px solid var(--db-border)`,
+        borderLeftWidth: "3px",
+        borderLeftColor: borderColor,
+      }}
+      onClick={onClick}
+      onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "var(--db-surface, var(--db-bg))"; }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick?.(); } }}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
+            {formatTime12h(appointment.time)}
+          </p>
+          <p className="text-sm mt-0.5 truncate" style={{ color: "var(--db-text)" }}>
+            {appointment.service}
+          </p>
+          {appointment.customerName && (
+            <p className="text-xs mt-1 truncate" style={{ color: "var(--db-text-muted)" }}>
+              {appointment.customerName}
+              {appointment.customerPhone ? ` \u00B7 ${formatPhone(appointment.customerPhone)}` : ""}
+            </p>
+          )}
+          {appointment.customerAddress && (
+            <p className="text-xs mt-0.5 truncate" style={{ color: "var(--db-text-muted)" }}>
+              {appointment.customerAddress}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+          <StatusBadge label={appointment.status} variant={statusToVariant(appointment.status)} />
+          {appointment.duration > 0 && (
+            <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)" }}>
+              {appointment.duration}m
+            </span>
+          )}
+        </div>
+      </div>
+
+      {onAssign && (
+        <button
+          className="mt-2 flex items-center gap-1 text-xs font-medium transition-colors"
+          style={{ color: "var(--db-accent)" }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onAssign();
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" />
+            <line x1="20" y1="8" x2="20" y2="14" /><line x1="23" y1="11" x2="17" y2="11" />
+          </svg>
+          Assign Tech
+        </button>
+      )}
+    </div>
+  );
+}
