@@ -1,6 +1,6 @@
 import { db } from "@/db";
-import { appointments, calls, leads, customers, technicians, smsOptOuts } from "@/db/schema";
-import { eq, and, ne, desc, gte, isNull } from "drizzle-orm";
+import { appointments, calls, leads, customers, technicians, smsOptOuts, callbacks } from "@/db/schema";
+import { eq, and, ne, gte, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { checkAvailability, bookSlot } from "@/lib/calendar/availability";
 import { getBusinessById } from "@/lib/ai/context-builder";
@@ -70,6 +70,12 @@ const rescheduleAppointmentSchema = z.object({
   new_time: z.string().min(1, "new_time is required"),
 });
 
+const scheduleCallbackSchema = z.object({
+  callback_time: z.string().min(1, "callback_time is required"),
+  caller_name: z.string().optional(),
+  reason: z.string().optional(),
+});
+
 interface ToolCallContext {
   businessId: string;
   callId?: string;
@@ -89,6 +95,7 @@ const TOOL_INTENT_MAP: Record<string, string> = {
   lookup_appointments: "booking",
   cancel_appointment: "booking",
   reschedule_appointment: "booking",
+  schedule_callback: "callback",
 };
 
 export async function dispatchToolCall(
@@ -124,6 +131,9 @@ export async function dispatchToolCall(
       break;
     case "reschedule_appointment":
       result = await handleRescheduleAppointment(params, ctx);
+      break;
+    case "schedule_callback":
+      result = await handleScheduleCallback(params, ctx);
       break;
     default:
       return { success: false, error: `Unknown tool: ${toolName}` };
@@ -279,7 +289,7 @@ async function handleBookAppointment(
       return { success: false, error: "That time slot was just booked. Please choose another time." };
     }
     appointment = result;
-  } catch (err) {
+  } catch (_err) {
     return { success: false, error: "Unable to book appointment. Please try again." };
   }
 
@@ -484,6 +494,67 @@ async function handleTakeMessage(
       }
     } catch (err) {
       reportError("Emergency dispatch failed", err, { businessId: ctx.businessId, extra: { callId: ctx.callId } });
+    }
+  }
+
+  // Auto-create follow-up task (fire-and-forget, non-critical)
+  try {
+    const { followUps } = await import("@/db/schema");
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(9, 0, 0, 0);
+
+    // Look up customerId from the call record
+    let customerId: string | null = null;
+    if (ctx.callId) {
+      const [callRec] = await db.select({ customerId: calls.customerId }).from(calls).where(eq(calls.id, ctx.callId)).limit(1);
+      customerId = callRec?.customerId || null;
+    }
+
+    await db.insert(followUps).values({
+      businessId: ctx.businessId,
+      callId: ctx.callId || null,
+      customerId,
+      title: `Follow up: ${callerName || "Caller"} — ${message.slice(0, 100)}`,
+      description: message,
+      dueDate: tomorrow.toISOString(),
+      priority: isEmergency ? "urgent" : "normal",
+    });
+
+    // Update call record
+    if (ctx.callId) {
+      await db.update(calls).set({ followUpCreated: true }).where(eq(calls.id, ctx.callId));
+    }
+  } catch (err) {
+    // Non-critical — don't break the tool response
+    console.error("[follow-up] auto-create failed:", err);
+  }
+
+  // Detect complaints and auto-create ticket (fire-and-forget, non-critical)
+  const complaintKeywords = ["complaint", "unhappy", "terrible", "awful", "worst", "sue", "lawyer", "bbb", "review", "report", "angry", "furious", "unacceptable", "refund", "rip off", "scam"];
+  const isComplaint = complaintKeywords.some(kw => messageLower.includes(kw));
+
+  if (isComplaint) {
+    try {
+      const { complaintTickets } = await import("@/db/schema");
+
+      let complaintCustomerId: string | null = null;
+      if (ctx.callId) {
+        const [callRec] = await db.select({ customerId: calls.customerId }).from(calls).where(eq(calls.id, ctx.callId)).limit(1);
+        complaintCustomerId = callRec?.customerId || null;
+      }
+
+      await db.insert(complaintTickets).values({
+        businessId: ctx.businessId,
+        callId: ctx.callId || null,
+        customerId: complaintCustomerId,
+        customerPhone: ctx.callerPhone || null,
+        severity: messageLower.includes("lawyer") || messageLower.includes("sue") ? "critical" : "high",
+        category: "service_quality",
+        description: message,
+      });
+    } catch (err) {
+      console.error("[complaint] auto-create failed:", err);
     }
   }
 
@@ -1232,4 +1303,75 @@ async function handleRescheduleAppointment(
         : `Your ${appt.service} appointment has been rescheduled to ${newDate} at ${newTime}. A confirmation text has been sent.`,
     },
   };
+}
+
+async function handleScheduleCallback(
+  params: Record<string, unknown>,
+  ctx: ToolCallContext,
+): Promise<ToolResult> {
+  const parsed = scheduleCallbackSchema.safeParse(params);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
+  }
+  const { callback_time: callbackTime, caller_name: callerName, reason } = parsed.data;
+
+  const biz = await getBusinessById(ctx.businessId);
+  if (!biz) return { success: false, error: "Business not found" };
+
+  // Update lead name if provided
+  if (callerName && ctx.leadId) {
+    await db.update(leads).set({ name: callerName }).where(eq(leads.id, ctx.leadId));
+  }
+
+  try {
+    const [cb] = await db.insert(callbacks).values({
+      businessId: ctx.businessId,
+      callId: ctx.callId || null,
+      customerPhone: ctx.callerPhone || "unknown",
+      customerName: callerName || null,
+      reason: reason || null,
+      requestedTime: callbackTime,
+      status: "scheduled",
+    }).returning();
+
+    // Notify the business owner via SMS
+    const callerDisplay = callerName || "A caller";
+    const reasonLine = reason ? ` — ${reason}` : "";
+    await sendSMS({
+      to: biz.ownerPhone,
+      from: biz.twilioNumber,
+      body: `Callback requested: ${callerDisplay} at ${callbackTime}${reasonLine}. Phone: ${ctx.callerPhone || "unknown"}.`,
+      businessId: ctx.businessId,
+      leadId: ctx.leadId,
+      callId: ctx.callId,
+      templateType: "owner_notify",
+    });
+
+    // Log activity (fire-and-forget)
+    logActivity({
+      type: "callback_scheduled",
+      entityType: "callback",
+      entityId: cb.id,
+      title: `Callback scheduled: ${callerDisplay}`,
+      detail: `Requested for ${callbackTime}${reasonLine}`,
+      metadata: {
+        businessId: ctx.businessId,
+        callerPhone: ctx.callerPhone,
+        callbackTime,
+      },
+    }).catch((err) => reportError("Failed to log callback activity", err));
+
+    return {
+      success: true,
+      data: {
+        callbackId: cb.id,
+        message: ctx.language === "es"
+          ? `Perfecto, le hemos agendado una llamada de vuelta para ${callbackTime}. ${biz.ownerName || "El dueño"} le llamará a ese horario.`
+          : `Got it, we've scheduled a callback for ${callbackTime}. ${biz.ownerName || "The owner"} will call you back at that time.`,
+      },
+    };
+  } catch (err) {
+    reportError("Failed to schedule callback", err, { extra: { callId: ctx.callId } });
+    return { success: false, error: "Failed to schedule callback" };
+  }
 }
