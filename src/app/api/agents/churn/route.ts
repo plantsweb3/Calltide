@@ -18,6 +18,7 @@ import {
 } from "@/lib/agents/handoffs";
 import { createNotification } from "@/lib/notifications";
 import { verifyCronAuth } from "@/lib/cron-auth";
+import { reportError } from "@/lib/error-reporting";
 
 // ── Programmatic Churn Scoring ──
 
@@ -262,73 +263,78 @@ export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
   if (authError) return authError;
 
-  // Get all active businesses
-  const activeClients = await db
-    .select()
-    .from(businesses)
-    .where(eq(businesses.active, true));
+  try {
+    // Get all active businesses
+    const activeClients = await db
+      .select()
+      .from(businesses)
+      .where(eq(businesses.active, true));
 
-  const results = [];
+    const results = [];
 
-  // Process incoming handoffs from onboard agent (stalled onboarding → churn watch)
-  const incomingHandoffs = await getHandoffsForAgent("churn");
-  for (const handoff of incomingHandoffs) {
-    const client = activeClients.find((c) => c.id === handoff.businessId);
-    if (!client) {
-      // Client might not be active — fetch directly
-      const [hClient] = await db
-        .select()
-        .from(businesses)
-        .where(eq(businesses.id, handoff.businessId))
-        .limit(1);
-      if (!hClient) {
-        await completeHandoff(handoff.id, "Business not found");
+    // Process incoming handoffs from onboard agent (stalled onboarding → churn watch)
+    const incomingHandoffs = await getHandoffsForAgent("churn");
+    for (const handoff of incomingHandoffs) {
+      const client = activeClients.find((c) => c.id === handoff.businessId);
+      if (!client) {
+        // Client might not be active — fetch directly
+        const [hClient] = await db
+          .select()
+          .from(businesses)
+          .where(eq(businesses.id, handoff.businessId))
+          .limit(1);
+        if (!hClient) {
+          await completeHandoff(handoff.id, "Business not found");
+          continue;
+        }
+
+        const result = await processClient(hClient, { isHandoff: true, handoffBoost: 2 });
+        await logOutreach(hClient.id, "churn_agent", "email");
+        await completeHandoff(handoff.id, `Processed churn analysis for ${hClient.name}`);
+        results.push({ businessId: hClient.id, name: hClient.name, handoff: true, ...result });
         continue;
       }
 
-      const result = await processClient(hClient, { isHandoff: true, handoffBoost: 2 });
-      await logOutreach(hClient.id, "churn_agent", "email");
-      await completeHandoff(handoff.id, `Processed churn analysis for ${hClient.name}`);
-      results.push({ businessId: hClient.id, name: hClient.name, handoff: true, ...result });
-      continue;
+      const result = await processClient(client, { isHandoff: true, handoffBoost: 2 });
+      await logOutreach(client.id, "churn_agent", "email");
+      await completeHandoff(handoff.id, `Processed churn analysis for ${client.name}`);
+      results.push({ businessId: client.id, name: client.name, handoff: true, ...result });
     }
 
-    const result = await processClient(client, { isHandoff: true, handoffBoost: 2 });
-    await logOutreach(client.id, "churn_agent", "email");
-    await completeHandoff(handoff.id, `Processed churn analysis for ${client.name}`);
-    results.push({ businessId: client.id, name: client.name, handoff: true, ...result });
-  }
+    for (const client of activeClients) {
+      // Outreach conflict prevention — skip if already contacted today
+      if (!(await canContactToday(client.id))) continue;
 
-  for (const client of activeClients) {
-    // Outreach conflict prevention — skip if already contacted today
-    if (!(await canContactToday(client.id))) continue;
+      const result = await processClient(client);
 
-    const result = await processClient(client);
+      // Log outreach to prevent same-day duplicate contacts
+      await logOutreach(client.id, "churn_agent", "email");
 
-    // Log outreach to prevent same-day duplicate contacts
-    await logOutreach(client.id, "churn_agent", "email");
+      // If high-risk (score >= 7), create handoff to success agent for recovery follow-up
+      if (result.score >= 7) {
+        await createHandoff({
+          fromAgent: "churn",
+          toAgent: "success",
+          businessId: client.id,
+          reason: "High churn risk — needs success recovery follow-up",
+          context: {
+            churnScore: result.score,
+            factors: result.factors,
+            paymentStatus: (await gatherClientSignals(client)).paymentStatus,
+          },
+          priority: result.score >= 8.5 ? "urgent" : "high",
+          ttlHours: 48,
+        });
+      }
 
-    // If high-risk (score >= 7), create handoff to success agent for recovery follow-up
-    if (result.score >= 7) {
-      await createHandoff({
-        fromAgent: "churn",
-        toAgent: "success",
-        businessId: client.id,
-        reason: "High churn risk — needs success recovery follow-up",
-        context: {
-          churnScore: result.score,
-          factors: result.factors,
-          paymentStatus: (await gatherClientSignals(client)).paymentStatus,
-        },
-        priority: result.score >= 8.5 ? "urgent" : "high",
-        ttlHours: 48,
-      });
+      results.push({ businessId: client.id, name: client.name, ...result });
     }
 
-    results.push({ businessId: client.id, name: client.name, ...result });
+    return NextResponse.json({ processed: results.length, results });
+  } catch (error) {
+    reportError("[churn] Agent failed", error);
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
-
-  return NextResponse.json({ processed: results.length, results });
 }
 
 /**

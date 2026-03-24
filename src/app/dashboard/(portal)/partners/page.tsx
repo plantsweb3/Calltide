@@ -109,6 +109,7 @@ export default function PartnersPage() {
       }
     } catch {
       toast.error("Failed to load partner data");
+      return;
     } finally {
       setLoading(false);
     }

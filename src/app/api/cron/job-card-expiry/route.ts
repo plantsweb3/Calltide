@@ -19,7 +19,6 @@ export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
   if (authError) return authError;
 
-  try {
   const now = new Date();
   const fourHoursAgo = new Date(now.getTime() - 4 * 60 * 60 * 1000).toISOString();
   const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString();
@@ -215,10 +214,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     reportError("Job card expiry cron failed", error);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
-  }
-  } catch (err) {
-    reportError("[job-card-expiry] Outer error", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

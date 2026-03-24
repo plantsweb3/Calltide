@@ -250,41 +250,45 @@ export async function processCallSummary(
     }
 
     // Generate job card from completed intake + notify owner (fire-and-forget)
-    import("@/lib/estimates/job-card").then(async ({ buildJobCard }) => {
-      const { jobIntakes } = await import("@/db/schema");
-      const { and: drizzleAnd, eq: drizzleEq } = await import("drizzle-orm");
-      const [intake] = await db
-        .select()
-        .from(jobIntakes)
-        .where(drizzleAnd(drizzleEq(jobIntakes.callId, callId), drizzleEq(jobIntakes.intakeComplete, true)))
-        .limit(1);
-      if (!intake) return; // No completed intake = no job card
+    if (callRecord) {
+      const cr = callRecord; // capture for closure safety
+      import("@/lib/estimates/job-card").then(async ({ buildJobCard }) => {
+        const { jobIntakes } = await import("@/db/schema");
+        const { and: drizzleAnd, eq: drizzleEq } = await import("drizzle-orm");
+        const [intake] = await db
+          .select()
+          .from(jobIntakes)
+          .where(drizzleAnd(drizzleEq(jobIntakes.callId, callId), drizzleEq(jobIntakes.intakeComplete, true)))
+          .limit(1);
+        if (!intake) return; // No completed intake = no job card
 
-      const card = await buildJobCard({
-        businessId: callRecord!.businessId,
-        callId,
-        jobIntakeId: intake.id,
-        leadId: callRecord!.leadId || undefined,
-        callerName: callerName || undefined,
+        const card = await buildJobCard({
+          businessId: cr.businessId,
+          callId,
+          jobIntakeId: intake.id,
+          leadId: cr.leadId || undefined,
+          callerName: callerName || undefined,
+        });
+
+        // Send job card SMS to owner for quick-response
+        if (card) {
+          const { sendJobCardToOwner } = await import("@/lib/notifications/owner-job-card");
+          await sendJobCardToOwner(card.id);
+        }
+      }).catch((err) => {
+        reportError("Job card generation failed", err, { extra: { callId } });
       });
-
-      // Send job card SMS to owner for quick-response
-      if (card) {
-        const { sendJobCardToOwner } = await import("@/lib/notifications/owner-job-card");
-        await sendJobCardToOwner(card.id);
-      }
-    }).catch((err) => {
-      reportError("Job card generation failed", err, { extra: { callId } });
-    });
+    }
 
     // Enqueue photo request with 2-minute delay (persistent, survives process restarts)
     // Only for genuine leads with completed intakes
     if (outcome !== "spam" && outcome !== "info_only" && callRecord?.callerPhone) {
+      const crForPhoto = callRecord; // capture for closure safety
       import("@/lib/jobs/queue").then(({ enqueueJob }) => {
         enqueueJob("photo_request", {
-          businessId: callRecord!.businessId,
+          businessId: crForPhoto.businessId,
           callId,
-          callerPhone: callRecord!.callerPhone!,
+          callerPhone: crForPhoto.callerPhone || "",
           callerName: callerName || null,
         }, 3, 2 * 60 * 1000).catch((err) => { // 3 attempts, 2-min delay
           reportError("Failed to enqueue photo request", err, { extra: { callId } });

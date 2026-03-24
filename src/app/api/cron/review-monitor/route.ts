@@ -6,6 +6,7 @@ import { reportError } from "@/lib/error-reporting";
 import { sendSMS } from "@/lib/twilio/sms";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
+import { isOwnerInQuietHours } from "@/lib/notifications/quiet-hours";
 
 /**
  * GET /api/cron/review-monitor
@@ -37,6 +38,9 @@ export async function GET(req: NextRequest) {
           twilioNumber: businesses.twilioNumber,
           receptionistName: businesses.receptionistName,
           googleReviewUrl: businesses.googleReviewUrl,
+          ownerQuietHoursStart: businesses.ownerQuietHoursStart,
+          ownerQuietHoursEnd: businesses.ownerQuietHoursEnd,
+          timezone: businesses.timezone,
         })
         .from(businesses)
         .where(
@@ -68,7 +72,7 @@ export async function GET(req: NextRequest) {
             fetched++;
 
             // Alert on negative reviews (< 4 stars)
-            if (review.rating < 4) {
+            if (review.rating < 4 && !isOwnerInQuietHours(biz)) {
               const receptionistName = biz.receptionistName || "Maria";
               const stars = "★".repeat(review.rating) + "☆".repeat(5 - review.rating);
               const authorLine = review.authorName ? ` from ${review.authorName}` : "";

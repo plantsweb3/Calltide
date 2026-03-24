@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
   if (authError) return authError;
 
-  try {
   return withCronMonitor("estimate-followup", "30 15 * * *", async () => {
     const now = new Date();
     const nowStr = now.toISOString();
@@ -122,8 +121,4 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Cron failed" }, { status: 500 });
     }
   });
-  } catch (err) {
-    reportError("[estimate-followup] Outer error", err);
-    return NextResponse.json({ error: "Cron failed" }, { status: 500 });
-  }
 }

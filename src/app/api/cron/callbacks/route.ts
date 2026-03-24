@@ -7,6 +7,7 @@ import { reportError } from "@/lib/error-reporting";
 import { sendSMS } from "@/lib/twilio/sms";
 import { normalizePhone } from "@/lib/compliance/sms";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
+import { isOwnerInQuietHours } from "@/lib/notifications/quiet-hours";
 
 /**
  * GET /api/cron/callbacks
@@ -57,6 +58,16 @@ export async function GET(req: NextRequest) {
               .set({ status: "failed", updatedAt: new Date().toISOString() })
               .where(eq(callbacks.id, cb.id));
             failed++;
+            continue;
+          }
+
+          // Skip during quiet hours — routine callback alert
+          if (isOwnerInQuietHours(biz)) {
+            // Re-mark as scheduled so it gets picked up next run
+            await db
+              .update(callbacks)
+              .set({ status: "scheduled", updatedAt: new Date().toISOString() })
+              .where(eq(callbacks.id, cb.id));
             continue;
           }
 

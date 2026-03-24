@@ -120,8 +120,11 @@ export default function EstimatesPage() {
     setConvertingId(id);
     try {
       const res = await fetch(`/api/dashboard/estimates/${id}/convert`, { method: "POST" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Conversion failed");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || "Conversion failed");
+      }
+      await res.json();
       toast.success("Estimate converted to invoice");
       fetchEstimates();
     } catch (err) {

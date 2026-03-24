@@ -193,182 +193,187 @@ export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
   if (authError) return authError;
 
-  // Get clients created in the last 30 days
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const cutoff = thirtyDaysAgo.toISOString();
+  try {
+    // Get clients created in the last 30 days
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const cutoff = thirtyDaysAgo.toISOString();
 
-  const newClients = await db
-    .select()
-    .from(businesses)
-    .where(
-      and(
-        sql`${businesses.createdAt} >= ${cutoff}`,
-        sql`${businesses.onboardingCompletedAt} IS NULL`,
-      ),
-    );
-
-  const results = [];
-
-  for (const client of newClients) {
-    const milestones = await checkOnboardingMilestones(client);
-
-    // Skip clients who have completed all milestones
-    if (milestones.allComplete) continue;
-
-    // Outreach conflict prevention — skip if already contacted today
-    if (!(await canContactToday(client.id))) continue;
-
-    const msSinceSignup = Date.now() - new Date(client.createdAt).getTime();
-    const daysSinceSignup = Math.floor(msSinceSignup / (1000 * 60 * 60 * 24));
-    const hoursSinceSignup = Math.floor(msSinceSignup / (1000 * 60 * 60));
-
-    const onboardingStep = client.onboardingStep ?? 1;
-    const skippedSteps = (client.onboardingSkippedSteps as number[]) ?? [];
-
-    const nudge = decideNudge({
-      daysSinceSignup,
-      hoursSinceSignup,
-      onboardingStep,
-      skippedSteps,
-      hasFirstCall: milestones.hasFirstCall,
-      hasFirstAppointment: milestones.hasFirstAppointment,
-      hasVoiceAgent: milestones.hasVoiceAgent,
-      hasBusinessHours: milestones.hasBusinessHours,
-      ownerName: client.ownerName,
-      bizName: client.name,
-      receptionistName: client.receptionistName || "Maria",
-      twilioNumber: client.twilioNumber || "",
-      active: client.active,
-    });
-
-    if (nudge.action === "none") {
-      // Secondary: profile completeness checks during first 7 days for active businesses
-      if (client.active && daysSinceSignup <= 7 && client.twilioNumber && client.ownerPhone) {
-        const profileGap = checkProfileGaps(client);
-        if (profileGap) {
-          try {
-            await sendSMS({
-              to: client.ownerPhone,
-              from: client.twilioNumber,
-              body: profileGap,
-              businessId: client.id,
-              templateType: "owner_notify",
-            });
-            await logOutreach(client.id, "nudge_agent", "sms");
-            results.push({
-              businessId: client.id,
-              name: client.name,
-              daysSinceSignup,
-              nudge: "profile_completeness",
-              actionsTaken: ["maria_sms"],
-            });
-          } catch (err) {
-            reportError("[onboard] Profile gap SMS failed", err, { extra: { businessId: client.id } });
-          }
-        }
-      }
-      continue;
-    }
-
-    const actionsTaken: string[] = [];
-
-    if (nudge.action === "maria_sms" && client.ownerPhone && client.twilioNumber && nudge.smsBody) {
-      // Send directly from the Capta number in Maria's voice
-      try {
-        await sendSMS({
-          to: client.ownerPhone,
-          from: client.twilioNumber,
-          body: nudge.smsBody,
-          businessId: client.id,
-          templateType: "owner_notify",
-        });
-        actionsTaken.push("maria_sms: sent");
-      } catch (err) {
-        reportError("[onboard] Maria SMS failed", err, { extra: { businessId: client.id } });
-        actionsTaken.push("maria_sms: failed");
-      }
-    } else if (nudge.action === "email" && client.ownerEmail) {
-      const emailResult = await executeTool(
-        "send_email",
-        { to: client.ownerEmail, subject: nudge.subject, body: nudge.body },
-        "onboard",
-      );
-      actionsTaken.push(`send_email: ${emailResult}`);
-    } else if (nudge.action === "sms" && client.ownerPhone) {
-      const smsResult = await executeTool(
-        "send_sms",
-        { to: client.ownerPhone, body: nudge.smsBody },
-        "onboard",
-      );
-      actionsTaken.push(`send_sms: ${smsResult}`);
-    } else if (nudge.action === "escalate") {
-      const escalateResult = await executeTool(
-        "escalate_to_owner",
-        {
-          reason: `Stalled onboarding for ${client.name} — ${daysSinceSignup} days, no first call`,
-          urgency: daysSinceSignup > 21 ? "high" : "medium",
-          context: `Step: ${onboardingStep}/8. Skipped: ${skippedSteps.join(",") || "none"}. Calls: ${milestones.totalCalls}.`,
-        },
-        "onboard",
-      );
-      actionsTaken.push(`escalate_to_owner: ${escalateResult}`);
-    }
-
-    // Log agent activity
-    await logAgentActivity({
-      agentName: "onboard",
-      actionType: nudge.action === "escalate" ? "escalated" : nudge.action === "maria_sms" ? "sms_sent" : nudge.action === "email" ? "email_sent" : "sms_sent",
-      targetId: client.id,
-      targetType: "client",
-      inputSummary: `Onboard check: ${client.name} (${daysSinceSignup}d/${hoursSinceSignup}h, step ${onboardingStep})`,
-      outputSummary: `Nudge: ${nudge.template}. ${actionsTaken.map((a) => a.split(":")[0]).join(", ")}`,
-      toolsCalled: actionsTaken.map((a) => a.split(":")[0]),
-      escalated: nudge.action === "escalate",
-      resolvedWithoutEscalation: nudge.action !== "escalate" && actionsTaken.length > 0,
-    });
-
-    // Log outreach to prevent same-day duplicate contacts
-    await logOutreach(client.id, "nudge_agent", nudge.action === "maria_sms" ? "sms" : "email");
-
-    // Check total nudge attempts — if 3+ and still not onboarded, hand off to churn agent
-    const [nudgeCount] = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(outreachLog)
+    const newClients = await db
+      .select()
+      .from(businesses)
       .where(
         and(
-          eq(outreachLog.businessId, client.id),
-          eq(outreachLog.source, "nudge_agent"),
+          sql`${businesses.createdAt} >= ${cutoff}`,
+          sql`${businesses.onboardingCompletedAt} IS NULL`,
         ),
       );
 
-    if ((nudgeCount?.count ?? 0) >= 3 && !milestones.hasFirstCall) {
-      await createHandoff({
-        fromAgent: "onboard",
-        toAgent: "churn",
+    const results = [];
+
+    for (const client of newClients) {
+      const milestones = await checkOnboardingMilestones(client);
+
+      // Skip clients who have completed all milestones
+      if (milestones.allComplete) continue;
+
+      // Outreach conflict prevention — skip if already contacted today
+      if (!(await canContactToday(client.id))) continue;
+
+      const msSinceSignup = Date.now() - new Date(client.createdAt).getTime();
+      const daysSinceSignup = Math.floor(msSinceSignup / (1000 * 60 * 60 * 24));
+      const hoursSinceSignup = Math.floor(msSinceSignup / (1000 * 60 * 60));
+
+      const onboardingStep = client.onboardingStep ?? 1;
+      const skippedSteps = (client.onboardingSkippedSteps as number[]) ?? [];
+
+      const nudge = decideNudge({
+        daysSinceSignup,
+        hoursSinceSignup,
+        onboardingStep,
+        skippedSteps,
+        hasFirstCall: milestones.hasFirstCall,
+        hasFirstAppointment: milestones.hasFirstAppointment,
+        hasVoiceAgent: milestones.hasVoiceAgent,
+        hasBusinessHours: milestones.hasBusinessHours,
+        ownerName: client.ownerName,
+        bizName: client.name,
+        receptionistName: client.receptionistName || "Maria",
+        twilioNumber: client.twilioNumber || "",
+        active: client.active,
+      });
+
+      if (nudge.action === "none") {
+        // Secondary: profile completeness checks during first 7 days for active businesses
+        if (client.active && daysSinceSignup <= 7 && client.twilioNumber && client.ownerPhone) {
+          const profileGap = checkProfileGaps(client);
+          if (profileGap) {
+            try {
+              await sendSMS({
+                to: client.ownerPhone,
+                from: client.twilioNumber,
+                body: profileGap,
+                businessId: client.id,
+                templateType: "owner_notify",
+              });
+              await logOutreach(client.id, "nudge_agent", "sms");
+              results.push({
+                businessId: client.id,
+                name: client.name,
+                daysSinceSignup,
+                nudge: "profile_completeness",
+                actionsTaken: ["maria_sms"],
+              });
+            } catch (err) {
+              reportError("[onboard] Profile gap SMS failed", err, { extra: { businessId: client.id } });
+            }
+          }
+        }
+        continue;
+      }
+
+      const actionsTaken: string[] = [];
+
+      if (nudge.action === "maria_sms" && client.ownerPhone && client.twilioNumber && nudge.smsBody) {
+        // Send directly from the Capta number in Maria's voice
+        try {
+          await sendSMS({
+            to: client.ownerPhone,
+            from: client.twilioNumber,
+            body: nudge.smsBody,
+            businessId: client.id,
+            templateType: "owner_notify",
+          });
+          actionsTaken.push("maria_sms: sent");
+        } catch (err) {
+          reportError("[onboard] Maria SMS failed", err, { extra: { businessId: client.id } });
+          actionsTaken.push("maria_sms: failed");
+        }
+      } else if (nudge.action === "email" && client.ownerEmail) {
+        const emailResult = await executeTool(
+          "send_email",
+          { to: client.ownerEmail, subject: nudge.subject, body: nudge.body },
+          "onboard",
+        );
+        actionsTaken.push(`send_email: ${emailResult}`);
+      } else if (nudge.action === "sms" && client.ownerPhone) {
+        const smsResult = await executeTool(
+          "send_sms",
+          { to: client.ownerPhone, body: nudge.smsBody },
+          "onboard",
+        );
+        actionsTaken.push(`send_sms: ${smsResult}`);
+      } else if (nudge.action === "escalate") {
+        const escalateResult = await executeTool(
+          "escalate_to_owner",
+          {
+            reason: `Stalled onboarding for ${client.name} — ${daysSinceSignup} days, no first call`,
+            urgency: daysSinceSignup > 21 ? "high" : "medium",
+            context: `Step: ${onboardingStep}/8. Skipped: ${skippedSteps.join(",") || "none"}. Calls: ${milestones.totalCalls}.`,
+          },
+          "onboard",
+        );
+        actionsTaken.push(`escalate_to_owner: ${escalateResult}`);
+      }
+
+      // Log agent activity
+      await logAgentActivity({
+        agentName: "onboard",
+        actionType: nudge.action === "escalate" ? "escalated" : nudge.action === "maria_sms" ? "sms_sent" : nudge.action === "email" ? "email_sent" : "sms_sent",
+        targetId: client.id,
+        targetType: "client",
+        inputSummary: `Onboard check: ${client.name} (${daysSinceSignup}d/${hoursSinceSignup}h, step ${onboardingStep})`,
+        outputSummary: `Nudge: ${nudge.template}. ${actionsTaken.map((a) => a.split(":")[0]).join(", ")}`,
+        toolsCalled: actionsTaken.map((a) => a.split(":")[0]),
+        escalated: nudge.action === "escalate",
+        resolvedWithoutEscalation: nudge.action !== "escalate" && actionsTaken.length > 0,
+      });
+
+      // Log outreach to prevent same-day duplicate contacts
+      await logOutreach(client.id, "nudge_agent", nudge.action === "maria_sms" ? "sms" : "email");
+
+      // Check total nudge attempts — if 3+ and still not onboarded, hand off to churn agent
+      const [nudgeCount] = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(outreachLog)
+        .where(
+          and(
+            eq(outreachLog.businessId, client.id),
+            eq(outreachLog.source, "nudge_agent"),
+          ),
+        );
+
+      if ((nudgeCount?.count ?? 0) >= 3 && !milestones.hasFirstCall) {
+        await createHandoff({
+          fromAgent: "onboard",
+          toAgent: "churn",
+          businessId: client.id,
+          reason: "Stalled onboarding after 3+ nudge attempts — no first call received",
+          context: {
+            daysSinceSignup,
+            onboardingStep: client.onboardingStep,
+            nudgeAttempts: nudgeCount?.count ?? 0,
+            milestones,
+          },
+          priority: daysSinceSignup > 14 ? "high" : "normal",
+          ttlHours: 72,
+        });
+      }
+
+      results.push({
         businessId: client.id,
-        reason: "Stalled onboarding after 3+ nudge attempts — no first call received",
-        context: {
-          daysSinceSignup,
-          onboardingStep: client.onboardingStep,
-          nudgeAttempts: nudgeCount?.count ?? 0,
-          milestones,
-        },
-        priority: daysSinceSignup > 14 ? "high" : "normal",
-        ttlHours: 72,
+        name: client.name,
+        daysSinceSignup,
+        nudge: nudge.template,
+        actionsTaken: actionsTaken.map((a) => a.split(":")[0]),
       });
     }
 
-    results.push({
-      businessId: client.id,
-      name: client.name,
-      daysSinceSignup,
-      nudge: nudge.template,
-      actionsTaken: actionsTaken.map((a) => a.split(":")[0]),
-    });
+    return NextResponse.json({ processed: results.length, results });
+  } catch (error) {
+    reportError("[onboard] Agent failed", error);
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
-
-  return NextResponse.json({ processed: results.length, results });
 }
 
 // ── Milestone Checking (uses client object to avoid redundant biz fetch) ──

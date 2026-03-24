@@ -544,7 +544,7 @@ export default function TeamPage() {
                 {editingTech ? "Edit Technician" : "Add Technician"}
               </h3>
               <button
-                onClick={() => setModalOpen(false)}
+                onClick={() => { if (!formLoading) setModalOpen(false); }}
                 className="p-1 rounded-lg transition-colors"
                 style={{ color: "var(--db-text-muted)" }}
                 disabled={formLoading}
@@ -701,7 +701,7 @@ export default function TeamPage() {
 
               {/* Actions */}
               <div className="flex items-center justify-end gap-3 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
-                <Button type="button" variant="ghost" onClick={() => setModalOpen(false)} disabled={formLoading}>
+                <Button type="button" variant="ghost" onClick={() => { if (!formLoading) setModalOpen(false); }} disabled={formLoading}>
                   Cancel
                 </Button>
                 <Button type="submit" disabled={formLoading}>
@@ -731,7 +731,7 @@ export default function TeamPage() {
                 Mark {unavailTarget.name} Unavailable
               </h3>
               <button
-                onClick={() => setUnavailTarget(null)}
+                onClick={() => { if (!unavailLoading) setUnavailTarget(null); }}
                 className="p-1 rounded-lg transition-colors"
                 style={{ color: "var(--db-text-muted)" }}
                 disabled={unavailLoading}
@@ -784,7 +784,7 @@ export default function TeamPage() {
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
-                <Button type="button" variant="ghost" onClick={() => setUnavailTarget(null)} disabled={unavailLoading}>
+                <Button type="button" variant="ghost" onClick={() => { if (!unavailLoading) setUnavailTarget(null); }} disabled={unavailLoading}>
                   Cancel
                 </Button>
                 <Button onClick={handleMarkUnavailable} disabled={unavailLoading}>

@@ -112,6 +112,7 @@ export default function InvoicesPage() {
     totalCount: 0, draftCount: 0, sentCount: 0, overdueCount: 0, paidCount: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabKey>("all");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -158,6 +159,7 @@ export default function InvoicesPage() {
 
   const fetchInvoices = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const params = new URLSearchParams();
       if (activeTab !== "all") params.set("status", activeTab);
@@ -174,6 +176,7 @@ export default function InvoicesPage() {
       setTotalPages(data.totalPages || 1);
       setTotal(data.total || 0);
     } catch {
+      setError("Failed to load invoices. Please try again.");
       toast.error("Failed to load invoices");
     } finally {
       setLoading(false);
@@ -565,6 +568,14 @@ export default function InvoicesPage() {
           value={stats.avgDaysToPay > 0 ? `${stats.avgDaysToPay}d` : "\u2014"}
         />
       </div>
+
+      {/* Error Banner */}
+      {error && (
+        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <Button variant="danger" size="sm" onClick={fetchInvoices}>Retry</Button>
+        </div>
+      )}
 
       {/* Tab Filters */}
       <div

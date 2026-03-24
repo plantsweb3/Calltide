@@ -4,6 +4,7 @@ import { prospects } from "@/db/schema";
 import { and, eq, gt, ne } from "drizzle-orm";
 import { runAgent, QUALIFY_TOOLS, AGENT_PROMPTS } from "@/lib/agents";
 import { verifyCronAuth } from "@/lib/cron-auth";
+import { reportError } from "@/lib/error-reporting";
 
 /**
  * POST /api/agents/qualify
@@ -62,36 +63,41 @@ export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
   if (authError) return authError;
 
-  // Get prospects that are in active pipeline stages
-  const activeProspects = await db
-    .select()
-    .from(prospects)
-    .where(
-      and(
-        ne(prospects.status, "converted"),
-        ne(prospects.status, "disqualified"),
-        gt(prospects.leadScore, 10),
-      ),
-    )
-    .limit(20);
+  try {
+    // Get prospects that are in active pipeline stages
+    const activeProspects = await db
+      .select()
+      .from(prospects)
+      .where(
+        and(
+          ne(prospects.status, "converted"),
+          ne(prospects.status, "disqualified"),
+          gt(prospects.leadScore, 10),
+        ),
+      )
+      .limit(20);
 
-  const results = [];
+    const results = [];
 
-  for (const prospect of activeProspects) {
-    const message = buildQualifyMessage(prospect);
-    const result = await runAgent({
-      agentName: "qualify",
-      systemPrompt: AGENT_PROMPTS.qualify,
-      userMessage: message,
-      tools: QUALIFY_TOOLS,
-      targetId: prospect.id,
-      targetType: "prospect",
-      inputSummary: `Qualify prospect: ${prospect.businessName}`,
-    });
-    results.push({ prospectId: prospect.id, name: prospect.businessName, ...result });
+    for (const prospect of activeProspects) {
+      const message = buildQualifyMessage(prospect);
+      const result = await runAgent({
+        agentName: "qualify",
+        systemPrompt: AGENT_PROMPTS.qualify,
+        userMessage: message,
+        tools: QUALIFY_TOOLS,
+        targetId: prospect.id,
+        targetType: "prospect",
+        inputSummary: `Qualify prospect: ${prospect.businessName}`,
+      });
+      results.push({ prospectId: prospect.id, name: prospect.businessName, ...result });
+    }
+
+    return NextResponse.json({ processed: results.length, results });
+  } catch (error) {
+    reportError("[qualify] Agent failed", error);
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
-
-  return NextResponse.json({ processed: results.length, results });
 }
 
 function buildQualifyMessage(prospect: typeof prospects.$inferSelect): string {

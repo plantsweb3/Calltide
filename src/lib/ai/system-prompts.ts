@@ -233,7 +233,6 @@ If a caller is rude or abusive:
 ${callerContext ? `
 ## Caller Context
 ${callerContext}` : ""}
-{{caller_context}}
 
 ## Rules
 ${pricingContext ? `- When asked about pricing, provide these BALLPARK ranges. Always frame them as estimates and add "the final price may vary depending on the specifics of the job":
@@ -414,7 +413,6 @@ Si el llamante es grosero o abusivo:
 ${callerContext ? `
 ## Contexto del Llamante
 ${callerContext}` : ""}
-{{caller_context}}
 
 ## Reglas
 ${pricingContext ? `- Cuando pregunten por precios, comparte estos rangos APROXIMADOS. Siempre preséntalos como estimados y agrega "el precio final puede variar según los detalles del trabajo":
