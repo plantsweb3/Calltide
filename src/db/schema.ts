@@ -192,6 +192,9 @@ export const calls = sqliteTable("calls", {
   isAbandoned: integer("is_abandoned", { mode: "boolean" }).default(false),
   recoverySmsSentAt: text("recovery_sms_sent_at"),
   recoveryStatus: text("recovery_status"), // null, sms_sent, callback_requested, callback_completed
+  // Repeat caller context
+  callerContextUsed: integer("caller_context_used", { mode: "boolean" }).default(false),
+  followUpCreated: integer("follow_up_created", { mode: "boolean" }).default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -381,6 +384,13 @@ export const estimates = sqliteTable("estimates", {
   lostAt: text("lost_at"),
   lostReason: text("lost_reason"),
   notes: text("notes"),
+  // Line items & tax
+  lineItems: text("line_items", { mode: "json" }).$type<Array<{ description: string; quantity: number; unit_price: number; total: number }>>(),
+  subtotal: real("subtotal"),
+  taxRate: real("tax_rate").default(0),
+  taxAmount: real("tax_amount").default(0),
+  validUntil: text("valid_until"),
+  convertedInvoiceId: text("converted_invoice_id"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -1626,6 +1636,8 @@ export const invoices = sqliteTable("invoices", {
   businessId: text("business_id").notNull().references(() => businesses.id),
   customerId: text("customer_id").references(() => customers.id),
   appointmentId: text("appointment_id").references(() => appointments.id),
+  estimateId: text("estimate_id").references(() => estimates.id),
+  invoiceNumber: text("invoice_number"),
   amount: real("amount").notNull(),
   status: text("status").notNull().default("pending"), // pending, sent, paid, overdue, cancelled
   dueDate: text("due_date"),
@@ -1633,6 +1645,15 @@ export const invoices = sqliteTable("invoices", {
   paymentMethod: text("payment_method"),
   paymentLinkUrl: text("payment_link_url"),
   notes: text("notes"),
+  // Line items & tax
+  lineItems: text("line_items", { mode: "json" }).$type<Array<{ description: string; quantity: number; unit_price: number; total: number }>>(),
+  subtotal: real("subtotal"),
+  taxRate: real("tax_rate").default(0),
+  taxAmount: real("tax_amount").default(0),
+  // Stripe payment
+  stripePaymentLinkId: text("stripe_payment_link_id"),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  customerPortalUrl: text("customer_portal_url"),
   smsSentAt: text("sms_sent_at"),
   reminderCount: integer("reminder_count").default(0),
   lastReminderAt: text("last_reminder_at"),
@@ -1653,6 +1674,100 @@ export const googleReviews = sqliteTable("google_reviews", {
   publishedAt: text("published_at"),
   alertedAt: text("alerted_at"),
   fetchedAt: text("fetched_at").notNull().default(sql`(datetime('now'))`),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Follow-ups, Callbacks, Complaints ──
+
+export const followUps = sqliteTable("follow_ups", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  callId: text("call_id").references(() => calls.id),
+  customerId: text("customer_id").references(() => customers.id),
+  title: text("title").notNull(),
+  description: text("description"),
+  dueDate: text("due_date").notNull(),
+  status: text("status").notNull().default("pending"), // pending, in_progress, completed, dismissed
+  priority: text("priority").notNull().default("normal"), // low, normal, high, urgent
+  assignedTo: text("assigned_to"), // technician_id
+  completedAt: text("completed_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const callbacks = sqliteTable("callbacks", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  callId: text("call_id").references(() => calls.id),
+  customerPhone: text("customer_phone").notNull(),
+  customerName: text("customer_name"),
+  reason: text("reason"),
+  requestedTime: text("requested_time").notNull(),
+  status: text("status").notNull().default("scheduled"), // scheduled, calling, completed, failed, cancelled
+  outboundCallId: text("outbound_call_id"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const complaintTickets = sqliteTable("complaint_tickets", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  callId: text("call_id").references(() => calls.id),
+  customerId: text("customer_id").references(() => customers.id),
+  customerPhone: text("customer_phone"),
+  severity: text("severity").notNull().default("medium"), // low, medium, high, critical
+  category: text("category"), // service_quality, billing, scheduling, communication, other
+  description: text("description").notNull(),
+  resolution: text("resolution"),
+  status: text("status").notNull().default("open"), // open, investigating, resolved, closed
+  resolvedAt: text("resolved_at"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Recurring Rules ──
+
+export const recurringRules = sqliteTable("recurring_rules", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  customerId: text("customer_id").notNull().references(() => customers.id),
+  service: text("service").notNull(),
+  frequency: text("frequency").notNull(), // daily, weekly, biweekly, monthly, quarterly, annually
+  dayOfWeek: integer("day_of_week"), // 0=Sunday
+  dayOfMonth: integer("day_of_month"),
+  preferredTime: text("preferred_time"),
+  technicianId: text("technician_id"),
+  duration: integer("duration").notNull().default(60),
+  notes: text("notes"),
+  nextOccurrence: text("next_occurrence").notNull(),
+  lastGenerated: text("last_generated"),
+  isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── SMS Templates ──
+
+export const smsTemplates = sqliteTable("sms_templates", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  templateKey: text("template_key").notNull(), // appointment_reminder, appointment_confirm, estimate_followup, invoice_sent, thank_you, custom
+  name: text("name").notNull(),
+  bodyEn: text("body_en").notNull(),
+  bodyEs: text("body_es").notNull(),
+  isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+});
+
+// ── Customer Portal Tokens ──
+
+export const customerPortalTokens = sqliteTable("customer_portal_tokens", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull().references(() => businesses.id),
+  customerId: text("customer_id").notNull().references(() => customers.id),
+  token: text("token").notNull().unique(),
+  expiresAt: text("expires_at").notNull(),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
