@@ -103,6 +103,11 @@ const navGroups: { label?: string; items: NavItem[] }[] = [
     label: "Insights",
     items: [
       {
+        href: "/dashboard/intelligence",
+        label: "Intelligence",
+        icon: <svg {...iconProps}><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z" /><line x1="9" y1="21" x2="15" y2="21" /></svg>,
+      },
+      {
         href: "/dashboard/reporting",
         label: "Reporting",
         icon: <svg {...iconProps}><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></svg>,

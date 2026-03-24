@@ -11,6 +11,8 @@ import Image from "next/image";
 import { SpotlightCard } from "@/components/marketing/SpotlightCard";
 import { Counter } from "@/components/marketing/Counter";
 import { ROICalculator } from "@/components/marketing/ROICalculator";
+import RevenueCycle from "@/components/marketing/RevenueCycle";
+import CallShowcase from "@/components/marketing/CallShowcase";
 import { FAQ } from "@/components/marketing/FAQ";
 import { MissedCallCalculator } from "@/components/marketing/MissedCallCalculator";
 import { MobileCTA } from "@/components/marketing/MobileCTA";
@@ -268,6 +270,12 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
           </div>
         </div>
       </section>
+
+      {/* ── 5b. REVENUE CYCLE ── */}
+      <RevenueCycle lang={lang} />
+
+      {/* ── 5c. CALL SHOWCASE ── */}
+      <CallShowcase lang={lang} />
 
       {/* ── 6. FEATURES — 4 Hero Cards ── */}
       <section id="features" className="relative bg-[#1B2A4A] px-6 sm:px-8 py-24 sm:py-32 dark-section grain-overlay">

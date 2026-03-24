@@ -1497,7 +1497,7 @@ function OnboardingPage() {
         {step === 8 && showConfetti && (
           <div className="flex flex-1 flex-col items-center justify-center text-center">
             {/* Confetti-style animation */}
-            <style jsx>{`
+            <style dangerouslySetInnerHTML={{ __html: `
               @keyframes celebrationPulse {
                 0%, 100% { transform: scale(1); }
                 50% { transform: scale(1.05); }
@@ -1506,30 +1506,30 @@ function OnboardingPage() {
                 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
                 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
               }
-              @keyframes shimmer {
+              @keyframes onb-shimmer {
                 0% { background-position: -200% center; }
                 100% { background-position: 200% center; }
               }
-              @keyframes fadeInUp {
+              @keyframes onb-fadeInUp {
                 0% { opacity: 0; transform: translateY(20px); }
                 100% { opacity: 1; transform: translateY(0); }
               }
               .celebration-card {
-                animation: celebrationPulse 3s ease-in-out infinite, fadeInUp 0.6s ease-out;
+                animation: celebrationPulse 3s ease-in-out infinite, onb-fadeInUp 0.6s ease-out;
               }
               .celebration-title {
-                animation: fadeInUp 0.6s ease-out 0.2s both;
+                animation: onb-fadeInUp 0.6s ease-out 0.2s both;
               }
               .celebration-sub {
-                animation: fadeInUp 0.6s ease-out 0.4s both;
+                animation: onb-fadeInUp 0.6s ease-out 0.4s both;
               }
               .celebration-actions {
-                animation: fadeInUp 0.6s ease-out 0.6s both;
+                animation: onb-fadeInUp 0.6s ease-out 0.6s both;
               }
               .gold-shimmer {
                 background: linear-gradient(90deg, #C59A27, #F0D78C, #D4A843, #F0D78C, #C59A27);
                 background-size: 200% auto;
-                animation: shimmer 3s linear infinite;
+                animation: onb-shimmer 3s linear infinite;
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 background-clip: text;
@@ -1542,7 +1542,7 @@ function OnboardingPage() {
                 pointer-events: none;
                 z-index: 50;
               }
-            `}</style>
+            ` }} />
 
             {/* Confetti particles */}
             {Array.from({ length: 30 }).map((_, i) => (

@@ -64,7 +64,11 @@ interface Overview {
     value?: number;
     recovered?: boolean;
     urgent?: boolean;
+    chainId?: string;
+    automationChain?: string[];
+    isRecent?: boolean;
   }>;
+  newestEventText?: string | null;
   insights?: Array<{ text: string; icon: string }>;
   bilingualStats?: {
     spanishCalls: number;
@@ -175,12 +179,11 @@ export default function OverviewPage() {
     return <LoadingSpinner />;
   }
 
-  const isEnhanced = data.revenueThisMonth != null;
+  const hasRevenue = data.revenueThisMonth != null && data.revenueThisMonth > 0;
 
   const showCelebration = data.firstCallCelebration?.show && !dismissed;
 
   if (
-    !isEnhanced &&
     data.totalCalls === 0 &&
     data.callsToday === 0 &&
     data.appointmentsThisWeek === 0
@@ -244,78 +247,95 @@ export default function OverviewPage() {
     );
   }
 
-  // ── Enhanced Demo Dashboard ──
-  if (isEnhanced) {
-    return (
-      <div className="space-y-6">
-        {/* Greeting */}
-        <div>
-          <h1
-            className="text-2xl font-semibold"
-            style={{ color: "var(--db-text)" }}
-          >
-            {getGreeting()}, {data.businessName?.split(" ")[0] || "there"}
-          </h1>
-          <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Here&apos;s how {receptionistName} is performing
-          </p>
-        </div>
+  // ── Unified Dashboard (all clients) ──
+  return (
+    <div className="space-y-6">
+      {/* Greeting */}
+      <div>
+        <h1
+          className="text-2xl font-semibold"
+          style={{ color: "var(--db-text)" }}
+        >
+          {getGreeting()}, {data.businessName?.split(" ")[0] || "there"}
+        </h1>
+        <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
+          Here&apos;s how {receptionistName} is performing
+        </p>
+      </div>
 
-        {/* Live Call Indicator */}
-        {activeCalls.length > 0 && (
-          <div
-            className="rounded-xl p-4"
-            style={{
-              background: "rgba(74,222,128,0.06)",
-              border: "1px solid rgba(74,222,128,0.2)",
-            }}
-          >
-            <div className="flex items-center gap-2 mb-2">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
-              </span>
-              <span className="text-sm font-semibold" style={{ color: "#4ade80" }}>
-                {activeCalls.length} active call{activeCalls.length > 1 ? "s" : ""} right now
-              </span>
-            </div>
-            <div className="space-y-1.5">
-              {activeCalls.map((call) => {
-                const elapsed = call.startedAt
-                  ? Math.floor((Date.now() - new Date(call.startedAt).getTime()) / 1000)
-                  : call.durationSeconds || 0;
-                const mins = Math.floor(elapsed / 60);
-                const secs = elapsed % 60;
-                return (
-                  <div key={call.id} className="flex items-center gap-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
-                    <span className="font-medium" style={{ color: "var(--db-text)" }}>
-                      {call.customerName || call.callerPhone || "Unknown"}
-                    </span>
-                    {call.isReturningCaller && (
-                      <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={{ background: "rgba(99,102,241,0.1)", color: "rgb(129,140,248)" }}>
-                        returning
-                      </span>
-                    )}
-                    {call.currentIntent && (
-                      <span className="text-[10px] uppercase tracking-wide" style={{ color: "var(--db-text-muted)" }}>
-                        {call.currentIntent}
-                      </span>
-                    )}
-                    <span className="ml-auto tabular-nums">
-                      {mins}:{secs.toString().padStart(2, "0")}
-                    </span>
-                    {call.language === "es" && <span>🇲🇽</span>}
-                  </div>
-                );
-              })}
-            </div>
+      {/* Live Call Indicator */}
+      {activeCalls.length > 0 && (
+        <div
+          className="rounded-xl p-4"
+          style={{
+            background: "rgba(74,222,128,0.06)",
+            border: "1px solid rgba(74,222,128,0.2)",
+          }}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+            </span>
+            <span className="text-sm font-semibold" style={{ color: "#4ade80" }}>
+              {activeCalls.length} active call{activeCalls.length > 1 ? "s" : ""} right now
+            </span>
           </div>
-        )}
+          <div className="space-y-1.5">
+            {activeCalls.map((call) => {
+              const elapsed = call.startedAt
+                ? Math.floor((Date.now() - new Date(call.startedAt).getTime()) / 1000)
+                : call.durationSeconds || 0;
+              const mins = Math.floor(elapsed / 60);
+              const secs = elapsed % 60;
+              return (
+                <div key={call.id} className="flex items-center gap-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  <span className="font-medium" style={{ color: "var(--db-text)" }}>
+                    {call.customerName || call.callerPhone || "Unknown"}
+                  </span>
+                  {call.isReturningCaller && (
+                    <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={{ background: "rgba(99,102,241,0.1)", color: "rgb(129,140,248)" }}>
+                      returning
+                    </span>
+                  )}
+                  {call.currentIntent && (
+                    <span className="text-[10px] uppercase tracking-wide" style={{ color: "var(--db-text-muted)" }}>
+                      {call.currentIntent}
+                    </span>
+                  )}
+                  <span className="ml-auto tabular-nums">
+                    {mins}:{secs.toString().padStart(2, "0")}
+                  </span>
+                  {call.language === "es" && <span>🇲🇽</span>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
-        {/* First Call Celebration */}
-        {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} receptionistName={receptionistName} />}
+      {/* First Call Celebration */}
+      {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} receptionistName={receptionistName} />}
 
-        {/* Revenue Hero Banner */}
+      {/* Setup Checklist (for newer businesses) */}
+      {data.createdAt && !hasRevenue && (
+        <SetupChecklist
+          businessHours={data.businessHours || null}
+          greeting={data.greeting || null}
+          hasPricing={data.hasPricing || false}
+          totalCalls={data.totalCalls}
+          setupChecklistDismissed={data.setupChecklistDismissed || false}
+          createdAt={data.createdAt}
+        />
+      )}
+
+      {/* Dashboard Tour */}
+      {data.tourCompleted === false && !tourDismissed && (
+        <DashboardTour onComplete={() => setTourDismissed(true)} />
+      )}
+
+      {/* Revenue Hero Banner — shown when there are calls with revenue */}
+      {hasRevenue ? (
         <div
           className="relative overflow-hidden rounded-xl p-6"
           style={{
@@ -335,43 +355,75 @@ export default function OverviewPage() {
               <AnimatedCounter value={data.revenueThisMonth!} prefix="$" duration={1500} />
             </p>
             <div className="mt-3 flex items-center gap-4 flex-wrap">
-              <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                <strong style={{ color: "#4ade80" }}>{data.roiMultiple}x</strong> return on your $497/mo
-              </span>
-              <span
-                className="rounded-full px-2.5 py-0.5 text-xs font-medium"
-                style={{ background: "rgba(74,222,128,0.12)", color: "#4ade80" }}
-              >
-                +${data.revenueSaved?.toLocaleString()} recovered from missed calls
-              </span>
+              {data.roiMultiple != null && data.roiMultiple > 0 && (
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
+                  <strong style={{ color: "#4ade80" }}>{data.roiMultiple}x</strong> return on your $497/mo
+                </span>
+              )}
+              {data.revenueSaved != null && data.revenueSaved > 0 && (
+                <span
+                  className="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  style={{ background: "rgba(74,222,128,0.12)", color: "#4ade80" }}
+                >
+                  +${data.revenueSaved.toLocaleString()} recovered from missed calls
+                </span>
+              )}
             </div>
             {/* ROI progress bar */}
-            <div className="mt-4 w-full max-w-md">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>$497 investment</span>
-                <span className="text-xs font-medium" style={{ color: "var(--db-accent)" }}>${data.revenueThisMonth?.toLocaleString()} earned</span>
+            {data.roiMultiple != null && data.roiMultiple > 0 && (
+              <div className="mt-4 w-full max-w-md">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>$497 investment</span>
+                  <span className="text-xs font-medium" style={{ color: "var(--db-accent)" }}>${data.revenueThisMonth?.toLocaleString()} earned</span>
+                </div>
+                <div className="h-2 rounded-full" style={{ background: "var(--db-border)" }}>
+                  <div
+                    className="h-2 rounded-full transition-all duration-1000"
+                    style={{
+                      width: `${Math.min((data.roiMultiple / 10) * 100, 100)}%`,
+                      background: "linear-gradient(90deg, var(--db-accent) 0%, #4ade80 100%)",
+                    }}
+                  />
+                </div>
               </div>
-              <div className="h-2 rounded-full" style={{ background: "var(--db-border)" }}>
-                <div
-                  className="h-2 rounded-full transition-all duration-1000"
-                  style={{
-                    width: `${Math.min((data.roiMultiple! / 10) * 100, 100)}%`,
-                    background: "linear-gradient(90deg, var(--db-accent) 0%, #4ade80 100%)",
-                  }}
-                />
-              </div>
-            </div>
+            )}
           </div>
-          {/* Decorative gradient blob */}
           <div
             className="absolute -right-16 -top-16 h-48 w-48 rounded-full opacity-[0.06]"
             style={{ background: "var(--db-accent)" }}
           />
         </div>
+      ) : data.totalCalls > 0 ? (
+        <div
+          className="rounded-xl p-5 flex items-center gap-4"
+          style={{
+            background: "linear-gradient(135deg, var(--db-surface) 0%, var(--db-card) 100%)",
+            border: "1px solid var(--db-border)",
+          }}
+        >
+          <div
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+            style={{ background: "rgba(74,222,128,0.1)" }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+          </div>
+          <div>
+            <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+              {receptionistName} is standing by
+            </p>
+            <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+              Revenue tracking starts when appointments are booked from calls
+            </p>
+          </div>
+        </div>
+      ) : null}
 
-        {/* Revenue Metric Cards */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 stagger-grid">
-          <HealthScoreCard score={data.healthScore ?? 50} />
+      {/* Metric Cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 stagger-grid" data-tour="overview-metrics">
+        <HealthScoreCard score={data.healthScore ?? 50} />
+        {hasRevenue && (
           <MetricCard
             label="Revenue Captured"
             value={data.revenueThisMonth!}
@@ -383,230 +435,46 @@ export default function OverviewPage() {
             }
             changeType={data.revenueChange != null && data.revenueChange > 0 ? "positive" : data.revenueChange != null && data.revenueChange < 0 ? "negative" : "neutral"}
           />
-          <MariaSavedCard
-            total={data.mariaSavedYou ?? data.revenueSaved ?? 0}
-            breakdown={data.mariaSavedBreakdown}
-            missedCallsRecoveredCount={data.missedCallsRecoveredCount ?? 0}
-            receptionistName={receptionistName}
-          />
+        )}
+        <MariaSavedCard
+          total={data.mariaSavedYou ?? data.revenueSaved ?? 0}
+          breakdown={data.mariaSavedBreakdown}
+          missedCallsRecoveredCount={data.missedCallsRecoveredCount ?? 0}
+          receptionistName={receptionistName}
+        />
+        {data.costPerLead != null && data.costPerLead > 0 && (
           <MetricCard
             label="Cost Per Lead"
-            value={data.costPerLead!}
+            value={data.costPerLead}
             prefix="$"
             decimals={2}
             change="Per qualified lead"
             changeType="positive"
           />
-          <MetricCard
-            label="Appointments Booked"
-            value={data.appointmentsThisWeek}
-            change="This week"
-            changeType="neutral"
-          />
-          <MetricCard
-            label="After-Hours Calls"
-            value={data.afterHoursThisWeek ?? 0}
-            change="Answered this week"
-            changeType={data.afterHoursThisWeek ? "positive" : "neutral"}
-          />
-        </div>
-
-        {/* Action Required */}
-        <ActionRequiredSection items={actionItems} />
-
-        {/* Activity Feed + Weekly Summary */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-          <div className="lg:col-span-3">
-            {data.activityFeed && <ActivityFeed events={data.activityFeed} />}
-          </div>
-          <div className="lg:col-span-2">
-            {data.weeklySummary && <WeeklySummary data={data.weeklySummary} />}
-          </div>
-        </div>
-
-        {/* Estimate Pipeline + Customer Insights */}
-        {(data.estimatePipeline || data.customerInsights) && (
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {data.estimatePipeline && (
-              <div
-                className="rounded-xl p-5"
-                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
-              >
-                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-                  Estimate Pipeline
-                </h3>
-                <div className="grid grid-cols-3 gap-3 mb-4">
-                  {[
-                    { label: "Active Pipeline", value: `$${data.estimatePipeline.totalPipelineValue.toLocaleString()}`, color: "var(--db-accent)" },
-                    { label: "Won This Month", value: `$${data.estimatePipeline.wonThisMonth.value.toLocaleString()}`, color: "#4ade80" },
-                    { label: "Won Deals", value: String(data.estimatePipeline.wonThisMonth.count), color: "#4ade80" },
-                  ].map((s) => (
-                    <div key={s.label}>
-                      <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{s.label}</p>
-                      <p className="text-lg font-bold" style={{ color: s.color }}>{s.value}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  {(["new", "sent", "follow_up", "won", "lost"] as const).map((status) => {
-                    const d = data.estimatePipeline![status];
-                    const colors: Record<string, string> = { new: "#3b82f6", sent: "#6366f1", follow_up: "#f59e0b", won: "#22c55e", lost: "#ef4444" };
-                    return (
-                      <div key={status} className="flex-1 rounded-lg p-2 text-center" style={{ background: "var(--db-hover)" }}>
-                        <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{status.replace(/_/g, " ")}</p>
-                        <p className="text-sm font-bold" style={{ color: colors[status] }}>{d.count}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-            {data.customerInsights && (
-              <div
-                className="rounded-xl p-5"
-                style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
-              >
-                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-                  Customer Insights
-                </h3>
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  <div>
-                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Total Customers</p>
-                    <p className="text-lg font-bold" style={{ color: "var(--db-text)" }}>{data.customerInsights.totalCustomers}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Repeat Rate</p>
-                    <p className="text-lg font-bold" style={{ color: "var(--db-accent)" }}>{data.customerInsights.repeatRate}%</p>
-                  </div>
-                  <div>
-                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Repeat Callers</p>
-                    <p className="text-lg font-bold" style={{ color: "var(--db-text)" }}>{data.customerInsights.repeatCallers}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>New This Month</p>
-                    <p className="text-lg font-bold" style={{ color: "#4ade80" }}>{data.customerInsights.newThisMonth}</p>
-                  </div>
-                </div>
-                {data.customerInsights.topByCallCount.length > 0 && (
-                  <div>
-                    <p className="text-xs mb-2" style={{ color: "var(--db-text-muted)" }}>Top Callers</p>
-                    {data.customerInsights.topByCallCount.map((c, i) => (
-                      <div key={i} className="flex items-center justify-between py-1">
-                        <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{c.name || c.phone}</span>
-                        <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{c.totalCalls} calls</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
         )}
-
-        {/* Insights + Bilingual */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-          <div className="lg:col-span-3">
-            {data.insights && (
-              <BusinessInsights
-                insights={data.insights}
-                bilingualStats={data.bilingualStats}
-              />
-            )}
-          </div>
-          <div className="lg:col-span-2">
-            {/* Quick Stats */}
-            <div
-              className="db-card p-5"
-            >
-              <h3
-                className="mb-4 text-sm font-semibold uppercase tracking-wider"
-                style={{ color: "var(--db-text-muted)" }}
-              >
-                All Time
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Total Calls Handled</span>
-                  <span className="text-lg font-semibold tabular-nums" style={{ color: "var(--db-text)" }}>
-                    <AnimatedCounter value={data.totalCalls} />
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Calls Today</span>
-                  <span className="text-lg font-semibold tabular-nums" style={{ color: "var(--db-text)" }}>
-                    <AnimatedCounter value={data.callsToday} />
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Missed Calls Saved</span>
-                  <span className="text-lg font-semibold tabular-nums" style={{ color: "#4ade80" }}>
-                    <AnimatedCounter value={data.missedCallsSaved} />
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Basic Dashboard (real clients) ──
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1
-          className="text-2xl font-semibold"
-          style={{ color: "var(--db-text)" }}
-        >
-          {getGreeting()}, {data.businessName || "there"}!
-        </h1>
-        <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Here&apos;s how {receptionistName} is doing today
-        </p>
-      </div>
-
-      {/* First Call Celebration */}
-      {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} receptionistName={receptionistName} />}
-
-      {/* Setup Checklist */}
-      {data.createdAt && (
-        <SetupChecklist
-          businessHours={data.businessHours || null}
-          greeting={data.greeting || null}
-          hasPricing={data.hasPricing || false}
-          totalCalls={data.totalCalls}
-          setupChecklistDismissed={data.setupChecklistDismissed || false}
-          createdAt={data.createdAt}
-        />
-      )}
-
-      {/* Dashboard Tour */}
-      {data.tourCompleted === false && !tourDismissed && (
-        <DashboardTour onComplete={() => setTourDismissed(true)} />
-      )}
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-grid" data-tour="overview-metrics">
-        <MetricCard label={`${receptionistName}'s Calls Today`} value={data.callsToday} />
-        <MetricCard label="Appointments This Week" value={data.appointmentsThisWeek} />
         <MetricCard
-          label="Missed Calls Saved"
-          value={data.missedCallsSaved}
-          changeType={data.missedCallsSaved > 0 ? "positive" : "neutral"}
-          change={data.missedCallsSaved > 0 ? "Recovered by AI" : undefined}
+          label="Appointments Booked"
+          value={data.appointmentsThisWeek}
+          change="This week"
+          changeType="neutral"
         />
-        <MetricCard label="Total Calls" value={data.totalCalls} />
+        <MetricCard
+          label="After-Hours Calls"
+          value={data.afterHoursThisWeek ?? 0}
+          change="Answered this week"
+          changeType={data.afterHoursThisWeek ? "positive" : "neutral"}
+        />
       </div>
 
       {/* Action Required */}
       <ActionRequiredSection items={actionItems} />
 
-      {/* Activity Feed + Weekly Summary (when available) */}
+      {/* Activity Feed + Weekly Summary */}
       {(data.activityFeed || data.weeklySummary) && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           {data.activityFeed && (
             <div className="lg:col-span-3">
-              <ActivityFeed events={data.activityFeed} />
+              <ActivityFeed events={data.activityFeed} newestEventText={data.newestEventText} receptionistName={receptionistName} />
             </div>
           )}
           {data.weeklySummary && (
@@ -617,13 +485,126 @@ export default function OverviewPage() {
         </div>
       )}
 
-      {/* Insights (when available) */}
-      {data.insights && (
-        <BusinessInsights
-          insights={data.insights}
-          bilingualStats={data.bilingualStats}
-        />
+      {/* Estimate Pipeline + Customer Insights */}
+      {(data.estimatePipeline || data.customerInsights) && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {data.estimatePipeline && (
+            <div
+              className="rounded-xl p-5"
+              style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+            >
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+                Estimate Pipeline
+              </h3>
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                {[
+                  { label: "Active Pipeline", value: `$${data.estimatePipeline.totalPipelineValue.toLocaleString()}`, color: "var(--db-accent)" },
+                  { label: "Won This Month", value: `$${data.estimatePipeline.wonThisMonth.value.toLocaleString()}`, color: "#4ade80" },
+                  { label: "Won Deals", value: String(data.estimatePipeline.wonThisMonth.count), color: "#4ade80" },
+                ].map((s) => (
+                  <div key={s.label}>
+                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{s.label}</p>
+                    <p className="text-lg font-bold" style={{ color: s.color }}>{s.value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                {(["new", "sent", "follow_up", "won", "lost"] as const).map((status) => {
+                  const d = data.estimatePipeline![status];
+                  const colors: Record<string, string> = { new: "#3b82f6", sent: "#6366f1", follow_up: "#f59e0b", won: "#22c55e", lost: "#ef4444" };
+                  return (
+                    <div key={status} className="flex-1 rounded-lg p-2 text-center" style={{ background: "var(--db-hover)" }}>
+                      <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{status.replace(/_/g, " ")}</p>
+                      <p className="text-sm font-bold" style={{ color: colors[status] }}>{d.count}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {data.customerInsights && (
+            <div
+              className="rounded-xl p-5"
+              style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+            >
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+                Customer Insights
+              </h3>
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Total Customers</p>
+                  <p className="text-lg font-bold" style={{ color: "var(--db-text)" }}>{data.customerInsights.totalCustomers}</p>
+                </div>
+                <div>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Repeat Rate</p>
+                  <p className="text-lg font-bold" style={{ color: "var(--db-accent)" }}>{data.customerInsights.repeatRate}%</p>
+                </div>
+                <div>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Repeat Callers</p>
+                  <p className="text-lg font-bold" style={{ color: "var(--db-text)" }}>{data.customerInsights.repeatCallers}</p>
+                </div>
+                <div>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>New This Month</p>
+                  <p className="text-lg font-bold" style={{ color: "#4ade80" }}>{data.customerInsights.newThisMonth}</p>
+                </div>
+              </div>
+              {data.customerInsights.topByCallCount.length > 0 && (
+                <div>
+                  <p className="text-xs mb-2" style={{ color: "var(--db-text-muted)" }}>Top Callers</p>
+                  {data.customerInsights.topByCallCount.map((c, i) => (
+                    <div key={i} className="flex items-center justify-between py-1">
+                      <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{c.name || c.phone}</span>
+                      <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{c.totalCalls} calls</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       )}
+
+      {/* Insights + Quick Stats */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+        <div className="lg:col-span-3">
+          {data.insights && (
+            <BusinessInsights
+              insights={data.insights}
+              bilingualStats={data.bilingualStats}
+            />
+          )}
+        </div>
+        <div className="lg:col-span-2">
+          <div className="db-card p-5">
+            <h3
+              className="mb-4 text-sm font-semibold uppercase tracking-wider"
+              style={{ color: "var(--db-text-muted)" }}
+            >
+              All Time
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Total Calls Handled</span>
+                <span className="text-lg font-semibold tabular-nums" style={{ color: "var(--db-text)" }}>
+                  <AnimatedCounter value={data.totalCalls} />
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Calls Today</span>
+                <span className="text-lg font-semibold tabular-nums" style={{ color: "var(--db-text)" }}>
+                  <AnimatedCounter value={data.callsToday} />
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Missed Calls Saved</span>
+                <span className="text-lg font-semibold tabular-nums" style={{ color: "#4ade80" }}>
+                  <AnimatedCounter value={data.missedCallsSaved} />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

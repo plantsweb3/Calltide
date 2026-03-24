@@ -139,25 +139,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const basicResponse = {
-    callsToday: callsToday.count,
-    appointmentsThisWeek: appointmentsThisWeekResult.count,
-    missedCallsSaved: missedCallsSaved.count,
-    totalCalls: totalCallsResult.count,
-    firstCallCelebration,
-    businessName: biz?.name,
-    businessHours: biz?.businessHours,
-    greeting: biz?.greeting,
-    hasPricing: biz?.hasPricingEnabled ?? false,
-    setupChecklistDismissed: biz?.setupChecklistDismissed ?? false,
-    tourCompleted: biz?.tourCompleted ?? false,
-    createdAt: biz?.createdAt,
-    healthScore: biz?.healthScore ?? 50,
-  };
-
-  // ── Enhanced metrics (wrapped so basic always returns) ──
-  try {
-
+  // ── Revenue metrics (always calculated for all clients) ──
   // After-hours calls this week
   const [afterHoursWeek] = await db
     .select({ count: count() })
@@ -236,6 +218,79 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // After-hours calls this month
+  const [afterHoursMonth] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, businessId),
+        eq(calls.isAfterHours, true),
+        gte(calls.createdAt, monthStart),
+      ),
+    );
+
+  // Spanish calls this month
+  const [spanishCallsMonth] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, businessId),
+        eq(calls.language, "es"),
+        gte(calls.createdAt, monthStart),
+      ),
+    );
+
+  // "Maria saved you" = missed recovered + after-hours × 25% conversion + Spanish × 25% conversion
+  const afterHoursSaved = Math.round((afterHoursMonth.count) * avgJobValue * 0.25);
+  const spanishSaved = Math.round((spanishCallsMonth.count) * avgJobValue * 0.25);
+  const mariaSavedYou = revenueSaved + afterHoursSaved + spanishSaved;
+
+  const planType = (biz?.planType === "annual" ? "annual" : "monthly") as PlanType;
+  const monthlyPlanCost = getMrrForPlan(planType) / 100;
+  const roiMultiple = monthlyPlanCost > 0
+    ? Math.round((revenueThisMonth / monthlyPlanCost) * 10) / 10
+    : 0;
+  const costPerLead = appointmentsThisMonth.count > 0
+    ? Math.round((monthlyPlanCost / appointmentsThisMonth.count) * 100) / 100
+    : 0;
+
+  const basicResponse = {
+    callsToday: callsToday.count,
+    appointmentsThisWeek: appointmentsThisWeekResult.count,
+    missedCallsSaved: missedCallsSaved.count,
+    totalCalls: totalCallsResult.count,
+    firstCallCelebration,
+    businessName: biz?.name,
+    businessHours: biz?.businessHours,
+    greeting: biz?.greeting,
+    hasPricing: biz?.hasPricingEnabled ?? false,
+    setupChecklistDismissed: biz?.setupChecklistDismissed ?? false,
+    tourCompleted: biz?.tourCompleted ?? false,
+    createdAt: biz?.createdAt,
+    healthScore: biz?.healthScore ?? 50,
+    // Revenue — always available for all clients
+    revenueThisMonth,
+    revenueChange,
+    revenueSaved,
+    missedCallsRecoveredCount,
+    costPerLead,
+    roiMultiple,
+    afterHoursThisWeek: afterHoursWeek.count,
+    mariaSavedYou,
+    mariaSavedBreakdown: {
+      missedRecovered: revenueSaved,
+      afterHours: afterHoursSaved,
+      afterHoursCount: afterHoursMonth.count,
+      spanish: spanishSaved,
+      spanishCount: spanishCallsMonth.count,
+    },
+  };
+
+  // ── Enhanced metrics (wrapped so basic always returns) ──
+  try {
+
   // Abandoned call recovery stats (SMS recovery for < 15s calls)
   const [abandonedTotal] = await db
     .select({ count: count() })
@@ -279,45 +334,6 @@ export async function GET(req: NextRequest) {
       ),
     );
   abandonedCallRecovery.smsSent = abandonedSmsSent.count;
-
-  // ── Enhanced "Maria Saved You" metric ──
-  // After-hours calls this month (would have gone to voicemail)
-  const [afterHoursMonth] = await db
-    .select({ count: count() })
-    .from(calls)
-    .where(
-      and(
-        eq(calls.businessId, businessId),
-        eq(calls.isAfterHours, true),
-        gte(calls.createdAt, monthStart),
-      ),
-    );
-
-  // Spanish calls this month (would have been missed by English-only staff)
-  const [spanishCallsMonth] = await db
-    .select({ count: count() })
-    .from(calls)
-    .where(
-      and(
-        eq(calls.businessId, businessId),
-        eq(calls.language, "es"),
-        gte(calls.createdAt, monthStart),
-      ),
-    );
-
-  // Unified "Maria saved you" = missed recovered + after-hours × 25% conversion + Spanish × 25% conversion
-  const afterHoursSaved = Math.round((afterHoursMonth.count) * avgJobValue * 0.25);
-  const spanishSaved = Math.round((spanishCallsMonth.count) * avgJobValue * 0.25);
-  const mariaSavedYou = revenueSaved + afterHoursSaved + spanishSaved;
-
-  const planType = (biz.planType === "annual" ? "annual" : "monthly") as PlanType;
-  const monthlyPlanCost = getMrrForPlan(planType) / 100; // cents → dollars
-  const roiMultiple = monthlyPlanCost > 0
-    ? Math.round((revenueThisMonth / monthlyPlanCost) * 10) / 10
-    : 0;
-  const costPerLead = appointmentsThisMonth.count > 0
-    ? Math.round((monthlyPlanCost / appointmentsThisMonth.count) * 100) / 100
-    : 0;
 
   // ── Weekly summary ──
   const weekCallRows = await db
@@ -408,6 +424,7 @@ export async function GET(req: NextRequest) {
       language: calls.language,
       duration: calls.duration,
       createdAt: calls.createdAt,
+      leadId: calls.leadId,
       leadName: leads.name,
     })
     .from(calls)
@@ -456,13 +473,30 @@ export async function GET(req: NextRequest) {
     value?: number;
     recovered?: boolean;
     urgent?: boolean;
+    chainId?: string;
+    automationChain?: string[];
+    isRecent?: boolean;
   };
 
+  const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+  const twoMinAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString();
   const feedEvents: FeedEvent[] = [];
+
+  // Build a map of leadId → events for chain grouping
+  const leadEventMap: Record<string, string[]> = {};
 
   for (const c of recentCalls) {
     const person = c.leadName || c.callerPhone || "Unknown";
+    const chainId = c.leadId || c.id;
+    const isRecent = c.createdAt > fiveMinAgo;
+
     if (c.status === "completed") {
+      const chain = ["Call Answered"];
+      // Check if this call led to an appointment
+      const appt = recentAppointments.find((a) => a.leadName === c.leadName && c.leadName);
+      if (appt) chain.push("Appointment Booked");
+      if (c.language === "es") chain.unshift("Language Detected");
+
       feedEvents.push({
         id: c.id,
         time: c.createdAt,
@@ -472,7 +506,14 @@ export async function GET(req: NextRequest) {
         person,
         language: c.language || undefined,
         value: avgJobValue,
+        chainId,
+        automationChain: chain,
+        isRecent,
       });
+      if (c.leadId) {
+        if (!leadEventMap[c.leadId]) leadEventMap[c.leadId] = [];
+        leadEventMap[c.leadId].push(c.id);
+      }
     } else if (c.status === "missed") {
       feedEvents.push({
         id: c.id,
@@ -483,6 +524,9 @@ export async function GET(req: NextRequest) {
         person,
         language: c.language || undefined,
         urgent: true,
+        chainId,
+        automationChain: ["Missed Call", "SMS Sent"],
+        isRecent,
       });
     }
   }
@@ -495,10 +539,12 @@ export async function GET(req: NextRequest) {
       title: s.direction === "outbound" ? "SMS Sent" : "SMS Received",
       description: s.body.length > 60 ? s.body.slice(0, 60) + "..." : s.body,
       person: s.toNumber,
+      isRecent: s.createdAt > fiveMinAgo,
     });
   }
 
   for (const a of recentAppointments) {
+    const chainId = a.leadName || a.id;
     feedEvents.push({
       id: a.id,
       time: a.createdAt,
@@ -507,11 +553,19 @@ export async function GET(req: NextRequest) {
       description: `${a.service} on ${a.date} at ${a.time}`,
       person: a.leadName || "Unknown",
       value: avgJobValue,
+      chainId,
+      automationChain: ["Call Answered", "Appointment Booked"],
+      isRecent: a.createdAt > fiveMinAgo,
     });
   }
 
   // Sort by time descending, take top 20
   feedEvents.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+
+  // Determine newest event header text
+  const newestEvent = feedEvents[0];
+  const newestIsVeryRecent = newestEvent && newestEvent.time > twoMinAgo;
+
   const activityFeed = feedEvents.slice(0, 20);
 
   // ── Bilingual stats ──
@@ -665,16 +719,10 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     ...basicResponse,
-    // Enhanced fields
-    businessName: biz?.name,
-    revenueThisMonth,
-    revenueChange,
-    revenueSaved,
-    missedCallsRecoveredCount,
-    costPerLead,
-    roiMultiple,
+    // Enhanced fields (additional insights beyond revenue)
     weeklySummary,
     activityFeed,
+    newestEventText: newestIsVeryRecent && newestEvent ? newestEvent.title : null,
     insights,
     bilingualStats,
     estimatePipeline: {
@@ -684,16 +732,7 @@ export async function GET(req: NextRequest) {
     },
     customerInsights,
     abandonedCallRecovery,
-    afterHoursThisWeek: afterHoursWeek.count,
     bookingRate,
-    mariaSavedYou,
-    mariaSavedBreakdown: {
-      missedRecovered: revenueSaved,
-      afterHours: afterHoursSaved,
-      afterHoursCount: afterHoursMonth.count,
-      spanish: spanishSaved,
-      spanishCount: spanishCallsMonth.count,
-    },
   });
 
   } catch (err) {

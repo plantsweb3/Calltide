@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import EmptyState from "@/components/empty-state";
 
@@ -14,6 +15,9 @@ interface FeedEvent {
   value?: number;
   recovered?: boolean;
   urgent?: boolean;
+  chainId?: string;
+  automationChain?: string[];
+  isRecent?: boolean;
 }
 
 function formatTime(iso: string): string {
@@ -88,13 +92,71 @@ function EventIcon({ type, urgent, recovered }: { type: string; urgent?: boolean
   return <div className="h-8 w-8 rounded-full" style={{ background: "var(--db-hover)" }} />;
 }
 
-export default function ActivityFeed({ events }: { events: FeedEvent[] }) {
-  function getRoute(type: string): string {
-    if (type.startsWith("call")) return "/dashboard/calls";
-    if (type.startsWith("sms")) return "/dashboard/sms";
-    if (type.startsWith("appointment")) return "/dashboard/appointments";
-    return "/dashboard";
+function getRoute(type: string): string {
+  if (type.startsWith("call")) return "/dashboard/calls";
+  if (type.startsWith("sms")) return "/dashboard/sms";
+  if (type.startsWith("appointment")) return "/dashboard/appointments";
+  return "/dashboard";
+}
+
+/** Group events by chainId. Events without chainId are standalone. */
+function groupByChain(events: FeedEvent[]): Array<{ chainId: string; events: FeedEvent[] }> {
+  const groups: Array<{ chainId: string; events: FeedEvent[] }> = [];
+  const seen = new Set<string>();
+
+  for (const evt of events) {
+    if (!evt.chainId || seen.has(evt.chainId)) {
+      if (!evt.chainId) {
+        groups.push({ chainId: evt.id, events: [evt] });
+      } else if (seen.has(evt.chainId)) {
+        const group = groups.find((g) => g.chainId === evt.chainId);
+        if (group) group.events.push(evt);
+      }
+      continue;
+    }
+    seen.add(evt.chainId);
+    groups.push({ chainId: evt.chainId, events: [evt] });
   }
+
+  return groups;
+}
+
+function ChainBadge({ chain }: { chain: string[] }) {
+  if (!chain || chain.length <= 1) return null;
+  return (
+    <div className="flex items-center gap-1 mt-1.5">
+      {chain.map((step, i) => (
+        <span key={i} className="flex items-center gap-1">
+          <span
+            className="rounded-full px-2 py-0.5 text-[9px] font-medium"
+            style={{
+              background: "var(--db-hover)",
+              color: "var(--db-text-muted)",
+            }}
+          >
+            {step}
+          </span>
+          {i < chain.length - 1 && (
+            <span className="text-[9px]" style={{ color: "var(--db-text-muted)" }}>
+              &rarr;
+            </span>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+export default function ActivityFeed({
+  events,
+  newestEventText,
+  receptionistName,
+}: {
+  events: FeedEvent[];
+  newestEventText?: string | null;
+  receptionistName?: string;
+}) {
+  const [expandedChains, setExpandedChains] = useState<Set<string>>(new Set());
 
   if (events.length === 0) {
     return (
@@ -125,6 +187,17 @@ export default function ActivityFeed({ events }: { events: FeedEvent[] }) {
     );
   }
 
+  const chains = groupByChain(events);
+
+  function toggleChain(chainId: string) {
+    setExpandedChains((prev) => {
+      const next = new Set(prev);
+      if (next.has(chainId)) next.delete(chainId);
+      else next.add(chainId);
+      return next;
+    });
+  }
+
   return (
     <div
       className="rounded-xl p-5 transition-colors duration-300"
@@ -134,70 +207,120 @@ export default function ActivityFeed({ events }: { events: FeedEvent[] }) {
         boxShadow: "var(--db-card-shadow)",
       }}
     >
-      <h3
-        className="mb-4 text-sm font-semibold uppercase tracking-wider"
-        style={{ color: "var(--db-text-muted)" }}
-      >
-        Recent Activity
-      </h3>
+      {/* Header — "Maria just did X" when very recent */}
+      {newestEventText ? (
+        <div className="flex items-center gap-2 mb-4">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ background: "var(--db-accent)" }} />
+            <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "var(--db-accent)" }} />
+          </span>
+          <span className="text-sm font-semibold" style={{ color: "var(--db-accent)" }}>
+            {receptionistName || "Maria"} just: {newestEventText}
+          </span>
+        </div>
+      ) : (
+        <h3
+          className="mb-4 text-sm font-semibold uppercase tracking-wider"
+          style={{ color: "var(--db-text-muted)" }}
+        >
+          Recent Activity
+        </h3>
+      )}
+
       <div className="space-y-0">
-        {events.map((evt, i) => (
-          <Link
-            key={evt.id}
-            href={getRoute(evt.type)}
-            className="flex gap-3 py-3 cursor-pointer transition-colors duration-150 rounded-lg px-2 -mx-2 no-underline"
-            style={{ borderTop: i > 0 ? "1px solid var(--db-border-light)" : "none" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-          >
-            <div className="flex flex-col items-center">
-              <EventIcon type={evt.type} urgent={evt.urgent} recovered={evt.recovered} />
+        {chains.map((chain, ci) => {
+          const primary = chain.events[0];
+          const hasMultiple = chain.events.length > 1;
+          const isExpanded = expandedChains.has(chain.chainId);
+          const eventsToShow = hasMultiple && !isExpanded ? [primary] : chain.events;
+
+          return (
+            <div key={chain.chainId}>
+              {eventsToShow.map((evt, i) => (
+                <Link
+                  key={evt.id}
+                  href={getRoute(evt.type)}
+                  className={`flex gap-3 py-3 cursor-pointer transition-colors duration-150 rounded-lg px-2 -mx-2 no-underline${evt.isRecent ? " feed-pulse" : ""}`}
+                  style={{
+                    borderTop: ci > 0 && i === 0 ? "1px solid var(--db-border-light)" : i > 0 ? "1px solid var(--db-border-light)" : "none",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                >
+                  <div className="flex flex-col items-center">
+                    <EventIcon type={evt.type} urgent={evt.urgent} recovered={evt.recovered} />
+                    {/* Connecting dot for chain events */}
+                    {hasMultiple && isExpanded && i < eventsToShow.length - 1 && (
+                      <div className="w-0.5 flex-1 mt-1" style={{ background: "var(--db-border)" }} />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                        {evt.person}
+                      </span>
+                      {evt.language && (
+                        <span
+                          className="rounded px-1.5 py-0.5 text-[10px] font-medium uppercase"
+                          style={{
+                            background: evt.language === "es" ? "rgba(197,154,39,0.15)" : "rgba(96,165,250,0.1)",
+                            color: evt.language === "es" ? "#C59A27" : "#60a5fa",
+                          }}
+                        >
+                          {evt.language}
+                        </span>
+                      )}
+                      {evt.recovered && (
+                        <span
+                          className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase"
+                          style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80" }}
+                        >
+                          Recovered
+                        </span>
+                      )}
+                      {evt.value && (
+                        <span
+                          className="rounded px-1.5 py-0.5 text-[10px] font-medium"
+                          style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
+                        >
+                          +${evt.value}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
+                      {evt.title}
+                    </p>
+                    <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                      {evt.description}
+                    </p>
+                    {/* Automation chain badge on first event */}
+                    {i === 0 && evt.automationChain && (
+                      <ChainBadge chain={evt.automationChain} />
+                    )}
+                  </div>
+                  <span className="shrink-0 text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
+                    {formatTime(evt.time)}
+                  </span>
+                </Link>
+              ))}
+              {/* Expand/collapse for chains with multiple events */}
+              {hasMultiple && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleChain(chain.chainId);
+                  }}
+                  className="ml-11 mb-1 text-[11px] font-medium transition-colors"
+                  style={{ color: "var(--db-accent)" }}
+                >
+                  {isExpanded
+                    ? "Show less"
+                    : `+${chain.events.length - 1} more event${chain.events.length - 1 > 1 ? "s" : ""}`}
+                </button>
+              )}
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                  {evt.person}
-                </span>
-                {evt.language && (
-                  <span
-                    className="rounded px-1.5 py-0.5 text-[10px] font-medium uppercase"
-                    style={{
-                      background: evt.language === "es" ? "rgba(197,154,39,0.15)" : "rgba(96,165,250,0.1)",
-                      color: evt.language === "es" ? "#C59A27" : "#60a5fa",
-                    }}
-                  >
-                    {evt.language}
-                  </span>
-                )}
-                {evt.recovered && (
-                  <span
-                    className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase"
-                    style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80" }}
-                  >
-                    Recovered
-                  </span>
-                )}
-                {evt.value && (
-                  <span
-                    className="rounded px-1.5 py-0.5 text-[10px] font-medium"
-                    style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
-                  >
-                    +${evt.value}
-                  </span>
-                )}
-              </div>
-              <p className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                {evt.title}
-              </p>
-              <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>
-                {evt.description}
-              </p>
-            </div>
-            <span className="shrink-0 text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
-              {formatTime(evt.time)}
-            </span>
-          </Link>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

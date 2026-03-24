@@ -278,7 +278,37 @@ const strings: Record<string, Record<Lang, string>> = {
   "nav.reporting": { en: "Reporting", es: "Reportes" },
   "nav.import": { en: "Import", es: "Importar" },
   "nav.feedback": { en: "Feedback", es: "Comentarios" },
+  "nav.intelligence": { en: "Intelligence", es: "Inteligencia" },
   "nav.locations": { en: "Locations", es: "Ubicaciones" },
+
+  // ── Intelligence page ────────────────────────────────────
+  "intelligence.title": { en: "{name}'s Brain", es: "El cerebro de {name}" },
+  "intelligence.subtitle": {
+    en: "Everything {name} has learned about your business",
+    es: "Todo lo que {name} ha aprendido sobre tu negocio",
+  },
+  "intelligence.callsHandled": { en: "Calls Handled", es: "Llamadas atendidas" },
+  "intelligence.customersServed": { en: "Customers Served", es: "Clientes atendidos" },
+  "intelligence.faqsMastered": { en: "FAQs Mastered", es: "Preguntas dominadas" },
+  "intelligence.avgQaScore": { en: "Avg QA Score", es: "Puntaje QA promedio" },
+  "intelligence.learningDays": {
+    en: "{name} has been learning for {n} days",
+    es: "{name} lleva {n} dias aprendiendo",
+  },
+  "intelligence.knowledgeMastery": { en: "Knowledge Mastery", es: "Dominio del conocimiento" },
+  "intelligence.qualityTrends": { en: "Quality Trends", es: "Tendencias de calidad" },
+  "intelligence.customerIntelligence": { en: "Customer Intelligence", es: "Inteligencia de clientes" },
+  "intelligence.businessInsights": { en: "Business Insights", es: "Datos del negocio" },
+  "intelligence.knowledgeGaps": { en: "Knowledge Gaps", es: "Vacios de conocimiento" },
+  "intelligence.topCallers": { en: "Top Callers", es: "Principales clientes" },
+  "intelligence.customerTiers": { en: "Customer Tiers", es: "Niveles de clientes" },
+  "intelligence.repeatCallerRate": { en: "Repeat Caller Rate", es: "Tasa de repeticion" },
+  "intelligence.topServices": { en: "Top Requested Services", es: "Servicios mas solicitados" },
+  "intelligence.busiestHours": { en: "Busiest Hours", es: "Horas mas activas" },
+  "intelligence.bilingualCalls": { en: "Bilingual Calls", es: "Llamadas bilingues" },
+  "intelligence.monthlyVolume": { en: "Monthly Call Volume", es: "Volumen mensual" },
+  "intelligence.weeklyTrend": { en: "Weekly Score Trend", es: "Tendencia semanal" },
+  "intelligence.teach": { en: "Teach {name}", es: "Ensenar a {name}" },
 
   // ── Calls page ─────────────────────────────────────────────
   "calls.inbound": { en: "Inbound", es: "Entrante" },
