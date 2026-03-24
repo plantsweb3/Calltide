@@ -64,6 +64,7 @@ export default function EstimatesPage() {
   const [lostReason, setLostReason] = useState("no_response");
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [convertingId, setConvertingId] = useState<string | null>(null);
 
   const fetchEstimates = useCallback(async () => {
     setLoading(true);
@@ -112,6 +113,21 @@ export default function EstimatesPage() {
       fetchEstimates();
     } catch {
       toast.error("Failed to send follow-up");
+    }
+  }
+
+  async function convertToInvoice(id: string) {
+    setConvertingId(id);
+    try {
+      const res = await fetch(`/api/dashboard/estimates/${id}/convert`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Conversion failed");
+      toast.success("Estimate converted to invoice");
+      fetchEstimates();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to convert estimate");
+    } finally {
+      setConvertingId(null);
     }
   }
 
@@ -276,6 +292,17 @@ export default function EstimatesPage() {
                 {["new", "sent", "follow_up"].includes(est.status) && (
                   <>
                     <Button size="sm" onClick={() => setConfirmFollowUpId(est.id)}>Send Follow-Up</Button>
+                    {est.amount && est.amount > 0 && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => convertToInvoice(est.id)}
+                        disabled={convertingId === est.id}
+                        style={{ background: "rgba(197,154,39,0.12)", color: "var(--db-accent)" }}
+                      >
+                        {convertingId === est.id ? "Converting..." : "Convert to Invoice"}
+                      </Button>
+                    )}
                     <Button
                       size="sm"
                       variant="ghost"

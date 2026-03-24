@@ -40,6 +40,9 @@ export function statusToVariant(status: string): BadgeVariant {
     follow_up: "warning",
     new: "accent",
     draft: "neutral",
+    // Invoice statuses
+    paid: "success",
+    overdue: "danger",
     // Referral statuses
     signed_up: "info",
     activated: "success",
