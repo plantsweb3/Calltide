@@ -173,8 +173,24 @@ export async function POST(req: NextRequest) {
     updatedAt: new Date().toISOString(),
   }).where(eq(calls.id, call.id));
 
+  // Detect call language from transcript for bilingual summary support
+  const detectedLanguage = (() => {
+    const callerLines = transcript.filter((l) => l.speaker === "caller").map((l) => l.text.toLowerCase());
+    if (callerLines.length === 0) return undefined;
+    const spanishIndicators = [
+      "hola", "gracias", "por favor", "necesito", "quiero", "tengo", "puede",
+      "cita", "ayuda", "problema", "emergencia", "buenos días", "buenas tardes",
+      "sí", "no puedo", "dónde", "cuándo", "cuánto", "servicio",
+    ];
+    let spanishCount = 0;
+    for (const line of callerLines) {
+      if (spanishIndicators.some((ind) => line.includes(ind))) spanishCount++;
+    }
+    return spanishCount / callerLines.length > 0.3 ? "es" as const : "en" as const;
+  })();
+
   // Generate AI summary from transcript (fire-and-forget, with retry on failure)
-  processCallSummary(call.id, conversationId, transcript).catch(async (err) => {
+  processCallSummary(call.id, conversationId, transcript, detectedLanguage).catch(async (err) => {
     reportError("Background call summary failed", err, {
       extra: { callId: call.id, conversationId },
     });

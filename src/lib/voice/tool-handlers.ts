@@ -420,7 +420,7 @@ async function handleTakeMessage(
   });
 
   // Emergency dispatch: notify on-call technicians
-  let dispatched = false;
+  let dispatchedCount = 0;
   if (isEmergency) {
     try {
       const onCallTechs = await db
@@ -452,7 +452,7 @@ async function handleTakeMessage(
           to: tech.phone,
           from: biz.twilioNumber,
           body: [
-            `🚨 EMERGENCY DISPATCH 🚨`,
+            `EMERGENCY DISPATCH`,
             `Business: ${biz.name}`,
             `Customer: ${callerDisplay}`,
             `Phone: ${phoneDisplay}`,
@@ -464,10 +464,10 @@ async function handleTakeMessage(
           templateType: "emergency_dispatch",
         });
 
-        dispatched = true;
+        dispatchedCount++;
       }
 
-      if (dispatched) {
+      if (dispatchedCount > 0) {
         // Notify owner that technicians have been dispatched
         const techNames = onCallTechs.filter((t) => t.phone).map((t) => t.name).join(", ");
         await sendSMS({
@@ -489,6 +489,28 @@ async function handleTakeMessage(
             businessId: ctx.businessId,
             callerPhone: ctx.callerPhone,
             technicianNames: techNames,
+          },
+        });
+      } else {
+        // No technicians could be reached — escalate directly to owner
+        await sendSMS({
+          to: biz.ownerPhone,
+          from: biz.twilioNumber,
+          body: `EMERGENCY: ${callerDisplay} (${phoneDisplay}) — ${message} — No on-call technicians could be reached via SMS. Please respond immediately.`,
+          businessId: ctx.businessId,
+          callId: ctx.callId,
+          templateType: "owner_notify",
+        });
+
+        await logActivity({
+          type: "emergency_dispatch",
+          entityType: "call",
+          entityId: ctx.callId,
+          title: `Emergency escalation (no techs): ${callerDisplay}`,
+          detail: `No on-call technicians reached. Owner notified directly. Problem: ${message}`,
+          metadata: {
+            businessId: ctx.businessId,
+            callerPhone: ctx.callerPhone,
           },
         });
       }
@@ -531,8 +553,12 @@ async function handleTakeMessage(
   }
 
   // Detect complaints and auto-create ticket (fire-and-forget, non-critical)
-  const complaintKeywords = ["complaint", "unhappy", "terrible", "awful", "worst", "sue", "lawyer", "bbb", "review", "report", "angry", "furious", "unacceptable", "refund", "rip off", "scam"];
-  const isComplaint = complaintKeywords.some(kw => messageLower.includes(kw));
+  // Strong keywords trigger complaint alone; weak keywords require 2+ matches
+  const strongComplaintKeywords = ["sue", "lawyer", "bbb", "scam", "rip off"];
+  const weakComplaintKeywords = ["complaint", "unhappy", "terrible", "awful", "worst", "angry", "furious", "unacceptable", "refund"];
+  const hasStrongKeyword = strongComplaintKeywords.some(kw => messageLower.includes(kw));
+  const weakMatches = weakComplaintKeywords.filter(kw => messageLower.includes(kw));
+  const isComplaint = hasStrongKeyword || weakMatches.length >= 2;
 
   if (isComplaint) {
     try {
@@ -561,7 +587,7 @@ async function handleTakeMessage(
   const ownerName = biz.ownerName || (ctx.language === "es" ? "el dueño" : "the owner");
 
   // Adjust response if technicians were dispatched
-  if (dispatched) {
+  if (dispatchedCount > 0) {
     return {
       success: true,
       data: {
@@ -572,7 +598,7 @@ async function handleTakeMessage(
     };
   }
 
-  // Emergency but no on-call techs — provide safety instructions
+  // Emergency but no on-call techs actually reached — notify caller accurately
   if (isEmergency) {
     const { getEmergencySafetyInstructions } = await import("@/lib/receptionist/emergency-instructions");
     const safetyTip = getEmergencySafetyInstructions(message, ctx.language);
@@ -589,8 +615,8 @@ async function handleTakeMessage(
       success: true,
       data: {
         message: ctx.language === "es"
-          ? `He notificado a ${ownerName} con prioridad de emergencia.${safetyLine} Si hay peligro inmediato, por favor llame al 911.`
-          : `I've notified ${ownerName} as emergency priority.${safetyLine} If there's immediate danger, please call 911.`,
+          ? `He notificado a ${ownerName} directamente sobre esta emergencia. Se comunicará con usted en breve.${safetyLine} Si hay peligro inmediato, por favor llame al 911.`
+          : `I've notified ${ownerName} directly about this emergency. They will be in touch shortly.${safetyLine} If there's immediate danger, please call 911.`,
       },
     };
   }

@@ -142,6 +142,17 @@ export async function POST(
     return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
   }
 
+  // Build caller context for personalized outbound conversation
+  let callerContext: string | null = null;
+  if (call.customerPhone) {
+    try {
+      const { buildCallerContext } = await import("@/lib/voice/caller-context");
+      callerContext = await buildCallerContext(call.businessId, call.customerPhone);
+    } catch {
+      // Non-fatal — proceed without caller context
+    }
+  }
+
   // Connect to ElevenLabs via WebSocket stream
   const elevenLabsWsUrl = `wss://api.elevenlabs.io/v1/convai/twilio/inbound?agent_id=${agentId}`;
 
@@ -156,6 +167,7 @@ export async function POST(
       <Parameter name="call_type" value="${escapeXml(call.callType)}" />
       <Parameter name="customer_name" value="${escapeXml(customerName)}" />
       <Parameter name="language" value="${escapeXml(call.language ?? "en")}" />
+      <Parameter name="caller_context" value="${escapeXml(callerContext || '')}" />
     </Stream>
   </Connect>
 </Response>`;

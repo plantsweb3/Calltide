@@ -42,6 +42,7 @@ interface SettingsData {
   googleReviewUrl: string;
   enableReviewRequests: boolean;
   enableMissedCallRecovery: boolean;
+  enableCustomerRecall: boolean;
   notifyOnEveryCall: boolean;
   notifyOnMissedOnly: boolean;
   ownerQuietHoursStart: string;
@@ -366,6 +367,7 @@ export default function SettingsPage() {
         googleReviewUrl: data.googleReviewUrl || "",
         enableReviewRequests: data.enableReviewRequests,
         enableMissedCallRecovery: data.enableMissedCallRecovery,
+        enableCustomerRecall: data.enableCustomerRecall,
         notifyOnEveryCall: data.notifyOnEveryCall,
         notifyOnMissedOnly: data.notifyOnMissedOnly,
         ownerQuietHoursStart: data.ownerQuietHoursStart,
@@ -801,6 +803,7 @@ export default function SettingsPage() {
               <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
                 Enable Weekly Digest
               </p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Performance report delivered every Monday</p>
             </div>
             <ToggleSwitch
               checked={data.enableWeeklyDigest}
@@ -842,104 +845,214 @@ export default function SettingsPage() {
       <Card title="Daily Report">
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            {data.receptionistName || "Maria"} sends you a daily end-of-day briefing with new leads, estimates, tomorrow's appointments, and action items.
+            {data.receptionistName || "Maria"} sends you a daily end-of-day briefing with new leads, estimates, tomorrow&apos;s appointments, and action items.
           </p>
-          <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-              How do you want to receive your daily report?
-            </label>
-            <div className="flex gap-2">
-              {[
-                { value: "sms", label: "Text Message" },
-                { value: "email", label: "Email" },
-                { value: "both", label: "Both" },
-                { value: "none", label: "None" },
-              ].map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setData({ ...data, digestPreference: opt.value })}
-                  className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-                  style={
-                    data.digestPreference === opt.value
-                      ? { background: "rgba(212,168,67,0.15)", color: "var(--db-accent)", border: "1px solid rgba(212,168,67,0.3)" }
-                      : { background: "var(--db-hover)", color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }
-                  }
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          {data.digestPreference !== "none" && (
+          <div className="flex items-center justify-between">
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                Delivery Time
-              </label>
-              <select
-                value={data.digestTime}
-                onChange={(e) => setData({ ...data, digestTime: e.target.value })}
-                className="rounded-lg px-3 py-2 text-sm"
-                style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
-              >
-                {["17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"].map((t) => (
-                  <option key={t} value={t}>{formatTime12(t)}</option>
-                ))}
-              </select>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                Enable Daily Summary
+              </p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>End-of-day briefing with key stats and action items</p>
             </div>
+            <ToggleSwitch
+              checked={data.enableDailySummary}
+              onChange={(v) => setData({ ...data, enableDailySummary: v })}
+            />
+          </div>
+          {data.enableDailySummary && (
+            <>
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                  How do you want to receive your daily report?
+                </label>
+                <div className="flex gap-2">
+                  {[
+                    { value: "sms", label: "Text Message" },
+                    { value: "email", label: "Email" },
+                    { value: "both", label: "Both" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setData({ ...data, digestPreference: opt.value })}
+                      className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+                      style={
+                        data.digestPreference === opt.value
+                          ? { background: "rgba(212,168,67,0.15)", color: "var(--db-accent)", border: "1px solid rgba(212,168,67,0.3)" }
+                          : { background: "var(--db-hover)", color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }
+                      }
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                  Delivery Time
+                </label>
+                <select
+                  value={data.digestTime}
+                  onChange={(e) => setData({ ...data, digestTime: e.target.value })}
+                  className="rounded-lg px-3 py-2 text-sm"
+                  style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                >
+                  {["17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"].map((t) => (
+                    <option key={t} value={t}>{formatTime12(t)}</option>
+                  ))}
+                </select>
+              </div>
+            </>
           )}
         </div>
       </Card>
 
-      {/* ── Section: Notification Preferences ── */}
-      <Card title="Notification Preferences">
+      {/* ── Section: Automations ── */}
+      <Card title="Automated Features">
+        <div className="space-y-4">
+          <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            Toggle automated SMS features that run in the background to help you grow.
+          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Google Review Requests</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Auto-text customers after appointments asking for a Google review</p>
+            </div>
+            <ToggleSwitch checked={data.enableReviewRequests} onChange={(v) => setField("enableReviewRequests", v)} />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Missed Call Recovery</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Auto-text callers who hang up within 15 seconds to recover the lead</p>
+            </div>
+            <ToggleSwitch checked={data.enableMissedCallRecovery} onChange={(v) => setField("enableMissedCallRecovery", v)} />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Customer Recall</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Remind past customers when seasonal maintenance is due</p>
+            </div>
+            <ToggleSwitch checked={data.enableCustomerRecall} onChange={(v) => setField("enableCustomerRecall", v)} />
+          </div>
+        </div>
+      </Card>
+
+      {/* ── Section: Call Notifications ── */}
+      <Card title="Call Notifications">
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
             Control when and how you receive notifications about calls.
           </p>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Notify on every call</p>
-              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Get an SMS after every answered call</p>
-            </div>
-            <ToggleSwitch checked={data.notifyOnEveryCall} onChange={(v) => setField("notifyOnEveryCall", v)} />
+          <div className="space-y-3">
+            <label
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 cursor-pointer transition-colors"
+              style={{
+                background: data.notifyOnEveryCall ? "rgba(212,168,67,0.06)" : "var(--db-bg)",
+                border: `1px solid ${data.notifyOnEveryCall ? "rgba(212,168,67,0.25)" : "var(--db-border)"}`,
+              }}
+            >
+              <input
+                type="radio"
+                name="callNotify"
+                checked={data.notifyOnEveryCall}
+                onChange={() => {
+                  setField("notifyOnEveryCall", true);
+                  setField("notifyOnMissedOnly", false);
+                }}
+                className="sr-only"
+              />
+              <span
+                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+                style={{
+                  border: `2px solid ${data.notifyOnEveryCall ? "var(--db-accent)" : "var(--db-border)"}`,
+                }}
+              >
+                {data.notifyOnEveryCall && (
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: "var(--db-accent)" }} />
+                )}
+              </span>
+              <div>
+                <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Every call</p>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Get an SMS after every answered call</p>
+              </div>
+            </label>
+
+            <label
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 cursor-pointer transition-colors"
+              style={{
+                background: data.notifyOnMissedOnly ? "rgba(212,168,67,0.06)" : "var(--db-bg)",
+                border: `1px solid ${data.notifyOnMissedOnly ? "rgba(212,168,67,0.25)" : "var(--db-border)"}`,
+              }}
+            >
+              <input
+                type="radio"
+                name="callNotify"
+                checked={data.notifyOnMissedOnly}
+                onChange={() => {
+                  setField("notifyOnMissedOnly", true);
+                  setField("notifyOnEveryCall", false);
+                }}
+                className="sr-only"
+              />
+              <span
+                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+                style={{
+                  border: `2px solid ${data.notifyOnMissedOnly ? "var(--db-accent)" : "var(--db-border)"}`,
+                }}
+              >
+                {data.notifyOnMissedOnly && (
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: "var(--db-accent)" }} />
+                )}
+              </span>
+              <div>
+                <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Missed calls only</p>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Only get notified when a call is missed or abandoned</p>
+              </div>
+            </label>
           </div>
-          <div className="flex items-center justify-between">
+        </div>
+      </Card>
+
+      {/* ── Section: Quiet Hours ── */}
+      <Card title="Quiet Hours">
+        <div className="space-y-4">
+          <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+            No owner notifications will be sent during these hours (except emergencies). Skipped notifications are included in your daily digest instead.
+          </p>
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Notify on missed calls only</p>
-              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Only get notified when a call is missed or abandoned</p>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>Start</label>
+              <select
+                value={data.ownerQuietHoursStart}
+                onChange={(e) => setField("ownerQuietHoursStart", e.target.value)}
+                className="w-full rounded-lg px-3 py-2 text-sm"
+                style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+              >
+                {TIME_OPTIONS.map((t) => <option key={t} value={t}>{formatTime12(t)}</option>)}
+              </select>
             </div>
-            <ToggleSwitch checked={data.notifyOnMissedOnly} onChange={(v) => setField("notifyOnMissedOnly", v)} />
+            <div>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>End</label>
+              <select
+                value={data.ownerQuietHoursEnd}
+                onChange={(e) => setField("ownerQuietHoursEnd", e.target.value)}
+                className="w-full rounded-lg px-3 py-2 text-sm"
+                style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+              >
+                {TIME_OPTIONS.map((t) => <option key={t} value={t}>{formatTime12(t)}</option>)}
+              </select>
+            </div>
           </div>
-          <div className="border-t pt-4" style={{ borderColor: "var(--db-border)" }}>
-            <p className="text-sm font-medium mb-3" style={{ color: "var(--db-text)" }}>Owner Quiet Hours</p>
-            <p className="text-xs mb-3" style={{ color: "var(--db-text-muted)" }}>
-              No owner notifications will be sent during these hours (except emergencies).
+          <div
+            className="rounded-lg p-3"
+            style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)" }}
+          >
+            <p className="text-xs font-medium" style={{ color: "var(--db-text)" }}>
+              Current window: {formatTime12(data.ownerQuietHoursStart)} &mdash; {formatTime12(data.ownerQuietHoursEnd)}
             </p>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>Start</label>
-                <select
-                  value={data.ownerQuietHoursStart}
-                  onChange={(e) => setField("ownerQuietHoursStart", e.target.value)}
-                  className="w-full rounded-lg px-3 py-2 text-sm"
-                  style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
-                >
-                  {TIME_OPTIONS.map((t) => <option key={t} value={t}>{formatTime12(t)}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>End</label>
-                <select
-                  value={data.ownerQuietHoursEnd}
-                  onChange={(e) => setField("ownerQuietHoursEnd", e.target.value)}
-                  className="w-full rounded-lg px-3 py-2 text-sm"
-                  style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
-                >
-                  {TIME_OPTIONS.map((t) => <option key={t} value={t}>{formatTime12(t)}</option>)}
-                </select>
-              </div>
-            </div>
+            <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
+              {data.receptionistName || "Maria"} still answers calls 24/7 &mdash; only your personal notifications are paused.
+            </p>
           </div>
         </div>
       </Card>

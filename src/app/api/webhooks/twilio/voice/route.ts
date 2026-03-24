@@ -106,13 +106,37 @@ export async function POST(req: NextRequest) {
   if (isOwner) {
     const receptionistName = biz.receptionistName || "Maria";
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+
+    // Look up business language preference for owner voice mode
+    let ownerLang: "en" | "es" = "en";
+    try {
+      const { businesses: bizTable } = await import("@/db/schema");
+      const [bizRecord] = await db
+        .select({ defaultLanguage: bizTable.defaultLanguage })
+        .from(bizTable)
+        .where(eq(bizTable.id, biz.id))
+        .limit(1);
+      if (bizRecord?.defaultLanguage === "es") ownerLang = "es";
+    } catch {
+      // Non-fatal — default to English
+    }
+
+    const twimlLang = ownerLang === "es" ? "es-MX" : "en-US";
+    const voice = ownerLang === "es" ? "Polly.Mia" : "Polly.Joanna";
+    const greeting = ownerLang === "es"
+      ? `Hola! Soy ${escapeXml(receptionistName)}, tu asistente de oficina. En que puedo ayudarte hoy?`
+      : `Hi! This is ${escapeXml(receptionistName)}, your office manager. What can I help you with?`;
+    const goodbye = ownerLang === "es"
+      ? "No entendi. Hasta luego!"
+      : "I didn't catch that. Goodbye!";
+
     // Use Gather with speech input to collect owner's spoken request, then process via Maria
     const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Say language="en-US" voice="Polly.Joanna">Hi! This is ${escapeXml(receptionistName)}, your office manager. What can I help you with?</Say>
-  <Gather input="speech" speechTimeout="auto" action="${escapeXml(appUrl)}/api/webhooks/twilio/voice-owner?businessId=${escapeXml(biz.id)}" method="POST" language="en-US">
+  <Say language="${twimlLang}" voice="${voice}">${greeting}</Say>
+  <Gather input="speech" speechTimeout="auto" action="${escapeXml(appUrl)}/api/webhooks/twilio/voice-owner?businessId=${escapeXml(biz.id)}" method="POST" language="${twimlLang}">
   </Gather>
-  <Say language="en-US" voice="Polly.Joanna">I didn't catch that. Goodbye!</Say>
+  <Say language="${twimlLang}" voice="${voice}">${goodbye}</Say>
   <Hangup/>
 </Response>`;
 
@@ -264,7 +288,7 @@ export async function POST(req: NextRequest) {
 function twimlSay(message: string, recordVoicemail = false): Response {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
   const voicemailTwiml = recordVoicemail
-    ? `<Record maxLength="120" playBeep="true" timeout="5" recordingStatusCallback="${escapeXml(appUrl)}/api/webhooks/twilio/recording" recordingStatusCallbackMethod="POST" />`
+    ? `<Record maxLength="120" playBeep="true" timeout="5" transcribe="true" transcribeCallback="${escapeXml(appUrl)}/api/webhooks/twilio/transcription" recordingStatusCallback="${escapeXml(appUrl)}/api/webhooks/twilio/recording" recordingStatusCallbackMethod="POST" />`
     : "";
 
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>

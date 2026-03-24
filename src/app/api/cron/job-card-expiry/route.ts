@@ -6,6 +6,7 @@ import { sendSMS } from "@/lib/twilio/sms";
 import { env } from "@/lib/env";
 import { reportError } from "@/lib/error-reporting";
 import { verifyCronAuth } from "@/lib/cron-auth";
+import { isOwnerInQuietHours } from "@/lib/notifications/quiet-hours";
 
 /**
  * Cron: Job Card Expiry + Reminder
@@ -51,6 +52,9 @@ export async function GET(req: NextRequest) {
           .limit(1);
 
         if (!biz?.ownerPhone) continue;
+
+        // Skip routine reminders during quiet hours
+        if (isOwnerInQuietHours(biz)) continue;
 
         const fromNumber = biz.twilioNumber || env.TWILIO_PHONE_NUMBER;
         const callerName = card.callerName || "a caller";
@@ -164,6 +168,9 @@ export async function GET(req: NextRequest) {
           .limit(1);
 
         if (!biz?.ownerPhone) continue;
+
+        // Skip routine nudges during quiet hours
+        if (isOwnerInQuietHours(biz)) continue;
 
         const fromNumber = biz.twilioNumber || env.TWILIO_PHONE_NUMBER;
         const body = `Still waiting on your adjusted estimate for ${card.callerName || "the caller"}'s ${card.jobTypeLabel || "job"}. Reply with a dollar amount (e.g. $800) or range ($800-$1200).`;

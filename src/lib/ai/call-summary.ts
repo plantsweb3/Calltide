@@ -39,12 +39,42 @@ interface GeneratedSummary {
   knowledgeGaps: KnowledgeGap[];
 }
 
-async function generateSummary(transcript: TranscriptLine[]): Promise<GeneratedSummary> {
+/**
+ * Detect language from transcript text using common Spanish indicators.
+ * Returns "es" if majority of caller lines contain Spanish, "en" otherwise.
+ */
+function detectTranscriptLanguage(transcript: TranscriptLine[]): "en" | "es" {
+  const callerLines = transcript.filter((l) => l.speaker === "caller").map((l) => l.text.toLowerCase());
+  if (callerLines.length === 0) return "en";
+
+  const spanishIndicators = [
+    "hola", "gracias", "por favor", "necesito", "quiero", "tengo", "puede",
+    "cita", "ayuda", "problema", "emergencia", "buenos días", "buenas tardes",
+    "sí", "no puedo", "dónde", "cuándo", "cuánto", "servicio", "teléfono",
+    "dirección", "nombre", "llamar", "mensaje", "urgente", "agua", "fuego",
+  ];
+
+  let spanishCount = 0;
+  for (const line of callerLines) {
+    if (spanishIndicators.some((ind) => line.includes(ind))) {
+      spanishCount++;
+    }
+  }
+
+  return spanishCount / callerLines.length > 0.3 ? "es" : "en";
+}
+
+async function generateSummary(transcript: TranscriptLine[], language?: "en" | "es"): Promise<GeneratedSummary> {
   const anthropic = getAnthropic();
 
   const transcriptText = transcript
     .map((line) => `${line.speaker === "ai" ? "AI" : "Caller"}: ${line.text}`)
     .join("\n");
+
+  const detectedLang = language || detectTranscriptLanguage(transcript);
+  const languageNote = detectedLang === "es"
+    ? "\n\nIMPORTANT: This call was conducted in Spanish. Note this in the summary (e.g. 'Call was conducted in Spanish.'). Still write all output in English for dashboard readability."
+    : "";
 
   const response = await anthropic.messages.create({
     model: process.env.CLAUDE_MODEL ?? HAIKU_MODEL,
@@ -52,7 +82,7 @@ async function generateSummary(transcript: TranscriptLine[]): Promise<GeneratedS
     messages: [
       {
         role: "user",
-        content: `Analyze this phone call transcript between an AI receptionist and a caller. Extract:
+        content: `Analyze this phone call transcript between an AI receptionist and a caller. Extract:${languageNote}
 
 1. A concise 1-3 sentence summary of what happened.
 2. The overall caller sentiment: "positive", "neutral", "negative", "frustrated", or "confused".
@@ -122,6 +152,7 @@ export async function processCallSummary(
   callId: string,
   conversationId: string,
   providedTranscript?: TranscriptLine[],
+  language?: "en" | "es",
 ): Promise<SummaryResult | null> {
   try {
     let transcript: TranscriptLine[];
@@ -150,7 +181,7 @@ export async function processCallSummary(
       return null;
     }
 
-    const { summary, sentiment, outcome, callerName, serviceRequested, knowledgeGaps } = await generateSummary(transcript);
+    const { summary, sentiment, outcome, callerName, serviceRequested, knowledgeGaps } = await generateSummary(transcript, language);
 
     await db.update(calls).set({
       summary,

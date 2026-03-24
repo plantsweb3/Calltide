@@ -1,10 +1,30 @@
 import { NextRequest } from "next/server";
+import { createHash } from "crypto";
 import { dispatchToolCall } from "@/lib/voice/tool-handlers";
 import { db } from "@/db";
 import { calls } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { reportError, reportWarning } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+
+// ── Idempotency cache ──
+// Prevents ElevenLabs retries from causing double bookings, double SMS, etc.
+const idempotencyCache = new Map<string, { result: unknown; expiresAt: number }>();
+const IDEMPOTENCY_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+function cleanupIdempotencyCache() {
+  const now = Date.now();
+  for (const [key, entry] of idempotencyCache) {
+    if (entry.expiresAt <= now) {
+      idempotencyCache.delete(key);
+    }
+  }
+}
+
+function buildIdempotencyKey(conversationId: string, toolName: string, params: Record<string, unknown>): string {
+  const raw = `${conversationId}:${toolName}:${JSON.stringify(params)}`;
+  return createHash("sha256").update(raw).digest("hex");
+}
 
 /**
  * POST /api/webhooks/elevenlabs/tools
@@ -52,6 +72,17 @@ export async function POST(req: NextRequest) {
 
   console.log(`[elevenlabs/tools] tool call: ${toolName} conversation=${conversationId}`);
 
+  // ── Idempotency check ──
+  // Periodic cleanup of expired entries
+  cleanupIdempotencyCache();
+
+  const idempotencyKey = buildIdempotencyKey(conversationId, toolName, parameters);
+  const cached = idempotencyCache.get(idempotencyKey);
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log(`[elevenlabs/tools] idempotent hit — returning cached result for ${toolName}`);
+    return Response.json(cached.result);
+  }
+
   // Look up the call record by conversationId
   const [call] = await db
     .select()
@@ -77,7 +108,16 @@ export async function POST(req: NextRequest) {
       language: "en",
     });
 
-    return Response.json(result.data || { error: result.error });
+    const responseData = result.data || { error: result.error };
+    // Cache successful results for idempotency
+    if (result.success) {
+      idempotencyCache.set(idempotencyKey, {
+        result: responseData,
+        expiresAt: Date.now() + IDEMPOTENCY_TTL_MS,
+      });
+    }
+
+    return Response.json(responseData);
   }
 
   // Dispatch to existing tool handler
@@ -89,5 +129,14 @@ export async function POST(req: NextRequest) {
     language: (call.language as "en" | "es") || "en",
   });
 
-  return Response.json(result.data || { error: result.error });
+  const responseData = result.data || { error: result.error };
+  // Cache successful results for idempotency
+  if (result.success) {
+    idempotencyCache.set(idempotencyKey, {
+      result: responseData,
+      expiresAt: Date.now() + IDEMPOTENCY_TTL_MS,
+    });
+  }
+
+  return Response.json(responseData);
 }
