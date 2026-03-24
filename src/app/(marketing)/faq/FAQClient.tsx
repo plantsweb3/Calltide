@@ -278,7 +278,7 @@ function AccordionItem({ item, isOpen, onToggle }: { item: FAQItem; isOpen: bool
       <div
         className="overflow-hidden transition-all duration-300"
         style={{
-          maxHeight: isOpen ? "300px" : "0",
+          maxHeight: isOpen ? "2000px" : "0",
           opacity: isOpen ? 1 : 0,
         }}
       >

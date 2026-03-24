@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { followUps, customers } from "@/db/schema";
 import { eq, and, desc, asc, gte, lte, lt, count, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 const PAGE_SIZE = 25;
 
@@ -13,8 +14,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const rl = await rateLimit(`dashboard-follow-ups-${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
+
   const { searchParams } = new URL(req.url);
-  const page = Math.min(Math.max(1, parseInt(searchParams.get("page") || "1")), 10000);
+  const page = Math.min(Math.max(1, parseInt(searchParams.get("page") || "1")), 1000);
   const status = searchParams.get("status"); // pending, in_progress, completed, dismissed
   const priority = searchParams.get("priority"); // low, normal, high, urgent
   const from = searchParams.get("from"); // ISO date
@@ -84,7 +88,7 @@ export async function GET(req: NextRequest) {
       // Custom priority order: urgent=0, high=1, normal=2, low=3
       orderByClause = sortOrder === "asc"
         ? sql`CASE ${followUps.priority} WHEN 'low' THEN 0 WHEN 'normal' THEN 1 WHEN 'high' THEN 2 WHEN 'urgent' THEN 3 ELSE 1 END ASC`
-        : sql`CASE ${followUps.priority} WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 WHEN 'normal' THEN 2 WHEN 'low' THEN 3 ELSE 2 END ASC`;
+        : sql`CASE ${followUps.priority} WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 WHEN 'normal' THEN 2 WHEN 'low' THEN 3 ELSE 2 END DESC`;
     } else {
       orderByClause = sortDir(followUps.createdAt);
     }
@@ -149,6 +153,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const rl = await rateLimit(`dashboard-follow-ups-write-${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
+
   let body: unknown;
   try {
     body = await req.json();
@@ -167,6 +174,14 @@ export async function POST(req: NextRequest) {
 
   try {
     const data = result.data;
+
+    // Validate customerId belongs to this business (prevent IDOR)
+    if (data.customerId) {
+      const [cust] = await db.select({ id: customers.id }).from(customers)
+        .where(and(eq(customers.id, data.customerId), eq(customers.businessId, businessId))).limit(1);
+      if (!cust) return NextResponse.json({ error: "Customer not found" }, { status: 404 });
+    }
+
     const [created] = await db.insert(followUps).values({
       businessId,
       customerId: data.customerId || null,

@@ -490,7 +490,7 @@ function resolveTimezone(
   if (tz && VALID_TIMEZONES.includes(tz)) return tz;
 
   // Check common timezone names that might come through
-  if (typeof tz === "string" && tz.startsWith("America/") || typeof tz === "string" && tz.startsWith("Pacific/")) {
+  if (typeof tz === "string" && (tz.startsWith("America/") || tz.startsWith("Pacific/"))) {
     return tz;
   }
 

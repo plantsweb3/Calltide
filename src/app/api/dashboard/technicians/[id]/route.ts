@@ -74,12 +74,12 @@ export async function PUT(
     await db
       .update(technicians)
       .set(updates)
-      .where(eq(technicians.id, id));
+      .where(and(eq(technicians.id, id), eq(technicians.businessId, businessId)));
 
     const [updated] = await db
       .select()
       .from(technicians)
-      .where(eq(technicians.id, id))
+      .where(and(eq(technicians.id, id), eq(technicians.businessId, businessId)))
       .limit(1);
 
     return NextResponse.json({ technician: updated });
@@ -120,7 +120,7 @@ export async function DELETE(
     await db
       .update(technicians)
       .set({ isActive: false, updatedAt: new Date().toISOString() })
-      .where(eq(technicians.id, id));
+      .where(and(eq(technicians.id, id), eq(technicians.businessId, businessId)));
 
     return NextResponse.json({ success: true });
   } catch (err) {

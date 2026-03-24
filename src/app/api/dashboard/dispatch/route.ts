@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
       })
       .from(appointments)
       .leftJoin(leads, eq(appointments.leadId, leads.id))
-      .leftJoin(customers, eq(leads.phone, customers.phone))
+      .leftJoin(customers, and(eq(leads.phone, customers.phone), eq(customers.businessId, businessId)))
       .where(
         and(
           eq(appointments.businessId, businessId),

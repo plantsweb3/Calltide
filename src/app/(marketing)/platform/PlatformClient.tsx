@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { PHONE, PHONE_TEL, BOOKING_URL } from "@/lib/marketing/translations";
 import type { Lang } from "@/lib/marketing/translations";
 
@@ -290,12 +290,12 @@ export default function PlatformClient() {
   const [lang, setLang] = useState<Lang>("en");
 
   // Restore language preference
-  useState(() => {
+  useEffect(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("capta-lang");
       if (saved === "en" || saved === "es") setLang(saved);
     }
-  });
+  }, []);
 
   const toggleLang = useCallback((l: Lang) => {
     setLang(l);

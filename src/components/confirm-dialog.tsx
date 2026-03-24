@@ -26,11 +26,32 @@ export default function ConfirmDialog({
 }: ConfirmDialogProps) {
   const confirmRef = useRef<HTMLButtonElement>(null);
   const onCancelRef = useRef(onCancel);
+  const prevFocusRef = useRef<HTMLElement | null>(null);
   onCancelRef.current = onCancel;
 
   const handleEscape = useCallback((e: KeyboardEvent) => {
     if (e.key === "Escape") onCancelRef.current();
   }, []);
+
+  // Focus restoration
+  useEffect(() => {
+    if (open) {
+      prevFocusRef.current = document.activeElement as HTMLElement;
+    }
+    return () => {
+      if (!open && prevFocusRef.current) {
+        prevFocusRef.current.focus();
+      }
+    };
+  }, [open]);
+
+  // Body scroll lock
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;

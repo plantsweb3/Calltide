@@ -5,7 +5,7 @@ import { eq, and, isNotNull, lt } from "drizzle-orm";
 import { verifyCronAuth } from "@/lib/cron-auth";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { getTwilioClient } from "@/lib/twilio/client";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 
 /**
  * GET /api/cron/recording-cleanup
@@ -64,13 +64,16 @@ export async function GET(req: NextRequest) {
         try {
           // Attempt to delete recording from Twilio
           if (call.recordingUrl && call.twilioCallSid) {
+            // Extract recording SID from URL (format: .../Recordings/RExxxxx.mp3)
+            const match = call.recordingUrl.match(/Recordings\/(RE[a-f0-9]+)/i);
+            if (!match) {
+              reportWarning("Recording URL format unexpected, skipping cleanup", { callId: call.id, url: call.recordingUrl });
+              continue;
+            }
+
             try {
               const twilioClient = getTwilioClient();
-              // Extract recording SID from URL (format: .../Recordings/RExxxxx.mp3)
-              const recordingSidMatch = call.recordingUrl.match(/Recordings\/(RE[a-f0-9]+)/i);
-              if (recordingSidMatch) {
-                await twilioClient.recordings(recordingSidMatch[1]).remove();
-              }
+              await twilioClient.recordings(match[1]).remove();
             } catch (twilioErr) {
               // Twilio deletion may fail if already deleted or URL is external — continue anyway
               reportError("Twilio recording deletion failed", twilioErr, {

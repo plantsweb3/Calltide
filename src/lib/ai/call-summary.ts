@@ -45,7 +45,7 @@ interface GeneratedSummary {
  */
 function detectTranscriptLanguage(transcript: TranscriptLine[]): "en" | "es" {
   const callerLines = transcript.filter((l) => l.speaker === "caller").map((l) => l.text.toLowerCase());
-  if (callerLines.length === 0) return "en";
+  if (callerLines.length < 2) return "en";
 
   const spanishIndicators = [
     "hola", "gracias", "por favor", "necesito", "quiero", "tengo", "puede",
@@ -61,7 +61,8 @@ function detectTranscriptLanguage(transcript: TranscriptLine[]): "en" | "es" {
     }
   }
 
-  return spanishCount / callerLines.length > 0.3 ? "es" : "en";
+  const ratio = spanishCount / callerLines.length;
+  return ratio >= 0.5 ? "es" : "en";
 }
 
 async function generateSummary(transcript: TranscriptLine[], language?: "en" | "es"): Promise<GeneratedSummary> {
@@ -292,9 +293,27 @@ export async function processCallSummary(
     }
 
     // Send rich owner SMS alert now that we have the summary (fire-and-forget)
-    sendOwnerCallAlert(callId).catch((err) => {
-      reportError("Post-call owner alert failed", err, { extra: { callId } });
-    });
+    // Suppress SMS during owner quiet hours
+    (async () => {
+      try {
+        if (callRecord) {
+          const { isOwnerInQuietHours } = await import("@/lib/notifications/quiet-hours");
+          const [bizForQuiet] = await db
+            .select({
+              ownerQuietHoursStart: businesses.ownerQuietHoursStart,
+              ownerQuietHoursEnd: businesses.ownerQuietHoursEnd,
+              timezone: businesses.timezone,
+            })
+            .from(businesses)
+            .where(eq(businesses.id, callRecord.businessId))
+            .limit(1);
+          if (bizForQuiet && isOwnerInQuietHours(bizForQuiet)) return;
+        }
+        await sendOwnerCallAlert(callId);
+      } catch (err) {
+        reportError("Post-call owner alert failed", err, { extra: { callId } });
+      }
+    })();
 
     // Send missed-call text-back to caller if applicable (fire-and-forget)
     sendMissedCallTextBack(callId).catch((err) => {
@@ -323,20 +342,30 @@ export async function processCallSummary(
 
             if (cust && (cust.complaintCount || 0) >= 2) {
               const [biz] = await db
-                .select({ ownerPhone: businesses.ownerPhone, twilioNumber: businesses.twilioNumber })
+                .select({
+                  ownerPhone: businesses.ownerPhone,
+                  twilioNumber: businesses.twilioNumber,
+                  ownerQuietHoursStart: businesses.ownerQuietHoursStart,
+                  ownerQuietHoursEnd: businesses.ownerQuietHoursEnd,
+                  timezone: businesses.timezone,
+                })
                 .from(businesses)
                 .where(eq(businesses.id, callRecord.businessId))
                 .limit(1);
 
               if (biz) {
-                const { sendSMS: sendAlert } = await import("@/lib/twilio/sms");
-                await sendAlert({
-                  to: biz.ownerPhone,
-                  from: biz.twilioNumber,
-                  body: `Complaint alert: ${cust.name || "A customer"} has had ${cust.complaintCount} negative interactions. Consider a personal follow-up.`,
-                  businessId: callRecord.businessId,
-                  templateType: "owner_notify",
-                });
+                // Suppress complaint SMS during owner quiet hours
+                const { isOwnerInQuietHours } = await import("@/lib/notifications/quiet-hours");
+                if (!isOwnerInQuietHours(biz)) {
+                  const { sendSMS: sendAlert } = await import("@/lib/twilio/sms");
+                  await sendAlert({
+                    to: biz.ownerPhone,
+                    from: biz.twilioNumber,
+                    body: `Complaint alert: ${cust.name || "A customer"} has had ${cust.complaintCount} negative interactions. Consider a personal follow-up.`,
+                    businessId: callRecord.businessId,
+                    templateType: "owner_notify",
+                  });
+                }
               }
             }
           }

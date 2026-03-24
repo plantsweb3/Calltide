@@ -235,17 +235,30 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Create call record
-  const [callRecord] = await db.insert(calls).values({
-    businessId: biz.id,
-    leadId,
-    direction: "inbound",
-    callerPhone: callerNumber,
-    calledPhone: calledNumber,
-    status: "in_progress",
-    twilioCallSid: callSid,
-    elevenlabsConversationId: conversationId,
-  }).returning({ id: calls.id });
+  // Guard against duplicate call records on Twilio retry
+  const [existingCall] = await db
+    .select({ id: calls.id })
+    .from(calls)
+    .where(eq(calls.twilioCallSid, callSid))
+    .limit(1);
+
+  let callRecord: { id: string };
+  if (existingCall) {
+    callRecord = existingCall;
+  } else {
+    // Create call record
+    const [created] = await db.insert(calls).values({
+      businessId: biz.id,
+      leadId: leadId || null,
+      direction: "inbound",
+      callerPhone: callerNumber,
+      calledPhone: calledNumber,
+      status: "in_progress",
+      twilioCallSid: callSid,
+      elevenlabsConversationId: conversationId,
+    }).returning({ id: calls.id });
+    callRecord = created;
+  }
 
   // Track active call for live monitoring (fire-and-forget)
   trackCallStart({

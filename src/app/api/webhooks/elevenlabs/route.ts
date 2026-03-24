@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
     reportWarning("ElevenLabs post-call webhook: no matching call record", {
       conversationId,
     });
-    return Response.json({ ok: true });
+    return Response.json({ error: "Call record not found, will retry" }, { status: 500 });
   }
 
   // Convert ElevenLabs transcript format to our format
@@ -176,7 +176,7 @@ export async function POST(req: NextRequest) {
   // Detect call language from transcript for bilingual summary support
   const detectedLanguage = (() => {
     const callerLines = transcript.filter((l) => l.speaker === "caller").map((l) => l.text.toLowerCase());
-    if (callerLines.length === 0) return undefined;
+    if (callerLines.length < 2) return undefined;
     const spanishIndicators = [
       "hola", "gracias", "por favor", "necesito", "quiero", "tengo", "puede",
       "cita", "ayuda", "problema", "emergencia", "buenos días", "buenas tardes",
@@ -186,7 +186,8 @@ export async function POST(req: NextRequest) {
     for (const line of callerLines) {
       if (spanishIndicators.some((ind) => line.includes(ind))) spanishCount++;
     }
-    return spanishCount / callerLines.length > 0.3 ? "es" as const : "en" as const;
+    const ratio = spanishCount / callerLines.length;
+    return ratio >= 0.5 ? "es" as const : "en" as const;
   })();
 
   // Generate AI summary from transcript (fire-and-forget, with retry on failure)

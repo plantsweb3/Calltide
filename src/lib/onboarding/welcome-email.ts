@@ -48,7 +48,7 @@ export async function sendWelcomeEmail(params: WelcomeEmailParams): Promise<void
   const formattedTwilio = biz.twilioNumber ? formatPhoneForDisplay(biz.twilioNumber) : null;
 
   const subject = isSpanish
-    ? `Bienvenido a Capta - ${receptionistName} esta lista`
+    ? `Bienvenido a Capta - ${receptionistName} está lista`
     : `Welcome to Capta - ${receptionistName} is ready`;
 
   const html = buildEmailHtml({
@@ -98,24 +98,24 @@ function buildEmailHtml(params: {
     ? {
         greeting: `Hola ${firstName},`,
         paymentConfirmed: "Tu pago ha sido confirmado.",
-        receptionistReady: `${receptionistName} esta lista para contestar tus llamadas 24/7 en ingles y espanol.`,
+        receptionistReady: `${receptionistName} está lista para contestar tus llamadas 24/7 en inglés y español.`,
         credentialsTitle: "Tus Credenciales",
         emailLabel: "Correo",
-        passwordLabel: "Contrasena temporal",
-        passwordNote: "Puedes cambiar tu contrasena en Configuracion despues de iniciar sesion.",
-        loginCta: "Iniciar Sesion",
+        passwordLabel: "Contraseña temporal",
+        passwordNote: "Puedes cambiar tu contraseña en Configuración después de iniciar sesión.",
+        loginCta: "Iniciar Sesión",
         nextStepsTitle: "Siguientes Pasos",
-        step1: "Inicia sesion en tu panel con las credenciales de arriba",
-        step2: "Configura el desvio de llamadas a tu numero de Capta",
+        step1: "Inicia sesión en tu panel con las credenciales de arriba",
+        step2: "Configura el desvío de llamadas a tu número de Capta",
         step3: `Activa a ${receptionistName} para empezar a contestar llamadas`,
-        yourNumberTitle: "Tu Numero de Capta",
-        yourNumberNote: "Desvia tus llamadas de negocio a este numero.",
-        forwardingTitle: "Instrucciones Rapidas de Desvio",
+        yourNumberTitle: "Tu Número de Capta",
+        yourNumberNote: "Desvía tus llamadas de negocio a este número.",
+        forwardingTitle: "Instrucciones Rápidas de Desvío",
         att: "AT&T: Marca *21*{NUMBER}#",
         verizon: "Verizon: Marca *72 {NUMBER}",
         tmobile: "T-Mobile: Marca **21*{NUMBER}#",
-        needHelp: "Necesitas ayuda?",
-        helpNote: "Responde a este correo o envia un mensaje a tu numero de Capta. Estamos aqui para ayudarte.",
+        needHelp: "\u00bfNecesitas ayuda?",
+        helpNote: "Responde a este correo o envía un mensaje a tu número de Capta. Estamos aquí para ayudarte.",
         footer: `Gracias por elegir Capta para ${businessName}.`,
       }
     : {

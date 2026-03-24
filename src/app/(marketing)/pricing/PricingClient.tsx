@@ -152,6 +152,8 @@ export default function PricingClient() {
           <div className="reveal flex items-center justify-center gap-3 mb-10">
             <span className={`text-sm font-medium transition-colors ${!isAnnual ? "text-white" : "text-slate-500"}`}>Monthly</span>
             <button
+              role="switch"
+              aria-checked={isAnnual}
               onClick={() => setBilling(isAnnual ? "monthly" : "annual")}
               className="relative h-7 w-[52px] rounded-full transition-colors"
               style={{ background: isAnnual ? "#d4a843" : "rgba(255,255,255,0.15)" }}

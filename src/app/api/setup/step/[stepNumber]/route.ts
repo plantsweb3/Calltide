@@ -22,7 +22,7 @@ const stepSchemas: Record<number, z.ZodSchema> = {
   2: z.object({
     ownerName: z.string().min(1).max(200),
     ownerEmail: z.string().email().max(320),
-    ownerPhone: z.string().min(7).max(20),
+    ownerPhone: z.string().regex(/^\+?1?\d{10,15}$/, "Please enter a valid phone number"),
   }),
   3: z.object({
     receptionistName: z.string().min(1).max(100),

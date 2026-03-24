@@ -77,6 +77,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!session.receptionistName?.trim()) {
+      return NextResponse.json({ error: "Please complete the receptionist setup (Step 3) first" }, { status: 400 });
+    }
+    if (!session.personalityPreset) {
+      return NextResponse.json({ error: "Please select a personality style (Step 4) first" }, { status: 400 });
+    }
+
     // Save selected plan
     await db
       .update(setupSessions)

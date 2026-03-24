@@ -51,7 +51,7 @@ export default function CancelPage() {
       await res.json();
 
       if (recoveryOfferAccepted) {
-        toast.success("Welcome back! Your discount will be applied shortly.");
+        toast.success("Your retention offer has been submitted. Our team will apply the discount within 24 hours.");
       } else {
         toast.success("Your subscription has been canceled. You'll retain access until the end of your billing period.");
       }
@@ -201,7 +201,7 @@ export default function CancelPage() {
           </h3>
           <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
             We&apos;d hate to lose you. How about <strong style={{ color: "var(--db-accent)" }}>2 months free</strong> on
-            us? Keep your AI receptionist running, and we&apos;ll waive your next two payments.
+            us? Keep your AI receptionist running, and our team will apply the discount to your account within 24 hours.
           </p>
           <button
             onClick={() => handleCancel(true)}

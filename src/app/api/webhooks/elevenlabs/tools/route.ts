@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createHash } from "crypto";
+import { createHash, timingSafeEqual } from "crypto";
 import { dispatchToolCall } from "@/lib/voice/tool-handlers";
 import { db } from "@/db";
 import { calls } from "@/db/schema";
@@ -9,15 +9,20 @@ import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/ra
 
 // ── Idempotency cache ──
 // Prevents ElevenLabs retries from causing double bookings, double SMS, etc.
-const idempotencyCache = new Map<string, { result: unknown; expiresAt: number }>();
-const IDEMPOTENCY_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const idempotencyCache = new Map<string, { result: unknown; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const MAX_CACHE_SIZE = 1000;
 
 function cleanupIdempotencyCache() {
   const now = Date.now();
   for (const [key, entry] of idempotencyCache) {
-    if (entry.expiresAt <= now) {
-      idempotencyCache.delete(key);
-    }
+    if (now - entry.timestamp > CACHE_TTL) idempotencyCache.delete(key);
+  }
+  // LRU eviction if still too large
+  if (idempotencyCache.size > MAX_CACHE_SIZE) {
+    const entries = [...idempotencyCache.entries()].sort((a, b) => a[1].timestamp - b[1].timestamp);
+    const toDelete = entries.slice(0, idempotencyCache.size - MAX_CACHE_SIZE);
+    for (const [key] of toDelete) idempotencyCache.delete(key);
   }
 }
 
@@ -47,7 +52,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Webhook auth not configured" }, { status: 500 });
   }
 
-  if (!apiKey || apiKey !== webhookSecret) {
+  if (!apiKey || apiKey.length !== webhookSecret.length || !timingSafeEqual(Buffer.from(apiKey), Buffer.from(webhookSecret))) {
     reportWarning("Invalid ElevenLabs tool webhook auth");
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -78,7 +83,7 @@ export async function POST(req: NextRequest) {
 
   const idempotencyKey = buildIdempotencyKey(conversationId, toolName, parameters);
   const cached = idempotencyCache.get(idempotencyKey);
-  if (cached && cached.expiresAt > Date.now()) {
+  if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
     console.log(`[elevenlabs/tools] idempotent hit — returning cached result for ${toolName}`);
     return Response.json(cached.result);
   }
@@ -113,7 +118,7 @@ export async function POST(req: NextRequest) {
     if (result.success) {
       idempotencyCache.set(idempotencyKey, {
         result: responseData,
-        expiresAt: Date.now() + IDEMPOTENCY_TTL_MS,
+        timestamp: Date.now(),
       });
     }
 
@@ -134,7 +139,7 @@ export async function POST(req: NextRequest) {
   if (result.success) {
     idempotencyCache.set(idempotencyKey, {
       result: responseData,
-      expiresAt: Date.now() + IDEMPOTENCY_TTL_MS,
+      timestamp: Date.now(),
     });
   }
 

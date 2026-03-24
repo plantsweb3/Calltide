@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { customers } from "@/db/schema";
 import { eq, and, or, like, desc, asc, count, isNull } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { DEMO_BUSINESS_ID, DEMO_CUSTOMERS } from "../demo-data";
 
 const PAGE_SIZE = 25;
@@ -14,8 +15,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const rl = await rateLimit(`dashboard-customers-${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
+
   const { searchParams } = new URL(req.url);
-  const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+  const page = Math.min(Math.max(1, parseInt(searchParams.get("page") || "1")), 1000);
   const search = searchParams.get("search")?.trim() || "";
   const tier = searchParams.get("tier")?.trim() || "";
   const sortBy = searchParams.get("sortBy") || "lastCallDate";

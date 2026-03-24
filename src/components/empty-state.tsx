@@ -17,7 +17,7 @@ interface EmptyStateProps {
 export default function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
     <div className="db-card rounded-xl p-12 text-center">
-      <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center" style={{ color: "var(--db-text-muted)" }}>
+      <div role="img" aria-hidden="true" className="mx-auto mb-4 flex h-12 w-12 items-center justify-center" style={{ color: "var(--db-text-muted)" }}>
         {icon}
       </div>
       <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>

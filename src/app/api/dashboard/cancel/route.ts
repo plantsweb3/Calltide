@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         action: "recovery_accepted",
-        message: "Thank you for staying! We'll apply your discount shortly.",
+        message: "Your retention offer has been submitted. Our team will apply the discount to your account within 24 hours.",
       });
     }
 

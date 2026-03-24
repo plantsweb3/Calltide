@@ -15,7 +15,7 @@ const sizeClasses = {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = "primary", size = "md", className = "", style, children, disabled, ...props }, ref) => {
-    const base = "inline-flex items-center justify-center font-medium transition-all duration-150 disabled:opacity-50 disabled:pointer-events-none db-btn";
+    const base = "inline-flex items-center justify-center font-medium transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed db-btn";
 
     return (
       <button

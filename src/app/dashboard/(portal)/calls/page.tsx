@@ -226,8 +226,8 @@ export default function CallsPage() {
           <span
             className="rounded px-1.5 py-0.5 text-[10px] font-medium"
             style={{
-              background: row.language === "es" ? "rgba(197,154,39,0.15)" : "rgba(96,165,250,0.1)",
-              color: row.language === "es" ? "#C59A27" : "#60a5fa",
+              background: row.language === "es" ? "var(--db-warning-bg)" : "var(--db-info-bg)",
+              color: row.language === "es" ? "var(--db-warning)" : "var(--db-info)",
             }}
           >
             {lang}
@@ -490,8 +490,8 @@ export default function CallsPage() {
       </div>
 
       {error && (
-        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+          <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
           <Button variant="danger" size="sm" onClick={fetchCalls}>
             Retry
           </Button>

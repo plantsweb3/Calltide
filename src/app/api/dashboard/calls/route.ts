@@ -4,6 +4,7 @@ import { calls, leads, smsMessages, appointments } from "@/db/schema";
 import { eq, and, or, like, desc, count, sql, inArray, gte, lte } from "drizzle-orm";
 import { DEMO_BUSINESS_ID, DEMO_CALLS, DEMO_TRANSCRIPTS, DEMO_RECOVERY_TIMELINES } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -11,7 +12,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const page = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1")), 10000);
+  const rl = await rateLimit(`dashboard-calls-${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
+
+  const page = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1")), 1000);
   const limit = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") || "20")), 100);
   const search = req.nextUrl.searchParams.get("search") || "";
   const status = req.nextUrl.searchParams.get("status") || "";
