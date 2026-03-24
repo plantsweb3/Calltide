@@ -17,6 +17,7 @@ interface Customer {
   phone: string;
   name: string | null;
   email: string | null;
+  address: string | null;
   language: string;
   tags: string[];
   totalCalls: number;
@@ -25,7 +26,34 @@ interface Customer {
   lastCallAt: string | null;
   isRepeat: boolean;
   createdAt: string;
+  leadScore: number | null;
+  tier: string | null;
 }
+
+const LEAD_TIER_CONFIG: Record<string, { label: string; bg: string; fg: string }> = {
+  hot: { label: "Hot", bg: "rgba(239,68,68,0.12)", fg: "#ef4444" },
+  warm: { label: "Warm", bg: "rgba(245,158,11,0.12)", fg: "#f59e0b" },
+  cold: { label: "Cold", bg: "rgba(59,130,246,0.12)", fg: "#3b82f6" },
+  dormant: { label: "Dormant", bg: "rgba(148,163,184,0.12)", fg: "#94a3b8" },
+  new: { label: "New", bg: "rgba(96,165,250,0.12)", fg: "#60a5fa" },
+  loyal: { label: "Loyal", bg: "rgba(74,222,128,0.12)", fg: "#4ade80" },
+  vip: { label: "VIP", bg: "rgba(250,204,21,0.12)", fg: "#facc15" },
+  "at-risk": { label: "At Risk", bg: "rgba(248,113,113,0.12)", fg: "#f87171" },
+};
+
+const TIER_FILTER_OPTIONS = [
+  { value: "", label: "All Tiers" },
+  { value: "hot", label: "Hot" },
+  { value: "warm", label: "Warm" },
+  { value: "cold", label: "Cold" },
+  { value: "dormant", label: "Dormant" },
+] as const;
+
+const SORT_OPTIONS = [
+  { value: "lastCallDate", label: "Last Call" },
+  { value: "name", label: "Name" },
+  { value: "leadScore", label: "Lead Score" },
+] as const;
 
 export default function CustomersPage() {
   const receptionistName = useReceptionistName();
@@ -38,6 +66,11 @@ export default function CustomersPage() {
   const [total, setTotal] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tierFilter, setTierFilter] = useState("");
+  const [sortBy, setSortBy] = useState("lastCallDate");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [showMergeModal, setShowMergeModal] = useState(false);
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
@@ -45,6 +78,9 @@ export default function CustomersPage() {
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (search) params.set("search", search);
+      if (tierFilter) params.set("tier", tierFilter);
+      params.set("sortBy", sortBy);
+      params.set("sortOrder", sortOrder);
       const res = await fetch(`/api/dashboard/customers?${params}`);
       if (!res.ok) throw new Error("Failed to load customers");
       const data = await res.json();
@@ -57,7 +93,7 @@ export default function CustomersPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, search]);
+  }, [page, search, tierFilter, sortBy, sortOrder]);
 
   useEffect(() => { fetchCustomers(); }, [fetchCustomers]);
 
@@ -68,7 +104,7 @@ export default function CustomersPage() {
   }, [searchInput]);
 
   function formatDate(d: string | null) {
-    if (!d) return "—";
+    if (!d) return "\u2014";
     return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   }
 
@@ -79,10 +115,17 @@ export default function CustomersPage() {
     return p;
   }
 
+  function handleMergeClick() {
+    if (selectedIds.size === 2) {
+      setShowMergeModal(true);
+    }
+  }
+
   const columns: Column<Customer>[] = [
     {
       key: "name",
       label: "Name",
+      sortable: true,
       render: (c) => (
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
@@ -102,6 +145,42 @@ export default function CustomersPage() {
       ),
     },
     {
+      key: "leadScore",
+      label: "Lead Score",
+      sortable: true,
+      render: (c) => {
+        const score = c.leadScore ?? 0;
+        const tierConf = LEAD_TIER_CONFIG[c.tier || "new"] || LEAD_TIER_CONFIG.new;
+        return (
+          <div className="flex items-center gap-2">
+            <span
+              className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase"
+              style={{ background: tierConf.bg, color: tierConf.fg }}
+            >
+              {tierConf.label}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <span
+                className="inline-block w-12 h-1.5 rounded-full overflow-hidden"
+                style={{ background: "var(--db-hover)" }}
+              >
+                <span
+                  className="block h-full rounded-full"
+                  style={{
+                    width: `${score}%`,
+                    background: score >= 70 ? "#4ade80" : score >= 40 ? "#fbbf24" : "#f87171",
+                  }}
+                />
+              </span>
+              <span className="text-[10px] font-medium tabular-nums" style={{ color: "var(--db-text-muted)" }}>
+                {score}
+              </span>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
       key: "totalCalls",
       label: "Calls",
       render: (c) => (
@@ -118,6 +197,7 @@ export default function CustomersPage() {
     {
       key: "lastCallAt",
       label: "Last Call",
+      sortable: true,
       render: (c) => (
         <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{formatDate(c.lastCallAt)}</span>
       ),
@@ -153,6 +233,14 @@ export default function CustomersPage() {
         description={`${total} total customers`}
         actions={
           <div className="flex flex-wrap items-center gap-2">
+            {selectedIds.size === 2 && (
+              <Button variant="secondary" size="sm" onClick={handleMergeClick}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M8 6L12 2L16 6" /><path d="M12 2V15" /><circle cx="6" cy="20" r="2" /><circle cx="18" cy="20" r="2" /><path d="M12 15C12 18 6 18 6 18" /><path d="M12 15C12 18 18 18 18 18" />
+                </svg>
+                Merge ({selectedIds.size})
+              </Button>
+            )}
             <Link
               href="/dashboard/import?type=customers"
               className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
@@ -178,6 +266,8 @@ export default function CustomersPage() {
                 { header: "Calls", accessor: (r) => r.totalCalls },
                 { header: "Appointments", accessor: (r) => r.totalAppointments },
                 { header: "Last Call", accessor: (r) => r.lastCallAt },
+                { header: "Lead Score", accessor: (r) => r.leadScore },
+                { header: "Tier", accessor: (r) => r.tier },
                 { header: "Tags", accessor: (r) => r.tags.join("; ") },
               ]}
               filename="customers"
@@ -189,8 +279,8 @@ export default function CustomersPage() {
         }
       />
 
-      {/* Search */}
-      <div className="mb-4">
+      {/* Search + Filters row */}
+      <div className="flex flex-wrap items-center gap-3 mb-4">
         <input
           type="text"
           placeholder="Search by name or phone..."
@@ -203,6 +293,49 @@ export default function CustomersPage() {
             color: "var(--db-text)",
           }}
         />
+
+        <select
+          value={tierFilter}
+          onChange={(e) => { setTierFilter(e.target.value); setPage(1); }}
+          className="rounded-lg border px-3 py-2 text-xs font-medium"
+          style={{
+            background: "var(--db-surface)",
+            borderColor: "var(--db-border)",
+            color: "var(--db-text)",
+          }}
+        >
+          {TIER_FILTER_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+
+        <select
+          value={sortBy}
+          onChange={(e) => { setSortBy(e.target.value); setPage(1); }}
+          className="rounded-lg border px-3 py-2 text-xs font-medium"
+          style={{
+            background: "var(--db-surface)",
+            borderColor: "var(--db-border)",
+            color: "var(--db-text)",
+          }}
+        >
+          {SORT_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>Sort: {opt.label}</option>
+          ))}
+        </select>
+
+        <button
+          onClick={() => setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
+          className="rounded-lg border px-2.5 py-2 text-xs font-medium transition-colors"
+          style={{
+            background: "var(--db-surface)",
+            borderColor: "var(--db-border)",
+            color: "var(--db-text-muted)",
+          }}
+          title={sortOrder === "asc" ? "Ascending" : "Descending"}
+        >
+          {sortOrder === "asc" ? "\u2191" : "\u2193"}
+        </button>
       </div>
 
       {error && (
@@ -237,6 +370,9 @@ export default function CustomersPage() {
         <DataTable
           columns={columns}
           data={customers}
+          selectable
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
           onRowClick={(c) => router.push(`/dashboard/customers/${c.id}`)}
           pagination={totalPages > 1 ? {
             page,
@@ -254,9 +390,23 @@ export default function CustomersPage() {
           onCreated={() => { setShowAddModal(false); fetchCustomers(); }}
         />
       )}
+
+      {showMergeModal && selectedIds.size === 2 && (
+        <MergeCustomerModal
+          customers={customers.filter((c) => selectedIds.has(c.id))}
+          onClose={() => setShowMergeModal(false)}
+          onMerged={() => {
+            setShowMergeModal(false);
+            setSelectedIds(new Set());
+            fetchCustomers();
+          }}
+        />
+      )}
     </div>
   );
 }
+
+// ── Add Customer Modal ──
 
 function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
   const [name, setName] = useState("");
@@ -353,6 +503,223 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
             </Button>
             <Button type="submit" disabled={saving} className="flex-1">
               {saving ? "Saving..." : "Add Customer"}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ── Merge Customer Modal ──
+
+function MergeCustomerModal({
+  customers,
+  onClose,
+  onMerged,
+}: {
+  customers: Customer[];
+  onClose: () => void;
+  onMerged: () => void;
+}) {
+  const [a, b] = customers;
+  const [primaryId, setPrimaryId] = useState(a.id);
+  const [keepFields, setKeepFields] = useState<Record<string, string>>({
+    name: a.name ? a.id : b.id,
+    phone: a.id,
+    email: a.email ? a.id : b.id,
+    address: a.address ? a.id : b.id,
+  });
+  const [merging, setMerging] = useState(false);
+  const [error, setError] = useState("");
+
+  function getFieldValue(field: keyof Customer, customer: Customer): string {
+    const val = customer[field];
+    if (val == null) return "\u2014";
+    return String(val);
+  }
+
+  const MERGE_FIELDS = [
+    { key: "name" as const, label: "Name" },
+    { key: "phone" as const, label: "Phone" },
+    { key: "email" as const, label: "Email" },
+    { key: "address" as const, label: "Address" },
+  ];
+
+  // The primary customer is the one whose ID matches primaryId
+  // The secondary gets soft-deleted
+  // But we want the primary to receive the chosen field values
+  // The merge endpoint does primary-wins on fields, so we set primaryId to the one with the preferred fields
+  // Actually, the merge endpoint auto-merges with primary-wins logic. For simplicity,
+  // we let the user choose which customer is primary and trust the server merge.
+  // If user wants specific field values, we can do a follow-up PUT after merge.
+
+  async function handleMerge(e: React.FormEvent) {
+    e.preventDefault();
+    setMerging(true);
+    setError("");
+
+    const secondaryId = primaryId === a.id ? b.id : a.id;
+
+    try {
+      const res = await fetch("/api/dashboard/customers/merge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ primaryId, secondaryId }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Failed to merge customers");
+        return;
+      }
+
+      // After merge, update the primary with the chosen field values
+      const primaryCustomer = primaryId === a.id ? a : b;
+      const secondaryCustomer = primaryId === a.id ? b : a;
+      const updates: Record<string, string | null> = {};
+
+      for (const field of MERGE_FIELDS) {
+        const chosenCustomerId = keepFields[field.key];
+        const chosenCustomer = chosenCustomerId === a.id ? a : b;
+        const chosenValue = chosenCustomer[field.key];
+        // Only update if the chosen value differs from what the primary already has
+        if (chosenCustomer.id !== primaryId && chosenValue) {
+          updates[field.key] = String(chosenValue);
+        }
+      }
+
+      if (Object.keys(updates).length > 0) {
+        await fetch(`/api/dashboard/customers/${primaryId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updates),
+        });
+      }
+
+      toast.success("Customers merged successfully");
+      onMerged();
+    } catch {
+      setError("Failed to merge customers");
+    } finally {
+      setMerging(false);
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop"
+      style={{ background: "rgba(0,0,0,0.5)" }}
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="merge-customers-title"
+        className="modal-content w-full max-w-2xl rounded-xl p-6"
+        style={{
+          background: "var(--db-surface)",
+          border: "1px solid var(--db-border)",
+          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 id="merge-customers-title" className="text-lg font-semibold mb-1" style={{ color: "var(--db-text)" }}>
+          Merge Customers
+        </h2>
+        <p className="text-xs mb-5" style={{ color: "var(--db-text-muted)" }}>
+          Choose which customer record to keep as primary. Select which field values to preserve.
+        </p>
+
+        <form onSubmit={handleMerge}>
+          {/* Primary selector */}
+          <div className="grid grid-cols-2 gap-4 mb-5">
+            {[a, b].map((cust) => (
+              <button
+                key={cust.id}
+                type="button"
+                onClick={() => setPrimaryId(cust.id)}
+                className="rounded-lg border p-3 text-left transition-all"
+                style={{
+                  borderColor: primaryId === cust.id ? "var(--db-accent)" : "var(--db-border)",
+                  background: primaryId === cust.id ? "rgba(212,168,67,0.06)" : "var(--db-bg)",
+                }}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
+                    {cust.name || "Unknown"}
+                  </span>
+                  {primaryId === cust.id && (
+                    <span
+                      className="rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase"
+                      style={{ background: "rgba(212,168,67,0.15)", color: "var(--db-accent)" }}
+                    >
+                      Primary
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                  {cust.phone} {cust.email ? `\u00B7 ${cust.email}` : ""}
+                </p>
+                <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
+                  {cust.totalCalls} calls \u00B7 {cust.totalAppointments} appts
+                </p>
+              </button>
+            ))}
+          </div>
+
+          {/* Field-by-field selection */}
+          <div className="rounded-lg border overflow-hidden mb-5" style={{ borderColor: "var(--db-border)" }}>
+            <table className="w-full text-sm">
+              <thead>
+                <tr style={{ borderBottom: "1px solid var(--db-border)", background: "var(--db-hover)" }}>
+                  <th className="px-4 py-2 text-left text-[11px] font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
+                    Field
+                  </th>
+                  <th className="px-4 py-2 text-center text-[11px] font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
+                    {a.name || "Customer A"}
+                  </th>
+                  <th className="px-4 py-2 text-center text-[11px] font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
+                    {b.name || "Customer B"}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {MERGE_FIELDS.map((field) => (
+                  <tr key={field.key} style={{ borderBottom: "1px solid var(--db-border)" }}>
+                    <td className="px-4 py-2 font-medium" style={{ color: "var(--db-text)" }}>
+                      {field.label}
+                    </td>
+                    {[a, b].map((cust) => (
+                      <td key={cust.id} className="px-4 py-2 text-center">
+                        <label className="flex items-center justify-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name={`merge-${field.key}`}
+                            checked={keepFields[field.key] === cust.id}
+                            onChange={() => setKeepFields((prev) => ({ ...prev, [field.key]: cust.id }))}
+                            style={{ accentColor: "var(--db-accent)" }}
+                          />
+                          <span className="text-xs" style={{ color: "var(--db-text)" }}>
+                            {getFieldValue(field.key, cust)}
+                          </span>
+                        </label>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {error && <p className="text-sm mb-3" style={{ color: "var(--db-danger)" }}>{error}</p>}
+
+          <div className="flex gap-2">
+            <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={merging} className="flex-1">
+              {merging ? "Merging..." : "Merge Customers"}
             </Button>
           </div>
         </form>

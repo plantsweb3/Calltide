@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
 import { followUps, customers } from "@/db/schema";
-import { eq, and, desc, gte, lte, count } from "drizzle-orm";
+import { eq, and, desc, asc, gte, lte, lt, count, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 
 const PAGE_SIZE = 25;
@@ -19,6 +19,9 @@ export async function GET(req: NextRequest) {
   const priority = searchParams.get("priority"); // low, normal, high, urgent
   const from = searchParams.get("from"); // ISO date
   const to = searchParams.get("to"); // ISO date
+  const sortBy = searchParams.get("sortBy"); // dueDate, priority, createdAt
+  const sortOrder = searchParams.get("sortOrder"); // asc, desc
+  const dueDateFilter = searchParams.get("dueDateFilter"); // overdue, today, this_week, all
 
   try {
     const conditions = [eq(followUps.businessId, businessId)];
@@ -45,12 +48,46 @@ export async function GET(req: NextRequest) {
       conditions.push(lte(followUps.dueDate, to));
     }
 
+    // Due date filter
+    if (dueDateFilter && dueDateFilter !== "all") {
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+      const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
+
+      if (dueDateFilter === "overdue") {
+        conditions.push(lt(followUps.dueDate, now.toISOString()));
+        // Exclude completed follow-ups from overdue
+        conditions.push(sql`${followUps.status} != 'completed'`);
+      } else if (dueDateFilter === "today") {
+        conditions.push(gte(followUps.dueDate, todayStart));
+        conditions.push(lt(followUps.dueDate, todayEnd));
+      } else if (dueDateFilter === "this_week") {
+        const weekEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7).toISOString();
+        conditions.push(gte(followUps.dueDate, todayStart));
+        conditions.push(lt(followUps.dueDate, weekEnd));
+      }
+    }
+
     const where = and(...conditions);
 
     const [totalResult] = await db
       .select({ count: count() })
       .from(followUps)
       .where(where);
+
+    // Determine sort column and direction
+    const sortDir = sortOrder === "asc" ? asc : desc;
+    let orderByClause;
+    if (sortBy === "dueDate") {
+      orderByClause = sortDir(followUps.dueDate);
+    } else if (sortBy === "priority") {
+      // Custom priority order: urgent=0, high=1, normal=2, low=3
+      orderByClause = sortOrder === "asc"
+        ? sql`CASE ${followUps.priority} WHEN 'low' THEN 0 WHEN 'normal' THEN 1 WHEN 'high' THEN 2 WHEN 'urgent' THEN 3 ELSE 1 END ASC`
+        : sql`CASE ${followUps.priority} WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 WHEN 'normal' THEN 2 WHEN 'low' THEN 3 ELSE 2 END ASC`;
+    } else {
+      orderByClause = sortDir(followUps.createdAt);
+    }
 
     const rows = await db
       .select({
@@ -61,7 +98,7 @@ export async function GET(req: NextRequest) {
       .from(followUps)
       .leftJoin(customers, eq(followUps.customerId, customers.id))
       .where(where)
-      .orderBy(desc(followUps.createdAt))
+      .orderBy(orderByClause)
       .limit(PAGE_SIZE)
       .offset((page - 1) * PAGE_SIZE);
 
@@ -71,11 +108,24 @@ export async function GET(req: NextRequest) {
       customerPhone: r.customerPhone,
     }));
 
+    // Also compute overdue count for the badge (always across all statuses except completed)
+    const overdueConditions = [
+      eq(followUps.businessId, businessId),
+      lt(followUps.dueDate, new Date().toISOString()),
+      sql`${followUps.status} != 'completed'`,
+      sql`${followUps.status} != 'dismissed'`,
+    ];
+    const [overdueResult] = await db
+      .select({ count: count() })
+      .from(followUps)
+      .where(and(...overdueConditions));
+
     return NextResponse.json({
       followUps: result,
       total: totalResult.count,
       page,
       totalPages: Math.ceil(totalResult.count / PAGE_SIZE),
+      overdueCount: overdueResult.count,
     });
   } catch (error) {
     reportError("Failed to fetch follow-ups", error, { businessId });

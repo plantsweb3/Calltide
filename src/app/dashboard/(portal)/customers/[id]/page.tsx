@@ -91,6 +91,14 @@ function BackArrowIcon() {
   );
 }
 
+function PlusIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+      <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
+
 const ICON_MAP: Record<TimelineItem["type"], () => React.ReactNode> = {
   call: CallIcon,
   appointment: CalendarIcon,
@@ -326,6 +334,10 @@ export default function CustomerDetailPage() {
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [hoveredTimelineId, setHoveredTimelineId] = useState<string | null>(null);
+  const [showFollowUpForm, setShowFollowUpForm] = useState<TimelineItem | null>(null);
+  const [showSmsModal, setShowSmsModal] = useState(false);
+  const [convertingEstimate, setConvertingEstimate] = useState<string | null>(null);
 
   const fetchCustomer = useCallback(async () => {
     setLoading(true);
@@ -396,6 +408,26 @@ export default function CustomerDetailPage() {
     } catch {
       toast.error("Failed to delete customer");
       setDeleting(false);
+    }
+  }
+
+  async function convertEstimateToInvoice(estimateId: string) {
+    setConvertingEstimate(estimateId);
+    try {
+      const res = await fetch(`/api/dashboard/estimates/${estimateId}/convert`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.error || "Failed to convert estimate");
+        return;
+      }
+      toast.success("Estimate converted to invoice");
+      fetchCustomer();
+    } catch {
+      toast.error("Failed to convert estimate");
+    } finally {
+      setConvertingEstimate(null);
     }
   }
 
@@ -511,11 +543,38 @@ export default function CustomerDetailPage() {
                 </span>
               )}
             </div>
-            <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-              {customer.phone}
-              {customer.email && ` \u00B7 ${customer.email}`}
-              {customer.address && ` \u00B7 ${customer.address}`}
-            </p>
+            {/* Contact info with action buttons */}
+            <div className="mt-1 flex items-center gap-2 flex-wrap">
+              <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
+                {customer.phone}
+                {customer.email && ` \u00B7 ${customer.email}`}
+                {customer.address && ` \u00B7 ${customer.address}`}
+              </p>
+              <div className="flex items-center gap-1.5">
+                <a
+                  href={`tel:${customer.phone}`}
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium transition-colors"
+                  style={{ background: "rgba(59,130,246,0.1)", color: "#3b82f6" }}
+                  title="Call customer"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  Call
+                </a>
+                <button
+                  onClick={() => setShowSmsModal(true)}
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium transition-colors"
+                  style={{ background: "rgba(139,92,246,0.1)", color: "#8b5cf6" }}
+                  title="Send SMS"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  SMS
+                </button>
+              </div>
+            </div>
           </div>
           <Button
             variant="danger"
@@ -640,23 +699,19 @@ export default function CustomerDetailPage() {
               const config = TIMELINE_CONFIG[item.type];
               const Icon = ICON_MAP[item.type];
               const Renderer = ITEM_RENDERERS[item.type];
+              const isHovered = hoveredTimelineId === `${item.type}-${item.id}`;
+              const estimateStatus = item.type === "estimate" ? String(item.data.status || "") : "";
+              const estimateHasConvertedInvoice = item.type === "estimate" && !!item.data.convertedInvoiceId;
               return (
                 <div
                   key={`${item.type}-${item.id}`}
-                  className="flex gap-3 p-4 transition-colors cursor-pointer"
+                  className="flex gap-3 p-4 transition-colors relative"
                   style={{
                     borderBottom: "1px solid var(--db-border)",
                     borderLeft: `3px solid ${config.borderColor}`,
                   }}
-                  onClick={() => {
-                    const routes: Record<string, string> = {
-                      call: "/dashboard/calls",
-                      appointment: "/dashboard/appointments",
-                      estimate: "/dashboard/estimates",
-                      sms: "/dashboard/sms",
-                    };
-                    router.push(routes[item.type] || "/dashboard");
-                  }}
+                  onMouseEnter={() => setHoveredTimelineId(`${item.type}-${item.id}`)}
+                  onMouseLeave={() => setHoveredTimelineId(null)}
                 >
                   {/* Icon */}
                   <div
@@ -673,6 +728,68 @@ export default function CustomerDetailPage() {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <Renderer item={item} />
+                    {/* Action CTAs - appear on hover */}
+                    {isHovered && (
+                      <div className="mt-2 flex items-center gap-1.5">
+                        {/* Call events: Create Follow-up */}
+                        {item.type === "call" && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setShowFollowUpForm(item);
+                            }}
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium transition-all"
+                            style={{
+                              background: "var(--db-hover)",
+                              color: "var(--db-text-muted)",
+                              border: "1px solid var(--db-border)",
+                            }}
+                          >
+                            <PlusIcon />
+                            Create Follow-up
+                          </button>
+                        )}
+                        {/* Appointment events: Create Invoice */}
+                        {item.type === "appointment" && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(`/dashboard/invoices?customerId=${customer.id}`);
+                            }}
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium transition-all"
+                            style={{
+                              background: "var(--db-hover)",
+                              color: "var(--db-text-muted)",
+                              border: "1px solid var(--db-border)",
+                            }}
+                          >
+                            <PlusIcon />
+                            Create Invoice
+                          </button>
+                        )}
+                        {/* Estimate events: Convert to Invoice */}
+                        {item.type === "estimate" && !estimateHasConvertedInvoice && !["lost", "expired", "won"].includes(estimateStatus) && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              convertEstimateToInvoice(item.id);
+                            }}
+                            disabled={convertingEstimate === item.id}
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium transition-all disabled:opacity-50"
+                            style={{
+                              background: "var(--db-hover)",
+                              color: "var(--db-text-muted)",
+                              border: "1px solid var(--db-border)",
+                            }}
+                          >
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            {convertingEstimate === item.id ? "Converting..." : "Convert to Invoice"}
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -691,6 +808,308 @@ export default function CustomerDetailPage() {
         onConfirm={deleteCustomer}
         onCancel={() => setShowDeleteConfirm(false)}
       />
+
+      {/* Create Follow-up Modal */}
+      {showFollowUpForm && customer && (
+        <CreateFollowUpModal
+          customerId={customer.id}
+          customerName={customer.name}
+          callItem={showFollowUpForm}
+          onClose={() => setShowFollowUpForm(null)}
+          onCreated={() => {
+            setShowFollowUpForm(null);
+            toast.success("Follow-up created");
+          }}
+        />
+      )}
+
+      {/* Send SMS Modal */}
+      {showSmsModal && customer && (
+        <SendSmsModal
+          customerPhone={customer.phone}
+          customerName={customer.name}
+          customerId={customer.id}
+          onClose={() => setShowSmsModal(false)}
+          onSent={() => {
+            setShowSmsModal(false);
+            fetchCustomer();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+// ── Create Follow-up Modal ──
+
+function CreateFollowUpModal({
+  customerId,
+  customerName,
+  callItem,
+  onClose,
+  onCreated,
+}: {
+  customerId: string;
+  customerName: string | null;
+  callItem: TimelineItem;
+  onClose: () => void;
+  onCreated: () => void;
+}) {
+  const summary = callItem.data.summary ? String(callItem.data.summary) : "";
+  const [title, setTitle] = useState(`Follow up: ${customerName || "Customer"}`);
+  const [description, setDescription] = useState(
+    summary ? `From call: ${summary.slice(0, 200)}` : ""
+  );
+  const [dueDate, setDueDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().slice(0, 16);
+  });
+  const [priority, setPriority] = useState("normal");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!title.trim()) {
+      setError("Title is required.");
+      return;
+    }
+    setSaving(true);
+    setError("");
+    try {
+      const res = await fetch("/api/dashboard/follow-ups", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerId,
+          callId: callItem.id,
+          title: title.trim(),
+          description: description.trim() || undefined,
+          dueDate: new Date(dueDate).toISOString(),
+          priority,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Failed to create follow-up");
+        return;
+      }
+      onCreated();
+    } catch {
+      setError("Failed to create follow-up");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop"
+      style={{ background: "rgba(0,0,0,0.5)" }}
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-followup-title"
+        className="modal-content w-full max-w-md rounded-xl p-6"
+        style={{
+          background: "var(--db-surface)",
+          border: "1px solid var(--db-border)",
+          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2
+          id="create-followup-title"
+          className="text-lg font-semibold mb-4"
+          style={{ color: "var(--db-text)" }}
+        >
+          Create Follow-up
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+              Title *
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2 text-sm"
+              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              autoFocus
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+              Description
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              className="w-full rounded-lg border px-3 py-2 text-sm"
+              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                Due Date
+              </label>
+              <input
+                type="datetime-local"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="w-full rounded-lg border px-3 py-2 text-sm"
+                style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                Priority
+              </label>
+              <select
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+                className="w-full rounded-lg border px-3 py-2 text-sm"
+                style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              >
+                <option value="low">Low</option>
+                <option value="normal">Normal</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+          </div>
+          {error && <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>}
+          <div className="flex gap-2 pt-2">
+            <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={saving} className="flex-1">
+              {saving ? "Creating..." : "Create Follow-up"}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ── Send SMS Modal ──
+
+function SendSmsModal({
+  customerPhone,
+  customerName,
+  customerId,
+  onClose,
+  onSent,
+}: {
+  customerPhone: string;
+  customerName: string | null;
+  customerId: string;
+  onClose: () => void;
+  onSent: () => void;
+}) {
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!message.trim()) {
+      setError("Message is required.");
+      return;
+    }
+    setSending(true);
+    setError("");
+    try {
+      const res = await fetch("/api/dashboard/sms/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerPhone,
+          message: message.trim(),
+          customerId,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Failed to send SMS");
+        return;
+      }
+      toast.success("SMS sent successfully");
+      onSent();
+    } catch {
+      setError("Failed to send SMS");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop"
+      style={{ background: "rgba(0,0,0,0.5)" }}
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="send-sms-title"
+        className="modal-content w-full max-w-md rounded-xl p-6"
+        style={{
+          background: "var(--db-surface)",
+          border: "1px solid var(--db-border)",
+          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2
+          id="send-sms-title"
+          className="text-lg font-semibold mb-1"
+          style={{ color: "var(--db-text)" }}
+        >
+          Send SMS
+        </h2>
+        <p className="text-xs mb-4" style={{ color: "var(--db-text-muted)" }}>
+          To: {customerName || "Customer"} ({customerPhone})
+        </p>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+              Message *
+            </label>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={4}
+              maxLength={1600}
+              placeholder="Type your message..."
+              className="w-full rounded-lg border px-3 py-2 text-sm"
+              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              autoFocus
+            />
+            <p className="text-[10px] text-right mt-0.5" style={{ color: "var(--db-text-muted)" }}>
+              {message.length}/1600
+            </p>
+          </div>
+          {error && <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>}
+          <div className="flex gap-2 pt-2">
+            <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={sending} className="flex-1">
+              {sending ? "Sending..." : "Send SMS"}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

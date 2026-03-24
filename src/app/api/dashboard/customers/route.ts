@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
 import { customers } from "@/db/schema";
-import { eq, and, or, like, desc, count, isNull } from "drizzle-orm";
+import { eq, and, or, like, desc, asc, count, isNull } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { DEMO_BUSINESS_ID, DEMO_CUSTOMERS } from "../demo-data";
 
@@ -17,12 +17,15 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
   const search = searchParams.get("search")?.trim() || "";
+  const tier = searchParams.get("tier")?.trim() || "";
+  const sortBy = searchParams.get("sortBy") || "lastCallDate";
+  const sortOrder = searchParams.get("sortOrder") || "desc";
 
   if (businessId === DEMO_BUSINESS_ID) {
     let filtered = DEMO_CUSTOMERS;
     if (search) {
       const q = search.toLowerCase();
-      filtered = DEMO_CUSTOMERS.filter(
+      filtered = filtered.filter(
         (c) =>
           c.name?.toLowerCase().includes(q) ||
           c.phone.includes(q)
@@ -52,6 +55,14 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // Tier filter: hot, warm, cold, dormant
+    if (tier) {
+      const validTiers = ["hot", "warm", "cold", "dormant", "new", "loyal", "vip", "at-risk"];
+      if (validTiers.includes(tier)) {
+        conditions.push(eq(customers.tier, tier));
+      }
+    }
+
     const where = and(...conditions);
 
     const [totalResult] = await db
@@ -59,11 +70,22 @@ export async function GET(req: NextRequest) {
       .from(customers)
       .where(where);
 
+    // Determine sort
+    const sortDir = sortOrder === "asc" ? asc : desc;
+    let orderByClause;
+    if (sortBy === "name") {
+      orderByClause = sortDir(customers.name);
+    } else if (sortBy === "leadScore") {
+      orderByClause = sortDir(customers.leadScore);
+    } else {
+      orderByClause = sortDir(customers.lastCallAt);
+    }
+
     const rows = await db
       .select()
       .from(customers)
       .where(where)
-      .orderBy(desc(customers.lastCallAt))
+      .orderBy(orderByClause)
       .limit(PAGE_SIZE)
       .offset((page - 1) * PAGE_SIZE);
 
