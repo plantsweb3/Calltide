@@ -33,6 +33,9 @@ export async function GET(req: NextRequest) {
         isOnCall: technicians.isOnCall,
         color: technicians.color,
         sortOrder: technicians.sortOrder,
+        isUnavailable: technicians.isUnavailable,
+        unavailableReason: technicians.unavailableReason,
+        unavailableUntil: technicians.unavailableUntil,
         createdAt: technicians.createdAt,
         updatedAt: technicians.updatedAt,
         todayJobs: sql<number>`(

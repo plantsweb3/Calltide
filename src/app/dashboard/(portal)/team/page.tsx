@@ -19,6 +19,9 @@ interface Technician {
   skills: string[];
   isActive: boolean;
   isOnCall: boolean;
+  isUnavailable: boolean;
+  unavailableReason: string | null;
+  unavailableUntil: string | null;
   color: string | null;
   sortOrder: number;
   todayJobs: number;
@@ -54,6 +57,10 @@ function formatPhone(phone: string | null): string {
   return phone;
 }
 
+function toDateInput(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
 /* ── Component ── */
 
 export default function TeamPage() {
@@ -78,6 +85,12 @@ export default function TeamPage() {
   // Confirm delete
   const [deleteTarget, setDeleteTarget] = useState<Technician | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  // Unavailability modal
+  const [unavailTarget, setUnavailTarget] = useState<Technician | null>(null);
+  const [unavailReason, setUnavailReason] = useState("");
+  const [unavailUntil, setUnavailUntil] = useState("");
+  const [unavailLoading, setUnavailLoading] = useState(false);
 
   const fetchTechnicians = useCallback(async () => {
     setLoading(true);
@@ -208,6 +221,57 @@ export default function TeamPage() {
     }
   }
 
+  function openUnavailModal(tech: Technician) {
+    setUnavailTarget(tech);
+    setUnavailReason("");
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    setUnavailUntil(toDateInput(tomorrow));
+  }
+
+  async function handleMarkUnavailable() {
+    if (!unavailTarget) return;
+    setUnavailLoading(true);
+    try {
+      const res = await fetch(`/api/dashboard/technicians/${unavailTarget.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          isUnavailable: true,
+          unavailableReason: unavailReason.trim() || null,
+          unavailableUntil: unavailUntil || null,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      toast.success(`${unavailTarget.name} marked as unavailable`);
+      setUnavailTarget(null);
+      fetchTechnicians();
+    } catch {
+      toast.error("Failed to update availability");
+    } finally {
+      setUnavailLoading(false);
+    }
+  }
+
+  async function handleMarkAvailable(tech: Technician) {
+    try {
+      const res = await fetch(`/api/dashboard/technicians/${tech.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          isUnavailable: false,
+          unavailableReason: null,
+          unavailableUntil: null,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      toast.success(`${tech.name} is now available`);
+      fetchTechnicians();
+    } catch {
+      toast.error("Failed to update availability");
+    }
+  }
+
   function addSkill() {
     const skill = formSkillInput.trim();
     if (skill && !formSkills.includes(skill)) {
@@ -226,6 +290,7 @@ export default function TeamPage() {
 
   const activeTechs = technicians.filter((t) => t.isActive);
   const onCallTechs = technicians.filter((t) => t.isOnCall && t.isActive);
+  const unavailableTechs = technicians.filter((t) => t.isUnavailable && t.isActive);
 
   const columns: Column<Technician>[] = [
     {
@@ -281,7 +346,7 @@ export default function TeamPage() {
       key: "status",
       label: "Status",
       render: (row) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <StatusBadge
             label={row.isActive ? "Active" : "Inactive"}
             variant={row.isActive ? "success" : "neutral"}
@@ -289,6 +354,9 @@ export default function TeamPage() {
           />
           {row.isOnCall && row.isActive && (
             <StatusBadge label="On Call" variant="danger" />
+          )}
+          {row.isUnavailable && row.isActive && (
+            <StatusBadge label="Unavailable" variant="danger" />
           )}
         </div>
       ),
@@ -310,6 +378,39 @@ export default function TeamPage() {
       label: "",
       render: (row) => (
         <div className="flex items-center gap-1">
+          {/* Unavailability toggle */}
+          {row.isActive && (
+            row.isUnavailable ? (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleMarkAvailable(row);
+                }}
+                title="Mark Available"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#10B981" }}>
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openUnavailModal(row);
+                }}
+                title="Mark Unavailable"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                </svg>
+              </Button>
+            )
+          )}
           <Button
             size="sm"
             variant="ghost"
@@ -356,7 +457,7 @@ export default function TeamPage() {
     <div>
       <PageHeader
         title="Team"
-        description={`${activeTechs.length} technician${activeTechs.length !== 1 ? "s" : ""}${onCallTechs.length > 0 ? ` \u00B7 ${onCallTechs.length} on call` : ""}`}
+        description={`${activeTechs.length} technician${activeTechs.length !== 1 ? "s" : ""}${onCallTechs.length > 0 ? ` \u00B7 ${onCallTechs.length} on call` : ""}${unavailableTechs.length > 0 ? ` \u00B7 ${unavailableTechs.length} unavailable` : ""}`}
         actions={
           <div className="flex items-center gap-2">
             {technicians.some((t) => !t.isActive) && (
@@ -608,6 +709,89 @@ export default function TeamPage() {
                 </Button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Unavailability Modal */}
+      {unavailTarget && (
+        <div
+          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => !unavailLoading && setUnavailTarget(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="unavail-dialog-title"
+        >
+          <div
+            className="modal-content db-card w-full max-w-md rounded-xl p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-5">
+              <h3 id="unavail-dialog-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+                Mark {unavailTarget.name} Unavailable
+              </h3>
+              <button
+                onClick={() => setUnavailTarget(null)}
+                className="p-1 rounded-lg transition-colors"
+                style={{ color: "var(--db-text-muted)" }}
+                disabled={unavailLoading}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                  Reason
+                </label>
+                <input
+                  type="text"
+                  value={unavailReason}
+                  onChange={(e) => setUnavailReason(e.target.value)}
+                  placeholder="e.g., Sick, Vacation, Personal"
+                  maxLength={200}
+                  className="w-full rounded-lg px-3 py-2 text-sm outline-none transition-colors"
+                  style={{
+                    background: "var(--db-surface, var(--db-bg))",
+                    border: "1px solid var(--db-border)",
+                    color: "var(--db-text)",
+                  }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                  Until
+                </label>
+                <input
+                  type="date"
+                  value={unavailUntil}
+                  onChange={(e) => setUnavailUntil(e.target.value)}
+                  className="w-full rounded-lg px-3 py-2 text-sm outline-none transition-colors"
+                  style={{
+                    background: "var(--db-surface, var(--db-bg))",
+                    border: "1px solid var(--db-border)",
+                    color: "var(--db-text)",
+                  }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
+                <Button type="button" variant="ghost" onClick={() => setUnavailTarget(null)} disabled={unavailLoading}>
+                  Cancel
+                </Button>
+                <Button onClick={handleMarkUnavailable} disabled={unavailLoading}>
+                  {unavailLoading ? "Saving..." : "Mark Unavailable"}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       )}

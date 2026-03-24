@@ -75,6 +75,11 @@ export default function AppointmentsPage() {
   const [confirmAction, setConfirmAction] = useState<{ status: string; label: string } | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
+  // Bulk selection
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkConfirmAction, setBulkConfirmAction] = useState<{ status: string; label: string } | null>(null);
+  const [bulkLoading, setBulkLoading] = useState(false);
+
   const now = new Date();
   const thirtyDaysAgo = new Date(now);
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
@@ -91,6 +96,7 @@ export default function AppointmentsPage() {
       if (!res.ok) throw new Error("Failed to load appointments");
       const data = await res.json();
       setAppointments(data.appointments);
+      setSelectedIds(new Set());
     } catch {
       setError("Failed to load appointments. Please try again.");
     } finally {
@@ -130,6 +136,34 @@ export default function AppointmentsPage() {
       toast.error("Failed to update appointment status");
     } finally {
       setActionLoading(false);
+    }
+  }
+
+  async function handleBulkStatus(status: string) {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+
+    setBulkLoading(true);
+    try {
+      const res = await fetch("/api/dashboard/appointments/bulk-status", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids, status }),
+      });
+      if (!res.ok) throw new Error("Failed to update appointments");
+      const data = await res.json();
+      toast.success(`${data.updated} appointment${data.updated !== 1 ? "s" : ""} ${status.replace(/_/g, " ")}`);
+
+      // Update local state
+      setAppointments((prev) =>
+        prev.map((a) => (selectedIds.has(a.id) ? { ...a, status } : a))
+      );
+      setSelectedIds(new Set());
+      setBulkConfirmAction(null);
+    } catch {
+      toast.error("Failed to update appointments");
+    } finally {
+      setBulkLoading(false);
     }
   }
 
@@ -192,6 +226,8 @@ export default function AppointmentsPage() {
     },
   ];
 
+  const showListView = view === "list" || filter === "past";
+
   return (
     <div>
       <PageHeader
@@ -245,7 +281,7 @@ export default function AppointmentsPage() {
             )}
             <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
               <button
-                onClick={() => { setFilter("upcoming"); setView("calendar"); }}
+                onClick={() => { setFilter("upcoming"); setView("calendar"); setSelectedIds(new Set()); }}
                 className="px-4 py-2 text-sm font-medium transition-colors"
                 style={{
                   background: filter === "upcoming" ? "var(--db-accent)" : "var(--db-card)",
@@ -255,7 +291,7 @@ export default function AppointmentsPage() {
                 Upcoming
               </button>
               <button
-                onClick={() => { setFilter("past"); setView("list"); }}
+                onClick={() => { setFilter("past"); setView("list"); setSelectedIds(new Set()); }}
                 className="px-4 py-2 text-sm font-medium transition-colors"
                 style={{
                   background: filter === "past" ? "var(--db-accent)" : "var(--db-card)",
@@ -298,16 +334,73 @@ export default function AppointmentsPage() {
         />
       )}
 
-      {filteredAppointments.length > 0 && (view === "list" || filter === "past") && (
+      {filteredAppointments.length > 0 && showListView && (
         <DataTable
           columns={columns}
           data={filteredAppointments}
           onRowClick={(row) => setSelected(row)}
+          selectable
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
         />
       )}
 
+      {/* Floating Bulk Action Bar */}
+      {selectedIds.size > 0 && (
+        <div
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 rounded-xl px-5 py-3"
+          style={{
+            background: "var(--db-card)",
+            border: "1px solid var(--db-border)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+          }}
+        >
+          <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+            {selectedIds.size} selected
+          </span>
+          <div className="h-5 w-px" style={{ background: "var(--db-border)" }} />
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={() => {
+              setBulkConfirmAction({ status: "completed", label: "Mark Completed" });
+            }}
+          >
+            Mark Completed ({selectedIds.size})
+          </Button>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => {
+              setBulkConfirmAction({ status: "no_show", label: "Mark No-Show" });
+            }}
+          >
+            No-Show ({selectedIds.size})
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            onClick={() => {
+              setBulkConfirmAction({ status: "cancelled", label: "Cancel" });
+            }}
+          >
+            Cancel ({selectedIds.size})
+          </Button>
+          <button
+            onClick={() => setSelectedIds(new Set())}
+            className="p-1 rounded-lg transition-colors ml-1"
+            style={{ color: "var(--db-text-muted)" }}
+            title="Clear selection"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* Appointment Detail Modal */}
-      {selected && !confirmAction && (
+      {selected && !confirmAction && !bulkConfirmAction && (
         <div
           className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setSelected(null)}
@@ -382,7 +475,7 @@ export default function AppointmentsPage() {
         </div>
       )}
 
-      {/* Confirm destructive action */}
+      {/* Confirm destructive action (single) */}
       <ConfirmDialog
         open={!!confirmAction}
         title={`${confirmAction?.label} Appointment?`}
@@ -400,6 +493,28 @@ export default function AppointmentsPage() {
           }
         }}
         onCancel={() => setConfirmAction(null)}
+      />
+
+      {/* Confirm destructive bulk action */}
+      <ConfirmDialog
+        open={!!bulkConfirmAction}
+        title={`${bulkConfirmAction?.label} ${selectedIds.size} Appointment${selectedIds.size !== 1 ? "s" : ""}?`}
+        description={
+          bulkConfirmAction?.status === "cancelled"
+            ? `This will cancel ${selectedIds.size} appointment${selectedIds.size !== 1 ? "s" : ""}. Customers will be notified.`
+            : bulkConfirmAction?.status === "no_show"
+            ? `This will mark ${selectedIds.size} appointment${selectedIds.size !== 1 ? "s" : ""} as no-show.`
+            : `This will mark ${selectedIds.size} appointment${selectedIds.size !== 1 ? "s" : ""} as completed.`
+        }
+        confirmLabel={bulkConfirmAction?.label || "Confirm"}
+        variant={bulkConfirmAction?.status === "completed" ? "primary" : "danger"}
+        loading={bulkLoading}
+        onConfirm={() => {
+          if (bulkConfirmAction) {
+            handleBulkStatus(bulkConfirmAction.status);
+          }
+        }}
+        onCancel={() => setBulkConfirmAction(null)}
       />
     </div>
   );

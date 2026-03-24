@@ -98,10 +98,54 @@ export async function GET(req: NextRequest) {
       appointments: techMap.get(t.id) || [],
     }));
 
+    // ── Skill-based recommendations for unassigned appointments ──
+    const availableTechs = techs.filter((t) => !t.isUnavailable);
+    const unassignedWithRecs = unassigned.map((appt) => {
+      let recommendedTechId: string | null = null;
+      let recommendedReason: string | null = null;
+
+      if (availableTechs.length > 0) {
+        // Try skill match first (case-insensitive partial match on service name)
+        const skillMatches = availableTechs.filter((t) => {
+          const skills = (t.skills || []) as string[];
+          return skills.some((skill) =>
+            appt.service.toLowerCase().includes(skill.toLowerCase()) ||
+            skill.toLowerCase().includes(appt.service.toLowerCase())
+          );
+        });
+
+        if (skillMatches.length > 0) {
+          // Prefer the tech with fewer jobs that day
+          const sorted = skillMatches.sort((a, b) => {
+            const aJobs = (techMap.get(a.id) || []).length;
+            const bJobs = (techMap.get(b.id) || []).length;
+            return aJobs - bJobs;
+          });
+          recommendedTechId = sorted[0].id;
+          const matchedSkill = ((sorted[0].skills || []) as string[]).find((skill) =>
+            appt.service.toLowerCase().includes(skill.toLowerCase()) ||
+            skill.toLowerCase().includes(appt.service.toLowerCase())
+          );
+          recommendedReason = matchedSkill ? `Matches skill: ${matchedSkill}` : "Skill match";
+        } else {
+          // No skill match — recommend the tech with fewest jobs
+          const sorted = availableTechs.sort((a, b) => {
+            const aJobs = (techMap.get(a.id) || []).length;
+            const bJobs = (techMap.get(b.id) || []).length;
+            return aJobs - bJobs;
+          });
+          recommendedTechId = sorted[0].id;
+          recommendedReason = "Fewest jobs today";
+        }
+      }
+
+      return { ...appt, recommendedTechId, recommendedReason };
+    });
+
     return NextResponse.json({
       date,
       technicians: techColumns,
-      unassigned,
+      unassigned: unassignedWithRecs,
     });
   } catch (err) {
     reportError("Failed to fetch dispatch data", err, { businessId });

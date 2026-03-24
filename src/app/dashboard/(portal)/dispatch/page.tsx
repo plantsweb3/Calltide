@@ -22,6 +22,8 @@ interface DispatchAppointment {
   customerName: string | null;
   customerPhone: string | null;
   customerAddress: string | null;
+  recommendedTechId?: string | null;
+  recommendedReason?: string | null;
 }
 
 interface Technician {
@@ -32,6 +34,9 @@ interface Technician {
   skills: string[];
   isActive: boolean;
   isOnCall: boolean;
+  isUnavailable: boolean;
+  unavailableReason: string | null;
+  unavailableUntil: string | null;
   color: string | null;
   appointments: DispatchAppointment[];
 }
@@ -92,6 +97,9 @@ export default function DispatchPage() {
   // Selected appointment detail
   const [selectedAppt, setSelectedAppt] = useState<DispatchAppointment | null>(null);
 
+  // Reassign dropdown
+  const [reassignApptId, setReassignApptId] = useState<string | null>(null);
+
   const fetchDispatch = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -133,11 +141,27 @@ export default function DispatchPage() {
       if (!res.ok) throw new Error("Failed to assign");
       toast.success(technicianId ? "Technician assigned" : "Technician unassigned");
       setAssignAppt(null);
+      setReassignApptId(null);
       fetchDispatch();
     } catch {
       toast.error("Failed to assign technician");
     } finally {
       setAssignLoading(false);
+    }
+  }
+
+  async function handleQuickAssign(appointmentId: string, technicianId: string) {
+    try {
+      const res = await fetch(`/api/dashboard/appointments/${appointmentId}/assign`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ technicianId }),
+      });
+      if (!res.ok) throw new Error("Failed to assign");
+      toast.success("Technician assigned");
+      fetchDispatch();
+    } catch {
+      toast.error("Failed to assign technician");
     }
   }
 
@@ -163,7 +187,7 @@ export default function DispatchPage() {
   }
 
   async function handleSendAll() {
-    const techsWithJobs = technicians.filter((t) => t.appointments.length > 0 && t.phone);
+    const techsWithJobs = technicians.filter((t) => t.appointments.length > 0 && t.phone && !t.isUnavailable);
     if (techsWithJobs.length === 0) {
       toast.error("No technicians with jobs and phone numbers to notify");
       return;
@@ -186,6 +210,10 @@ export default function DispatchPage() {
     toast.success(`Schedules sent to ${sent} of ${techsWithJobs.length} technicians`);
     setSendAllLoading(false);
   }
+
+  // Available techs are those that are not unavailable
+  const availableTechs = technicians.filter((t) => !t.isUnavailable);
+  const unavailableTechs = technicians.filter((t) => t.isUnavailable);
 
   const isToday = date === toDateString(new Date());
   const totalJobs = technicians.reduce((sum, t) => sum + t.appointments.length, 0) + unassigned.length;
@@ -326,17 +354,20 @@ export default function DispatchPage() {
                     key={appt.id}
                     appointment={appt}
                     borderColor="var(--db-border)"
-                    onAssign={() => setAssignAppt(appt)}
                     onClick={() => setSelectedAppt(appt)}
+                    quickAssignTechs={availableTechs}
+                    onQuickAssign={(techId) => handleQuickAssign(appt.id, techId)}
+                    recommendedTechId={appt.recommendedTechId}
+                    recommendedReason={appt.recommendedReason}
                   />
                 ))}
               </div>
             </div>
           )}
 
-          {/* Technician columns */}
+          {/* Available Technician columns */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {technicians.map((tech, idx) => {
+            {availableTechs.map((tech, idx) => {
               const color = getTechColor(tech, idx);
               return (
                 <div
@@ -436,6 +467,13 @@ export default function DispatchPage() {
                           appointment={appt}
                           borderColor={color}
                           onClick={() => setSelectedAppt(appt)}
+                          showReassign
+                          showUnassign
+                          reassignOpen={reassignApptId === appt.id}
+                          onReassignToggle={() => setReassignApptId(reassignApptId === appt.id ? null : appt.id)}
+                          reassignTechs={availableTechs.filter((t) => t.id !== tech.id)}
+                          onReassign={(techId) => handleQuickAssign(appt.id, techId)}
+                          onUnassign={() => handleAssign(appt.id, null)}
                         />
                       ))
                     )}
@@ -444,6 +482,59 @@ export default function DispatchPage() {
               );
             })}
           </div>
+
+          {/* Unavailable Techs - grayed out */}
+          {unavailableTechs.length > 0 && (
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--db-text-muted)" }}>
+                Unavailable ({unavailableTechs.length})
+              </h3>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {unavailableTechs.map((tech, idx) => {
+                  const color = getTechColor(tech, idx);
+                  return (
+                    <div
+                      key={tech.id}
+                      className="rounded-xl overflow-hidden"
+                      style={{
+                        border: `1px solid var(--db-border)`,
+                        background: "var(--db-card)",
+                        opacity: 0.5,
+                        filter: "grayscale(0.5)",
+                      }}
+                    >
+                      <div className="px-4 py-3" style={{ borderBottom: `2px solid ${color}` }}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <span className="h-3 w-3 rounded-full flex-shrink-0" style={{ background: color }} />
+                            <div>
+                              <h3 className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
+                                {tech.name}
+                              </h3>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span
+                              className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
+                              style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444" }}
+                            >
+                              Unavailable
+                            </span>
+                          </div>
+                        </div>
+                        {tech.unavailableReason && (
+                          <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
+                            {tech.unavailableReason}
+                            {tech.unavailableUntil && ` - until ${new Date(tech.unavailableUntil + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}`}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -469,7 +560,7 @@ export default function DispatchPage() {
             </p>
 
             <div className="space-y-1.5 max-h-64 overflow-y-auto">
-              {technicians.map((tech, idx) => (
+              {availableTechs.map((tech, idx) => (
                 <button
                   key={tech.id}
                   onClick={() => handleAssign(assignAppt.id, tech.id)}
@@ -613,17 +704,102 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
+/* ── Quick-Assign Tech Circle ── */
+
+interface TechCircleProps {
+  tech: Technician;
+  index: number;
+  isRecommended: boolean;
+  recommendedReason?: string | null;
+  onClick: () => void;
+}
+
+function TechCircle({ tech, index, isRecommended, recommendedReason, onClick }: TechCircleProps) {
+  const color = getTechColor(tech, index);
+  const initial = tech.name.charAt(0).toUpperCase();
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        className="h-7 w-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white transition-transform hover:scale-110"
+        style={{
+          background: color,
+          boxShadow: isRecommended ? `0 0 0 2px var(--db-card), 0 0 0 4px var(--db-accent)` : "none",
+        }}
+        title={`${tech.name} - ${tech.appointments.length} jobs`}
+      >
+        {initial}
+      </button>
+      {showTooltip && (
+        <div
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1.5 rounded-md text-[10px] font-medium whitespace-nowrap z-10 pointer-events-none"
+          style={{
+            background: "var(--db-surface, var(--db-card))",
+            color: "var(--db-text)",
+            border: "1px solid var(--db-border)",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          }}
+        >
+          <p className="font-semibold">{tech.name}</p>
+          <p style={{ color: "var(--db-text-muted)" }}>{tech.appointments.length} job{tech.appointments.length !== 1 ? "s" : ""} today</p>
+          {isRecommended && (
+            <p style={{ color: "var(--db-accent)" }}>
+              {recommendedReason ? `Recommended - ${recommendedReason}` : "Recommended"}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Appointment Card ── */
+
 interface AppointmentCardProps {
   appointment: DispatchAppointment;
   borderColor: string;
-  onAssign?: () => void;
   onClick?: () => void;
+  // Quick-assign (for unassigned cards)
+  quickAssignTechs?: Technician[];
+  onQuickAssign?: (techId: string) => void;
+  recommendedTechId?: string | null;
+  recommendedReason?: string | null;
+  // Reassign / Unassign (for assigned cards)
+  showReassign?: boolean;
+  showUnassign?: boolean;
+  reassignOpen?: boolean;
+  onReassignToggle?: () => void;
+  reassignTechs?: Technician[];
+  onReassign?: (techId: string) => void;
+  onUnassign?: () => void;
 }
 
-function AppointmentCard({ appointment, borderColor, onAssign, onClick }: AppointmentCardProps) {
+function AppointmentCard({
+  appointment,
+  borderColor,
+  onClick,
+  quickAssignTechs,
+  onQuickAssign,
+  recommendedTechId,
+  recommendedReason,
+  showReassign,
+  showUnassign,
+  reassignOpen,
+  onReassignToggle,
+  reassignTechs,
+  onReassign,
+  onUnassign,
+}: AppointmentCardProps) {
   return (
     <div
-      className="rounded-lg p-3 transition-all cursor-pointer"
+      className="rounded-lg p-3 transition-all"
       style={{
         background: "var(--db-surface, var(--db-bg))",
         borderLeft: `3px solid ${borderColor}`,
@@ -631,58 +807,133 @@ function AppointmentCard({ appointment, borderColor, onAssign, onClick }: Appoin
         borderLeftWidth: "3px",
         borderLeftColor: borderColor,
       }}
-      onClick={onClick}
-      onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = "var(--db-surface, var(--db-bg))"; }}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick?.(); } }}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
-            {formatTime12h(appointment.time)}
-          </p>
-          <p className="text-sm mt-0.5 truncate" style={{ color: "var(--db-text)" }}>
-            {appointment.service}
-          </p>
-          {appointment.customerName && (
-            <p className="text-xs mt-1 truncate" style={{ color: "var(--db-text-muted)" }}>
-              {appointment.customerName}
-              {appointment.customerPhone ? ` \u00B7 ${formatPhone(appointment.customerPhone)}` : ""}
+      <div
+        className="cursor-pointer"
+        onClick={onClick}
+        onMouseEnter={(e) => { e.currentTarget.parentElement!.style.background = "var(--db-hover)"; }}
+        onMouseLeave={(e) => { e.currentTarget.parentElement!.style.background = "var(--db-surface, var(--db-bg))"; }}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick?.(); } }}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
+              {formatTime12h(appointment.time)}
             </p>
-          )}
-          {appointment.customerAddress && (
-            <p className="text-xs mt-0.5 truncate" style={{ color: "var(--db-text-muted)" }}>
-              {appointment.customerAddress}
+            <p className="text-sm mt-0.5 truncate" style={{ color: "var(--db-text)" }}>
+              {appointment.service}
             </p>
-          )}
-        </div>
-        <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-          <StatusBadge label={appointment.status} variant={statusToVariant(appointment.status)} />
-          {appointment.duration > 0 && (
-            <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)" }}>
-              {appointment.duration}m
-            </span>
-          )}
+            {appointment.customerName && (
+              <p className="text-xs mt-1 truncate" style={{ color: "var(--db-text-muted)" }}>
+                {appointment.customerName}
+                {appointment.customerPhone ? ` \u00B7 ${formatPhone(appointment.customerPhone)}` : ""}
+              </p>
+            )}
+            {appointment.customerAddress && (
+              <p className="text-xs mt-0.5 truncate" style={{ color: "var(--db-text-muted)" }}>
+                {appointment.customerAddress}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+            <StatusBadge label={appointment.status} variant={statusToVariant(appointment.status)} />
+            {appointment.duration > 0 && (
+              <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)" }}>
+                {appointment.duration}m
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
-      {onAssign && (
-        <button
-          className="mt-2 flex items-center gap-1 text-xs font-medium transition-colors"
-          style={{ color: "var(--db-accent)" }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onAssign();
-          }}
+      {/* Quick-assign circles for unassigned appointments */}
+      {quickAssignTechs && quickAssignTechs.length > 0 && onQuickAssign && (
+        <div className="mt-2.5 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
+          <p className="text-[10px] font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+            Quick assign
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {quickAssignTechs.map((tech, idx) => (
+              <TechCircle
+                key={tech.id}
+                tech={tech}
+                index={idx}
+                isRecommended={tech.id === recommendedTechId}
+                recommendedReason={recommendedReason}
+                onClick={() => onQuickAssign(tech.id)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Reassign / Unassign for assigned appointments */}
+      {(showReassign || showUnassign) && (
+        <div className="mt-2 pt-2 flex items-center gap-2" style={{ borderTop: "1px solid var(--db-border)" }}>
+          {showReassign && (
+            <button
+              className="flex items-center gap-1 text-xs font-medium transition-colors"
+              style={{ color: "var(--db-accent)" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onReassignToggle?.();
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" />
+                <polyline points="17 11 19 13 23 9" />
+              </svg>
+              Reassign
+            </button>
+          )}
+          {showUnassign && (
+            <button
+              className="flex items-center gap-1 text-xs font-medium transition-colors"
+              style={{ color: "var(--db-text-muted)" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onUnassign?.();
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+              Unassign
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Reassign dropdown */}
+      {reassignOpen && reassignTechs && onReassign && (
+        <div
+          className="mt-2 p-2 rounded-lg space-y-1"
+          style={{ background: "var(--db-hover)", border: "1px solid var(--db-border)" }}
+          onClick={(e) => e.stopPropagation()}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" />
-            <line x1="20" y1="8" x2="20" y2="14" /><line x1="23" y1="11" x2="17" y2="11" />
-          </svg>
-          Assign Tech
-        </button>
+          {reassignTechs.length === 0 ? (
+            <p className="text-xs text-center py-1" style={{ color: "var(--db-text-muted)" }}>No other techs available</p>
+          ) : (
+            reassignTechs.map((tech, idx) => {
+              const color = getTechColor(tech, idx);
+              return (
+                <button
+                  key={tech.id}
+                  onClick={() => onReassign(tech.id)}
+                  className="flex items-center gap-2 w-full rounded px-2 py-1.5 text-left text-xs transition-colors"
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-surface, var(--db-bg))"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                >
+                  <span className="h-2.5 w-2.5 rounded-full flex-shrink-0" style={{ background: color }} />
+                  <span className="font-medium" style={{ color: "var(--db-text)" }}>{tech.name}</span>
+                  <span style={{ color: "var(--db-text-muted)" }}>({tech.appointments.length} jobs)</span>
+                </button>
+              );
+            })
+          )}
+        </div>
       )}
     </div>
   );

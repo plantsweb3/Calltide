@@ -15,6 +15,9 @@ const updateTechSchema = z.object({
   isOnCall: z.boolean().optional(),
   color: z.string().max(20).optional().nullable(),
   sortOrder: z.number().int().min(0).max(999).optional(),
+  isUnavailable: z.boolean().optional(),
+  unavailableReason: z.string().max(200).optional().nullable(),
+  unavailableUntil: z.string().max(30).optional().nullable(),
 });
 
 /**
@@ -64,6 +67,9 @@ export async function PUT(
     if (data.isOnCall !== undefined) updates.isOnCall = data.isOnCall;
     if (data.color !== undefined) updates.color = data.color;
     if (data.sortOrder !== undefined) updates.sortOrder = data.sortOrder;
+    if (data.isUnavailable !== undefined) updates.isUnavailable = data.isUnavailable;
+    if (data.unavailableReason !== undefined) updates.unavailableReason = data.unavailableReason;
+    if (data.unavailableUntil !== undefined) updates.unavailableUntil = data.unavailableUntil;
 
     await db
       .update(technicians)

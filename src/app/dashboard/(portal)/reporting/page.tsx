@@ -65,13 +65,16 @@ export default function ReportingPage() {
   }
 
   const maxHour = Math.max(...data.callsByHour.map((h) => h.total), 1);
-  const maxDay = Math.max(...data.callsByDay.map((d) => d.total), 1);
   const totalCalls = data.callsByHour.reduce((s, h) => s + h.total, 0);
   const busiestHour = data.callsByHour.reduce((a, b) => (b.total > a.total ? b : a));
   const busiestDay = data.callsByDay.reduce((a, b) => (b.total > a.total ? b : a));
   const totalDuration = data.durationBuckets.reduce((s, b) => s + b.total, 0);
   const totalLang = data.languageBreakdown.reduce((s, l) => s + l.total, 0);
   const topServiceMax = data.topServices.length > 0 ? data.topServices[0].total : 1;
+
+  // Daily volume for chart (last 30 or 7 days)
+  const dailyVolumeSlice = data.dailyVolume.slice(-30);
+  const maxDailyVolume = Math.max(...dailyVolumeSlice.map((d) => d.total), 1);
 
   const pipelineLabels: Record<string, string> = { new: "New", sent: "Sent", follow_up: "Follow Up", won: "Won", lost: "Lost" };
   const pipelineColors: Record<string, string> = { new: "#3B82F6", sent: "#F59E0B", follow_up: "#8B5CF6", won: "#10B981", lost: "#EF4444" };
@@ -104,57 +107,126 @@ export default function ReportingPage() {
         <MetricCard label="Recovery Rate" value={data.recoveryStats.rate} suffix="%" />
       </div>
 
-      {/* Row 1: Calls by Hour + Calls by Day */}
+      {/* Row 1: Calls by Hour (horizontal bars) + Calls by Day of Week */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Calls by Hour */}
+        {/* Calls by Hour - Horizontal bar chart */}
         <Card title="Calls by Hour of Day">
-          <div className="flex items-end gap-[3px] h-40">
+          <div className="space-y-1 max-h-[400px] overflow-y-auto">
             {data.callsByHour.map((h) => (
-              <div key={h.hour} className="flex-1 flex flex-col items-center justify-end h-full group relative">
-                <div
-                  className="w-full rounded-t transition-colors"
-                  style={{
-                    height: `${Math.max((h.total / maxHour) * 100, 2)}%`,
-                    background: h.hour >= 7 && h.hour <= 19 ? "var(--db-accent)" : "var(--db-border)",
-                    opacity: h.total > 0 ? 1 : 0.3,
-                  }}
-                />
-                <span className="absolute -top-6 hidden group-hover:block rounded px-1.5 py-0.5 text-[10px] font-medium" style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}>
-                  {formatHour(h.hour)}: {h.total}
+              <div key={h.hour} className="flex items-center gap-2" style={{ height: "20px" }}>
+                <span className="w-12 text-[10px] font-medium text-right flex-shrink-0" style={{ color: "var(--db-text-muted)" }}>
+                  {formatHour(h.hour)}
+                </span>
+                <div className="flex-1 h-3.5 rounded-sm overflow-hidden" style={{ background: "var(--db-hover)" }}>
+                  <div
+                    className="h-full rounded-sm"
+                    style={{
+                      width: `${Math.max((h.total / maxHour) * 100, h.total > 0 ? 3 : 0)}%`,
+                      background: h.hour >= 7 && h.hour <= 19 ? "var(--db-accent)" : "var(--db-border)",
+                    }}
+                  />
+                </div>
+                <span className="w-6 text-right text-[10px] font-semibold flex-shrink-0" style={{ color: "var(--db-text)" }}>
+                  {h.total}
                 </span>
               </div>
             ))}
           </div>
-          <div className="mt-2 flex justify-between text-[10px]" style={{ color: "var(--db-text-muted)" }}>
-            <span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>11 PM</span>
-          </div>
         </Card>
 
-        {/* Calls by Day */}
+        {/* Calls by Day - Horizontal bar chart */}
         <Card title="Calls by Day of Week">
           <div className="space-y-3">
-            {data.callsByDay.map((d) => (
-              <div key={d.day} className="flex items-center gap-3">
-                <span className="w-8 text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{d.label}</span>
-                <div className="flex-1 h-6 rounded-lg overflow-hidden" style={{ background: "var(--db-hover)" }}>
-                  <div
-                    className="h-full rounded-lg transition-all"
-                    style={{
-                      width: `${Math.max((d.total / maxDay) * 100, 2)}%`,
-                      background: "var(--db-accent)",
-                    }}
-                  />
+            {data.callsByDay.map((d) => {
+              const maxDay = Math.max(...data.callsByDay.map((x) => x.total), 1);
+              return (
+                <div key={d.day} className="flex items-center gap-3">
+                  <span className="w-8 text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{d.label}</span>
+                  <div className="flex-1 h-6 rounded-lg overflow-hidden" style={{ background: "var(--db-hover)" }}>
+                    <div
+                      className="h-full rounded-lg transition-all"
+                      style={{
+                        width: `${Math.max((d.total / maxDay) * 100, 2)}%`,
+                        background: "var(--db-accent)",
+                      }}
+                    />
+                  </div>
+                  <span className="w-8 text-right text-xs font-semibold" style={{ color: "var(--db-text)" }}>{d.total}</span>
                 </div>
-                <span className="w-8 text-right text-xs font-semibold" style={{ color: "var(--db-text)" }}>{d.total}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Card>
       </div>
 
-      {/* Row 2: Duration + Language + Recovery */}
+      {/* Row 2: Daily Volume - Vertical stacked bar chart */}
+      {dailyVolumeSlice.length > 0 && (
+        <Card title="Daily Call Volume">
+          <div className="flex items-end gap-[2px]" style={{ height: "180px" }}>
+            {dailyVolumeSlice.map((d) => {
+              const answeredPct = maxDailyVolume > 0 ? ((d.answered ?? 0) / maxDailyVolume) * 100 : 0;
+              const missedPct = maxDailyVolume > 0 ? ((d.missed ?? 0) / maxDailyVolume) * 100 : 0;
+              const dateLabel = new Date(d.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+              return (
+                <div key={d.date} className="flex-1 flex flex-col items-center justify-end h-full group relative" style={{ minWidth: "4px" }}>
+                  <div className="w-full flex flex-col justify-end" style={{ height: `${answeredPct + missedPct}%` }}>
+                    {(d.missed ?? 0) > 0 && (
+                      <div
+                        className="w-full rounded-t-sm"
+                        style={{
+                          height: `${missedPct > 0 ? (missedPct / (answeredPct + missedPct)) * 100 : 0}%`,
+                          background: "var(--db-danger, #ef4444)",
+                          minHeight: d.missed > 0 ? "2px" : "0",
+                        }}
+                      />
+                    )}
+                    {(d.answered ?? 0) > 0 && (
+                      <div
+                        className="w-full"
+                        style={{
+                          height: `${answeredPct > 0 ? (answeredPct / (answeredPct + missedPct)) * 100 : 0}%`,
+                          background: "var(--db-success, #10B981)",
+                          minHeight: d.answered > 0 ? "2px" : "0",
+                          borderRadius: (d.missed ?? 0) > 0 ? "0" : "2px 2px 0 0",
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div
+                    className="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:block rounded px-1.5 py-0.5 text-[9px] font-medium whitespace-nowrap z-10 pointer-events-none"
+                    style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                  >
+                    {dateLabel}: {d.total} ({d.answered ?? 0}A / {d.missed ?? 0}M)
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-3 flex items-center justify-between">
+            <div className="flex gap-4">
+              <div className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--db-success, #10B981)" }} />
+                <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)" }}>Answered</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--db-danger, #ef4444)" }} />
+                <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)" }}>Missed</span>
+              </div>
+            </div>
+            {dailyVolumeSlice.length > 0 && (
+              <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                {new Date(dailyVolumeSlice[0].date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                {" - "}
+                {new Date(dailyVolumeSlice[dailyVolumeSlice.length - 1].date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+              </span>
+            )}
+          </div>
+        </Card>
+      )}
+
+      {/* Row 3: Duration + Language + Recovery */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Call Duration */}
+        {/* Call Duration - Horizontal bar chart */}
         <Card title="Call Duration">
           <div className="space-y-3">
             {data.durationBuckets.map((b) => (
@@ -175,38 +247,34 @@ export default function ReportingPage() {
           </div>
         </Card>
 
-        {/* Language */}
+        {/* Language - Progress bar style */}
         <Card title="Language Breakdown">
-          <div className="flex items-center justify-center py-4">
-            <div className="relative h-32 w-32">
-              <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
-                {data.languageBreakdown.map((l, i) => {
-                  const pct = totalLang > 0 ? (l.total / totalLang) * 100 : 0;
-                  const offset = data.languageBreakdown.slice(0, i).reduce((s, x) => s + (totalLang > 0 ? (x.total / totalLang) * 100 : 0), 0);
-                  return (
-                    <circle
-                      key={l.language}
-                      cx="18" cy="18" r="15.915"
-                      fill="none"
-                      strokeWidth="3.5"
-                      stroke={l.language === "en" ? "var(--db-accent)" : "#10B981"}
-                      strokeDasharray={`${pct} ${100 - pct}`}
-                      strokeDashoffset={`${-offset}`}
+          <div className="space-y-4 py-2">
+            {data.languageBreakdown.map((l) => {
+              const pct = totalLang > 0 ? Math.round((l.total / totalLang) * 100) : 0;
+              const langLabel = l.language === "en" ? "English" : l.language === "es" ? "Spanish" : l.language;
+              const langColor = l.language === "en" ? "var(--db-accent)" : "#10B981";
+              return (
+                <div key={l.language}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="h-3 w-3 rounded-full flex-shrink-0" style={{ background: langColor }} />
+                      <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{langLabel}</span>
+                    </div>
+                    <span className="text-sm font-bold" style={{ color: "var(--db-text)" }}>
+                      {pct}%
+                    </span>
+                  </div>
+                  <div className="h-3 rounded-full overflow-hidden" style={{ background: "var(--db-hover)" }}>
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${pct}%`, background: langColor }}
                     />
-                  );
-                })}
-              </svg>
-            </div>
-          </div>
-          <div className="flex justify-center gap-6">
-            {data.languageBreakdown.map((l) => (
-              <div key={l.language} className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full" style={{ background: l.language === "en" ? "var(--db-accent)" : "#10B981" }} />
-                <span className="text-xs font-medium" style={{ color: "var(--db-text)" }}>
-                  {l.language === "en" ? "English" : "Spanish"} ({totalLang > 0 ? Math.round((l.total / totalLang) * 100) : 0}%)
-                </span>
-              </div>
-            ))}
+                  </div>
+                  <p className="text-[10px] mt-1" style={{ color: "var(--db-text-muted)" }}>{l.total} calls</p>
+                </div>
+              );
+            })}
           </div>
         </Card>
 
@@ -226,9 +294,9 @@ export default function ReportingPage() {
         </Card>
       </div>
 
-      {/* Row 3: Top Services + Estimates + Callers */}
+      {/* Row 4: Top Services + Estimates + Callers */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Top Services */}
+        {/* Top Services - Horizontal bar chart */}
         <Card title="Top Services Booked">
           {data.topServices.length === 0 ? (
             <p className="py-8 text-center text-sm" style={{ color: "var(--db-text-muted)" }}>No appointments yet</p>
@@ -236,14 +304,19 @@ export default function ReportingPage() {
             <div className="space-y-3">
               {data.topServices.map((s, i) => (
                 <div key={s.service} className="flex items-center gap-3">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold flex-shrink-0" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
                     {i + 1}
                   </span>
-                  <span className="flex-1 text-sm truncate" style={{ color: "var(--db-text)" }}>{s.service}</span>
-                  <div className="w-20 h-4 rounded-full overflow-hidden" style={{ background: "var(--db-hover)" }}>
-                    <div className="h-full rounded-full" style={{ width: `${(s.total / topServiceMax) * 100}%`, background: "var(--db-accent)" }} />
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm truncate block" style={{ color: "var(--db-text)" }}>{s.service}</span>
+                    <div className="h-3 rounded-full overflow-hidden mt-1" style={{ background: "var(--db-hover)" }}>
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${(s.total / topServiceMax) * 100}%`, background: "var(--db-accent)" }}
+                      />
+                    </div>
                   </div>
-                  <span className="w-6 text-right text-xs font-semibold" style={{ color: "var(--db-text)" }}>{s.total}</span>
+                  <span className="w-6 text-right text-xs font-semibold flex-shrink-0" style={{ color: "var(--db-text)" }}>{s.total}</span>
                 </div>
               ))}
             </div>
@@ -266,7 +339,7 @@ export default function ReportingPage() {
               )}
               {data.estimatePipeline.map((e) => (
                 <div key={e.status} className="flex items-center gap-3">
-                  <span className="h-3 w-3 rounded-full" style={{ background: pipelineColors[e.status] ?? "var(--db-border)" }} />
+                  <span className="h-3 w-3 rounded-full flex-shrink-0" style={{ background: pipelineColors[e.status] ?? "var(--db-border)" }} />
                   <span className="flex-1 text-sm" style={{ color: "var(--db-text)" }}>{pipelineLabels[e.status] ?? e.status}</span>
                   <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{e.total}</span>
                   <span className="text-xs font-semibold" style={{ color: "var(--db-text)" }}>${e.value.toLocaleString()}</span>
@@ -317,7 +390,7 @@ export default function ReportingPage() {
         </Card>
       </div>
 
-      {/* Row 4: Outbound Calls */}
+      {/* Row 5: Outbound Calls */}
       {data.outboundSummary && data.outboundSummary.total > 0 && (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <Card title="Outbound Calls">
