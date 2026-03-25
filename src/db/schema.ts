@@ -1011,7 +1011,7 @@ export const capacitySnapshots = sqliteTable("capacity_snapshots", {
   activeClients: integer("active_clients").default(0),
   callsToday: integer("calls_today").default(0),
   peakConcurrent: integer("peak_concurrent").default(0),
-  // Hume
+  // ElevenLabs (column names are legacy from Hume migration)
   humeMinutesMtd: real("hume_minutes_mtd").default(0),
   humePlanMinutes: integer("hume_plan_minutes").default(1200),
   humeConcurrentPeak: integer("hume_concurrent_peak").default(0),

@@ -15,7 +15,7 @@ const t = {
   uptimeSuffix: " % disponibilidad",
   today: "Hoy",
   subtitle: "Estado en tiempo real de todos los servicios de Capta",
-  services: "Estado de Componentes",
+  services: "Estado de Servicios",
   activeIncidents: "Incidentes Activos",
   pastIncidents: "Incidentes Pasados",
   subscribe: "Recibe notificaciones",
@@ -33,6 +33,12 @@ const t = {
   unsubscribedMsg: "Te has dado de baja de las actualizaciones de estado.",
   verifyFailedMsg: "La verificación falló. Por favor, inténtalo de nuevo.",
   subscribedMsg: "Revisa tu correo para confirmar tu suscripción.",
+  categoryDescriptions: {
+    "Phone Answering": "Recepción de llamadas e IA de voz",
+    "SMS & Notifications": "Mensajes de texto y alertas por correo",
+    "Dashboard & CRM": "Portal de cliente, datos e informes",
+    "AI Intelligence": "Resúmenes de llamadas y funciones inteligentes",
+  } as Record<string, string>,
 };
 
 export default function StatusPageEs() {

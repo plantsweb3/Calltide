@@ -3,7 +3,7 @@
 
 export const SUB_PROCESSORS = [
   { name: "Twilio", purpose: "Call routing, SMS delivery, phone number management", dataProcessed: ["phone_numbers", "sms_content", "call_metadata"], location: "United States", dpaUrl: "https://www.twilio.com/legal/data-protection-addendum" },
-  { name: "Hume AI", purpose: "Voice AI processing for AI receptionist", dataProcessed: ["call_audio", "voice_data", "transcripts"], location: "United States", dpaUrl: "https://www.hume.ai/privacy" },
+  { name: "ElevenLabs", purpose: "Voice AI processing for AI receptionist", dataProcessed: ["call_audio", "voice_data", "transcripts"], location: "United States", dpaUrl: "https://elevenlabs.io/privacy" },
   { name: "Anthropic", purpose: "AI intelligence and natural language processing", dataProcessed: ["transcript_text", "conversation_context"], location: "United States", dpaUrl: "https://www.anthropic.com/legal/data-processing-agreement" },
   { name: "Turso (LibSQL)", purpose: "Database storage", dataProcessed: ["all_structured_data", "pii"], location: "United States", dpaUrl: "https://turso.tech/privacy-policy" },
   { name: "Vercel", purpose: "Application hosting and serverless functions", dataProcessed: ["request_logs", "ip_addresses"], location: "United States", dpaUrl: "https://vercel.com/legal/dpa" },
@@ -121,7 +121,7 @@ Capta may use aggregated, anonymized data derived from the Service (e.g., averag
 
 Capta targets 99.9% uptime for the core voice answering service. Planned maintenance will be communicated at least 24 hours in advance. In the event of service disruptions, Capta maintains a voicemail fallback system so callers can still leave messages. A real-time status page is available at [captahq.com/status](/status).
 
-Capta does not guarantee uninterrupted or error-free service. The Service depends on third-party providers (Twilio, Hume AI, etc.) whose availability is outside Capta's direct control.
+Capta does not guarantee uninterrupted or error-free service. The Service depends on third-party providers (Twilio, ElevenLabs, etc.) whose availability is outside Capta's direct control.
 
 ## 10. Limitation of Liability
 
@@ -300,7 +300,7 @@ Capta puede utilizar datos agregados y anonimizados derivados del Servicio (por 
 
 Capta se propone alcanzar 99.9% de tiempo de actividad para el servicio principal de contestación de voz. El mantenimiento programado se comunicará con al menos 24 horas de anticipación. En caso de interrupciones del servicio, Capta mantiene un sistema de respuesta de correo de voz de reserva para que las personas que llaman aún puedan dejar mensajes. Una página de estado en tiempo real está disponible en [captahq.com/status](/status).
 
-Capta no garantiza un servicio ininterrumpido o libre de errores. El Servicio depende de proveedores terceros (Twilio, Hume AI, etc.) cuya disponibilidad está fuera del control directo de Capta.
+Capta no garantiza un servicio ininterrumpido o libre de errores. El Servicio depende de proveedores terceros (Twilio, ElevenLabs, etc.) cuya disponibilidad está fuera del control directo de Capta.
 
 ## 10. Limitación de Responsabilidad
 
@@ -428,7 +428,7 @@ We use third-party service providers to operate the platform. Each processes dat
 | Provider | Purpose | Data Accessed |
 |----------|---------|--------------|
 | Twilio | Phone call routing, SMS delivery | Phone numbers, call metadata, SMS content |
-| Hume AI | Voice AI processing | Call audio, voice data |
+| ElevenLabs | Voice AI processing | Call audio, voice data |
 | Anthropic (Claude) | Call summaries, AI agents | Transcript text, conversation context |
 | Turso | Database hosting | All structured data |
 | Vercel | Application hosting | Request logs, IP addresses |
@@ -597,7 +597,7 @@ Utilizamos proveedores de servicios de terceros para operar la plataforma. Cada 
 | Proveedor | Propósito | Datos Accedidos |
 |-----------|-----------|-----------------|
 | Twilio | Enrutamiento de llamadas telefónicas, entrega de SMS | Números de teléfono, metadatos de llamadas, contenido de SMS |
-| Hume AI | Procesamiento de IA de voz | Audio de llamadas, datos de voz |
+| ElevenLabs | Procesamiento de IA de voz | Audio de llamadas, datos de voz |
 | Anthropic (Claude) | Resúmenes de llamadas, agentes de IA | Texto de transcripción, contexto de conversación |
 | Turso | Alojamiento de base de datos | Todos los datos estructurados |
 | Vercel | Alojamiento de aplicaciones | Registros de solicitudes, direcciones IP |

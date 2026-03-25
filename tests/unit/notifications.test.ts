@@ -86,7 +86,7 @@ describe("createNotification()", () => {
       source: "incident",
       severity: "critical",
       title: "Service outage",
-      message: "Hume API is down",
+      message: "ElevenLabs API is down",
       actionUrl: "/admin/incidents",
     });
 
@@ -94,7 +94,7 @@ describe("createNotification()", () => {
       source: "incident",
       severity: "critical",
       title: "Service outage",
-      message: "Hume API is down",
+      message: "ElevenLabs API is down",
       actionUrl: "/admin/incidents",
       acknowledged: false,
     });

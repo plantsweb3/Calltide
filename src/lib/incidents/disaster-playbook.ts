@@ -25,8 +25,8 @@ export interface PlaybookEntry {
 }
 
 export const DISASTER_PLAYBOOK: Record<string, PlaybookEntry> = {
-  Hume: {
-    provider: "Hume",
+  ElevenLabs: {
+    provider: "ElevenLabs",
     severity: "critical",
     actions: [
       { action: "activate_voicemail_fallback", description: "Route all inbound calls to Twilio voicemail TwiML fallback", auto: true },
@@ -167,7 +167,7 @@ export async function executeAutoActions(
 /**
  * Activate voicemail fallback for all active businesses.
  * When active, the Twilio webhook should route to a TwiML voicemail
- * response instead of attempting Hume EVI connection.
+ * response instead of attempting ElevenLabs connection.
  */
 export async function activateVoicemailFallback(): Promise<number> {
   const result = await db

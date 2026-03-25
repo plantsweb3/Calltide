@@ -243,7 +243,7 @@ export default function AIPerformancePage() {
           </div>
           <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Voice Engine</p>
-            <p className="mt-1 text-sm font-medium" style={{ color: "var(--db-text)" }}>Hume EVI</p>
+            <p className="mt-1 text-sm font-medium" style={{ color: "var(--db-text)" }}>ElevenLabs</p>
           </div>
           <div className="rounded-lg p-3" style={{ border: "1px solid var(--db-border)" }}>
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Languages</p>

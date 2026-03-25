@@ -48,7 +48,7 @@ interface Subscriber {
 
 type Tab = "active" | "history" | "create" | "subscribers" | "metrics";
 
-const SERVICES = ["Twilio", "Hume", "Anthropic", "Turso", "Resend"];
+const SERVICES = ["Twilio", "ElevenLabs", "Anthropic", "Turso", "Resend"];
 const SEVERITIES = ["critical", "major", "minor", "maintenance"] as const;
 
 // ── Page ──

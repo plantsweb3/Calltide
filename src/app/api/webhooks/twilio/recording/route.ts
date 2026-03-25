@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
   try {
     // Try to find a call record for this voicemail by the Twilio CallSid
-    // Since voicemails happen when Hume is down, we may not have a call record.
+    // Since voicemails happen when ElevenLabs is down, we may not have a call record.
     // Look up the business by the called number from the original call.
     const calledNumber = params.To || "";
     const callerPhone = params.From || "";
@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
         duration: recordingDuration,
         recordingUrl: `${recordingUrl}.mp3`,
         twilioCallSid: callSid,
-        summary: "Voicemail — Hume was unavailable. Recording saved.",
+        summary: "Voicemail — voice AI was unavailable. Recording saved.",
         outcome: "message_taken",
       }).returning();
       callId = newCall.id;

@@ -19,7 +19,7 @@ import { verifyCronAuth } from "@/lib/cron-auth";
  * - Twilio: free authenticated GET (always checked)
  * - Resend: env var presence check only (no API call)
  * - Env vars: validates all required env vars are present
- * - Anthropic & Hume: only checked every 4 hours (expensive API calls)
+ * - Anthropic & ElevenLabs: only checked every 4 hours (expensive API calls)
  */
 export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
       } else {
         await handleHealthyService(check);
         // If a service that triggered voicemail fallback recovers, deactivate it
-        if (check.name === "Hume" || check.name === "Turso") {
+        if (check.name === "ElevenLabs" || check.name === "Turso") {
           await deactivateVoicemailFallback();
         }
       }

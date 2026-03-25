@@ -91,7 +91,7 @@ export async function canMakeOutboundCall(
 }
 
 /**
- * Initiate an outbound call via Twilio, connecting to Hume EVI via TwiML.
+ * Initiate an outbound call via Twilio, connecting to ElevenLabs via TwiML.
  */
 export async function initiateOutboundCall(
   outboundCallId: string,

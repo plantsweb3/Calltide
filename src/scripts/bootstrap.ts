@@ -28,21 +28,21 @@ async function bootstrap() {
     const tiers = [
       { tier: "seed", clientRange: "1-10", entries: [
         { provider: "Twilio", action: "Standard plan, 1 phone number", planRequired: "Pay-as-you-go", estimatedMonthlyCost: "$50-200" },
-        { provider: "Hume", action: "Starter plan, standard EVI config", planRequired: "Starter", estimatedMonthlyCost: "$100-300" },
+        { provider: "ElevenLabs", action: "Starter plan, standard voice config", planRequired: "Starter", estimatedMonthlyCost: "$100-300" },
         { provider: "Anthropic", action: "Standard API access", planRequired: "Standard", estimatedMonthlyCost: "$50-150" },
         { provider: "Turso", action: "Free/Starter plan", planRequired: "Starter", estimatedMonthlyCost: "$0-29" },
         { provider: "Resend", action: "Free tier (100 emails/day)", planRequired: "Free", estimatedMonthlyCost: "$0" },
       ]},
       { tier: "growth", clientRange: "11-50", entries: [
         { provider: "Twilio", action: "Upgrade to Business, add redundant numbers", planRequired: "Business", estimatedMonthlyCost: "$500-1500" },
-        { provider: "Hume", action: "Growth plan, custom voice config per client", planRequired: "Growth", estimatedMonthlyCost: "$500-1000" },
+        { provider: "ElevenLabs", action: "Growth plan, custom voice config per client", planRequired: "Growth", estimatedMonthlyCost: "$500-1000" },
         { provider: "Anthropic", action: "Scale tier, monitor token usage", planRequired: "Scale", estimatedMonthlyCost: "$300-800" },
         { provider: "Turso", action: "Pro plan, enable read replicas", planRequired: "Pro", estimatedMonthlyCost: "$29-99" },
         { provider: "Resend", action: "Pro plan (50K emails/month)", planRequired: "Pro", estimatedMonthlyCost: "$20-50" },
       ]},
       { tier: "scale", clientRange: "51-200", entries: [
         { provider: "Twilio", action: "Enterprise plan, dedicated numbers, CNAM", planRequired: "Enterprise", estimatedMonthlyCost: "$3000-8000" },
-        { provider: "Hume", action: "Enterprise plan, priority support", planRequired: "Enterprise", estimatedMonthlyCost: "$2000-5000" },
+        { provider: "ElevenLabs", action: "Enterprise plan, priority support", planRequired: "Enterprise", estimatedMonthlyCost: "$2000-5000" },
         { provider: "Anthropic", action: "Enterprise tier, prompt caching", planRequired: "Enterprise", estimatedMonthlyCost: "$1500-4000" },
         { provider: "Turso", action: "Enterprise, multi-region", planRequired: "Enterprise", estimatedMonthlyCost: "$100-500" },
         { provider: "Resend", action: "Business plan (200K emails/month)", planRequired: "Business", estimatedMonthlyCost: "$50-200" },
@@ -111,7 +111,7 @@ async function bootstrap() {
   if ((spCount?.count ?? 0) === 0) {
     const processors = [
       { name: "Twilio", purpose: "Voice calling, SMS messaging", dataProcessed: ["Phone numbers", "Call recordings", "SMS content"], location: "United States" },
-      { name: "Hume AI", purpose: "Voice AI / EVI (Empathic Voice Interface)", dataProcessed: ["Voice audio", "Conversation data"], location: "United States" },
+      { name: "ElevenLabs", purpose: "Voice AI processing for AI receptionist", dataProcessed: ["Voice audio", "Conversation data"], location: "United States" },
       { name: "Anthropic", purpose: "LLM (Claude) for AI agent reasoning", dataProcessed: ["Conversation context", "Business data summaries"], location: "United States" },
       { name: "Turso (libSQL)", purpose: "Primary database", dataProcessed: ["All application data"], location: "United States" },
       { name: "Vercel", purpose: "Application hosting, edge compute", dataProcessed: ["Request logs", "Application code"], location: "United States" },

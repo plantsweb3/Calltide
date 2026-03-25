@@ -43,7 +43,7 @@ interface ElevenLabsPostCallEvent {
  *
  * Post-call webhook handler. ElevenLabs fires this after each call
  * with conversation_id, transcript, analysis, and metadata.
- * Replaces /api/webhooks/hume for call completion handling.
+ * Handles call completion processing.
  */
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);

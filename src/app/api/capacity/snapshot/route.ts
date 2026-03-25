@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     // Collect provider metrics
     const twilio = await getTwilioMetrics(today);
-    const hume = await getElevenLabsMetrics();
+    const elevenlabs = await getElevenLabsMetrics();
     const anthropic = await getAnthropicMetrics();
     const turso = await getTursoMetrics();
     const concurrent = await getConcurrentCallCount();
@@ -44,10 +44,10 @@ export async function POST(request: NextRequest) {
       activeClients,
       callsToday: twilio.callsToday,
       peakConcurrent: concurrent,
-      humeMinutesMtd: hume.minutesUsedMtd,
-      humePlanMinutes: hume.planCharacters,
-      humeConcurrentPeak: hume.concurrentPeak,
-      humeConcurrentLimit: hume.concurrentLimit,
+      humeMinutesMtd: elevenlabs.minutesUsedMtd,
+      humePlanMinutes: elevenlabs.planCharacters,
+      humeConcurrentPeak: elevenlabs.concurrentPeak,
+      humeConcurrentLimit: elevenlabs.concurrentLimit,
       anthropicTokensMtd: anthropic.tokensUsedMtd,
       anthropicRpmPeak: anthropic.rpmPeak,
       anthropicSpendMtd: anthropic.monthlySpend,
@@ -63,14 +63,14 @@ export async function POST(request: NextRequest) {
       {
         provider: "ElevenLabs",
         metric: "monthly_characters",
-        currentValue: hume.minutesUsedMtd,
-        limitValue: hume.planCharacters,
+        currentValue: elevenlabs.minutesUsedMtd,
+        limitValue: elevenlabs.planCharacters,
       },
       {
         provider: "ElevenLabs",
         metric: "concurrent_connections",
         currentValue: concurrent,
-        limitValue: hume.concurrentLimit,
+        limitValue: elevenlabs.concurrentLimit,
       },
       {
         provider: "Anthropic",

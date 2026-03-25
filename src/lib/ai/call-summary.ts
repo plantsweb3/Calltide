@@ -147,7 +147,7 @@ ${transcriptText}`,
 /**
  * Process a completed call: generate summary from transcript, update DB.
  * Accepts transcript directly (from ElevenLabs post-call webhook).
- * Falls back to fetching from Hume API if transcript not provided (legacy).
+ * Falls back gracefully if transcript not provided.
  */
 export async function processCallSummary(
   callId: string,

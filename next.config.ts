@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: https:",
               "font-src 'self' data:",
               "worker-src 'self' blob: https://storage.googleapis.com",
-              "connect-src 'self' https://api.hume.ai wss://api.hume.ai https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io",
+              "connect-src 'self' https://api.elevenlabs.io wss://api.elevenlabs.io https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

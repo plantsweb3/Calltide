@@ -48,10 +48,17 @@ interface StatusData {
 
 // ── Text ──
 
+const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+  "Phone Answering": "Inbound call handling & voice AI",
+  "SMS & Notifications": "Text messages & email alerts",
+  "Dashboard & CRM": "Client portal, data & reporting",
+  "AI Intelligence": "Call summaries & smart features",
+};
+
 const t = {
   title: "System Status",
   subtitle: "Real-time status of all Capta services",
-  services: "Component Status",
+  services: "Service Status",
   activeIncidents: "Active Incidents",
   pastIncidents: "Past Incidents",
   uptimeHeading: "Uptime over the past 90 days.",
@@ -76,6 +83,7 @@ const t = {
   unsubscribedMsg: "You've been unsubscribed from status updates.",
   verifyFailedMsg: "Verification failed. Please try again.",
   subscribedMsg: "Check your email to confirm your subscription.",
+  categoryDescriptions: CATEGORY_DESCRIPTIONS,
 };
 
 export default function StatusPage() {
@@ -282,9 +290,14 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
                     borderTop: idx > 0 ? "1px solid #E2E8F0" : undefined,
                   }}
                 >
-                  {/* Name + "Operational" status text */}
+                  {/* Name + description + status text */}
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-[15px]" style={{ color: "#1A1D24" }}>{svc.name}</span>
+                    <div>
+                      <span className="font-bold text-[15px]" style={{ color: "#1A1D24" }}>{svc.name}</span>
+                      {text.categoryDescriptions?.[svc.name] && (
+                        <span className="ml-2 text-xs" style={{ color: "#94A3B8" }}>{text.categoryDescriptions[svc.name]}</span>
+                      )}
+                    </div>
                     <span className="text-sm font-medium" style={{ color: sColor }}>
                       {svc.status === "operational" ? text.operational : svc.status === "degraded" ? text.degraded : text.outage}
                     </span>

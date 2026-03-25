@@ -70,7 +70,7 @@ beforeEach(async () => {
 });
 
 describe("Voice Webhook — TwiML Generation", () => {
-  it("returns TwiML with Hume EVI stream for valid inbound call", async () => {
+  it("returns TwiML with ElevenLabs stream for valid inbound call", async () => {
     const { POST } = await import("@/app/api/webhooks/twilio/voice/route");
 
     const formData = new FormData();
@@ -175,7 +175,7 @@ describe("Voice Webhook — TwiML Generation", () => {
     expect(body).toContain("not currently active");
   });
 
-  it("returns voicemail fallback when Hume is not configured", async () => {
+  it("returns voicemail fallback when ElevenLabs is not configured", async () => {
     delete process.env.HUME_API_KEY;
 
     const { db } = await import("@/db");

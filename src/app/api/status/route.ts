@@ -5,6 +5,50 @@ import { sql, desc, eq, and, inArray } from "drizzle-orm";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-reporting";
 
+/**
+ * Maps internal service names to user-facing categories.
+ * Users don't need to know about individual subprocessors — they care about
+ * whether their phone answering, SMS, dashboard, etc. are working.
+ */
+const SERVICE_CATEGORY_MAP: Record<string, string[]> = {
+  "Phone Answering": ["Twilio", "ElevenLabs"],
+  "SMS & Notifications": ["Twilio", "Resend"],
+  "Dashboard & CRM": ["Turso"],
+  "AI Intelligence": ["Anthropic"],
+};
+
+const CATEGORY_ORDER = ["Phone Answering", "SMS & Notifications", "Dashboard & CRM", "AI Intelligence"];
+
+function aggregateCategoryStatus(
+  categoryServices: string[],
+  latestByService: Map<string, { status: string; latencyMs: number | null; checkedAt: string | null }>,
+): { status: string; latencyMs: number | null; checkedAt: string | null } {
+  let worstStatus = "operational";
+  let maxLatency: number | null = null;
+  let latestCheck: string | null = null;
+
+  for (const svc of categoryServices) {
+    const log = latestByService.get(svc);
+    if (!log) continue;
+
+    // Worst status wins
+    if (log.status === "down") worstStatus = "down";
+    else if (log.status === "degraded" && worstStatus !== "down") worstStatus = "degraded";
+
+    // Max latency
+    if (log.latencyMs != null && (maxLatency == null || log.latencyMs > maxLatency)) {
+      maxLatency = log.latencyMs;
+    }
+
+    // Latest check time
+    if (log.checkedAt && (!latestCheck || log.checkedAt > latestCheck)) {
+      latestCheck = log.checkedAt;
+    }
+  }
+
+  return { status: worstStatus, latencyMs: maxLatency, checkedAt: latestCheck };
+}
+
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
   const rl = await rateLimit(`status:${ip}`, { limit: 60, windowSeconds: 60 });
@@ -24,12 +68,18 @@ export async function GET(req: NextRequest) {
         latestByService.set(log.serviceName, log);
       }
     }
-    const services = Array.from(latestByService.values()).map((s) => ({
-      name: s.serviceName,
-      status: s.status,
-      latencyMs: s.latencyMs,
-      checkedAt: s.checkedAt,
-    }));
+
+    // Build user-facing categories from internal service health
+    const services = CATEGORY_ORDER.map((category) => {
+      const categoryServices = SERVICE_CATEGORY_MAP[category] || [];
+      const agg = aggregateCategoryStatus(categoryServices, latestByService);
+      return {
+        name: category,
+        status: agg.status,
+        latencyMs: agg.latencyMs,
+        checkedAt: agg.checkedAt,
+      };
+    });
 
     // Active incidents (open statuses)
     const openStatuses = ["detected", "investigating", "identified", "monitoring"];
@@ -90,7 +140,8 @@ export async function GET(req: NextRequest) {
       }),
     );
 
-    // Daily health per service (last 90 days)
+    // Daily health per category (last 90 days)
+    // Aggregate from internal services into user-facing categories
     const dailyHealth = await db
       .select({
         serviceName: systemHealthLogs.serviceName,
@@ -104,13 +155,36 @@ export async function GET(req: NextRequest) {
       .groupBy(systemHealthLogs.serviceName, sql`date(${systemHealthLogs.checkedAt})`)
       .orderBy(sql`date(${systemHealthLogs.checkedAt})`);
 
-    const dailyByService: Record<string, Array<{ date: string; status: string }>> = {};
+    // Group daily data by internal service first
+    const dailyByInternalService: Record<string, Record<string, string>> = {};
     for (const row of dailyHealth) {
-      if (!dailyByService[row.serviceName]) dailyByService[row.serviceName] = [];
+      if (!dailyByInternalService[row.serviceName]) dailyByInternalService[row.serviceName] = {};
       let status = "operational";
       if (row.hasUnhealthy) status = "outage";
       else if (row.hasDegraded || (row.maxLatency && row.maxLatency > 5000)) status = "degraded";
-      dailyByService[row.serviceName].push({ date: row.day, status });
+      dailyByInternalService[row.serviceName][row.day] = status;
+    }
+
+    // Aggregate into categories — worst status per day across member services
+    const dailyByCategory: Record<string, Array<{ date: string; status: string }>> = {};
+    for (const category of CATEGORY_ORDER) {
+      const memberServices = SERVICE_CATEGORY_MAP[category] || [];
+      const allDates = new Set<string>();
+      for (const svc of memberServices) {
+        if (dailyByInternalService[svc]) {
+          for (const d of Object.keys(dailyByInternalService[svc])) allDates.add(d);
+        }
+      }
+      const sorted = Array.from(allDates).sort();
+      dailyByCategory[category] = sorted.map((date) => {
+        let worst = "operational";
+        for (const svc of memberServices) {
+          const s = dailyByInternalService[svc]?.[date];
+          if (s === "outage") worst = "outage";
+          else if (s === "degraded" && worst !== "outage") worst = "degraded";
+        }
+        return { date, status: worst };
+      });
     }
 
     // Overall status
@@ -133,7 +207,7 @@ export async function GET(req: NextRequest) {
       services,
       activeIncidents: activeWithUpdates,
       recentIncidents: recentWithUpdates,
-      dailyHealth: dailyByService,
+      dailyHealth: dailyByCategory,
     });
   } catch (error) {
     reportError("Status API error", error);
