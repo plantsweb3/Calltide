@@ -146,7 +146,8 @@ export default function OverviewPage() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
+  const loadOverview = useCallback(() => {
+    setError(null);
     fetch("/api/dashboard/overview")
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
@@ -155,17 +156,21 @@ export default function OverviewPage() {
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d: ActionItems) => setActionItems(d))
       .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    loadOverview();
     fetchActiveCalls();
     const interval = setInterval(fetchActiveCalls, 10000);
     return () => clearInterval(interval);
-  }, [fetchActiveCalls]);
+  }, [fetchActiveCalls, loadOverview]);
 
   if (error) {
     return (
       <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)", color: "var(--db-danger)" }}>
         <p className="text-sm">{error}</p>
         <button
-          onClick={() => { setError(null); window.location.reload(); }}
+          onClick={loadOverview}
           className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
           style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >

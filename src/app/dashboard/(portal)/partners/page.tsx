@@ -7,6 +7,7 @@ import Button from "@/components/ui/button";
 import ConfirmDialog from "@/components/confirm-dialog";
 import EmptyState from "@/components/empty-state";
 import PageHeader from "@/components/page-header";
+import { formatPhone } from "@/lib/format";
 
 interface Partner {
   id: string;
@@ -65,12 +66,6 @@ const OUTCOME_STYLES: Record<string, { bg: string; color: string }> = {
   no_response: { bg: "rgba(251,191,36,0.15)", color: "#fbbf24" },
   declined: { bg: "rgba(248,113,113,0.15)", color: "#f87171" },
 };
-
-function formatPhone(phone: string): string {
-  const d = phone.replace(/\D/g, "");
-  if (d.length === 10) return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
-  return phone;
-}
 
 export default function PartnersPage() {
   const [tab, setTab] = useState<Tab>("partners");

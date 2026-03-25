@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import Button from "@/components/ui/button";
@@ -27,7 +27,8 @@ export default function ReferralsPage() {
   const [copied, setCopied] = useState<"code" | "link" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadReferrals = useCallback(() => {
+    setError(null);
     fetch("/api/dashboard/referrals")
       .then((r) => {
         if (!r.ok) throw new Error("Failed to load");
@@ -35,7 +36,6 @@ export default function ReferralsPage() {
       })
       .then(setData)
       .catch(() => {
-        // Show demo data on failure so the page is always usable
         setData({
           referralCode: null,
           shareLink: null,
@@ -44,6 +44,8 @@ export default function ReferralsPage() {
         });
       });
   }, []);
+
+  useEffect(() => { loadReferrals(); }, [loadReferrals]);
 
   function copyToClipboard(text: string, type: "code" | "link") {
     try {
@@ -66,8 +68,15 @@ export default function ReferralsPage() {
 
   if (error) {
     return (
-      <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-        <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+      <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
+        <button
+          onClick={loadReferrals}
+          className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+          style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
+        >
+          Retry
+        </button>
       </div>
     );
   }

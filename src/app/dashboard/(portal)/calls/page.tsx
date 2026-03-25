@@ -12,6 +12,7 @@ import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import PageHeader from "@/components/page-header";
 import EmptyState from "@/components/empty-state";
 import PhoneLink from "@/components/phone-link";
+import { formatPhone } from "@/lib/format";
 
 interface TranscriptLine {
   speaker: "ai" | "caller";
@@ -169,18 +170,6 @@ export default function CallsPage() {
       hour: "numeric",
       minute: "2-digit",
     });
-  }
-
-  function formatPhone(phone: string | null): string {
-    if (!phone) return "-";
-    const digits = phone.replace(/\D/g, "");
-    if (digits.length === 11 && digits[0] === "1") {
-      return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
-    }
-    if (digits.length === 10) {
-      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-    }
-    return phone;
   }
 
   function fetchIntakes(callId: string) {

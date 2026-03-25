@@ -8,6 +8,7 @@ import StatusBadge from "@/components/ui/status-badge";
 import Button from "@/components/ui/button";
 import EmptyState from "@/components/empty-state";
 import ConfirmDialog from "@/components/confirm-dialog";
+import { formatPhone } from "@/lib/format";
 
 /* ── Types ── */
 
@@ -44,18 +45,6 @@ const COLOR_OPTIONS = [
 ];
 
 /* ── Helpers ── */
-
-function formatPhone(phone: string | null): string {
-  if (!phone) return "-";
-  const digits = phone.replace(/\D/g, "");
-  if (digits.length === 11 && digits[0] === "1") {
-    return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
-  }
-  if (digits.length === 10) {
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-  }
-  return phone;
-}
 
 function toDateInput(d: Date): string {
   return d.toISOString().slice(0, 10);

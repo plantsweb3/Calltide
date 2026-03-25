@@ -7,6 +7,7 @@ import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import Button from "@/components/ui/button";
 import EmptyState from "@/components/empty-state";
 import ConfirmDialog from "@/components/confirm-dialog";
+import { formatPhone } from "@/lib/format";
 
 /* ── Types ── */
 
@@ -48,18 +49,6 @@ function formatTime12h(time: string): string {
   const period = h >= 12 ? "PM" : "AM";
   const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
   return `${hour12}:${String(m).padStart(2, "0")} ${period}`;
-}
-
-function formatPhone(phone: string | null): string {
-  if (!phone) return "";
-  const digits = phone.replace(/\D/g, "");
-  if (digits.length === 11 && digits[0] === "1") {
-    return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
-  }
-  if (digits.length === 10) {
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-  }
-  return phone;
 }
 
 function toDateString(d: Date): string {

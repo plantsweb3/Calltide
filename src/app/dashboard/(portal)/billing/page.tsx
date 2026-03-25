@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import Button from "@/components/ui/button";
@@ -36,19 +36,22 @@ export default function BillingPage() {
   const [showSwitchConfirm, setShowSwitchConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadBilling = useCallback(() => {
+    setError(null);
     fetch("/api/dashboard/billing")
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => setError("Failed to load billing data"));
   }, []);
 
+  useEffect(() => { loadBilling(); }, [loadBilling]);
+
   if (error) {
     return (
       <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
         <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
         <button
-          onClick={() => { setError(null); window.location.reload(); }}
+          onClick={loadBilling}
           className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
           style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >

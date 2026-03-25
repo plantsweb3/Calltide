@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import { CaptaSpinnerInline } from "@/components/capta-spinner";
 import WebhookManager from "@/components/webhook-manager";
+import { formatPhone } from "@/lib/format";
 
 interface BusinessHourEntry {
   open: string;
@@ -107,17 +108,6 @@ function formatTime12(time: string): string {
   const ampm = hour >= 12 ? "PM" : "AM";
   const display = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
   return `${display}:${m} ${ampm}`;
-}
-
-function formatPhone(phone: string): string {
-  const digits = phone.replace(/\D/g, "");
-  if (digits.length === 11 && digits[0] === "1") {
-    return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
-  }
-  if (digits.length === 10) {
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-  }
-  return phone;
 }
 
 interface FieldError {
@@ -241,7 +231,8 @@ export default function SettingsPage() {
   } | null>(null);
   const [confirmDeleteEstimateId, setConfirmDeleteEstimateId] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadSettings = useCallback(() => {
+    setError(null);
     fetch("/api/dashboard/settings")
       .then((r) => {
         if (!r.ok) throw new Error("Failed to load settings");
@@ -253,7 +244,6 @@ export default function SettingsPage() {
       })
       .catch(() => setError("Failed to load settings"));
 
-    // Fetch pricing data
     fetch("/api/dashboard/pricing")
       .then((r) => r.ok ? r.json() : { pricing: [] })
       .then((d) => {
@@ -263,7 +253,6 @@ export default function SettingsPage() {
       .catch(() => setPricing([]))
       .finally(() => setPricingLoading(false));
 
-    // Fetch estimate pricing data + mode
     fetch("/api/dashboard/estimate-pricing")
       .then((r) => r.ok ? r.json() : { ranges: [], mode: "quick" })
       .then((d) => {
@@ -273,12 +262,13 @@ export default function SettingsPage() {
       .catch(() => setEstimateRanges([]))
       .finally(() => setEstimateRangesLoading(false));
 
-    // Fetch custom responses
     fetch("/api/receptionist/responses")
       .then((r) => r.ok ? r.json() : { responses: {} })
       .then((d) => setCustomResponses(d.responses || {}))
       .catch(() => {});
   }, []);
+
+  useEffect(() => { loadSettings(); }, [loadSettings]);
 
   // Sync tab with URL hash
   useEffect(() => {
@@ -440,8 +430,15 @@ export default function SettingsPage() {
 
   if (error && !data) {
     return (
-      <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-        <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+      <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
+        <button
+          onClick={loadSettings}
+          className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+          style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
+        >
+          Retry
+        </button>
       </div>
     );
   }

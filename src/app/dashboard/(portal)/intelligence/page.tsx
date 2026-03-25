@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import MetricCard from "@/components/metric-card";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
@@ -76,7 +76,8 @@ export default function IntelligencePage() {
   const [data, setData] = useState<IntelligenceData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadIntelligence = useCallback(() => {
+    setError(null);
     fetch("/api/dashboard/intelligence")
       .then((r) => {
         if (!r.ok) throw new Error();
@@ -85,6 +86,8 @@ export default function IntelligencePage() {
       .then(setData)
       .catch(() => setError("Failed to load intelligence data"));
   }, []);
+
+  useEffect(() => { loadIntelligence(); }, [loadIntelligence]);
 
   if (error) {
     return (
@@ -98,10 +101,7 @@ export default function IntelligencePage() {
       >
         <p className="text-sm">{error}</p>
         <button
-          onClick={() => {
-            setError(null);
-            window.location.reload();
-          }}
+          onClick={loadIntelligence}
           className="rounded-lg px-3 py-1.5 text-xs font-medium"
           style={{ color: "var(--db-danger)" }}
         >
