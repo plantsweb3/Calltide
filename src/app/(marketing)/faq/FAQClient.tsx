@@ -33,7 +33,7 @@ const content = {
           },
           {
             q: "Can I try it before committing?",
-            a: "Yes — every plan comes with a 30-day money-back guarantee. If Capta doesn't pay for itself in missed-call revenue within 30 days, you pay nothing.",
+            a: "Yes — every plan starts with a 14-day free trial. Your card won't be charged until day 15. If Capta doesn't work for you, cancel anytime during the trial.",
           },
         ],
       },
@@ -124,8 +124,8 @@ const content = {
     ] as Category[],
     ctaH: "Still have questions?",
     ctaSub: "Talk to us — or better yet, talk to your receptionist.",
-    ctaButton: "Get Capta",
-    ctaBook: "Get Capta",
+    ctaButton: "Start Free Trial",
+    ctaBook: "Start Free Trial",
     ctaCall: "Or call us:",
   },
   es: {
@@ -146,7 +146,7 @@ const content = {
           },
           {
             q: "¿Puedo probarlo antes de comprometerme?",
-            a: "Sí — cada plan incluye una garantía de devolución de 30 días. Si Capta no se paga solo con ingresos de llamadas recuperadas en 30 días, no pagas nada.",
+            a: "Sí — cada plan comienza con una prueba gratuita de 14 días. Tu tarjeta no será cobrada hasta el día 15. Si Capta no funciona para ti, cancela cuando quieras durante la prueba.",
           },
         ],
       },
@@ -237,8 +237,8 @@ const content = {
     ] as Category[],
     ctaH: "¿Todavía tienes preguntas?",
     ctaSub: "Habla con nosotros — o mejor aún, habla con tu recepcionista.",
-    ctaButton: "Obtén Capta",
-    ctaBook: "Obtén Capta",
+    ctaButton: "Prueba Gratis",
+    ctaBook: "Prueba Gratis",
     ctaCall: "O llámanos:",
   },
 };

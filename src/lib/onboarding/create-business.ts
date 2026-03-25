@@ -25,6 +25,10 @@ interface CreateBusinessFromSetupParams {
   mrr: number;
   /** If true, this was created via the fallback path (webhook didn't fire) */
   isFallback?: boolean;
+  /** Real subscription status from Stripe (e.g. "trialing", "active") */
+  subStatus?: string;
+  /** ISO date when trial ends */
+  trialEndsAt?: string;
 }
 
 interface CreateBusinessResult {
@@ -40,7 +44,7 @@ interface CreateBusinessResult {
 export async function createBusinessFromSetup(
   params: CreateBusinessFromSetupParams,
 ): Promise<CreateBusinessResult | null> {
-  const { setupSessionId, customerId, subscriptionId, email, plan, mrr, isFallback } = params;
+  const { setupSessionId, customerId, subscriptionId, email, plan, mrr, isFallback, subStatus = "active", trialEndsAt } = params;
 
   // Load setup session
   const [setupSession] = await db
@@ -86,10 +90,11 @@ export async function createBusinessFromSetup(
             : undefined,
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId,
-        stripeSubscriptionStatus: "active",
+        stripeSubscriptionStatus: subStatus,
         paymentStatus: "active",
         planType: plan,
         mrr,
+        trialEndsAt,
         onboardingStep: 7,
         onboardingStatus: "in_progress",
         annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
@@ -134,7 +139,7 @@ export async function createBusinessFromSetup(
     ownerPhone: setupSession.ownerPhone || "",
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscriptionId,
-    stripeSubscriptionStatus: "active",
+    stripeSubscriptionStatus: subStatus,
     planType: plan,
     locationCount: 1,
   });
@@ -165,10 +170,11 @@ export async function createBusinessFromSetup(
       defaultLanguage: setupSession.language || "en",
       stripeCustomerId: customerId,
       stripeSubscriptionId: subscriptionId,
-      stripeSubscriptionStatus: "active",
+      stripeSubscriptionStatus: subStatus,
       paymentStatus: "active",
       planType: plan,
       mrr,
+      trialEndsAt,
       annualConvertedAt: plan === "annual" ? now : undefined,
       active: false, // Activated after phone forwarding
       accountId,

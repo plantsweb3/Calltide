@@ -237,7 +237,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">{t.hero.demoDetail}</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-              {lang === "en" ? "Get Capta" : "Obtén Capta"} &rarr;
+              {lang === "en" ? "Start Free Trial" : "Prueba Gratis"} &rarr;
             </a>
           </div>
         </div>

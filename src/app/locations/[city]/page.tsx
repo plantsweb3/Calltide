@@ -328,7 +328,7 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link href={`/setup?utm_source=locations&utm_medium=landing&utm_campaign=${citySlug}`} className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-              Get Capta &rarr;
+              Start Free Trial &rarr;
             </Link>
             <Link href={`/blog/${city.blogSlug}`} className="text-sm font-medium text-slate-400 transition hover:text-white">
               Read the {city.name} guide &rarr;
@@ -400,10 +400,10 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
             {city.name} Contractors: Stop Losing Jobs to Voicemail
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-slate-300">
-            $497/month. Unlimited calls. Bilingual English &amp; Spanish. 30-day money-back guarantee.
+            Free for 14 days, then $497/month. Unlimited calls. Bilingual English &amp; Spanish.
           </p>
           <Link href={`/setup?utm_source=locations&utm_medium=landing&utm_campaign=${citySlug}`} className="cta-gold cta-shimmer mt-8 inline-flex items-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
-            Get Capta &rarr;
+            Start Free Trial &rarr;
           </Link>
           <div className="mt-6 flex flex-col items-center gap-3">
             <Link href={`/blog/${city.blogSlug}`} className="text-sm text-slate-400 underline underline-offset-4 transition hover:text-amber">

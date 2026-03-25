@@ -499,7 +499,7 @@ Capta's AI receptionist is trained on electrical service terminology. She knows 
 - Electrical emergency classification (sparking, burning smell, power loss, exposed wiring)
 - Bilingual EN/ES without extra cost
 - No charges for spam calls, wrong numbers, or operational calls
-- 30-day money-back guarantee
+- 14-day free trial
 
 **Honest limitations:**
 - AI, not human. For complex commercial project discussions, your receptionist captures details for your callback rather than having a consultative conversation.
@@ -826,7 +826,7 @@ Yes, and it will not charge extra for them (on flat pricing). However, you might
 Capta captures whatever the caller describes and books accordingly. Your receptionist does not need to know the technical details of drip irrigation design -- she needs to capture the request, confirm the address, and book the estimate. For that workflow, AI works well.
 
 **Should I answer my own phone during winter when calls are slow?**
-This is a legitimate question. If you are getting under 8 calls/day and can answer most of them, you might not need any answering service during off-season. Some landscapers use Capta only during March-October and pause during winter. The 30-day money-back guarantee lets you try it during your busiest months risk-free.`,
+This is a legitimate question. If you are getting under 8 calls/day and can answer most of them, you might not need any answering service during off-season. Some landscapers use Capta only during March-October and pause during winter. The 14-day free trial lets you try it during your busiest months risk-free.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1079,8 +1079,8 @@ Yes. Capta classifies active leaks as urgent and alerts you immediately. Your re
 **What about door-knocker leads and canvasser callbacks?**
 If your sales team is canvassing a neighborhood after a storm and leaving door hangers, those callbacks go to your business line. Your AI receptionist handles them the same as any inbound call -- captures the address, notes the storm damage, and books the inspection. No per-call charges means your canvassing ROI stays intact.
 
-**Is the 30-day money-back guarantee real?**
-Yes. Capta offers a 30-day money-back guarantee. If it does not work for your roofing business, you get your money back. No contracts, no cancellation fees.`,
+**Is the 14-day free trial real?**
+Yes. Capta offers a 14-day free trial. If it does not work for your roofing business, you get your money back. No contracts, no cancellation fees.`,
   },
 
   /* ════════════════════════════════════════════════════════════════

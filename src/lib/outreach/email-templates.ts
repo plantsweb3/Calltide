@@ -50,7 +50,7 @@ export const missedCallSequence = {
         Capta isn't an answering service — it actually <strong>books the job right on the call</strong>, gives pricing ballparks, texts the customer a confirmation, and follows up on open estimates automatically. 24/7, English + Spanish.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        It also auto-texts missed callers back, sends appointment reminders, and requests Google reviews after completed jobs. Like a full office manager for less than one lost job/month. 30-day money-back guarantee.
+        It also auto-texts missed callers back, sends appointment reminders, and requests Google reviews after completed jobs. Like a full office manager for less than one lost job/month. 14-day free trial.
       </p>
       ${ctaButton("See How It Works →")}
     `, email),
@@ -66,7 +66,7 @@ export const missedCallSequence = {
         Most ${tradeName(vertical)} owners we work with were missing 15-30 calls a month. Now their AI receptionist answers every one, books the appointment, and sends them a daily briefing of everything that happened — while they're on a job site.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        You can even text it to manage your schedule, check what jobs are booked, or block time off. No app needed. 30-day money-back guarantee.
+        You can even text it to manage your schedule, check what jobs are booked, or block time off. No app needed. 14-day free trial.
       </p>
       ${ctaButton("Book a 10-Min Demo")}
     `, email),
@@ -98,7 +98,7 @@ export const missedCallSequence = {
         If you're losing ${tradeName(vertical)} jobs to voicemail, Capta answers 24/7 and actually books the work — not just takes a message. It follows up on estimates, sends appointment reminders, requests Google reviews, and you can manage everything by texting it from the job site. Pays for itself in 1-2 recovered jobs.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        30-day money-back guarantee — zero risk. Reply anytime.
+        14-day free trial — zero risk. Reply anytime.
       </p>
       <p style="color:${BRAND_COLOR};font-weight:600;">— Ulysses</p>
     `, email),
@@ -123,7 +123,7 @@ export const answeredSequence = {
         It also sends appointment reminders so customers don't no-show, requests Google reviews after completed jobs, and gives you a daily briefing via text. You can even text it from the job site to manage your schedule — no app needed. Like a full office manager for less than one lost job/month.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        30-day money-back guarantee.
+        14-day free trial.
       </p>
       ${ctaButton("See How It Works →")}
     `, email),
@@ -142,7 +142,7 @@ export const answeredSequence = {
         Beyond just answering — it books the appointment on the call, chases open estimates, sends reminders so customers show up, auto-requests Google reviews, and texts you a daily briefing of everything that happened while you were on the job site. Bilingual.
       </p>
       <p style="color:#475569;line-height:1.7;">
-        Reply to this email and I'll show you how it works in 10 minutes. 30-day money-back guarantee.
+        Reply to this email and I'll show you how it works in 10 minutes. 14-day free trial.
       </p>
       <p style="color:${BRAND_COLOR};font-weight:600;">— Ulysses, Capta</p>
     `, email),

@@ -168,14 +168,14 @@ export default async function HelpArticlePage({ params }: { params: Promise<{ ca
             <div className="relative">
               <p className="text-xl font-bold text-white">Ready to stop missing calls?</p>
               <p className="mt-2 text-sm" style={{ color: "#94A3B8" }}>
-                Set up your AI receptionist in minutes. 30-day money-back guarantee.
+                Set up your AI receptionist in minutes. Free for 14 days.
               </p>
               <Link
                 href="/setup?utm_source=help&utm_medium=prospect-cta"
                 className="mt-5 inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:brightness-110"
                 style={{ background: "#C59A27" }}
               >
-                Get Capta &rarr;
+                Start Free Trial &rarr;
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Link>
             </div>

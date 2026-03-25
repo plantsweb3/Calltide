@@ -6,12 +6,12 @@ export const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "/setup";
 
 export const T = {
   en: {
-    nav: { login: "Log In", cta: "Get Capta", help: "Help" },
+    nav: { login: "Log In", cta: "Start Free Trial", help: "Help" },
     hero: {
       badge: "AI Front Office for Home Services",
       h1: "Your AI Front Office. Not Just a Receptionist.",
       sub: "Your AI receptionist answers calls, generates estimates, recovers missed leads, follows up on quotes, re-engages past customers, and manages your office via text — in English and Spanish, 24/7.",
-      cta: "Get Capta",
+      cta: "Start Free Trial",
       audioLabel: "Hear her in action",
       audioSub: "\"Hi, I need to schedule a plumber...\"",
       audioDuration: "0:47",
@@ -179,8 +179,8 @@ export const T = {
         "Partner referral network + outbound automation",
       ],
       comparison: "vs. $3,000+/month for a receptionist \u2014 or $2,500+/month in separate software",
-      cta: "Get Capta",
-      guarantee: "30-day money-back guarantee. Cancel anytime. No contracts.",
+      cta: "Start Free Trial",
+      guarantee: "Free for 14 days \u00B7 Cancel anytime \u00B7 No contracts",
       crossLinks: [
         { label: "Why missed calls cost real money", href: "/help/missed-calls-cost-money" },
         { label: "Capta vs hiring a receptionist", href: "/help/capta-vs-receptionist" },
@@ -208,8 +208,8 @@ export const T = {
     cta: {
       h2: "Stop losing jobs to missed calls.",
       placeholder: "Enter your business email",
-      button: "Get Capta",
-      sub: "Setup takes 5 minutes. Your AI front office starts immediately. 30-day money-back guarantee.",
+      button: "Start Free Trial",
+      sub: "Setup takes 5 minutes. Your AI front office starts immediately. Free for 14 days.",
       sending: "Starting...",
       existsError: "Looks like you already have an account.",
       loginLink: "Log in instead \u2192",
@@ -230,12 +230,12 @@ export const T = {
     },
   },
   es: {
-    nav: { login: "Iniciar Sesi\u00F3n", cta: "Obt\u00E9n Capta", help: "Ayuda" },
+    nav: { login: "Iniciar Sesi\u00F3n", cta: "Prueba Gratis", help: "Ayuda" },
     hero: {
       badge: "Oficina IA para Servicios del Hogar",
       h1: "Tu Oficina IA. No Solo una Recepcionista.",
       sub: "Tu recepcionista IA contesta llamadas, genera presupuestos, recupera leads perdidos, da seguimiento a cotizaciones, reactiva clientes anteriores y maneja tu oficina por texto \u2014 en ingl\u00E9s y espa\u00F1ol, 24/7.",
-      cta: "Obt\u00E9n Capta",
+      cta: "Prueba Gratis",
       audioLabel: "Esc\u00FAchala en acci\u00F3n",
       audioSub: "\"Hola, necesito programar un plomero...\"",
       audioDuration: "0:52",
@@ -403,8 +403,8 @@ export const T = {
         "Red de referidos + automatizaci\u00F3n de salida",
       ],
       comparison: "vs. $3,000+/mes por una recepcionista \u2014 o $2,500+/mes en software separado",
-      cta: "Obt\u00E9n Capta",
-      guarantee: "Garant\u00EDa de devoluci\u00F3n de 30 d\u00EDas. Cancela cuando quieras. Sin contratos.",
+      cta: "Prueba Gratis",
+      guarantee: "Gratis por 14 d\u00EDas \u00B7 Cancela cuando quieras \u00B7 Sin contratos",
       crossLinks: [
         { label: "Por qu\u00E9 las llamadas perdidas cuestan dinero real", href: "/es/help/missed-calls-cost-money" },
         { label: "Capta vs contratar una recepcionista", href: "/es/help/capta-vs-receptionist" },
@@ -432,8 +432,8 @@ export const T = {
     cta: {
       h2: "Deja de perder trabajos por llamadas perdidas.",
       placeholder: "Ingresa tu correo de negocio",
-      button: "Obt\u00E9n Capta",
-      sub: "La configuraci\u00F3n toma 5 minutos. Tu oficina IA comienza inmediatamente. Garant\u00EDa de devoluci\u00F3n de 30 d\u00EDas.",
+      button: "Prueba Gratis",
+      sub: "La configuraci\u00F3n toma 5 minutos. Tu oficina IA comienza inmediatamente. Gratis por 14 d\u00EDas.",
       sending: "Iniciando...",
       existsError: "Parece que ya tienes una cuenta.",
       loginLink: "Inicia sesi\u00F3n \u2192",

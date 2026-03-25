@@ -15,6 +15,7 @@ interface BillingData {
   price: number;
   status: string;
   stripeSubscriptionStatus: string | null;
+  trialEndsAt?: string | null;
   nextBillingAt: string | null;
   cardLast4: string | null;
   cardExpMonth: number | null;
@@ -67,6 +68,10 @@ export default function BillingPage() {
   if (!data) return <LoadingSpinner message={t("billing.loadingBilling", lang)} />;
 
   const isPastDue = ["past_due", "grace_period"].includes(data.status);
+  const isTrialing = data.stripeSubscriptionStatus === "trialing";
+  const trialDaysLeft = data.trialEndsAt
+    ? Math.max(0, Math.ceil((new Date(data.trialEndsAt).getTime() - Date.now()) / 86400000))
+    : 0;
   const isMonthly = data.planType === "monthly";
 
   async function openPortal() {
@@ -140,6 +145,32 @@ export default function BillingPage() {
               {portalLoading ? t("action.loading", lang) : t("billing.updatePaymentMethod", lang)}
             </Button>
           )}
+        </div>
+      )}
+
+      {/* Trial Status Banner */}
+      {isTrialing && data.trialEndsAt && (
+        <div
+          className="rounded-xl p-5"
+          style={{
+            background: "var(--db-accent-bg)",
+            border: "1px solid var(--db-accent)",
+          }}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="var(--db-accent)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <h3 className="text-sm font-semibold" style={{ color: "var(--db-accent)" }}>
+              {lang === "es" ? "Prueba Gratuita" : "Free Trial"}
+            </h3>
+          </div>
+          <p className="text-sm" style={{ color: "var(--db-text)" }}>
+            {lang === "es"
+              ? `Tu prueba gratuita termina en ${trialDaysLeft} día${trialDaysLeft !== 1 ? "s" : ""} (${new Date(data.trialEndsAt).toLocaleDateString(lang === "es" ? "es" : "en", { month: "long", day: "numeric" })}). Tu tarjeta será cobrada cuando termine la prueba.`
+              : `Your free trial ends in ${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} (${new Date(data.trialEndsAt).toLocaleDateString("en", { month: "long", day: "numeric" })}). Your card will be charged when the trial ends.`}
+          </p>
         </div>
       )}
 

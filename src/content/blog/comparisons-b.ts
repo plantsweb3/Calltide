@@ -40,7 +40,7 @@ This comparison breaks down what each platform actually delivers — pricing, fe
 | Live Transfer | No | Yes — emergency and priority calls |
 | Industry Focus | General-purpose | Built specifically for home services |
 | Setup Time | ~15 minutes | ~5 minutes |
-| Guarantee | Varies | 30-day money-back guarantee |
+| Guarantee | Varies | 14-day free trial |
 
 ## Pricing Breakdown
 
@@ -152,7 +152,7 @@ Yes. There are no per-call charges, no per-minute fees, and no customer caps. Wh
 
 ### What if Capta doesn't work for my business?
 
-Capta offers a 30-day money-back guarantee. Try it for a full month. If it's not right for your business, you get a complete refund. No questions asked, no hoops to jump through.
+Capta offers a 14-day free trial. Try it for a full month. If it's not right for your business, you get a complete refund. No questions asked, no hoops to jump through.
 
 ### Is Goodcall's $79/month really enough for a contractor?
 
@@ -166,7 +166,7 @@ Capta is built for home service businesses: plumbing, HVAC, electrical, landscap
 
 Stop choosing between budget and capability. She answers every call, books every appointment, and speaks your customers' language — English and Spanish.
 
-**[Get Capta](https://captahq.com)** today with a 30-day money-back guarantee. Setup takes 5 minutes, and your receptionist starts answering your calls immediately. Your customers are calling right now. Make sure someone picks up.`,
+**[Get Capta](https://captahq.com)** today with a 14-day free trial. Setup takes 5 minutes, and your receptionist starts answering your calls immediately. Your customers are calling right now. Make sure someone picks up.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -560,7 +560,7 @@ But if you're reading this article, you're probably not that business. You're pr
 
 ---
 
-Done with the math? If Capta is the right fit, the 30-day money-back guarantee means you can verify the calculator with your real numbers. Setup takes 5 minutes. your receptionist starts answering immediately — in English and Spanish. [Get Capta →](https://captahq.com)
+Done with the math? If Capta is the right fit, the 14-day free trial means you can verify the calculator with your real numbers. Setup takes 5 minutes. your receptionist starts answering immediately — in English and Spanish. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -989,7 +989,7 @@ For contractors who want to understand the cost comparison:
 
 **Nexa's typical range:** $250-$1,200+/month depending on call volume and plan. Per-minute overages during busy months. Spanish and after-hours as paid add-ons. Often annual contracts.
 
-**Capta:** $497/month flat. Or $397/month on the annual plan ($4,764/year). Everything included. No overages. No add-ons. 30-day money-back guarantee.
+**Capta:** $497/month flat. Or $397/month on the annual plan ($4,764/year). Everything included. No overages. No add-ons. 14-day free trial.
 
 For a contractor with moderate volume (80-120 calls/month), Nexa and Capta often cost similar amounts. But Capta's conversion rate on those calls is dramatically higher because of instant booking, bilingual support, and emergency detection — meaning the revenue captured per dollar spent on answering service is substantially better.
 
@@ -1030,7 +1030,7 @@ The scenarios above aren't hypothetical. They play out in contractor businesses 
 
 She answers every call on the first ring — in English and Spanish. She books appointments, sends SMS confirmations, and detects emergencies automatically. No hold times. No callbacks. No jobs lost to slow response.
 
-**[Get Capta](https://captahq.com)** with a 30-day money-back guarantee. Setup takes 5 minutes, and She handles your next call. Your customers are calling right now — make sure someone picks up.`,
+**[Get Capta](https://captahq.com)** with a 14-day free trial. Setup takes 5 minutes, and She handles your next call. Your customers are calling right now — make sure someone picks up.`,
   },
 
   /* ════════════════════════════════════════════════════════════════

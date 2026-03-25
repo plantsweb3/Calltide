@@ -90,6 +90,7 @@ export const businesses = sqliteTable("businesses", {
   annualConvertedAt: text("annual_converted_at"),
   annualPitchedAt: text("annual_pitched_at"),
   trialEndingNotified: integer("trial_ending_notified", { mode: "boolean" }).default(false),
+  trialEndsAt: text("trial_ends_at"),
   audioRetentionDays: integer("audio_retention_days").default(90),
   // Outbound calling
   outboundEnabled: integer("outbound_enabled", { mode: "boolean" }).default(false),

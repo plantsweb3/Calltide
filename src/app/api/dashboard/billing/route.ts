@@ -90,6 +90,7 @@ export async function GET(req: NextRequest) {
       price: planInfo.monthlyRate,
       status: business.paymentStatus ?? "active",
       stripeSubscriptionStatus: business.stripeSubscriptionStatus,
+      trialEndsAt: business.stripeSubscriptionStatus === "trialing" ? business.trialEndsAt : undefined,
       nextBillingAt: business.nextBillingAt,
       cardLast4: business.cardLast4,
       cardExpMonth: business.cardExpMonth,

@@ -63,8 +63,8 @@ Payments are processed through Stripe, Inc. By subscribing, you authorize Capta 
 ### 4.3 Failed Payments
 If a payment fails, Capta will attempt to recover the payment over a 7-day grace period using a combination of email and SMS reminders. If payment is not recovered within the grace period, your account may be suspended or terminated.
 
-### 4.4 Refunds
-Capta offers a 30-day money-back guarantee for new subscribers. If you are not satisfied within the first 30 days of your paid subscription, contact us for a full refund. After 30 days, subscription fees are non-refundable, but you may cancel at any time to prevent future charges.
+### 4.4 Free Trial and Refunds
+Capta offers a 14-day free trial for new subscribers. Your card is collected at signup but will not be charged until day 15. You may cancel at any time during the trial period at no cost. After the trial period, subscription fees are non-refundable, but you may cancel at any time to prevent future charges.
 
 ### 4.5 Price Changes
 Capta may change subscription pricing with 30 days' written notice. Price changes will not affect your current billing period.
@@ -242,8 +242,8 @@ Los pagos se procesan a través de Stripe, Inc. Al suscribirse, usted autoriza a
 ### 4.3 Pagos Fallidos
 Si un pago falla, Capta intentará recuperar el pago durante un período de gracia de 7 días utilizando una combinación de recordatorios por correo electrónico y SMS. Si el pago no se recupera dentro del período de gracia, su cuenta puede ser suspendida o terminada.
 
-### 4.4 Reembolsos
-Capta ofrece una garantía de devolución de dinero de 30 días para nuevos suscriptores. Si no está satisfecho dentro de los primeros 30 días de su suscripción de pago, comuníquese con nosotros para obtener un reembolso completo. Después de 30 días, las tarifas de suscripción no son reembolsables, pero puede cancelar en cualquier momento para evitar cargos futuros.
+### 4.4 Prueba Gratuita y Reembolsos
+Capta ofrece una prueba gratuita de 14 días para nuevos suscriptores. Su tarjeta se registra al momento de la inscripción, pero no se le cobra hasta el día 15. Si cancela durante el período de prueba, no se le cobrará nada. Después del período de prueba, las tarifas de suscripción no son reembolsables, pero puede cancelar en cualquier momento para evitar cargos futuros.
 
 ### 4.5 Cambios de Precio
 Capta puede cambiar el precio de la suscripción con 30 días de notificación escrita. Los cambios de precio no afectarán su período de facturación actual.

@@ -81,7 +81,7 @@ export const CAPTA_QUICK_REFERENCE = `
 - $497/month flat rate — unlimited calls, all features included
 - Annual plan: $397/month ($4,764/year, saves $1,200/year)
 - No per-minute billing, no call limits, no hidden fees
-- 30-day money-back guarantee
+- 14-day free trial (card on file, no charge until day 15)
 
 ### Key Features
 - Bilingual (English & Spanish) — automatic detection

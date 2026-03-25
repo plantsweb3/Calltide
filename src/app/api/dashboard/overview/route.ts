@@ -54,6 +54,8 @@ export async function GET(req: NextRequest) {
       createdAt: businesses.createdAt,
       healthScore: businesses.healthScore,
       planType: businesses.planType,
+      stripeSubscriptionStatus: businesses.stripeSubscriptionStatus,
+      trialEndsAt: businesses.trialEndsAt,
     })
     .from(businesses)
     .where(eq(businesses.id, businessId))
@@ -267,6 +269,8 @@ export async function GET(req: NextRequest) {
     totalCalls: totalCallsResult.count,
     firstCallCelebration,
     businessName: biz?.name,
+    stripeSubscriptionStatus: biz?.stripeSubscriptionStatus,
+    trialEndsAt: biz?.trialEndsAt,
     businessHours: biz?.businessHours,
     greeting: biz?.greeting,
     hasPricing: biz?.hasPricingEnabled ?? false,

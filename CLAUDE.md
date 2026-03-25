@@ -89,7 +89,7 @@ tests/
 
 ### Database
 - Drizzle ORM with SQLite/Turso
-- Migrations in `src/db/migrations/` (numbered 0000-0077)
+- Migrations in `src/db/migrations/` (numbered 0000-0079)
 - Journal in `src/db/migrations/meta/_journal.json`
 - All tables defined in `src/db/schema.ts`
 
@@ -124,7 +124,7 @@ npm run db:migrate   # Apply migrations
 
 ## Pricing
 
-ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers.
+ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers. 14-day free trial (card upfront).
 
 ## Style
 
@@ -138,7 +138,7 @@ ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers.
 - Use serif fonts or dev metrics in UI
 - Add pricing tiers — single plan only
 - Lower the price below $497
-- Use "Start Free Trial" — always "Get Capta →"
+- Use "Get Capta →" — always "Start Free Trial →" / "Prueba Gratis →"
 
 ## Important Notes
 

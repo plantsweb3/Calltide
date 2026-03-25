@@ -126,7 +126,7 @@ const SCRIPT_STEPS = [
   {
     num: 6,
     title: "Close",
-    line: `I can get you set up today and you'd be live by tomorrow morning. 30-day money-back guarantee, zero risk. Want me to get you started?`,
+    line: `I can get you set up today and you'd be live by tomorrow morning. 14-day free trial, zero risk — you don't pay anything until day 15. Want me to get you started?`,
   },
 ];
 
@@ -141,7 +141,7 @@ const OBJECTION_HANDLERS = [
   },
   {
     trigger: '"Too expensive"',
-    response: `What's your average job worth? [Let them answer] So one extra job a month covers the whole thing. And you're also getting automatic estimate follow-ups, Google review requests, appointment reminders, daily briefings, missed call recovery — you'd pay $2K+/mo for all that separately. Plus 30-day money-back guarantee.`,
+    response: `What's your average job worth? [Let them answer] So one extra job a month covers the whole thing. And you're also getting automatic estimate follow-ups, Google review requests, appointment reminders, daily briefings, missed call recovery — you'd pay $2K+/mo for all that separately. Plus there's a 14-day free trial.`,
   },
   {
     trigger: '"Send me info"',

@@ -12,24 +12,24 @@ interface SetupCTAProps {
 const copy = {
   en: {
     inline: {
-      text: "Ready to stop missing calls? Get Capta today",
-      cta: "Get Capta",
+      text: "Ready to stop missing calls? Try Capta free for 14 days",
+      cta: "Start Free Trial",
     },
     full: {
       title: "Stop Missing Calls Today",
-      subtitle: "Set up your AI receptionist in minutes. 30-day money-back guarantee.",
-      cta: "Get Capta",
+      subtitle: "Set up your AI receptionist in minutes. Free for 14 days.",
+      cta: "Start Free Trial",
     },
   },
   es: {
     inline: {
-      text: "¿Listo para dejar de perder llamadas? Obtén Capta hoy",
-      cta: "Obtén Capta",
+      text: "¿Listo para dejar de perder llamadas? Prueba Capta gratis por 14 días",
+      cta: "Prueba Gratis",
     },
     full: {
       title: "Deja de Perder Llamadas Hoy",
-      subtitle: "Configura tu recepcionista IA en minutos. Garantía de devolución de 30 días.",
-      cta: "Obtén Capta",
+      subtitle: "Configura tu recepcionista IA en minutos. Gratis por 14 días.",
+      cta: "Prueba Gratis",
     },
   },
 };

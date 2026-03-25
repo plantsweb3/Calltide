@@ -149,7 +149,7 @@ Before you buy anything, call the demo line yourself. Twice — once in English,
 
 5. **Flat pricing or per-call?** Per-call pricing punishes you for growing. When summer hits and your HVAC calls spike 40%, you don't want your phone bill spiking too.
 
-6. **30-day money-back guarantee?** If the company won't let you test it risk-free with your real calls, that tells you something.
+6. **14-day free trial?** If the company won't let you test it risk-free with your real calls, that tells you something.
 
 7. **Does it integrate with your calendar and CRM?** Appointments need to show up where you already look. If you have to check a separate app, you'll miss things.
 
@@ -321,7 +321,7 @@ Capta gives you an AI receptionist who speaks English and Spanish, answers 24/7,
 
 No more missed calls. No more voicemail tag. No more customers calling your competitor instead.
 
-30-day money-back guarantee. [Get Capta →](https://captahq.com).
+14-day free trial. [Get Capta →](https://captahq.com).
 
 Or call us at (830) 521-7133 to see how it works on your business.`,
   },
@@ -401,7 +401,7 @@ Capta is an AI receptionist built by Capta. She works 24/7 in English and Spanis
 - **Call transcription:** Every call is recorded and transcribed so you can review what was promised or discussed.
 - **Emergency detection:** She identifies urgent situations and alerts you immediately.
 - **CRM integration:** Customer info syncs with your system automatically.
-- **30-day money-back guarantee:** Test it risk-free. If it's not right, you get your money back.
+- **14-day free trial:** Test it risk-free. If it's not right, you get your money back.
 
 **No hidden costs. No payroll taxes. No equipment to buy.**
 
@@ -444,7 +444,7 @@ That's nearly $40,000 you could reinvest in your team, your services, or your bu
 
 ## Want to See for Yourself?
 
-You can [get Capta today](https://captahq.com) with a 30-day money-back guarantee. See how She handles your calls, manages your schedule, and frees up your time.
+You can [get Capta today](https://captahq.com) with a 14-day free trial. See how She handles your calls, manages your schedule, and frees up your time.
 
 If it's not right for you, get a full refund within 30 days. No questions asked.
 
@@ -789,7 +789,7 @@ Antes de comprar nada, llama tú mismo a la línea demo. Dos veces — una en in
 3. **¿Entiende tu oficio?** "Mi aire hace un ruido raro" es diferente de "huelo gas cerca del calentador." Uno es rutinario. El otro es emergencia. La IA debe saber la diferencia.
 4. **¿Qué pasa cuando no puede manejar algo?** ¿Transfiere a tu teléfono? ¿Toma un mensaje detallado? ¿O simplemente se disculpa y cuelga?
 5. **¿Precio fijo o por llamada?** El precio por llamada te castiga por crecer. Cuando llega el verano y tus llamadas de HVAC suben 40%, no quieres que tu factura de teléfono también suba.
-6. **¿Garantía de devolución?** Si la empresa no te deja probar sin riesgo con tus llamadas reales, eso dice algo.
+6. **¿Prueba gratuita?** Si la empresa no te deja probar sin riesgo con tus llamadas reales, eso dice algo.
 
 ## El Siguiente Paso
 
@@ -924,7 +924,7 @@ Y si no hablas español, estás ignorando a 1 de cada 4 potenciales clientes en 
 
 ## ¿Cuál Es el Siguiente Paso?
 
-Prueba Capta durante 30 días con garantía de devolución. Mira cuántas llamadas recibiste (de verdad, cantidad real). Luego calcula: ¿cuánto dinero dejé en la mesa? Probablemente más de lo que pensabas.
+Prueba Capta gratis por 14 días. Mira cuántas llamadas recibiste (de verdad, cantidad real). Luego calcula: ¿cuánto dinero dejé en la mesa? Probablemente más de lo que pensabas.
 
 **Para empezar:**
 
@@ -1031,13 +1031,13 @@ Algunos negocios hacen esto:
 
 Comparado con $45,000-57,000 para 1 persona full-time que solo contesta teléfono. Es una no-brainer.
 
-## La Garantía de Dinero de Vuelta
+## Prueba Gratuita de 14 Días
 
-Aquí está el punto de quiebre: Capta tiene garantía de devolución de dinero de 30 días.
+Aquí está el punto de quiebre: Capta tiene prueba gratuita de 14 días.
 
-¿No funciona para ti? Te devuelven el 100%. Cero preguntas.
+¿No funciona para ti? Cancela antes del día 15 y no se te cobra nada. Cero preguntas.
 
-No hay riesgo. Capta tiene 30 días de garantía de devolución. Si no funciona, te devuelven el 100%.
+No hay riesgo. Capta tiene 14 días de prueba gratuita. Si no funciona, cancelas sin costo.
 
 ## ¿Cuál Es Mi Recomendación?
 
@@ -1160,7 +1160,7 @@ Estos son números reales de negocios reales en San Antonio.
 
 ## ¿Cómo Empezar?
 
-$497/mes. Sin contrato a largo plazo. Garantía de devolución de 30 días. Simplemente da tu número de teléfono comercial a Capta, y tu recepcionista comenzará a contestar.
+$497/mes. Sin contrato a largo plazo. Prueba gratuita de 14 días. Simplemente da tu número de teléfono comercial a Capta, y tu recepcionista comenzará a contestar.
 
 Desde el primer día:
 
@@ -1346,7 +1346,7 @@ Comparado con $60,000/año que pierdes sin eso, es una no-brainer.
 
 ## El Siguiente Paso
 
-No te creas mi palabra. Prueba Capta durante 30 días con garantía de devolución. Mira cuántas llamadas recibes. Ve cuántos son hispanohablantes. Observa cómo Ella los maneja.
+No te creas mi palabra. Prueba Capta gratis por 14 días. Mira cuántas llamadas recibes. Ve cuántos son hispanohablantes. Observa cómo Ella los maneja.
 
 Si no funciona para ti, te devuelven tu dinero. Sin preguntas.
 
@@ -3058,7 +3058,7 @@ Los contratistas que están capturando el mercado hispanohablante en Texas no es
 
 Estás dejando dinero sobre la mesa si no contestas en español. La pregunta no es si deberías hacerlo. La pregunta es: ¿cuánto dinero vas a perder antes de empezar?
 
-**Obtén Capta.** Llama a tu recepcionista en español y pruébala tú mismo. 30 días de garantía de devolución.
+**Prueba Capta Gratis.** Llama a tu recepcionista en español y pruébala tú mismo. 14 días de prueba gratuita.
 
 **Teléfono: (830) 521-7133**
 

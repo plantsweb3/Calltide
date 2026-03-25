@@ -160,11 +160,11 @@ Smith.ai offers human receptionists at higher pricing. Capta is AI-powered, but 
 
 ### Does Capta have a free trial?
 
-Capta offers a 30-day money-back guarantee. Try it on your real calls for a full month. If she's not booking jobs and saving you time, you get your money back. No risk, no contracts.
+Capta offers a 14-day free trial. Try it on your real calls for a full month. If she's not booking jobs and saving you time, you get your money back. No risk, no contracts.
 
 ---
 
-Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—She answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
+Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 14-day free trial—She answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -449,13 +449,13 @@ Here's my advice:
 
 **Stay with Ruby if** your call volume is under 15 calls per month, you don't need after-hours coverage, your customers are exclusively English-speaking, and you value human voice above everything else. Ruby is excellent at what they do. They're just not built for the trades.
 
-**Switch to Capta if** you're missing calls, missing jobs, or missing an entire segment of your market because of language barriers. The 30-day money-back guarantee means you can try it with zero risk — run both services in parallel for a month if you want to compare them directly.
+**Switch to Capta if** you're missing calls, missing jobs, or missing an entire segment of your market because of language barriers. The 14-day free trial means you can try it with zero risk — run both services in parallel for a month if you want to compare them directly.
 
 The setup takes 5 minutes. I did it from my truck before a 7 AM job. She was answering calls before I finished my coffee.
 
 ---
 
-Ready to make the switch? Capta offers a 30-day money-back guarantee. She answers every call, books appointments, speaks English and Spanish, and never charges you extra for a busy month. [Get Capta →](https://captahq.com)
+Ready to make the switch? Capta offers a 14-day free trial. She answers every call, books appointments, speaks English and Spanish, and never charges you extra for a busy month. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -741,7 +741,7 @@ The right choice depends entirely on your business. This isn't about which produ
 
 ---
 
-If Capta is the right fit, the 30-day money-back guarantee means there's no risk in trying it. Setup takes 5 minutes. She starts answering calls immediately — in English and Spanish. [Get Capta →](https://captahq.com)
+If Capta is the right fit, the 14-day free trial means there's no risk in trying it. Setup takes 5 minutes. She starts answering calls immediately — in English and Spanish. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -1040,7 +1040,7 @@ Capta books appointments and manages call data in its own dashboard. You can man
 
 ---
 
-Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—She answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
+Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 14-day free trial—She answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
 `,
   },
 

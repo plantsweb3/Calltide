@@ -145,7 +145,7 @@ export default function RootLayout({
                 "Emergency detection and live transfer",
                 "Call analytics dashboard",
                 "NPS surveys and referral program",
-                "30-day money-back guarantee",
+                "14-day free trial",
               ],
               screenshot: "https://captahq.com/opengraph-image",
               creator: {

@@ -93,6 +93,8 @@ interface Overview {
     newThisMonth: number;
     topByCallCount: Array<{ name: string | null; phone: string; totalCalls: number }>;
   };
+  stripeSubscriptionStatus?: string | null;
+  trialEndsAt?: string | null;
   healthScore?: number;
   afterHoursThisWeek?: number;
   mariaSavedYou?: number;
@@ -253,12 +255,27 @@ export default function OverviewPage() {
     <div className="space-y-6">
       {/* Greeting */}
       <div>
-        <h1
-          className="text-2xl font-semibold"
-          style={{ color: "var(--db-text)" }}
-        >
-          {getGreeting(lang)}, {data.businessName?.split(" ")[0] || "there"}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1
+            className="text-2xl font-semibold"
+            style={{ color: "var(--db-text)" }}
+          >
+            {getGreeting(lang)}, {data.businessName?.split(" ")[0] || "there"}
+          </h1>
+          {data.stripeSubscriptionStatus === "trialing" && data.trialEndsAt && (() => {
+            const trialEnd = new Date(data.trialEndsAt).getTime();
+            const trialStart = trialEnd - 14 * 86400000;
+            const dayNum = Math.min(14, Math.max(1, Math.ceil((Date.now() - trialStart) / 86400000)));
+            return (
+              <span
+                className="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                style={{ background: "var(--db-accent-bg)", color: "var(--db-accent)" }}
+              >
+                {lang === "es" ? `Día ${dayNum} de 14` : `Day ${dayNum} of 14`}
+              </span>
+            );
+          })()}
+        </div>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
           {t("overview.hereIsHowPerforming", lang, { name: receptionistName })}
         </p>

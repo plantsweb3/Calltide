@@ -554,6 +554,13 @@
       "when": 1778900000000,
       "tag": "0078_audit_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 79,
+      "version": "6",
+      "when": 1779000000000,
+      "tag": "0079_free_trial",
+      "breakpoints": true
     }
   ]
 }

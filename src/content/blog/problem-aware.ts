@@ -722,7 +722,7 @@ Here are the 4 main approaches, compared honestly.
 | Want maximum coverage at flat cost | AI receptionist ($497/mo) |
 | High call volume, seasonal surges | AI receptionist (flat pricing critical) |
 
-**[Get Capta →](https://captahq.com)** — 30-day money-back guarantee.
+**[Get Capta →](https://captahq.com)** — 14-day free trial.
 
 ## FAQs
 
@@ -1226,7 +1226,7 @@ If you don't automate, what's the "personal touch" your customers actually get?
 
 Is THAT the personal touch you're protecting?
 
-**[Try the hybrid approach →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=personal-touch)** — 30-day money-back guarantee.
+**[Try the hybrid approach →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=personal-touch)** — 14-day free trial.
 
 ## FAQs
 
@@ -1477,7 +1477,7 @@ The result: less stress, more focus, more completed jobs, more revenue. And iron
 
 **One flat monthly fee.** That's the cost of removing phone anxiety from your workday. [See what it costs →](https://captahq.com/pricing)
 
-**[Let Capta handle it →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=phone-anxiety)** — 30-day money-back guarantee.
+**[Let Capta handle it →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=phone-anxiety)** — 14-day free trial.
 
 ## FAQs
 

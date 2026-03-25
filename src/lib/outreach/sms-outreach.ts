@@ -22,7 +22,7 @@ const smsTemplates: Record<string, (businessName: string, vertical?: string) => 
     `${name} — how many ${tradeName(v)} calls go to voicemail when you're on a job? Capta catches them all, books appointments, sends reminders so customers don't no-show, and auto-requests Google reviews. Like a full office manager for less than one lost job/month. Reply YES or visit ${MARKETING_URL}. STOP to opt out.`,
 
   missed_sms_3: (name, v) =>
-    `Last text ${name}. If missed ${tradeName(v)} calls are costing you jobs — Capta answers 24/7, books work on the call, chases open estimates, and you can text it from the job site to manage your schedule. 30-day money-back guarantee. Reply YES. STOP to opt out.`,
+    `Last text ${name}. If missed ${tradeName(v)} calls are costing you jobs — Capta answers 24/7, books work on the call, chases open estimates, and you can text it from the job site to manage your schedule. 14-day free trial. Reply YES. STOP to opt out.`,
 
   // ANSWERED SEQUENCE — 1 SMS (day 3)
   answered_sms_1: (name, v) =>

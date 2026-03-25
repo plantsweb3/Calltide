@@ -164,7 +164,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link href={`/setup?utm_source=services&utm_medium=landing&utm_campaign=${tradeSlug}`} className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-              Get Capta &rarr;
+              Start Free Trial &rarr;
             </Link>
             <Link href="/platform" className="text-sm font-medium text-slate-400 transition hover:text-white">
               See all features &rarr;
@@ -286,10 +286,10 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
             Stop Losing {profile.label} Jobs to Voicemail
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-slate-300">
-            $497/month. Unlimited calls. Bilingual. 30-day money-back guarantee.
+            Free for 14 days, then $497/month. Unlimited calls. Bilingual.
           </p>
           <Link href={`/setup?utm_source=services&utm_medium=landing&utm_campaign=${tradeSlug}`} className="cta-gold cta-shimmer mt-8 inline-flex items-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
-            Get Capta &rarr;
+            Start Free Trial &rarr;
           </Link>
           {meta.blogSlug && (
             <p className="mt-6">

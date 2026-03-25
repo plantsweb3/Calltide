@@ -152,7 +152,7 @@ const faqSchema = {
       name: "What if I want to cancel?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Cancel anytime from your dashboard. No contracts, no cancellation fees, no phone calls required. Your account stays active until the end of your billing period. Both plans come with a 30-day money-back guarantee.",
+        text: "Cancel anytime from your dashboard. No contracts, no cancellation fees, no phone calls required. Your account stays active until the end of your billing period. Every plan starts with a 14-day free trial.",
       },
     },
     {

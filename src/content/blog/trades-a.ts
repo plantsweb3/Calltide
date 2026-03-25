@@ -484,7 +484,7 @@ That's exactly the point. She handles every call while you work. When you check 
 
 Electrical work is too important — and too dangerous — for voicemail. Every missed call is either a lost job or a safety risk that went unaddressed.
 
-**[Get Capta →](https://captahq.com)** | $497/month flat | 30-day money-back guarantee | Call (830) 521-7133`,
+**[Get Capta →](https://captahq.com)** | $497/month flat | 14-day free trial | Call (830) 521-7133`,
   },
 
   /* ════════════════════════════════════════════════════════════════

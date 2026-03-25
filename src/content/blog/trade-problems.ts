@@ -478,7 +478,7 @@ Un propietario hispanohablante que llama por "chispas en mi panel eléctrico" re
 
 Cuando Don Miguel llama y dice "se me andan apagando las luces cuando prendo el microondas," tu recepcionista entiende que probablemente es un problema de panel, captura la dirección, agenda una inspección, y le envía confirmación por texto — todo en español, todo en menos de 3 minutos.
 
-**$497/mes fijo.** Sin cargos por minuto. Garantía de devolución de 30 días.
+**$497/mes fijo.** Sin cargos por minuto. Prueba gratuita de 14 días.
 
 **[Compara opciones bilingües →](https://captahq.com/es/blog/mejor-sistema-telefonico-ai-electricistas-2026)**
 
@@ -834,7 +834,7 @@ Tu recepcionista captura los detalles del seguro y las preguntas del cliente. Pa
 No. La temporada de tormentas es cuando el ROI es más dramático, pero pierdes dinero por llamadas perdidas todo el año. Mantenimiento de techos, reparaciones menores, canaletas — esos trabajos también se pierden cuando no contestas. Y con precio fijo de $497/mes, no tiene sentido activar y desactivar el servicio.
 
 **¿Cuánto cuesta realmente?**
-$497/mes fijo, o $397/mes con plan anual ($4,764/año). Sin cargos por minuto, sin cargos por volumen. Garantía de devolución de 30 días.`,
+$497/mes fijo, o $397/mes con plan anual ($4,764/año). Sin cargos por minuto, sin cargos por volumen. Prueba gratuita de 14 días.`,
   },
   /* ════ EN 6 — Pest Control Seasonal Surges ════ */
   {
@@ -1156,7 +1156,7 @@ Tu recepcionista captura los detalles y toma mensajes detallados para preguntas 
 Sí. Capta maneja las necesidades telefónicas de contratistas residenciales y comerciales. La complejidad del proyecto no cambia la capacidad de tu recepcionista para contestar profesionalmente, capturar información, y agendar reuniones.
 
 **¿Cuánto cuesta?**
-$497/mes fijo, o $397/mes con plan anual ($4,764/año). Llamadas ilimitadas, cobertura 24/7, bilingüe, sin cargos por minuto. Garantía de devolución de 30 días. Si un solo proyecto nuevo que capturas porque tu recepcionista contestó la llamada vale $20,000, Capta se pagó por todo el año.`,
+$497/mes fijo, o $397/mes con plan anual ($4,764/año). Llamadas ilimitadas, cobertura 24/7, bilingüe, sin cargos por minuto. Prueba gratuita de 14 días. Si un solo proyecto nuevo que capturas porque tu recepcionista contestó la llamada vale $20,000, Capta se pagó por todo el año.`,
   },
 ];
 

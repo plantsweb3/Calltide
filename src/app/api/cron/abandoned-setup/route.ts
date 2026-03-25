@@ -171,7 +171,7 @@ function getEmail2(
         <p style="color:#475569;margin:4px 0;font-size:14px;">24/7 call answering in English and Spanish</p>
         <p style="color:#475569;margin:4px 0;font-size:14px;">Automatic appointment booking</p>
         <p style="color:#475569;margin:4px 0;font-size:14px;">Message taking and emergency handling</p>
-        <p style="color:#475569;margin:4px 0;font-size:14px;">30-day money-back guarantee</p>
+        <p style="color:#475569;margin:4px 0;font-size:14px;">14-day free trial — no charge until day 15</p>
       </div>
       ${goldButton("Complete Setup →", resumeUrl)}
     `, token),

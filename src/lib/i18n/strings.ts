@@ -1867,6 +1867,32 @@ const strings: Record<string, Record<Lang, string>> = {
   "billing.confirmSwitch": { en: "Confirm Switch", es: "Confirmar cambio" },
   "billing.retry": { en: "Retry", es: "Reintentar" },
 
+  // ── Trial ───────────────────────────────────────────────────
+  "trial.startFree": {
+    en: "Start Free Trial",
+    es: "Comenzar Prueba Gratuita",
+  },
+  "trial.freeFor14Days": {
+    en: "Free for 14 days, then $497/mo",
+    es: "Gratis por 14 dias, luego $497/mes",
+  },
+  "trial.daysRemaining": {
+    en: "Your free trial ends in {days} days",
+    es: "Tu prueba gratuita termina en {days} dias",
+  },
+  "trial.trialEndsToday": {
+    en: "Your free trial ends today",
+    es: "Tu prueba gratuita termina hoy",
+  },
+  "trial.noCharge": {
+    en: "No charge until day 15",
+    es: "Sin cargo hasta el dia 15",
+  },
+  "trial.cancelAnytime": {
+    en: "Cancel anytime · No contracts",
+    es: "Cancela cuando quieras · Sin contratos",
+  },
+
   // ── Dispatch page toasts & strings ─────────────────────────
   "toast.failedToLoadDispatch": {
     en: "Failed to load dispatch data",

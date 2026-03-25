@@ -94,7 +94,7 @@ The more complete your profile, the better She can handle calls.
 
 ## Get Started
 
-$497/month with a 30-day money-back guarantee. See how She handles your calls, manages your schedule, and frees up your time.
+$497/month with a 14-day free trial. See how She handles your calls, manages your schedule, and frees up your time.
 
 Need help? Email support@captahq.com or call (830) 521-7133.`,
     titleEs: "¿Qué es Capta y cómo funciona tu recepcionista?",
@@ -141,7 +141,7 @@ Entre más completo esté tu perfil, mejor podrá manejar las llamadas.
 
 ## Empieza ya
 
-$497/mes con garantía de devolución de dinero de 30 días. Mira cómo maneja tus llamadas, administra tu agenda y te libera tiempo.
+$497/mes con prueba gratuita de 14 días. Mira cómo maneja tus llamadas, administra tu agenda y te libera tiempo.
 
 ¿Necesitas ayuda? Escríbenos a support@captahq.com o llama al (830) 521-7133.`,
     searchKeywordsEs: "capta, recepcionista ia, cómo funciona, configuración, primeros pasos, bilingüe, agendado, 24/7",
@@ -469,7 +469,7 @@ Each additional location costs $197/month. Manage all your locations from one da
 
 ### No Contracts
 
-30-day money-back guarantee. Cancel anytime. No long-term contracts.`,
+14-day free trial. Cancel anytime. No long-term contracts.`,
     titleEs: "Qué incluye tu suscripción",
     contentEs: `Tu suscripción de Capta a $497/mes incluye todo lo que necesitas:
 
@@ -492,7 +492,7 @@ Cada ubicación adicional cuesta $197/mes. Administra todas tus ubicaciones desd
 
 ### Sin contratos
 
-Garantía de devolución de dinero de 30 días. Cancela cuando quieras. Sin contratos a largo plazo.`,
+Prueba gratuita de 14 días. Cancela cuando quieras. Sin contratos a largo plazo.`,
     searchKeywordsEs: "suscripción, precios, plan, funciones, anual, ubicaciones, incluido, ilimitado",
   },
   {
@@ -506,9 +506,9 @@ Garantía de devolución de dinero de 30 días. Cancela cuando quieras. Sin cont
 
 Sign up and get full access to all features immediately. Your subscription starts from the day you sign up.
 
-### Money-Back Guarantee
+### Free Trial
 
-Not satisfied? Contact us within 30 days for a full refund. No questions asked.
+Every plan starts with a 14-day free trial. Your card is on file but won't be charged until day 15. Cancel anytime during the trial.
 
 ### Monthly Billing
 
@@ -528,9 +528,9 @@ Choose annual billing and save $100/month. We charge your full annual amount onc
 
 Regístrate y obtén acceso completo a todas las funciones de inmediato. Tu suscripción comienza desde el día que te registras.
 
-### Garantía de devolución de dinero
+### Prueba gratuita de 14 días
 
-¿No estás satisfecho? Contáctanos dentro de los primeros 30 días para un reembolso completo. Sin preguntas.
+¿No estás satisfecho? Cancela antes del día 15 y no se te cobra nada. Sin preguntas.
 
 ### Facturación mensual
 
@@ -623,7 +623,7 @@ Las suscripciones de Capta son un gasto de negocio. Guarda tus facturas para fin
     categorySlug: "billing-account",
     title: "Cancellation and Refunds",
     sortOrder: 20,
-    searchKeywords: "cancel, refund, money-back, data retention, termination, penalty",
+    searchKeywords: "cancel, refund, free trial, data retention, termination, penalty",
     relatedArticles: ["understanding-subscription", "billing-and-charges"],
     content: `### How to Cancel
 
@@ -637,9 +637,9 @@ Your cancellation takes effect at the end of your current billing period. You ke
 
 There are no early termination fees, no penalties, and no hidden charges. Cancel anytime without cost.
 
-### 30-Day Money-Back Guarantee
+### 14-Day Free Trial
 
-If you're a new subscriber and change your mind within 30 days, we'll refund your subscription fee in full. No questions asked.
+Every new subscriber gets a 14-day free trial. Your card is on file but won't be charged until day 15. Cancel anytime during the trial at no cost.
 
 ### What Happens to Your Data?
 
@@ -661,9 +661,9 @@ Tu cancelación aplica al final de tu período de facturación actual. Mantienes
 
 No hay cargos por terminación anticipada, sin penalizaciones y sin cargos ocultos. Cancela cuando quieras sin costo.
 
-### Garantía de devolución de 30 días
+### Prueba gratuita de 14 días
 
-Si eres un suscriptor nuevo y cambias de opinión dentro de los primeros 30 días, te reembolsamos tu suscripción completa. Sin preguntas.
+Si eres un suscriptor nuevo y cancelas antes del día 15, no se te cobra nada. Sin preguntas.
 
 ### ¿Qué pasa con tus datos?
 
@@ -1824,7 +1824,7 @@ Check these first:
 
 ## Get Started
 
-30-day money-back guarantee. Full access to everything. Cancel anytime.
+14-day free trial. Full access to everything. Cancel anytime.
 
 **Ready?** Get started at [captahq.com](https://captahq.com).
 
@@ -1946,7 +1946,7 @@ Revisa esto primero:
 
 ## Empieza Ya
 
-Garantía de devolución de 30 días. Acceso completo a todo. Cancela cuando quieras.
+Prueba gratuita de 14 días. Acceso completo a todo. Cancela cuando quieras.
 
 **¿Listo?** Empieza en [captahq.com](https://captahq.com).
 

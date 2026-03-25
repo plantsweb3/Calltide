@@ -184,7 +184,7 @@ function email3En(d: SetupEmailData): { subject: string; html: string } {
       <div style="background:#f1f5f9;border-radius:8px;padding:16px 20px;margin:20px 0;">
         <p style="color:#0f172a;font-weight:600;margin:0 0 8px;">Your ROI at a glance:</p>
         <p style="color:#475569;margin:4px 0;font-size:14px;">Estimated revenue lost: <strong>$${monthlyLoss.toLocaleString()}/mo</strong></p>
-        <p style="color:#475569;margin:4px 0;font-size:14px;">Capta cost: <strong>$497/mo</strong> (30-day money-back guarantee)</p>
+        <p style="color:#475569;margin:4px 0;font-size:14px;">Capta cost: <strong>$497/mo</strong> (14-day free trial)</p>
         <p style="color:#059669;margin:4px 0;font-size:14px;font-weight:600;">Net gain: $${(monthlyLoss - 497).toLocaleString()}/mo</p>
       </div>
       <p style="color:#475569;line-height:1.7;font-size:15px;">
@@ -209,7 +209,7 @@ function email3Es(d: SetupEmailData): { subject: string; html: string } {
       <div style="background:#f1f5f9;border-radius:8px;padding:16px 20px;margin:20px 0;">
         <p style="color:#0f172a;font-weight:600;margin:0 0 8px;">Tu ROI de un vistazo:</p>
         <p style="color:#475569;margin:4px 0;font-size:14px;">Ingresos perdidos estimados: <strong>$${monthlyLoss.toLocaleString()}/mes</strong></p>
-        <p style="color:#475569;margin:4px 0;font-size:14px;">Costo de Capta: <strong>$497/mes</strong> (garantía de devolución de 30 días)</p>
+        <p style="color:#475569;margin:4px 0;font-size:14px;">Costo de Capta: <strong>$497/mes</strong> (prueba gratuita de 14 días)</p>
         <p style="color:#059669;margin:4px 0;font-size:14px;font-weight:600;">Ganancia neta: $${(monthlyLoss - 497).toLocaleString()}/mes</p>
       </div>
       <p style="color:#475569;line-height:1.7;font-size:15px;">

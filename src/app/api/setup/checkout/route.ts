@@ -103,6 +103,7 @@ export async function POST(req: NextRequest) {
       payment_method_collection: "always",
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
+        trial_period_days: 14,
         metadata: {
           source: "setup_page",
           plan,

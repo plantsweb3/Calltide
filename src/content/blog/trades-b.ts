@@ -113,7 +113,7 @@ And that is from one storm. Many roofing markets see 2 to 4 significant weather 
 
 4. **Wait for the next storm.** When it hits, She captures every call while you focus on inspections and repairs. Your CRM fills up with qualified leads. Your calendar fills up with booked inspections. Your competitors wonder why your trucks are running nonstop.
 
-No contracts. No setup fees. 30-day money-back guarantee.
+No contracts. No setup fees. 14-day free trial.
 
 ---
 
@@ -327,7 +327,7 @@ She is built for that long game. She does not just answer the phone. She manages
 
 ## Getting Started
 
-Go to [captahq.com/setup](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=painters). $497/month or $397/month on the annual plan ($4,764/year). One plan, everything included. No contracts. 30-day money-back guarantee.
+Go to [captahq.com/setup](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=painters). $497/month or $397/month on the annual plan ($4,764/year). One plan, everything included. No contracts. 14-day free trial.
 
 Setup takes five minutes. Enter your service area, job types, estimate availability, and follow-up preferences. Forward your calls. She starts building your pipeline immediately.
 
@@ -531,7 +531,7 @@ Capta costs $497/month. One small additional project per year covers the entire 
 
 ## Getting Started
 
-[Go to captahq.com/setup](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=general-contractors). $497/month or $397/month on the annual plan ($4,764/year). One plan, everything included. No contracts. 30-day money-back guarantee.
+[Go to captahq.com/setup](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=general-contractors). $497/month or $397/month on the annual plan ($4,764/year). One plan, everything included. No contracts. 14-day free trial.
 
 Setup takes five minutes. Tell your receptionist about your project types, scheduling preferences, and how you want calls triaged. Forward your business line. From that point on, every call is answered, categorized, and routed to you with the right context.
 
@@ -775,7 +775,7 @@ The math is not close.
 
 ## Getting Started
 
-[Go to captahq.com/setup](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=pest-control). $497/month or $397/month on the annual plan ($4,764/year). One plan, everything included. No contracts. 30-day money-back guarantee.
+[Go to captahq.com/setup](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=pest-control). $497/month or $397/month on the annual plan ($4,764/year). One plan, everything included. No contracts. 14-day free trial.
 
 Tell your receptionist about your service area, the pests you treat, your emergency protocols, and your scheduling preferences. Forward your business line. She starts answering calls immediately, and she will scale with you from the quiet days of winter through the chaos of peak season and back again.
 

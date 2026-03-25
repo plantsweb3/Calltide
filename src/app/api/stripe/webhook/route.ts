@@ -20,6 +20,7 @@ import { getStripe } from "@/lib/stripe/client";
 import { enqueueJob } from "@/lib/jobs/queue";
 import { generateBookingSlug } from "@/lib/booking-slug";
 import { createBusinessFromSetup } from "@/lib/onboarding/create-business";
+import { sendTrialEndingEmail } from "@/lib/email/trial-ending";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -86,6 +87,7 @@ export async function POST(request: Request) {
     "charge.refunded": () => handleChargeRefunded(event.data.object as Stripe.Charge),
     "charge.dispute.created": () => handleDisputeCreated(event.data.object as Stripe.Dispute),
     "charge.dispute.closed": () => handleDisputeClosed(event.data.object as Stripe.Dispute),
+    "customer.subscription.trial_will_end": () => handleTrialWillEnd(event.data.object as Stripe.Subscription),
     "invoice.voided": () => handleInvoiceVoided(event.data.object as Stripe.Invoice),
     "invoice.marked_uncollectible": () => handleInvoiceUncollectible(event.data.object as Stripe.Invoice),
   };
@@ -148,10 +150,26 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const plan = (session.metadata?.plan === "annual" ? "annual" : "monthly") as PlanType;
   const mrr = getMrrForPlan(plan);
 
+  // Fetch real subscription status (will be "trialing" for trial subs)
+  let subStatus: string = "active";
+  let trialEndsAt: string | undefined;
+  if (subscriptionId) {
+    try {
+      const stripe = getStripe();
+      const sub = await stripe.subscriptions.retrieve(subscriptionId);
+      subStatus = sub.status; // "trialing", "active", etc.
+      if (sub.trial_end) {
+        trialEndsAt = new Date(sub.trial_end * 1000).toISOString();
+      }
+    } catch {
+      // Fall back to "active" if retrieval fails
+    }
+  }
+
   // ── Setup Page Flow ──
   // If this checkout came from /setup, create a fully-populated business from setup session data
   if (session.metadata?.source === "setup_page" && session.metadata?.setupSessionId) {
-    await handleSetupPageCheckout(session, customerId, subscriptionId || undefined, email, plan, mrr);
+    await handleSetupPageCheckout(session, customerId, subscriptionId || undefined, email, plan, mrr, subStatus, trialEndsAt);
     return;
   }
 
@@ -162,11 +180,12 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       .update(businesses)
       .set({
         stripeSubscriptionId: subscriptionId || undefined,
-        stripeSubscriptionStatus: "active",
-        paymentStatus: "active",
+        stripeSubscriptionStatus: subStatus,
+        paymentStatus: subStatus === "trialing" ? "active" : "active",
         active: true,
         planType: plan,
         mrr,
+        trialEndsAt,
         annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
         updatedAt: new Date().toISOString(),
       })
@@ -174,7 +193,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     if (existing.accountId) {
       await db
         .update(accounts)
-        .set({ stripeSubscriptionId: subscriptionId || undefined, stripeSubscriptionStatus: "active", planType: plan, updatedAt: new Date().toISOString() })
+        .set({ stripeSubscriptionId: subscriptionId || undefined, stripeSubscriptionStatus: subStatus, planType: plan, updatedAt: new Date().toISOString() })
         .where(eq(accounts.id, existing.accountId));
     }
     await logActivity({
@@ -207,10 +226,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       .set({
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId || undefined,
-        stripeSubscriptionStatus: "active",
+        stripeSubscriptionStatus: subStatus,
         paymentStatus: "active",
         planType: plan,
         mrr,
+        trialEndsAt,
         annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
         updatedAt: new Date().toISOString(),
       })
@@ -232,7 +252,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         ownerPhone: biz.ownerPhone || "",
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId || undefined,
-        stripeSubscriptionStatus: "active",
+        stripeSubscriptionStatus: subStatus,
         planType: plan,
         locationCount: 1,
       });
@@ -271,7 +291,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     ownerPhone: "",
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscriptionId || undefined,
-    stripeSubscriptionStatus: "active",
+    stripeSubscriptionStatus: subStatus,
     planType: plan,
     locationCount: 1,
   });
@@ -295,10 +315,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     },
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscriptionId || undefined,
-    stripeSubscriptionStatus: "active",
+    stripeSubscriptionStatus: subStatus,
     paymentStatus: "active",
     planType: plan,
     mrr,
+    trialEndsAt,
     annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
     active: false, // Activated after onboarding
     accountId,
@@ -473,7 +494,9 @@ async function handleSubscriptionUpdated(sub: Stripe.Subscription) {
 
   // Determine change type
   let changeType = "updated";
-  if (previousStatus === "past_due" && newStatus === "active") {
+  if (previousStatus === "trialing" && newStatus === "active") {
+    changeType = "trial_converted";
+  } else if (previousStatus === "past_due" && newStatus === "active") {
     changeType = "recovered";
   } else if (newStatus === "past_due") {
     changeType = "past_due";
@@ -556,6 +579,30 @@ async function handleSubscriptionUpdated(sub: Stripe.Subscription) {
   // If recovered from past_due, clear dunning
   if (changeType === "recovered") {
     await clearDunning(business.id);
+  }
+
+  // Trial converted to paid — clear trial fields and notify
+  if (changeType === "trial_converted") {
+    await db
+      .update(businesses)
+      .set({ trialEndsAt: null, trialEndingNotified: false })
+      .where(eq(businesses.id, business.id));
+
+    await createNotification({
+      source: "financial",
+      severity: "info",
+      title: "Trial converted to paid",
+      message: `${business.name} trial converted to active subscription.`,
+      actionUrl: "/admin/billing",
+    });
+
+    await logActivity({
+      type: "trial_converted",
+      entityType: "business",
+      entityId: business.id,
+      title: `${business.name} converted from trial to paid`,
+      detail: `Plan: ${business.planType ?? "monthly"}`,
+    });
   }
 }
 
@@ -760,6 +807,49 @@ async function handleInvoiceUncollectible(invoice: Stripe.Invoice) {
   });
 }
 
+// ── Trial Will End ──
+
+async function handleTrialWillEnd(sub: Stripe.Subscription) {
+  const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+  if (!customerId) return;
+
+  const business = await findBusinessByCustomer(customerId);
+  if (!business) return;
+
+  // Skip if already notified
+  if (business.trialEndingNotified) return;
+
+  const daysLeft = sub.trial_end
+    ? Math.max(0, Math.ceil((sub.trial_end * 1000 - Date.now()) / 86400000))
+    : 3;
+
+  // Send trial-ending email
+  if (business.ownerEmail) {
+    const lang = (business.defaultLanguage === "es" ? "es" : "en") as "en" | "es";
+    await sendTrialEndingEmail({
+      to: business.ownerEmail,
+      businessName: business.name,
+      receptionistName: business.receptionistName || "Maria",
+      daysLeft,
+      lang,
+    });
+  }
+
+  // Mark as notified
+  await db
+    .update(businesses)
+    .set({ trialEndingNotified: true, updatedAt: new Date().toISOString() })
+    .where(eq(businesses.id, business.id));
+
+  await createNotification({
+    source: "financial",
+    severity: "info",
+    title: "Trial ending soon",
+    message: `${business.name} trial ends in ${daysLeft} days. Email notification sent.`,
+    actionUrl: "/admin/billing",
+  });
+}
+
 // ── Setup Page Checkout ──
 
 async function handleSetupPageCheckout(
@@ -769,6 +859,8 @@ async function handleSetupPageCheckout(
   email: string,
   plan: PlanType,
   mrr: number,
+  subStatus: string,
+  trialEndsAt: string | undefined,
 ) {
   const setupSessionId = session.metadata?.setupSessionId;
   if (!setupSessionId) return;
@@ -780,6 +872,8 @@ async function handleSetupPageCheckout(
     email,
     plan,
     mrr,
+    subStatus,
+    trialEndsAt,
   });
 }
 
