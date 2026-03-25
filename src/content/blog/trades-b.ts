@@ -18,7 +18,7 @@ export const TRADES_B: PostDef[] = [
       "ai-receptionist-for-general-contractors",
       "ai-receptionist-for-pest-control",
       "capta-vs-hiring-receptionist-real-cost-breakdown",
-      "best-answering-service-contractors-2026",
+      "how-to-choose-answering-service-contractors",
     ],
     markdown: `# Storm Economics: Why Your Roofing Company Needs an AI Receptionist Before the Next Hailstorm
 
@@ -141,7 +141,7 @@ She answers every call from the first ring of the first storm to the last callba
       "recepcionista-ai-para-contratistas-generales",
       "recepcionista-ai-para-control-plagas",
       "capta-vs-contratar-recepcionista-desglose-costos",
-      "best-answering-service-contractors-2026",
+      "how-to-choose-answering-service-contractors",
     ],
     markdown: `# Economia de Tormentas: Lo Que Cada Techador Debe Saber Sobre las Llamadas Que Pierde Cuando Cae el Granizo
 
@@ -239,7 +239,7 @@ Ella contesta cada llamada desde el primer timbrazo de la primera tormenta hasta
       "ai-receptionist-for-general-contractors",
       "ai-receptionist-for-pest-control",
       "capta-vs-hiring-receptionist-real-cost-breakdown",
-      "best-answering-service-contractors-2026",
+      "how-to-choose-answering-service-contractors",
     ],
     markdown: `# The Painter's Pipeline Problem: Why Answering Calls Is Only Half the Battle
 
@@ -359,7 +359,7 @@ For a painting business, the AI receptionist is not about answering phones. It i
       "recepcionista-ai-para-contratistas-generales",
       "recepcionista-ai-para-control-plagas",
       "capta-vs-contratar-recepcionista-desglose-costos",
-      "best-answering-service-contractors-2026",
+      "how-to-choose-answering-service-contractors",
     ],
     markdown: `# El Cuello de Botella del Pintor: Por Que Contestar Llamadas Es Solo la Mitad de la Batalla
 
@@ -459,7 +459,7 @@ Para un negocio de pintura, la recepcionista AI no se trata de contestar telefon
       "ai-receptionist-for-painters",
       "ai-receptionist-for-pest-control",
       "capta-vs-hiring-receptionist-real-cost-breakdown",
-      "best-answering-service-contractors-2026",
+      "how-to-choose-answering-service-contractors",
     ],
     markdown: `# The GC's Communication Problem: Managing 47 Daily Calls Across Clients, Subs, and New Leads
 
@@ -563,7 +563,7 @@ For $497 a month, your phone stops being a liability and starts being a system.
       "recepcionista-ai-para-pintores",
       "recepcionista-ai-para-control-plagas",
       "capta-vs-contratar-recepcionista-desglose-costos",
-      "best-answering-service-contractors-2026",
+      "how-to-choose-answering-service-contractors",
     ],
     markdown: `# El Problema de Comunicacion del Contratista General: 47 Llamadas Diarias Entre Clientes, Subs y Nuevos Prospectos
 
@@ -662,7 +662,7 @@ Por $497 al mes, tu telefono deja de ser un problema y se convierte en un sistem
       "ai-receptionist-for-painters",
       "ai-receptionist-for-general-contractors",
       "capta-vs-hiring-receptionist-real-cost-breakdown",
-      "best-answering-service-contractors-2026",
+      "how-to-choose-answering-service-contractors",
     ],
     markdown: `# The Pest Control Calendar: How Seasonal Call Surges Make or Break Your Year
 
@@ -807,7 +807,7 @@ For $497 a month, you get phone capacity that scales with your biology-driven, w
       "recepcionista-ai-para-pintores",
       "recepcionista-ai-para-contratistas-generales",
       "capta-vs-contratar-recepcionista-desglose-costos",
-      "best-answering-service-contractors-2026",
+      "how-to-choose-answering-service-contractors",
     ],
     markdown: `# El Calendario del Control de Plagas: Como las Oleadas Estacionales Definen Tu Ano
 

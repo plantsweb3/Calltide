@@ -15,7 +15,7 @@ function verifySeedAuth(req: NextRequest): boolean {
 
 /* ────────────────────────────────────────────────────────── */
 /*  POST /api/help/seed                                      */
-/*  Seeds 6 help categories + 28 articles from vault content  */
+/*  Seeds 6 help categories + 37 articles from vault content  */
 /* ────────────────────────────────────────────────────────── */
 
 const SEED_CATEGORIES = [
@@ -1361,7 +1361,7 @@ All data traveling between your devices and Capta's servers is encrypted using T
 Your data stored on our servers is encrypted. Even if someone accessed our servers physically, they couldn't read your data without the encryption keys.
 
 **No Passwords**
-Capta uses magic link login instead of passwords. You receive a secure link via email, click it, and you're logged in.
+Capta supports password login (primary) and magic link login as a fallback. With magic links, you receive a secure link via email, click it, and you're logged in — no password needed.
 
 **Role-Based Access**
 If you add team members to your Capta account, you control what they can see.
@@ -1399,7 +1399,7 @@ Todos los datos que viajan entre tus dispositivos y los servidores de Capta est�
 Tus datos almacenados en nuestros servidores están encriptados. Aunque alguien accediera físicamente a nuestros servidores, no podría leer tus datos sin las llaves de encriptación.
 
 **Sin Contraseñas**
-Capta usa inicio de sesión con enlace mágico en vez de contraseñas. Recibes un enlace seguro por email, haces clic, y ya estás dentro.
+Capta soporta inicio de sesión con contraseña (principal) y enlace mágico como alternativa. Con enlaces mágicos, recibes un enlace seguro por email, haces clic, y ya estás dentro — sin necesidad de contraseña.
 
 **Acceso Basado en Roles**
 Si agregas miembros de equipo a tu cuenta de Capta, tú controlas lo que pueden ver.
@@ -2366,6 +2366,175 @@ En la página de Citas, puedes seleccionar múltiples citas y:
 - Cambiar su estado (confirmar, cancelar, completar)
 - Exportar las citas seleccionadas`,
     searchKeywordsEs: "despacho, técnico, asignar, habilidad, disponibilidad, equipo, cuadrilla, agenda",
+  },
+  {
+    slug: "estimates-pipeline",
+    categorySlug: "features-tips",
+    title: "Managing Estimates and Follow-Ups",
+    sortOrder: 45,
+    searchKeywords: "estimates, quotes, pricing, pipeline, follow up, kanban, approve, send, status",
+    dashboardContextRoutes: ["/dashboard/estimates", "/dashboard/follow-ups"],
+    relatedArticles: ["how-maria-handles-calls", "revenue-attribution"],
+    content: `Your receptionist collects job details during calls and generates price range estimates based on your configured rates. You manage these from the Estimates page.
+
+### How Estimates Work
+
+1. Caller describes their problem during the call
+2. Your receptionist collects job details — problem type, property info, urgency
+3. An estimate with a price range is generated based on your pricing rules
+4. You receive a text with the estimate for one-tap approval
+5. Once approved, the customer gets a text with the real number
+
+### The Estimates Pipeline
+
+Your Estimates page uses a Kanban-style pipeline:
+- **New** — Freshly generated estimates awaiting your review
+- **Sent** — Approved and sent to the customer
+- **Accepted** — Customer accepted the estimate
+- **Declined** — Customer declined
+- **Expired** — No response within your configured window
+
+### Follow-Ups
+
+The Follow-Ups page shows estimates and leads that need attention. Your receptionist can automatically follow up on cold estimates with texts like "Hi, we sent you an estimate last week. Would you like to schedule the work?"
+
+### Tips
+
+- Review new estimates daily — speed wins jobs
+- Set your pricing ranges in **Settings → Services** so estimates are accurate
+- Use the follow-up system instead of manually chasing quotes`,
+    titleEs: "Administrando Estimados y Seguimientos",
+    contentEs: `Tu recepcionista recopila detalles del trabajo durante las llamadas y genera estimados con rangos de precio basados en tus tarifas configuradas. Los administras desde la página de Estimados.
+
+### Cómo Funcionan los Estimados
+
+1. La persona describe su problema durante la llamada
+2. Tu recepcionista recopila detalles del trabajo — tipo de problema, información de la propiedad, urgencia
+3. Se genera un estimado con rango de precios basado en tus reglas de precios
+4. Recibes un texto con el estimado para aprobación con un toque
+5. Una vez aprobado, el cliente recibe un texto con el número real
+
+### El Pipeline de Estimados
+
+Tu página de Estimados usa un pipeline estilo Kanban:
+- **Nuevo** — Estimados recién generados esperando tu revisión
+- **Enviado** — Aprobados y enviados al cliente
+- **Aceptado** — El cliente aceptó el estimado
+- **Rechazado** — El cliente rechazó
+- **Expirado** — Sin respuesta dentro de tu ventana configurada
+
+### Seguimientos
+
+La página de Seguimientos muestra estimados y prospectos que necesitan atención. Tu recepcionista puede hacer seguimiento automático a estimados fríos con textos como "Hola, te enviamos un estimado la semana pasada. ¿Te gustaría agendar el trabajo?"
+
+### Consejos
+
+- Revisa nuevos estimados diariamente — la velocidad gana trabajos
+- Configura tus rangos de precios en **Configuración → Servicios** para que los estimados sean precisos
+- Usa el sistema de seguimiento en vez de perseguir cotizaciones manualmente`,
+    searchKeywordsEs: "estimados, cotizaciones, precios, pipeline, seguimiento, kanban, aprobar, enviar, estado",
+  },
+  {
+    slug: "job-cards",
+    categorySlug: "features-tips",
+    title: "Understanding Job Cards",
+    sortOrder: 46,
+    searchKeywords: "job cards, work orders, photos, details, crew, field, dispatch, job site",
+    dashboardContextRoutes: ["/dashboard/job-cards"],
+    relatedArticles: ["estimates-pipeline", "dispatch-technicians"],
+    content: `Job cards are structured records created from every call where a service is requested. They give you and your crew everything needed to do the job.
+
+### What's on a Job Card
+
+- **Customer info** — Name, phone, address
+- **Job type** — Service category and description
+- **Urgency** — Low, medium, high, or emergency
+- **Photos** — After the call, your receptionist texts the customer asking for photos of the job site. Photos attach to the card automatically.
+- **Notes** — Details from the call transcript
+- **Estimate** — Price range if one was generated
+
+### How Job Cards Are Created
+
+When your receptionist handles a call that involves a service request, a job card is created automatically. No manual data entry needed.
+
+### Using Job Cards
+
+- **Dispatch to crew** — Assign a technician directly from the job card
+- **Review before arriving** — Your crew sees the problem description and photos before they get to the site
+- **Track status** — Mark jobs as scheduled, in progress, or completed
+- **Link to invoice** — Connect the job card to an invoice after completion`,
+    titleEs: "Entendiendo las Tarjetas de Trabajo",
+    contentEs: `Las tarjetas de trabajo son registros estructurados creados de cada llamada donde se solicita un servicio. Te dan a ti y a tu equipo todo lo necesario para hacer el trabajo.
+
+### Qué Contiene una Tarjeta de Trabajo
+
+- **Datos del cliente** — Nombre, teléfono, dirección
+- **Tipo de trabajo** — Categoría de servicio y descripción
+- **Urgencia** — Baja, media, alta o emergencia
+- **Fotos** — Después de la llamada, tu recepcionista le envía un texto al cliente pidiendo fotos del sitio. Las fotos se adjuntan automáticamente a la tarjeta.
+- **Notas** — Detalles de la transcripción de la llamada
+- **Estimado** — Rango de precios si se generó uno
+
+### Cómo Se Crean las Tarjetas de Trabajo
+
+Cuando tu recepcionista maneja una llamada que involucra una solicitud de servicio, se crea una tarjeta de trabajo automáticamente. Sin entrada manual de datos.
+
+### Usando Tarjetas de Trabajo
+
+- **Despacha a tu equipo** — Asigna un técnico directamente desde la tarjeta
+- **Revisa antes de llegar** — Tu equipo ve la descripción del problema y fotos antes de llegar al sitio
+- **Rastrea el estado** — Marca trabajos como programados, en progreso o completados
+- **Vincula a factura** — Conecta la tarjeta de trabajo a una factura después de completar`,
+    searchKeywordsEs: "tarjetas de trabajo, órdenes de trabajo, fotos, detalles, equipo, campo, despacho, sitio",
+  },
+  {
+    slug: "feedback-and-surveys",
+    categorySlug: "features-tips",
+    title: "Customer Feedback and Surveys",
+    sortOrder: 47,
+    searchKeywords: "feedback, survey, nps, satisfaction, review, rating, customer opinion",
+    dashboardContextRoutes: ["/dashboard/feedback"],
+    relatedArticles: ["nps-health-score", "monthly-report"],
+    content: `Capta automatically collects customer feedback after calls and completed appointments. You can view all feedback in the Feedback page.
+
+### How Feedback Is Collected
+
+After certain interactions, customers receive a short follow-up survey asking about their experience. Responses are stored in your dashboard.
+
+### What You See
+
+- **Rating** — Customer satisfaction score
+- **Comments** — Written feedback from customers
+- **Date** — When the feedback was submitted
+- **Source** — Which call or appointment triggered the survey
+
+### Using Feedback
+
+- **Identify patterns** — If multiple customers mention the same issue, address it
+- **Celebrate wins** — High ratings mean your receptionist is performing well
+- **Improve responses** — Low ratings on specific topics? Update your FAQ or business profile
+- **Request reviews** — After completed jobs, Capta automatically asks happy customers for Google reviews`,
+    titleEs: "Retroalimentación y Encuestas de Clientes",
+    contentEs: `Capta recopila automáticamente retroalimentación de clientes después de llamadas y citas completadas. Puedes ver toda la retroalimentación en la página de Feedback.
+
+### Cómo Se Recopila la Retroalimentación
+
+Después de ciertas interacciones, los clientes reciben una encuesta corta de seguimiento preguntando sobre su experiencia. Las respuestas se guardan en tu panel.
+
+### Qué Ves
+
+- **Calificación** — Puntaje de satisfacción del cliente
+- **Comentarios** — Retroalimentación escrita de clientes
+- **Fecha** — Cuándo se envió la retroalimentación
+- **Fuente** — Qué llamada o cita generó la encuesta
+
+### Usando la Retroalimentación
+
+- **Identifica patrones** — Si varios clientes mencionan el mismo problema, atiéndelo
+- **Celebra los logros** — Calificaciones altas significan que tu recepcionista está funcionando bien
+- **Mejora las respuestas** — ¿Calificaciones bajas en temas específicos? Actualiza tus FAQ o perfil de negocio
+- **Solicita reseñas** — Después de trabajos completados, Capta automáticamente pide a los clientes satisfechos reseñas en Google`,
+    searchKeywordsEs: "retroalimentación, encuesta, nps, satisfacción, reseña, calificación, opinión del cliente",
   },
 ];
 
