@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface PrimaryLocationData {
   services: string[];
@@ -31,6 +33,7 @@ const DEFAULT_HOURS: Record<string, { open: string; close: string }> = {
 };
 
 export default function AddLocationPage() {
+  const [lang] = useLang();
   const receptionistName = useReceptionistName();
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -82,7 +85,7 @@ export default function AddLocationPage() {
 
   async function submit() {
     if (!locationName.trim()) {
-      toast.error("Location name is required");
+      toast.error(t("toast.locationNameRequired", lang));
       return;
     }
     setLoading(true);
@@ -100,9 +103,9 @@ export default function AddLocationPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to add location");
+      if (!res.ok) throw new Error(data.error || t("toast.failedToAddLocation", lang));
 
-      toast.success(`Location "${locationName}" created!`);
+      toast.success(t("toast.locationCreated", lang, { name: locationName }));
 
       // Switch to new location
       await fetch("/api/dashboard/locations/switch", {
@@ -114,22 +117,22 @@ export default function AddLocationPage() {
       router.push("/dashboard");
       router.refresh();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to add location");
+      toast.error(err instanceof Error ? err.message : t("toast.failedToAddLocation", lang));
     } finally {
       setLoading(false);
     }
   }
 
-  const stepTitles = ["Location Info", "Services", "Business Hours", "Greeting", "Review"];
+  const stepTitles = [t("location.stepInfo", lang), t("location.stepServices", lang), t("location.stepHours", lang), t("location.stepGreeting", lang), t("location.stepReview", lang)];
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)" }}>
-          Add New Location
+          {t("location.addNewLocation", lang)}
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Step {step} of 5 — {stepTitles[step - 1]}
+          {t("location.stepOf", lang, { step })} — {stepTitles[step - 1]}
         </p>
       </div>
 
@@ -153,20 +156,20 @@ export default function AddLocationPage() {
           <div className="space-y-4">
             <div>
               <label className="mb-1 block text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Location Name
+                {t("location.locationName", lang)}
               </label>
               <input
                 type="text"
                 value={locationName}
                 onChange={(e) => setLocationName(e.target.value)}
-                placeholder="e.g., San Antonio, Downtown Office"
+                placeholder={t("location.locationNamePlaceholder", lang)}
                 className="w-full rounded-lg px-3 py-2 text-sm outline-none"
                 style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
               />
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Industry
+                {t("location.industry", lang)}
               </label>
               <select
                 value={type}
@@ -174,7 +177,7 @@ export default function AddLocationPage() {
                 className="w-full rounded-lg px-3 py-2 text-sm outline-none"
                 style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
               >
-                <option value="">Select industry</option>
+                <option value="">{t("location.selectIndustry", lang)}</option>
                 {INDUSTRIES.map((t) => (
                   <option key={t} value={t}>{t.replace(/_/g, " ")}</option>
                 ))}
@@ -182,13 +185,13 @@ export default function AddLocationPage() {
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Service Area
+                {t("location.serviceArea", lang)}
               </label>
               <input
                 type="text"
                 value={serviceArea}
                 onChange={(e) => setServiceArea(e.target.value)}
-                placeholder="e.g., Austin and surrounding areas"
+                placeholder={t("location.serviceAreaPlaceholder", lang)}
                 className="w-full rounded-lg px-3 py-2 text-sm outline-none"
                 style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
               />
@@ -200,7 +203,7 @@ export default function AddLocationPage() {
         {step === 2 && (
           <div className="space-y-4">
             <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-              These were copied from your primary location. Add, remove, or keep as-is.
+              {t("location.copiedFromPrimary", lang)}
             </p>
             <div className="flex gap-2">
               <input
@@ -208,7 +211,7 @@ export default function AddLocationPage() {
                 value={serviceInput}
                 onChange={(e) => setServiceInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addService())}
-                placeholder="Add a service..."
+                placeholder={t("location.addServicePlaceholder", lang)}
                 className="flex-1 rounded-lg px-3 py-2 text-sm outline-none"
                 style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
               />
@@ -217,7 +220,7 @@ export default function AddLocationPage() {
                 className="rounded-lg px-4 py-2 text-sm font-medium text-white"
                 style={{ background: "var(--db-accent)" }}
               >
-                Add
+                {t("action.add", lang)}
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -233,7 +236,7 @@ export default function AddLocationPage() {
               ))}
             </div>
             {services.length === 0 && (
-              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>No services added yet.</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("location.noServicesYet", lang)}</p>
             )}
           </div>
         )}
@@ -242,7 +245,7 @@ export default function AddLocationPage() {
         {step === 3 && (
           <div className="space-y-3">
             <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-              Copied from your primary location. Adjust as needed.
+              {t("location.copiedHours", lang)}
             </p>
             {DAYS.map((day) => (
               <div key={day} className="flex items-center gap-3">
@@ -267,7 +270,7 @@ export default function AddLocationPage() {
                   className="text-xs font-medium"
                   style={{ color: hours[day]?.open === "closed" ? "var(--db-accent)" : "var(--db-text-muted)" }}
                 >
-                  {hours[day]?.open === "closed" ? "Closed" : "Set Closed"}
+                  {hours[day]?.open === "closed" ? t("location.closed", lang) : t("location.setClosed", lang)}
                 </button>
               </div>
             ))}
@@ -278,7 +281,7 @@ export default function AddLocationPage() {
         {step === 4 && (
           <div className="space-y-4">
             <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-              Customize how {receptionistName} greets callers at this location. Leave blank to use the default.
+              {t("location.greetingDesc", lang, { name: receptionistName })}
             </p>
             <textarea
               value={greeting}
@@ -296,25 +299,25 @@ export default function AddLocationPage() {
           <div className="space-y-4">
             <div className="space-y-2 text-sm" style={{ color: "var(--db-text)" }}>
               <div className="flex justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
-                <span style={{ color: "var(--db-text-muted)" }}>Location</span>
+                <span style={{ color: "var(--db-text-muted)" }}>{t("location.location", lang)}</span>
                 <span className="font-medium">{locationName}</span>
               </div>
               <div className="flex justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
-                <span style={{ color: "var(--db-text-muted)" }}>Industry</span>
+                <span style={{ color: "var(--db-text-muted)" }}>{t("location.industry", lang)}</span>
                 <span className="font-medium">{(type || "general").replace(/_/g, " ")}</span>
               </div>
               {serviceArea && (
                 <div className="flex justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
-                  <span style={{ color: "var(--db-text-muted)" }}>Service Area</span>
+                  <span style={{ color: "var(--db-text-muted)" }}>{t("location.serviceArea", lang)}</span>
                   <span className="font-medium">{serviceArea}</span>
                 </div>
               )}
               <div className="flex justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
-                <span style={{ color: "var(--db-text-muted)" }}>Services</span>
-                <span className="font-medium">{services.length} services</span>
+                <span style={{ color: "var(--db-text-muted)" }}>{t("location.services", lang)}</span>
+                <span className="font-medium">{t("location.servicesCount", lang, { n: services.length })}</span>
               </div>
               <div className="flex justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
-                <span style={{ color: "var(--db-text-muted)" }}>Additional Cost</span>
+                <span style={{ color: "var(--db-text-muted)" }}>{t("location.additionalCost", lang)}</span>
                 <span className="font-medium" style={{ color: "var(--db-accent)" }}>+$197/mo</span>
               </div>
             </div>
@@ -329,14 +332,14 @@ export default function AddLocationPage() {
           className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
           style={{ background: "var(--db-hover)", color: "var(--db-text)" }}
         >
-          {step === 1 ? "Cancel" : "Back"}
+          {step === 1 ? t("action.cancel", lang) : t("action.back", lang)}
         </button>
 
         {step < 5 ? (
           <button
             onClick={() => {
               if (step === 1 && !locationName.trim()) {
-                toast.error("Location name is required");
+                toast.error(t("toast.locationNameRequired", lang));
                 return;
               }
               setStep(step + 1);
@@ -344,7 +347,7 @@ export default function AddLocationPage() {
             className="rounded-lg px-6 py-2 text-sm font-medium text-white"
             style={{ background: "var(--db-accent)" }}
           >
-            Continue
+            {t("location.continue", lang)}
           </button>
         ) : (
           <button
@@ -353,7 +356,7 @@ export default function AddLocationPage() {
             className="rounded-lg px-6 py-2 text-sm font-medium text-white disabled:opacity-50"
             style={{ background: "var(--db-accent)" }}
           >
-            {loading ? "Creating..." : "Create Location"}
+            {loading ? t("location.creating", lang) : t("location.createLocation", lang)}
           </button>
         )}
       </div>

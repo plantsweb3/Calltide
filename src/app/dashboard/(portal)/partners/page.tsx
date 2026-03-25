@@ -108,7 +108,7 @@ export default function PartnersPage() {
         setReferrals(rData.referrals || []);
       }
     } catch {
-      toast.error("Failed to load partner data");
+      toast.error(t("toast.failedToLoadPartners", lang));
       return;
     } finally {
       setLoading(false);
@@ -145,7 +145,7 @@ export default function PartnersPage() {
 
   async function handleSave() {
     if (!formName.trim() || !formPhone.trim()) {
-      toast.error("Name and phone are required");
+      toast.error(t("toast.namePhoneRequired", lang));
       return;
     }
 
@@ -174,15 +174,15 @@ export default function PartnersPage() {
 
       if (!res.ok) {
         const err = await res.json();
-        toast.error(err.error || "Failed to save");
+        toast.error(err.error || t("toast.failedToSavePartner", lang));
         return;
       }
 
-      toast.success(editingId ? "Partner updated" : "Partner added");
+      toast.success(editingId ? t("toast.partnerUpdated", lang) : t("toast.partnerAdded", lang));
       resetForm();
       fetchData();
     } catch {
-      toast.error("Failed to save partner");
+      toast.error(t("toast.failedToSavePartner", lang));
     } finally {
       setSaving(false);
     }
@@ -193,26 +193,26 @@ export default function PartnersPage() {
     try {
       const res = await fetch(`/api/dashboard/partners/${id}`, { method: "DELETE" });
       if (!res.ok) {
-        toast.error("Failed to remove partner");
+        toast.error(t("toast.failedToRemovePartner", lang));
         return;
       }
-      toast.success("Partner removed");
+      toast.success(t("toast.partnerRemoved", lang));
       fetchData();
     } catch {
-      toast.error("Failed to remove partner");
+      toast.error(t("toast.failedToRemovePartner", lang));
     } finally {
       setDeleteLoading(false);
       setDeleteConfirmId(null);
     }
   }
 
-  if (loading) return <LoadingSpinner message="Loading partners..." />;
+  if (loading) return <LoadingSpinner message={t("partners.loadingPartners", lang)} />;
 
   return (
     <div className="space-y-6">
       <PageHeader
         title={t("partners.title", lang)}
-        description="Add trusted partners so your receptionist can refer callers who need services you don't offer"
+        description={t("partners.description", lang)}
         actions={
           tab === "partners" && !showForm ? (
             <Button onClick={() => setShowForm(true)}>+ {t("partners.addPartner", lang)}</Button>
@@ -223,8 +223,8 @@ export default function PartnersPage() {
       {/* Tabs */}
       <div className="flex gap-1 rounded-lg p-1" style={{ background: "var(--db-surface)" }}>
         {([
-          { key: "partners" as Tab, label: "Partners", count: partners.length },
-          { key: "referrals" as Tab, label: "Referral Log", count: referrals.length },
+          { key: "partners" as Tab, label: t("partners.partners", lang), count: partners.length },
+          { key: "referrals" as Tab, label: t("partners.referralLog", lang), count: referrals.length },
         ]).map(({ key, label, count }) => (
           <button
             key={key}
@@ -251,12 +251,12 @@ export default function PartnersPage() {
               style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
             >
               <h3 className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
-                {editingId ? "Edit Partner" : "Add New Partner"}
+                {editingId ? t("partners.editPartner", lang) : t("partners.addNewPartner", lang)}
               </h3>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Business Name *</label>
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.businessName", lang)} *</label>
                   <input
                     type="text"
                     value={formName}
@@ -267,7 +267,7 @@ export default function PartnersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Trade *</label>
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.trade", lang)} *</label>
                   <select
                     value={formTrade}
                     onChange={(e) => setFormTrade(e.target.value)}
@@ -280,7 +280,7 @@ export default function PartnersPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Phone *</label>
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.phone", lang)} *</label>
                   <input
                     type="tel"
                     value={formPhone}
@@ -291,7 +291,7 @@ export default function PartnersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Contact Name</label>
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.contactName", lang)}</label>
                   <input
                     type="text"
                     value={formContact}
@@ -302,7 +302,7 @@ export default function PartnersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Email</label>
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.email", lang)}</label>
                   <input
                     type="email"
                     value={formEmail}
@@ -313,20 +313,20 @@ export default function PartnersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Relationship</label>
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.relationship", lang)}</label>
                   <select
                     value={formRelationship}
                     onChange={(e) => setFormRelationship(e.target.value)}
                     className="w-full rounded-lg px-3 py-2 text-sm"
                     style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
                   >
-                    <option value="preferred">{t("partners.preferred", lang)} (top pick)</option>
-                    <option value="trusted">Trusted</option>
-                    <option value="occasional">Occasional</option>
+                    <option value="preferred">{t("partners.preferred", lang)}</option>
+                    <option value="trusted">{t("partners.trusted", lang)}</option>
+                    <option value="occasional">{t("partners.occasional", lang)}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Language</label>
+                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.language", lang)}</label>
                   <select
                     value={formLanguage}
                     onChange={(e) => setFormLanguage(e.target.value)}
@@ -340,7 +340,7 @@ export default function PartnersPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Notes</label>
+                <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.notes", lang)}</label>
                 <textarea
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
@@ -357,7 +357,7 @@ export default function PartnersPage() {
                   className="rounded-lg px-4 py-2 text-sm"
                   style={{ color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }}
                 >
-                  Cancel
+                  {t("action.cancel", lang)}
                 </button>
                 <button
                   onClick={handleSave}
@@ -365,7 +365,7 @@ export default function PartnersPage() {
                   className="rounded-lg px-4 py-2 text-sm font-medium transition-opacity"
                   style={{ background: "var(--db-accent)", color: "#fff", opacity: saving ? 0.6 : 1 }}
                 >
-                  {saving ? "Saving..." : editingId ? "Update" : "Add Partner"}
+                  {saving ? t("action.loading", lang) : editingId ? t("action.save", lang) : t("partners.addPartner", lang)}
                 </button>
               </div>
             </div>
@@ -378,7 +378,7 @@ export default function PartnersPage() {
               style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
             >
               <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-                No partners yet. Add your first referral partner so {receptionistName} can connect callers to your network.
+                {t("partners.noPartnersYet", lang)}
               </p>
             </div>
           ) : (
@@ -419,14 +419,14 @@ export default function PartnersPage() {
                         size="sm"
                         onClick={() => startEdit(p)}
                       >
-                        Edit
+                        {t("action.edit", lang)}
                       </Button>
                       <Button
                         variant="danger"
                         size="sm"
                         onClick={() => setDeleteConfirmId(p.id)}
                       >
-                        Remove
+                        {t("action.remove", lang)}
                       </Button>
                     </div>
                   </div>
@@ -447,8 +447,8 @@ export default function PartnersPage() {
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" y1="8" x2="19" y2="14" /><line x1="22" y1="11" x2="16" y2="11" />
                 </svg>
               }
-              title="No referrals yet"
-              description="When your receptionist refers a caller to one of your partners, it'll show up here."
+              title={t("partners.noReferralsYet", lang)}
+              description={t("partners.noReferralsDesc", lang)}
             />
           ) : (
             <div
@@ -458,11 +458,11 @@ export default function PartnersPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr style={{ background: "var(--db-hover)" }}>
-                    <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Date</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Caller</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Trade</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Partner</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("partners.date", lang)}</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("partners.caller", lang)}</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("partners.trade", lang)}</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("partners.partner", lang)}</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("partners.status", lang)}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -508,9 +508,9 @@ export default function PartnersPage() {
 
       <ConfirmDialog
         open={!!deleteConfirmId}
-        title="Remove Partner?"
-        description="This will remove the partner from your referral network. Existing referral history will be preserved."
-        confirmLabel="Remove Partner"
+        title={t("partners.removePartner", lang)}
+        description={t("partners.removePartnerDesc", lang)}
+        confirmLabel={t("partners.removePartnerConfirm", lang)}
         variant="danger"
         loading={deleteLoading}
         onConfirm={() => { if (deleteConfirmId) handleDelete(deleteConfirmId); }}

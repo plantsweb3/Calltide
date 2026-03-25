@@ -190,10 +190,10 @@ export default function OverviewPage() {
     data.appointmentsThisWeek === 0
   ) {
     const steps = [
-      { label: "Forward your business number", desc: "Dial *72 then your Capta number (Verizon/landline), or *21* then number and # (AT&T/T-Mobile). Check your carrier's instructions for conditional forwarding.", href: "/dashboard/settings", icon: <IconPhone size={18} /> },
-      { label: "Customize your receptionist", desc: "Set her name, greeting, personality, and the services you offer.", href: "/dashboard/settings", icon: <IconSparkles size={18} /> },
-      { label: "Set your business hours", desc: "Tell her when you're available so she books appointments at the right times.", href: "/dashboard/settings", icon: <IconClock size={18} /> },
-      { label: "Make a test call", desc: "Call your Capta number to hear how she handles a real conversation.", icon: <IconTarget size={18} /> },
+      { label: t("overview.forwardNumber", lang), desc: t("overview.forwardNumberDesc", lang), href: "/dashboard/settings", icon: <IconPhone size={18} /> },
+      { label: t("overview.customizeReceptionist", lang), desc: t("overview.customizeReceptionistDesc", lang), href: "/dashboard/settings", icon: <IconSparkles size={18} /> },
+      { label: t("overview.setBusinessHours", lang), desc: t("overview.setBusinessHoursDesc", lang), href: "/dashboard/settings", icon: <IconClock size={18} /> },
+      { label: t("overview.makeTestCall", lang), desc: t("overview.makeTestCallDesc", lang), icon: <IconTarget size={18} /> },
     ];
 
     return (
@@ -260,7 +260,7 @@ export default function OverviewPage() {
           {getGreeting(lang)}, {data.businessName?.split(" ")[0] || "there"}
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Here&apos;s how {receptionistName} is performing
+          {t("overview.hereIsHowPerforming", lang, { name: receptionistName })}
         </p>
       </div>
 
@@ -296,7 +296,7 @@ export default function OverviewPage() {
                   </span>
                   {call.isReturningCaller && (
                     <span className="rounded-full px-1.5 py-0.5 text-xs font-medium" style={{ background: "rgba(99,102,241,0.1)", color: "rgb(129,140,248)" }}>
-                      returning
+                      {t("overview.returning", lang)}
                     </span>
                   )}
                   {call.currentIntent && (
@@ -347,7 +347,7 @@ export default function OverviewPage() {
         >
           <div className="relative z-10">
             <p className="text-sm font-medium" style={{ color: "var(--db-text-muted)" }}>
-              This month, {receptionistName} earned you
+              {t("metric.earnedYou", lang, { name: receptionistName })}
             </p>
             <p
               className="mt-1 text-4xl font-bold tracking-tight"
@@ -358,7 +358,7 @@ export default function OverviewPage() {
             <div className="mt-3 flex items-center gap-4 flex-wrap">
               {data.roiMultiple != null && data.roiMultiple > 0 && (
                 <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                  <strong style={{ color: "var(--db-success)" }}>{data.roiMultiple}x</strong> return on investment
+                  <strong style={{ color: "var(--db-success)" }}>{data.roiMultiple}x</strong> {t("metric.roiReturn", lang)}
                 </span>
               )}
               {data.revenueSaved != null && data.revenueSaved > 0 && (
@@ -366,7 +366,7 @@ export default function OverviewPage() {
                   className="rounded-full px-2.5 py-0.5 text-xs font-medium"
                   style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                 >
-                  +${data.revenueSaved.toLocaleString()} recovered from missed calls
+                  +${data.revenueSaved.toLocaleString()} {t("metric.recoveredFromMissed", lang)}
                 </span>
               )}
             </div>
@@ -374,8 +374,8 @@ export default function OverviewPage() {
             {data.roiMultiple != null && data.roiMultiple > 0 && (
               <div className="mt-4 w-full max-w-md">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>$497 investment</span>
-                  <span className="text-xs font-medium" style={{ color: "var(--db-accent)" }}>${data.revenueThisMonth?.toLocaleString()} earned</span>
+                  <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("metric.investment", lang)}</span>
+                  <span className="text-xs font-medium" style={{ color: "var(--db-accent)" }}>${data.revenueThisMonth?.toLocaleString()} {t("metric.earned", lang)}</span>
                 </div>
                 <div className="h-2 rounded-full" style={{ background: "var(--db-border)" }}>
                   <div
@@ -412,10 +412,10 @@ export default function OverviewPage() {
           </div>
           <div>
             <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-              {receptionistName} is standing by
+              {t("overview.mariaIsStandingBy", lang, { name: receptionistName })}
             </p>
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-              Revenue tracking starts when appointments are booked from calls
+              {t("overview.revenueEstimate", lang)}
             </p>
           </div>
         </div>
@@ -426,12 +426,12 @@ export default function OverviewPage() {
         <HealthScoreCard score={data.healthScore ?? 50} />
         {hasRevenue && (
           <MetricCard
-            label="Revenue Captured"
+            label={t("metric.revenueCaptured", lang)}
             value={data.revenueThisMonth!}
             prefix="$"
             change={
               data.revenueChange != null && data.revenueChange !== 0
-                ? `${data.revenueChange > 0 ? "+" : ""}${data.revenueChange}% vs last month`
+                ? `${data.revenueChange > 0 ? "+" : ""}${data.revenueChange}% ${t("misc.lastMonth", lang)}`
                 : undefined
             }
             changeType={data.revenueChange != null && data.revenueChange > 0 ? "positive" : data.revenueChange != null && data.revenueChange < 0 ? "negative" : "neutral"}
@@ -445,24 +445,23 @@ export default function OverviewPage() {
         />
         {data.costPerLead != null && data.costPerLead > 0 && (
           <MetricCard
-            label="Cost Per Lead"
+            label={t("metric.costPerLead", lang)}
             value={data.costPerLead}
             prefix="$"
             decimals={2}
-            change="Per qualified lead"
             changeType="positive"
           />
         )}
         <MetricCard
-          label="Appointments Booked"
+          label={t("metric.appointmentsBooked", lang)}
           value={data.appointmentsThisWeek}
-          change="This week"
+          change={t("metric.thisWeek", lang)}
           changeType="neutral"
         />
         <MetricCard
-          label="After-Hours Calls"
+          label={t("metric.afterHoursCalls", lang)}
           value={data.afterHoursThisWeek ?? 0}
-          change="Answered this week"
+          change={t("metric.thisWeek", lang)}
           changeType={data.afterHoursThisWeek ? "positive" : "neutral"}
         />
       </div>
@@ -495,13 +494,13 @@ export default function OverviewPage() {
               style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
             >
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-                Estimate Pipeline
+                {t("section.estimatePipeline", lang)}
               </h3>
               <div className="grid grid-cols-3 gap-3 mb-4">
                 {[
                   { label: t("metric.activePipeline", lang), value: `$${data.estimatePipeline.totalPipelineValue.toLocaleString()}`, color: "var(--db-accent)" },
-                  { label: "Won This Month", value: `$${data.estimatePipeline.wonThisMonth.value.toLocaleString()}`, color: "var(--db-success)" },
-                  { label: "Won Deals", value: String(data.estimatePipeline.wonThisMonth.count), color: "var(--db-success)" },
+                  { label: t("estimates.wonThisMonth", lang), value: `$${data.estimatePipeline.wonThisMonth.value.toLocaleString()}`, color: "var(--db-success)" },
+                  { label: t("estimates.won", lang), value: String(data.estimatePipeline.wonThisMonth.count), color: "var(--db-success)" },
                 ].map((s) => (
                   <div key={s.label}>
                     <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{s.label}</p>
@@ -529,23 +528,23 @@ export default function OverviewPage() {
               style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
             >
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-                Customer Insights
+                {t("section.customerInsights", lang)}
               </h3>
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div>
-                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Total Customers</p>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("metric.totalCustomers", lang)}</p>
                   <p className="text-lg font-bold" style={{ color: "var(--db-text)" }}>{data.customerInsights.totalCustomers}</p>
                 </div>
                 <div>
-                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Repeat Rate</p>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("metric.repeatRate", lang)}</p>
                   <p className="text-lg font-bold" style={{ color: "var(--db-accent)" }}>{data.customerInsights.repeatRate}%</p>
                 </div>
                 <div>
-                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Repeat Callers</p>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("customers.repeatCallers", lang)}</p>
                   <p className="text-lg font-bold" style={{ color: "var(--db-text)" }}>{data.customerInsights.repeatCallers}</p>
                 </div>
                 <div>
-                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>New This Month</p>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("metric.newThisMonth", lang)}</p>
                   <p className="text-lg font-bold" style={{ color: "var(--db-success)" }}>{data.customerInsights.newThisMonth}</p>
                 </div>
               </div>
@@ -581,7 +580,7 @@ export default function OverviewPage() {
               className="mb-4 text-sm font-semibold uppercase tracking-wider"
               style={{ color: "var(--db-text-muted)" }}
             >
-              All Time
+              {t("time.allTime", lang)}
             </h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -736,6 +735,7 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
 }
 
 function HealthScoreCard({ score }: { score: number }) {
+  const [lang] = useLang();
   const color = score >= 80 ? "var(--db-success)" : score >= 50 ? "var(--db-warning)" : "var(--db-danger)";
   const label = score >= 80 ? "Excellent" : score >= 50 ? "Good" : "Needs Attention";
 
@@ -747,7 +747,7 @@ function HealthScoreCard({ score }: { score: number }) {
         className="text-xs font-semibold uppercase tracking-wider mb-2"
         style={{ color: "var(--db-text-muted)" }}
       >
-        Health Score
+        {t("section.healthScore", lang)}
       </p>
       <div className="relative w-16 h-16 flex items-center justify-center">
         <svg viewBox="0 0 36 36" className="w-16 h-16 -rotate-90">
@@ -791,6 +791,7 @@ function MariaSavedCard({
   missedCallsRecoveredCount: number;
   receptionistName: string;
 }) {
+  const [lang] = useLang();
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -808,25 +809,25 @@ function MariaSavedCard({
             className="mt-1 text-xs font-medium"
             style={{ color: "var(--db-accent)" }}
           >
-            {expanded ? "Hide breakdown" : "See breakdown"}
+            {expanded ? t("action.hideBreakdown", lang) : t("action.seeBreakdown", lang)}
           </button>
           {expanded && (
             <div className="mt-2 space-y-1.5 text-xs" style={{ color: "var(--db-text-secondary)" }}>
               {breakdown.missedRecovered > 0 && (
                 <div className="flex justify-between">
-                  <span>Missed calls recovered ({missedCallsRecoveredCount})</span>
+                  <span>{t("metric.missedCallsRecovered", lang)} ({missedCallsRecoveredCount})</span>
                   <span className="font-medium">${breakdown.missedRecovered.toLocaleString()}</span>
                 </div>
               )}
               {breakdown.afterHours > 0 && (
                 <div className="flex justify-between">
-                  <span>After-hours calls ({breakdown.afterHoursCount})</span>
+                  <span>{t("metric.afterHoursCalls", lang)} ({breakdown.afterHoursCount})</span>
                   <span className="font-medium">${breakdown.afterHours.toLocaleString()}</span>
                 </div>
               )}
               {breakdown.spanish > 0 && (
                 <div className="flex justify-between">
-                  <span>Spanish calls ({breakdown.spanishCount})</span>
+                  <span>{t("intelligence.bilingualCalls", lang)} ({breakdown.spanishCount})</span>
                   <span className="font-medium">${breakdown.spanish.toLocaleString()}</span>
                 </div>
               )}

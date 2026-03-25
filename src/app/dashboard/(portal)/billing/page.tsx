@@ -44,7 +44,7 @@ export default function BillingPage() {
     fetch("/api/dashboard/billing")
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
-      .catch(() => setError("Failed to load billing data"));
+      .catch(() => setError(t("toast.failedToLoadBilling", lang)));
   }, []);
 
   useEffect(() => { loadBilling(); }, [loadBilling]);
@@ -58,13 +58,13 @@ export default function BillingPage() {
           className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
           style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
-          Retry
+          {t("billing.retry", lang)}
         </button>
       </div>
     );
   }
 
-  if (!data) return <LoadingSpinner message="Loading billing..." />;
+  if (!data) return <LoadingSpinner message={t("billing.loadingBilling", lang)} />;
 
   const isPastDue = ["past_due", "grace_period"].includes(data.status);
   const isMonthly = data.planType === "monthly";
@@ -78,7 +78,7 @@ export default function BillingPage() {
         window.location.href = json.url;
       }
     } catch {
-      toast.error("Could not open billing portal");
+      toast.error(t("toast.couldNotOpenPortal", lang));
     } finally {
       setPortalLoading(false);
     }
@@ -94,13 +94,13 @@ export default function BillingPage() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed to switch plan");
-      toast.success("Switched to annual plan! You're saving $1,200/year.");
+      toast.success(t("toast.switchedToAnnual", lang));
       // Refresh billing data
       const refreshRes = await fetch("/api/dashboard/billing");
       const refreshData = await refreshRes.json();
       setData(refreshData);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to switch plan");
+      toast.error(err instanceof Error ? err.message : t("toast.failedToSwitchPlan", lang));
     } finally {
       setSwitchLoading(false);
     }
@@ -109,8 +109,8 @@ export default function BillingPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Billing"
-        description="Manage your subscription and payment method"
+        title={t("billing.title", lang)}
+        description={t("billing.description", lang)}
       />
 
       {/* Past Due Banner */}
@@ -132,12 +132,12 @@ export default function BillingPage() {
               {t("billing.paymentPastDue", lang)}
             </p>
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-              Your recent payment was declined. Please update your payment method to avoid service interruption.
+              {t("billing.paymentDeclined", lang)}
             </p>
           </div>
           {data.hasStripeCustomer && (
             <Button variant="danger" onClick={openPortal} disabled={portalLoading}>
-              {portalLoading ? "Loading..." : t("billing.updatePaymentMethod", lang)}
+              {portalLoading ? t("action.loading", lang) : t("billing.updatePaymentMethod", lang)}
             </Button>
           )}
         </div>
@@ -156,18 +156,17 @@ export default function BillingPage() {
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-semibold" style={{ color: "var(--db-accent)" }}>
-                  Save $1,200/year with Annual Billing
+                  {t("billing.saveAnnual", lang)}
                 </h3>
                 <span
                   className="rounded-full px-2 py-0.5 text-xs font-bold"
                   style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                 >
-                  SAVE 20%
+                  {t("billing.save20", lang)}
                 </span>
               </div>
               <p className="mt-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
-                Switch from $497/mo to $397/mo billed annually at $4,764/year.
-                Same features, same service — just $100/mo less.
+                {t("billing.switchDesc", lang)}
               </p>
               <div className="mt-3 flex items-center gap-4 text-xs" style={{ color: "var(--db-text-muted)" }}>
                 <span>$497/mo &rarr; $397/mo</span>
@@ -181,7 +180,7 @@ export default function BillingPage() {
               disabled={switchLoading}
               className="shrink-0"
             >
-              {switchLoading ? "Switching..." : "Switch to Annual"}
+              {switchLoading ? t("billing.switching", lang) : t("billing.switchToAnnual", lang)}
             </Button>
           </div>
         </div>
@@ -202,13 +201,13 @@ export default function BillingPage() {
                 {data.plan}
               </p>
               {data.planType === "annual" && (
-                <StatusBadge label="Annual" variant="success" />
+                <StatusBadge label={t("billing.annual", lang)} variant="success" />
               )}
             </div>
             <p className="text-2xl font-bold mt-1" style={{ color: "var(--db-accent)" }}>
               {fmt(data.price)}
               <span className="text-sm font-normal" style={{ color: "var(--db-text-muted)" }}>
-                /month{data.planType === "annual" ? " (billed annually)" : ""}
+                {t("billing.perMonth", lang)}{data.planType === "annual" ? ` ${t("billing.billedAnnually", lang)}` : ""}
               </span>
             </p>
           </div>
@@ -223,11 +222,11 @@ export default function BillingPage() {
             className="mb-4 text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
           >
-            Locations
+            {t("billing.locations", lang)}
           </h3>
           <div className="space-y-2">
             <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
-              <span className="text-sm" style={{ color: "var(--db-text)" }}>Base plan (1 location)</span>
+              <span className="text-sm" style={{ color: "var(--db-text)" }}>{t("billing.basePlan", lang)}</span>
               <span className="text-sm font-medium font-mono" style={{ color: "var(--db-text)" }}>{fmt(data.price)}/mo</span>
             </div>
             <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
@@ -239,7 +238,7 @@ export default function BillingPage() {
               </span>
             </div>
             <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ borderTop: "1px solid var(--db-border)" }}>
-              <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>Total</span>
+              <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>{t("billing.total", lang)}</span>
               <span className="text-sm font-bold font-mono" style={{ color: "var(--db-accent)" }}>
                 {fmt(data.totalMonthly ?? data.price)}/mo
               </span>
@@ -259,7 +258,7 @@ export default function BillingPage() {
           </h3>
           {data.hasStripeCustomer && (
             <Button variant="ghost" size="sm" onClick={openPortal} disabled={portalLoading}>
-              {portalLoading ? "Loading..." : "Update"}
+              {portalLoading ? t("action.loading", lang) : t("billing.update", lang)}
             </Button>
           )}
         </div>
@@ -276,13 +275,13 @@ export default function BillingPage() {
                 •••• •••• •••• {data.cardLast4}
               </p>
               <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                Expires {String(data.cardExpMonth).padStart(2, "0")}/{data.cardExpYear}
+                {t("billing.cardExpires", lang)} {String(data.cardExpMonth).padStart(2, "0")}/{data.cardExpYear}
               </p>
             </div>
           </div>
         ) : (
           <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-            No payment method on file
+            {t("billing.noPaymentMethod", lang)}
           </p>
         )}
       </div>
@@ -336,7 +335,7 @@ export default function BillingPage() {
                   <span className="text-sm font-mono font-medium" style={{ color: "var(--db-text)" }}>
                     {fmt(inv.amount ?? 0)}
                   </span>
-                  <StatusBadge label="Paid" variant="success" dot />
+                  <StatusBadge label={t("invoices.paid", lang)} variant="success" dot />
                 </div>
               </div>
             ))}
@@ -348,7 +347,7 @@ export default function BillingPage() {
       {data.hasStripeCustomer && (
         <div className="flex justify-center">
           <Button size="lg" onClick={openPortal} disabled={portalLoading}>
-            {portalLoading ? "Opening Portal..." : t("billing.manageBilling", lang)}
+            {portalLoading ? t("billing.openingPortal", lang) : t("billing.manageBilling", lang)}
           </Button>
         </div>
       )}
@@ -368,22 +367,22 @@ export default function BillingPage() {
             onKeyDown={(e) => { if (e.key === "Escape") setShowSwitchConfirm(false); }}
           >
             <h3 id="switch-confirm-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
-              Switch to Annual Billing?
+              {t("billing.switchToAnnualConfirm", lang)}
             </h3>
             <div className="space-y-2 text-sm" style={{ color: "var(--db-text-secondary)" }}>
-              <p>Your plan will change from <strong>$497/mo</strong> to <strong>$397/mo</strong> billed annually at $4,764/year.</p>
-              <p>This saves you <strong style={{ color: "var(--db-success)" }}>$1,200/year</strong>.</p>
+              <p>{t("billing.switchConfirmDesc", lang)}</p>
+              <p><strong style={{ color: "var(--db-success)" }}>{t("billing.savesYou", lang)}</strong></p>
             </div>
             <div className="flex items-center justify-end gap-3 pt-2">
               <Button variant="ghost" onClick={() => setShowSwitchConfirm(false)}>
-                Cancel
+                {t("action.cancel", lang)}
               </Button>
               <Button
                 autoFocus
                 onClick={() => { setShowSwitchConfirm(false); switchToAnnual(); }}
                 disabled={switchLoading}
               >
-                {switchLoading ? "Switching..." : "Confirm Switch"}
+                {switchLoading ? t("billing.switching", lang) : t("billing.confirmSwitch", lang)}
               </Button>
             </div>
           </div>

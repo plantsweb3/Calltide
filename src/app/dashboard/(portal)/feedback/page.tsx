@@ -34,19 +34,19 @@ interface ReviewItem {
 }
 
 const TYPE_OPTIONS = [
-  { value: "feedback", label: "Feedback" },
-  { value: "feature_request", label: "Feature Request" },
-  { value: "bug_report", label: "Bug Report" },
-];
+  { value: "feedback", key: "feedback.feedbackLabel" },
+  { value: "feature_request", key: "feedback.featureRequestLabel" },
+  { value: "bug_report", key: "feedback.bugReportLabel" },
+] as const;
 
 const CATEGORY_OPTIONS = [
-  { value: "general", label: "General" },
-  { value: "calls", label: "Calls" },
-  { value: "billing", label: "Billing" },
-  { value: "appointments", label: "Appointments" },
-  { value: "sms", label: "SMS" },
-  { value: "other", label: "Other" },
-];
+  { value: "general", key: "feedback.general" },
+  { value: "calls", key: "feedback.calls" },
+  { value: "billing", key: "feedback.billing" },
+  { value: "appointments", key: "feedback.appointments" },
+  { value: "sms", key: "feedback.sms" },
+  { value: "other", key: "feedback.other" },
+] as const;
 
 const FEEDBACK_STATUS_VARIANT: Record<string, "info" | "accent" | "warning" | "success" | "neutral"> = {
   new: "info",
@@ -111,7 +111,7 @@ export default function ClientFeedbackPage() {
       setFormSuccess(true);
       setTimeout(() => setFormSuccess(false), 3000);
     } catch {
-      setFormError("Network error. Please try again.");
+      setFormError(t("feedback.networkError", lang));
     } finally {
       setSubmitting(false);
     }
@@ -129,14 +129,14 @@ export default function ClientFeedbackPage() {
     <div className="space-y-6">
       <PageHeader
         title={t("feedback.title", lang)}
-        description="Manage customer reviews and share ideas with our team."
+        description={t("feedback.description", lang)}
         actions={
           tab === "feedback" ? (
             <Button
               variant={showForm ? "secondary" : "primary"}
               onClick={() => setShowForm(!showForm)}
             >
-              {showForm ? "Cancel" : "New Feedback"}
+              {showForm ? t("action.cancel", lang) : t("feedback.newFeedback", lang)}
             </Button>
           ) : undefined
         }
@@ -144,18 +144,18 @@ export default function ClientFeedbackPage() {
 
       {/* Tabs */}
       <div className="flex gap-1 rounded-lg p-1" style={{ background: "var(--db-hover)" }}>
-        {(["feedback", "reviews"] as const).map((t) => (
+        {(["feedback", "reviews"] as const).map((tabKey) => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={tabKey}
+            onClick={() => setTab(tabKey)}
             className="flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors"
             style={{
-              background: tab === t ? "var(--db-card)" : "transparent",
-              color: tab === t ? "var(--db-text)" : "var(--db-text-muted)",
-              boxShadow: tab === t ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
+              background: tab === tabKey ? "var(--db-card)" : "transparent",
+              color: tab === tabKey ? "var(--db-text)" : "var(--db-text-muted)",
+              boxShadow: tab === tabKey ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
             }}
           >
-            {t === "feedback" ? `Feedback (${items.length})` : `Reviews (${reviews.length})`}
+            {tabKey === "feedback" ? `${t("feedback.feedbackTab", lang)} (${items.length})` : `${t("feedback.reviewsTab", lang)} (${reviews.length})`}
           </button>
         ))}
       </div>
@@ -164,7 +164,7 @@ export default function ClientFeedbackPage() {
         <>
           {formSuccess && (
             <div className="rounded-lg p-3 text-sm" style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}>
-              Thank you! Your feedback has been submitted.
+              {t("feedback.thankYou", lang)}
             </div>
           )}
 
@@ -172,36 +172,36 @@ export default function ClientFeedbackPage() {
             <form onSubmit={handleSubmit} className="db-card space-y-4 rounded-lg p-5">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Type</label>
+                  <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("feedback.type", lang)}</label>
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value)}
                     className="w-full rounded-lg px-3 py-2 text-sm outline-none"
                     style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
                   >
-                    {TYPE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                    {TYPE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{t(o.key, lang)}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Category</label>
+                  <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("feedback.category", lang)}</label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full rounded-lg px-3 py-2 text-sm outline-none"
                     style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
                   >
-                    {CATEGORY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                    {CATEGORY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{t(o.key, lang)}</option>)}
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Title</label>
+                <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("feedback.titleLabel", lang)}</label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Brief summary of your feedback..."
+                  placeholder={t("feedback.titlePlaceholder", lang)}
                   required
                   minLength={3}
                   maxLength={200}
@@ -212,11 +212,11 @@ export default function ClientFeedbackPage() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Description</label>
+                <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("feedback.descriptionLabel", lang)}</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Please describe in detail..."
+                  placeholder={t("feedback.descriptionPlaceholder", lang)}
                   required
                   minLength={10}
                   maxLength={2000}
@@ -232,7 +232,7 @@ export default function ClientFeedbackPage() {
               )}
 
               <Button type="submit" disabled={submitting}>
-                {submitting ? "Submitting..." : t("feedback.submitFeedback", lang)}
+                {submitting ? t("feedback.submitting", lang) : t("feedback.submitFeedback", lang)}
               </Button>
             </form>
           )}
@@ -247,9 +247,9 @@ export default function ClientFeedbackPage() {
                     <line x1="9" y1="10" x2="9.01" y2="10" /><line x1="15" y1="10" x2="15.01" y2="10" />
                   </svg>
                 }
-                title="No feedback yet"
-                description="Share your first idea or feature request with our team."
-                action={{ label: "New Feedback", onClick: () => setShowForm(true) }}
+                title={t("feedback.noFeedbackYet", lang)}
+                description={t("feedback.noFeedbackDesc", lang)}
+                action={{ label: t("feedback.newFeedback", lang), onClick: () => setShowForm(true) }}
               />
             ) : (
               items.map((item) => (
@@ -272,7 +272,7 @@ export default function ClientFeedbackPage() {
 
                   {item.adminResponse && (
                     <div className="mt-3 rounded-lg p-3" style={{ background: "var(--db-hover)" }}>
-                      <p className="text-xs font-medium" style={{ color: "var(--db-accent)" }}>Team Response</p>
+                      <p className="text-xs font-medium" style={{ color: "var(--db-accent)" }}>{t("feedback.teamResponse", lang)}</p>
                       <p className="mt-1 text-sm" style={{ color: "var(--db-text)" }}>{item.adminResponse}</p>
                       {item.adminRespondedAt && (
                         <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
@@ -370,8 +370,8 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
           }
-          title="No reviews yet"
-          description="Reviews will appear here when imported or synced."
+          title={t("feedback.noReviewsYet", lang)}
+          description={t("feedback.noReviewsDesc", lang)}
         />
       ) : (
         reviews.map((review) => (
@@ -383,7 +383,7 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                    {review.authorName || "Anonymous"}
+                    {review.authorName || t("feedback.anonymous", lang)}
                   </span>
                   <span className="text-sm" style={{ color: "var(--db-warning)" }}>
                     {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
@@ -412,7 +412,7 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
                     onClick={() => generateDraft(review.id)}
                     disabled={drafting === review.id}
                   >
-                    {drafting === review.id ? "Generating..." : "Generate Reply"}
+                    {drafting === review.id ? t("feedback.generating", lang) : t("feedback.generateReply", lang)}
                   </Button>
                 )}
               </div>
@@ -422,7 +422,7 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
             {review.replyDraft && review.replyStatus !== "none" && (
               <div className="mt-3 rounded-lg p-3" style={{ background: "var(--db-hover)" }}>
                 <p className="text-xs font-medium mb-1" style={{ color: "var(--db-accent)" }}>
-                  AI Draft {review.replyStatus === "approved" && "(Approved)"}
+                  {t("feedback.aiDraft", lang)} {review.replyStatus === "approved" && t("feedback.approved", lang)}
                 </p>
                 {editing === review.id ? (
                   <div className="space-y-2">
@@ -435,10 +435,10 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
                     />
                     <div className="flex gap-2">
                       <Button size="sm" onClick={() => saveEdit(review.id)}>
-                        Save
+                        {t("action.save", lang)}
                       </Button>
                       <Button size="sm" variant="ghost" onClick={() => { setEditing(null); setEditText(""); }}>
-                        Cancel
+                        {t("action.cancel", lang)}
                       </Button>
                     </div>
                   </div>
@@ -451,7 +451,7 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
                           {t("feedback.approve", lang)}
                         </Button>
                         <Button size="sm" variant="secondary" onClick={() => { setEditing(review.id); setEditText(review.replyDraft || ""); }}>
-                          Edit
+                          {t("action.edit", lang)}
                         </Button>
                         <Button
                           size="sm"
@@ -459,7 +459,7 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
                           onClick={() => generateDraft(review.id)}
                           disabled={drafting === review.id}
                         >
-                          {drafting === review.id ? "Regenerating..." : "Regenerate"}
+                          {drafting === review.id ? t("feedback.regenerating", lang) : t("feedback.regenerate", lang)}
                         </Button>
                       </div>
                     )}

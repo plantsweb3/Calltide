@@ -179,8 +179,8 @@ export default function InvoicesPage() {
       setTotalPages(data.totalPages || 1);
       setTotal(data.total || 0);
     } catch {
-      setError("Failed to load invoices. Please try again.");
-      toast.error("Failed to load invoices");
+      setError(t("toast.failedToLoadInvoices", lang));
+      toast.error(t("toast.failedToLoadInvoices", lang));
     } finally {
       setLoading(false);
     }
@@ -211,14 +211,14 @@ export default function InvoicesPage() {
     const total = calculateTotal(subtotal, taxAmount);
 
     if (total <= 0) {
-      toast.error("Invoice total must be greater than $0");
+      toast.error(t("toast.invoiceTotalRequired", lang));
       return;
     }
 
     // Require at least one line item with a description
     const validItems = formLineItems.filter((i) => i.description.trim());
     if (validItems.length === 0) {
-      toast.error("Add at least one line item with a description");
+      toast.error(t("toast.lineItemRequired", lang));
       return;
     }
 
@@ -242,11 +242,11 @@ export default function InvoicesPage() {
         const data = await res.json();
         throw new Error(data.error || "Failed to create invoice");
       }
-      toast.success("Invoice created");
+      toast.success(t("toast.invoiceCreated", lang));
       resetCreateForm();
       fetchInvoices();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to create invoice");
+      toast.error(err instanceof Error ? err.message : t("toast.failedToCreateInvoice", lang));
     } finally {
       setCreating(false);
     }
@@ -267,10 +267,10 @@ export default function InvoicesPage() {
       const res = await fetch(`/api/dashboard/invoices/${invoiceId}/send`, { method: "POST" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to send");
-      toast.success("Invoice sent to customer via SMS");
+      toast.success(t("toast.invoiceSent", lang));
       fetchInvoices();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to send invoice");
+      toast.error(err instanceof Error ? err.message : t("toast.failedToSendInvoice", lang));
     } finally {
       setSendingId(null);
     }
@@ -287,11 +287,11 @@ export default function InvoicesPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to mark as paid");
-      toast.success("Invoice marked as paid");
+      toast.success(t("toast.invoiceMarkedPaid", lang));
       setMarkPaidId(null);
       fetchInvoices();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to mark as paid");
+      toast.error(err instanceof Error ? err.message : t("toast.failedToMarkPaid", lang));
     } finally {
       setMarkPaidLoading(false);
     }
@@ -304,11 +304,11 @@ export default function InvoicesPage() {
       const res = await fetch(`/api/dashboard/invoices/${cancelId}`, { method: "DELETE" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to cancel");
-      toast.success("Invoice cancelled");
+      toast.success(t("toast.invoiceCancelled", lang));
       setCancelId(null);
       fetchInvoices();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to cancel invoice");
+      toast.error(err instanceof Error ? err.message : t("toast.failedToCancelInvoice", lang));
     } finally {
       setCancelLoading(false);
     }
@@ -332,7 +332,7 @@ export default function InvoicesPage() {
     const total = calculateTotal(subtotal, taxAmount);
 
     if (total <= 0) {
-      toast.error("Invoice total must be greater than $0");
+      toast.error(t("toast.invoiceTotalRequired", lang));
       return;
     }
 
@@ -355,11 +355,11 @@ export default function InvoicesPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update");
-      toast.success("Invoice updated");
+      toast.success(t("toast.invoiceUpdated", lang));
       setShowEdit(null);
       fetchInvoices();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to update invoice");
+      toast.error(err instanceof Error ? err.message : t("toast.failedToUpdateInvoice", lang));
     } finally {
       setEditSaving(false);
     }
@@ -383,7 +383,7 @@ export default function InvoicesPage() {
   const columns: Column<Invoice>[] = [
     {
       key: "invoiceNumber",
-      label: "Invoice #",
+      label: t("invoices.invoiceNumber", lang),
       render: (row) => (
         <span className="text-sm font-mono font-medium" style={{ color: "var(--db-text)" }}>
           {row.invoiceNumber || row.id.slice(0, 8).toUpperCase()}
@@ -392,11 +392,11 @@ export default function InvoicesPage() {
     },
     {
       key: "customerName",
-      label: "Customer",
+      label: t("invoices.customer", lang),
       render: (row) => (
         <div>
           <span className="text-sm font-medium block" style={{ color: "var(--db-text)" }}>
-            {row.customerName || "No customer"}
+            {row.customerName || t("invoices.noCustomer", lang)}
           </span>
           {row.customerPhone && (
             <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
@@ -408,7 +408,7 @@ export default function InvoicesPage() {
     },
     {
       key: "amount",
-      label: "Amount",
+      label: t("invoices.amount", lang),
       render: (row) => (
         <span className="text-sm font-semibold font-mono" style={{ color: "var(--db-text)" }}>
           {formatCurrency(row.amount)}
@@ -417,7 +417,7 @@ export default function InvoicesPage() {
     },
     {
       key: "status",
-      label: "Status",
+      label: t("invoices.status", lang),
       render: (row) => {
         const effectiveStatus = isOverdue(row) ? "overdue" : row.status;
         return <StatusBadge label={effectiveStatus} variant={statusToVariant(effectiveStatus)} dot />;
@@ -425,20 +425,20 @@ export default function InvoicesPage() {
     },
     {
       key: "dueDate",
-      label: "Due Date",
+      label: t("invoices.dueDate", lang),
       render: (row) => {
         const overdue = isOverdue(row);
         return (
           <span className="text-sm" style={{ color: overdue ? "var(--db-danger)" : "var(--db-text-muted)" }}>
             {formatDate(row.dueDate)}
-            {overdue && <span className="ml-1 text-xs font-semibold uppercase">overdue</span>}
+            {overdue && <span className="ml-1 text-xs font-semibold uppercase">{t("invoices.overdue", lang)}</span>}
           </span>
         );
       },
     },
     {
       key: "smsSentAt",
-      label: "Sent",
+      label: t("status.sent", lang),
       render: (row) => (
         <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>
           {row.smsSentAt ? formatDate(row.smsSentAt) : "\u2014"}
@@ -457,10 +457,10 @@ export default function InvoicesPage() {
               variant="ghost"
               onClick={() => handleSend(row.id)}
               disabled={sendingId === row.id}
-              title="Send invoice to customer"
+              title={t("invoices.sendInvoice", lang)}
             >
               {sendingId === row.id ? (
-                <span className="text-xs">Sending...</span>
+                <span className="text-xs">{t("invoices.sending", lang)}</span>
               ) : (
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="22" y1="2" x2="11" y2="13" />
@@ -475,7 +475,7 @@ export default function InvoicesPage() {
               size="sm"
               variant="ghost"
               onClick={() => { setMarkPaidId(row.id); setMarkPaidMethod("cash"); }}
-              title="Mark as paid"
+              title={t("invoices.markPaid", lang)}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12" />
@@ -488,7 +488,7 @@ export default function InvoicesPage() {
               size="sm"
               variant="ghost"
               onClick={() => openEdit(row)}
-              title="Edit invoice"
+              title={t("invoices.editInvoice", lang)}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -502,7 +502,7 @@ export default function InvoicesPage() {
               size="sm"
               variant="ghost"
               onClick={() => setCancelId(row.id)}
-              title="Cancel invoice"
+              title={t("invoices.cancelInvoice", lang)}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -527,7 +527,7 @@ export default function InvoicesPage() {
     <div>
       <PageHeader
         title={t("invoices.title", lang)}
-        description="Create, send, and track payments from your customers."
+        description={t("invoices.description", lang)}
         actions={
           <div className="flex items-center gap-2">
             <ExportCsvButton
@@ -552,22 +552,22 @@ export default function InvoicesPage() {
       {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-3 mb-6 sm:grid-cols-4 stagger-grid">
         <MetricCard
-          label="Outstanding"
+          label={t("invoices.outstanding", lang)}
           value={formatCurrency(stats.outstanding)}
         />
         <MetricCard
-          label="Overdue"
+          label={t("invoices.overdue", lang)}
           value={formatCurrency(stats.overdue)}
           changeType={stats.overdue > 0 ? "negative" : "neutral"}
           change={stats.overdueCount > 0 ? `${stats.overdueCount} invoice${stats.overdueCount > 1 ? "s" : ""}` : undefined}
         />
         <MetricCard
-          label="Paid This Month"
+          label={t("invoices.paidThisMonth", lang)}
           value={formatCurrency(stats.paidThisMonth)}
           changeType="positive"
         />
         <MetricCard
-          label="Avg. Days to Pay"
+          label={t("invoices.avgDaysToPay", lang)}
           value={stats.avgDaysToPay > 0 ? `${stats.avgDaysToPay}d` : "\u2014"}
         />
       </div>
@@ -650,13 +650,13 @@ export default function InvoicesPage() {
                 style={{ color: "var(--db-accent)" }}
                 title="Clear date filter"
               >
-                Clear
+                {t("invoices.clear", lang)}
               </button>
             )}
           </div>
           <input
             type="text"
-            placeholder="Search invoices..."
+            placeholder={t("invoices.searchPlaceholder", lang)}
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             className="rounded-lg px-3 py-1.5 text-sm outline-none transition-all w-44"
@@ -679,9 +679,9 @@ export default function InvoicesPage() {
               <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
             </svg>
           }
-          title="No invoices yet"
-          description="Create your first invoice to start tracking payments and collecting money from customers."
-          action={{ label: "Create Invoice", onClick: () => setShowCreate(true) }}
+          title={t("invoices.noInvoices", lang)}
+          description={t("invoices.noInvoicesDesc", lang)}
+          action={{ label: t("invoices.createInvoice", lang), onClick: () => setShowCreate(true) }}
         />
       )}
 
@@ -701,7 +701,7 @@ export default function InvoicesPage() {
               {row.lineItems && row.lineItems.length > 0 && (
                 <div className="space-y-1">
                   <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-                    Line Items
+                    {t("invoices.lineItems", lang)}
                   </p>
                   {row.lineItems.map((item, i) => (
                     <div key={i} className="flex items-center justify-between text-sm">
@@ -778,7 +778,7 @@ export default function InvoicesPage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                    Customer
+                    {t("invoices.customer", lang)}
                   </label>
                   <select
                     value={formCustomerId}
@@ -786,7 +786,7 @@ export default function InvoicesPage() {
                     className="w-full rounded-lg px-3 py-2 text-sm outline-none"
                     style={inputStyle}
                   >
-                    <option value="">No customer selected</option>
+                    <option value="">{t("invoices.noCustomerSelected", lang)}</option>
                     {customers.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name || c.phone}{c.name ? ` (${c.phone})` : ""}
@@ -796,7 +796,7 @@ export default function InvoicesPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                    Due Date
+                    {t("invoices.dueDate", lang)}
                   </label>
                   <input
                     type="date"
@@ -811,7 +811,7 @@ export default function InvoicesPage() {
               {/* Line Items */}
               <div>
                 <label className="block text-xs font-medium mb-2" style={{ color: "var(--db-text-muted)" }}>
-                  Line Items
+                  {t("invoices.lineItems", lang)}
                 </label>
                 <LineItemsEditor
                   items={formLineItems}
@@ -824,12 +824,12 @@ export default function InvoicesPage() {
               {/* Notes */}
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                  Notes
+                  {t("invoices.notes", lang)}
                 </label>
                 <textarea
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
-                  placeholder="Payment terms, special instructions..."
+                  placeholder={t("invoices.notesPlaceholder", lang)}
                   rows={2}
                   className="w-full resize-none rounded-lg px-3 py-2 text-sm outline-none"
                   style={inputStyle}
@@ -842,7 +842,7 @@ export default function InvoicesPage() {
                   {t("action.cancel", lang)}
                 </Button>
                 <Button type="submit" disabled={creating}>
-                  {creating ? "Creating..." : t("invoices.newInvoice", lang)}
+                  {creating ? t("invoices.creating", lang) : t("invoices.newInvoice", lang)}
                 </Button>
               </div>
             </form>
@@ -874,7 +874,7 @@ export default function InvoicesPage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                    Customer
+                    {t("invoices.customer", lang)}
                   </label>
                   <select
                     value={editCustomerId}
@@ -882,7 +882,7 @@ export default function InvoicesPage() {
                     className="w-full rounded-lg px-3 py-2 text-sm outline-none"
                     style={inputStyle}
                   >
-                    <option value="">No customer selected</option>
+                    <option value="">{t("invoices.noCustomerSelected", lang)}</option>
                     {customers.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name || c.phone}{c.name ? ` (${c.phone})` : ""}
@@ -892,7 +892,7 @@ export default function InvoicesPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                    Due Date
+                    {t("invoices.dueDate", lang)}
                   </label>
                   <input
                     type="date"
@@ -906,7 +906,7 @@ export default function InvoicesPage() {
 
               <div>
                 <label className="block text-xs font-medium mb-2" style={{ color: "var(--db-text-muted)" }}>
-                  Line Items
+                  {t("invoices.lineItems", lang)}
                 </label>
                 <LineItemsEditor
                   items={editLineItems}
@@ -918,12 +918,12 @@ export default function InvoicesPage() {
 
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                  Notes
+                  {t("invoices.notes", lang)}
                 </label>
                 <textarea
                   value={editNotes}
                   onChange={(e) => setEditNotes(e.target.value)}
-                  placeholder="Payment terms, special instructions..."
+                  placeholder={t("invoices.notesPlaceholder", lang)}
                   rows={2}
                   className="w-full resize-none rounded-lg px-3 py-2 text-sm outline-none"
                   style={inputStyle}
@@ -935,7 +935,7 @@ export default function InvoicesPage() {
                   {t("action.cancel", lang)}
                 </Button>
                 <Button type="submit" disabled={editSaving}>
-                  {editSaving ? "Saving..." : t("action.save", lang)}
+                  {editSaving ? t("settings.saving", lang) : t("action.save", lang)}
                 </Button>
               </div>
             </form>
@@ -961,7 +961,7 @@ export default function InvoicesPage() {
               {t("invoices.markPaid", lang)}
             </h3>
             <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-              Payment Method
+              {t("invoices.paymentMethod", lang)}
             </label>
             <select
               value={markPaidMethod}
@@ -984,7 +984,7 @@ export default function InvoicesPage() {
                 disabled={markPaidLoading}
                 style={{ background: "var(--db-success)", color: "#fff" }}
               >
-                {markPaidLoading ? "Saving..." : t("invoices.recordPayment", lang)}
+                {markPaidLoading ? t("settings.saving", lang) : t("invoices.recordPayment", lang)}
               </Button>
             </div>
           </div>
@@ -994,9 +994,9 @@ export default function InvoicesPage() {
       {/* ─── Cancel Confirmation ─── */}
       <ConfirmDialog
         open={!!cancelId}
-        title="Cancel Invoice"
-        description="This will cancel the invoice. This action cannot be undone. The customer will no longer be able to pay via the payment link."
-        confirmLabel="Cancel Invoice"
+        title={t("invoices.cancelInvoice", lang)}
+        description={t("invoices.cancelInvoiceDesc", lang)}
+        confirmLabel={t("invoices.cancelInvoice", lang)}
         variant="danger"
         loading={cancelLoading}
         onConfirm={handleCancel}

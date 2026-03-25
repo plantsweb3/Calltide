@@ -48,9 +48,9 @@ const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
 const LOST_REASONS = [
   { value: "too_expensive", i18nKey: "estimates.lostReasons.tooExpensive" as const, label: null },
   { value: "went_with_competitor", i18nKey: "estimates.lostReasons.competitor" as const, label: null },
-  { value: "no_longer_needed", i18nKey: null, label: "No longer needed" },
+  { value: "no_longer_needed", i18nKey: "estimates.lostReasons.noLongerNeeded" as const, label: null },
   { value: "no_response", i18nKey: "estimates.lostReasons.noResponse" as const, label: null },
-  { value: "other", i18nKey: null, label: "Other" },
+  { value: "other", i18nKey: "estimates.lostReasons.other" as const, label: null },
 ];
 
 export default function EstimatesPage() {
@@ -81,7 +81,7 @@ export default function EstimatesPage() {
       setEstimates(data.estimates || []);
       setPipeline(data.pipeline || {});
     } catch {
-      setError("Failed to load estimates. Please try again.");
+      setError(t("toast.failedToLoadEstimates", lang));
       setEstimates([]);
     } finally {
       setLoading(false);
@@ -98,11 +98,11 @@ export default function EstimatesPage() {
         body: JSON.stringify(updates),
       });
       if (!res.ok) throw new Error("Update failed");
-      const label = updates.status === "won" ? "Estimate marked as won" : updates.status === "lost" ? "Estimate marked as lost" : "Estimate updated";
+      const label = updates.status === "won" ? t("toast.estimateMarkedWon", lang) : updates.status === "lost" ? t("toast.estimateMarkedLost", lang) : t("toast.estimateUpdated", lang);
       toast.success(label);
       fetchEstimates();
     } catch {
-      toast.error("Failed to update estimate");
+      toast.error(t("toast.failedToUpdateEstimate", lang));
     }
   }
 
@@ -112,10 +112,10 @@ export default function EstimatesPage() {
     try {
       const res = await fetch(`/api/dashboard/estimates/${id}/follow-up`, { method: "POST" });
       if (!res.ok) throw new Error("Follow-up failed");
-      toast.success("Follow-up SMS sent");
+      toast.success(t("toast.followUpSmsSent", lang));
       fetchEstimates();
     } catch {
-      toast.error("Failed to send follow-up");
+      toast.error(t("toast.failedToSendFollowUp", lang));
     }
   }
 
@@ -128,10 +128,10 @@ export default function EstimatesPage() {
         throw new Error(errorData.error || "Conversion failed");
       }
       await res.json();
-      toast.success("Estimate converted to invoice");
+      toast.success(t("toast.estimateConvertedToInvoice", lang));
       fetchEstimates();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to convert estimate");
+      toast.error(err instanceof Error ? err.message : t("toast.failedToConvertEstimate", lang));
     } finally {
       setConvertingId(null);
     }
@@ -163,7 +163,7 @@ export default function EstimatesPage() {
           <div className="flex items-center gap-2">
             <input
               type="text"
-              placeholder="Search by customer..."
+              placeholder={t("estimates.searchPlaceholder", lang)}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-200 w-full sm:w-52"
@@ -224,7 +224,7 @@ export default function EstimatesPage() {
       {error && (
         <div role="alert" aria-live="assertive" className="db-card mb-4 flex items-center justify-between p-4" style={{ borderColor: "var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
-          <Button variant="danger" size="sm" onClick={fetchEstimates}>Retry</Button>
+          <Button variant="danger" size="sm" onClick={fetchEstimates}>{t("action.retry", lang)}</Button>
         </div>
       )}
 
@@ -237,7 +237,7 @@ export default function EstimatesPage() {
           </svg>
           <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>{t("empty.noEstimates", lang, { name: receptionistName })}</p>
           <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
-            Estimates are auto-created when callers request quotes through {receptionistName}.
+            {t("estimates.autoCreated", lang, { name: receptionistName })}
           </p>
         </div>
       ) : (
@@ -245,16 +245,16 @@ export default function EstimatesPage() {
           columns={[
             {
               key: "customerName",
-              label: "Customer",
+              label: t("estimates.customer", lang),
               render: (row) => (
                 <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                  {row.customerName || "Unknown"}
+                  {row.customerName || t("dispatch.unknown", lang)}
                 </span>
               ),
             },
             {
               key: "service",
-              label: "Service",
+              label: t("estimates.service", lang),
               render: (row) => <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{row.service || "\u2014"}</span>,
             },
             {
@@ -264,17 +264,17 @@ export default function EstimatesPage() {
             },
             {
               key: "status",
-              label: "Status",
+              label: t("estimates.status", lang),
               render: (row) => <StatusBadge label={row.status} variant={statusToVariant(row.status)} />,
             },
             {
               key: "createdAt",
-              label: "Created",
+              label: t("estimates.created", lang),
               render: (row) => <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{formatDate(row.createdAt)}</span>,
             },
             {
               key: "nextFollowUpAt",
-              label: "Next Follow-Up",
+              label: t("estimates.nextFollowUp", lang),
               render: (row) => <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{formatDate(row.nextFollowUpAt)}</span>,
             },
           ] as Column<Estimate>[]}
@@ -287,17 +287,17 @@ export default function EstimatesPage() {
                 <p className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{est.description}</p>
               )}
               {est.notes && (
-                <p className="text-sm italic" style={{ color: "var(--db-text-muted)" }}>Notes: {est.notes}</p>
+                <p className="text-sm italic" style={{ color: "var(--db-text-muted)" }}>{t("estimates.notes", lang)}: {est.notes}</p>
               )}
               <div className="flex items-center gap-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
-                <span>Follow-ups sent: {est.followUpCount}</span>
-                {est.lastFollowUpAt && <span>Last: {formatDate(est.lastFollowUpAt)}</span>}
-                {est.customerPhone && <span>Phone: {est.customerPhone}</span>}
+                <span>{t("estimates.followUpsSent", lang)}: {est.followUpCount}</span>
+                {est.lastFollowUpAt && <span>{t("estimates.last", lang)}: {formatDate(est.lastFollowUpAt)}</span>}
+                {est.customerPhone && <span>{t("misc.phone", lang)}: {est.customerPhone}</span>}
               </div>
               <div className="flex gap-2 pt-2">
                 {["new", "sent", "follow_up"].includes(est.status) && (
                   <>
-                    <Button size="sm" onClick={() => setConfirmFollowUpId(est.id)}>Send Follow-Up</Button>
+                    <Button size="sm" onClick={() => setConfirmFollowUpId(est.id)}>{t("estimates.sendFollowUp", lang)}</Button>
                     {est.amount && est.amount > 0 && (
                       <Button
                         size="sm"
@@ -306,7 +306,7 @@ export default function EstimatesPage() {
                         disabled={convertingId === est.id}
                         style={{ background: "var(--db-accent-bg)", color: "var(--db-accent)" }}
                       >
-                        {convertingId === est.id ? "Converting..." : "Convert to Invoice"}
+                        {convertingId === est.id ? t("estimates.converting", lang) : t("estimates.convertToInvoice", lang)}
                       </Button>
                     )}
                     <Button
@@ -315,19 +315,19 @@ export default function EstimatesPage() {
                       onClick={() => { setShowWonModal(est.id); setWonAmount(est.amount?.toString() || ""); }}
                       style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                     >
-                      Mark Won
+                      {t("estimates.markWon", lang)}
                     </Button>
-                    <Button size="sm" variant="danger" onClick={() => setShowLostModal(est.id)}>Mark Lost</Button>
+                    <Button size="sm" variant="danger" onClick={() => setShowLostModal(est.id)}>{t("estimates.markLost", lang)}</Button>
                   </>
                 )}
                 {est.status === "won" && est.wonAt && (
                   <span className="text-xs font-medium" style={{ color: "var(--db-success)" }}>
-                    Won on {formatDate(est.wonAt)} — {formatCurrency(est.amount)}
+                    {t("estimates.wonOn", lang, { date: formatDate(est.wonAt) })} — {formatCurrency(est.amount)}
                   </span>
                 )}
                 {est.status === "lost" && (
                   <span className="text-xs font-medium" style={{ color: "var(--db-danger)" }}>
-                    Lost: {est.lostReason?.replace(/_/g, " ") || "no reason"}
+                    {t("estimates.lost", lang)}: {est.lostReason?.replace(/_/g, " ") || t("estimates.lostNoReason", lang)}
                   </span>
                 )}
               </div>
@@ -352,11 +352,11 @@ export default function EstimatesPage() {
             style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 id="follow-up-dialog-title" className="text-lg font-semibold mb-2" style={{ color: "var(--db-text)" }}>Send Follow-Up SMS?</h3>
-            <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>This will send a follow-up text message to the customer.</p>
+            <h3 id="follow-up-dialog-title" className="text-lg font-semibold mb-2" style={{ color: "var(--db-text)" }}>{t("estimates.sendFollowUpSms", lang)}</h3>
+            <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>{t("estimates.sendFollowUpDesc", lang)}</p>
             <div className="flex gap-2">
-              <Button variant="secondary" className="flex-1" onClick={() => setConfirmFollowUpId(null)}>Cancel</Button>
-              <Button className="flex-1" onClick={() => { sendFollowUp(confirmFollowUpId); setConfirmFollowUpId(null); }}>Send SMS</Button>
+              <Button variant="secondary" className="flex-1" onClick={() => setConfirmFollowUpId(null)}>{t("action.cancel", lang)}</Button>
+              <Button className="flex-1" onClick={() => { sendFollowUp(confirmFollowUpId); setConfirmFollowUpId(null); }}>{t("estimates.sendSms", lang)}</Button>
             </div>
           </div>
         </div>
@@ -378,8 +378,8 @@ export default function EstimatesPage() {
             style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 id="won-dialog-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>Mark as Won</h3>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Final Amount ($)</label>
+            <h3 id="won-dialog-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>{t("estimates.markAsWon", lang)}</h3>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("estimates.finalAmount", lang)}</label>
             <input
               type="number"
               min="0"
@@ -390,7 +390,7 @@ export default function EstimatesPage() {
               autoFocus
             />
             <div className="flex gap-2">
-              <Button variant="secondary" className="flex-1" onClick={() => setShowWonModal(null)}>Cancel</Button>
+              <Button variant="secondary" className="flex-1" onClick={() => setShowWonModal(null)}>{t("action.cancel", lang)}</Button>
               <Button
                 className="flex-1"
                 style={{ background: "var(--db-success)", color: "#fff" }}
@@ -399,7 +399,7 @@ export default function EstimatesPage() {
                   setShowWonModal(null);
                 }}
               >
-                Confirm Won
+                {t("estimates.confirmWon", lang)}
               </Button>
             </div>
           </div>
@@ -422,8 +422,8 @@ export default function EstimatesPage() {
             style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 id="lost-dialog-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>Mark as Lost</h3>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Reason</label>
+            <h3 id="lost-dialog-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>{t("estimates.markAsLost", lang)}</h3>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("estimates.reason", lang)}</label>
             <select
               value={lostReason}
               onChange={(e) => setLostReason(e.target.value)}
@@ -432,11 +432,11 @@ export default function EstimatesPage() {
               autoFocus
             >
               {LOST_REASONS.map((r) => (
-                <option key={r.value} value={r.value}>{r.i18nKey ? t(r.i18nKey, lang) : r.label}</option>
+                <option key={r.value} value={r.value}>{t(r.i18nKey, lang)}</option>
               ))}
             </select>
             <div className="flex gap-2">
-              <Button variant="secondary" className="flex-1" onClick={() => setShowLostModal(null)}>Cancel</Button>
+              <Button variant="secondary" className="flex-1" onClick={() => setShowLostModal(null)}>{t("action.cancel", lang)}</Button>
               <Button
                 variant="danger"
                 className="flex-1"
@@ -445,7 +445,7 @@ export default function EstimatesPage() {
                   setShowLostModal(null);
                 }}
               >
-                Confirm Lost
+                {t("estimates.confirmLost", lang)}
               </Button>
             </div>
           </div>

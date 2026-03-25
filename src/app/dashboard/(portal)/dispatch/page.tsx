@@ -102,7 +102,7 @@ export default function DispatchPage() {
       setTechnicians(data.technicians);
       setUnassigned(data.unassigned);
     } catch {
-      setError("Failed to load dispatch data. Please try again.");
+      setError(t("toast.failedToLoadDispatch", lang));
     } finally {
       setLoading(false);
     }
@@ -131,12 +131,12 @@ export default function DispatchPage() {
         body: JSON.stringify({ technicianId }),
       });
       if (!res.ok) throw new Error("Failed to assign");
-      toast.success(technicianId ? "Technician assigned" : "Technician unassigned");
+      toast.success(technicianId ? t("toast.technicianAssigned", lang) : t("toast.technicianUnassigned", lang));
       setAssignAppt(null);
       setReassignApptId(null);
       fetchDispatch();
     } catch {
-      toast.error("Failed to assign technician");
+      toast.error(t("toast.failedToAssign", lang));
     } finally {
       setAssignLoading(false);
     }
@@ -153,7 +153,7 @@ export default function DispatchPage() {
       toast.success("Technician assigned");
       fetchDispatch();
     } catch {
-      toast.error("Failed to assign technician");
+      toast.error(t("toast.failedToAssign", lang));
     }
   }
 
@@ -170,9 +170,9 @@ export default function DispatchPage() {
         throw new Error(data.error || "Failed to send");
       }
       const data = await res.json();
-      toast.success(`Schedule sent (${data.jobCount} jobs)`);
+      toast.success(t("toast.scheduleSent", lang, { count: String(data.jobCount) }));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to send schedule");
+      toast.error(err instanceof Error ? err.message : t("toast.failedToSendSchedule", lang));
     } finally {
       setNotifyLoading(null);
     }
@@ -181,7 +181,7 @@ export default function DispatchPage() {
   async function handleSendAll() {
     const techsWithJobs = technicians.filter((t) => t.appointments.length > 0 && t.phone && !t.isUnavailable);
     if (techsWithJobs.length === 0) {
-      toast.error("No technicians with jobs and phone numbers to notify");
+      toast.error(t("toast.noTechsToNotify", lang));
       return;
     }
 
@@ -199,7 +199,7 @@ export default function DispatchPage() {
         // Continue to next
       }
     }
-    toast.success(`Schedules sent to ${sent} of ${techsWithJobs.length} technicians`);
+    toast.success(t("toast.schedulesSent", lang, { sent: String(sent), total: String(techsWithJobs.length) }));
     setSendAllLoading(false);
   }
 
@@ -223,7 +223,7 @@ export default function DispatchPage() {
               onClick={handleSendAll}
               disabled={sendAllLoading || technicians.every((t) => t.appointments.length === 0)}
             >
-              {sendAllLoading ? "Sending..." : "Send All Schedules"}
+              {sendAllLoading ? t("dispatch.sending", lang) : t("dispatch.sendAllSchedules", lang)}
             </Button>
           </div>
         }
@@ -244,7 +244,7 @@ export default function DispatchPage() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
-          Prev
+          {t("dispatch.prev", lang)}
         </button>
 
         <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ export default function DispatchPage() {
               className="rounded-md px-2 py-1 text-xs font-medium transition-colors"
               style={{ background: "var(--db-accent)", color: "#fff" }}
             >
-              Today
+              {t("dispatch.today", lang)}
             </button>
           )}
         </div>
@@ -269,7 +269,7 @@ export default function DispatchPage() {
           onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
         >
-          Next
+          {t("dispatch.next", lang)}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6" />
           </svg>
@@ -310,9 +310,9 @@ export default function DispatchPage() {
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
           }
-          title="No technicians yet"
-          description="Add your team members to start dispatching jobs."
-          action={{ label: "Add Team", href: "/dashboard/team" }}
+          title={t("dispatch.noTechniciansYet", lang)}
+          description={t("dispatch.noTechniciansDesc", lang)}
+          action={{ label: t("dispatch.addTeam", lang), href: "/dashboard/team" }}
         />
       )}
 
@@ -395,14 +395,14 @@ export default function DispatchPage() {
                             className="text-xs font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
                             style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
                           >
-                            On Call
+                            {t("team.onCall", lang)}
                           </span>
                         )}
                         <span
                           className="text-xs font-medium px-2 py-0.5 rounded-full"
                           style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
                         >
-                          {tech.appointments.length} job{tech.appointments.length !== 1 ? "s" : ""}
+                          {tech.appointments.length} {tech.appointments.length !== 1 ? t("team.jobs", lang) : t("team.job", lang)}
                         </span>
                       </div>
                     </div>
@@ -441,7 +441,7 @@ export default function DispatchPage() {
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M22 2L11 13" /><path d="M22 2L15 22 11 13 2 9z" />
                         </svg>
-                        {notifyLoading === tech.id ? "Sending..." : "Send schedule"}
+                        {notifyLoading === tech.id ? t("dispatch.sending", lang) : t("dispatch.sendSchedule", lang)}
                       </button>
                     )}
                   </div>
@@ -450,7 +450,7 @@ export default function DispatchPage() {
                   <div className="p-3 space-y-2 min-h-[80px]">
                     {tech.appointments.length === 0 ? (
                       <p className="text-xs text-center py-4" style={{ color: "var(--db-text-muted)" }}>
-                        No jobs scheduled
+                        {t("dispatch.noJobsScheduled", lang)}
                       </p>
                     ) : (
                       tech.appointments.map((appt) => (
@@ -570,7 +570,7 @@ export default function DispatchPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate" style={{ color: "var(--db-text)" }}>{tech.name}</p>
                     <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                      {tech.appointments.length} job{tech.appointments.length !== 1 ? "s" : ""} today
+                      {tech.appointments.length} {t("dispatch.jobsToday", lang)}
                       {tech.skills?.length ? ` \u00B7 ${tech.skills.slice(0, 2).join(", ")}` : ""}
                     </p>
                   </div>
@@ -623,11 +623,11 @@ export default function DispatchPage() {
             </div>
 
             <div className="space-y-3">
-              <DetailRow label="Status">
+              <DetailRow label={t("dispatch.detailStatus", lang)}>
                 <StatusBadge label={selectedAppt.status} variant={statusToVariant(selectedAppt.status)} dot />
               </DetailRow>
               {selectedAppt.customerName && (
-                <DetailRow label="Customer">
+                <DetailRow label={t("dispatch.detailCustomer", lang)}>
                   <span className="text-sm" style={{ color: "var(--db-text)" }}>
                     {selectedAppt.customerName}
                     {selectedAppt.customerPhone ? ` \u00B7 ${formatPhone(selectedAppt.customerPhone)}` : ""}
@@ -635,22 +635,22 @@ export default function DispatchPage() {
                 </DetailRow>
               )}
               {selectedAppt.customerAddress && (
-                <DetailRow label="Address">
+                <DetailRow label={t("dispatch.detailAddress", lang)}>
                   <span className="text-sm" style={{ color: "var(--db-text)" }}>{selectedAppt.customerAddress}</span>
                 </DetailRow>
               )}
               {selectedAppt.notes && (
                 <div>
-                  <span className="text-xs font-medium uppercase tracking-wider block mb-1" style={{ color: "var(--db-text-muted)" }}>Notes</span>
+                  <span className="text-xs font-medium uppercase tracking-wider block mb-1" style={{ color: "var(--db-text-muted)" }}>{t("dispatch.detailNotes", lang)}</span>
                   <p className="text-sm rounded-lg p-3" style={{ background: "var(--db-hover)", color: "var(--db-text)" }}>
                     {selectedAppt.notes}
                   </p>
                 </div>
               )}
               {selectedAppt.technicianId && (
-                <DetailRow label="Assigned">
+                <DetailRow label={t("dispatch.detailAssigned", lang)}>
                   <span className="text-sm" style={{ color: "var(--db-text)" }}>
-                    {technicians.find((t) => t.id === selectedAppt.technicianId)?.name || "Unknown"}
+                    {technicians.find((t) => t.id === selectedAppt.technicianId)?.name || t("dispatch.unknown", lang)}
                   </span>
                 </DetailRow>
               )}
@@ -709,6 +709,7 @@ interface TechCircleProps {
 }
 
 function TechCircle({ tech, index, isRecommended, recommendedReason, onClick }: TechCircleProps) {
+  const [lang] = useLang();
   const color = getTechColor(tech, index);
   const initial = tech.name.charAt(0).toUpperCase();
   const [showTooltip, setShowTooltip] = useState(false);
@@ -742,10 +743,10 @@ function TechCircle({ tech, index, isRecommended, recommendedReason, onClick }: 
           }}
         >
           <p className="font-semibold">{tech.name}</p>
-          <p style={{ color: "var(--db-text-muted)" }}>{tech.appointments.length} job{tech.appointments.length !== 1 ? "s" : ""} today</p>
+          <p style={{ color: "var(--db-text-muted)" }}>{tech.appointments.length} {t("dispatch.jobsToday", lang)}</p>
           {isRecommended && (
             <p style={{ color: "var(--db-accent)" }}>
-              {recommendedReason ? `Recommended - ${recommendedReason}` : "Recommended"}
+              {recommendedReason ? `${t("dispatch.recommended", lang)} - ${recommendedReason}` : t("dispatch.recommended", lang)}
             </p>
           )}
         </div>
@@ -909,7 +910,7 @@ function AppointmentCard({
           onClick={(e) => e.stopPropagation()}
         >
           {reassignTechs.length === 0 ? (
-            <p className="text-xs text-center py-1" style={{ color: "var(--db-text-muted)" }}>No other techs available</p>
+            <p className="text-xs text-center py-1" style={{ color: "var(--db-text-muted)" }}>{t("dispatch.noOtherTechs", lang)}</p>
           ) : (
             reassignTechs.map((tech, idx) => {
               const color = getTechColor(tech, idx);

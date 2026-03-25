@@ -7,6 +7,8 @@ import { PageSkeleton } from "@/components/skeleton";
 import Button from "@/components/ui/button";
 import ConfirmDialog from "@/components/confirm-dialog";
 import TagEditor from "@/components/tag-editor";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 // ── Types ──
 
@@ -321,6 +323,7 @@ type FilterType = "all" | TimelineItem["type"];
 // ── Page component ──
 
 export default function CustomerDetailPage() {
+  const [lang] = useLang();
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
@@ -375,9 +378,9 @@ export default function CustomerDetailPage() {
       });
       if (!res.ok) throw new Error("Save failed");
       setCustomer((prev) => prev ? { ...prev, [field]: value || null } : prev);
-      toast.success("Changes saved");
+      toast.success(t("settings.saved", lang));
     } catch {
-      toast.error("Failed to save changes");
+      toast.error(t("settings.failedSave", lang));
     }
     setSaving(false);
     setEditingField(null);
@@ -392,9 +395,9 @@ export default function CustomerDetailPage() {
       });
       if (!res.ok) throw new Error("Save failed");
       setCustomer((prev) => prev ? { ...prev, tags: newTags } : prev);
-      toast.success("Tags updated");
+      toast.success(t("settings.saved", lang));
     } catch {
-      toast.error("Failed to save tags");
+      toast.error(t("settings.failedSave", lang));
     }
   }
 
@@ -403,10 +406,10 @@ export default function CustomerDetailPage() {
     try {
       const res = await fetch(`/api/dashboard/customers/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Delete failed");
-      toast.success("Customer deleted");
+      toast.success(t("action.delete", lang));
       router.push("/dashboard/customers");
     } catch {
-      toast.error("Failed to delete customer");
+      toast.error(t("error.somethingWentWrong", lang));
       setDeleting(false);
     }
   }
@@ -422,7 +425,7 @@ export default function CustomerDetailPage() {
         toast.error(data.error || "Failed to convert estimate");
         return;
       }
-      toast.success("Estimate converted to invoice");
+      toast.success(t("toast.estimateConvertedToInvoice", lang));
       fetchCustomer();
     } catch {
       toast.error("Failed to convert estimate");
@@ -444,7 +447,7 @@ export default function CustomerDetailPage() {
           style={{ color: "var(--db-text-muted)" }}
         >
           <BackArrowIcon />
-          Back to Customers
+          {t("action.back", lang)} {t("nav.customers", lang)}
         </button>
         <div
           className="rounded-xl p-6 text-center"
@@ -456,7 +459,7 @@ export default function CustomerDetailPage() {
             className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             style={{ background: "var(--db-accent)", color: "#fff" }}
           >
-            Retry
+            {t("action.retry", lang)}
           </button>
         </div>
       </div>
@@ -490,7 +493,7 @@ export default function CustomerDetailPage() {
         style={{ color: "var(--db-text-muted)" }}
       >
         <BackArrowIcon />
-        Back to Customers
+        {t("action.back", lang)} {t("nav.customers", lang)}
       </button>
 
       {/* Header card */}
@@ -584,18 +587,18 @@ export default function CustomerDetailPage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
             </svg>
-            Delete
+            {t("action.delete", lang)}
           </Button>
         </div>
 
         {/* Stats row */}
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-5">
           {[
-            { label: "Total Calls", value: String(customer.totalCalls) },
-            { label: "Appointments", value: String(customer.totalAppointments) },
-            { label: "Estimates", value: String(customer.totalEstimates) },
-            { label: "Lifetime Value", value: formatCurrency(customer.lifetimeValue || 0) },
-            { label: "First Contact", value: formatDate(customer.firstCallAt) },
+            { label: t("customers.totalCalls", lang), value: String(customer.totalCalls) },
+            { label: t("metric.appointments", lang), value: String(customer.totalAppointments) },
+            { label: t("nav.estimates", lang), value: String(customer.totalEstimates) },
+            { label: t("metric.revenueCaptured", lang), value: formatCurrency(customer.lifetimeValue || 0) },
+            { label: t("customers.lastCall", lang), value: formatDate(customer.firstCallAt) },
           ].map((stat) => (
             <div key={stat.label}>
               <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{stat.label}</p>
@@ -660,7 +663,7 @@ export default function CustomerDetailPage() {
       {/* Timeline section */}
       <div className="mb-4 flex items-center justify-between flex-wrap gap-3">
         <h2 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
-          Activity Timeline
+          {t("customerDetail.activity", lang)}
         </h2>
         <div className="flex gap-1 flex-wrap">
           {(["all", "call", "appointment", "estimate", "sms"] as const).map((f) => (
@@ -800,9 +803,9 @@ export default function CustomerDetailPage() {
 
       <ConfirmDialog
         open={showDeleteConfirm}
-        title="Delete Customer?"
-        description="This will permanently remove this customer and all their associated data. This action cannot be undone."
-        confirmLabel="Delete Customer"
+        title={`${t("action.delete", lang)}?`}
+        description={t("settings.dangerZone", lang)}
+        confirmLabel={t("action.delete", lang)}
         variant="danger"
         loading={deleting}
         onConfirm={deleteCustomer}
@@ -855,6 +858,7 @@ function CreateFollowUpModal({
   onClose: () => void;
   onCreated: () => void;
 }) {
+  const [lang] = useLang();
   const summary = callItem.data.summary ? String(callItem.data.summary) : "";
   const [title, setTitle] = useState(`Follow up: ${customerName || "Customer"}`);
   const [description, setDescription] = useState(
@@ -927,7 +931,7 @@ function CreateFollowUpModal({
           className="text-lg font-semibold mb-4"
           style={{ color: "var(--db-text)" }}
         >
-          Create Follow-up
+          {t("status.followUp", lang)}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
@@ -988,10 +992,10 @@ function CreateFollowUpModal({
           {error && <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>}
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
-              Cancel
+              {t("action.cancel", lang)}
             </Button>
             <Button type="submit" disabled={saving} className="flex-1">
-              {saving ? "Creating..." : "Create Follow-up"}
+              {saving ? t("action.loading", lang) : t("status.followUp", lang)}
             </Button>
           </div>
         </form>
@@ -1015,6 +1019,7 @@ function SendSmsModal({
   onClose: () => void;
   onSent: () => void;
 }) {
+  const [lang] = useLang();
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -1042,7 +1047,7 @@ function SendSmsModal({
         setError(data.error || "Failed to send SMS");
         return;
       }
-      toast.success("SMS sent successfully");
+      toast.success(t("status.sent", lang));
       onSent();
     } catch {
       setError("Failed to send SMS");
@@ -1075,7 +1080,7 @@ function SendSmsModal({
           className="text-lg font-semibold mb-1"
           style={{ color: "var(--db-text)" }}
         >
-          Send SMS
+          {t("customerDetail.sendSms", lang)}
         </h2>
         <p className="text-xs mb-4" style={{ color: "var(--db-text-muted)" }}>
           To: {customerName || "Customer"} ({customerPhone})
@@ -1102,10 +1107,10 @@ function SendSmsModal({
           {error && <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>}
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
-              Cancel
+              {t("action.cancel", lang)}
             </Button>
             <Button type="submit" disabled={sending} className="flex-1">
-              {sending ? "Sending..." : "Send SMS"}
+              {sending ? t("action.loading", lang) : t("customerDetail.sendSms", lang)}
             </Button>
           </div>
         </form>

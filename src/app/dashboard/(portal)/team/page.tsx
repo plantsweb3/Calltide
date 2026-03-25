@@ -93,7 +93,7 @@ export default function TeamPage() {
       const data = await res.json();
       setTechnicians(data.technicians);
     } catch {
-      setError("Failed to load team members. Please try again.");
+      setError(t("error.failedToLoad", lang));
     } finally {
       setLoading(false);
     }
@@ -128,7 +128,7 @@ export default function TeamPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!formName.trim()) {
-      toast.error("Name is required");
+      toast.error(t("toast.nameRequired", lang));
       return;
     }
 
@@ -151,7 +151,7 @@ export default function TeamPage() {
           const data = await res.json();
           throw new Error(data.error || "Failed to update");
         }
-        toast.success("Team member updated");
+        toast.success(t("toast.teamMemberUpdated", lang));
       } else {
         // Create
         const res = await fetch("/api/dashboard/technicians", {
@@ -169,12 +169,12 @@ export default function TeamPage() {
           const data = await res.json();
           throw new Error(data.error || "Failed to create");
         }
-        toast.success("Team member added");
+        toast.success(t("toast.teamMemberAdded", lang));
       }
       setModalOpen(false);
       fetchTechnicians();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Something went wrong");
+      toast.error(err instanceof Error ? err.message : t("error.somethingWentWrong", lang));
     } finally {
       setFormLoading(false);
     }
@@ -188,11 +188,11 @@ export default function TeamPage() {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to remove");
-      toast.success(`${deleteTarget.name} removed`);
+      toast.success(t("toast.nameRemoved", lang, { name: deleteTarget.name }));
       setDeleteTarget(null);
       fetchTechnicians();
     } catch {
-      toast.error("Failed to remove team member");
+      toast.error(t("toast.failedToRemoveTeamMember", lang));
     } finally {
       setDeleteLoading(false);
     }
@@ -206,10 +206,10 @@ export default function TeamPage() {
         body: JSON.stringify({ isOnCall: !tech.isOnCall }),
       });
       if (!res.ok) throw new Error("Failed to update");
-      toast.success(`${tech.name} is ${!tech.isOnCall ? "now on call" : "no longer on call"}`);
+      toast.success(!tech.isOnCall ? t("toast.nowOnCall", lang, { name: tech.name }) : t("toast.noLongerOnCall", lang, { name: tech.name }));
       fetchTechnicians();
     } catch {
-      toast.error("Failed to update on-call status");
+      toast.error(t("toast.failedToUpdateOnCall", lang));
     }
   }
 
@@ -235,11 +235,11 @@ export default function TeamPage() {
         }),
       });
       if (!res.ok) throw new Error("Failed to update");
-      toast.success(`${unavailTarget.name} marked as unavailable`);
+      toast.success(t("toast.markedUnavailable", lang, { name: unavailTarget.name }));
       setUnavailTarget(null);
       fetchTechnicians();
     } catch {
-      toast.error("Failed to update availability");
+      toast.error(t("toast.failedToUpdateAvailability", lang));
     } finally {
       setUnavailLoading(false);
     }
@@ -257,10 +257,10 @@ export default function TeamPage() {
         }),
       });
       if (!res.ok) throw new Error("Failed to update");
-      toast.success(`${tech.name} is now available`);
+      toast.success(t("toast.nowAvailable", lang, { name: tech.name }));
       fetchTechnicians();
     } catch {
-      toast.error("Failed to update availability");
+      toast.error(t("toast.failedToUpdateAvailability", lang));
     }
   }
 
@@ -336,32 +336,32 @@ export default function TeamPage() {
     },
     {
       key: "status",
-      label: "Status",
+      label: t("team.status", lang),
       render: (row) => (
         <div className="flex items-center gap-2 flex-wrap">
           <StatusBadge
-            label={row.isActive ? "Active" : "Inactive"}
+            label={row.isActive ? t("team.active", lang) : t("team.inactive", lang)}
             variant={row.isActive ? "success" : "neutral"}
             dot
           />
           {row.isOnCall && row.isActive && (
-            <StatusBadge label="On Call" variant="danger" />
+            <StatusBadge label={t("team.onCall", lang)} variant="danger" />
           )}
           {row.isUnavailable && row.isActive && (
-            <StatusBadge label="Unavailable" variant="danger" />
+            <StatusBadge label={t("team.unavailable", lang)} variant="danger" />
           )}
         </div>
       ),
     },
     {
       key: "todayJobs",
-      label: "Today",
+      label: t("team.today", lang),
       render: (row) => (
         <span
           className="text-sm font-medium tabular-nums"
           style={{ color: row.todayJobs > 0 ? "var(--db-text)" : "var(--db-text-muted)" }}
         >
-          {row.todayJobs} job{row.todayJobs !== 1 ? "s" : ""}
+          {row.todayJobs} {row.todayJobs !== 1 ? t("team.jobs", lang) : t("team.job", lang)}
         </span>
       ),
     },
@@ -380,7 +380,7 @@ export default function TeamPage() {
                   e.stopPropagation();
                   handleMarkAvailable(row);
                 }}
-                title="Mark Available"
+                title={t("team.markAvailable", lang)}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#10B981" }}>
                   <polyline points="20 6 9 17 4 12" />
@@ -394,7 +394,7 @@ export default function TeamPage() {
                   e.stopPropagation();
                   openUnavailModal(row);
                 }}
-                title="Mark Unavailable"
+                title={t("team.markUnavailable", lang)}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
                   <circle cx="12" cy="12" r="10" />
@@ -410,7 +410,7 @@ export default function TeamPage() {
               e.stopPropagation();
               toggleOnCall(row);
             }}
-            title={row.isOnCall ? "Remove from on-call" : "Set on-call"}
+            title={row.isOnCall ? t("team.removeFromOnCall", lang) : t("team.setOnCall", lang)}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill={row.isOnCall ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: row.isOnCall ? "var(--db-danger)" : "var(--db-text-muted)" }}>
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
@@ -424,7 +424,7 @@ export default function TeamPage() {
               openEditModal(row);
             }}
           >
-            Edit
+            {t("action.edit", lang)}
           </Button>
           {row.isActive && (
             <Button
@@ -449,7 +449,7 @@ export default function TeamPage() {
     <div>
       <PageHeader
         title={t("team.title", lang)}
-        description={`${activeTechs.length} technician${activeTechs.length !== 1 ? "s" : ""}${onCallTechs.length > 0 ? ` \u00B7 ${onCallTechs.length} on call` : ""}${unavailableTechs.length > 0 ? ` \u00B7 ${unavailableTechs.length} unavailable` : ""}`}
+        description={`${activeTechs.length} ${activeTechs.length !== 1 ? t("team.techniciansPlural", lang) : t("team.technicians", lang)}${onCallTechs.length > 0 ? ` \u00B7 ${onCallTechs.length} ${t("team.onCallCount", lang)}` : ""}${unavailableTechs.length > 0 ? ` \u00B7 ${unavailableTechs.length} ${t("team.unavailableCount", lang)}` : ""}`}
         actions={
           <div className="flex items-center gap-2">
             {technicians.some((tech) => !tech.isActive) && (
@@ -458,7 +458,7 @@ export default function TeamPage() {
                 size="sm"
                 onClick={() => setShowInactive(!showInactive)}
               >
-                {showInactive ? "Hide Inactive" : "Show Inactive"}
+                {showInactive ? t("team.hideInactive", lang) : t("team.showInactive", lang)}
               </Button>
             )}
             <Button onClick={openAddModal}>
@@ -503,8 +503,8 @@ export default function TeamPage() {
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
           }
-          title="No team members yet"
-          description="Add your technicians to start dispatching jobs and sending schedules."
+          title={t("team.noTeamMembers", lang)}
+          description={t("team.noTeamMembersDesc", lang)}
           action={{ label: t("team.addTechnician", lang), onClick: openAddModal }}
         />
       )}
@@ -534,7 +534,7 @@ export default function TeamPage() {
           >
             <div className="flex items-center justify-between mb-5">
               <h3 id="tech-form-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
-                {editingTech ? "Edit Technician" : t("team.addTechnician", lang)}
+                {editingTech ? t("team.editTechnician", lang) : t("team.addTechnician", lang)}
               </h3>
               <button
                 onClick={() => { if (!formLoading) setModalOpen(false); }}
@@ -629,7 +629,7 @@ export default function TeamPage() {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") { e.preventDefault(); addSkill(); }
                     }}
-                    placeholder="Type a skill and press Enter"
+                    placeholder={t("team.skillPlaceholder", lang)}
                     maxLength={100}
                     className="flex-1 rounded-lg px-3 py-2 text-sm outline-none transition-colors"
                     style={{
@@ -641,7 +641,7 @@ export default function TeamPage() {
                     onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
                   />
                   <Button type="button" variant="secondary" size="sm" onClick={addSkill}>
-                    Add
+                    {t("action.add", lang)}
                   </Button>
                 </div>
                 {formSkills.length > 0 && (
@@ -698,7 +698,7 @@ export default function TeamPage() {
                   {t("action.cancel", lang)}
                 </Button>
                 <Button type="submit" disabled={formLoading}>
-                  {formLoading ? "Saving..." : editingTech ? t("action.save", lang) : t("team.addTechnician", lang)}
+                  {formLoading ? t("team.saving", lang) : editingTech ? t("action.save", lang) : t("team.addTechnician", lang)}
                 </Button>
               </div>
             </form>
@@ -722,7 +722,7 @@ export default function TeamPage() {
           >
             <div className="flex items-center justify-between mb-5">
               <h3 id="unavail-dialog-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
-                Mark {unavailTarget.name} Unavailable
+                {t("team.markNameUnavailable", lang, { name: unavailTarget.name })}
               </h3>
               <button
                 onClick={() => { if (!unavailLoading) setUnavailTarget(null); }}
@@ -739,13 +739,13 @@ export default function TeamPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                  Reason
+                  {t("team.reason", lang)}
                 </label>
                 <input
                   type="text"
                   value={unavailReason}
                   onChange={(e) => setUnavailReason(e.target.value)}
-                  placeholder="e.g., Sick, Vacation, Personal"
+                  placeholder={t("team.reasonPlaceholder", lang)}
                   maxLength={200}
                   className="w-full rounded-lg px-3 py-2 text-sm outline-none transition-colors"
                   style={{
@@ -760,7 +760,7 @@ export default function TeamPage() {
 
               <div>
                 <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                  Until
+                  {t("team.until", lang)}
                 </label>
                 <input
                   type="date"
@@ -782,7 +782,7 @@ export default function TeamPage() {
                   {t("action.cancel", lang)}
                 </Button>
                 <Button onClick={handleMarkUnavailable} disabled={unavailLoading}>
-                  {unavailLoading ? "Saving..." : "Mark Unavailable"}
+                  {unavailLoading ? t("team.saving", lang) : t("team.markUnavailable", lang)}
                 </Button>
               </div>
             </div>
@@ -793,9 +793,9 @@ export default function TeamPage() {
       {/* Confirm Delete */}
       <ConfirmDialog
         open={!!deleteTarget}
-        title={`Remove ${deleteTarget?.name}?`}
-        description="This will deactivate the technician. They can be reactivated later. Their existing job assignments will remain."
-        confirmLabel="Remove"
+        title={t("team.removeConfirmTitle", lang, { name: deleteTarget?.name || "" })}
+        description={t("team.removeConfirmDesc", lang)}
+        confirmLabel={t("action.remove", lang)}
         variant="danger"
         loading={deleteLoading}
         onConfirm={handleDelete}

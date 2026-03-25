@@ -65,7 +65,7 @@ export default function ReferralsPage() {
       document.body.removeChild(textarea);
     }
     setCopied(type);
-    toast.success(type === "code" ? "Referral code copied!" : "Share link copied!");
+    toast.success(type === "code" ? t("toast.referralCodeCopied", lang) : t("toast.shareLinkCopied", lang));
     setTimeout(() => setCopied(null), 2000);
   }
 
@@ -78,21 +78,21 @@ export default function ReferralsPage() {
           className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
           style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
-          Retry
+          {t("action.retry", lang)}
         </button>
       </div>
     );
   }
 
   if (!data) {
-    return <LoadingSpinner message="Loading referrals..." />;
+    return <LoadingSpinner message={t("referrals.loadingReferrals", lang)} />;
   }
 
   return (
     <div className="space-y-8">
       <PageHeader
         title={t("referrals.title", lang)}
-        description="Refer a business → they get 50% off first month → you get 1 month free ($497 credit)"
+        description={t("referrals.description", lang)}
       />
 
       {/* Referral Code + Link */}
@@ -115,14 +115,14 @@ export default function ReferralsPage() {
                   size="sm"
                   onClick={() => copyToClipboard(data.referralCode!, "code")}
                 >
-                  {copied === "code" ? "Copied!" : t("referrals.copyLink", lang)}
+                  {copied === "code" ? t("action.copied", lang) : t("referrals.copyLink", lang)}
                 </Button>
               </div>
             </div>
 
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--db-text-muted)" }}>
-                Share This Link
+                {t("referrals.shareThisLink", lang)}
               </p>
               <div className="flex items-center gap-3">
                 <input
@@ -137,14 +137,14 @@ export default function ReferralsPage() {
                   size="sm"
                   onClick={() => data.shareLink && copyToClipboard(data.shareLink, "link")}
                 >
-                  {copied === "link" ? "Copied!" : t("referrals.copyLink", lang)}
+                  {copied === "link" ? t("action.copied", lang) : t("referrals.copyLink", lang)}
                 </Button>
               </div>
             </div>
           </>
         ) : (
           <p style={{ color: "var(--db-text-muted)" }}>
-            No referral code assigned yet. Contact support.
+            {t("referrals.noCodeYet", lang)}
           </p>
         )}
       </div>
@@ -174,7 +174,7 @@ export default function ReferralsPage() {
       {data.referrals.length > 0 && (
         <div className="space-y-3">
           <h2 className="text-base font-medium" style={{ color: "var(--db-text)" }}>
-            Your Referrals
+            {t("referrals.yourReferrals", lang)}
           </h2>
           <div
             className="rounded-xl overflow-hidden overflow-x-auto"
@@ -183,9 +183,9 @@ export default function ReferralsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ background: "var(--db-hover)" }}>
-                  <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Date</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Credit</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.date", lang)}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.status", lang)}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.credit", lang)}</th>
                 </tr>
               </thead>
               <tbody>
@@ -200,9 +200,9 @@ export default function ReferralsPage() {
                       </td>
                       <td className="px-4 py-3" style={{ color: "var(--db-text-secondary)" }}>
                         {ref.creditApplied ? (
-                          <span style={{ color: "var(--db-success)" }}>${ref.creditAmount} applied</span>
+                          <span style={{ color: "var(--db-success)" }}>{t("referrals.applied", lang, { amount: `$${ref.creditAmount}` })}</span>
                         ) : ref.status === "activated" ? (
-                          <span style={{ color: "var(--db-warning)" }}>${ref.creditAmount} pending</span>
+                          <span style={{ color: "var(--db-warning)" }}>{t("referrals.pending", lang, { amount: `$${ref.creditAmount}` })}</span>
                         ) : (
                           "—"
                         )}

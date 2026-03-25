@@ -73,10 +73,10 @@ interface OutboundCall {
 }
 
 
-const callTypeLabels: Record<string, string> = {
-  appointment_reminder: "Appointment Reminder",
-  estimate_followup: "Estimate Follow-up",
-  seasonal_reminder: "Seasonal Reminder",
+const callTypeKeys: Record<string, string> = {
+  appointment_reminder: "calls.appointmentReminder",
+  estimate_followup: "calls.estimateFollowUp",
+  seasonal_reminder: "calls.seasonalReminder",
 };
 
 export default function CallsPage() {
@@ -327,18 +327,18 @@ export default function CallsPage() {
                   <polyline points="15 2 20 2 20 7" /><line x1="14" y1="9" x2="20" y2="2" />
                 </svg>
               }
-              title="No outbound calls yet"
+              title={t("calls.noCalls", lang)}
               description={`Enable outbound calling in Settings to let ${receptionistName} make appointment reminders, estimate follow-ups, and seasonal reminder calls.`}
-              action={{ label: "Outbound Settings", href: "/dashboard/settings#outbound" }}
+              action={{ label: t("action.settings", lang), href: "/dashboard/settings#outbound" }}
             />
           ) : (
             <DataTable
               columns={[
                 {
                   key: "callType" as keyof OutboundCall,
-                  label: "Type",
+                  label: t("calls.allTypes", lang),
                   render: (row: OutboundCall) => (
-                    <StatusBadge label={callTypeLabels[row.callType] ?? row.callType} variant={statusToVariant(row.status)} />
+                    <StatusBadge label={callTypeKeys[row.callType] ? t(callTypeKeys[row.callType], lang) : row.callType} variant={statusToVariant(row.status)} />
                   ),
                 },
                 {
@@ -366,7 +366,7 @@ export default function CallsPage() {
                 },
                 {
                   key: "scheduledFor" as keyof OutboundCall,
-                  label: "Scheduled",
+                  label: t("status.scheduled", lang),
                   render: (row: OutboundCall) => (
                     <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{formatDate(row.scheduledFor)}</span>
                   ),
@@ -413,7 +413,7 @@ export default function CallsPage() {
         })}
         <div className="flex items-center gap-1.5">
           <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-            From
+            {t("sms.from", lang)}
           </label>
           <input
             type="date"
@@ -429,7 +429,7 @@ export default function CallsPage() {
         </div>
         <div className="flex items-center gap-1.5">
           <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-            To
+            {t("sms.to", lang)}
           </label>
           <input
             type="date"
@@ -486,9 +486,9 @@ export default function CallsPage() {
             color: "var(--db-text)",
           }}
         >
-          <option value="">All Languages</option>
-          <option value="en">English</option>
-          <option value="es">Spanish</option>
+          <option value="">{t("calls.language", lang)}</option>
+          <option value="en">{t("misc.english", lang)}</option>
+          <option value="es">{t("misc.spanish", lang)}</option>
         </select>
         {(filterStatus || filterOutcome || filterLanguage || filterDateFrom || filterDateTo) && (
           <button
@@ -503,7 +503,7 @@ export default function CallsPage() {
             className="rounded-lg px-2 py-1.5 text-xs font-medium transition-colors"
             style={{ color: "var(--db-accent)" }}
           >
-            Clear Filters
+            {t("action.filter", lang)}
           </button>
         )}
       </div>
@@ -529,8 +529,8 @@ export default function CallsPage() {
             </svg>
           }
           title={t("calls.noCalls", lang)}
-          description="When your AI receptionist handles calls, they'll show up here with full transcripts and summaries."
-          action={{ label: "Set Up Call Forwarding", href: "/dashboard/settings#general" }}
+          description={t("empty.noCalls", lang, { name: receptionistName })}
+          action={{ label: t("overview.forwardNumber", lang), href: "/dashboard/settings#general" }}
         />
       )}
 
@@ -610,7 +610,7 @@ export default function CallsPage() {
                     className="text-xs font-medium uppercase tracking-wider"
                     style={{ color: "var(--db-text-muted)" }}
                   >
-                    Recording
+                    {t("calls.playAudio", lang)}
                   </p>
                   <AudioPlayer src={(row.audioUrl || row.recordingUrl)!} />
                 </div>
@@ -732,13 +732,13 @@ export default function CallsPage() {
                     color: "var(--db-accent)",
                   }}
                 >
-                  {row.transcript ? "View Full Transcript" : "View Call Details"}
+                  {row.transcript ? t("calls.transcript", lang) : t("calls.summary", lang)}
                 </Button>
               )}
 
               {!row.summary && (
                 <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-                  No summary available
+                  {t("action.noData", lang)}
                 </p>
               )}
             </div>

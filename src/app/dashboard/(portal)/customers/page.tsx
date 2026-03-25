@@ -185,7 +185,7 @@ export default function CustomersPage() {
     },
     {
       key: "totalAppointments",
-      label: "Appts",
+      label: t("metric.appointments", lang),
       render: (c) => (
         <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{c.totalAppointments}</span>
       ),
@@ -226,7 +226,7 @@ export default function CustomersPage() {
     <div>
       <PageHeader
         title={t("customers.title", lang)}
-        description={`${total} total customers`}
+        description={`${total} ${t("metric.totalCustomers", lang).toLowerCase()}`}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             {selectedIds.size === 2 && (
@@ -251,7 +251,7 @@ export default function CustomersPage() {
                 <polyline points="17 8 12 3 7 8" />
                 <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
-              Import CSV
+              {t("nav.import", lang)} CSV
             </Link>
             <ExportCsvButton
               data={customers}
@@ -337,7 +337,7 @@ export default function CustomersPage() {
       {error && (
         <div role="alert" aria-live="assertive" className="db-card mb-4 flex items-center justify-between p-4" style={{ borderColor: "var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
-          <Button variant="danger" size="sm" onClick={fetchCustomers}>Retry</Button>
+          <Button variant="danger" size="sm" onClick={fetchCustomers}>{t("action.retry", lang)}</Button>
         </div>
       )}
 
@@ -353,12 +353,12 @@ export default function CustomersPage() {
           </p>
           <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
             {search
-              ? "Try a different search term."
-              : `Your customer list builds automatically as ${receptionistName} takes calls.`}
+              ? ""
+              : t("empty.noCustomers", lang, { name: receptionistName })}
           </p>
           {!search && (
             <Button className="mt-4" onClick={() => setShowAddModal(true)}>
-              Add Customer Manually
+              {t("customers.addCustomer", lang)}
             </Button>
           )}
         </div>
@@ -431,7 +431,7 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
         setError(data.error || "Failed to create customer");
         return;
       }
-      toast.success("Customer added successfully");
+      toast.success(t("toast.customerAdded", lang));
       onCreated();
     } catch {
       setError("Failed to create customer");
@@ -456,11 +456,11 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="add-customer-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>
-          Add Customer
+          {t("customers.addCustomerTitle", lang)}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Name *</label>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("customers.nameLabel", lang)}</label>
             <input
               type="text"
               placeholder="John Smith"
@@ -472,7 +472,7 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
             />
           </div>
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Phone *</label>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("customers.phoneLabel", lang)}</label>
             <input
               type="tel"
               placeholder="(512) 555-1234"
@@ -483,7 +483,7 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
             />
           </div>
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>Email (optional)</label>
+            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("customers.emailOptional", lang)}</label>
             <input
               type="email"
               placeholder="john@example.com"
@@ -499,7 +499,7 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
               {t("action.cancel", lang)}
             </Button>
             <Button type="submit" disabled={saving} className="flex-1">
-              {saving ? "Saving..." : t("customers.addCustomer", lang)}
+              {saving ? t("action.saving", lang) : t("customers.addCustomer", lang)}
             </Button>
           </div>
         </form>
@@ -594,7 +594,7 @@ function MergeCustomerModal({
         });
       }
 
-      toast.success("Customers merged successfully");
+      toast.success(t("toast.customersMerged", lang));
       onMerged();
     } catch {
       setError("Failed to merge customers");
@@ -717,7 +717,7 @@ function MergeCustomerModal({
               {t("action.cancel", lang)}
             </Button>
             <Button type="submit" disabled={merging} className="flex-1">
-              {merging ? "Merging..." : t("customers.mergeCustomers", lang)}
+              {merging ? t("action.loading", lang) : t("customers.mergeCustomers", lang)}
             </Button>
           </div>
         </form>

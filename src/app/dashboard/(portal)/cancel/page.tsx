@@ -8,12 +8,12 @@ import { useLang } from "@/app/dashboard/_hooks/use-lang";
 import { t } from "@/lib/i18n/strings";
 
 const REASONS = [
-  { value: "too_expensive", label: "Too Expensive" },
-  { value: "not_enough_value", label: "Not Enough Value" },
-  { value: "switching_competitor", label: "Switching to a Competitor" },
-  { value: "going_manual", label: "Going Back to Manual" },
-  { value: "seasonal_business", label: "Seasonal Business" },
-  { value: "other", label: "Other" },
+  { value: "too_expensive", key: "cancel.reasons.tooExpensive" },
+  { value: "not_enough_value", key: "cancel.reasons.notEnoughValue" },
+  { value: "switching_competitor", key: "cancel.reasons.switchingCompetitor" },
+  { value: "going_manual", key: "cancel.reasons.goingManual" },
+  { value: "seasonal_business", key: "cancel.reasons.seasonalBusiness" },
+  { value: "other", key: "cancel.otherReason" },
 ] as const;
 
 export default function CancelPage() {
@@ -29,7 +29,7 @@ export default function CancelPage() {
 
   const handleCancel = async (recoveryOfferAccepted: boolean) => {
     if (!reason) {
-      toast.error("Please select a reason for canceling");
+      toast.error(t("toast.selectCancelReason", lang));
       return;
     }
 
@@ -54,9 +54,9 @@ export default function CancelPage() {
       await res.json();
 
       if (recoveryOfferAccepted) {
-        toast.success("Your retention offer has been submitted. Our team will apply the discount within 24 hours.");
+        toast.success(t("toast.retentionOfferSubmitted", lang));
       } else {
-        toast.success("Your subscription has been canceled. You'll retain access until the end of your billing period.");
+        toast.success(t("toast.subscriptionCanceled", lang));
       }
 
       router.push("/dashboard/billing");
@@ -111,7 +111,7 @@ export default function CancelPage() {
                 color: reason === r.value ? "var(--db-accent)" : "var(--db-text)",
               }}
             >
-              {r.value === "other" ? t("cancel.otherReason", lang) : r.label}
+              {t(r.key, lang)}
             </button>
           ))}
         </div>
@@ -126,7 +126,7 @@ export default function CancelPage() {
           className="mb-4 text-sm font-semibold uppercase tracking-wider"
           style={{ color: "var(--db-text-muted)" }}
         >
-          How would you rate your experience?
+          {t("cancel.rateExperience", lang)}
         </h3>
         <div className="flex gap-2">
           {[1, 2, 3, 4, 5].map((star) => (
@@ -151,9 +151,9 @@ export default function CancelPage() {
         </div>
         {rating > 0 && (
           <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
-            {rating <= 2 ? "We're sorry we didn't meet your expectations." :
-             rating <= 3 ? "Thank you for the honest feedback." :
-             "We're glad you had a positive experience!"}
+            {rating <= 2 ? t("cancel.ratingLow", lang) :
+             rating <= 3 ? t("cancel.ratingMid", lang) :
+             t("cancel.ratingHigh", lang)}
           </p>
         )}
       </div>
@@ -167,12 +167,12 @@ export default function CancelPage() {
           className="mb-4 text-sm font-semibold uppercase tracking-wider"
           style={{ color: "var(--db-text-muted)" }}
         >
-          Anything else you&apos;d like to share?
+          {t("cancel.anythingElse", lang)}
         </h3>
         <textarea
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
-          placeholder="Your feedback helps us improve Capta for everyone..."
+          placeholder={t("cancel.feedbackPlaceholder", lang)}
           rows={4}
           maxLength={2000}
           className="w-full rounded-lg px-3 py-2 text-sm resize-none"
@@ -200,11 +200,10 @@ export default function CancelPage() {
             className="mb-2 text-base font-semibold"
             style={{ color: "var(--db-text)" }}
           >
-            Before you go...
+            {t("cancel.beforeYouGo", lang)}
           </h3>
           <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
-            We&apos;d hate to lose you. How about <strong style={{ color: "var(--db-accent)" }}>2 months free</strong> on
-            us? Keep your AI receptionist running, and our team will apply the discount to your account within 24 hours.
+            {t("cancel.recoveryOffer", lang)}
           </p>
           <button
             onClick={() => handleCancel(true)}
@@ -220,10 +219,10 @@ export default function CancelPage() {
             {submitting ? (
               <span className="flex items-center gap-2">
                 <CaptaSpinnerInline size={16} />
-                Processing...
+                {t("cancel.processing", lang)}
               </span>
             ) : (
-              "Yes, I'll Stay — Give Me 2 Months Free"
+              t("cancel.acceptOffer", lang)
             )}
           </button>
         </div>
@@ -249,7 +248,7 @@ export default function CancelPage() {
           <button
             onClick={() => {
               if (!reason) {
-                toast.error("Please select a reason first");
+                toast.error(t("toast.selectReasonFirst", lang));
                 return;
               }
               setConfirmCancel(true);
@@ -262,7 +261,7 @@ export default function CancelPage() {
               flex: 1,
             }}
           >
-            Cancel My Subscription
+            {t("cancel.cancelMySubscription", lang)}
           </button>
         ) : (
           <button
@@ -280,7 +279,7 @@ export default function CancelPage() {
             {submitting ? (
               <span className="flex items-center gap-2">
                 <CaptaSpinnerInline size={16} />
-                Canceling...
+                {t("cancel.canceling", lang)}
               </span>
             ) : (
               t("cancel.confirmCancel", lang)
@@ -291,7 +290,7 @@ export default function CancelPage() {
 
       {confirmCancel && (
         <p className="text-center text-xs" style={{ color: "var(--db-text-muted)" }}>
-          Your access will continue until the end of your current billing period.
+          {t("cancel.accessUntilEnd", lang)}
         </p>
       )}
     </div>

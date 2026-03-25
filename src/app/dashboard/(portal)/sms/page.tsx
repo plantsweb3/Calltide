@@ -187,7 +187,7 @@ export default function SmsPage() {
             </svg>
           }
           title={t("sms.noMessages", lang)}
-          description={`SMS confirmations and reminders will show up here as ${receptionistName} handles calls.`}
+          description={t("sms.smsDescription", lang, { name: receptionistName })}
           action={{ label: t("sms.viewSettings", lang), href: "/dashboard/settings#notifications" }}
         />
       )}
