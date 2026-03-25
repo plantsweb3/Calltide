@@ -247,6 +247,24 @@ async function handleBookAppointment(
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
 
+  // Validate service against known services for this business
+  if (biz.services && Array.isArray(biz.services) && biz.services.length > 0) {
+    const normalizedService = service.toLowerCase().trim();
+    const matchedService = biz.services.find((s: string) => {
+      const ns = s.toLowerCase().trim();
+      return ns === normalizedService || normalizedService.includes(ns) || ns.includes(normalizedService);
+    });
+    if (!matchedService) {
+      const serviceList = biz.services.slice(0, 8).join(", ");
+      return {
+        success: false,
+        error: ctx.language === "es"
+          ? `No ofrecemos "${service}". Nuestros servicios incluyen: ${serviceList}. ¿Cuál de estos necesita?`
+          : `We don't offer "${service}". Our services include: ${serviceList}. Which of these do you need?`,
+      };
+    }
+  }
+
   // Early availability check (the transactional conflict check below is the real double-booking guard)
   const bookResult = await bookSlot(biz, date, time, service);
   if (!bookResult.success) {

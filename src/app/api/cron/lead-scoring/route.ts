@@ -275,17 +275,24 @@ export async function GET(req: NextRequest) {
               updates.push({ id: cust.id, leadScore: score, tier });
             }
 
-            // ── Batch update customers ──
+            // ── Batch update customers — group by (score, tier) to minimize queries ──
             const updatedAt = new Date().toISOString();
+            const updateGroups = new Map<string, string[]>();
             for (const u of updates) {
+              const key = `${u.leadScore}:${u.tier}`;
+              if (!updateGroups.has(key)) updateGroups.set(key, []);
+              updateGroups.get(key)!.push(u.id);
+            }
+            for (const [key, ids] of updateGroups) {
+              const [score, tier] = key.split(":");
               await db
                 .update(customers)
                 .set({
-                  leadScore: u.leadScore,
-                  tier: u.tier,
+                  leadScore: parseInt(score),
+                  tier: tier as Tier,
                   updatedAt,
                 })
-                .where(eq(customers.id, u.id));
+                .where(inArray(customers.id, ids));
             }
 
             scored += updates.length;

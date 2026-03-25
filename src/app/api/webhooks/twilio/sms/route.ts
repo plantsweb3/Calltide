@@ -364,7 +364,9 @@ export async function POST(req: NextRequest) {
   // Triggers for active business owners AND onboarding owners (isOnboarding)
   if ((isOwner || isOnboarding) && body.trim().length > 0 && process.env.ANTHROPIC_API_KEY) {
     // Race pattern: try to complete Maria's response within Twilio's timeout
-    // If it finishes in time, great. If not, it continues in background.
+    // If it finishes in time, return empty TwiML (response already sent via SMS).
+    // If timeout fires first, reply inline so owner knows Maria is working on it.
+    let mariaFinished = false;
     const mariaPromise = (async () => {
       try {
         const { chat: mariaChat } = await import("@/lib/maria/chat-engine");
@@ -384,12 +386,18 @@ export async function POST(req: NextRequest) {
       } catch (err) {
         reportError("Owner SMS → Maria chat failed", err, { extra: { businessId: biz.id } });
       }
+      mariaFinished = true;
     })();
 
-    // Try to complete within Twilio's timeout (14s buffer before 15s limit)
-    const timeout = new Promise<void>((resolve) => setTimeout(resolve, 14000));
+    // Try to complete within Twilio's timeout (12s buffer before 15s limit)
+    const timeout = new Promise<void>((resolve) => setTimeout(resolve, 12000));
     await Promise.race([mariaPromise, timeout]);
-    // If maria didn't finish, it continues in background
+
+    if (!mariaFinished) {
+      // Maria is still processing — send a "working on it" reply so owner isn't left hanging
+      // Maria's full response will arrive as a follow-up SMS when it completes
+      return twimlResponse("Give me a moment — I'll text you back shortly.");
+    }
     return twimlResponse("");
   }
 
