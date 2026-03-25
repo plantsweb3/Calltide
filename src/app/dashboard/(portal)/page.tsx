@@ -357,7 +357,7 @@ export default function OverviewPage() {
             <div className="mt-3 flex items-center gap-4 flex-wrap">
               {data.roiMultiple != null && data.roiMultiple > 0 && (
                 <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                  <strong style={{ color: "#4ade80" }}>{data.roiMultiple}x</strong> return on your $497/mo
+                  <strong style={{ color: "#4ade80" }}>{data.roiMultiple}x</strong> return on investment
                 </span>
               )}
               {data.revenueSaved != null && data.revenueSaved > 0 && (

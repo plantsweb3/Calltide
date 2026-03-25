@@ -12,6 +12,7 @@ import PageHeader from "@/components/page-header";
 import ConfirmDialog from "@/components/confirm-dialog";
 import DateRangePicker, { type DateRange } from "@/components/date-range-picker";
 import EmptyState from "@/components/empty-state";
+import PhoneLink from "@/components/phone-link";
 
 interface Appointment {
   id: string;
@@ -185,7 +186,14 @@ export default function AppointmentsPage() {
     {
       key: "caller",
       label: "Caller",
-      render: (row) => row.leadName || formatPhone(row.leadPhone),
+      render: (row) => row.leadName ? (
+        <div>
+          <span style={{ color: "var(--db-text)" }}>{row.leadName}</span>
+          {row.leadPhone && <div className="mt-0.5"><PhoneLink phone={row.leadPhone} className="text-xs font-medium hover:underline" /></div>}
+        </div>
+      ) : row.leadPhone ? (
+        <PhoneLink phone={row.leadPhone} className="text-sm font-medium hover:underline" />
+      ) : "\u2014",
     },
     {
       key: "status",

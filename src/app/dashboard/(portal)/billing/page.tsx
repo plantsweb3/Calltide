@@ -45,8 +45,15 @@ export default function BillingPage() {
 
   if (error) {
     return (
-      <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-        <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+      <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
+        <button
+          onClick={() => { setError(null); window.location.reload(); }}
+          className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+          style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
+        >
+          Retry
+        </button>
       </div>
     );
   }

@@ -11,6 +11,7 @@ import Button from "@/components/ui/button";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import PageHeader from "@/components/page-header";
 import EmptyState from "@/components/empty-state";
+import PhoneLink from "@/components/phone-link";
 
 interface TranscriptLine {
   speaker: "ai" | "caller";
@@ -352,7 +353,7 @@ export default function CallsPage() {
                   key: "customerPhone" as keyof OutboundCall,
                   label: "Phone",
                   render: (row: OutboundCall) => (
-                    <span className="text-sm" style={{ color: "var(--db-text)" }}>{formatPhone(row.customerPhone)}</span>
+                    <PhoneLink phone={row.customerPhone} className="text-sm font-medium hover:underline" />
                   ),
                 },
                 {

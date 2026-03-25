@@ -8,6 +8,7 @@ import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import PageHeader from "@/components/page-header";
 import EmptyState from "@/components/empty-state";
 import { TableSkeleton } from "@/components/skeleton";
+import PhoneLink from "@/components/phone-link";
 
 interface FollowUp {
   id: string;
@@ -140,9 +141,16 @@ export default function FollowUpsPage() {
       label: "Customer",
       sortable: true,
       render: (row) => (
-        <span style={{ color: "var(--db-text)" }}>
-          {row.customerName || row.customerPhone || "\u2014"}
-        </span>
+        <div>
+          <span style={{ color: "var(--db-text)" }}>
+            {row.customerName || "\u2014"}
+          </span>
+          {row.customerPhone && (
+            <div className="mt-0.5">
+              <PhoneLink phone={row.customerPhone} className="text-xs font-medium hover:underline" />
+            </div>
+          )}
+        </div>
       ),
     },
     {
@@ -186,6 +194,16 @@ export default function FollowUpsPage() {
           >
             Edit
           </Button>
+          {row.customerPhone && (
+            <a
+              href={`tel:${row.customerPhone.replace(/\D/g, "").startsWith("1") ? `+${row.customerPhone.replace(/\D/g, "")}` : `+1${row.customerPhone.replace(/\D/g, "")}`}`}
+              className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors"
+              style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              Call Back
+            </a>
+          )}
           {row.status === "pending" && (
             <Button
               size="sm"

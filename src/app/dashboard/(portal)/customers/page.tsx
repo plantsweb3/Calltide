@@ -11,6 +11,7 @@ import DataTable, { type Column } from "@/components/data-table";
 import Button from "@/components/ui/button";
 import StatusBadge from "@/components/ui/status-badge";
 import PageHeader from "@/components/page-header";
+import PhoneLink from "@/components/phone-link";
 
 interface Customer {
   id: string;
@@ -139,9 +140,7 @@ export default function CustomersPage() {
       key: "phone",
       label: "Phone",
       render: (c) => (
-        <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-          {formatPhone(c.phone)}
-        </span>
+        <PhoneLink phone={c.phone} className="text-sm font-medium hover:underline" />
       ),
     },
     {
