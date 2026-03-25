@@ -54,9 +54,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  // Reject stale events (>5 minutes old) to prevent replay attacks
+  // Reject stale events (>1 hour old) to prevent replay attacks
+  // Generous window so Stripe retries after outages aren't dropped — idempotency table prevents duplicates
   const eventAge = Math.floor(Date.now() / 1000) - event.created;
-  if (eventAge > 300) {
+  if (eventAge > 3600) {
     return NextResponse.json({ error: "Event too old" }, { status: 400 });
   }
 

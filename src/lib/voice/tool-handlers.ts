@@ -14,6 +14,28 @@ import { findBestPartner, logReferral, notifyPartner, sendPartnerInfoToCaller } 
 import { normalizePhone } from "@/lib/compliance/sms";
 import type { ToolResult, Language } from "@/types";
 
+/**
+ * Normalize time formats from AI (e.g. "9:00 AM" → "09:00", "2:30 PM" → "14:30")
+ * to match the 24-hour "HH:MM" format used by the availability system.
+ */
+function normalizeTime(time: string): string {
+  // Already in HH:MM format
+  if (/^\d{2}:\d{2}$/.test(time)) return time;
+
+  // Match 12-hour formats: "9:00 AM", "2:30 PM", "9AM", "2:30PM", etc.
+  const match = time.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM|am|pm|a\.m\.|p\.m\.)?$/i);
+  if (!match) return time; // Can't parse — return as-is
+
+  let hours = parseInt(match[1], 10);
+  const minutes = match[2] ? parseInt(match[2], 10) : 0;
+  const period = match[3]?.toUpperCase().replace(/\./g, "");
+
+  if (period === "PM" && hours < 12) hours += 12;
+  if (period === "AM" && hours === 12) hours = 0;
+
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+}
+
 // --- Zod schemas for tool parameters ---
 
 const checkAvailabilitySchema = z.object({
@@ -219,7 +241,8 @@ async function handleBookAppointment(
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
   }
-  const { date, time, service, caller_name: callerName } = parsed.data;
+  const { date, service, caller_name: callerName } = parsed.data;
+  const time = normalizeTime(parsed.data.time);
 
   const biz = await getBusinessById(ctx.businessId);
   if (!biz) return { success: false, error: "Business not found" };
@@ -1077,7 +1100,7 @@ async function handleCancelAppointment(
     };
   }
 
-  // Verify caller owns this appointment via leadId
+  // Verify caller owns this appointment via leadId or phone match
   if (ctx.leadId && appt.leadId && appt.leadId !== ctx.leadId) {
     return {
       success: false,
@@ -1085,6 +1108,22 @@ async function handleCancelAppointment(
         ? "No tiene permiso para cancelar esa cita."
         : "You don't have permission to cancel that appointment.",
     };
+  }
+  // When leadId is missing, fall back to phone match for ownership
+  if (!ctx.leadId && appt.leadId) {
+    const [apptLead] = await db
+      .select({ phone: leads.phone })
+      .from(leads)
+      .where(eq(leads.id, appt.leadId))
+      .limit(1);
+    if (apptLead?.phone && ctx.callerPhone && normalizePhone(apptLead.phone) !== normalizePhone(ctx.callerPhone)) {
+      return {
+        success: false,
+        error: ctx.language === "es"
+          ? "No tiene permiso para cancelar esa cita."
+          : "You don't have permission to cancel that appointment.",
+      };
+    }
   }
 
   if (appt.status === "cancelled") {
@@ -1162,7 +1201,8 @@ async function handleRescheduleAppointment(
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") };
   }
-  const { appointment_id: appointmentId, new_date: newDate, new_time: newTime } = parsed.data;
+  const { appointment_id: appointmentId, new_date: newDate } = parsed.data;
+  const newTime = normalizeTime(parsed.data.new_time);
 
   // Find the existing appointment
   const [appt] = await db
@@ -1188,7 +1228,7 @@ async function handleRescheduleAppointment(
     };
   }
 
-  // Verify caller owns this appointment via leadId
+  // Verify caller owns this appointment via leadId or phone match
   if (ctx.leadId && appt.leadId && appt.leadId !== ctx.leadId) {
     return {
       success: false,
@@ -1196,6 +1236,22 @@ async function handleRescheduleAppointment(
         ? "No tiene permiso para reprogramar esa cita."
         : "You don't have permission to reschedule that appointment.",
     };
+  }
+  // When leadId is missing, fall back to phone match for ownership
+  if (!ctx.leadId && appt.leadId) {
+    const [apptLead] = await db
+      .select({ phone: leads.phone })
+      .from(leads)
+      .where(eq(leads.id, appt.leadId))
+      .limit(1);
+    if (apptLead?.phone && ctx.callerPhone && normalizePhone(apptLead.phone) !== normalizePhone(ctx.callerPhone)) {
+      return {
+        success: false,
+        error: ctx.language === "es"
+          ? "No tiene permiso para reprogramar esa cita."
+          : "You don't have permission to reschedule that appointment.",
+      };
+    }
   }
 
   if (appt.status !== "confirmed") {

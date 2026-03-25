@@ -145,7 +145,9 @@ export async function checkAvailability(
   const isToday = date === todayStr;
   const currentMinutes = isToday ? nowInTz.getHours() * 60 + nowInTz.getMinutes() : 0;
 
-  for (let min = startMin; min + slotDuration <= endMin; min += slotDuration) {
+  // Generate slots at 30-minute intervals regardless of service duration
+  // Each slot checks that startTime + serviceDuration fits within business hours
+  for (let min = startMin; min + slotDuration <= endMin; min += 30) {
     const h = Math.floor(min / 60);
     const m = min % 60;
     const time = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;

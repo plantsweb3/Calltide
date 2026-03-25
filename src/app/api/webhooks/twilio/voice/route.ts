@@ -77,16 +77,18 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // If payment is suspended (grace period expired), don't connect
-  if (biz.paymentStatus === "suspended" || biz.paymentStatus === "canceled") {
+  // If payment is suspended, canceled, or in grace period, don't connect
+  if (biz.paymentStatus === "suspended" || biz.paymentStatus === "canceled" || biz.paymentStatus === "grace_period") {
     return twimlSay(
       `Thank you for calling ${escapeXml(biz.name)}. We're experiencing a temporary service interruption. Please try again later or contact the business directly.`,
     );
   }
 
   // Spam detection: block callers who call >3 times in 5 minutes
+  // Skip spam check for queue retry redirects (Twilio signature covers the full URL, so this can't be spoofed)
+  const isQueueRetry = params.queue_retry === "1";
   const normalizedCaller = normalizePhone(callerNumber);
-  if (normalizedCaller && !normalizePhone(biz.ownerPhone).includes(normalizedCaller)) {
+  if (!isQueueRetry && normalizedCaller && !normalizePhone(biz.ownerPhone).includes(normalizedCaller)) {
     const spamCheck = await rateLimit(`spam:${biz.id}:${normalizedCaller}`, {
       limit: 3,
       windowSeconds: 300,
@@ -164,7 +166,7 @@ export async function POST(req: NextRequest) {
 <Response>
   <Say language="en-US" voice="Polly.Joanna">Thank you for calling ${escapeXml(biz.name)}. This is ${escapeXml(receptionistName)}. All of our lines are currently busy. Please hold and I'll be with you shortly.</Say>
   <Pause length="20"/>
-  <Redirect method="POST">${escapeXml(appUrl)}/api/webhooks/twilio/voice</Redirect>
+  <Redirect method="POST">${escapeXml(appUrl)}/api/webhooks/twilio/voice?queue_retry=1</Redirect>
 </Response>`;
     return new Response(queueTwiml, {
       status: 200,

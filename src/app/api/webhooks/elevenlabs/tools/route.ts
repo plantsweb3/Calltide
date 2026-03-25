@@ -89,11 +89,30 @@ export async function POST(req: NextRequest) {
   }
 
   // Look up the call record by conversationId
-  const [call] = await db
+  let [call] = await db
     .select()
     .from(calls)
     .where(eq(calls.elevenlabsConversationId, conversationId))
     .limit(1);
+
+  // If not found by conversationId, try matching by call_id from stream parameters
+  if (!call) {
+    const callId = parameters?.call_id as string | undefined;
+    if (callId) {
+      const [byCallId] = await db
+        .select()
+        .from(calls)
+        .where(eq(calls.id, callId))
+        .limit(1);
+      if (byCallId) {
+        // Link this conversationId to the call for the post-call webhook to find
+        await db.update(calls)
+          .set({ elevenlabsConversationId: conversationId })
+          .where(eq(calls.id, byCallId.id));
+        call = { ...byCallId, elevenlabsConversationId: conversationId };
+      }
+    }
+  }
 
   if (!call) {
     // Extract business_id from parameters (injected as dynamic variable)

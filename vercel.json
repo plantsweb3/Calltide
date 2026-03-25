@@ -34,6 +34,7 @@
     { "path": "/api/cron/review-monitor", "schedule": "0 6 * * *" },
     { "path": "/api/cron/abandoned-setup", "schedule": "0 13 * * *" },
     { "path": "/api/cron/review-solicitation", "schedule": "0 17 * * *" },
+    { "path": "/api/cron/call-cleanup", "schedule": "*/15 * * * *" },
     { "path": "/api/cron/lead-scoring", "schedule": "0 3 * * *" },
     { "path": "/api/cron/data-deletion", "schedule": "0 2 * * *" },
     { "path": "/api/cron/outreach-sequence", "schedule": "0 15 * * *" }

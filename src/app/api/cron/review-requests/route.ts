@@ -5,7 +5,6 @@ import { eq, and, gte, lt, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { sendSMS } from "@/lib/twilio/sms";
 import { canSendSms } from "@/lib/compliance/sms";
-import { env } from "@/lib/env";
 import { getBusinessDateRange } from "@/lib/timezone";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
@@ -130,10 +129,10 @@ export async function GET(req: NextRequest) {
                 language,
               });
 
-              // Send SMS
+              // Send SMS from the business's own Twilio number
               const result = await sendSMS({
                 to: lead.phone,
-                from: env.TWILIO_PHONE_NUMBER,
+                from: biz.twilioNumber,
                 body: smsBody,
                 businessId: biz.id,
                 leadId: lead.id,

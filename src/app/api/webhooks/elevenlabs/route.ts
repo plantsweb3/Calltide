@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
 import { db } from "@/db";
 import { businesses, calls } from "@/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, gte } from "drizzle-orm";
 import { processCallSummary } from "@/lib/ai/call-summary";
 import { reportError, reportWarning } from "@/lib/error-reporting";
 import { enqueueJob } from "@/lib/jobs/queue";
@@ -61,19 +61,22 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Webhook auth not configured" }, { status: 500 });
   }
 
-  if (signature) {
-    const expectedSig = createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
-    try {
-      const sigBuf = Buffer.from(signature, "hex");
-      const expectedBuf = Buffer.from(expectedSig, "hex");
-      if (sigBuf.length !== expectedBuf.length || !timingSafeEqual(sigBuf, expectedBuf)) {
-        reportWarning("Invalid ElevenLabs webhook signature");
-        return Response.json({ error: "Invalid signature" }, { status: 401 });
-      }
-    } catch {
-      reportWarning("ElevenLabs webhook signature verification error");
+  if (!signature) {
+    reportWarning("ElevenLabs webhook missing signature header");
+    return Response.json({ error: "Missing signature" }, { status: 401 });
+  }
+
+  const expectedSig = createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
+  try {
+    const sigBuf = Buffer.from(signature, "hex");
+    const expectedBuf = Buffer.from(expectedSig, "hex");
+    if (sigBuf.length !== expectedBuf.length || !timingSafeEqual(sigBuf, expectedBuf)) {
+      reportWarning("Invalid ElevenLabs webhook signature");
       return Response.json({ error: "Invalid signature" }, { status: 401 });
     }
+  } catch {
+    reportWarning("ElevenLabs webhook signature verification error");
+    return Response.json({ error: "Invalid signature" }, { status: 401 });
   }
 
   let event: ElevenLabsPostCallEvent;
@@ -123,7 +126,7 @@ export async function POST(req: NextRequest) {
     .where(eq(calls.elevenlabsConversationId, conversationId))
     .limit(1);
 
-  // If not found by conversationId, look up the business via agent_id, then find the most recent in_progress call for that business
+  // Fallback: look up by agent_id + most recent in_progress call (with time guard to reduce race risk)
   if (!call && event.agent_id) {
     const [biz] = await db
       .select({ id: businesses.id })
@@ -132,10 +135,16 @@ export async function POST(req: NextRequest) {
       .limit(1);
 
     if (biz) {
+      // Only match calls created in the last 30 minutes to avoid grabbing stale zombies
+      const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
       const [recentCall] = await db
         .select()
         .from(calls)
-        .where(and(eq(calls.businessId, biz.id), eq(calls.status, "in_progress")))
+        .where(and(
+          eq(calls.businessId, biz.id),
+          eq(calls.status, "in_progress"),
+          gte(calls.createdAt, thirtyMinAgo),
+        ))
         .orderBy(desc(calls.createdAt))
         .limit(1);
 
