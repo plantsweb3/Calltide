@@ -2,28 +2,155 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useScrollReveal } from "@/lib/marketing/hooks";
+import type { Lang } from "@/lib/marketing/translations";
+
+/* ─── Translations ─── */
+
+const T = {
+  en: {
+    badge: "ROI Calculator",
+    heroH: "See How Much Revenue You're Losing to Missed Calls",
+    heroSub: "Plug in your numbers. See the math. Decide if Capta pays for itself.",
+    yourTrade: "Your trade",
+    afterHoursCoverage: "Current after-hours coverage",
+    avgJobValue: "Average job value",
+    missedCallsPerWeek: "Estimated missed calls per week",
+    yourNumbers: "Your Numbers",
+    monthlyRevenueLost: "Monthly revenue lost",
+    annualRevenueLost: "Annual revenue lost",
+    captaCost: "Capta cost",
+    yourROI: "Your ROI",
+    perMonth: "/month",
+    perYear: "/year",
+    return: "return",
+    jobsToBreakEven: "Jobs to break even",
+    breakEvenPrefix: "If Capta books just",
+    breakEvenJob: "job",
+    breakEvenJobs: "jobs",
+    breakEvenSuffix: "you'd miss, she's free.",
+    netAnnualPrefix: "That's",
+    netAnnualSuffix: "saved per year",
+    netAnnualAfter: "after paying for Capta.",
+    cta: "Get Capta",
+    guarantee: "30-day money-back guarantee. Cancel anytime.",
+    mathTitle: "The Math Behind the Calculator",
+    conversionRate: "Conversion rate",
+    conversionDesc: "The average conversion rate for inbound calls in home services.",
+    missedAfterHours: "Calls missed after hours",
+    missedAfterHoursDesc: "Most home service calls come when you can't answer — evenings, weekends, lunch.",
+    wontLeaveVM: "Won't leave a voicemail",
+    wontLeaveVMDesc: "Callers who hit voicemail call your competitor instead of leaving a message.",
+    compReceptionist: "A bilingual receptionist costs",
+    compReceptionistCost: "$3,000-$4,000/month",
+    compService: "An answering service costs",
+    compServiceCost: "$700-$1,600/month",
+    compCapta: "Capta costs",
+    compCaptaCost: "$497/month",
+    compCaptaDesc: ", answers 24/7, books appointments, generates estimates, and never calls in sick.",
+    finalH: "Stop losing revenue. Start today.",
+    finalSub: "Capta pays for itself after just",
+    finalJob: "booked job",
+    finalJobs: "booked jobs",
+    guaranteeFull: "30-day money-back guarantee. Cancel anytime. No contracts.",
+    coverageNone: "With no after-hours coverage, you are likely missing every call outside business hours.",
+    coverageVM: "Studies show 80% of callers won't leave a voicemail — they call your competitor instead.",
+    coverageAS: "Answering services average $700-$1,600/mo and still can't book jobs or generate estimates.",
+    trades: {
+      plumber: "Plumber",
+      hvac: "HVAC",
+      electrician: "Electrician",
+      roofer: "Roofer",
+      landscaper: "Landscaper",
+      general_contractor: "General Contractor",
+      other: "Other",
+    },
+    coverageOptions: {
+      none: "None",
+      voicemail: "Voicemail",
+      answering_service: "Answering service",
+    },
+  },
+  es: {
+    badge: "Calculadora de ROI",
+    heroH: "Descubre Cuántos Ingresos Pierdes por Llamadas No Contestadas",
+    heroSub: "Ingresa tus números. Mira las cuentas. Decide si Capta se paga solo.",
+    yourTrade: "Tu oficio",
+    afterHoursCoverage: "Cobertura fuera de horario actual",
+    avgJobValue: "Valor promedio del trabajo",
+    missedCallsPerWeek: "Llamadas perdidas estimadas por semana",
+    yourNumbers: "Tus Números",
+    monthlyRevenueLost: "Ingresos perdidos por mes",
+    annualRevenueLost: "Ingresos perdidos por año",
+    captaCost: "Costo de Capta",
+    yourROI: "Tu ROI",
+    perMonth: "/mes",
+    perYear: "/año",
+    return: "retorno",
+    jobsToBreakEven: "Trabajos para punto de equilibrio",
+    breakEvenPrefix: "Si Capta agenda solo",
+    breakEvenJob: "trabajo",
+    breakEvenJobs: "trabajos",
+    breakEvenSuffix: "que perderías, es gratis.",
+    netAnnualPrefix: "Eso es",
+    netAnnualSuffix: "ahorrados por año",
+    netAnnualAfter: "después de pagar Capta.",
+    cta: "Obtén Capta",
+    guarantee: "Garantía de devolución de 30 días. Cancela cuando quieras.",
+    mathTitle: "Las Cuentas Detrás de la Calculadora",
+    conversionRate: "Tasa de conversión",
+    conversionDesc: "La tasa promedio de conversión para llamadas entrantes en servicios del hogar.",
+    missedAfterHours: "Llamadas perdidas fuera de horario",
+    missedAfterHoursDesc: "La mayoría de las llamadas de servicios llegan cuando no puedes contestar — noches, fines de semana, hora de almuerzo.",
+    wontLeaveVM: "No dejan mensaje de voz",
+    wontLeaveVMDesc: "Los llamantes que llegan al buzón de voz llaman a tu competencia en vez de dejar un mensaje.",
+    compReceptionist: "Una recepcionista bilingüe cuesta",
+    compReceptionistCost: "$3,000-$4,000/mes",
+    compService: "Un servicio de contestación cuesta",
+    compServiceCost: "$700-$1,600/mes",
+    compCapta: "Capta cuesta",
+    compCaptaCost: "$497/mes",
+    compCaptaDesc: ", contesta 24/7, agenda citas, genera presupuestos, y nunca se enferma.",
+    finalH: "Deja de perder ingresos. Empieza hoy.",
+    finalSub: "Capta se paga solo después de solo",
+    finalJob: "trabajo agendado",
+    finalJobs: "trabajos agendados",
+    guaranteeFull: "Garantía de devolución de 30 días. Cancela cuando quieras. Sin contratos.",
+    coverageNone: "Sin cobertura fuera de horario, probablemente estás perdiendo cada llamada fuera de horas de oficina.",
+    coverageVM: "Los estudios muestran que el 80% de los llamantes no dejan mensaje de voz — llaman a tu competencia.",
+    coverageAS: "Los servicios de contestación cuestan $700-$1,600/mes y no pueden agendar trabajos ni generar presupuestos.",
+    trades: {
+      plumber: "Plomero",
+      hvac: "HVAC",
+      electrician: "Electricista",
+      roofer: "Techador",
+      landscaper: "Jardinero",
+      general_contractor: "Contratista General",
+      other: "Otro",
+    },
+    coverageOptions: {
+      none: "Ninguna",
+      voicemail: "Buzón de voz",
+      answering_service: "Servicio de contestación",
+    },
+  },
+};
 
 /* ─── Trade definitions ─── */
 
 const TRADES = [
-  { value: "plumber", label: "Plumber", avgJob: 450 },
-  { value: "hvac", label: "HVAC", avgJob: 500 },
-  { value: "electrician", label: "Electrician", avgJob: 350 },
-  { value: "roofer", label: "Roofer", avgJob: 800 },
-  { value: "landscaper", label: "Landscaper", avgJob: 250 },
-  { value: "general_contractor", label: "General Contractor", avgJob: 600 },
-  { value: "other", label: "Other", avgJob: 400 },
+  { value: "plumber", avgJob: 450 },
+  { value: "hvac", avgJob: 500 },
+  { value: "electrician", avgJob: 350 },
+  { value: "roofer", avgJob: 800 },
+  { value: "landscaper", avgJob: 250 },
+  { value: "general_contractor", avgJob: 600 },
+  { value: "other", avgJob: 400 },
 ] as const;
 
 type TradeValue = (typeof TRADES)[number]["value"];
 
-const COVERAGE_OPTIONS = [
-  { value: "none", label: "None" },
-  { value: "voicemail", label: "Voicemail" },
-  { value: "answering_service", label: "Answering service" },
-] as const;
-
-type CoverageValue = (typeof COVERAGE_OPTIONS)[number]["value"];
+const COVERAGE_VALUES = ["none", "voicemail", "answering_service"] as const;
+type CoverageValue = (typeof COVERAGE_VALUES)[number];
 
 const WEEKS_PER_MONTH = 4.33;
 const CONVERSION_RATE = 0.25;
@@ -118,6 +245,14 @@ function StatCard({
 export default function ROICalculatorPage() {
   useScrollReveal();
 
+  const [lang, setLang] = useState<Lang>("en");
+  useEffect(() => {
+    const saved = localStorage.getItem("capta-lang");
+    if (saved === "en" || saved === "es") setLang(saved);
+  }, []);
+
+  const s = T[lang];
+
   const [trade, setTrade] = useState<TradeValue>("plumber");
   const [avgJobValue, setAvgJobValue] = useState(450);
   const [missedCallsPerWeek, setMissedCallsPerWeek] = useState(10);
@@ -170,15 +305,15 @@ export default function ROICalculatorPage() {
   const coverageNote = useMemo(() => {
     switch (coverage) {
       case "none":
-        return "With no after-hours coverage, you are likely missing every call outside business hours.";
+        return s.coverageNone;
       case "voicemail":
-        return "Studies show 80% of callers won't leave a voicemail — they call your competitor instead.";
+        return s.coverageVM;
       case "answering_service":
-        return "Answering services average $700-$1,600/mo and still can't book jobs or generate estimates.";
+        return s.coverageAS;
       default:
         return "";
     }
-  }, [coverage]);
+  }, [coverage, s]);
 
   return (
     <>
@@ -189,17 +324,16 @@ export default function ROICalculatorPage() {
       >
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <p className="reveal text-[13px] font-bold uppercase tracking-[0.15em] text-slate-400">
-            ROI Calculator
+            {s.badge}
           </p>
           <h1
             className="reveal mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[52px]"
             style={{ fontFamily: "Inter, sans-serif" }}
           >
-            See How Much Revenue You&apos;re Losing to Missed Calls
+            {s.heroH}
           </h1>
           <p className="reveal mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-400">
-            Plug in your numbers. See the math. Decide if Capta pays for
-            itself.
+            {s.heroSub}
           </p>
         </div>
       </section>
@@ -225,7 +359,7 @@ export default function ROICalculatorPage() {
               {/* Trade type */}
               <div>
                 <label className="block text-sm font-medium text-slate-400 mb-2">
-                  Your trade
+                  {s.yourTrade}
                 </label>
                 <select
                   value={trade}
@@ -238,9 +372,9 @@ export default function ROICalculatorPage() {
                     border: "1px solid rgba(255,255,255,0.1)",
                   }}
                 >
-                  {TRADES.map((t) => (
-                    <option key={t.value} value={t.value}>
-                      {t.label}
+                  {TRADES.map((tr) => (
+                    <option key={tr.value} value={tr.value}>
+                      {s.trades[tr.value]}
                     </option>
                   ))}
                 </select>
@@ -249,7 +383,7 @@ export default function ROICalculatorPage() {
               {/* After-hours coverage */}
               <div>
                 <label className="block text-sm font-medium text-slate-400 mb-2">
-                  Current after-hours coverage
+                  {s.afterHoursCoverage}
                 </label>
                 <select
                   value={coverage}
@@ -262,9 +396,9 @@ export default function ROICalculatorPage() {
                     border: "1px solid rgba(255,255,255,0.1)",
                   }}
                 >
-                  {COVERAGE_OPTIONS.map((c) => (
-                    <option key={c.value} value={c.value}>
-                      {c.label}
+                  {COVERAGE_VALUES.map((cv) => (
+                    <option key={cv} value={cv}>
+                      {s.coverageOptions[cv]}
                     </option>
                   ))}
                 </select>
@@ -274,7 +408,7 @@ export default function ROICalculatorPage() {
               <div>
                 <div className="flex items-baseline justify-between mb-3">
                   <label className="text-sm font-medium text-slate-400">
-                    Average job value
+                    {s.avgJobValue}
                   </label>
                   <span className="text-lg font-extrabold text-white tabular-nums">
                     {formatDollars(avgJobValue)}
@@ -302,7 +436,7 @@ export default function ROICalculatorPage() {
               <div>
                 <div className="flex items-baseline justify-between mb-3">
                   <label className="text-sm font-medium text-slate-400">
-                    Estimated missed calls per week
+                    {s.missedCallsPerWeek}
                   </label>
                   <span className="text-lg font-extrabold text-white tabular-nums">
                     {missedCallsPerWeek}
@@ -347,38 +481,38 @@ export default function ROICalculatorPage() {
             {/* Results heading */}
             <div className="text-center mb-8">
               <p className="text-[13px] font-bold uppercase tracking-[0.15em] text-slate-500">
-                Your Numbers
+                {s.yourNumbers}
               </p>
             </div>
 
             {/* Output stats */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <StatCard
-                label="Monthly revenue lost"
+                label={s.monthlyRevenueLost}
                 value={formatDollars(animatedMonthlyLost)}
-                sub="/month"
+                sub={s.perMonth}
                 color="#ef4444"
               />
               <StatCard
-                label="Annual revenue lost"
+                label={s.annualRevenueLost}
                 value={formatDollars(animatedAnnualLost)}
-                sub="/year"
+                sub={s.perYear}
                 color="#ef4444"
               />
               <StatCard
-                label="Capta cost"
+                label={s.captaCost}
                 value="$497"
-                sub="/month"
+                sub={s.perMonth}
                 color="white"
               />
               <StatCard
-                label="Your ROI"
+                label={s.yourROI}
                 value={
                   animatedRoi > 0
                     ? `${(animatedRoi / 10).toFixed(1)}x`
                     : "--"
                 }
-                sub="return"
+                sub={s.return}
                 color="#d4a843"
                 highlight
               />
@@ -394,7 +528,7 @@ export default function ROICalculatorPage() {
                 }}
               >
                 <p className="text-sm font-medium text-slate-400 mb-2">
-                  Jobs to break even
+                  {s.jobsToBreakEven}
                 </p>
                 <p
                   className="text-5xl font-extrabold tracking-tight tabular-nums sm:text-6xl"
@@ -403,12 +537,12 @@ export default function ROICalculatorPage() {
                   {calculations.jobsToBreakEven}
                 </p>
                 <p className="mt-3 text-base text-slate-300">
-                  If Capta books just{" "}
+                  {s.breakEvenPrefix}{" "}
                   <span className="font-extrabold text-white">
-                    {calculations.jobsToBreakEven} job
-                    {calculations.jobsToBreakEven !== 1 ? "s" : ""}
+                    {calculations.jobsToBreakEven}{" "}
+                    {calculations.jobsToBreakEven !== 1 ? s.breakEvenJobs : s.breakEvenJob}
                   </span>{" "}
-                  you&apos;d miss, she&apos;s free.
+                  {s.breakEvenSuffix}
                 </p>
               </div>
             </div>
@@ -417,11 +551,11 @@ export default function ROICalculatorPage() {
             {calculations.netAnnualSavings > 0 && (
               <div className="mt-8 text-center">
                 <p className="text-lg text-slate-400">
-                  That&apos;s{" "}
+                  {s.netAnnualPrefix}{" "}
                   <span className="font-extrabold text-white">
-                    {formatDollars(animatedNetAnnual)} saved per year
+                    {formatDollars(animatedNetAnnual)} {s.netAnnualSuffix}
                   </span>{" "}
-                  after paying for Capta.
+                  {s.netAnnualAfter}
                 </p>
               </div>
             )}
@@ -432,10 +566,10 @@ export default function ROICalculatorPage() {
                 href="/setup"
                 className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white"
               >
-                Get Capta &rarr;
+                {s.cta} &rarr;
               </a>
               <p className="mt-4 text-sm text-slate-500">
-                30-day money-back guarantee. Cancel anytime.
+                {s.guarantee}
               </p>
             </div>
           </div>
@@ -449,24 +583,24 @@ export default function ROICalculatorPage() {
       >
         <div className="mx-auto max-w-3xl">
           <h2 className="reveal text-center text-2xl font-extrabold tracking-tight text-white sm:text-3xl mb-12">
-            The Math Behind the Calculator
+            {s.mathTitle}
           </h2>
           <div className="reveal grid gap-6 sm:grid-cols-3">
             {[
               {
                 stat: "25%",
-                label: "Conversion rate",
-                desc: "The average conversion rate for inbound calls in home services.",
+                label: s.conversionRate,
+                desc: s.conversionDesc,
               },
               {
                 stat: "62%",
-                label: "Calls missed after hours",
-                desc: "Most home service calls come when you can't answer — evenings, weekends, lunch.",
+                label: s.missedAfterHours,
+                desc: s.missedAfterHoursDesc,
               },
               {
                 stat: "80%",
-                label: "Won't leave a voicemail",
-                desc: "Callers who hit voicemail call your competitor instead of leaving a message.",
+                label: s.wontLeaveVM,
+                desc: s.wontLeaveVMDesc,
               },
             ].map((item) => (
               <div
@@ -501,24 +635,23 @@ export default function ROICalculatorPage() {
         <div className="mx-auto max-w-2xl">
           <div className="reveal text-center space-y-5">
             <p className="text-lg text-slate-400">
-              A bilingual receptionist costs{" "}
+              {s.compReceptionist}{" "}
               <span className="font-semibold text-white">
-                $3,000-$4,000/month
+                {s.compReceptionistCost}
               </span>
               .
             </p>
             <p className="text-lg text-slate-400">
-              An answering service costs{" "}
+              {s.compService}{" "}
               <span className="font-semibold text-white">
-                $700-$1,600/month
-              </span>{" "}
-              and can&apos;t book jobs.
+                {s.compServiceCost}
+              </span>
+              .
             </p>
             <p className="text-lg text-slate-400">
-              Capta costs{" "}
-              <span className="font-semibold text-white">$497/month</span>,
-              answers 24/7, books appointments, generates estimates, and never
-              calls in sick.
+              {s.compCapta}{" "}
+              <span className="font-semibold text-white">{s.compCaptaCost}</span>
+              {s.compCaptaDesc}
             </p>
           </div>
         </div>
@@ -531,23 +664,23 @@ export default function ROICalculatorPage() {
       >
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <h2 className="reveal text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[40px]">
-            Stop losing revenue. Start today.
+            {s.finalH}
           </h2>
           <p className="reveal mt-5 text-lg text-slate-400">
-            Capta pays for itself after just{" "}
-            {calculations.jobsToBreakEven} booked job
-            {calculations.jobsToBreakEven !== 1 ? "s" : ""}.
+            {s.finalSub}{" "}
+            {calculations.jobsToBreakEven}{" "}
+            {calculations.jobsToBreakEven !== 1 ? s.finalJobs : s.finalJob}.
           </p>
           <div className="reveal mt-8">
             <a
               href="/setup"
               className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white"
             >
-              Get Capta &rarr;
+              {s.cta} &rarr;
             </a>
           </div>
           <p className="mt-6 text-sm text-slate-500">
-            30-day money-back guarantee. Cancel anytime. No contracts.
+            {s.guaranteeFull}
           </p>
         </div>
       </section>

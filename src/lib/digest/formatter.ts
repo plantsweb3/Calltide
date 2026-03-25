@@ -21,83 +21,113 @@ export function formatDigestSMS(
   businessName: string,
   ownerName: string,
   receptionistName: string,
+  lang: "en" | "es" = "en",
 ): string {
-  const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const isEs = lang === "es";
+  const today = new Date().toLocaleDateString(isEs ? "es-MX" : "en-US", { weekday: "long", month: "long", day: "numeric" });
 
   // Quiet day
   if (data.totalCalls === 0 && data.pendingJobCards === 0 && data.tomorrowAppointments.length === 0) {
     return [
-      `\ud83d\udcca ${receptionistName}'s Daily Report`,
+      isEs
+        ? `\ud83d\udcca Reporte Diario de ${receptionistName}`
+        : `\ud83d\udcca ${receptionistName}'s Daily Report`,
       today,
       "",
-      `Quiet day at ${businessName} \u2014 0 calls today.`,
+      isEs
+        ? `Dia tranquilo en ${businessName} \u2014 0 llamadas hoy.`
+        : `Quiet day at ${businessName} \u2014 0 calls today.`,
       "",
       data.tomorrowAppointments.length > 0
-        ? `\ud83d\udcc5 Tomorrow: ${data.tomorrowAppointments.length} appointment${data.tomorrowAppointments.length > 1 ? "s" : ""}`
-        : "\ud83d\udcc5 No appointments tomorrow",
+        ? isEs
+          ? `\ud83d\udcc5 Ma\u00f1ana: ${data.tomorrowAppointments.length} cita${data.tomorrowAppointments.length > 1 ? "s" : ""}`
+          : `\ud83d\udcc5 Tomorrow: ${data.tomorrowAppointments.length} appointment${data.tomorrowAppointments.length > 1 ? "s" : ""}`
+        : isEs
+          ? "\ud83d\udcc5 Sin citas ma\u00f1ana"
+          : "\ud83d\udcc5 No appointments tomorrow",
       "",
-      `\u2705 ${receptionistName}'s keeping watch. Enjoy your evening, ${ownerName}!`,
+      isEs
+        ? `\u2705 ${receptionistName} sigue vigilando. \u00a1Buenas noches, ${ownerName}!`
+        : `\u2705 ${receptionistName}'s keeping watch. Enjoy your evening, ${ownerName}!`,
     ].join("\n");
   }
 
   const lines: string[] = [];
 
   // Header
-  lines.push(`\ud83d\udcca ${receptionistName}'s Daily Report for ${businessName}`);
+  lines.push(isEs
+    ? `\ud83d\udcca Reporte Diario de ${receptionistName} para ${businessName}`
+    : `\ud83d\udcca ${receptionistName}'s Daily Report for ${businessName}`);
   lines.push(today);
   lines.push("");
 
   // Call summary
-  lines.push(`\ud83d\udcde ${data.totalCalls} call${data.totalCalls !== 1 ? "s" : ""} today`);
+  lines.push(isEs
+    ? `\ud83d\udcde ${data.totalCalls} llamada${data.totalCalls !== 1 ? "s" : ""} hoy`
+    : `\ud83d\udcde ${data.totalCalls} call${data.totalCalls !== 1 ? "s" : ""} today`);
 
   // New leads (limit to 5 for SMS length)
   if (data.callBreakdown.newLeads.length > 0) {
     const leadCount = data.callBreakdown.newLeads.length;
-    lines.push(`\u2022 ${leadCount} new lead${leadCount > 1 ? "s" : ""}:`);
+    lines.push(isEs
+      ? `\u2022 ${leadCount} prospecto${leadCount > 1 ? "s" : ""} nuevo${leadCount > 1 ? "s" : ""}:`
+      : `\u2022 ${leadCount} new lead${leadCount > 1 ? "s" : ""}:`);
     for (const lead of data.callBreakdown.newLeads.slice(0, 5)) {
       const emoji = STATUS_EMOJI[lead.status] || "";
       const estimate = lead.estimateRange ? `, ${lead.estimateRange}` : "";
-      const photos = lead.photoCount > 0 ? `, \u{1F4F8}${lead.photoCount} photo${lead.photoCount > 1 ? "s" : ""}` : "";
-      const statusLabel = lead.status === "confirmed" || lead.status === "adjusted" ? " Confirmed" : lead.status === "pending_review" ? " Pending" : "";
+      const photos = lead.photoCount > 0 ? `, \u{1F4F8}${lead.photoCount} foto${lead.photoCount > 1 ? "s" : ""}` : "";
+      const statusLabel = isEs
+        ? (lead.status === "confirmed" || lead.status === "adjusted" ? " Confirmado" : lead.status === "pending_review" ? " Pendiente" : "")
+        : (lead.status === "confirmed" || lead.status === "adjusted" ? " Confirmed" : lead.status === "pending_review" ? " Pending" : "");
       lines.push(`  - ${lead.callerName}: ${lead.jobType}${estimate}${photos} ${emoji}${statusLabel}`);
     }
-    if (leadCount > 5) lines.push(`  + ${leadCount - 5} more`);
+    if (leadCount > 5) lines.push(isEs ? `  + ${leadCount - 5} m\u00e1s` : `  + ${leadCount - 5} more`);
   }
 
   // Existing customers
   if (data.callBreakdown.existingCustomers.length > 0) {
+    const custCount = data.callBreakdown.existingCustomers.length;
     const custList = data.callBreakdown.existingCustomers.slice(0, 3)
       .map((c) => `${c.callerName} (${c.reason})`).join(", ");
-    lines.push(`\u2022 ${data.callBreakdown.existingCustomers.length} existing customer${data.callBreakdown.existingCustomers.length > 1 ? "s" : ""} (${custList})`);
+    lines.push(isEs
+      ? `\u2022 ${custCount} cliente${custCount > 1 ? "s" : ""} existente${custCount > 1 ? "s" : ""} (${custList})`
+      : `\u2022 ${custCount} existing customer${custCount > 1 ? "s" : ""} (${custList})`);
   }
 
   // Suppliers
   if (data.callBreakdown.suppliers.length > 0) {
     const suppList = data.callBreakdown.suppliers.slice(0, 2)
-      .map((s) => `${s.callerName} \u2014 ${s.reason}`).join(", ");
-    lines.push(`\u2022 ${data.callBreakdown.suppliers.length} supplier (${suppList})`);
+      .map((sup) => `${sup.callerName} \u2014 ${sup.reason}`).join(", ");
+    lines.push(isEs
+      ? `\u2022 ${data.callBreakdown.suppliers.length} proveedor (${suppList})`
+      : `\u2022 ${data.callBreakdown.suppliers.length} supplier (${suppList})`);
   }
 
   // Missed/spam
   if (data.callBreakdown.missed > 0) {
-    lines.push(`\u2022 ${data.callBreakdown.missed} missed`);
+    lines.push(isEs
+      ? `\u2022 ${data.callBreakdown.missed} perdida${data.callBreakdown.missed > 1 ? "s" : ""}`
+      : `\u2022 ${data.callBreakdown.missed} missed`);
   }
 
   // Tomorrow appointments
   lines.push("");
   if (data.tomorrowAppointments.length > 0) {
-    lines.push(`\ud83d\udcc5 Tomorrow: ${data.tomorrowAppointments.length} appointment${data.tomorrowAppointments.length > 1 ? "s" : ""}`);
+    const apptCount = data.tomorrowAppointments.length;
+    lines.push(isEs
+      ? `\ud83d\udcc5 Ma\u00f1ana: ${apptCount} cita${apptCount > 1 ? "s" : ""}`
+      : `\ud83d\udcc5 Tomorrow: ${apptCount} appointment${apptCount > 1 ? "s" : ""}`);
     for (const appt of data.tomorrowAppointments.slice(0, 4)) {
       lines.push(`\u2022 ${appt.time} \u2014 ${appt.customerName}, ${appt.jobType}`);
     }
   } else {
-    lines.push("\ud83d\udcc5 No appointments tomorrow");
+    lines.push(isEs ? "\ud83d\udcc5 Sin citas ma\u00f1ana" : "\ud83d\udcc5 No appointments tomorrow");
   }
 
   // Action items
   if (data.actionItems.length > 0) {
     lines.push("");
-    lines.push("\u26a1 Action needed:");
+    lines.push(isEs ? "\u26a1 Acci\u00f3n necesaria:" : "\u26a1 Action needed:");
     for (const item of data.actionItems.slice(0, 4)) {
       lines.push(`\u2022 ${item.description}`);
     }
@@ -106,12 +136,14 @@ export function formatDigestSMS(
   // Monthly revenue
   if (data.estimatedRevenueCaptured && data.estimatedRevenueCaptured > 0) {
     lines.push("");
-    lines.push(`\ud83d\udcb0 This month: ${receptionistName} has captured ~$${data.estimatedRevenueCaptured.toLocaleString()} in estimated job value.`);
+    lines.push(isEs
+      ? `\ud83d\udcb0 Este mes: ${receptionistName} ha capturado ~$${data.estimatedRevenueCaptured.toLocaleString()} en valor estimado de trabajos.`
+      : `\ud83d\udcb0 This month: ${receptionistName} has captured ~$${data.estimatedRevenueCaptured.toLocaleString()} in estimated job value.`);
   }
 
   // Sign off
   lines.push("");
-  lines.push(`Have a good evening, ${ownerName}!`);
+  lines.push(isEs ? `\u00a1Buenas noches, ${ownerName}!` : `Have a good evening, ${ownerName}!`);
 
   let result = lines.join("\n");
 
@@ -133,25 +165,39 @@ export function formatDigestEmail(
   businessName: string,
   ownerName: string,
   receptionistName: string,
+  lang: "en" | "es" = "en",
 ): { subject: string; html: string } {
-  const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  const isEs = lang === "es";
+  const today = new Date().toLocaleDateString(isEs ? "es-MX" : "en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
   const dashboardUrl = `${env.NEXT_PUBLIC_APP_URL || "https://captahq.com"}/dashboard/job-cards`;
 
   // Subject line
   const subjectParts: string[] = [];
-  if (data.totalCalls > 0) subjectParts.push(`${data.totalCalls} call${data.totalCalls !== 1 ? "s" : ""}`);
-  if (data.callBreakdown.newLeads.length > 0) subjectParts.push(`${data.callBreakdown.newLeads.length} new lead${data.callBreakdown.newLeads.length > 1 ? "s" : ""}`);
-  if (data.pendingJobCards > 0) subjectParts.push(`${data.pendingJobCards} pending`);
+  if (data.totalCalls > 0) subjectParts.push(isEs
+    ? `${data.totalCalls} llamada${data.totalCalls !== 1 ? "s" : ""}`
+    : `${data.totalCalls} call${data.totalCalls !== 1 ? "s" : ""}`);
+  if (data.callBreakdown.newLeads.length > 0) subjectParts.push(isEs
+    ? `${data.callBreakdown.newLeads.length} prospecto${data.callBreakdown.newLeads.length > 1 ? "s" : ""} nuevo${data.callBreakdown.newLeads.length > 1 ? "s" : ""}`
+    : `${data.callBreakdown.newLeads.length} new lead${data.callBreakdown.newLeads.length > 1 ? "s" : ""}`);
+  if (data.pendingJobCards > 0) subjectParts.push(isEs
+    ? `${data.pendingJobCards} pendiente${data.pendingJobCards > 1 ? "s" : ""}`
+    : `${data.pendingJobCards} pending`);
   const subject = subjectParts.length > 0
-    ? `${receptionistName}'s Daily Report \u2014 ${subjectParts.join(", ")}`
-    : `${receptionistName}'s Daily Report \u2014 ${businessName}`;
+    ? isEs
+      ? `Reporte Diario de ${receptionistName} \u2014 ${subjectParts.join(", ")}`
+      : `${receptionistName}'s Daily Report \u2014 ${subjectParts.join(", ")}`
+    : isEs
+      ? `Reporte Diario de ${receptionistName} \u2014 ${businessName}`
+      : `${receptionistName}'s Daily Report \u2014 ${businessName}`;
 
   // Quiet day email
   const isQuietDay = data.totalCalls === 0 && data.pendingJobCards === 0 && data.tomorrowAppointments.length === 0;
 
   const leadsHtml = data.callBreakdown.newLeads.map((lead) => {
     const statusColor = lead.status === "confirmed" || lead.status === "adjusted" ? "#4ade80" : lead.status === "pending_review" ? "#fbbf24" : "#94a3b8";
-    const statusLabel = lead.status === "confirmed" || lead.status === "adjusted" ? "Confirmed" : lead.status === "pending_review" ? "Pending" : lead.status === "site_visit_requested" ? "Site Visit" : "";
+    const statusLabel = isEs
+      ? (lead.status === "confirmed" || lead.status === "adjusted" ? "Confirmado" : lead.status === "pending_review" ? "Pendiente" : lead.status === "site_visit_requested" ? "Visita" : "")
+      : (lead.status === "confirmed" || lead.status === "adjusted" ? "Confirmed" : lead.status === "pending_review" ? "Pending" : lead.status === "site_visit_requested" ? "Site Visit" : "");
     const estimate = lead.estimateRange ? `<span style="color:#D4A843;font-weight:600;">${escapeHtml(lead.estimateRange)}</span>` : "";
     const photos = lead.photoCount > 0 ? `<span style="color:#94a3b8;font-size:11px;margin-left:4px;">\u{1F4F8}${lead.photoCount}</span>` : "";
     return `<tr>
@@ -175,7 +221,7 @@ export function formatDigestEmail(
   ).join("");
 
   const html = `<!DOCTYPE html>
-<html lang="en">
+<html lang="${isEs ? "es" : "en"}">
 <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /></head>
 <body style="margin:0;padding:0;background:#0f1729;font-family:'Inter',system-ui,-apple-system,sans-serif;">
 <div style="max-width:600px;margin:0 auto;padding:32px 16px;">
@@ -184,7 +230,7 @@ export function formatDigestEmail(
   <div style="background:linear-gradient(135deg,#1B2A4A 0%,#0f1729 100%);border-radius:16px 16px 0 0;padding:32px 28px 24px;border:1px solid rgba(212,168,67,0.2);border-bottom:none;">
     <div style="margin-bottom:4px;">
       <span style="font-size:22px;font-weight:700;color:#D4A843;">${escapeHtml(receptionistName)}</span>
-      <span style="font-size:14px;color:#94a3b8;margin-left:8px;">Daily Report</span>
+      <span style="font-size:14px;color:#94a3b8;margin-left:8px;">${isEs ? "Reporte Diario" : "Daily Report"}</span>
     </div>
     <p style="margin:0;font-size:20px;font-weight:700;color:#f8fafc;">${escapeHtml(businessName)}</p>
     <p style="margin:6px 0 0;font-size:13px;color:#94a3b8;">${today}</p>
@@ -195,8 +241,8 @@ export function formatDigestEmail(
 
     ${isQuietDay ? `
     <div style="text-align:center;padding:24px 0;">
-      <p style="margin:0;font-size:16px;color:#f8fafc;">Quiet day \u2014 0 calls today.</p>
-      <p style="margin:12px 0 0;font-size:14px;color:#94a3b8;">${escapeHtml(receptionistName)}'s keeping watch. Enjoy your evening, ${escapeHtml(ownerName)}!</p>
+      <p style="margin:0;font-size:16px;color:#f8fafc;">${isEs ? "D\u00eda tranquilo \u2014 0 llamadas hoy." : "Quiet day \u2014 0 calls today."}</p>
+      <p style="margin:12px 0 0;font-size:14px;color:#94a3b8;">${isEs ? `${escapeHtml(receptionistName)} sigue vigilando. \u00a1Buenas noches, ${escapeHtml(ownerName)}!` : `${escapeHtml(receptionistName)}'s keeping watch. Enjoy your evening, ${escapeHtml(ownerName)}!`}</p>
     </div>
     ` : `
 
@@ -206,25 +252,25 @@ export function formatDigestEmail(
         <td width="25%" style="padding:8px;text-align:center;">
           <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:16px 8px;border:1px solid rgba(255,255,255,0.06);">
             <p style="margin:0;font-size:28px;font-weight:800;color:#f8fafc;">${data.totalCalls}</p>
-            <p style="margin:4px 0 0;font-size:10px;color:#94a3b8;text-transform:uppercase;">Calls</p>
+            <p style="margin:4px 0 0;font-size:10px;color:#94a3b8;text-transform:uppercase;">${isEs ? "Llamadas" : "Calls"}</p>
           </div>
         </td>
         <td width="25%" style="padding:8px;text-align:center;">
           <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:16px 8px;border:1px solid rgba(255,255,255,0.06);">
             <p style="margin:0;font-size:28px;font-weight:800;color:#4ade80;">${data.callBreakdown.newLeads.length}</p>
-            <p style="margin:4px 0 0;font-size:10px;color:#94a3b8;text-transform:uppercase;">New Leads</p>
+            <p style="margin:4px 0 0;font-size:10px;color:#94a3b8;text-transform:uppercase;">${isEs ? "Prospectos" : "New Leads"}</p>
           </div>
         </td>
         <td width="25%" style="padding:8px;text-align:center;">
           <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:16px 8px;border:1px solid rgba(255,255,255,0.06);">
             <p style="margin:0;font-size:28px;font-weight:800;color:#fbbf24;">${data.appointmentsBooked}</p>
-            <p style="margin:4px 0 0;font-size:10px;color:#94a3b8;text-transform:uppercase;">Booked</p>
+            <p style="margin:4px 0 0;font-size:10px;color:#94a3b8;text-transform:uppercase;">${isEs ? "Agendados" : "Booked"}</p>
           </div>
         </td>
         <td width="25%" style="padding:8px;text-align:center;">
           <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:16px 8px;border:1px solid rgba(255,255,255,0.06);">
             <p style="margin:0;font-size:28px;font-weight:800;color:#D4A843;">${data.pendingJobCards}</p>
-            <p style="margin:4px 0 0;font-size:10px;color:#94a3b8;text-transform:uppercase;">Pending</p>
+            <p style="margin:4px 0 0;font-size:10px;color:#94a3b8;text-transform:uppercase;">${isEs ? "Pendientes" : "Pending"}</p>
           </div>
         </td>
       </tr>
@@ -233,13 +279,13 @@ export function formatDigestEmail(
     ${data.callBreakdown.newLeads.length > 0 ? `
     <!-- New Leads Table -->
     <div style="margin-bottom:20px;">
-      <p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#f8fafc;">New Leads</p>
+      <p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#f8fafc;">${isEs ? "Prospectos Nuevos" : "New Leads"}</p>
       <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
         <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-          <th style="padding:6px 12px;text-align:left;font-size:11px;color:#94a3b8;text-transform:uppercase;">Name</th>
-          <th style="padding:6px 12px;text-align:left;font-size:11px;color:#94a3b8;text-transform:uppercase;">Job</th>
-          <th style="padding:6px 12px;text-align:left;font-size:11px;color:#94a3b8;text-transform:uppercase;">Estimate</th>
-          <th style="padding:6px 12px;text-align:left;font-size:11px;color:#94a3b8;text-transform:uppercase;">Status</th>
+          <th style="padding:6px 12px;text-align:left;font-size:11px;color:#94a3b8;text-transform:uppercase;">${isEs ? "Nombre" : "Name"}</th>
+          <th style="padding:6px 12px;text-align:left;font-size:11px;color:#94a3b8;text-transform:uppercase;">${isEs ? "Trabajo" : "Job"}</th>
+          <th style="padding:6px 12px;text-align:left;font-size:11px;color:#94a3b8;text-transform:uppercase;">${isEs ? "Presupuesto" : "Estimate"}</th>
+          <th style="padding:6px 12px;text-align:left;font-size:11px;color:#94a3b8;text-transform:uppercase;">${isEs ? "Estado" : "Status"}</th>
         </tr>
         ${leadsHtml}
       </table>
@@ -249,7 +295,7 @@ export function formatDigestEmail(
     ${data.tomorrowAppointments.length > 0 ? `
     <!-- Tomorrow's Appointments -->
     <div style="margin-bottom:20px;">
-      <p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#f8fafc;">Tomorrow's Appointments</p>
+      <p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#f8fafc;">${isEs ? "Citas de Ma\u00f1ana" : "Tomorrow's Appointments"}</p>
       ${appointmentsHtml}
     </div>
     ` : ""}
@@ -257,7 +303,7 @@ export function formatDigestEmail(
     ${data.actionItems.length > 0 ? `
     <!-- Action Items -->
     <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:14px 18px;margin-bottom:20px;">
-      <p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#fbbf24;">Action Needed</p>
+      <p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#fbbf24;">${isEs ? "Acci\u00f3n Necesaria" : "Action Needed"}</p>
       ${actionItemsHtml}
     </div>
     ` : ""}
@@ -266,7 +312,7 @@ export function formatDigestEmail(
     <!-- Monthly Revenue -->
     <div style="background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:10px;padding:14px 18px;">
       <p style="margin:0;font-size:13px;color:#f8fafc;">
-        <span style="color:#4ade80;font-weight:600;">${escapeHtml(receptionistName)} has captured ~$${data.estimatedRevenueCaptured.toLocaleString()} in estimated job value this month.</span>
+        <span style="color:#4ade80;font-weight:600;">${isEs ? `${escapeHtml(receptionistName)} ha capturado ~$${data.estimatedRevenueCaptured.toLocaleString()} en valor estimado de trabajos este mes.` : `${escapeHtml(receptionistName)} has captured ~$${data.estimatedRevenueCaptured.toLocaleString()} in estimated job value this month.`}</span>
       </p>
     </div>
     ` : ""}
@@ -277,7 +323,7 @@ export function formatDigestEmail(
   <!-- Footer -->
   <div style="background:linear-gradient(135deg,#1B2A4A 0%,#0f1729 100%);border-radius:0 0 16px 16px;padding:24px 28px 32px;text-align:center;border:1px solid rgba(212,168,67,0.2);border-top:none;">
     <a href="${dashboardUrl}" style="display:inline-block;background:#D4A843;color:#0f1729;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;">
-      View Job Cards &rarr;
+      ${isEs ? "Ver Tarjetas de Trabajo" : "View Job Cards"} &rarr;
     </a>
     <p style="margin:16px 0 0;font-size:11px;color:#64748b;">
       Capta LLC &middot; San Antonio, TX

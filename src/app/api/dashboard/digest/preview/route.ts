@@ -40,10 +40,11 @@ export async function GET(req: NextRequest) {
     const tz = biz.timezone || "America/Chicago";
     const receptionistName = biz.receptionistName || "Maria";
     const ownerName = biz.ownerName?.split(" ")[0] || "there";
+    const lang = (biz.defaultLanguage === "es" ? "es" : "en") as "en" | "es";
 
     const data = await aggregateDailyDigest(businessId, tz);
-    const sms = formatDigestSMS(data, biz.name, ownerName, receptionistName);
-    const email = formatDigestEmail(data, biz.name, ownerName, receptionistName);
+    const sms = formatDigestSMS(data, biz.name, ownerName, receptionistName, lang);
+    const email = formatDigestEmail(data, biz.name, ownerName, receptionistName, lang);
 
     return NextResponse.json({ sms, email, data });
   } catch (error) {

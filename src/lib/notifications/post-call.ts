@@ -28,8 +28,11 @@ export async function sendBasicCallNotification(
   const receptionistName = biz.receptionistName || "Maria";
   const callerDisplay = callerPhone || call.callerPhone || "unknown number";
   const duration = durationSeconds ? `${Math.ceil(durationSeconds / 60)}min` : "";
+  const isSpanish = biz.defaultLanguage === "es";
 
-  const message = `${receptionistName} handled a call from ${callerDisplay}${duration ? ` (${duration})` : ""}. Summary unavailable — check your dashboard for details. — Capta`;
+  const message = isSpanish
+    ? `${receptionistName} atendio una llamada de ${callerDisplay}${duration ? ` (${duration})` : ""}. Resumen no disponible — revisa tu panel para detalles. — Capta`
+    : `${receptionistName} handled a call from ${callerDisplay}${duration ? ` (${duration})` : ""}. Summary unavailable — check your dashboard for details. — Capta`;
 
   try {
     await sendSMS({
@@ -82,30 +85,43 @@ export async function sendOwnerCallAlert(callId: string): Promise<void> {
   const outcome = call.outcome || "unknown";
   const summary = call.summary || "";
   const duration = call.duration ? `${Math.ceil(call.duration / 60)}min` : "";
+  const isSpanish = biz.defaultLanguage === "es";
 
   let message: string;
 
   switch (outcome) {
     case "appointment_booked":
-      message = `${receptionistName} just booked an appointment! Caller: ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`;
+      message = isSpanish
+        ? `${receptionistName} acaba de reservar una cita! Llamante: ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`
+        : `${receptionistName} just booked an appointment! Caller: ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`;
       break;
     case "estimate_requested":
-      message = `${receptionistName} took an estimate request from ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`;
+      message = isSpanish
+        ? `${receptionistName} recibio una solicitud de presupuesto de ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`
+        : `${receptionistName} took an estimate request from ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`;
       break;
     case "message_taken":
-      message = `${receptionistName} took a message from ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`;
+      message = isSpanish
+        ? `${receptionistName} tomo un mensaje de ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`
+        : `${receptionistName} took a message from ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`;
       break;
     case "transfer":
-      message = `${receptionistName} transferred a call from ${callerDisplay} — they requested to speak with you. ${summary}`;
+      message = isSpanish
+        ? `${receptionistName} transfirio una llamada de ${callerDisplay} — solicitaron hablar contigo. ${summary}`
+        : `${receptionistName} transferred a call from ${callerDisplay} — they requested to speak with you. ${summary}`;
       break;
     case "info_only":
-      message = `${receptionistName} answered an info call from ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`;
+      message = isSpanish
+        ? `${receptionistName} atendio una llamada informativa de ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`
+        : `${receptionistName} answered an info call from ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`;
       break;
     case "spam":
       // Don't bother the owner with spam
       return;
     default:
-      message = `${receptionistName} handled a call from ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`;
+      message = isSpanish
+        ? `${receptionistName} atendio una llamada de ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`
+        : `${receptionistName} handled a call from ${callerDisplay}. ${summary}${duration ? ` (${duration})` : ""}`;
   }
 
   // Truncate to SMS-safe length (160 chars ideal, 320 max for multi-part)

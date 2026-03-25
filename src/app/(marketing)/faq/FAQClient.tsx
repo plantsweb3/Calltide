@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
 import { useScrollReveal } from "@/lib/marketing/hooks";
 
@@ -289,13 +289,18 @@ function AccordionItem({ item, isOpen, onToggle }: { item: FAQItem; isOpen: bool
 }
 
 export default function FAQClient() {
-  const [lang] = useState<Lang>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("capta-lang");
-      if (saved === "en" || saved === "es") return saved;
-    }
-    return "en";
-  });
+  const [lang, setLang] = useState<Lang>("en");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("capta-lang");
+    if (saved === "en" || saved === "es") setLang(saved);
+  }, []);
+
+  const toggleLang = useCallback((l: Lang) => {
+    setLang(l);
+    if (typeof window !== "undefined") localStorage.setItem("capta-lang", l);
+  }, []);
+
   useScrollReveal();
 
   const c = content[lang];
@@ -308,6 +313,14 @@ export default function FAQClient() {
 
   return (
     <>
+      {/* Language toggle */}
+      <div className="flex justify-center pt-6" style={{ background: "#0f1729" }}>
+        <div className="inline-flex rounded-full overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.15)" }}>
+          <button onClick={() => toggleLang("en")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "en" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>English</button>
+          <button onClick={() => toggleLang("es")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "es" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>Espa&ntilde;ol</button>
+        </div>
+      </div>
+
       {/* Hero */}
       <section className="relative px-6 sm:px-8 py-28 sm:py-36 dark-section grain-overlay" style={{ background: "#0f1729" }}>
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(212,168,67,0.06) 0%, transparent 70%)" }} />

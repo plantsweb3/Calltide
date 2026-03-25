@@ -10,6 +10,7 @@ import PageHeader from "@/components/page-header";
 import { formatPhone } from "@/lib/format";
 import { useLang } from "@/app/dashboard/_hooks/use-lang";
 import { t } from "@/lib/i18n/strings";
+import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 
 interface Partner {
   id: string;
@@ -71,6 +72,7 @@ const OUTCOME_STYLES: Record<string, { bg: string; color: string }> = {
 
 export default function PartnersPage() {
   const [lang] = useLang();
+  const receptionistName = useReceptionistName();
   const [tab, setTab] = useState<Tab>("partners");
   const [partners, setPartners] = useState<Partner[]>([]);
   const [referrals, setReferrals] = useState<Referral[]>([]);
@@ -376,7 +378,7 @@ export default function PartnersPage() {
               style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
             >
               <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-                No partners yet. Add your first referral partner so Maria can connect callers to your network.
+                No partners yet. Add your first referral partner so {receptionistName} can connect callers to your network.
               </p>
             </div>
           ) : (
@@ -450,7 +452,7 @@ export default function PartnersPage() {
             />
           ) : (
             <div
-              className="rounded-xl overflow-hidden"
+              className="rounded-xl overflow-hidden overflow-x-auto"
               style={{ border: "1px solid var(--db-border)" }}
             >
               <table className="w-full text-sm">

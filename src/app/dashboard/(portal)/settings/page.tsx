@@ -7,6 +7,7 @@ import { CaptaSpinnerInline } from "@/components/capta-spinner";
 import WebhookManager from "@/components/webhook-manager";
 import { formatPhone } from "@/lib/format";
 import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 import { t } from "@/lib/i18n/strings";
 import type { Lang } from "@/lib/i18n/strings";
 
@@ -487,7 +488,7 @@ export default function SettingsPage() {
       {successMsg && (
         <div
           className="rounded-xl p-4 flex items-center gap-2"
-          style={{ background: "var(--db-success-bg)", border: "1px solid rgba(74,222,128,0.2)" }}
+          style={{ background: "var(--db-success-bg)", border: "1px solid var(--db-success)" }}
         >
           <span style={{ color: "var(--db-success)" }}>&#10003;</span>
           <p className="text-sm font-medium" style={{ color: "var(--db-success)" }}>{successMsg}</p>
@@ -511,7 +512,7 @@ export default function SettingsPage() {
         className="flex items-center gap-3 rounded-xl p-4"
         style={{
           background: data.active ? "var(--db-success-bg)" : "var(--db-danger-bg)",
-          border: `1px solid ${data.active ? "rgba(74,222,128,0.2)" : "rgba(248,113,113,0.2)"}`,
+          border: `1px solid ${data.active ? "var(--db-success)" : "var(--db-danger)"}`,
         }}
       >
         <span className="relative flex h-3 w-3">
@@ -1190,7 +1191,7 @@ export default function SettingsPage() {
                   style={{
                     background: isClosed ? "var(--db-danger-bg)" : "var(--db-success-bg)",
                     color: isClosed ? "var(--db-danger)" : "var(--db-success)",
-                    border: `1px solid ${isClosed ? "rgba(239,68,68,0.2)" : "rgba(74,222,128,0.2)"}`,
+                    border: `1px solid ${isClosed ? "var(--db-danger)" : "var(--db-success)"}`,
                   }}
                 >
                   {isClosed ? t("settings.closed", lang) : t("settings.open", lang)}
@@ -2497,6 +2498,7 @@ const STATUS_COLORS: Record<string, string> = {
 const MONTH_LABELS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function OutboundSettingsSection({ lang }: { lang: Lang }) {
+  const rName = useReceptionistName();
   const [settings, setSettings] = useState<OutboundSettings | null>(null);
   const [calls, setCalls] = useState<OutboundCallItem[]>([]);
   const [seasonal, setSeasonal] = useState<SeasonalService[]>([]);
@@ -2591,7 +2593,7 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
               {t("settings.enableOutbound", lang)}
             </p>
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-              {t("settings.letMariaCalls", lang, { name: "Maria" })}
+              {t("settings.letMariaCalls", lang, { name: rName })}
             </p>
           </div>
           <ToggleSwitch
@@ -2817,7 +2819,7 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                       style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)" }}
                     >
                       <span
-                        className="rounded px-1.5 py-0.5 text-[10px] font-semibold"
+                        className="rounded px-1.5 py-0.5 text-xs font-semibold"
                         style={{ background: `${STATUS_COLORS[c.status] ?? "#94a3b8"}15`, color: STATUS_COLORS[c.status] ?? "#94a3b8" }}
                       >
                         {CALL_TYPE_I18N_KEYS[c.callType] ? t(CALL_TYPE_I18N_KEYS[c.callType], lang) : c.callType}
@@ -2825,11 +2827,11 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                       <span className="flex-1 truncate text-xs" style={{ color: "var(--db-text-secondary)" }}>
                         {c.customerPhone}
                       </span>
-                      <span className="text-[10px]" style={{ color: STATUS_COLORS[c.status] ?? "#94a3b8" }}>
+                      <span className="text-xs" style={{ color: STATUS_COLORS[c.status] ?? "#94a3b8" }}>
                         {c.outcome ?? c.status}
                       </span>
                       {c.duration != null && (
-                        <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                        <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
                           {c.duration}s
                         </span>
                       )}

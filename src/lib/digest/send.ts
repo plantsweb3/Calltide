@@ -27,6 +27,7 @@ export async function sendDailyDigest(businessId: string): Promise<boolean> {
   const tz = biz.timezone || "America/Chicago";
   const receptionistName = biz.receptionistName || "Maria";
   const ownerName = biz.ownerName?.split(" ")[0] || "there";
+  const lang = (biz.defaultLanguage === "es" ? "es" : "en") as "en" | "es";
 
   // Check double-send: don't send if already sent today
   if (biz.lastDigestSentAt) {
@@ -45,7 +46,7 @@ export async function sendDailyDigest(businessId: string): Promise<boolean> {
   // Send SMS
   if ((preference === "sms" || preference === "both") && biz.ownerPhone) {
     try {
-      const smsBody = formatDigestSMS(data, biz.name, ownerName, receptionistName);
+      const smsBody = formatDigestSMS(data, biz.name, ownerName, receptionistName, lang);
       const result = await sendSMS({
         to: biz.ownerPhone,
         from: biz.twilioNumber || env.TWILIO_PHONE_NUMBER,
@@ -62,7 +63,7 @@ export async function sendDailyDigest(businessId: string): Promise<boolean> {
   // Send email
   if ((preference === "email" || preference === "both") && biz.ownerEmail) {
     try {
-      const { subject, html } = formatDigestEmail(data, biz.name, ownerName, receptionistName);
+      const { subject, html } = formatDigestEmail(data, biz.name, ownerName, receptionistName, lang);
       const resend = getResend();
       const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
       await resend.emails.send({
