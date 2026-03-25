@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { toast } from "sonner";
+import ConfirmDialog from "@/components/confirm-dialog";
 
 interface WebhookEndpoint {
   id: string;
@@ -35,13 +37,15 @@ export default function WebhookManager() {
   const [testingId, setTestingId] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<{ id: string; status: string; error?: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchEndpoints = useCallback(async () => {
     try {
       const res = await fetch("/api/dashboard/webhooks");
       if (res.ok) setEndpoints(await res.json());
     } catch {
-      // silent
+      toast.error("Failed to load webhooks");
     } finally {
       setLoading(false);
     }
@@ -78,11 +82,15 @@ export default function WebhookManager() {
   }
 
   async function handleDelete(id: string) {
+    setDeleting(true);
     try {
       await fetch(`/api/dashboard/webhooks/${id}`, { method: "DELETE" });
       setEndpoints((prev) => prev.filter((e) => e.id !== id));
     } catch {
-      // silent
+      toast.error("Failed to delete webhook");
+    } finally {
+      setDeleting(false);
+      setDeleteId(null);
     }
   }
 
@@ -100,7 +108,7 @@ export default function WebhookManager() {
         );
       }
     } catch {
-      // silent
+      toast.error("Failed to update webhook status");
     }
   }
 
@@ -300,7 +308,7 @@ export default function WebhookManager() {
                     {ep.status === "active" ? "Pause" : "Resume"}
                   </button>
                   <button
-                    onClick={() => handleDelete(ep.id)}
+                    onClick={() => setDeleteId(ep.id)}
                     className="rounded px-3 py-2 text-[11px] font-medium min-h-[44px]"
                     style={{ color: "var(--db-danger)" }}
                   >
@@ -367,6 +375,16 @@ export default function WebhookManager() {
           ))}
         </div>
       </div>
+      <ConfirmDialog
+        open={deleteId !== null}
+        title="Delete Webhook"
+        description="Are you sure you want to delete this webhook endpoint? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="danger"
+        loading={deleting}
+        onConfirm={() => { if (deleteId) handleDelete(deleteId); }}
+        onCancel={() => setDeleteId(null)}
+      />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
-import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import { PageSkeleton } from "@/components/skeleton";
 import MetricCard from "@/components/metric-card";
 import PageHeader from "@/components/page-header";
 import DateRangePicker, { type DateRange } from "@/components/date-range-picker";
@@ -62,7 +62,9 @@ export default function ReportingPage() {
     return (
       <div>
         <PageHeader title="Reporting" />
-        <LoadingSpinner message="Loading analytics..." />
+        <div className="mt-6">
+          <PageSkeleton />
+        </div>
       </div>
     );
   }

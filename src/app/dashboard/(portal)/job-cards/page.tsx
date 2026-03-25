@@ -186,7 +186,7 @@ export default function JobCardsPage() {
               placeholder="Search jobs..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-52"
+              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-200 w-full sm:w-52"
               style={{
                 background: "var(--db-card)",
                 border: "1px solid var(--db-border)",
@@ -316,10 +316,11 @@ export default function JobCardsPage() {
                     </span>
                     {card.photoCount > 0 && (
                       <span
-                        className="px-2 py-0.5 rounded-full text-xs font-medium"
+                        className="px-2 py-0.5 rounded-full text-xs font-medium inline-flex items-center gap-1"
                         style={{ background: "rgba(59,130,246,0.15)", color: "#60a5fa" }}
                       >
-                        {"\u{1F4F8}"} {card.photoCount}
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        {card.photoCount}
                       </span>
                     )}
                   </div>

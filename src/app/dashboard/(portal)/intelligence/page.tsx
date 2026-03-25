@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import MetricCard from "@/components/metric-card";
-import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import { PageSkeleton } from "@/components/skeleton";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 
 interface IntelligenceData {
@@ -111,7 +111,7 @@ export default function IntelligencePage() {
     );
   }
 
-  if (!data) return <LoadingSpinner />;
+  if (!data) return <PageSkeleton />;
 
   const maxHour = Math.max(...data.hourCounts, 1);
   const totalTierCount = Object.values(data.tierDistribution).reduce(

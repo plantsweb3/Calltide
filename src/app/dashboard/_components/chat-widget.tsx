@@ -161,7 +161,7 @@ export default function ChatWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed z-50 flex items-center gap-2.5 rounded-full px-5 py-3 shadow-lg transition-all duration-300 hover:shadow-xl active:scale-95"
+          className="fixed z-50 flex items-center gap-2.5 rounded-full px-5 py-3 shadow-lg transition-all duration-200 hover:shadow-xl active:scale-95"
           style={{
             bottom: "1.5rem",
             right: "4.5rem",

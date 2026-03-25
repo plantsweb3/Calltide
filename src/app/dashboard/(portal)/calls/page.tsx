@@ -285,7 +285,7 @@ export default function CallsPage() {
                       setPage(1);
                     }, 300);
                   }}
-                  className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-64"
+                  className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-200 w-full sm:w-64"
                   style={{
                     background: "var(--db-card)",
                     border: "1px solid var(--db-border)",

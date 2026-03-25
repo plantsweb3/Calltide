@@ -163,7 +163,7 @@ export default function EstimatesPage() {
               placeholder="Search by customer..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-300 w-full sm:w-52"
+              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-200 w-full sm:w-52"
               style={{
                 background: "var(--db-card)",
                 border: "1px solid var(--db-border)",
