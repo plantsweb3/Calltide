@@ -3,6 +3,8 @@
 import { Suspense, useState, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 function getStrength(pw: string): "weak" | "fair" | "strong" {
   if (pw.length < 8 || !/[a-zA-Z]/.test(pw) || !/[0-9]/.test(pw)) return "weak";
@@ -10,15 +12,14 @@ function getStrength(pw: string): "weak" | "fair" | "strong" {
   return "fair";
 }
 
-const STRENGTH_CONFIG = {
-  weak: { color: "var(--db-danger)", label: "Weak", width: "33%" },
-  fair: { color: "#facc15", label: "Fair", width: "66%" },
-  strong: { color: "var(--db-success)", label: "Strong", width: "100%" },
-} as const;
-
-function PasswordStrengthBar({ password }: { password: string }) {
+function PasswordStrengthBar({ password, lang }: { password: string; lang: "en" | "es" }) {
   const strength = getStrength(password);
-  const config = STRENGTH_CONFIG[strength];
+  const config = {
+    weak: { color: "var(--db-danger)", label: t("auth.strength.weak", lang), width: "33%" },
+    fair: { color: "#facc15", label: t("auth.strength.fair", lang), width: "66%" },
+    strong: { color: "var(--db-success)", label: t("auth.strength.strong", lang), width: "100%" },
+  } as const;
+  const c = config[strength];
 
   if (!password) return null;
 
@@ -27,15 +28,15 @@ function PasswordStrengthBar({ password }: { password: string }) {
       <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--db-border)" }}>
         <div
           className="h-full rounded-full transition-all duration-300"
-          style={{ background: config.color, width: config.width }}
+          style={{ background: c.color, width: c.width }}
         />
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-xs" style={{ color: config.color }}>{config.label}</span>
+        <span className="text-xs" style={{ color: c.color }}>{c.label}</span>
         <div className="text-xs space-x-3" style={{ color: "var(--db-text-muted)" }}>
           <span style={{ color: password.length >= 8 ? "var(--db-success)" : undefined }}>8+ chars</span>
-          <span style={{ color: /[a-zA-Z]/.test(password) ? "var(--db-success)" : undefined }}>Letter</span>
-          <span style={{ color: /[0-9]/.test(password) ? "var(--db-success)" : undefined }}>Number</span>
+          <span style={{ color: /[a-zA-Z]/.test(password) ? "var(--db-success)" : undefined }}>{lang === "es" ? "Letra" : "Letter"}</span>
+          <span style={{ color: /[0-9]/.test(password) ? "var(--db-success)" : undefined }}>{lang === "es" ? "Numero" : "Number"}</span>
         </div>
       </div>
     </div>
@@ -47,6 +48,7 @@ function ResetPasswordForm() {
   const router = useRouter();
   const token = searchParams.get("token") || "";
   const email = searchParams.get("email") || "";
+  const [lang] = useLang();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -76,7 +78,7 @@ function ResetPasswordForm() {
           className="rounded-lg px-4 py-3 text-sm"
           style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
-          Invalid reset link. Please request a new one.
+          {lang === "es" ? "Enlace invalido. Solicita uno nuevo." : "Invalid reset link. Please request a new one."}
         </div>
         <div className="text-center">
           <Link
@@ -84,7 +86,7 @@ function ResetPasswordForm() {
             className="text-sm font-medium"
             style={{ color: "var(--db-accent)" }}
           >
-            Request New Reset Link
+            {t("auth.sendResetLink", lang)}
           </Link>
         </div>
       </div>
@@ -108,10 +110,10 @@ function ResetPasswordForm() {
         router.push("/dashboard/login?msg=password_updated");
       } else {
         const data = await res.json();
-        setError(data.error || "Something went wrong");
+        setError(data.error || t("error.somethingWentWrong", lang));
       }
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(t("error.somethingWentWrong", lang));
     }
     setLoading(false);
   }
@@ -130,10 +132,10 @@ function ResetPasswordForm() {
           className="text-2xl font-semibold"
           style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
         >
-          Set New Password
+          {t("auth.setNewPassword", lang)}
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Choose a strong password for your account
+          {lang === "es" ? "Elige una contrasena segura para tu cuenta" : "Choose a strong password for your account"}
         </p>
       </div>
 
@@ -153,7 +155,7 @@ function ResetPasswordForm() {
             className="mb-1.5 block text-sm font-medium"
             style={{ color: "var(--db-text-secondary)" }}
           >
-            New Password
+            {t("auth.newPassword", lang)}
           </label>
           <div className="relative">
             <input
@@ -167,7 +169,7 @@ function ResetPasswordForm() {
                 border: "1px solid var(--db-border)",
                 color: "var(--db-text)",
               }}
-              placeholder="Min 8 characters"
+              placeholder={lang === "es" ? "Minimo 8 caracteres" : "Min 8 characters"}
               autoFocus
               required
             />
@@ -191,7 +193,7 @@ function ResetPasswordForm() {
             </button>
           </div>
           <div className="mt-2">
-            <PasswordStrengthBar password={password} />
+            <PasswordStrengthBar password={password} lang={lang} />
           </div>
         </div>
 
@@ -201,7 +203,7 @@ function ResetPasswordForm() {
             className="mb-1.5 block text-sm font-medium"
             style={{ color: "var(--db-text-secondary)" }}
           >
-            Confirm Password
+            {t("auth.confirmPassword", lang)}
           </label>
           <input
             id="confirm"
@@ -214,11 +216,11 @@ function ResetPasswordForm() {
               border: `1px solid ${confirmPassword && confirmPassword !== password ? "var(--db-danger)" : "var(--db-border)"}`,
               color: "var(--db-text)",
             }}
-            placeholder="Re-enter your password"
+            placeholder={lang === "es" ? "Confirma tu contrasena" : "Re-enter your password"}
             required
           />
           {confirmPassword && confirmPassword !== password && (
-            <p className="mt-1 text-xs" style={{ color: "var(--db-danger)" }}>Passwords don&apos;t match</p>
+            <p className="mt-1 text-xs" style={{ color: "var(--db-danger)" }}>{t("auth.passwordsDontMatch", lang)}</p>
           )}
         </div>
 
@@ -234,7 +236,7 @@ function ResetPasswordForm() {
             e.currentTarget.style.background = "var(--db-accent)";
           }}
         >
-          {loading ? "Updating..." : "Reset Password"}
+          {loading ? t("auth.sending", lang) : t("auth.updatePassword", lang)}
         </button>
       </form>
 
@@ -244,7 +246,7 @@ function ResetPasswordForm() {
           className="text-sm font-medium transition-colors"
           style={{ color: "var(--db-accent)" }}
         >
-          Back to Sign In
+          {t("auth.backToSignIn", lang)}
         </Link>
       </div>
     </div>

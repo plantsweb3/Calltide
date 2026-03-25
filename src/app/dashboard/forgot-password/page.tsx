@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [lang] = useLang();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,10 +28,10 @@ export default function ForgotPasswordPage() {
         setSubmitted(true);
       } else {
         const data = await res.json();
-        setError(data.error || "Something went wrong");
+        setError(data.error || t("error.somethingWentWrong", lang));
       }
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(t("error.somethingWentWrong", lang));
     }
     setLoading(false);
   }
@@ -48,12 +51,12 @@ export default function ForgotPasswordPage() {
             className="text-2xl font-semibold"
             style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
           >
-            Reset Password
+            {t("auth.resetPassword", lang)}
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
             {submitted
-              ? "Check your email for a reset link"
-              : "Enter your email to receive a password reset link"}
+              ? (lang === "es" ? "Revisa tu correo para el enlace de restablecimiento" : "Check your email for a reset link")
+              : t("auth.resetPasswordSub", lang)}
           </p>
         </div>
 
@@ -71,7 +74,9 @@ export default function ForgotPasswordPage() {
             className="rounded-lg px-4 py-3 text-sm"
             style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
           >
-            If an account exists for <strong>{email}</strong>, you&apos;ll receive a reset link. It expires in 1 hour.
+            {lang === "es"
+              ? <>Si existe una cuenta para <strong>{email}</strong>, recibiras un enlace. Expira en 1 hora.</>
+              : <>If an account exists for <strong>{email}</strong>, you&apos;ll receive a reset link. It expires in 1 hour.</>}
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -81,7 +86,7 @@ export default function ForgotPasswordPage() {
                 className="mb-1.5 block text-sm font-medium"
                 style={{ color: "var(--db-text-secondary)" }}
               >
-                Email
+                {t("auth.email", lang)}
               </label>
               <input
                 id="email"
@@ -112,7 +117,7 @@ export default function ForgotPasswordPage() {
                 e.currentTarget.style.background = "var(--db-accent)";
               }}
             >
-              {loading ? "Sending..." : "Send Reset Link"}
+              {loading ? t("auth.sending", lang) : t("auth.sendResetLink", lang)}
             </button>
           </form>
         )}
@@ -123,7 +128,7 @@ export default function ForgotPasswordPage() {
             className="text-sm font-medium transition-colors"
             style={{ color: "var(--db-accent)" }}
           >
-            Back to Sign In
+            {t("auth.backToSignIn", lang)}
           </Link>
         </div>
       </div>

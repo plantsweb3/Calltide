@@ -3,6 +3,29 @@
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
+
+function LanguageToggle({ lang, setLang }: { lang: "en" | "es"; setLang: (l: "en" | "es") => void }) {
+  return (
+    <div className="flex items-center gap-1 rounded-lg p-0.5" style={{ background: "var(--db-hover)" }}>
+      {(["en", "es"] as const).map((l) => (
+        <button
+          key={l}
+          onClick={() => setLang(l)}
+          className="rounded-md px-2.5 py-1 text-xs font-medium transition-colors"
+          style={{
+            background: lang === l ? "var(--db-card)" : "transparent",
+            color: lang === l ? "var(--db-text)" : "var(--db-text-muted)",
+            boxShadow: lang === l ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
+          }}
+        >
+          {l === "en" ? "EN" : "ES"}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -14,6 +37,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [magicLoading, setMagicLoading] = useState(false);
+  const [lang, setLang] = useLang();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -25,14 +49,14 @@ function LoginForm() {
     } else if (errParam === "expired") {
       setError("This login link has already been used. Please request a new one.");
     } else if (errParam === "rate_limited") {
-      setError("Too many login attempts. Please wait a few minutes and try again.");
+      setError(t("auth.error.rateLimited", lang));
     } else if (errParam === "session_expired") {
-      setError("Your session has expired. Please sign in again.");
+      setError(t("error.sessionExpired", lang));
     }
     if (msg === "password_updated") {
-      setSuccessMsg("Password updated successfully. Sign in with your new password.");
+      setSuccessMsg(lang === "es" ? "Contrasena actualizada. Inicia sesion con tu nueva contrasena." : "Password updated successfully. Sign in with your new password.");
     }
-  }, [searchParams]);
+  }, [searchParams, lang]);
 
   async function handlePasswordLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -51,17 +75,17 @@ function LoginForm() {
         router.push("/dashboard");
       } else {
         const data = await res.json();
-        setError(data.error || "Something went wrong");
+        setError(data.error || t("error.somethingWentWrong", lang));
       }
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(t("error.somethingWentWrong", lang));
     }
     setLoading(false);
   }
 
   async function handleMagicLink() {
     if (!email) {
-      setError("Enter your email address first");
+      setError(t("auth.error.enterEmailFirst", lang));
       return;
     }
     setMagicLoading(true);
@@ -79,10 +103,10 @@ function LoginForm() {
         setMagicLinkSent(true);
       } else {
         const data = await res.json();
-        setError(data.error || "Something went wrong");
+        setError(data.error || t("error.somethingWentWrong", lang));
       }
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(t("error.somethingWentWrong", lang));
     }
     setMagicLoading(false);
   }
@@ -96,17 +120,20 @@ function LoginForm() {
         boxShadow: "var(--db-card-shadow)",
       }}
     >
-      <div>
-        <img src="/images/logo-inline-navy.webp" alt="Capta" className="h-8 w-auto mb-4" />
-        <h1
-          className="text-2xl font-semibold"
-          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
-        >
-          Client Portal
-        </h1>
-        <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Sign in to your dashboard
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <img src="/images/logo-inline-navy.webp" alt="Capta" className="h-8 w-auto mb-4" />
+          <h1
+            className="text-2xl font-semibold"
+            style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+          >
+            {t("auth.clientPortal", lang)}
+          </h1>
+          <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
+            {t("auth.signInSub", lang)}
+          </p>
+        </div>
+        <LanguageToggle lang={lang} setLang={setLang} />
       </div>
 
       {error && (
@@ -132,7 +159,7 @@ function LoginForm() {
           className="rounded-lg px-4 py-3 text-sm"
           style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
         >
-          We sent a login link to <strong>{email}</strong>. It expires in 15 minutes.
+          {t("auth.magicLinkSent", lang)}
         </div>
       ) : (
         <>
@@ -144,7 +171,7 @@ function LoginForm() {
                 className="mb-1.5 block text-sm font-medium"
                 style={{ color: "var(--db-text-secondary)" }}
               >
-                Email
+                {t("auth.email", lang)}
               </label>
               <input
                 id="email"
@@ -169,7 +196,7 @@ function LoginForm() {
                 className="mb-1.5 block text-sm font-medium"
                 style={{ color: "var(--db-text-secondary)" }}
               >
-                Password
+                {t("auth.password", lang)}
               </label>
               <div className="relative">
                 <input
@@ -183,7 +210,7 @@ function LoginForm() {
                     border: "1px solid var(--db-border)",
                     color: "var(--db-text)",
                   }}
-                  placeholder="Enter your password"
+                  placeholder={lang === "es" ? "Ingresa tu contrasena" : "Enter your password"}
                   required
                 />
                 <button
@@ -217,7 +244,7 @@ function LoginForm() {
                   style={{ accentColor: "var(--db-accent)" }}
                 />
                 <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-                  Remember me
+                  {t("auth.rememberMe", lang)}
                 </span>
               </label>
               <Link
@@ -225,7 +252,7 @@ function LoginForm() {
                 className="text-sm font-medium transition-colors"
                 style={{ color: "var(--db-accent)" }}
               >
-                Forgot password?
+                {t("auth.forgotPassword", lang)}
               </Link>
             </div>
 
@@ -241,14 +268,14 @@ function LoginForm() {
                 e.currentTarget.style.background = "var(--db-accent)";
               }}
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? t("auth.signingIn", lang) : t("auth.signIn", lang)}
             </button>
           </form>
 
           {/* Divider */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px" style={{ background: "var(--db-border)" }} />
-            <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>OR</span>
+            <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("auth.or", lang).toUpperCase()}</span>
             <div className="flex-1 h-px" style={{ background: "var(--db-border)" }} />
           </div>
 
@@ -270,21 +297,25 @@ function LoginForm() {
               e.currentTarget.style.background = "transparent";
             }}
           >
-            {magicLoading ? "Sending..." : "Send Magic Link"}
+            {magicLoading ? t("auth.sending", lang) : t("auth.sendMagicLink", lang)}
           </button>
         </>
       )}
 
-      <div
-        className="pt-2 text-center"
-        style={{ borderTop: "1px solid var(--db-border)" }}
-      >
+      <div className="flex items-center justify-between pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
         <Link
           href="/help"
           className="inline-block text-xs transition-colors"
           style={{ color: "var(--db-text-muted)" }}
         >
-          Need help? Visit our Help Center
+          {t("auth.needHelp", lang)} {t("auth.visitHelpCenter", lang)}
+        </Link>
+        <Link
+          href="/setup"
+          className="text-xs font-medium transition-colors"
+          style={{ color: "var(--db-accent)" }}
+        >
+          {t("auth.getStarted", lang)}
         </Link>
       </div>
     </div>

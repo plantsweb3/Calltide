@@ -130,6 +130,53 @@ const strings: Record<string, Record<Lang, string>> = {
     es: "Pon a {name} a contestar llamadas en los proximos 10 minutos.",
   },
 
+  // ── Overview ─────────────────────────────────────────────
+  "overview.quickSetup": { en: "Quick Setup", es: "Configuracion rapida" },
+  "overview.forwardNumber": {
+    en: "Forward your number",
+    es: "Redirige tu numero",
+  },
+  "overview.forwardNumberSub": {
+    en: "Set up call forwarding to your Capta number",
+    es: "Configura el desvio de llamadas a tu numero Capta",
+  },
+  "overview.customizeReceptionist": {
+    en: "Customize your receptionist",
+    es: "Personaliza tu recepcionista",
+  },
+  "overview.setBusinessHours": {
+    en: "Set business hours",
+    es: "Configura tu horario",
+  },
+  "overview.makeTestCall": {
+    en: "Make a test call",
+    es: "Haz una llamada de prueba",
+  },
+  "overview.mariaIsStandingBy": {
+    en: "{name} is standing by",
+    es: "{name} esta lista",
+  },
+  "overview.callsToday": { en: "Calls Today", es: "Llamadas hoy" },
+  "overview.thisWeek": { en: "This Week", es: "Esta semana" },
+  "overview.totalCalls": { en: "Total Calls", es: "Total de llamadas" },
+  "overview.revenueThisMonth": {
+    en: "Revenue This Month",
+    es: "Ingresos este mes",
+  },
+  "overview.noCalls": { en: "No calls yet", es: "Aun no hay llamadas" },
+  "overview.noCallsSub": {
+    en: "Once {name} starts answering calls, your dashboard will come alive.",
+    es: "Cuando {name} empiece a contestar, tu panel cobrara vida.",
+  },
+  "overview.activeCallsNow": {
+    en: "active call right now",
+    es: "llamada activa ahora",
+  },
+  "overview.activeCallsNowPlural": {
+    en: "active calls right now",
+    es: "llamadas activas ahora",
+  },
+
   // ── Common actions ─────────────────────────────────────────
   "action.seeBreakdown": { en: "See breakdown", es: "Ver detalle" },
   "action.hideBreakdown": { en: "Hide breakdown", es: "Ocultar detalle" },
@@ -405,6 +452,70 @@ const strings: Record<string, Record<Lang, string>> = {
     en: "Missed Call Recovery",
     es: "Recuperacion de llamadas perdidas",
   },
+  "settings.tab.general": { en: "General", es: "General" },
+  "settings.tab.receptionist": { en: "Receptionist", es: "Recepcionista" },
+  "settings.tab.responses": { en: "Responses", es: "Respuestas" },
+  "settings.tab.notifications": { en: "Notifications", es: "Notificaciones" },
+  "settings.tab.pricing": { en: "Pricing", es: "Precios" },
+  "settings.tab.automations": { en: "Automations", es: "Automatizaciones" },
+  "settings.tab.integrations": { en: "Integrations", es: "Integraciones" },
+  "settings.ownerContact": {
+    en: "Owner Contact",
+    es: "Contacto del dueno",
+  },
+  "settings.yourReceptionist": {
+    en: "Your Receptionist",
+    es: "Tu Recepcionista",
+  },
+  "settings.personality": { en: "Personality", es: "Personalidad" },
+  "settings.voice": { en: "Voice", es: "Voz" },
+  "settings.quietHours": { en: "Quiet Hours", es: "Horario silencioso" },
+  "settings.weeklyDigest": { en: "Weekly Digest", es: "Resumen semanal" },
+  "settings.dailySummary": { en: "Daily Summary", es: "Resumen diario" },
+  "settings.reviewRequests": {
+    en: "Review Requests",
+    es: "Solicitudes de resena",
+  },
+  "settings.save": { en: "Save Changes", es: "Guardar cambios" },
+  "settings.saving": { en: "Saving...", es: "Guardando..." },
+  "settings.saved": { en: "Changes saved", es: "Cambios guardados" },
+  "settings.businessName": { en: "Business Name", es: "Nombre del negocio" },
+  "settings.trade": { en: "Trade/Industry", es: "Industria" },
+  "settings.phone": { en: "Business Phone", es: "Telefono del negocio" },
+  "settings.email": { en: "Business Email", es: "Correo del negocio" },
+  "settings.address": { en: "Address", es: "Direccion" },
+  "settings.serviceArea": { en: "Service Area", es: "Area de servicio" },
+  "settings.ownerName": { en: "Owner Name", es: "Nombre del dueno" },
+  "settings.ownerPhone": { en: "Owner Phone", es: "Telefono del dueno" },
+  "settings.ownerEmail": { en: "Owner Email", es: "Correo del dueno" },
+  "settings.receptionistName": {
+    en: "Receptionist Name",
+    es: "Nombre de la recepcionista",
+  },
+  "settings.greeting": { en: "Greeting", es: "Saludo" },
+  "settings.greetingEs": {
+    en: "Greeting (Spanish)",
+    es: "Saludo (Espanol)",
+  },
+  "settings.additionalInfo": {
+    en: "Additional Information",
+    es: "Informacion adicional",
+  },
+  "settings.mondayFriday": { en: "Monday - Friday", es: "Lunes - Viernes" },
+  "settings.saturday": { en: "Saturday", es: "Sabado" },
+  "settings.sunday": { en: "Sunday", es: "Domingo" },
+  "settings.closed": { en: "Closed", es: "Cerrado" },
+  "settings.security": { en: "Security", es: "Seguridad" },
+  "settings.changePassword": {
+    en: "Change Password",
+    es: "Cambiar contrasena",
+  },
+  "settings.currentPassword": {
+    en: "Current Password",
+    es: "Contrasena actual",
+  },
+  "settings.dangerZone": { en: "Danger Zone", es: "Zona de peligro" },
+  "settings.deleteAccount": { en: "Delete Account", es: "Eliminar cuenta" },
 
   // ── Errors / empty states ──────────────────────────────────
   "error.failedToLoad": {
@@ -431,6 +542,75 @@ const strings: Record<string, Record<Lang, string>> = {
     en: "Page not found",
     es: "Pagina no encontrada",
   },
+
+  // ── Auth ──────────────────────────────────────────────────
+  "auth.clientPortal": { en: "Client Portal", es: "Portal de Cliente" },
+  "auth.signIn": { en: "Sign in to your account", es: "Inicia sesion" },
+  "auth.signInSub": {
+    en: "See how your AI receptionist is performing",
+    es: "Mira como va tu recepcionista AI",
+  },
+  "auth.email": { en: "Email address", es: "Correo electronico" },
+  "auth.password": { en: "Password", es: "Contrasena" },
+  "auth.rememberMe": { en: "Remember me", es: "Recordarme" },
+  "auth.forgotPassword": {
+    en: "Forgot password?",
+    es: "Olvidaste tu contrasena?",
+  },
+  "auth.signingIn": { en: "Signing in...", es: "Iniciando sesion..." },
+  "auth.or": { en: "or", es: "o" },
+  "auth.sendMagicLink": { en: "Send magic link", es: "Enviar enlace magico" },
+  "auth.sending": { en: "Sending...", es: "Enviando..." },
+  "auth.needHelp": { en: "Need help?", es: "Necesitas ayuda?" },
+  "auth.visitHelpCenter": {
+    en: "Visit our help center",
+    es: "Visita nuestro centro de ayuda",
+  },
+  "auth.magicLinkSent": {
+    en: "Check your email for the magic link",
+    es: "Revisa tu correo para el enlace magico",
+  },
+  "auth.resetPassword": { en: "Reset Password", es: "Restablecer Contrasena" },
+  "auth.resetPasswordSub": {
+    en: "Enter your email and we'll send you a reset link",
+    es: "Ingresa tu correo y te enviaremos un enlace",
+  },
+  "auth.sendResetLink": { en: "Send reset link", es: "Enviar enlace" },
+  "auth.backToSignIn": {
+    en: "Back to sign in",
+    es: "Volver a iniciar sesion",
+  },
+  "auth.setNewPassword": { en: "Set New Password", es: "Nueva Contrasena" },
+  "auth.newPassword": { en: "New password", es: "Nueva contrasena" },
+  "auth.confirmPassword": {
+    en: "Confirm password",
+    es: "Confirmar contrasena",
+  },
+  "auth.passwordsDontMatch": {
+    en: "Passwords don't match",
+    es: "Las contrasenas no coinciden",
+  },
+  "auth.updatePassword": {
+    en: "Update password",
+    es: "Actualizar contrasena",
+  },
+  "auth.noAccount": { en: "Don't have an account?", es: "No tienes cuenta?" },
+  "auth.getStarted": { en: "Get started", es: "Comenzar" },
+  "auth.error.invalid": {
+    en: "Invalid email or password",
+    es: "Correo o contrasena invalidos",
+  },
+  "auth.error.rateLimited": {
+    en: "Too many attempts. Try again later.",
+    es: "Demasiados intentos. Intenta mas tarde.",
+  },
+  "auth.error.enterEmailFirst": {
+    en: "Enter your email first",
+    es: "Ingresa tu correo primero",
+  },
+  "auth.strength.weak": { en: "Weak", es: "Debil" },
+  "auth.strength.fair": { en: "Fair", es: "Regular" },
+  "auth.strength.strong": { en: "Strong", es: "Fuerte" },
 
   // ── Empty states ───────────────────────────────────────────
   "empty.noCalls": {
@@ -484,6 +664,28 @@ const strings: Record<string, Record<Lang, string>> = {
   "misc.of": { en: "of", es: "de" },
   "misc.vs": { en: "vs", es: "vs" },
   "misc.lastMonth": { en: "vs last month", es: "vs el mes pasado" },
+  "misc.minRead": { en: "min read", es: "min de lectura" },
+  "misc.caller": { en: "Caller", es: "Llamante" },
+
+  // ── Component keys ───────────────────────────────────────
+  "component.cancel": { en: "Cancel", es: "Cancelar" },
+  "component.pleaseWait": { en: "Please wait...", es: "Por favor espera..." },
+  "component.confirm": { en: "Confirm", es: "Confirmar" },
+  "component.noData": { en: "No data", es: "Sin datos" },
+  "component.prev": { en: "Previous", es: "Anterior" },
+  "component.next": { en: "Next", es: "Siguiente" },
+  "component.selected": { en: "selected", es: "seleccionados" },
+  "component.total": { en: "total", es: "total" },
+  "component.errorTitle": {
+    en: "Something went wrong",
+    es: "Algo salio mal",
+  },
+  "component.errorSubtitle": {
+    en: "Please try again or reload the page",
+    es: "Intenta de nuevo o recarga la pagina",
+  },
+  "component.reload": { en: "Reload Page", es: "Recargar pagina" },
+  "component.tryAgain": { en: "Try Again", es: "Intentar de nuevo" },
 };
 
 /**
