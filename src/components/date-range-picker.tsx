@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Button from "@/components/ui/button";
 
 export interface DateRange {
@@ -100,6 +100,13 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      e.stopPropagation();
+      setOpen(false);
+    }
+  }, []);
+
   const presets = getPresets();
 
   return (
@@ -126,6 +133,7 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
         <div
           className="db-card absolute right-0 top-full z-30 mt-2 w-64 rounded-xl p-3 space-y-2 shadow-lg"
           style={{ border: "1px solid var(--db-border)" }}
+          onKeyDown={handleKeyDown}
         >
           {presets.map((p) => {
             const r = p.getRange();
@@ -137,7 +145,7 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
                   onChange(r);
                   setOpen(false);
                 }}
-                className="w-full rounded-lg px-3 py-2 text-left text-sm transition-colors"
+                className="w-full rounded-lg px-3 py-2 text-left text-sm transition-colors min-h-[44px]"
                 style={{
                   background: active ? "var(--db-accent)" : "transparent",
                   color: active ? "#fff" : "var(--db-text)",
@@ -183,7 +191,7 @@ export default function DateRangePicker({ value, onChange }: DateRangePickerProp
               size="sm"
               className="w-full"
               onClick={() => {
-                if (customFrom && customTo) {
+                if (customFrom && customTo && customFrom <= customTo) {
                   onChange({ from: customFrom, to: customTo });
                   setOpen(false);
                 }

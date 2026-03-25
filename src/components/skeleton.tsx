@@ -7,6 +7,8 @@ interface SkeletonProps {
 export default function Skeleton({ className = "h-4 w-32" }: SkeletonProps) {
   return (
     <div
+      role="status"
+      aria-label="Loading"
       className={`animate-pulse rounded ${className}`}
       style={{ background: "var(--db-border)" }}
     />
@@ -18,6 +20,8 @@ export default function Skeleton({ className = "h-4 w-32" }: SkeletonProps) {
 export function MetricCardSkeleton() {
   return (
     <div
+      role="status"
+      aria-label="Loading"
       className="rounded-xl p-5"
       style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
     >
@@ -31,6 +35,8 @@ export function MetricCardSkeleton() {
 export function TableSkeleton({ rows = 5, columns = 4 }: { rows?: number; columns?: number }) {
   return (
     <div
+      role="status"
+      aria-label="Loading"
       className="rounded-xl overflow-hidden"
       style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
     >
@@ -50,7 +56,7 @@ export function TableSkeleton({ rows = 5, columns = 4 }: { rows?: number; column
 
 export function PageSkeleton() {
   return (
-    <div className="space-y-6">
+    <div role="status" aria-label="Loading" className="space-y-6">
       <div>
         <Skeleton className="h-7 w-48 mb-2" />
         <Skeleton className="h-4 w-64" />

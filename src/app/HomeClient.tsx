@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, MotionConfig } from "framer-motion";
 import dynamic from "next/dynamic";
 
 import { T, PHONE, PHONE_TEL, BOOKING_URL, type Lang } from "@/lib/marketing/translations";
@@ -62,6 +62,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
   const t = T[lang];
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="relative overflow-x-hidden">
       <script
         type="application/ld+json"
@@ -667,5 +668,6 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
 
       <div className="h-16 md:hidden" />
     </div>
+    </MotionConfig>
   );
 }

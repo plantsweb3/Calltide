@@ -287,21 +287,21 @@ export default function WebhookManager() {
                   <button
                     onClick={() => handleTest(ep.id)}
                     disabled={testingId === ep.id}
-                    className="rounded px-2 py-1 text-[11px] font-medium"
+                    className="rounded px-3 py-2 text-[11px] font-medium min-h-[44px]"
                     style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
                   >
                     {testingId === ep.id ? "..." : "Test"}
                   </button>
                   <button
                     onClick={() => handleToggle(ep.id, ep.status)}
-                    className="rounded px-2 py-1 text-[11px] font-medium"
+                    className="rounded px-3 py-2 text-[11px] font-medium min-h-[44px]"
                     style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
                   >
                     {ep.status === "active" ? "Pause" : "Resume"}
                   </button>
                   <button
                     onClick={() => handleDelete(ep.id)}
-                    className="rounded px-2 py-1 text-[11px] font-medium"
+                    className="rounded px-3 py-2 text-[11px] font-medium min-h-[44px]"
                     style={{ color: "var(--db-danger)" }}
                   >
                     Delete

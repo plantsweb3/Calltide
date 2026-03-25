@@ -404,6 +404,7 @@ export default function AppointmentsPage() {
           onKeyDown={(e) => { if (e.key === "Escape") setSelected(null); }}
           role="dialog"
           aria-modal="true"
+          aria-labelledby="modal-title"
         >
           <div
             className="modal-content db-card w-full max-w-lg rounded-xl p-6 space-y-5"
@@ -411,7 +412,7 @@ export default function AppointmentsPage() {
           >
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+                <h3 id="modal-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
                   {selected.service}
                 </h3>
                 <p className="text-sm mt-1" style={{ color: "var(--db-text-muted)" }}>

@@ -591,6 +591,7 @@ export default function DispatchPage() {
           onKeyDown={(e) => { if (e.key === "Escape") setSelectedAppt(null); }}
           role="dialog"
           aria-modal="true"
+          aria-labelledby="modal-title"
         >
           <div
             className="modal-content db-card w-full max-w-lg rounded-xl p-6 space-y-4"
@@ -598,7 +599,7 @@ export default function DispatchPage() {
           >
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
+                <h3 id="modal-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
                   {selectedAppt.service}
                 </h3>
                 <p className="text-sm mt-1" style={{ color: "var(--db-text-muted)" }}>
