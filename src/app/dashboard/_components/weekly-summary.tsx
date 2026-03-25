@@ -98,7 +98,7 @@ function SummaryRow({
       <span
         className="text-lg font-semibold tabular-nums"
         style={{
-          color: positive ? "#4ade80" : highlight ? "var(--db-accent)" : "var(--db-text)",
+          color: positive ? "var(--db-success)" : highlight ? "var(--db-accent)" : "var(--db-text)",
         }}
       >
         {value}

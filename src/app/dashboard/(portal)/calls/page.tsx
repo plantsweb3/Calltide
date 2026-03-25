@@ -625,8 +625,8 @@ export default function CallsPage() {
                   <div className="mt-2 space-y-0">
                     {row.recoveryTimeline.map((step, i) => {
                       const dotColor =
-                        step.status === "missed" ? "#fbbf24"
-                          : step.status === "recovered" ? "#4ade80"
+                        step.status === "missed" ? "var(--db-warning)"
+                          : step.status === "recovered" ? "var(--db-success)"
                             : step.status === "reply" ? "#60a5fa"
                               : "var(--db-text-muted)";
                       return (
@@ -651,7 +651,7 @@ export default function CallsPage() {
                               {step.status === "recovered" && (
                                 <span
                                   className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase"
-                                  style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80" }}
+                                  style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                                 >
                                   Saved
                                 </span>

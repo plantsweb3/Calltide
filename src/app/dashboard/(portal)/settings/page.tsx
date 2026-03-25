@@ -489,10 +489,10 @@ export default function SettingsPage() {
       {successMsg && (
         <div
           className="rounded-xl p-4 flex items-center gap-2"
-          style={{ background: "rgba(74,222,128,0.08)", border: "1px solid rgba(74,222,128,0.2)" }}
+          style={{ background: "var(--db-success-bg)", border: "1px solid rgba(74,222,128,0.2)" }}
         >
-          <span style={{ color: "#4ade80" }}>&#10003;</span>
-          <p className="text-sm font-medium" style={{ color: "#4ade80" }}>{successMsg}</p>
+          <span style={{ color: "var(--db-success)" }}>&#10003;</span>
+          <p className="text-sm font-medium" style={{ color: "var(--db-success)" }}>{successMsg}</p>
         </div>
       )}
 
@@ -500,9 +500,9 @@ export default function SettingsPage() {
       {error && data && (
         <div
           className="rounded-xl p-4 flex items-center gap-2"
-          style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}
+          style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}
         >
-          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
         </div>
       )}
 
@@ -510,7 +510,7 @@ export default function SettingsPage() {
       <div
         className="flex items-center gap-3 rounded-xl p-4"
         style={{
-          background: data.active ? "rgba(74,222,128,0.08)" : "rgba(248,113,113,0.08)",
+          background: data.active ? "var(--db-success-bg)" : "var(--db-danger-bg)",
           border: `1px solid ${data.active ? "rgba(74,222,128,0.2)" : "rgba(248,113,113,0.2)"}`,
         }}
       >
@@ -518,12 +518,12 @@ export default function SettingsPage() {
           {data.active && (
             <span
               className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
-              style={{ background: "#4ade80" }}
+              style={{ background: "var(--db-success)" }}
             />
           )}
           <span
             className="relative inline-flex h-3 w-3 rounded-full"
-            style={{ background: data.active ? "#4ade80" : "#f87171" }}
+            style={{ background: data.active ? "var(--db-success)" : "var(--db-danger)" }}
           />
         </span>
         <div>
@@ -625,13 +625,13 @@ export default function SettingsPage() {
               className="w-full rounded-lg px-3 py-2 text-sm resize-none"
               style={{
                 background: "var(--db-bg)",
-                border: `1px solid ${getFieldError("additionalInfo") ? "#f87171" : "var(--db-border)"}`,
+                border: `1px solid ${getFieldError("additionalInfo") ? "var(--db-danger)" : "var(--db-border)"}`,
                 color: "var(--db-text)",
               }}
             />
             <div className="flex justify-between mt-1">
               {getFieldError("additionalInfo") && (
-                <span className="text-xs" style={{ color: "#f87171" }}>{getFieldError("additionalInfo")}</span>
+                <span className="text-xs" style={{ color: "var(--db-danger)" }}>{getFieldError("additionalInfo")}</span>
               )}
               <span className="text-xs ml-auto" style={{ color: "var(--db-text-muted)" }}>
                 {(data.additionalInfo || "").length}/1000
@@ -1188,8 +1188,8 @@ export default function SettingsPage() {
                   onClick={() => toggleDayClosed(day)}
                   className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors shrink-0"
                   style={{
-                    background: isClosed ? "rgba(239,68,68,0.1)" : "rgba(74,222,128,0.08)",
-                    color: isClosed ? "#f87171" : "#4ade80",
+                    background: isClosed ? "var(--db-danger-bg)" : "var(--db-success-bg)",
+                    color: isClosed ? "var(--db-danger)" : "var(--db-success)",
                     border: `1px solid ${isClosed ? "rgba(239,68,68,0.2)" : "rgba(74,222,128,0.2)"}`,
                   }}
                 >
@@ -1221,7 +1221,7 @@ export default function SettingsPage() {
               <button
                 onClick={() => removeService(i)}
                 className="ml-1 hover:opacity-100 opacity-50 transition-opacity"
-                style={{ color: "#f87171" }}
+                style={{ color: "var(--db-danger)" }}
                 title="Remove service"
               >
                 &times;
@@ -1428,7 +1428,7 @@ export default function SettingsPage() {
                           <button
                             onClick={() => setConfirmDeletePriceId(p.id)}
                             className="text-xs"
-                            style={{ color: "#f87171" }}
+                            style={{ color: "var(--db-danger)" }}
                           >
                             Delete
                           </button>
@@ -1580,13 +1580,13 @@ export default function SettingsPage() {
               className="w-full rounded-lg px-3 py-2 text-sm resize-none"
               style={{
                 background: "var(--db-bg)",
-                border: `1px solid ${getFieldError("greeting") ? "#f87171" : "var(--db-border)"}`,
+                border: `1px solid ${getFieldError("greeting") ? "var(--db-danger)" : "var(--db-border)"}`,
                 color: "var(--db-text)",
               }}
             />
             <div className="flex justify-between mt-1">
               {getFieldError("greeting") && (
-                <span className="text-xs" style={{ color: "#f87171" }}>{getFieldError("greeting")}</span>
+                <span className="text-xs" style={{ color: "var(--db-danger)" }}>{getFieldError("greeting")}</span>
               )}
               <span className="text-xs ml-auto" style={{ color: "var(--db-text-muted)" }}>
                 {(data.greeting || "").length}/500
@@ -1607,13 +1607,13 @@ export default function SettingsPage() {
               className="w-full rounded-lg px-3 py-2 text-sm resize-none"
               style={{
                 background: "var(--db-bg)",
-                border: `1px solid ${getFieldError("greetingEs") ? "#f87171" : "var(--db-border)"}`,
+                border: `1px solid ${getFieldError("greetingEs") ? "var(--db-danger)" : "var(--db-border)"}`,
                 color: "var(--db-text)",
               }}
             />
             <div className="flex justify-between mt-1">
               {getFieldError("greetingEs") && (
-                <span className="text-xs" style={{ color: "#f87171" }}>{getFieldError("greetingEs")}</span>
+                <span className="text-xs" style={{ color: "var(--db-danger)" }}>{getFieldError("greetingEs")}</span>
               )}
               <span className="text-xs ml-auto" style={{ color: "var(--db-text-muted)" }}>
                 {(data.greetingEs || "").length}/500
@@ -1757,7 +1757,7 @@ export default function SettingsPage() {
                             toast.success("Removed");
                           }}
                           className="shrink-0 p-1 rounded transition-colors"
-                          style={{ color: "#ef4444" }}
+                          style={{ color: "var(--db-danger)" }}
                           title="Delete"
                         >
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
@@ -1928,7 +1928,7 @@ export default function SettingsPage() {
                       }
                     }}
                     className="text-xs px-2 py-1 rounded"
-                    style={{ color: confirmDeleteEstimateId === range.id ? "#ef4444" : "var(--db-text-muted)" }}
+                    style={{ color: confirmDeleteEstimateId === range.id ? "var(--db-danger)" : "var(--db-text-muted)" }}
                   >
                     {confirmDeleteEstimateId === range.id ? "Confirm?" : "×"}
                   </button>
@@ -2377,7 +2377,7 @@ export default function SettingsPage() {
                   }
                 }}
                 className="rounded-lg px-4 py-2 text-sm font-semibold text-white"
-                style={{ background: "#ef4444" }}
+                style={{ background: "var(--db-danger)" }}
               >
                 Delete
               </button>
@@ -2428,7 +2428,7 @@ function InputField({
     <div>
       <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
         {label}
-        {required && <span style={{ color: "#f87171" }}> *</span>}
+        {required && <span style={{ color: "var(--db-danger)" }}> *</span>}
       </label>
       <input
         type={type}
@@ -2439,11 +2439,11 @@ function InputField({
         className="w-full rounded-lg px-3 py-2 text-sm"
         style={{
           background: "var(--db-bg)",
-          border: `1px solid ${error ? "#f87171" : "var(--db-border)"}`,
+          border: `1px solid ${error ? "var(--db-danger)" : "var(--db-border)"}`,
           color: "var(--db-text)",
         }}
       />
-      {error && <p className="mt-1 text-xs" style={{ color: "#f87171" }}>{error}</p>}
+      {error && <p className="mt-1 text-xs" style={{ color: "var(--db-danger)" }}>{error}</p>}
     </div>
   );
 }
@@ -2488,11 +2488,11 @@ const CALL_TYPE_LABELS: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, string> = {
   scheduled: "#3b82f6",
-  initiated: "#f59e0b",
+  initiated: "var(--db-warning-alt)",
   completed: "#22c55e",
-  failed: "#ef4444",
-  retry: "#f59e0b",
-  consent_blocked: "#ef4444",
+  failed: "var(--db-danger)",
+  retry: "var(--db-warning-alt)",
+  consent_blocked: "var(--db-danger)",
 };
 
 const MONTH_LABELS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -2715,7 +2715,7 @@ function OutboundSettingsSection() {
                         <button
                           onClick={() => deleteSeasonalService(svc.id)}
                           className="text-xs font-medium px-2 py-1 rounded"
-                          style={{ color: "#f87171" }}
+                          style={{ color: "var(--db-danger)" }}
                         >
                           Remove
                         </button>
@@ -2802,7 +2802,7 @@ function OutboundSettingsSection() {
                   <span className="text-xs" style={{ color: "#22c55e" }}>
                     Answered: {stats.answered}
                   </span>
-                  <span className="text-xs" style={{ color: "#f59e0b" }}>
+                  <span className="text-xs" style={{ color: "var(--db-warning-alt)" }}>
                     No Answer: {stats.noAnswer}
                   </span>
                   <span className="text-xs" style={{ color: "#3b82f6" }}>
@@ -2855,9 +2855,9 @@ function getStrength(pw: string): "weak" | "fair" | "strong" {
 }
 
 const STRENGTH_CONFIG = {
-  weak: { color: "#f87171", label: "Weak", width: "33%" },
+  weak: { color: "var(--db-danger)", label: "Weak", width: "33%" },
   fair: { color: "#facc15", label: "Fair", width: "66%" },
-  strong: { color: "#4ade80", label: "Strong", width: "100%" },
+  strong: { color: "var(--db-success)", label: "Strong", width: "100%" },
 } as const;
 
 function SecuritySection() {
@@ -2952,7 +2952,7 @@ function SecuritySection() {
         </div>
 
         {secSuccess && !expanded && (
-          <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}>
+          <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}>
             {secSuccess}
           </div>
         )}
@@ -2960,7 +2960,7 @@ function SecuritySection() {
         {expanded && (
           <div className="space-y-3 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
             {secError && (
-              <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}>
+              <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}>
                 {secError}
               </div>
             )}
@@ -3044,12 +3044,12 @@ function SecuritySection() {
                 className="w-full rounded-lg px-3 py-2 text-sm"
                 style={{
                   background: "var(--db-bg)",
-                  border: `1px solid ${confirmPassword && !passwordsMatch ? "#f87171" : "var(--db-border)"}`,
+                  border: `1px solid ${confirmPassword && !passwordsMatch ? "var(--db-danger)" : "var(--db-border)"}`,
                   color: "var(--db-text)",
                 }}
               />
               {confirmPassword && !passwordsMatch && (
-                <p className="mt-0.5 text-xs" style={{ color: "#f87171" }}>Passwords don&apos;t match</p>
+                <p className="mt-0.5 text-xs" style={{ color: "var(--db-danger)" }}>Passwords don&apos;t match</p>
               )}
             </div>
 
@@ -3216,7 +3216,7 @@ function GoogleCalendarSection() {
               style={{
                 background: "var(--db-surface)",
                 border: "1px solid var(--db-border)",
-                color: "#f87171",
+                color: "var(--db-danger)",
               }}
             >
               {disconnecting ? "Disconnecting..." : "Disconnect"}

@@ -20,8 +20,8 @@ export default function PaymentBanner() {
     <div
       className="flex items-center gap-3 rounded-xl px-4 py-3 mb-4"
       style={{
-        background: isGrace ? "rgba(251,191,36,0.08)" : "rgba(248,113,113,0.08)",
-        border: `1px solid ${isGrace ? "rgba(251,191,36,0.2)" : "rgba(248,113,113,0.2)"}`,
+        background: isGrace ? "var(--db-warning-bg)" : "var(--db-danger-bg)",
+        border: `1px solid ${isGrace ? "var(--db-warning)" : "var(--db-danger)"}`,
       }}
     >
       <svg
@@ -29,7 +29,7 @@ export default function PaymentBanner() {
         height={18}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={isGrace ? "#fbbf24" : "#f87171"}
+        stroke={isGrace ? "var(--db-warning)" : "var(--db-danger)"}
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -38,7 +38,7 @@ export default function PaymentBanner() {
         <line x1="12" y1="9" x2="12" y2="13" />
         <line x1="12" y1="17" x2="12.01" y2="17" />
       </svg>
-      <p className="flex-1 text-sm" style={{ color: isGrace ? "#fbbf24" : "#f87171" }}>
+      <p className="flex-1 text-sm" style={{ color: isGrace ? "var(--db-warning)" : "var(--db-danger)" }}>
         {isGrace
           ? "Your payment is overdue. Please update your payment method to keep your service running."
           : "Your payment has failed. Update your payment method to avoid service interruption."}
@@ -46,7 +46,7 @@ export default function PaymentBanner() {
       <a
         href="/dashboard/billing"
         className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-white"
-        style={{ background: isGrace ? "#f59e0b" : "#ef4444" }}
+        style={{ background: isGrace ? "var(--db-warning-alt)" : "var(--db-danger)" }}
       >
         Update Payment
       </a>

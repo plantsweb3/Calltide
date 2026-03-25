@@ -33,14 +33,14 @@ interface Customer {
 }
 
 const LEAD_TIER_CONFIG: Record<string, { label: string; bg: string; fg: string }> = {
-  hot: { label: "Hot", bg: "rgba(239,68,68,0.12)", fg: "#ef4444" },
-  warm: { label: "Warm", bg: "rgba(245,158,11,0.12)", fg: "#f59e0b" },
+  hot: { label: "Hot", bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
+  warm: { label: "Warm", bg: "rgba(245,158,11,0.12)", fg: "var(--db-warning-alt)" },
   cold: { label: "Cold", bg: "rgba(59,130,246,0.12)", fg: "#3b82f6" },
   dormant: { label: "Dormant", bg: "rgba(148,163,184,0.12)", fg: "#94a3b8" },
   new: { label: "New", bg: "rgba(96,165,250,0.12)", fg: "#60a5fa" },
-  loyal: { label: "Loyal", bg: "rgba(74,222,128,0.12)", fg: "#4ade80" },
+  loyal: { label: "Loyal", bg: "var(--db-success-bg)", fg: "var(--db-success)" },
   vip: { label: "VIP", bg: "rgba(250,204,21,0.12)", fg: "#facc15" },
-  "at-risk": { label: "At Risk", bg: "rgba(248,113,113,0.12)", fg: "#f87171" },
+  "at-risk": { label: "At Risk", bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
 };
 
 const TIER_FILTER_OPTIONS = [
@@ -161,7 +161,7 @@ export default function CustomersPage() {
                   className="block h-full rounded-full"
                   style={{
                     width: `${score}%`,
-                    background: score >= 70 ? "#4ade80" : score >= 40 ? "#fbbf24" : "#f87171",
+                    background: score >= 70 ? "var(--db-success)" : score >= 40 ? "var(--db-warning)" : "var(--db-danger)",
                   }}
                 />
               </span>

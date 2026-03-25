@@ -146,10 +146,10 @@ function tierLabel(tier: string): string {
 function tierColor(tier: string): { bg: string; fg: string } {
   const map: Record<string, { bg: string; fg: string }> = {
     new: { bg: "rgba(96,165,250,0.15)", fg: "#60a5fa" },
-    loyal: { bg: "rgba(74,222,128,0.15)", fg: "#4ade80" },
+    loyal: { bg: "var(--db-success-bg)", fg: "var(--db-success)" },
     vip: { bg: "rgba(250,204,21,0.15)", fg: "#facc15" },
     dormant: { bg: "rgba(156,163,175,0.15)", fg: "#9ca3af" },
-    "at-risk": { bg: "rgba(248,113,113,0.15)", fg: "#f87171" },
+    "at-risk": { bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
   };
   return map[tier] || { bg: "var(--db-hover)", fg: "var(--db-text-muted)" };
 }
@@ -161,17 +161,17 @@ function StatusBadge({ status, type }: { status: string; type: TimelineItem["typ
   let fg = "var(--db-text-muted)";
 
   if (type === "call") {
-    if (status === "completed") { bg = "rgba(74,222,128,0.15)"; fg = "#4ade80"; }
-    else if (status === "missed") { bg = "rgba(248,113,113,0.15)"; fg = "#f87171"; }
+    if (status === "completed") { bg = "var(--db-success-bg)"; fg = "var(--db-success)"; }
+    else if (status === "missed") { bg = "var(--db-danger-bg)"; fg = "var(--db-danger)"; }
     else if (status === "in_progress") { bg = "rgba(96,165,250,0.15)"; fg = "#60a5fa"; }
   } else if (type === "appointment") {
-    if (status === "confirmed") { bg = "rgba(74,222,128,0.15)"; fg = "#4ade80"; }
+    if (status === "confirmed") { bg = "var(--db-success-bg)"; fg = "var(--db-success)"; }
     else if (status === "completed") { bg = "rgba(96,165,250,0.15)"; fg = "#60a5fa"; }
-    else if (status === "cancelled") { bg = "rgba(248,113,113,0.15)"; fg = "#f87171"; }
+    else if (status === "cancelled") { bg = "var(--db-danger-bg)"; fg = "var(--db-danger)"; }
     else if (status === "no_show") { bg = "rgba(250,204,21,0.15)"; fg = "#facc15"; }
   } else if (type === "estimate") {
-    if (status === "won") { bg = "rgba(74,222,128,0.15)"; fg = "#4ade80"; }
-    else if (status === "lost" || status === "expired") { bg = "rgba(248,113,113,0.15)"; fg = "#f87171"; }
+    if (status === "won") { bg = "var(--db-success-bg)"; fg = "var(--db-success)"; }
+    else if (status === "lost" || status === "expired") { bg = "var(--db-danger-bg)"; fg = "var(--db-danger)"; }
     else if (status === "sent" || status === "follow_up") { bg = "rgba(96,165,250,0.15)"; fg = "#60a5fa"; }
     else if (status === "new") { bg = "rgba(250,204,21,0.15)"; fg = "#facc15"; }
   }
@@ -450,7 +450,7 @@ export default function CustomerDetailPage() {
           className="rounded-xl p-6 text-center"
           style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
         >
-          <p className="text-sm mb-3" style={{ color: "#f87171" }}>{error}</p>
+          <p className="text-sm mb-3" style={{ color: "var(--db-danger)" }}>{error}</p>
           <button
             onClick={fetchCustomer}
             className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
@@ -535,7 +535,7 @@ export default function CustomerDetailPage() {
                       className="block h-full rounded-full"
                       style={{
                         width: `${customer.leadScore}%`,
-                        background: customer.leadScore >= 70 ? "#4ade80" : customer.leadScore >= 40 ? "#fbbf24" : "#f87171",
+                        background: customer.leadScore >= 70 ? "var(--db-success)" : customer.leadScore >= 40 ? "var(--db-warning)" : "var(--db-danger)",
                       }}
                     />
                   </span>

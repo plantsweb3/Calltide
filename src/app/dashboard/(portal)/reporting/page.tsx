@@ -71,8 +71,8 @@ export default function ReportingPage() {
     return (
       <div>
         <PageHeader title="Reporting" />
-        <div className="rounded-xl p-4 mt-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-          <p className="text-sm" style={{ color: "#f87171" }}>{error || "Unable to load reporting data."}</p>
+        <div className="rounded-xl p-4 mt-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+          <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error || "Unable to load reporting data."}</p>
           <Button variant="danger" size="sm" onClick={fetchData}>Retry</Button>
         </div>
       </div>

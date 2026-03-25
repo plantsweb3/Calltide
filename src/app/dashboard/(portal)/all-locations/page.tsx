@@ -40,8 +40,8 @@ export default function AllLocationsPage() {
 
   if (error) {
     return (
-      <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-        <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+      <div className="rounded-xl p-4" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
       </div>
     );
   }
@@ -91,7 +91,7 @@ export default function AllLocationsPage() {
                 <div className="flex items-center gap-2">
                   <span
                     className="h-2 w-2 rounded-full shrink-0"
-                    style={{ background: loc.active ? "#4ade80" : "#94a3b8" }}
+                    style={{ background: loc.active ? "var(--db-success)" : "#94a3b8" }}
                   />
                   <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
                     {loc.locationName}
@@ -102,7 +102,7 @@ export default function AllLocationsPage() {
                   <span>{loc.completedCalls} completed</span>
                   <span
                     className="font-medium"
-                    style={{ color: rate >= 50 ? "#4ade80" : "#f87171" }}
+                    style={{ color: rate >= 50 ? "var(--db-success)" : "var(--db-danger)" }}
                   >
                     {rate}%
                   </span>

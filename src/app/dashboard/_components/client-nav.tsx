@@ -181,7 +181,7 @@ function NavLink({ item, pathname, badges, onClose }: { item: NavItem; pathname:
         {badgeCount > 0 && (
           <span
             className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center rounded-full text-[9px] font-bold leading-none"
-            style={{ background: "#ef4444", color: "#fff", minWidth: "16px", height: "16px", padding: "0 4px" }}
+            style={{ background: "var(--db-danger)", color: "#fff", minWidth: "16px", height: "16px", padding: "0 4px" }}
           >
             {badgeCount > 99 ? "99+" : badgeCount}
           </span>
@@ -235,10 +235,10 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
   }, []);
 
   const statusConfig: Record<string, { color: string; pulse: boolean; label: string }> = {
-    active: { color: "#4ade80", pulse: true, label: "AI Receptionist Active" },
-    past_due: { color: "#fbbf24", pulse: false, label: "AI Receptionist Active" },
-    grace_period: { color: "#f59e0b", pulse: false, label: "Payment Overdue" },
-    suspended: { color: "#f87171", pulse: false, label: "Service Suspended" },
+    active: { color: "var(--db-success)", pulse: true, label: "AI Receptionist Active" },
+    past_due: { color: "var(--db-warning)", pulse: false, label: "AI Receptionist Active" },
+    grace_period: { color: "var(--db-warning-alt)", pulse: false, label: "Payment Overdue" },
+    suspended: { color: "var(--db-danger)", pulse: false, label: "Service Suspended" },
     canceled: { color: "#94a3b8", pulse: false, label: "Service Canceled" },
   };
   const sc = statusConfig[aiStatus] ?? statusConfig.active;

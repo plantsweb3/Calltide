@@ -275,8 +275,8 @@ export default function DispatchPage() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+          <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
           <Button variant="danger" size="sm" onClick={fetchDispatch}>Retry</Button>
         </div>
       )}
@@ -390,7 +390,7 @@ export default function DispatchPage() {
                         {tech.isOnCall && (
                           <span
                             className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
-                            style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444" }}
+                            style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
                           >
                             On Call
                           </span>
@@ -505,7 +505,7 @@ export default function DispatchPage() {
                           <div className="flex items-center gap-2">
                             <span
                               className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
-                              style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444" }}
+                              style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
                             >
                               Unavailable
                             </span>

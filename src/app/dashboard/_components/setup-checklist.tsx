@@ -107,7 +107,7 @@ export default function SetupChecklist({
               key={i}
               className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors"
               style={{
-                background: item.done ? "rgba(74,222,128,0.05)" : "transparent",
+                background: item.done ? "var(--db-success-bg)" : "transparent",
               }}
             >
               {/* Checkbox */}

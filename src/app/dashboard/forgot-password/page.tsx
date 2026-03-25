@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
         {error && (
           <div
             className="rounded-lg px-4 py-3 text-sm"
-            style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+            style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
           >
             {error}
           </div>
@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
         {submitted ? (
           <div
             className="rounded-lg px-4 py-3 text-sm"
-            style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
+            style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
           >
             If an account exists for <strong>{email}</strong>, you&apos;ll receive a reset link. It expires in 1 hour.
           </div>

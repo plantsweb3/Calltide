@@ -115,17 +115,17 @@ export default function BillingPage() {
         <div
           className="flex items-center gap-3 rounded-xl p-4"
           style={{
-            background: "rgba(248,113,113,0.08)",
-            border: "1px solid rgba(248,113,113,0.2)",
+            background: "var(--db-danger-bg)",
+            border: "1px solid var(--db-danger)",
           }}
         >
-          <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="var(--db-danger)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
             <line x1="12" y1="9" x2="12" y2="13" />
             <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
           <div className="flex-1">
-            <p className="text-sm font-medium" style={{ color: "#f87171" }}>
+            <p className="text-sm font-medium" style={{ color: "var(--db-danger)" }}>
               Payment Past Due
             </p>
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
@@ -157,7 +157,7 @@ export default function BillingPage() {
                 </h3>
                 <span
                   className="rounded-full px-2 py-0.5 text-[10px] font-bold"
-                  style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80" }}
+                  style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                 >
                   SAVE 20%
                 </span>
@@ -369,7 +369,7 @@ export default function BillingPage() {
             </h3>
             <div className="space-y-2 text-sm" style={{ color: "var(--db-text-secondary)" }}>
               <p>Your plan will change from <strong>$497/mo</strong> to <strong>$397/mo</strong> billed annually at $4,764/year.</p>
-              <p>This saves you <strong style={{ color: "#4ade80" }}>$1,200/year</strong>.</p>
+              <p>This saves you <strong style={{ color: "var(--db-success)" }}>$1,200/year</strong>.</p>
             </div>
             <div className="flex items-center justify-end gap-3 pt-2">
               <Button variant="ghost" onClick={() => setShowSwitchConfirm(false)}>

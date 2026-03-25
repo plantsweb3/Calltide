@@ -78,17 +78,17 @@ interface Stats {
 }
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; label: string }> = {
-  pending_review: { bg: "rgba(245,158,11,0.15)", text: "#fbbf24", label: "Pending" },
-  confirmed: { bg: "rgba(34,197,94,0.15)", text: "#4ade80", label: "Confirmed" },
+  pending_review: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)", label: "Pending" },
+  confirmed: { bg: "rgba(34,197,94,0.15)", text: "var(--db-success)", label: "Confirmed" },
   adjusted: { bg: "rgba(99,102,241,0.15)", text: "#818cf8", label: "Adjusted" },
-  awaiting_adjustment: { bg: "rgba(245,158,11,0.15)", text: "#fbbf24", label: "Awaiting Adj." },
+  awaiting_adjustment: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)", label: "Awaiting Adj." },
   site_visit_requested: { bg: "rgba(59,130,246,0.15)", text: "#60a5fa", label: "Site Visit" },
   expired: { bg: "rgba(148,163,184,0.15)", text: "#94a3b8", label: "Expired" },
 };
 
 const CONFIDENCE_COLORS: Record<string, { bg: string; text: string }> = {
-  ballpark: { bg: "rgba(245,158,11,0.15)", text: "#fbbf24" },
-  estimated: { bg: "rgba(34,197,94,0.15)", text: "#4ade80" },
+  ballpark: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)" },
+  estimated: { bg: "rgba(34,197,94,0.15)", text: "var(--db-success)" },
   no_match: { bg: "rgba(148,163,184,0.15)", text: "#94a3b8" },
 };
 
@@ -227,7 +227,7 @@ export default function JobCardsPage() {
       </div>
 
       {error && (
-        <div className="p-4 mb-4 rounded-lg text-sm" style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}>
+        <div className="p-4 mb-4 rounded-lg text-sm" style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}>
           {error}
         </div>
       )}
@@ -410,7 +410,7 @@ export default function JobCardsPage() {
                     {/* Owner response */}
                     {card.ownerRespondedAt && (
                       <div className="p-3 rounded-lg" style={{ background: "rgba(34,197,94,0.08)" }}>
-                        <div className="text-xs mb-1" style={{ color: "#4ade80" }}>Owner Response</div>
+                        <div className="text-xs mb-1" style={{ color: "var(--db-success)" }}>Owner Response</div>
                         <div className="text-sm" style={{ color: "var(--db-text)" }}>
                           {card.ownerResponse === "confirmed" && "Estimate confirmed"}
                           {card.ownerResponse === "adjusted" && `Adjusted to ${formatCurrency(card.ownerAdjustedMin)}\u2013${formatCurrency(card.ownerAdjustedMax)}`}
@@ -443,7 +443,7 @@ export default function JobCardsPage() {
                                 className="px-1.5 py-0.5 rounded shrink-0"
                                 style={{
                                   background: r.direction === "inbound" ? "rgba(34,197,94,0.15)" : "rgba(59,130,246,0.15)",
-                                  color: r.direction === "inbound" ? "#4ade80" : "#60a5fa",
+                                  color: r.direction === "inbound" ? "var(--db-success)" : "#60a5fa",
                                 }}
                               >
                                 {r.direction === "inbound" ? "Owner" : "System"}

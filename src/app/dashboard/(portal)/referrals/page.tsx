@@ -197,9 +197,9 @@ export default function ReferralsPage() {
                       </td>
                       <td className="px-4 py-3" style={{ color: "var(--db-text-secondary)" }}>
                         {ref.creditApplied ? (
-                          <span style={{ color: "#4ade80" }}>${ref.creditAmount} applied</span>
+                          <span style={{ color: "var(--db-success)" }}>${ref.creditAmount} applied</span>
                         ) : ref.status === "activated" ? (
-                          <span style={{ color: "#fbbf24" }}>${ref.creditAmount} pending</span>
+                          <span style={{ color: "var(--db-warning)" }}>${ref.creditAmount} pending</span>
                         ) : (
                           "—"
                         )}

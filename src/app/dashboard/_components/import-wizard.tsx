@@ -488,7 +488,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
 
           <div className="grid gap-4 sm:grid-cols-3 mb-6">
             <div className="rounded-xl p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
-              <div className="text-2xl font-bold" style={{ color: "#4ade80" }}>
+              <div className="text-2xl font-bold" style={{ color: "var(--db-success)" }}>
                 {results.imported}
               </div>
               <div className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
@@ -504,7 +504,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
               </div>
             </div>
             <div className="rounded-xl p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
-              <div className="text-2xl font-bold" style={{ color: results.errors.length > 0 ? "#f87171" : "var(--db-text-muted)" }}>
+              <div className="text-2xl font-bold" style={{ color: results.errors.length > 0 ? "var(--db-danger)" : "var(--db-text-muted)" }}>
                 {results.errors.length}
               </div>
               <div className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
@@ -515,9 +515,9 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
 
           {/* Error details */}
           {results.errors.length > 0 && (
-            <div className="mb-6 rounded-xl overflow-hidden" style={{ border: "1px solid rgba(239,68,68,0.3)" }}>
-              <div className="px-4 py-3" style={{ background: "rgba(239,68,68,0.1)" }}>
-                <p className="text-sm font-medium" style={{ color: "#f87171" }}>
+            <div className="mb-6 rounded-xl overflow-hidden" style={{ border: "1px solid var(--db-danger)" }}>
+              <div className="px-4 py-3" style={{ background: "var(--db-danger-bg)" }}>
+                <p className="text-sm font-medium" style={{ color: "var(--db-danger)" }}>
                   {results.errors.length} row{results.errors.length !== 1 ? "s" : ""} had errors
                 </p>
               </div>

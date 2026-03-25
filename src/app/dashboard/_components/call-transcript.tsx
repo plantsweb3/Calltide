@@ -96,7 +96,7 @@ export default function CallTranscript({
                 <span
                   className="rounded px-1.5 py-0.5 text-[10px] font-medium uppercase"
                   style={{
-                    background: call.language === "es" ? "rgba(197,154,39,0.15)" : "rgba(96,165,250,0.1)",
+                    background: call.language === "es" ? "var(--db-accent-bg)" : "rgba(96,165,250,0.1)",
                     color: call.language === "es" ? "#C59A27" : "#60a5fa",
                   }}
                 >
@@ -149,7 +149,7 @@ export default function CallTranscript({
                   style={{
                     background: line.speaker === "ai"
                       ? "var(--db-hover)"
-                      : "rgba(197,154,39,0.12)",
+                      : "var(--db-accent-bg)",
                     borderBottomLeftRadius: line.speaker === "ai" ? "4px" : undefined,
                     borderBottomRightRadius: line.speaker === "caller" ? "4px" : undefined,
                   }}

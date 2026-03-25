@@ -17,10 +17,10 @@ interface Appointment {
 
 // Status-based color coding
 const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  confirmed: { bg: "rgba(74,222,128,0.12)", text: "#4ade80", border: "#4ade80" },
-  cancelled: { bg: "rgba(248,113,113,0.08)", text: "#f87171", border: "#f87171" },
+  confirmed: { bg: "var(--db-success-bg)", text: "var(--db-success)", border: "var(--db-success)" },
+  cancelled: { bg: "var(--db-danger-bg)", text: "var(--db-danger)", border: "var(--db-danger)" },
   completed: { bg: "rgba(96,165,250,0.12)", text: "#60a5fa", border: "#60a5fa" },
-  no_show: { bg: "rgba(251,191,36,0.12)", text: "#fbbf24", border: "#fbbf24" },
+  no_show: { bg: "var(--db-warning-bg)", text: "var(--db-warning)", border: "var(--db-warning)" },
 };
 
 function getStatusColor(status: string) {
@@ -208,7 +208,7 @@ export default function AppointmentCalendar({
               <button
                 onClick={() => setWeekOffset(0)}
                 className="rounded px-2 py-0.5 text-xs mt-0.5"
-                style={{ color: "var(--db-accent)", background: "rgba(197,154,39,0.1)" }}
+                style={{ color: "var(--db-accent)", background: "var(--db-accent-bg)" }}
               >
                 Today
               </button>
@@ -340,7 +340,7 @@ export default function AppointmentCalendar({
             <button
               onClick={() => setWeekOffset(0)}
               className="rounded px-2 py-0.5 text-xs"
-              style={{ color: "var(--db-accent)", background: "rgba(197,154,39,0.1)" }}
+              style={{ color: "var(--db-accent)", background: "var(--db-accent-bg)" }}
             >
               Today
             </button>

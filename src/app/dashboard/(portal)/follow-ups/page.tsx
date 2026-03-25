@@ -27,8 +27,8 @@ interface FollowUp {
 }
 
 const priorityColors: Record<string, string> = {
-  urgent: "#ef4444",
-  high: "#f59e0b",
+  urgent: "var(--db-danger)",
+  high: "var(--db-warning-alt)",
   normal: "#3b82f6",
   low: "#94a3b8",
 };
@@ -166,7 +166,7 @@ export default function FollowUpsPage() {
           <span
             className="text-sm font-medium"
             style={{
-              color: isOverdue ? "#ef4444" : isToday ? "#f59e0b" : "var(--db-text-muted)",
+              color: isOverdue ? "var(--db-danger)" : isToday ? "var(--db-warning-alt)" : "var(--db-text-muted)",
             }}
           >
             {isOverdue ? "Overdue" : isToday ? "Today" : due.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
@@ -198,7 +198,7 @@ export default function FollowUpsPage() {
             <a
               href={`tel:${row.customerPhone.replace(/\D/g, "").startsWith("1") ? `+${row.customerPhone.replace(/\D/g, "")}` : `+1${row.customerPhone.replace(/\D/g, "")}`}`}
               className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors"
-              style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
+              style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
               onClick={(e) => e.stopPropagation()}
             >
               Call Back
@@ -254,7 +254,7 @@ export default function FollowUpsPage() {
           overdueCount > 0 ? (
             <span
               className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
-              style={{ background: "rgba(239,68,68,0.12)", color: "#ef4444" }}
+              style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
             >
               {overdueCount} overdue
             </span>

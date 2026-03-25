@@ -1188,7 +1188,7 @@ function OnboardingPage() {
                     className="rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors"
                     style={
                       digestPref === opt.value
-                        ? { background: "#fef3c7", borderColor: "#fbbf24", color: "#92400e" }
+                        ? { background: "var(--db-warning-bg)", borderColor: "var(--db-warning)", color: "#92400e" }
                         : { background: "#fff", borderColor: "#e5e7eb", color: "#6b7280" }
                     }
                   >

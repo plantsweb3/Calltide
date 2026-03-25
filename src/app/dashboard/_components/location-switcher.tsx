@@ -168,7 +168,7 @@ export default function LocationSwitcher() {
                   if (!isActive) e.currentTarget.style.background = "transparent";
                 }}
               >
-                <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ background: loc.active ? "#4ade80" : "#94a3b8" }} />
+                <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ background: loc.active ? "var(--db-success)" : "#94a3b8" }} />
                 <span className="truncate">{loc.locationName}</span>
                 {isActive && (
                   <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="ml-auto shrink-0">

@@ -11,9 +11,9 @@ function getStrength(pw: string): "weak" | "fair" | "strong" {
 }
 
 const STRENGTH_CONFIG = {
-  weak: { color: "#f87171", label: "Weak", width: "33%" },
+  weak: { color: "var(--db-danger)", label: "Weak", width: "33%" },
   fair: { color: "#facc15", label: "Fair", width: "66%" },
-  strong: { color: "#4ade80", label: "Strong", width: "100%" },
+  strong: { color: "var(--db-success)", label: "Strong", width: "100%" },
 } as const;
 
 function PasswordStrengthBar({ password }: { password: string }) {
@@ -33,9 +33,9 @@ function PasswordStrengthBar({ password }: { password: string }) {
       <div className="flex items-center justify-between">
         <span className="text-xs" style={{ color: config.color }}>{config.label}</span>
         <div className="text-xs space-x-3" style={{ color: "var(--db-text-muted)" }}>
-          <span style={{ color: password.length >= 8 ? "#4ade80" : undefined }}>8+ chars</span>
-          <span style={{ color: /[a-zA-Z]/.test(password) ? "#4ade80" : undefined }}>Letter</span>
-          <span style={{ color: /[0-9]/.test(password) ? "#4ade80" : undefined }}>Number</span>
+          <span style={{ color: password.length >= 8 ? "var(--db-success)" : undefined }}>8+ chars</span>
+          <span style={{ color: /[a-zA-Z]/.test(password) ? "var(--db-success)" : undefined }}>Letter</span>
+          <span style={{ color: /[0-9]/.test(password) ? "var(--db-success)" : undefined }}>Number</span>
         </div>
       </div>
     </div>
@@ -74,7 +74,7 @@ function ResetPasswordForm() {
       >
         <div
           className="rounded-lg px-4 py-3 text-sm"
-          style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+          style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
           Invalid reset link. Please request a new one.
         </div>
@@ -140,7 +140,7 @@ function ResetPasswordForm() {
       {error && (
         <div
           className="rounded-lg px-4 py-3 text-sm"
-          style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+          style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
           {error}
         </div>
@@ -211,14 +211,14 @@ function ResetPasswordForm() {
             className="w-full rounded-lg px-4 py-2.5 text-sm outline-none transition-colors"
             style={{
               background: "var(--db-surface)",
-              border: `1px solid ${confirmPassword && confirmPassword !== password ? "#f87171" : "var(--db-border)"}`,
+              border: `1px solid ${confirmPassword && confirmPassword !== password ? "var(--db-danger)" : "var(--db-border)"}`,
               color: "var(--db-text)",
             }}
             placeholder="Re-enter your password"
             required
           />
           {confirmPassword && confirmPassword !== password && (
-            <p className="mt-1 text-xs" style={{ color: "#f87171" }}>Passwords don&apos;t match</p>
+            <p className="mt-1 text-xs" style={{ color: "var(--db-danger)" }}>Passwords don&apos;t match</p>
           )}
         </div>
 

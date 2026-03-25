@@ -30,8 +30,8 @@ function formatTime(iso: string): string {
 function EventIcon({ type, urgent, recovered }: { type: string; urgent?: boolean; recovered?: boolean }) {
   if (recovered) {
     return (
-      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "rgba(74,222,128,0.15)" }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--db-success-bg)" }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--db-success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="20 6 9 17 4 12" />
         </svg>
       </div>
@@ -39,8 +39,8 @@ function EventIcon({ type, urgent, recovered }: { type: string; urgent?: boolean
   }
   if (urgent) {
     return (
-      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "rgba(248,113,113,0.15)" }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--db-danger-bg)" }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--db-danger)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
           <line x1="12" y1="9" x2="12" y2="13" />
           <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -50,8 +50,8 @@ function EventIcon({ type, urgent, recovered }: { type: string; urgent?: boolean
   }
   if (type === "call_missed") {
     return (
-      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "rgba(251,191,36,0.15)" }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--db-warning-bg)" }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--db-warning)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="1" y1="1" x2="23" y2="23" />
           <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55" />
           <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39" />
@@ -79,7 +79,7 @@ function EventIcon({ type, urgent, recovered }: { type: string; urgent?: boolean
   }
   if (type === "appointment_booked") {
     return (
-      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "rgba(197,154,39,0.15)" }}>
+      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--db-accent-bg)" }}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
           <line x1="16" y1="2" x2="16" y2="6" />
@@ -263,7 +263,7 @@ export default function ActivityFeed({
                         <span
                           className="rounded px-1.5 py-0.5 text-[10px] font-medium uppercase"
                           style={{
-                            background: evt.language === "es" ? "rgba(197,154,39,0.15)" : "rgba(96,165,250,0.1)",
+                            background: evt.language === "es" ? "var(--db-accent-bg)" : "rgba(96,165,250,0.1)",
                             color: evt.language === "es" ? "#C59A27" : "#60a5fa",
                           }}
                         >
@@ -273,7 +273,7 @@ export default function ActivityFeed({
                       {evt.recovered && (
                         <span
                           className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase"
-                          style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80" }}
+                          style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                         >
                           Recovered
                         </span>
@@ -281,7 +281,7 @@ export default function ActivityFeed({
                       {evt.value && (
                         <span
                           className="rounded px-1.5 py-0.5 text-[10px] font-medium"
-                          style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
+                          style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                         >
                           +${evt.value}
                         </span>

@@ -225,7 +225,7 @@ export default function ClientFeedbackPage() {
               </div>
 
               {formError && (
-                <p className="text-sm" style={{ color: "#ef4444" }}>{formError}</p>
+                <p className="text-sm" style={{ color: "var(--db-danger)" }}>{formError}</p>
               )}
 
               <Button type="submit" disabled={submitting}>
@@ -377,7 +377,7 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
                   <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
                     {review.authorName || "Anonymous"}
                   </span>
-                  <span className="text-sm" style={{ color: "#fbbf24" }}>
+                  <span className="text-sm" style={{ color: "var(--db-warning)" }}>
                     {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
                   </span>
                   {review.replyStatus !== "none" && (

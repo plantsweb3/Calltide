@@ -37,9 +37,9 @@ interface Pipeline {
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   new: { bg: "rgba(59,130,246,0.15)", text: "#60a5fa" },
   sent: { bg: "rgba(99,102,241,0.15)", text: "#818cf8" },
-  follow_up: { bg: "rgba(245,158,11,0.15)", text: "#fbbf24" },
-  won: { bg: "rgba(34,197,94,0.15)", text: "#4ade80" },
-  lost: { bg: "rgba(239,68,68,0.15)", text: "#f87171" },
+  follow_up: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)" },
+  won: { bg: "var(--db-success-bg)", text: "var(--db-success)" },
+  lost: { bg: "var(--db-danger-bg)", text: "var(--db-danger)" },
   expired: { bg: "rgba(148,163,184,0.15)", text: "#94a3b8" },
 };
 

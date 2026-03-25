@@ -115,7 +115,7 @@ export default function BusinessInsights({
           <div className="flex items-center gap-3 mb-3">
             <div
               className="flex h-10 w-10 items-center justify-center rounded-full"
-              style={{ background: "rgba(197,154,39,0.15)" }}
+              style={{ background: "var(--db-accent-bg)" }}
             >
               <IconGlobe size={16} />
             </div>

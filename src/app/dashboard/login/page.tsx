@@ -112,7 +112,7 @@ function LoginForm() {
       {error && (
         <div
           className="rounded-lg px-4 py-3 text-sm"
-          style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+          style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
           {error}
         </div>
@@ -121,7 +121,7 @@ function LoginForm() {
       {successMsg && (
         <div
           className="rounded-lg px-4 py-3 text-sm"
-          style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
+          style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
         >
           {successMsg}
         </div>
@@ -130,7 +130,7 @@ function LoginForm() {
       {magicLinkSent ? (
         <div
           className="rounded-lg px-4 py-3 text-sm"
-          style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
+          style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
         >
           We sent a login link to <strong>{email}</strong>. It expires in 15 minutes.
         </div>

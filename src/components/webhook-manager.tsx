@@ -125,8 +125,8 @@ export default function WebhookManager() {
   }
 
   const statusColors: Record<string, string> = {
-    active: "#4ade80",
-    paused: "#fbbf24",
+    active: "var(--db-success)",
+    paused: "var(--db-warning)",
   };
 
   return (
@@ -164,7 +164,7 @@ export default function WebhookManager() {
       {createdSecret && (
         <div
           className="rounded-lg p-3 mb-4 text-sm"
-          style={{ background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.3)", color: "var(--db-text)" }}
+          style={{ background: "var(--db-success-bg)", border: "1px solid var(--db-success)", color: "var(--db-text)" }}
         >
           <div className="font-semibold mb-1">Signing Secret (shown once):</div>
           <code className="text-xs break-all" style={{ color: "var(--db-accent)" }}>{createdSecret}</code>
@@ -188,7 +188,7 @@ export default function WebhookManager() {
       )}
 
       {error && (
-        <div className="rounded-lg p-3 mb-4 text-sm" style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444" }}>
+        <div className="rounded-lg p-3 mb-4 text-sm" style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}>
           {error}
         </div>
       )}
@@ -302,7 +302,7 @@ export default function WebhookManager() {
                   <button
                     onClick={() => handleDelete(ep.id)}
                     className="rounded px-2 py-1 text-[11px] font-medium"
-                    style={{ color: "#ef4444" }}
+                    style={{ color: "var(--db-danger)" }}
                   >
                     Delete
                   </button>
@@ -322,7 +322,7 @@ export default function WebhookManager() {
               </div>
 
               {ep.failureCount > 0 && (
-                <div className="text-[11px] mt-1" style={{ color: "#f59e0b" }}>
+                <div className="text-[11px] mt-1" style={{ color: "var(--db-warning-alt)" }}>
                   {ep.failureCount} consecutive failure{ep.failureCount > 1 ? "s" : ""}
                   {ep.lastFailureReason ? ` — ${ep.lastFailureReason}` : ""}
                 </div>
@@ -331,7 +331,7 @@ export default function WebhookManager() {
               {testResult?.id === ep.id && (
                 <div
                   className="text-[11px] mt-1"
-                  style={{ color: testResult.status === "delivered" ? "#4ade80" : "#ef4444" }}
+                  style={{ color: testResult.status === "delivered" ? "var(--db-success)" : "var(--db-danger)" }}
                 >
                   Test: {testResult.status}{testResult.error ? ` — ${testResult.error}` : ""}
                 </div>

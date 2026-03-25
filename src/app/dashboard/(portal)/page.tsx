@@ -282,7 +282,7 @@ export default function OverviewPage() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
             </span>
-            <span className="text-sm font-semibold" style={{ color: "#4ade80" }}>
+            <span className="text-sm font-semibold" style={{ color: "var(--db-success)" }}>
               {activeCalls.length} active call{activeCalls.length > 1 ? "s" : ""} right now
             </span>
           </div>
@@ -362,13 +362,13 @@ export default function OverviewPage() {
             <div className="mt-3 flex items-center gap-4 flex-wrap">
               {data.roiMultiple != null && data.roiMultiple > 0 && (
                 <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                  <strong style={{ color: "#4ade80" }}>{data.roiMultiple}x</strong> return on investment
+                  <strong style={{ color: "var(--db-success)" }}>{data.roiMultiple}x</strong> return on investment
                 </span>
               )}
               {data.revenueSaved != null && data.revenueSaved > 0 && (
                 <span
                   className="rounded-full px-2.5 py-0.5 text-xs font-medium"
-                  style={{ background: "rgba(74,222,128,0.12)", color: "#4ade80" }}
+                  style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                 >
                   +${data.revenueSaved.toLocaleString()} recovered from missed calls
                 </span>
@@ -408,9 +408,9 @@ export default function OverviewPage() {
         >
           <div
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
-            style={{ background: "rgba(74,222,128,0.1)" }}
+            style={{ background: "var(--db-success-bg)" }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--db-success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
             </svg>
           </div>
@@ -504,8 +504,8 @@ export default function OverviewPage() {
               <div className="grid grid-cols-3 gap-3 mb-4">
                 {[
                   { label: "Active Pipeline", value: `$${data.estimatePipeline.totalPipelineValue.toLocaleString()}`, color: "var(--db-accent)" },
-                  { label: "Won This Month", value: `$${data.estimatePipeline.wonThisMonth.value.toLocaleString()}`, color: "#4ade80" },
-                  { label: "Won Deals", value: String(data.estimatePipeline.wonThisMonth.count), color: "#4ade80" },
+                  { label: "Won This Month", value: `$${data.estimatePipeline.wonThisMonth.value.toLocaleString()}`, color: "var(--db-success)" },
+                  { label: "Won Deals", value: String(data.estimatePipeline.wonThisMonth.count), color: "var(--db-success)" },
                 ].map((s) => (
                   <div key={s.label}>
                     <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{s.label}</p>
@@ -516,7 +516,7 @@ export default function OverviewPage() {
               <div className="flex gap-2">
                 {(["new", "sent", "follow_up", "won", "lost"] as const).map((status) => {
                   const d = data.estimatePipeline![status];
-                  const colors: Record<string, string> = { new: "#3b82f6", sent: "#6366f1", follow_up: "#f59e0b", won: "#22c55e", lost: "#ef4444" };
+                  const colors: Record<string, string> = { new: "#3b82f6", sent: "#6366f1", follow_up: "var(--db-warning-alt)", won: "#22c55e", lost: "var(--db-danger)" };
                   return (
                     <div key={status} className="flex-1 rounded-lg p-2 text-center" style={{ background: "var(--db-hover)" }}>
                       <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{status.replace(/_/g, " ")}</p>
@@ -550,7 +550,7 @@ export default function OverviewPage() {
                 </div>
                 <div>
                   <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>New This Month</p>
-                  <p className="text-lg font-bold" style={{ color: "#4ade80" }}>{data.customerInsights.newThisMonth}</p>
+                  <p className="text-lg font-bold" style={{ color: "var(--db-success)" }}>{data.customerInsights.newThisMonth}</p>
                 </div>
               </div>
               {data.customerInsights.topByCallCount.length > 0 && (
@@ -602,7 +602,7 @@ export default function OverviewPage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Missed Calls Saved</span>
-                <span className="text-lg font-semibold tabular-nums" style={{ color: "#4ade80" }}>
+                <span className="text-lg font-semibold tabular-nums" style={{ color: "var(--db-success)" }}>
                   <AnimatedCounter value={data.missedCallsSaved} />
                 </span>
               </div>
@@ -714,7 +714,7 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
               <div
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
                 style={{
-                  background: card.priority === "urgent" ? "rgba(239,68,68,0.1)" : "rgba(245,158,11,0.1)",
+                  background: card.priority === "urgent" ? "var(--db-danger-bg)" : "rgba(245,158,11,0.1)",
                   color: card.priority === "urgent" ? "var(--db-danger)" : "var(--db-warning)",
                 }}
               >
@@ -740,7 +740,7 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
 }
 
 function HealthScoreCard({ score }: { score: number }) {
-  const color = score >= 80 ? "#4ade80" : score >= 50 ? "#fbbf24" : "#f87171";
+  const color = score >= 80 ? "var(--db-success)" : score >= 50 ? "var(--db-warning)" : "var(--db-danger)";
   const label = score >= 80 ? "Excellent" : score >= 50 ? "Good" : "Needs Attention";
 
   return (
@@ -802,7 +802,7 @@ function MariaSavedCard({
       <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
         {receptionistName} Saved You
       </p>
-      <p className="mt-1 text-2xl font-bold" style={{ color: "#4ade80" }}>
+      <p className="mt-1 text-2xl font-bold" style={{ color: "var(--db-success)" }}>
         ${total.toLocaleString()}
       </p>
       {breakdown && total > 0 ? (
@@ -839,7 +839,7 @@ function MariaSavedCard({
         </>
       ) : (
         missedCallsRecoveredCount > 0 && (
-          <p className="mt-1 text-xs" style={{ color: "#4ade80" }}>
+          <p className="mt-1 text-xs" style={{ color: "var(--db-success)" }}>
             {missedCallsRecoveredCount} call{missedCallsRecoveredCount === 1 ? "" : "s"} saved
           </p>
         )

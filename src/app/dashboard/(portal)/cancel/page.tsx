@@ -253,9 +253,9 @@ export default function CancelPage() {
             }}
             className="rounded-lg px-6 py-3 text-sm font-medium transition-all"
             style={{
-              background: "rgba(239,68,68,0.08)",
-              color: "#f87171",
-              border: "1px solid rgba(239,68,68,0.2)",
+              background: "var(--db-danger-bg)",
+              color: "var(--db-danger)",
+              border: "1px solid var(--db-danger)",
               flex: 1,
             }}
           >
