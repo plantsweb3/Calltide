@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { businesses, calls, appointments } from "@/db/schema";
 import { eq, count, and, sql } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../demo-data";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -34,6 +35,9 @@ export async function GET(req: NextRequest) {
       memberSince: "2025-01-15",
     });
   }
+
+  const rl = await rateLimit(`dashboard-account-${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const [biz] = await db
     .select()

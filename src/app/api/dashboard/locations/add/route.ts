@@ -7,6 +7,7 @@ import { reportError } from "@/lib/error-reporting";
 import { logActivity } from "@/lib/activity";
 import { getLocationPriceId, getLocationMrr, type PlanType } from "@/lib/stripe-prices";
 import { getStripe } from "@/lib/stripe/client";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const addLocationSchema = z.object({
   locationName: z.string().min(1).max(200),
@@ -34,6 +35,9 @@ export async function POST(req: NextRequest) {
   if (!businessId || !accountId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`dashboard-locations-add-${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;
   try {

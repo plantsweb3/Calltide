@@ -93,55 +93,36 @@ export async function GET(req: NextRequest) {
       .limit(PAGE_SIZE)
       .offset((page - 1) * PAGE_SIZE);
 
-    // Compute stats from all invoices for this business (unfiltered)
-    const allInvoices = await db
+    // Compute stats via SQL aggregation (no full-table JS scan)
+    const nowISO = new Date().toISOString();
+    const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+    const bizFilter = eq(invoices.businessId, businessId);
+
+    const [statsRow] = await db
       .select({
-        amount: invoices.amount,
-        status: invoices.status,
-        paidAt: invoices.paidAt,
-        dueDate: invoices.dueDate,
-        createdAt: invoices.createdAt,
+        outstanding: sql<number>`coalesce(sum(case when ${invoices.status} in ('pending', 'sent') then ${invoices.amount} else 0 end), 0)`,
+        overdue: sql<number>`coalesce(sum(case when ${invoices.status} = 'overdue' or ((${invoices.status} in ('sent', 'pending')) and ${invoices.dueDate} is not null and ${invoices.dueDate} < ${nowISO}) then ${invoices.amount} else 0 end), 0)`,
+        paidThisMonth: sql<number>`coalesce(sum(case when ${invoices.status} = 'paid' and ${invoices.paidAt} >= ${monthStart} then ${invoices.amount} else 0 end), 0)`,
+        avgDaysToPay: sql<number>`coalesce(cast(avg(case when ${invoices.status} = 'paid' and ${invoices.paidAt} is not null and ${invoices.createdAt} is not null then max(0, cast(julianday(${invoices.paidAt}) - julianday(${invoices.createdAt}) as integer)) else null end) as integer), 0)`,
+        totalCount: count(),
+        draftCount: sql<number>`sum(case when ${invoices.status} = 'pending' then 1 else 0 end)`,
+        sentCount: sql<number>`sum(case when ${invoices.status} = 'sent' then 1 else 0 end)`,
+        overdueCount: sql<number>`sum(case when ${invoices.status} = 'overdue' or ((${invoices.status} in ('sent', 'pending')) and ${invoices.dueDate} is not null and ${invoices.dueDate} < ${nowISO}) then 1 else 0 end)`,
+        paidCount: sql<number>`sum(case when ${invoices.status} = 'paid' then 1 else 0 end)`,
       })
       .from(invoices)
-      .where(eq(invoices.businessId, businessId));
-
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      .where(bizFilter);
 
     const stats = {
-      outstanding: allInvoices
-        .filter((i) => i.status === "pending" || i.status === "sent")
-        .reduce((sum, i) => sum + i.amount, 0),
-      overdue: allInvoices
-        .filter((i) => i.status === "overdue" || (
-          (i.status === "sent" || i.status === "pending") &&
-          i.dueDate && new Date(i.dueDate) < now
-        ))
-        .reduce((sum, i) => sum + i.amount, 0),
-      paidThisMonth: allInvoices
-        .filter((i) => i.status === "paid" && i.paidAt && i.paidAt >= monthStart)
-        .reduce((sum, i) => sum + i.amount, 0),
-      avgDaysToPay: (() => {
-        const paidInvoices = allInvoices.filter((i) => i.status === "paid" && i.paidAt && i.createdAt);
-        if (paidInvoices.length === 0) return 0;
-        const totalDays = paidInvoices.reduce((sum, i) => {
-          const created = new Date(i.createdAt).getTime();
-          const paid = new Date(i.paidAt!).getTime();
-          return sum + Math.max(0, Math.round((paid - created) / (1000 * 60 * 60 * 24)));
-        }, 0);
-        return Math.round(totalDays / paidInvoices.length);
-      })(),
-      // Pipeline counts for tab badges
-      totalCount: allInvoices.length,
-      draftCount: allInvoices.filter((i) => i.status === "pending").length,
-      sentCount: allInvoices.filter((i) => i.status === "sent").length,
-      overdueCount: allInvoices.filter((i) =>
-        i.status === "overdue" || (
-          (i.status === "sent" || i.status === "pending") &&
-          i.dueDate && new Date(i.dueDate) < now
-        )
-      ).length,
-      paidCount: allInvoices.filter((i) => i.status === "paid").length,
+      outstanding: Number(statsRow?.outstanding) || 0,
+      overdue: Number(statsRow?.overdue) || 0,
+      paidThisMonth: Number(statsRow?.paidThisMonth) || 0,
+      avgDaysToPay: Number(statsRow?.avgDaysToPay) || 0,
+      totalCount: statsRow?.totalCount ?? 0,
+      draftCount: Number(statsRow?.draftCount) || 0,
+      sentCount: Number(statsRow?.sentCount) || 0,
+      overdueCount: Number(statsRow?.overdueCount) || 0,
+      paidCount: Number(statsRow?.paidCount) || 0,
     };
 
     return NextResponse.json({

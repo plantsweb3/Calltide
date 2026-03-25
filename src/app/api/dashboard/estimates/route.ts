@@ -5,12 +5,16 @@ import { estimates, customers } from "@/db/schema";
 import { eq, and, count, desc, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { DEMO_BUSINESS_ID, DEMO_ESTIMATES } from "../demo-data";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`dashboard-estimates-${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const { searchParams } = new URL(req.url);
   const statusFilter = searchParams.get("status");
@@ -56,11 +60,16 @@ export async function GET(req: NextRequest) {
       .where(and(...conditions))
       .orderBy(desc(estimates.createdAt));
 
-    // Pipeline counts
-    const allEstimates = await db
-      .select({ status: estimates.status, amount: estimates.amount })
+    // Pipeline counts via SQL GROUP BY
+    const pipelineRows = await db
+      .select({
+        status: estimates.status,
+        count: count(),
+        value: sql<number>`coalesce(sum(${estimates.amount}), 0)`,
+      })
       .from(estimates)
-      .where(eq(estimates.businessId, businessId));
+      .where(eq(estimates.businessId, businessId))
+      .groupBy(estimates.status);
 
     const pipeline: Record<string, { count: number; value: number }> = {
       new: { count: 0, value: 0 },
@@ -70,10 +79,10 @@ export async function GET(req: NextRequest) {
       lost: { count: 0, value: 0 },
       expired: { count: 0, value: 0 },
     };
-    for (const e of allEstimates) {
-      if (pipeline[e.status]) {
-        pipeline[e.status].count++;
-        pipeline[e.status].value += e.amount || 0;
+    for (const row of pipelineRows) {
+      if (pipeline[row.status]) {
+        pipeline[row.status].count = row.count;
+        pipeline[row.status].value = Number(row.value) || 0;
       }
     }
 
@@ -103,6 +112,9 @@ export async function POST(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`dashboard-estimates-create-${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ success: true, message: "Demo mode — not saved" });

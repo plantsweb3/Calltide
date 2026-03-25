@@ -9,6 +9,7 @@ import { reportError } from "@/lib/error-reporting";
 import { getPriceId, getLocationPriceId, getMrrForPlan, type PlanType } from "@/lib/stripe-prices";
 import { logActivity } from "@/lib/activity";
 import { getStripe } from "@/lib/stripe/client";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const schema = z.object({
   plan: z.enum(["monthly", "annual"]),
@@ -19,6 +20,9 @@ export async function POST(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`dashboard-switch-plan-${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ success: true, message: "Demo mode — no changes made" });

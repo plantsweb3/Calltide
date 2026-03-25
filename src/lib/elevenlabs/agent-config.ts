@@ -150,7 +150,8 @@ export function buildAgentConfig({ biz, voiceId }: BuildAgentConfigParams) {
   const greetingEn = preset.greetingTemplate.en(receptionistName, biz.name);
   const greetingEs = preset.greetingTemplate.es(receptionistName, biz.name);
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!appUrl) throw new Error("NEXT_PUBLIC_APP_URL is required for ElevenLabs agent config");
   const webhookSecret = process.env.ELEVENLABS_WEBHOOK_SECRET || "";
 
   const tools = buildToolDefinitions(appUrl, webhookSecret);

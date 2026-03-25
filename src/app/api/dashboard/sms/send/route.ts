@@ -6,6 +6,7 @@ import { eq, and, isNull } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { normalizePhone } from "@/lib/compliance/sms";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const sendSmsSchema = z.object({
   customerPhone: z.string().min(10).max(20),
@@ -18,6 +19,9 @@ export async function POST(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`dashboard-sms-send-${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;
   try {

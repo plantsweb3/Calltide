@@ -4,6 +4,7 @@ import { businesses, referrals } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 /**
  * GET /api/dashboard/referrals
@@ -42,6 +43,9 @@ export async function GET(req: NextRequest) {
       ],
     });
   }
+
+  const rl = await rateLimit(`dashboard-referrals-${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   try {
     const [biz] = await db

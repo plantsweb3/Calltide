@@ -6,6 +6,7 @@ import { DEMO_BUSINESS_ID, DEMO_OVERVIEW } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
 import { getMrrForPlan } from "@/lib/stripe-prices";
 import type { PlanType } from "@/lib/stripe-prices";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -16,6 +17,9 @@ export async function GET(req: NextRequest) {
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json(DEMO_OVERVIEW);
   }
+
+  const rl = await rateLimit(`dashboard-overview-${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const now = new Date();
   const today = now.toISOString().slice(0, 10);

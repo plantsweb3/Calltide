@@ -1,6 +1,8 @@
 "use client";
 
 import { Component } from "react";
+import { reportError } from "@/lib/error-reporting";
+import Button from "@/components/ui/button";
 
 interface Props {
   children: React.ReactNode;
@@ -22,8 +24,11 @@ export default class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("ErrorBoundary caught:", error, info.componentStack);
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("ErrorBoundary caught:", error, errorInfo.componentStack);
+    reportError("ErrorBoundary caught error", error, {
+      extra: { componentStack: errorInfo?.componentStack },
+    });
   }
 
   render() {
@@ -43,18 +48,24 @@ export default class ErrorBoundary extends Component<Props, State> {
               Something went wrong
             </p>
             <p className="mt-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
-              {this.state.error?.message || "An unexpected error occurred"}
+              An unexpected error occurred
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-4 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-              style={{
-                background: "var(--db-accent)",
-                color: "#fff",
-              }}
-            >
-              Reload Page
-            </button>
+            <div className="mt-4 flex items-center justify-center gap-3">
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={() => this.setState({ hasError: false })}
+              >
+                Try Again
+              </Button>
+              <Button
+                variant="primary"
+                size="md"
+                onClick={() => window.location.reload()}
+              >
+                Reload Page
+              </Button>
+            </div>
           </div>
         </div>
       );

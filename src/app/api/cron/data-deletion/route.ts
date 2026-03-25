@@ -75,124 +75,126 @@ export async function GET(req: NextRequest) {
           const deletedRecords: Record<string, number> = {};
           const email = request.requestedBy;
 
-          // Find the business associated with this email
-          const [biz] = await db
-            .select({ id: businesses.id })
-            .from(businesses)
-            .where(eq(businesses.ownerEmail, email))
-            .limit(1);
+          await db.transaction(async (tx) => {
+            // Find the business associated with this email
+            const [biz] = await tx
+              .select({ id: businesses.id })
+              .from(businesses)
+              .where(eq(businesses.ownerEmail, email))
+              .limit(1);
 
-          if (biz) {
-            // Anonymize customers
-            const custResult = await db
-              .update(customers)
-              .set({
-                name: "DELETED",
-                email: null,
-                address: null,
-                notes: null,
-                phone: `deleted-${Date.now()}`,
-                tags: [],
-                deletedAt: new Date().toISOString(),
-              })
-              .where(and(eq(customers.businessId, biz.id), sql`${customers.deletedAt} IS NULL`));
-            deletedRecords.customers = custResult.rowsAffected ?? 0;
+            if (biz) {
+              // Anonymize customers
+              const custResult = await tx
+                .update(customers)
+                .set({
+                  name: "DELETED",
+                  email: null,
+                  address: null,
+                  notes: null,
+                  phone: `deleted-${Date.now()}`,
+                  tags: [],
+                  deletedAt: new Date().toISOString(),
+                })
+                .where(and(eq(customers.businessId, biz.id), sql`${customers.deletedAt} IS NULL`));
+              deletedRecords.customers = custResult.rowsAffected ?? 0;
 
-            // Anonymize calls (keep metadata for analytics, remove PII)
-            const callResult = await db
-              .update(calls)
-              .set({
-                callerPhone: "DELETED",
-                summary: null,
-                transcript: null,
-              })
-              .where(eq(calls.businessId, biz.id));
-            deletedRecords.calls = callResult.rowsAffected ?? 0;
+              // Anonymize calls (keep metadata for analytics, remove PII)
+              const callResult = await tx
+                .update(calls)
+                .set({
+                  callerPhone: "DELETED",
+                  summary: null,
+                  transcript: null,
+                })
+                .where(eq(calls.businessId, biz.id));
+              deletedRecords.calls = callResult.rowsAffected ?? 0;
 
-            // Anonymize leads
-            const leadResult = await db
-              .update(leads)
-              .set({
-                name: "DELETED",
-                email: null,
-                phone: `deleted-${Date.now()}`,
-                notes: null,
-              })
-              .where(eq(leads.businessId, biz.id));
-            deletedRecords.leads = leadResult.rowsAffected ?? 0;
+              // Anonymize leads
+              const leadResult = await tx
+                .update(leads)
+                .set({
+                  name: "DELETED",
+                  email: null,
+                  phone: `deleted-${Date.now()}`,
+                  notes: null,
+                })
+                .where(eq(leads.businessId, biz.id));
+              deletedRecords.leads = leadResult.rowsAffected ?? 0;
 
-            // Anonymize appointments (clear notes only — PII is in leads table)
-            const apptResult = await db
-              .update(appointments)
-              .set({
-                notes: null,
-              })
-              .where(eq(appointments.businessId, biz.id));
-            deletedRecords.appointments = apptResult.rowsAffected ?? 0;
+              // Anonymize appointments (clear notes only — PII is in leads table)
+              const apptResult = await tx
+                .update(appointments)
+                .set({
+                  notes: null,
+                })
+                .where(eq(appointments.businessId, biz.id));
+              deletedRecords.appointments = apptResult.rowsAffected ?? 0;
 
-            // Anonymize SMS messages
-            const smsResult = await db
-              .update(smsMessages)
-              .set({
-                body: "DELETED",
-                fromNumber: "DELETED",
-                toNumber: "DELETED",
-              })
-              .where(eq(smsMessages.businessId, biz.id));
-            deletedRecords.smsMessages = smsResult.rowsAffected ?? 0;
+              // Anonymize SMS messages
+              const smsResult = await tx
+                .update(smsMessages)
+                .set({
+                  body: "DELETED",
+                  fromNumber: "DELETED",
+                  toNumber: "DELETED",
+                })
+                .where(eq(smsMessages.businessId, biz.id));
+              deletedRecords.smsMessages = smsResult.rowsAffected ?? 0;
 
-            // Delete customer notes (via customer IDs since no businessId column)
-            const bizCustomers = await db
-              .select({ id: customers.id })
-              .from(customers)
-              .where(eq(customers.businessId, biz.id));
-            if (bizCustomers.length > 0) {
-              const { inArray } = await import("drizzle-orm");
-              const customerIds = bizCustomers.map((c) => c.id);
-              const notesResult = await db
-                .delete(customerNotes)
-                .where(inArray(customerNotes.customerId, customerIds));
-              deletedRecords.customerNotes = notesResult.rowsAffected ?? 0;
+              // Delete customer notes (via customer IDs since no businessId column)
+              const bizCustomers = await tx
+                .select({ id: customers.id })
+                .from(customers)
+                .where(eq(customers.businessId, biz.id));
+              if (bizCustomers.length > 0) {
+                const { inArray } = await import("drizzle-orm");
+                const customerIds = bizCustomers.map((c) => c.id);
+                const notesResult = await tx
+                  .delete(customerNotes)
+                  .where(inArray(customerNotes.customerId, customerIds));
+                deletedRecords.customerNotes = notesResult.rowsAffected ?? 0;
+              }
+
+              // Delete QA scores (contain call content analysis)
+              const qaResult = await tx
+                .delete(callQaScores)
+                .where(eq(callQaScores.businessId, biz.id));
+              deletedRecords.qaScores = qaResult.rowsAffected ?? 0;
+
+              // Anonymize estimates
+              const estResult = await tx
+                .update(estimates)
+                .set({
+                  description: "DELETED",
+                  notes: null,
+                })
+                .where(eq(estimates.businessId, biz.id));
+              deletedRecords.estimates = estResult.rowsAffected ?? 0;
+
+              // Mark business as data-deleted
+              await tx
+                .update(businesses)
+                .set({
+                  dataDeletedAt: new Date().toISOString(),
+                  ownerName: "DELETED",
+                  ownerEmail: `deleted-${Date.now()}@deleted.local`,
+                  ownerPhone: "DELETED",
+                })
+                .where(eq(businesses.id, biz.id));
+              deletedRecords.business = 1;
             }
 
-            // Delete QA scores (contain call content analysis)
-            const qaResult = await db
-              .delete(callQaScores)
-              .where(eq(callQaScores.businessId, biz.id));
-            deletedRecords.qaScores = qaResult.rowsAffected ?? 0;
-
-            // Anonymize estimates
-            const estResult = await db
-              .update(estimates)
+            // Mark request as completed
+            await tx
+              .update(dataDeletionRequests)
               .set({
-                description: "DELETED",
-                notes: null,
+                status: "completed",
+                completedAt: new Date().toISOString(),
+                deletedRecords,
               })
-              .where(eq(estimates.businessId, biz.id));
-            deletedRecords.estimates = estResult.rowsAffected ?? 0;
-
-            // Mark business as data-deleted
-            await db
-              .update(businesses)
-              .set({
-                dataDeletedAt: new Date().toISOString(),
-                ownerName: "DELETED",
-                ownerEmail: `deleted-${Date.now()}@deleted.local`,
-                ownerPhone: "DELETED",
-              })
-              .where(eq(businesses.id, biz.id));
-            deletedRecords.business = 1;
-          }
-
-          // Mark request as completed
-          await db
-            .update(dataDeletionRequests)
-            .set({
-              status: "completed",
-              completedAt: new Date().toISOString(),
-              deletedRecords,
-            })
-            .where(eq(dataDeletionRequests.id, request.id));
+              .where(eq(dataDeletionRequests.id, request.id));
+          });
 
           processed++;
           console.log(`[data-deletion] Completed request ${request.id}: ${JSON.stringify(deletedRecords)}`);

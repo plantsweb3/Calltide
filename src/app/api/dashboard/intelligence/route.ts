@@ -12,12 +12,16 @@ import {
 import { eq, and, count, desc, sql, gte } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`dashboard-intelligence-${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   try {
     const isDemoMode = businessId === DEMO_BUSINESS_ID;

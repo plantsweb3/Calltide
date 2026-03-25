@@ -4,6 +4,7 @@ import { calls, appointments, customers, estimates, outboundCalls, callQaScores 
 import { eq, and, sql, gte, count, desc } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -14,6 +15,9 @@ export async function GET(req: NextRequest) {
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json(getDemoReporting());
   }
+
+  const rl = await rateLimit(`dashboard-reporting-${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   try {
     const now = new Date();
