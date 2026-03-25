@@ -338,63 +338,7 @@ export function ROICalculator({ lang = "en" }: { lang?: "en" | "es" }) {
         </div>
       </div>
 
-      {/* Slider styles — scoped to .roi-slider */}
-      <style jsx global>{`
-        .roi-slider {
-          -webkit-appearance: none;
-          appearance: none;
-          height: 6px;
-          border-radius: 3px;
-          background: linear-gradient(to right, #d4a843 0%, #d4a843 var(--fill), rgba(255,255,255,0.1) var(--fill), rgba(255,255,255,0.1) 100%);
-          outline: none;
-          cursor: pointer;
-        }
-        .roi-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          background: #d4a843;
-          border: 3px solid #0f1729;
-          box-shadow: 0 0 12px rgba(212,168,67,0.4);
-          cursor: pointer;
-          transition: box-shadow 0.2s ease, transform 0.15s ease;
-        }
-        .roi-slider::-webkit-slider-thumb:hover {
-          box-shadow: 0 0 20px rgba(212,168,67,0.6);
-          transform: scale(1.1);
-        }
-        .roi-slider::-webkit-slider-thumb:active {
-          transform: scale(0.95);
-        }
-        .roi-slider::-moz-range-thumb {
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          background: #d4a843;
-          border: 3px solid #0f1729;
-          box-shadow: 0 0 12px rgba(212,168,67,0.4);
-          cursor: pointer;
-        }
-        .roi-slider::-moz-range-track {
-          height: 6px;
-          border-radius: 3px;
-          background: rgba(255,255,255,0.1);
-        }
-        .roi-slider::-moz-range-progress {
-          height: 6px;
-          border-radius: 3px;
-          background: #d4a843;
-        }
-        .roi-card {
-          transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .roi-card:hover {
-          border-color: rgba(212,168,67,0.2);
-          box-shadow: 0 0 100px rgba(212,168,67,0.08), 0 24px 64px rgba(0,0,0,0.4);
-        }
-      `}</style>
+      {/* Slider + card hover styles in globals.css */}
     </div>
   );
 }

@@ -369,16 +369,7 @@ export default function PricingClient() {
               </div>
             </div>
 
-            {/* Card hover glow effect via CSS */}
-            <style jsx>{`
-              .pricing-card {
-                transition: border-color 0.3s ease, box-shadow 0.3s ease;
-              }
-              .pricing-card:hover {
-                border-color: rgba(212, 168, 67, 0.25);
-                box-shadow: 0 0 80px rgba(212, 168, 67, 0.1), 0 16px 48px rgba(0, 0, 0, 0.4);
-              }
-            `}</style>
+            {/* Card hover glow — styles in globals.css */}
           </div>
         </div>
       </section>
