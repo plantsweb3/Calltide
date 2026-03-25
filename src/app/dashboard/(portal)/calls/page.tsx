@@ -393,6 +393,32 @@ export default function CallsPage() {
         className="flex flex-wrap items-center gap-2 mb-4 p-3 rounded-xl"
         style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
       >
+        {/* Date presets */}
+        {[
+          { label: "Today", days: 0 },
+          { label: "7d", days: 6 },
+          { label: "30d", days: 29 },
+        ].map((preset) => {
+          const today = new Date().toISOString().split("T")[0];
+          const from = preset.days === 0
+            ? today
+            : new Date(Date.now() - preset.days * 86400000).toISOString().split("T")[0];
+          const active = filterDateFrom === from && filterDateTo === today;
+          return (
+            <button
+              key={preset.label}
+              onClick={() => { setFilterDateFrom(from); setFilterDateTo(today); setPage(1); }}
+              className="rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors"
+              style={{
+                background: active ? "var(--db-accent)" : "var(--db-card)",
+                color: active ? "#fff" : "var(--db-text-muted)",
+                border: "1px solid var(--db-border)",
+              }}
+            >
+              {preset.label}
+            </button>
+          );
+        })}
         <div className="flex items-center gap-1.5">
           <label className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
             From

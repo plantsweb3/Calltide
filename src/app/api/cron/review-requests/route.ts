@@ -97,6 +97,7 @@ export async function GET(req: NextRequest) {
               }
 
               // Rate limit: max 1 review request per customer per business per 90 days
+              // Also catches "pending" records to prevent TOCTOU race
               const [existing] = await db
                 .select({ id: reviewRequests.id })
                 .from(reviewRequests)
@@ -104,8 +105,8 @@ export async function GET(req: NextRequest) {
                   and(
                     eq(reviewRequests.businessId, biz.id),
                     eq(reviewRequests.customerPhone, lead.phone),
-                    eq(reviewRequests.status, "sent"),
-                    gte(reviewRequests.sentAt, ninetyDaysAgoISO),
+                    sql`${reviewRequests.status} IN ('sent', 'pending')`,
+                    gte(reviewRequests.createdAt, ninetyDaysAgoISO),
                   ),
                 )
                 .limit(1);
@@ -129,6 +130,17 @@ export async function GET(req: NextRequest) {
                 language,
               });
 
+              // Insert record BEFORE sending SMS to prevent TOCTOU race
+              // (concurrent cron runs would see "pending" and skip)
+              const [reqRecord] = await db.insert(reviewRequests).values({
+                businessId: biz.id,
+                appointmentId: appt.appointmentId,
+                leadId: lead.id,
+                customerPhone: lead.phone,
+                language,
+                status: "pending",
+              }).returning({ id: reviewRequests.id });
+
               // Send SMS from the business's own Twilio number
               const result = await sendSMS({
                 to: lead.phone,
@@ -140,16 +152,10 @@ export async function GET(req: NextRequest) {
               });
 
               if (result.success) {
-                // Record in review_requests table
-                await db.insert(reviewRequests).values({
-                  businessId: biz.id,
-                  appointmentId: appt.appointmentId,
-                  leadId: lead.id,
-                  customerPhone: lead.phone,
-                  language,
-                  status: "sent",
-                  twilioSid: result.sid,
-                });
+                // Update to sent status
+                await db.update(reviewRequests)
+                  .set({ status: "sent", twilioSid: result.sid, sentAt: new Date().toISOString() })
+                  .where(eq(reviewRequests.id, reqRecord.id));
 
                 // Log to outreach log
                 await db.insert(outreachLog).values({
@@ -160,15 +166,10 @@ export async function GET(req: NextRequest) {
 
                 sent++;
               } else {
-                // Record failed attempt
-                await db.insert(reviewRequests).values({
-                  businessId: biz.id,
-                  appointmentId: appt.appointmentId,
-                  leadId: lead.id,
-                  customerPhone: lead.phone,
-                  language,
-                  status: "failed",
-                });
+                // Update to failed status
+                await db.update(reviewRequests)
+                  .set({ status: "failed" })
+                  .where(eq(reviewRequests.id, reqRecord.id));
                 errors++;
               }
             } catch (err) {
