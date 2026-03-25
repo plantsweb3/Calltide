@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { SpotlightCard } from "@/components/marketing/SpotlightCard";
 
 type Lang = "en" | "es";
@@ -58,17 +57,17 @@ const SCENARIOS_ES: Scenario[] = [
   {
     title: "Emergencia a las 2 AM",
     description:
-      "Fuga de gas detectada. Da instrucciones de seguridad, despacha tecnico de guardia y avisa al dueno — todo en 45 segundos.",
+      "Fuga de gas detectada. Da instrucciones de seguridad, despacha t\u00E9cnico de guardia y avisa al due\u00F1o \u2014 todo en 45 segundos.",
     transcript: [
       { speaker: "caller", text: "Huelo a gas en mi cocina, no se que hacer..." },
       { speaker: "maria", text: "Entiendo, lo primero es tu seguridad. Abre las ventanas y sal de la casa de inmediato." },
-      { speaker: "maria", text: "Estoy enviando a tu tecnico de guardia ahora y avisando al dueno." },
+      { speaker: "maria", text: "Estoy enviando a tu t\u00E9cnico de guardia ahora y avisando al due\u00F1o." },
     ],
   },
   {
-    title: "Reserva en Espanol",
+    title: "Reserva en Espa\u00F1ol",
     description:
-      "Cambio de idioma fluido durante la llamada. Detecta espanol y responde naturalmente.",
+      "Cambio de idioma fluido durante la llamada. Detecta espa\u00F1ol y responde naturalmente.",
     transcript: [
       { speaker: "caller", text: "Hola, necesito programar una cita para manana..." },
       { speaker: "maria", text: "Claro que si! Tengo disponibilidad manana a las 10 AM o 2 PM. Cual le funciona mejor?" },
@@ -76,9 +75,9 @@ const SCENARIOS_ES: Scenario[] = [
     ],
   },
   {
-    title: "Cotizacion en la Llamada",
+    title: "Cotizaci\u00F3n en la Llamada",
     description:
-      "El cliente necesita un rango de precio. Genera una estimacion usando tus datos de precios.",
+      "El cliente necesita un rango de precio. Genera una estimaci\u00F3n usando tus datos de precios.",
     transcript: [
       { speaker: "caller", text: "Cuanto cuesta reemplazar un calentador de agua?" },
       { speaker: "maria", text: "Segun tu area, un reemplazo estandar normalmente cuesta entre $1,200 y $1,800 incluyendo mano de obra." },
@@ -86,9 +85,9 @@ const SCENARIOS_ES: Scenario[] = [
     ],
   },
   {
-    title: "Recuperacion de Llamada",
+    title: "Recuperaci\u00F3n de Llamada",
     description:
-      "El cliente cuelga a los 8 segundos. Le envia un texto en 60 segundos y agenda una llamada.",
+      "El cliente cuelga a los 8 segundos. Le env\u00EDa un texto en 60 segundos y agenda una llamada.",
     transcript: [
       { speaker: "maria", text: "Hola! Note que acaba de llamar a ABC Plomeria. Disculpe que no lo alcance." },
       { speaker: "maria", text: "Puedo ayudarle con citas, cotizaciones, o cualquier pregunta. Responda aqui!" },
@@ -97,29 +96,7 @@ const SCENARIOS_ES: Scenario[] = [
   },
 ];
 
-function WaveformBars({ playing }: { playing: boolean }) {
-  return (
-    <div className="flex items-center gap-[2px] h-8">
-      {Array.from({ length: 20 }).map((_, i) => (
-        <div
-          key={i}
-          className="w-[3px] rounded-full transition-all"
-          style={{
-            height: playing
-              ? `${12 + Math.sin(i * 0.8) * 10 + Math.random() * 6}px`
-              : `${4 + Math.sin(i * 0.5) * 3}px`,
-            background: playing ? "#C59A27" : "rgba(197,154,39,0.3)",
-            transition: playing ? "height 0.15s ease" : "height 0.5s ease",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 function ScenarioCard({ scenario }: { scenario: Scenario }) {
-  const [playing, setPlaying] = useState(false);
-
   return (
     <SpotlightCard className="rounded-xl overflow-hidden">
       <div className="p-6 sm:p-8" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
@@ -128,59 +105,36 @@ function ScenarioCard({ scenario }: { scenario: Scenario }) {
           {scenario.description}
         </p>
 
-        {/* Audio player placeholder */}
-        <div
-          className="mt-4 flex items-center gap-3 rounded-lg px-4 py-3"
-          style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <button
-            onClick={() => setPlaying(!playing)}
-            disabled
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-opacity opacity-40 cursor-not-allowed"
-            style={{ background: "rgba(197,154,39,0.15)" }}
-            aria-label="Play audio"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="#C59A27"
-              stroke="none"
-            >
-              <polygon points="5 3 19 12 5 21 5 3" />
-            </svg>
-          </button>
-          <WaveformBars playing={false} />
-          <span className="ml-auto text-xs text-slate-500">
-            Coming soon
-          </span>
-        </div>
-
         {/* Transcript excerpt */}
-        <div className="mt-4 space-y-2">
+        <div className="mt-5 space-y-2.5">
           {scenario.transcript.map((line, i) => (
             <div
               key={i}
-              className="flex gap-2 text-[13px] leading-relaxed"
+              className="flex gap-2.5 text-[13px] leading-relaxed"
             >
               <div
-                className="w-0.5 shrink-0 rounded-full"
+                className="w-0.5 shrink-0 rounded-full self-stretch"
                 style={{
                   background:
                     line.speaker === "maria" ? "#C59A27" : "rgba(255,255,255,0.15)",
                 }}
               />
-              <p
-                style={{
-                  color:
-                    line.speaker === "maria" ? "#e2d5b8" : "rgba(255,255,255,0.5)",
-                }}
-              >
-                {line.text}
-              </p>
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-wider" style={{
+                  color: line.speaker === "maria" ? "#C59A27" : "rgba(255,255,255,0.35)",
+                }}>
+                  {line.speaker === "maria" ? "Maria" : "Caller"}
+                </span>
+                <p
+                  className="mt-0.5"
+                  style={{
+                    color:
+                      line.speaker === "maria" ? "#e2d5b8" : "rgba(255,255,255,0.5)",
+                  }}
+                >
+                  {line.text}
+                </p>
+              </div>
             </div>
           ))}
         </div>

@@ -308,12 +308,6 @@ export default function PlatformClient() {
 
   return (
     <>
-      {/* Language toggle */}
-      <div className="fixed top-4 right-4 z-50 flex items-center gap-1 rounded-full px-1 py-1" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(12px)" }}>
-        <button onClick={() => toggleLang("en")} className="rounded-full px-3 py-1 text-xs font-semibold transition-all" style={{ background: lang === "en" ? "rgba(212,168,67,0.2)" : "transparent", color: lang === "en" ? "#d4a843" : "#94a3b8" }}>EN</button>
-        <button onClick={() => toggleLang("es")} className="rounded-full px-3 py-1 text-xs font-semibold transition-all" style={{ background: lang === "es" ? "rgba(212,168,67,0.2)" : "transparent", color: lang === "es" ? "#d4a843" : "#94a3b8" }}>ES</button>
-      </div>
-
       {/* Hero */}
       <section className="relative px-6 sm:px-8 pt-24 pb-12 sm:pt-32 sm:pb-16" style={{ background: "#0f1729" }}>
         <div className="relative z-10 mx-auto max-w-3xl text-center">

@@ -24,14 +24,14 @@ const STEPS_ES = [
   { icon: "headset", label: "Capta Contesta" },
   { icon: "globe", label: "Detecta Idioma" },
   { icon: "calendar", label: "Agenda Cita" },
-  { icon: "file-text", label: "Genera Cotizacion" },
-  { icon: "smartphone", label: "Avisa al Dueno" },
-  { icon: "check", label: "Dueno Aprueba" },
+  { icon: "file-text", label: "Genera Cotizaci\u00F3n" },
+  { icon: "smartphone", label: "Avisa al Due\u00F1o" },
+  { icon: "check", label: "Due\u00F1o Aprueba" },
   { icon: "dollar", label: "Factura Creada" },
   { icon: "bell", label: "Recordatorio" },
   { icon: "check-circle", label: "Trabajo Hecho" },
-  { icon: "message", label: "Solicita Resena" },
-  { icon: "star", label: "Resena 5 Estrellas" },
+  { icon: "message", label: "Solicita Rese\u00F1a" },
+  { icon: "star", label: "Rese\u00F1a 5 Estrellas" },
 ];
 
 function StepIcon({ icon }: { icon: string }) {
@@ -177,7 +177,7 @@ export default function RevenueCycle({ lang }: { lang: Lang }) {
           <p className="mt-4 text-base text-slate-400 max-w-2xl mx-auto">
             {lang === "en"
               ? "From missed call to 5-star review — no other platform automates the complete revenue cycle."
-              : "De llamada perdida a resena de 5 estrellas — ninguna otra plataforma automatiza el ciclo completo."}
+              : "De llamada perdida a rese\u00F1a de 5 estrellas — ninguna otra plataforma automatiza el ciclo completo."}
           </p>
         </div>
 

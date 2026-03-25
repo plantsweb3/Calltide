@@ -319,6 +319,48 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
         </div>
       </section>
 
+      {/* ── 6b. SOCIAL PROOF ── */}
+      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-16 sm:py-20">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">
+            {lang === "en" ? "FOUNDING MEMBERS" : "MIEMBROS FUNDADORES"}
+          </p>
+          <h2 className="mt-4 text-[28px] font-extrabold leading-[1.1] tracking-tight text-charcoal sm:text-[36px]">
+            {lang === "en"
+              ? "Built by contractors, for contractors."
+              : "Hecho por contratistas, para contratistas."}
+          </h2>
+          <p className="mt-4 text-base text-charcoal-muted max-w-2xl mx-auto">
+            {lang === "en"
+              ? "We\u2019re onboarding our first wave of home service businesses. Early members shape how Capta works \u2014 and lock in founder pricing."
+              : "Estamos incorporando nuestra primera ola de negocios de servicios. Los miembros iniciales definen c\u00F3mo funciona Capta \u2014 y aseguran precio de fundador."}
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-6">
+            {(lang === "en"
+              ? ["Plumbing", "HVAC", "Electrical", "General Contracting", "Landscaping", "Roofing"]
+              : ["Plomer\u00EDa", "HVAC", "Electricidad", "Contratista General", "Jardiner\u00EDa", "Techos"]
+            ).map((trade, i) => (
+              <span
+                key={i}
+                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-charcoal shadow-sm"
+              >
+                {trade}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-10">
+            <a
+              href="/setup"
+              className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white"
+            >
+              {lang === "en" ? "Join the Founding Wave" : "\u00DAnete a la Ola Fundadora"} &rarr;
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ── 7. MARIA OFFICE MANAGER ── */}
       <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
         <div className="mx-auto max-w-5xl">
