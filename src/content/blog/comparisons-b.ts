@@ -50,7 +50,7 @@ Let's talk numbers.
 
 For a contractor doing $500K-$1M in annual revenue, 100 customers per month is a fraction of your call volume. You're paying for a tool that stops working when business picks up.
 
-**Capta** costs $497 per month — or $397/month if you pay annually ($4,764/year, saving $1,200). No caps. No per-customer limits. No per-minute charges. Maria answers every call, whether it's your 10th customer of the month or your 500th.
+**Capta** costs $497 per month — or $397/month if you pay annually ($4,764/year, saving $1,200). No caps. No per-customer limits. No per-minute charges. She answers every call, whether it's your 10th customer of the month or your 500th.
 
 Here's the math that matters: if Goodcall's cap forces you to upgrade or miss calls, you're either paying more than $79/month or losing jobs. One missed plumbing emergency is worth $300-$800. Two missed HVAC calls in summer could cost you $1,500+. Capta's flat rate means you never have to worry about volume.
 
@@ -68,13 +68,13 @@ The real question isn't "which is cheaper?" It's "which one pays for itself?"
 
 **Goodcall** provides a basic AI phone agent that answers calls and captures lead information. It handles simple conversations and can route calls based on basic rules. For straightforward "name, number, what do you need?" interactions, it works.
 
-**Capta** goes further. Maria doesn't just capture information — she has full conversations. She understands context. When a homeowner says "my AC stopped working and it's 98 degrees outside and I have a baby at home," Maria recognizes that as an emergency and handles it differently from a routine maintenance request. She asks the right follow-up questions, books the appointment, confirms via SMS, and alerts you immediately.
+**Capta** goes further. She doesn't just capture information — she has full conversations. She understands context. When a homeowner says "my AC stopped working and it's 98 degrees outside and I have a baby at home," She recognizes that as an emergency and handles it differently from a routine maintenance request. She asks the right follow-up questions, books the appointment, confirms via SMS, and alerts you immediately.
 
 ### Bilingual Support
 
 **Goodcall** operates primarily in English. If a Spanish-speaking customer calls, they're getting an English-language experience. For contractors in Texas, California, Florida, Arizona, or any state with significant Hispanic populations, this is a dealbreaker.
 
-**Capta** is natively bilingual. Maria speaks English and Spanish at equal quality. She detects the caller's language automatically and switches seamlessly. This isn't a translation layer bolted onto an English product — the Spanish was built in from day one.
+**Capta** is natively bilingual. She speaks English and Spanish at equal quality. She detects the caller's language automatically and switches seamlessly. This isn't a translation layer bolted onto an English product — the Spanish was built in from day one.
 
 For context: 42 million Americans speak Spanish at home. In the home services industry, Spanish-speaking customers represent a massive share of the market. If your AI phone agent can't talk to them, you're leaving money on the table.
 
@@ -82,7 +82,7 @@ For context: 42 million Americans speak Spanish at home. In the home services in
 
 **Goodcall** offers basic scheduling capabilities. It can capture appointment requests and relay them to you. But the actual booking process often requires your involvement — you're still manually confirming appointments.
 
-**Capta** handles the entire booking flow automatically. Maria checks your availability, books the slot, sends an SMS confirmation to the customer, and updates your dashboard. The customer hangs up knowing they have a confirmed appointment. No callback needed. No manual entry.
+**Capta** handles the entire booking flow automatically. She checks your availability, books the slot, sends an SMS confirmation to the customer, and updates your dashboard. The customer hangs up knowing they have a confirmed appointment. No callback needed. No manual entry.
 
 For contractors who run 5-10 jobs per day, eliminating the back-and-forth on scheduling saves hours every week.
 
@@ -96,13 +96,13 @@ For contractors who run 5-10 jobs per day, eliminating the back-and-forth on sch
 
 **Goodcall** treats every call the same. There's no built-in mechanism to distinguish between a routine inquiry and a genuine emergency.
 
-**Capta** has emergency detection built in. When Maria identifies an urgent situation — burst pipe, gas leak, electrical hazard, no heat in winter with children at home — she immediately flags it as priority. She can transfer the call live to your cell phone so you can respond in real time. For home service contractors, this isn't a nice-to-have. It's the difference between saving a customer's property and reading about it in a voicemail two hours later.
+**Capta** has emergency detection built in. When She identifies an urgent situation — burst pipe, gas leak, electrical hazard, no heat in winter with children at home — she immediately flags it as priority. She can transfer the call live to your cell phone so you can respond in real time. For home service contractors, this isn't a nice-to-have. It's the difference between saving a customer's property and reading about it in a voicemail two hours later.
 
 ### Industry Specialization
 
 **Goodcall** is a general-purpose AI phone agent. It works for dentists, law offices, restaurants, and yes, contractors. But it doesn't understand the specific language and scenarios of home services. It doesn't know what a "slab leak" is or why "no hot water" at 10 PM is more urgent than "I need a quote for a new water heater."
 
-**Capta** was built specifically for home service businesses. Maria knows the trades. She understands plumbing, HVAC, electrical, landscaping, roofing, and painting terminology. She knows what questions to ask for each trade. She knows that an AC failure in August is an emergency and a faucet drip is not. This specialization means better conversations, better bookings, and happier customers.
+**Capta** was built specifically for home service businesses. She knows the trades. She understands plumbing, HVAC, electrical, landscaping, roofing, and painting terminology. She knows what questions to ask for each trade. She knows that an AC failure in August is an emergency and a faucet drip is not. This specialization means better conversations, better bookings, and happier customers.
 
 ## Who Should Choose Goodcall?
 
@@ -144,7 +144,7 @@ One missed emergency call can cost more than a year of the price difference betw
 
 ### Can I switch from Goodcall to Capta easily?
 
-Yes. Capta setup takes about 5 minutes. You forward your business number to Capta, configure your business details, and Maria starts answering immediately. There's no data migration needed — Capta builds your CRM from incoming calls automatically.
+Yes. Capta setup takes about 5 minutes. You forward your business number to Capta, configure your business details, and your receptionist starts answering immediately. There's no data migration needed — Capta builds your CRM from incoming calls automatically.
 
 ### Does Capta really handle unlimited calls?
 
@@ -160,13 +160,13 @@ It depends on your volume. If you're a solo operator with a handful of regular c
 
 ### Does Capta work for all types of contractors?
 
-Capta is built for home service businesses: plumbing, HVAC, electrical, landscaping, roofing, painting, and general contracting. Maria understands trade-specific terminology, common service requests, and emergency scenarios for each industry.
+Capta is built for home service businesses: plumbing, HVAC, electrical, landscaping, roofing, painting, and general contracting. She understands trade-specific terminology, common service requests, and emergency scenarios for each industry.
 
 ---
 
-Stop choosing between budget and capability. Maria answers every call, books every appointment, and speaks your customers' language — English and Spanish.
+Stop choosing between budget and capability. She answers every call, books every appointment, and speaks your customers' language — English and Spanish.
 
-**[Get Capta](https://captahq.com)** today with a 30-day money-back guarantee. Setup takes 5 minutes, and Maria starts answering your calls immediately. Your customers are calling right now. Make sure someone picks up.`,
+**[Get Capta](https://captahq.com)** today with a 30-day money-back guarantee. Setup takes 5 minutes, and your receptionist starts answering your calls immediately. Your customers are calling right now. Make sure someone picks up.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -218,7 +218,7 @@ Hablemos de numeros.
 
 Para un contratista que factura $500K-$1M al ano, 100 clientes por mes es una fraccion de tu volumen de llamadas. Estas pagando por una herramienta que deja de funcionar cuando el negocio mejora.
 
-**Capta** cuesta $497 al mes — o $397/mes si pagas anual ($4,764/ano, ahorrandote $1,200). Sin limites. Sin cobros por cliente. Sin cobros por minuto. Maria contesta cada llamada, ya sea tu cliente numero 10 del mes o el numero 500.
+**Capta** cuesta $497 al mes — o $397/mes si pagas anual ($4,764/ano, ahorrandote $1,200). Sin limites. Sin cobros por cliente. Sin cobros por minuto. Ella contesta cada llamada, ya sea tu cliente numero 10 del mes o el numero 500.
 
 La matematica que importa: si el limite de Goodcall te obliga a pagar mas o perder llamadas, estas pagando mas de $79/mes o perdiendo trabajos. Una emergencia de plomeria perdida vale $300-$800. Dos llamadas de HVAC perdidas en verano pueden costarte $1,500+. La tarifa plana de Capta significa que nunca tienes que preocuparte por el volumen.
 
@@ -236,13 +236,13 @@ La pregunta real no es "cual es mas barato?" sino "cual se paga solo?"
 
 **Goodcall** tiene un agente de IA basico que contesta llamadas y captura informacion de contacto. Maneja conversaciones simples y puede enrutar llamadas con reglas basicas. Para interacciones sencillas de "nombre, numero, que necesita," funciona.
 
-**Capta** va mas alla. Maria no solo captura informacion — tiene conversaciones completas. Entiende el contexto. Cuando un propietario dice "mi aire acondicionado dejo de funcionar y estamos a 37 grados y tengo un bebe en casa," Maria reconoce eso como emergencia y lo maneja diferente a una solicitud de mantenimiento rutinario. Hace las preguntas correctas, agenda la cita, confirma por SMS y te alerta de inmediato.
+**Capta** va mas alla. Ella no solo captura informacion — tiene conversaciones completas. Entiende el contexto. Cuando un propietario dice "mi aire acondicionado dejo de funcionar y estamos a 37 grados y tengo un bebe en casa," Ella reconoce eso como emergencia y lo maneja diferente a una solicitud de mantenimiento rutinario. Hace las preguntas correctas, agenda la cita, confirma por SMS y te alerta de inmediato.
 
 ### Soporte Bilingue
 
 **Goodcall** opera principalmente en ingles. Si un cliente hispanohablante llama, recibe una experiencia en ingles. Para contratistas en Texas, California, Florida, Arizona, o cualquier estado con poblaciones hispanas significativas, esto es un problema serio.
 
-**Capta** es nativamente bilingue. Maria habla ingles y espanol con la misma calidad. Detecta el idioma del llamante automaticamente y cambia sin problema. No es una capa de traduccion pegada a un producto en ingles — el espanol fue integrado desde el primer dia.
+**Capta** es nativamente bilingue. Ella habla ingles y espanol con la misma calidad. Detecta el idioma del llamante automaticamente y cambia sin problema. No es una capa de traduccion pegada a un producto en ingles — el espanol fue integrado desde el primer dia.
 
 Dato importante: 42 millones de estadounidenses hablan espanol en casa. En la industria de servicios del hogar, los clientes hispanohablantes representan una porcion enorme del mercado. Si tu agente de IA no puede hablar con ellos, estas dejando dinero en la mesa.
 
@@ -250,7 +250,7 @@ Dato importante: 42 millones de estadounidenses hablan espanol en casa. En la in
 
 **Goodcall** ofrece agendamiento basico. Puede capturar solicitudes de citas y pasartelas. Pero el proceso real de reservacion generalmente requiere tu participacion — sigues confirmando citas manualmente.
 
-**Capta** maneja todo el flujo de reservacion automaticamente. Maria revisa tu disponibilidad, reserva el horario, envia confirmacion por SMS al cliente y actualiza tu panel. El cliente cuelga sabiendo que tiene cita confirmada. Sin necesidad de que tu devuelvas la llamada. Sin entrada manual.
+**Capta** maneja todo el flujo de reservacion automaticamente. Ella revisa tu disponibilidad, reserva el horario, envia confirmacion por SMS al cliente y actualiza tu panel. El cliente cuelga sabiendo que tiene cita confirmada. Sin necesidad de que tu devuelvas la llamada. Sin entrada manual.
 
 Para contratistas que hacen 5-10 trabajos por dia, eliminar ese ir y venir con el agendamiento te ahorra horas cada semana.
 
@@ -264,13 +264,13 @@ Para contratistas que hacen 5-10 trabajos por dia, eliminar ese ir y venir con e
 
 **Goodcall** trata todas las llamadas igual. No tiene un mecanismo para distinguir entre una consulta rutinaria y una emergencia real.
 
-**Capta** tiene deteccion de emergencias integrada. Cuando Maria identifica una situacion urgente — tuberia rota, fuga de gas, peligro electrico, sin calefaccion en invierno con ninos en casa — la marca como prioridad inmediatamente. Puede transferir la llamada en vivo a tu celular para que respondas en tiempo real. Para contratistas de servicios del hogar, esto no es un lujo. Es la diferencia entre salvar la propiedad de un cliente y enterarte por un mensaje de voz dos horas despues.
+**Capta** tiene deteccion de emergencias integrada. Cuando Ella identifica una situacion urgente — tuberia rota, fuga de gas, peligro electrico, sin calefaccion en invierno con ninos en casa — la marca como prioridad inmediatamente. Puede transferir la llamada en vivo a tu celular para que respondas en tiempo real. Para contratistas de servicios del hogar, esto no es un lujo. Es la diferencia entre salvar la propiedad de un cliente y enterarte por un mensaje de voz dos horas despues.
 
 ### Especializacion en la Industria
 
 **Goodcall** es un agente de IA de uso general. Funciona para dentistas, abogados, restaurantes y si, contratistas. Pero no entiende el lenguaje y los escenarios especificos de servicios del hogar. No sabe que es una "fuga en losa" ni por que "no hay agua caliente" a las 10 PM es mas urgente que "necesito cotizacion para un calentador nuevo."
 
-**Capta** fue disenada especificamente para negocios de servicios del hogar. Maria conoce los oficios. Entiende terminologia de plomeria, HVAC, electricidad, jardineria, techos y pintura. Sabe que preguntas hacer para cada oficio. Sabe que una falla de aire acondicionado en agosto es emergencia y un grifo goteando no lo es. Esta especializacion significa mejores conversaciones, mas reservaciones y clientes mas satisfechos.
+**Capta** fue disenada especificamente para negocios de servicios del hogar. Ella conoce los oficios. Entiende terminologia de plomeria, HVAC, electricidad, jardineria, techos y pintura. Sabe que preguntas hacer para cada oficio. Sabe que una falla de aire acondicionado en agosto es emergencia y un grifo goteando no lo es. Esta especializacion significa mejores conversaciones, mas reservaciones y clientes mas satisfechos.
 
 ## Quien Deberia Elegir Goodcall
 
@@ -312,7 +312,7 @@ Una llamada de emergencia perdida puede costar mas que un ano de la diferencia d
 
 ### ¿Puedo cambiar de Goodcall a Capta facilmente?
 
-Si. La configuracion de Capta toma unos 5 minutos. Rediriges tu numero de negocio a Capta, configuras los datos de tu empresa, y Maria empieza a contestar de inmediato. No necesitas migracion de datos — Capta construye tu CRM automaticamente con las llamadas entrantes.
+Si. La configuracion de Capta toma unos 5 minutos. Rediriges tu numero de negocio a Capta, configuras los datos de tu empresa, y tu recepcionista empieza a contestar de inmediato. No necesitas migracion de datos — Capta construye tu CRM automaticamente con las llamadas entrantes.
 
 ### ¿Capta realmente maneja llamadas ilimitadas?
 
@@ -328,9 +328,9 @@ Depende de tu volumen. Si eres operador independiente con pocos clientes regular
 
 ---
 
-Deja de elegir entre presupuesto y capacidad. Maria contesta cada llamada, agenda cada cita y habla el idioma de tus clientes — ingles y espanol.
+Deja de elegir entre presupuesto y capacidad. Ella contesta cada llamada, agenda cada cita y habla el idioma de tus clientes — ingles y espanol.
 
-**[Obten Capta](https://captahq.com)** hoy con garantia de devolucion de 30 dias. La configuracion toma 5 minutos y Maria empieza a contestar tus llamadas de inmediato. Tus clientes estan llamando ahora mismo. Asegurate de que alguien conteste.`,
+**[Obten Capta](https://captahq.com)** hoy con garantia de devolucion de 30 dias. La configuracion toma 5 minutos y tu recepcionista empieza a contestar tus llamadas de inmediato. Tus clientes estan llamando ahora mismo. Asegurate de que alguien conteste.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -371,7 +371,7 @@ Here's what that number means for each platform:
 
 **Rosie AI at $49/month:** At the entry tier, you get basic AI answering. Rosie picks up the phone, captures caller information, and sends you the message. Think of it as an intelligent voicemail that sounds human. At this price point, features are limited — no CRM, no real appointment booking, no SMS confirmations. As your needs grow and you move to higher tiers, Rosie's costs scale up, but the feature set remains relatively basic compared to a purpose-built contractor tool.
 
-**Capta at $497/month:** Flat rate. Whether you get 50 calls or 500, the price doesn't change. Maria answers every call, books appointments, sends SMS confirmations, logs everything in a CRM, and detects emergencies. No overages. No tier upgrades. No surprises.
+**Capta at $497/month:** Flat rate. Whether you get 50 calls or 500, the price doesn't change. She answers every call, books appointments, sends SMS confirmations, logs everything in a CRM, and detects emergencies. No overages. No tier upgrades. No surprises.
 
 For this step, the math is simple:
 
@@ -398,7 +398,7 @@ Industry data shows that the average contractor takes 2-4 hours to return calls 
 
 Here's the problem: customers don't wait. A study by InsideSales.com found that the odds of reaching a lead drop 10x after the first 5 minutes. For home services, the math is even harsher. A homeowner whose AC broke in July is calling 2-3 contractors simultaneously. The first one to confirm an appointment gets the job approximately 70-80% of the time.
 
-**Capta eliminates this gap entirely.** Maria books the appointment during the call. The customer hangs up with a confirmed time slot and an SMS confirmation in their pocket. There is no callback loop. There is no 2-4 hour window where the customer shops your competitors.
+**Capta eliminates this gap entirely.** She books the appointment during the call. The customer hangs up with a confirmed time slot and an SMS confirmation in their pocket. There is no callback loop. There is no 2-4 hour window where the customer shops your competitors.
 
 Let's calculate what the callback gap costs you:
 
@@ -432,7 +432,7 @@ What hours does your answering service actually cover, and what does that covera
 
 **Rosie AI** answers calls around the clock at its AI tier. That's a legitimate advantage — you're covered 24/7. But "answering" means different things. Rosie answers and takes a message. She doesn't book an appointment at 10 PM. She doesn't send the customer an SMS confirmation at midnight. She doesn't detect emergencies and transfer the call to your phone at 2 AM.
 
-**Capta** also answers 24/7. But Maria does the same thing at midnight that she does at noon — full conversations, appointment booking, SMS confirmations, emergency detection with live transfer.
+**Capta** also answers 24/7. But Capta's AI receptionist does the same thing at midnight that she does at noon — full conversations, appointment booking, SMS confirmations, emergency detection with live transfer.
 
 **Your after-hours call percentage:** _____% (industry average for contractors is 30-40%)
 
@@ -463,7 +463,7 @@ If you're in Texas, California, Florida, Arizona, Nevada, New Mexico, or most ma
 
 **Rosie AI** operates primarily in English. Spanish-speaking customers who call get an English-language experience. Some navigate it. Many don't. They hang up and call someone who speaks their language.
 
-**Capta's Maria** is natively bilingual. She handles Spanish-language calls with the same depth, quality, and trade knowledge as English calls. Appointment booking, SMS confirmations, emergency detection — everything works in both languages.
+**Capta's AI receptionist** is natively bilingual. She handles Spanish-language calls with the same depth, quality, and trade knowledge as English calls. Appointment booking, SMS confirmations, emergency detection — everything works in both languages.
 
 **Your estimated Spanish-language calls per month:** _____ (If you don't know, estimate based on your market demographics. If 30% of your area is Hispanic, assume at least 15-20% of your potential calls could be in Spanish — many you're currently not even receiving because word gets around that your business doesn't speak Spanish.)
 
@@ -498,7 +498,7 @@ If you're a plumber, HVAC tech, or electrician, the answer is probably "several.
 
 **Rosie AI** treats emergency calls the same as routine calls. She takes a message. There's no detection, no escalation, no live transfer. The message sits in your inbox alongside "I need a quote for a bathroom remodel" until you check it.
 
-**Capta** detects emergencies automatically. Maria identifies urgent language and scenarios, flags the call as priority, sends you an immediate alert, and offers to transfer the caller live to your phone. The customer gets help in minutes, not hours.
+**Capta** detects emergencies automatically. She identifies urgent language and scenarios, flags the call as priority, sends you an immediate alert, and offers to transfer the caller live to your phone. The customer gets help in minutes, not hours.
 
 **Average emergency job value:** $_____ (most are $800-$2,000+)
 
@@ -560,7 +560,7 @@ But if you're reading this article, you're probably not that business. You're pr
 
 ---
 
-Done with the math? If Capta is the right fit, the 30-day money-back guarantee means you can verify the calculator with your real numbers. Setup takes 5 minutes. Maria starts answering immediately — in English and Spanish. [Get Capta →](https://captahq.com)
+Done with the math? If Capta is the right fit, the 30-day money-back guarantee means you can verify the calculator with your real numbers. Setup takes 5 minutes. your receptionist starts answering immediately — in English and Spanish. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -602,7 +602,7 @@ Esto es lo que ese numero significa para cada plataforma:
 
 **Rosie AI a $49/mes:** En el plan basico, obtienes contestacion AI elemental. Rosie contesta el telefono, captura la informacion del cliente y te envia el mensaje. Piensa en ello como un buzon de voz inteligente que suena humano. A este precio, las funciones son limitadas — sin CRM, sin agendamiento real, sin confirmaciones por SMS. Conforme tus necesidades crecen y subes de plan, los costos de Rosie escalan, pero las funciones siguen siendo relativamente basicas.
 
-**Capta a $497/mes:** Tarifa plana. Ya sea que recibas 50 llamadas o 500, el precio no cambia. Maria contesta cada llamada, agenda citas, envia confirmaciones por SMS, registra todo en un CRM y detecta emergencias. Sin excedentes. Sin cambios de plan. Sin sorpresas.
+**Capta a $497/mes:** Tarifa plana. Ya sea que recibas 50 llamadas o 500, el precio no cambia. Ella contesta cada llamada, agenda citas, envia confirmaciones por SMS, registra todo en un CRM y detecta emergencias. Sin excedentes. Sin cambios de plan. Sin sorpresas.
 
 Para este paso, la matematica es simple. A valor nominal, Rosie gana en precio. Pero solo estamos en el paso 1. Sigue leyendo.
 
@@ -620,7 +620,7 @@ Los datos de la industria muestran que el contratista promedio tarda 2-4 horas e
 
 Aqui esta el problema: los clientes no esperan. Un propietario cuyo aire acondicionado se descompuso en julio esta llamando a 2-3 contratistas al mismo tiempo. El primero que confirme una cita se queda con el trabajo aproximadamente el 70-80% de las veces.
 
-**Capta elimina esta brecha por completo.** Maria agenda la cita durante la llamada. El cliente cuelga con un horario confirmado y una confirmacion por SMS. No hay ciclo de devolucion. No hay ventana de 2-4 horas donde el cliente busca a tus competidores.
+**Capta elimina esta brecha por completo.** Tu recepcionista agenda la cita durante la llamada. El cliente cuelga con un horario confirmado y una confirmacion por SMS. No hay ciclo de devolucion. No hay ventana de 2-4 horas donde el cliente busca a tus competidores.
 
 Calculemos cuanto te cuesta la brecha de devolucion:
 
@@ -646,7 +646,7 @@ De repente Capta no solo es mas barata — es $352/mes mas barata que la opcion 
 
 **Rosie AI** contesta llamadas las 24 horas. Eso es una ventaja legitima. Pero "contestar" significa cosas diferentes. Rosie contesta y toma un mensaje. No agenda una cita a las 10 PM. No envia confirmacion por SMS a medianoche. No detecta emergencias ni transfiere la llamada a tu telefono a las 2 AM.
 
-**Capta** tambien contesta 24/7. Pero Maria hace lo mismo a medianoche que al mediodia — conversaciones completas, agendamiento, confirmaciones SMS, deteccion de emergencias con transferencia en vivo.
+**Capta** tambien contesta 24/7. Pero la recepcionista AI de Capta hace lo mismo a medianoche que al mediodia — conversaciones completas, agendamiento, confirmaciones SMS, deteccion de emergencias con transferencia en vivo.
 
 **Tu porcentaje de llamadas fuera de horario:** _____% (el promedio de la industria para contratistas es 30-40%)
 
@@ -666,9 +666,9 @@ Si estas en Texas, California, Florida, Arizona, Nevada, Nuevo Mexico o la mayor
 
 **Rosie AI** opera principalmente en ingles. Los clientes hispanohablantes que llaman reciben una experiencia en ingles. Algunos la navegan. Muchos no. Cuelgan y llaman a alguien que hable su idioma.
 
-**Maria de Capta** es nativamente bilingue. Maneja llamadas en espanol con la misma profundidad, calidad y conocimiento del oficio que las de ingles. Agendamiento, confirmaciones SMS, deteccion de emergencias — todo funciona en ambos idiomas.
+**La recepcionista AI de Capta** es nativamente bilingue. Maneja llamadas en espanol con la misma profundidad, calidad y conocimiento del oficio que las de ingles. Agendamiento, confirmaciones SMS, deteccion de emergencias — todo funciona en ambos idiomas.
 
-Para los contratistas hispanos y latinos: ya sabes esto intuitivamente. Tus clientes que hablan espanol no solo prefieren comunicarse en su idioma — necesitan explicar problemas tecnicos (una fuga, un cortocircuito, un calentador que no enciende) en el idioma donde se sienten seguros. Maria entiende eso porque fue construida con esa realidad en mente.
+Para los contratistas hispanos y latinos: ya sabes esto intuitivamente. Tus clientes que hablan espanol no solo prefieren comunicarse en su idioma — necesitan explicar problemas tecnicos (una fuga, un cortocircuito, un calentador que no enciende) en el idioma donde se sienten seguros. Tu recepcionista entiende eso porque fue construida con esa realidad en mente.
 
 Digamos que estas en un mercado donde 8 llamadas al mes llegan en espanol:
 
@@ -689,7 +689,7 @@ Si eres plomero, tecnico HVAC o electricista, la respuesta probablemente es "var
 
 **Rosie AI** trata las llamadas de emergencia igual que las rutinarias. Toma un mensaje. No hay deteccion, no hay escalamiento, no hay transferencia en vivo. El mensaje se queda en tu bandeja junto con "necesito cotizacion para remodelar un bano" hasta que lo revises.
 
-**Capta** detecta emergencias automaticamente. Maria identifica lenguaje y escenarios urgentes, marca la llamada como prioridad, te envia una alerta inmediata y ofrece transferir al cliente en vivo a tu telefono.
+**Capta** detecta emergencias automaticamente. Ella identifica lenguaje y escenarios urgentes, marca la llamada como prioridad, te envia una alerta inmediata y ofrece transferir al cliente en vivo a tu telefono.
 
 Si pierdes 1 llamada de emergencia al mes porque fue tratada como un mensaje rutinario y no llegaste a tiempo, y esa emergencia vale $1,000 promedio, es $1,000 mas en costos invisibles.
 
@@ -744,7 +744,7 @@ Si el primer numero es mayor que $497, ya tienes tu respuesta.
 
 ---
 
-¿Terminaste con la matematica? Si Capta es la opcion correcta, la garantia de devolucion de 30 dias significa que puedes verificar la calculadora con tus numeros reales. La configuracion toma 5 minutos. Maria empieza a contestar de inmediato — en ingles y espanol. [Obten Capta →](https://captahq.com)
+¿Terminaste con la matematica? Si Capta es la opcion correcta, la garantia de devolucion de 30 dias significa que puedes verificar la calculadora con tus numeros reales. La configuracion toma 5 minutos. tu recepcionista empieza a contestar de inmediato — en ingles y espanol. [Obten Capta →](https://captahq.com)
 `,
   },
 
@@ -796,13 +796,13 @@ When ABC Heating's owner checks his Nexa messages at 6:30 AM, he sees Sarah's ca
 
 ### What happens on Capta:
 
-Sarah calls DEF Heating & Cooling. The phone rings once. Maria answers immediately.
+Sarah calls DEF Heating & Cooling. The phone rings once. Capta's AI receptionist answers immediately.
 
-"Hi, you've reached DEF Heating and Cooling. This is Maria. How can I help you?"
+"Hi, you've reached DEF Heating and Cooling. How can I help you?"
 
 Sarah explains her situation — furnace stopped, 19 degrees, two young children.
 
-Maria's emergency detection activates. She recognizes this as a priority situation based on multiple signals: heating failure, sub-freezing temperatures, vulnerable occupants.
+The AI's emergency detection activates. She recognizes this as a priority situation based on multiple signals: heating failure, sub-freezing temperatures, vulnerable occupants.
 
 "I understand this is urgent, Sarah. Let me help you right away. First — for safety — is there any unusual smell coming from the furnace, like a gas or burning odor?"
 
@@ -812,13 +812,13 @@ Sarah says no.
 
 Sarah says transfer me.
 
-Maria transfers the call to DEF's emergency line. The owner's phone rings at 11:49 PM — two minutes after Sarah's initial call. He answers, confirms he can be there in 40 minutes, and Maria sends Sarah an SMS confirmation: "DEF Heating & Cooling — Emergency visit confirmed. Technician en route. Estimated arrival: 12:30 AM."
+The AI receptionist transfers the call to DEF's emergency line. The owner's phone rings at 11:49 PM — two minutes after Sarah's initial call. He answers, confirms he can be there in 40 minutes, and Capta sends Sarah an SMS confirmation: "DEF Heating & Cooling — Emergency visit confirmed. Technician en route. Estimated arrival: 12:30 AM."
 
 The owner arrives, diagnoses a failed ignitor, replaces it. Total bill: $850. Sarah leaves a 5-star review mentioning that "someone answered immediately even at midnight."
 
 **Cost to the contractor:** $0 lost revenue. $850 earned. A new loyal customer.
 
-**What went right:** Maria didn't just take a message. She assessed the urgency, asked a safety question, offered immediate escalation, transferred the call live, and sent an SMS confirmation — all in under 2 minutes. The customer never had to wait, wonder, or call someone else.
+**What went right:** She didn't just take a message. She assessed the urgency, asked a safety question, offered immediate escalation, transferred the call live, and sent an SMS confirmation — all in under 2 minutes. The customer never had to wait, wonder, or call someone else.
 
 ### The gap:
 
@@ -855,15 +855,15 @@ When GHI's owner calls back 3 hours later, Roberto doesn't answer — he's picki
 
 ### What happens on Capta:
 
-Roberto calls JKL Plumbing. Maria answers.
+Roberto calls JKL Plumbing. Capta's receptionist answers.
 
-"Buenas tardes, ha llamado a JKL Plumbing. Soy Maria. ¿En que le puedo ayudar?"
+"Buenas tardes, ha llamado a JKL Plumbing. ¿En que le puedo ayudar?"
 
-Maria detected that Roberto's phone is set to Spanish-language preferences, but more importantly, she's ready for either language.
+She detected that Roberto's phone is set to Spanish-language preferences, but more importantly, she's ready for either language.
 
 Roberto switches to Spanish immediately. The relief is audible. "Si, mire, tengo un problema con el drenaje de la cocina. Lleva tres dias yendo lento y ahora ya no baja nada. El agua esta parada en el lavabo."
 
-Maria responds in fluent, natural Spanish. "Entendido, Roberto. ¿Ha intentado destaparlo con algo — desatascador, liquido, serpiente de plomero?"
+She responds in fluent, natural Spanish. "Entendido, Roberto. ¿Ha intentado destaparlo con algo — desatascador, liquido, serpiente de plomero?"
 
 "Si, use un desatascador y una serpiente que compre en Home Depot, pero no sirvio de nada."
 
@@ -873,11 +873,11 @@ Maria responds in fluent, natural Spanish. "Entendido, Roberto. ¿Ha intentado d
 
 "Si es la segunda vez en poco tiempo, puede que sea un bloqueo mas profundo en la linea principal. Nuestro tecnico puede hacer una inspeccion con camara para ver exactamente donde esta el problema. ¿Le gustaria agendar una cita?"
 
-Roberto says yes. Maria checks availability, offers a Thursday morning slot, and books it. She sends Roberto an SMS confirmation — in Spanish: "JKL Plumbing — Cita confirmada: Jueves 10:00 AM. Inspeccion de drenaje de cocina. Direccion: [his address]. Llame al (830) 521-7133 si necesita cambiar."
+Roberto says yes. She checks availability, offers a Thursday morning slot, and books it. She sends Roberto an SMS confirmation — in Spanish: "JKL Plumbing — Cita confirmada: Jueves 10:00 AM. Inspeccion de drenaje de cocina. Direccion: [his address]. Llame al (830) 521-7133 si necesita cambiar."
 
 **Cost to the contractor:** $0 lost revenue. $350+ job captured (drain clearing plus potential camera inspection upsell). A new long-term customer whose entire household will call JKL for future plumbing needs.
 
-**What went right:** Maria didn't just translate — she had a real conversation. She asked diagnostic questions that revealed the recurring nature of the problem (which means the plumber can arrive prepared with the right equipment). She suggested a camera inspection based on the symptoms. And she did it all in the language where Roberto was comfortable, which meant he shared details he wouldn't have shared in English.
+**What went right:** She didn't just translate — she had a real conversation. She asked diagnostic questions that revealed the recurring nature of the problem (which means the plumber can arrive prepared with the right equipment). She suggested a camera inspection based on the symptoms. And she did it all in the language where Roberto was comfortable, which meant he shared details he wouldn't have shared in English.
 
 ### The gap:
 
@@ -926,13 +926,13 @@ By the end of the 5-day heat wave:
 
 PQR Air Conditioning uses Capta. Their monthly bill is $497 regardless of call volume.
 
-Day 1: 48 calls come in. Maria answers every single one on the first ring. There are no hold times. There is no queue. AI doesn't get overwhelmed by volume the way human operators do.
+Day 1: 48 calls come in. She answers every single one on the first ring. There are no hold times. There is no queue. AI doesn't get overwhelmed by volume the way human operators do.
 
-For each call, Maria has a full conversation. She asks what's happening with the AC, when it stopped working, whether anyone in the home is vulnerable to the heat, and what type of system they have. Based on the answers, she either books a standard service appointment or flags it as emergency/priority.
+For each call, she has a full conversation. She asks what's happening with the AC, when it stopped working, whether anyone in the home is vulnerable to the heat, and what type of system they have. Based on the answers, she either books a standard service appointment or flags it as emergency/priority.
 
-Maria books 31 appointments on Day 1. She sends each customer an SMS confirmation immediately. The customers who got a confirmed appointment don't call other companies. They're locked in.
+She books 31 appointments on Day 1. She sends each customer an SMS confirmation immediately. The customers who got a confirmed appointment don't call other companies. They're locked in.
 
-For the 17 calls that couldn't be booked (PQR's schedule is full for the day), Maria takes detailed information, explains the current wait time honestly, and offers the next available slot. She sends those customers an SMS with their booking details too.
+For the 17 calls that couldn't be booked (PQR's schedule is full for the day), she takes detailed information, explains the current wait time honestly, and offers the next available slot. She sends those customers an SMS with their booking details too.
 
 **Revenue captured on Day 1:** 31 confirmed bookings at $350 average = $10,850. Plus 14 of the 17 waitlisted callers book for the following days (the other 3 call competitors). Additional revenue from waitlist: $4,900.
 
@@ -1028,9 +1028,9 @@ The scenarios above aren't hypothetical. They play out in contractor businesses 
 
 ---
 
-Maria answers every call on the first ring — in English and Spanish. She books appointments, sends SMS confirmations, and detects emergencies automatically. No hold times. No callbacks. No jobs lost to slow response.
+She answers every call on the first ring — in English and Spanish. She books appointments, sends SMS confirmations, and detects emergencies automatically. No hold times. No callbacks. No jobs lost to slow response.
 
-**[Get Capta](https://captahq.com)** with a 30-day money-back guarantee. Setup takes 5 minutes, and Maria handles your next call. Your customers are calling right now — make sure someone picks up.`,
+**[Get Capta](https://captahq.com)** with a 30-day money-back guarantee. Setup takes 5 minutes, and She handles your next call. Your customers are calling right now — make sure someone picks up.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1079,13 +1079,13 @@ Cuando el dueno de Climatizacion ABC revisa sus mensajes de Nexa a las 6:30 AM, 
 
 ### Que pasa con Capta:
 
-La Sra. Ramirez llama a Climatizacion DEF. El telefono suena una vez. Maria contesta inmediatamente.
+La Sra. Ramirez llama a Climatizacion DEF. El telefono suena una vez. Ella contesta inmediatamente.
 
-"Buenas noches, ha llamado a Climatizacion DEF. Soy Maria. ¿En que le puedo ayudar?"
+"Buenas noches, ha llamado a Climatizacion DEF. ¿En que le puedo ayudar?"
 
 La Sra. Ramirez explica — la calefaccion paro, hace mucho frio, tiene dos ninos pequenos.
 
-La deteccion de emergencias de Maria se activa. Reconoce esto como situacion prioritaria: falla de calefaccion, temperaturas bajo cero, ocupantes vulnerables.
+La deteccion de emergencias de Capta se activa. Reconoce esto como situacion prioritaria: falla de calefaccion, temperaturas bajo cero, ocupantes vulnerables.
 
 "Entiendo que esto es urgente, senora Ramirez. Dejeme ayudarle de inmediato. Primero — por seguridad — ¿percibe algun olor inusual del equipo de calefaccion, como gas o algo quemandose?"
 
@@ -1095,7 +1095,7 @@ La Sra. Ramirez dice que no.
 
 La Sra. Ramirez dice que la transfiera.
 
-Maria transfiere la llamada. El celular del tecnico suena a las 11:49 PM — dos minutos despues de la llamada inicial. Confirma que puede estar ahi en 40 minutos. Maria envia un SMS de confirmacion a la Sra. Ramirez: "Climatizacion DEF — Visita de emergencia confirmada. Tecnico en camino. Llegada estimada: 12:30 AM."
+Ella transfiere la llamada. El celular del tecnico suena a las 11:49 PM — dos minutos despues de la llamada inicial. Confirma que puede estar ahi en 40 minutos. Capta envia un SMS de confirmacion a la Sra. Ramirez: "Climatizacion DEF — Visita de emergencia confirmada. Tecnico en camino. Llegada estimada: 12:30 AM."
 
 El tecnico llega, diagnostica un ignitor fallido, lo reemplaza. Factura total: $850. La Sra. Ramirez deja una resena de 5 estrellas mencionando que "alguien contesto inmediatamente incluso a medianoche."
 
@@ -1135,15 +1135,15 @@ Cuando el dueno de GHI le devuelve la llamada 3 horas despues, Roberto no contes
 
 ### Que pasa con Capta:
 
-Roberto llama a Plomeria JKL. Maria contesta.
+Roberto llama a Plomeria JKL. Ella contesta.
 
-"Buenas tardes, ha llamado a Plomeria JKL. Soy Maria. ¿En que le puedo ayudar?"
+"Buenas tardes, ha llamado a Plomeria JKL. ¿En que le puedo ayudar?"
 
 Roberto cambia a espanol inmediatamente. El alivio es palpable.
 
 "Si, mire, tengo un problema con el drenaje de la cocina. Lleva tres dias yendo lento y ahora ya no baja nada. El agua esta parada en el lavabo."
 
-Maria responde en espanol fluido y natural. "Entendido, Roberto. ¿Ha intentado destaparlo con algo — desatascador, liquido, serpiente de plomero?"
+Ella responde en espanol fluido y natural. "Entendido, Roberto. ¿Ha intentado destaparlo con algo — desatascador, liquido, serpiente de plomero?"
 
 "Si, use un desatascador y una serpiente que compre en Home Depot, pero no sirvio de nada."
 
@@ -1153,13 +1153,13 @@ Maria responde en espanol fluido y natural. "Entendido, Roberto. ¿Ha intentado 
 
 "Si es la segunda vez en poco tiempo, puede que sea un bloqueo mas profundo en la linea principal. Nuestro tecnico puede hacer una inspeccion con camara para ver exactamente donde esta el problema. ¿Le gustaria agendar una cita?"
 
-Roberto dice que si. Maria revisa disponibilidad, ofrece un horario el jueves en la manana y lo reserva. Envia un SMS de confirmacion — en espanol: "Plomeria JKL — Cita confirmada: Jueves 10:00 AM. Inspeccion de drenaje de cocina."
+Roberto dice que si. Ella revisa disponibilidad, ofrece un horario el jueves en la manana y lo reserva. Envia un SMS de confirmacion — en espanol: "Plomeria JKL — Cita confirmada: Jueves 10:00 AM. Inspeccion de drenaje de cocina."
 
 **Costo para el contratista:** $0 perdido. Trabajo de $350+ capturado. Nuevo cliente a largo plazo.
 
-**Que salio bien:** Maria no solo tradujo — tuvo una conversacion real. Hizo preguntas de diagnostico que revelaron la naturaleza recurrente del problema. Sugirio una inspeccion con camara. Y lo hizo todo en el idioma donde Roberto se sentia comodo, lo cual significo que compartio detalles que no habria compartido en ingles.
+**Que salio bien:** Ella no solo tradujo — tuvo una conversacion real. Hizo preguntas de diagnostico que revelaron la naturaleza recurrente del problema. Sugirio una inspeccion con camara. Y lo hizo todo en el idioma donde Roberto se sentia comodo, lo cual significo que compartio detalles que no habria compartido en ingles.
 
-Este escenario es especialmente relevante para los contratistas hispanos y latinos que leen esto. Ustedes saben exactamente como se siente Roberto. Saben que la diferencia entre "kitchen drain clogged" y la conversacion completa que tuvo con Maria es la diferencia entre un trabajo estandar y un diagnostico correcto. Maria fue construida para tener exactamente esa conversacion.
+Este escenario es especialmente relevante para los contratistas hispanos y latinos que leen esto. Ustedes saben exactamente como se siente Roberto. Saben que la diferencia entre "kitchen drain clogged" y la conversacion completa que tuvo con tu recepcionista es la diferencia entre un trabajo estandar y un diagnostico correcto. Capta fue construida para tener exactamente esa conversacion.
 
 ### La brecha:
 
@@ -1203,13 +1203,13 @@ Al final de los 5 dias de ola de calor:
 
 Climatizacion PQR usa Capta. Su factura mensual es $497 sin importar el volumen.
 
-Dia 1: 48 llamadas. Maria contesta cada una al primer timbre. No hay tiempos de espera. No hay cola. La IA no se satura con el volumen como los operadores humanos.
+Dia 1: 48 llamadas. Ella contesta cada una al primer timbre. No hay tiempos de espera. No hay cola. La IA no se satura con el volumen como los operadores humanos.
 
-Maria tiene una conversacion completa con cada cliente. Pregunta que pasa con el AC, cuando dejo de funcionar, si hay alguien vulnerable al calor en la casa, que tipo de sistema tienen.
+Ella tiene una conversacion completa con cada cliente. Pregunta que pasa con el AC, cuando dejo de funcionar, si hay alguien vulnerable al calor en la casa, que tipo de sistema tienen.
 
-Maria agenda 31 citas el Dia 1. Envia confirmacion por SMS a cada cliente inmediatamente. Los clientes con cita confirmada no llaman a otras empresas. Estan asegurados.
+Ella agenda 31 citas el Dia 1. Envia confirmacion por SMS a cada cliente inmediatamente. Los clientes con cita confirmada no llaman a otras empresas. Estan asegurados.
 
-Para las 17 llamadas que no pudieron agendarse (el horario de PQR esta lleno), Maria toma informacion detallada, explica el tiempo de espera honestamente y ofrece el siguiente horario disponible. Tambien les envia SMS con los detalles.
+Para las 17 llamadas que no pudieron agendarse (el horario de PQR esta lleno), ella toma informacion detallada, explica el tiempo de espera honestamente y ofrece el siguiente horario disponible. Tambien les envia SMS con los detalles.
 
 Al final de los 5 dias de ola de calor:
 - Total de llamadas: 243
@@ -1294,9 +1294,9 @@ Los escenarios de arriba no son hipoteticos. Se repiten en negocios de contratis
 
 ---
 
-Maria contesta cada llamada al primer timbre — en ingles y espanol. Agenda citas, envia confirmaciones por SMS y detecta emergencias automaticamente. Sin tiempos de espera. Sin devoluciones de llamada. Sin trabajos perdidos.
+Ella contesta cada llamada al primer timbre — en ingles y espanol. Agenda citas, envia confirmaciones por SMS y detecta emergencias automaticamente. Sin tiempos de espera. Sin devoluciones de llamada. Sin trabajos perdidos.
 
-**[Obten Capta](https://captahq.com)** con garantia de devolucion de 30 dias. La configuracion toma 5 minutos y Maria atiende tu proxima llamada. Tus clientes estan llamando ahora mismo — asegurate de que alguien conteste.`,
+**[Obten Capta](https://captahq.com)** con garantia de devolucion de 30 dias. La configuracion toma 5 minutos y tu recepcionista atiende tu proxima llamada. Tus clientes estan llamando ahora mismo — asegurate de que alguien conteste.`,
   },
 ];
 

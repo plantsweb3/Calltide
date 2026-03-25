@@ -317,7 +317,7 @@ The fix isn't complicated. It's just urgent.
 
 ## Ready to Stop Missing Calls?
 
-Capta gives you Maria—an AI receptionist who speaks English and Spanish, answers 24/7, and books appointments without you lifting a finger.
+Capta gives you an AI receptionist who speaks English and Spanish, answers 24/7, and books appointments without you lifting a finger.
 
 No more missed calls. No more voicemail tag. No more customers calling your competitor instead.
 
@@ -387,7 +387,7 @@ But here's the catch: you're mostly getting a 9-to-5 service, even if you're wor
 
 ## The Capta Alternative: $497/Month
 
-Capta is an AI receptionist named Maria. She works 24/7 in English and Spanish.
+Capta is an AI receptionist built by Capta. She works 24/7 in English and Spanish.
 
 **What you pay:** $497/month = $5,964/year.
 
@@ -395,11 +395,11 @@ Capta is an AI receptionist named Maria. She works 24/7 in English and Spanish.
 
 - **24/7 availability:** Calls answered at 2 AM, on Sunday, during holidays—always.
 - **Bilingual:** English and Spanish. No extra fee, no hiring a second person.
-- **Instant start:** No training period. Maria works from day one.
+- **Instant start:** No training period. She works from day one.
 - **Appointment booking:** Customers schedule themselves. You get a real-time dashboard and SMS alerts.
 - **No sick days, no vacation:** 100% uptime unless there's a system outage (rare).
 - **Call transcription:** Every call is recorded and transcribed so you can review what was promised or discussed.
-- **Emergency detection:** Maria identifies urgent situations and alerts you immediately.
+- **Emergency detection:** She identifies urgent situations and alerts you immediately.
 - **CRM integration:** Customer info syncs with your system automatically.
 - **30-day money-back guarantee:** Test it risk-free. If it's not right, you get your money back.
 
@@ -444,7 +444,7 @@ That's nearly $40,000 you could reinvest in your team, your services, or your bu
 
 ## Want to See for Yourself?
 
-You can [get Capta today](https://captahq.com) with a 30-day money-back guarantee. See how Maria handles your calls, manages your schedule, and frees up your time.
+You can [get Capta today](https://captahq.com) with a 30-day money-back guarantee. See how She handles your calls, manages your schedule, and frees up your time.
 
 If it's not right for you, get a full refund within 30 days. No questions asked.
 
@@ -454,7 +454,7 @@ For more on how AI receptionists work for home service businesses, check out our
 
 Stop choosing between missed calls and hiring costs. Get started at [captahq.com](https://captahq.com), or call us at (830) 521-7133 to talk to our team.
 
-**Maria's waiting to answer your phone.**`,
+**your receptionist's waiting to answer your phone.**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -530,21 +530,21 @@ Capta was built in Texas, by people who understand Texas home service businesses
 
 Here's what makes Capta different for Bexar County plumbers:
 
-**Maria speaks natural Spanish.** Not the Duolingo version. Not phonetically-perfect but emotionally flat. Maria has natural conversational tone in both English and Spanish. She handles accent variations and understands regional Spanish. San Antonio customers recognize her as human-level natural, which builds trust immediately.
+**She speaks natural Spanish.** Not the Duolingo version. Not phonetically-perfect but emotionally flat. She has natural conversational tone in both English and Spanish. She handles accent variations and understands regional Spanish. San Antonio customers recognize her as human-level natural, which builds trust immediately.
 
-**24/7 answering with no exceptions.** 2 AM on Saturday? Maria answers. Christmas morning? Maria answers. Summer heat emergency at midnight? She's already there. Your customers never get voicemail unless you want them to.
+**24/7 answering with no exceptions.** 2 AM on Saturday? She answers. Christmas morning? She answers. Summer heat emergency at midnight? She's already there. Your customers never get voicemail unless you want them to.
 
-**Appointment booking with zero friction.** Maria confirms availability on your calendar, books the appointment, sends SMS to the customer, and alerts you to priority calls. No callback needed. The appointment is booked.
+**Appointment booking with zero friction.** She confirms availability on your calendar, books the appointment, sends SMS to the customer, and alerts you to priority calls. No callback needed. The appointment is booked.
 
 **Built for Texas service businesses.** Capta integrates with the CRM and scheduling tools that San Antonio plumbers actually use. It's not a one-size-fits-all generic service. It's purpose-built for HVAC, plumbing, electrical, and other home service trades operating across Bexar County and Texas.
 
-**Emergency detection that matters.** If a customer mentions a burst pipe, gas smell, or immediate water damage, Maria flags it as priority and alerts you right away. You're not finding out about emergencies when you check your voicemail at lunch.
+**Emergency detection that matters.** If a customer mentions a burst pipe, gas smell, or immediate water damage, She flags it as priority and alerts you right away. You're not finding out about emergencies when you check your voicemail at lunch.
 
 **SMS alerts and transcription.** Every call is transcribed. Every booking generates an instant SMS alert to the customer. Your team gets a summary in your CRM so everyone has context when they arrive at the job site.
 
 ## Getting Started with Capta in San Antonio
 
-Setting up Capta for your San Antonio plumbing business is straightforward. You provide a local San Antonio number (or use your existing one), Capta routes inbound calls to Maria, she answers in the customer's language, books appointments, and you handle the rest.
+Setting up Capta for your San Antonio plumbing business is straightforward. You provide a local San Antonio number (or use your existing one), Capta routes inbound calls to your receptionist, she answers in the customer's language, books appointments, and you handle the rest.
 
 For San Antonio plumbers, the ROI is simple: every additional customer you capture pays for the service. With 64% of your potential customers speaking Spanish natively, and 24/7 call coverage capturing jobs you're currently missing, most SA plumbers break even within the first month.
 
@@ -560,7 +560,7 @@ For San Antonio specifically, the choice is clear. You need 24/7 answering, bili
 
 ## Ready to Start?
 
-Stop losing calls. Stop managing overflow yourself. Let Maria handle your phones while you run your plumbing business.
+Stop losing calls. Stop managing overflow yourself. Let Capta handle your phones while you run your plumbing business.
 
 **[Get Capta](https://captahq.com)** — $497/month for unlimited calls, 24/7 Spanish+English service, and appointment booking. No setup fees. Questions? Call us at (830) 521-7133 or visit captahq.com today.`,
   },
@@ -644,13 +644,13 @@ But not all solutions are created equal. A traditional bilingual answering servi
 
 ## How Capta Solves This Problem
 
-Capta is a bilingual AI receptionist named Maria. She answers your calls 24/7 in both English and Spanish.
+Capta is a bilingual AI receptionist built by Capta. She answers your calls 24/7 in both English and Spanish.
 
 Here's what actually happens when a Spanish-speaking customer calls:
 
-1. **Maria detects the language automatically.** If they start speaking Spanish, Maria responds in Spanish. No menu. No confusion. Just natural conversation.
-2. **She has a real conversation.** Maria asks about their project, their timeline, and their contact information — all in Spanish.
-3. **She books the appointment.** Maria adds it to your calendar instantly, in your time zone, with all the details.
+1. **She detects the language automatically.** If they start speaking Spanish, She responds in Spanish. No menu. No confusion. Just natural conversation.
+2. **She has a real conversation.** She asks about their project, their timeline, and their contact information — all in Spanish.
+3. **She books the appointment.** She adds it to your calendar instantly, in your time zone, with all the details.
 4. **She sends a confirmation.** The customer receives an SMS in Spanish with the appointment date, time, and your address.
 5. **You get the lead.** No voicemails disappear. No customers fall through the cracks. Just qualified appointments on your schedule.
 
@@ -697,7 +697,7 @@ Ready to stop losing calls to language barriers?
     language: "es",
     category: "pillar",
     metaTitle: "Recepcionista Virtual IA para Contratistas - Guía 2026",
-    metaDescription: "Descubre cómo funcionan las recepcionistas de IA como María de Capta. Guía completa para plomeros, electricistas y contratistas en español.",
+    metaDescription: "Descubre cómo funcionan las recepcionistas de IA como la recepcionista de Capta. Guía completa para plomeros, electricistas y contratistas en español.",
     targetKeyword: "recepcionista virtual para contratistas",
     relatedPostSlugs: ["llamamos-200-plomeros-texas-cuantos-contestaron", "capta-vs-contratar-recepcionista-desglose-costos"],
     markdown: `# Guía Completa: Recepcionistas de IA para Negocios de Servicios del Hogar
@@ -905,11 +905,11 @@ Si eres plomero, electricista o contratista en Texas, tienes dos opciones:
 
 ## ¿Cuál Es la Solución?
 
-Una recepcionista de IA como María (de Capta) contesta CADA llamada. No importa si estás en el terreno, comiendo, o durmiendo.
+Una recepcionista de IA como la de Capta contesta CADA llamada. No importa si estás en el terreno, comiendo, o durmiendo.
 
-- Si el cliente habla inglés, María responde en inglés.
-- Si el cliente habla español, María responde en español.
-- María pregunta qué necesita, agenda la cita, y te avisa por SMS.
+- Si el cliente habla inglés, ella responde en inglés.
+- Si el cliente habla español, ella responde en español.
+- ella pregunta qué necesita, agenda la cita, y te avisa por SMS.
 - Cero llamadas perdidas.
 
 El costo: $497/mes. El retorno: recuperar esa 1 llamada perdida que se convierte en trabajo. A $150 por trabajo, recuperas tu inversión en 4 días.
@@ -991,7 +991,7 @@ Si contratas a una persona física para que conteste teléfono 9am-5pm:
 | **Agendamiento de Citas** | Manual (posibles errores) | Automático en tu panel de Capta |
 | **SMS a Clientes** | No incluido | Automático |
 | **Detección de Emergencias** | Posiblemente olvida | Automático + SMS de alerta |
-| **Rotación de Personal** | Cada 1-2 años = más costo | Nunca. María siempre es María. |
+| **Rotación de Personal** | Cada 1-2 años = más costo | Nunca. Tu recepcionista siempre está lista. |
 | **Ahorro en 5 años** | $0 (línea base) | $195,000-240,000 |
 
 ## Espera, ¿Y Si Necesito Más Cobertura?
@@ -999,15 +999,15 @@ Si contratas a una persona física para que conteste teléfono 9am-5pm:
 ¿Qué pasa si necesitas que alguien conteste llamadas de 7am a 8pm? ¿Todos los días?
 
 - **Recepcionista humana:** Necesitas 2 personas. Ahora estamos hablando de $90,000-114,000/año. O un horario ridículo para 1 persona.
-- **Capta:** Sigue siendo $497/mes. María trabaja todo el tiempo.
+- **Capta:** Sigue siendo $497/mes. ella trabaja todo el tiempo.
 
 ## ¿Pero Qué Si Necesito Contacto Humano?
 
 Buena pregunta. Aquí está la verdad:
 
-- **El 80% de las llamadas solo necesitan agendar cita.** María lo hace perfectamente.
-- **El 15% son preguntas sobre servicios.** María también maneja eso.
-- **El 5% realmente necesitan hablar contigo.** María transfiere la llamada a tu celular en 2 segundos.
+- **El 80% de las llamadas solo necesitan agendar cita.** Ella lo hace perfectamente.
+- **El 15% son preguntas sobre servicios.** Ella también maneja eso.
+- **El 5% realmente necesitan hablar contigo.** ella transfiere la llamada a tu celular en 2 segundos.
 
 Entonces, el cliente siente que está hablando con "recepción" porque ES recepción. Pero sin pagar $50K/año.
 
@@ -1083,11 +1083,11 @@ Y si tu recepcionista (o tu teléfono) solo habla inglés, estás perdiendo dine
 
 Capta está basada en Texas. Entiende San Antonio. Entiende que necesitas bilingüe. Entiende que muchos de tus clientes no van a dejar mensaje en voicemail en inglés.
 
-María—la recepcionista de IA—fue entrenada específicamente para este mercado. Habla español de verdad. No es una traducción de Google. Es español natural, con jerga local. Entiende cuando alguien dice "tubería" vs "tubo." Sabe qué es una "fugas de agua" y por qué es urgente.
+La recepcionista de IA de Capta fue entrenada específicamente para este mercado. Habla español de verdad. No es una traducción de Google. Es español natural, con jerga local. Entiende cuando alguien dice "tubería" vs "tubo." Sabe qué es una "fugas de agua" y por qué es urgente.
 
 ## Los Desafíos Reales del Plomero Sanantónico
 
-San Antonio tiene clima cálido. Aire acondicionado es crítico. Agua también. Cuando alguien llama con "sin agua fría en la tarde," saben que es urgencia. María lo entiende. Prioriza correctamente.
+San Antonio tiene clima cálido. Aire acondicionado es crítico. Agua también. Cuando alguien llama con "sin agua fría en la tarde," saben que es urgencia. Ella lo entiende. Prioriza correctamente.
 
 También, San Antonio tiene mucha competencia de contratistas. El cliente que no puede comunicarse contigo (en su idioma) simplemente llama al siguiente. No hay lealtad. Solo hay servicio.
 
@@ -1121,17 +1121,17 @@ Capta cuesta $497/mes = $5,964/año. Recuperas tu inversión en 30 días. El res
 
 **2. Competencia:** San Antonio tiene muchos contratistas. El diferenciador es servicio. Si contestas rápido en español, ganas.
 
-**3. Turismo:** San Antonio atrae turismo. Algunas llamadas son de fuera de la ciudad. María puede manejar "I'm staying on the Riverwalk" igual de bien que "Estoy cerca de la Misión."
+**3. Turismo:** San Antonio atrae turismo. Algunas llamadas son de fuera de la ciudad. Ella puede manejar "I'm staying on the Riverwalk" igual de bien que "Estoy cerca de la Misión."
 
 **4. Construcción de viviendas:** San Antonio crece. Nuevas casas, nuevos residentes, nuevas demandas de servicios. Pero también, más competencia. Necesitas cada llamada.
 
 ## ¿Qué Incluye Capta Para Ti?
 
-- **Respuesta 24/7:** María contesta a las 2am si es necesario.
+- **Respuesta 24/7:** Ella contesta a las 2am si es necesario.
 - **Bilingüe perfecto:** Inglés natural, español natural. Sin acento robótico.
 - **Agendamiento:** Citas automáticas en tu panel de Capta.
 - **SMS:** Confirmación de cita al cliente en su idioma. (Los textos funcionan mejor que voicemail.)
-- **Detección de emergencias:** "Sin agua caliente en la casa" → María te avisa por SMS inmediatamente.
+- **Detección de emergencias:** "Sin agua caliente en la casa" → Ella te avisa por SMS inmediatamente.
 - **Transcripciones:** Sabes exactamente qué dijo el cliente.
 - **CRM integrado:** Todo en un lugar.
 
@@ -1152,21 +1152,21 @@ San Antonio es el caso de uso perfecto para Capta.
 Hemos hablado con decenas de plomeros en San Antonio usando Capta. Lo que dicen:
 
 - **"Finalizado más citas en español. Antes esas llamadas desaparecían."**
-- **"María suena como una recepcionista real. Los clientes no saben que es IA."**
-- **"Si estoy en trabajo, María contesta. Cero llamadas perdidas."**
+- **"Ella suena como una recepcionista real. Los clientes no saben que es IA."**
+- **"Si estoy en trabajo, Ella contesta. Cero llamadas perdidas."**
 - **"El SMS de confirmación reduce los no-shows. La gente sabe que la cita está anotada."**
 
 Estos son números reales de negocios reales en San Antonio.
 
 ## ¿Cómo Empezar?
 
-$497/mes. Sin contrato a largo plazo. Garantía de devolución de 30 días. Simplemente da tu número de teléfono comercial a Capta, y María comenzará a contestar.
+$497/mes. Sin contrato a largo plazo. Garantía de devolución de 30 días. Simplemente da tu número de teléfono comercial a Capta, y tu recepcionista comenzará a contestar.
 
 Desde el primer día:
 
 - Mira cuántas llamadas recibes realmente (probablemente más de lo que pensabas).
 - Observa cuántos hispanohablantes.
-- Observa cómo María los maneja.
+- Observa cómo Ella los maneja.
 - Calcula cuánto dinero hace esto por ti.
 
 Si no funciona en 30 días, te devolvemos tu dinero. Sin preguntas.
@@ -1276,32 +1276,32 @@ Resultado: pierdes 8 llamadas potenciales al día. Si 1 de cada 5 se convierte e
 
 $60,000. Todos los años. Dinero dejado en la mesa.
 
-## La Solución: María Contesta En Español Automáticamente
+## La Solución: Tu Recepcionista Contesta En Español Automáticamente
 
 Aquí está la magia de Capta:
 
 **La llamada entra.**
 
-**María escucha.** Analiza el idioma de las primeras palabras (tan rápido que el cliente no nota).
+**Ella escucha.** Analiza el idioma de las primeras palabras (tan rápido que el cliente no nota).
 
-**María responde en español.** Naturalmente. No robótico. Con personalidad.
+**ella responde en español.** Naturalmente. No robótico. Con personalidad.
 
-> "Hola, me llamo María. Gracias por llamar a [tu negocio]. ¿En qué puedo ayudarte hoy?"
+> "Hola, gracias por llamar a [tu negocio]. ¿En qué puedo ayudarte hoy?"
 
 El cliente piensa: "Oh, hablan español. Bien."
 
 Luego:
 
-- María entiende el problema
-- María pregunta los detalles
-- María agenda la cita automáticamente
-- María envía SMS de confirmación EN ESPAÑOL
+- ella entiende el problema
+- ella pregunta los detalles
+- ella agenda la cita automáticamente
+- Ella envía SMS de confirmación EN ESPAÑOL
 
 Cero ambigüedad. Cero incertidumbre. El cliente SABE que su llamada fue escuchada.
 
-## ¿Pero María Es Una Máquina?
+## ¿Pero Es Una Máquina?
 
-Sí. Pero no suena como una máquina. María tiene:
+Sí. Pero no suena como una máquina. Ella tiene:
 
 - Pausas naturales entre palabras
 - Variación de tono (no monótona)
@@ -1324,15 +1324,15 @@ Después de los primeros 5 segundos, el cliente olvida que es IA. Solo sabe que 
 **Con Capta:**
 
 - Cliente hispanohablante llama
-- Escucha: "Hola, me llamo María..."
+- Escucha: "Hola, gracias por llamar..."
 - Se siente cómodo (están hablando su idioma)
 - Explica el problema en español
-- María agenda cita, envía SMS
+- ella agenda cita, envía SMS
 - Resultado: GANAS el cliente
 
 ## Por Qué Esto Es Tan Importante Ahora
 
-En 2026, la tecnología de IA ha avanzado. María no suena como Siri de 2010. Suena como una persona real.
+En 2026, la tecnología de IA ha avanzado. Ella no suena como Siri de 2010. Suena como una persona real.
 
 Y en estados como Texas, Arizona, California—donde hay millones de hispanohablantes—la IA bilingüe no es un "nice to have." Es un MUST HAVE.
 
@@ -1346,7 +1346,7 @@ Comparado con $60,000/año que pierdes sin eso, es una no-brainer.
 
 ## El Siguiente Paso
 
-No te creas mi palabra. Prueba Capta durante 30 días con garantía de devolución. Mira cuántas llamadas recibes. Ve cuántos son hispanohablantes. Observa cómo María los maneja.
+No te creas mi palabra. Prueba Capta durante 30 días con garantía de devolución. Mira cuántas llamadas recibes. Ve cuántos son hispanohablantes. Observa cómo Ella los maneja.
 
 Si no funciona para ti, te devuelven tu dinero. Sin preguntas.
 
@@ -1377,7 +1377,7 @@ You're running a crew. You're at job sites. Someone calls—maybe a new customer
 
 But you can't be everywhere. So you get smart about it.
 
-This guide breaks down your real options for handling calls while you work: voicemail, traditional answering services, hiring a receptionist, and AI receptionists like Maria. We'll look at cost, reliability, and what actually works for plumbers, HVAC companies, electricians, and roofers.
+This guide breaks down your real options for handling calls while you work: voicemail, traditional answering services, hiring a receptionist, and AI receptionists like Capta. We'll look at cost, reliability, and what actually works for plumbers, HVAC companies, electricians, and roofers.
 
 ## The Problem: Missed Calls Cost Revenue
 
@@ -1450,13 +1450,13 @@ This is the old-school solution. You hire someone to sit at a desk, answer the p
 
 ---
 
-## Option 4: AI Receptionist (Maria) – $497/month
+## Option 4: AI Receptionist (Capta) – $497/month
 
 This is the new approach, and it's what Capta built.
 
-Maria is an AI receptionist that answers your calls 24/7. She greets customers by name, listens to their issue, and captures information automatically—no message-taking delays.
+She is an AI receptionist that answers your calls 24/7. She greets customers by name, listens to their issue, and captures information automatically—no message-taking delays.
 
-**What Maria does:**
+**What she does:**
 - Answers 24/7, even nights, weekends, holidays
 - Qualifies leads (asks what they need, what property type, whether it's urgent)
 - Sends you a summary via SMS or email
@@ -1474,7 +1474,7 @@ Maria is an AI receptionist that answers your calls 24/7. She greets customers b
 | Voicemail | $0 | $0 | N/A (you lose calls) |
 | Traditional Answering Service | $800–$1,200 | $9,600–$14,400 | $1–$3 per call |
 | In-House Receptionist | $3,000–$4,000 | $35,000–$50,000 | N/A (fixed salary) |
-| **Capta (Maria)** | **$497** | **$5,964** | **Unlimited** |
+| **Capta (Capta)** | **$497** | **$5,964** | **Unlimited** |
 
 **Advantages for your business:**
 - You get every lead. No voicemail tag-outs. No games with message-taking delays.
@@ -1486,7 +1486,7 @@ Maria is an AI receptionist that answers your calls 24/7. She greets customers b
 
 **Real example:** A plumbing company in Austin was missing 4–5 calls a day using voicemail. At one job per week from those missed calls, that's $20K+ in annual revenue loss. Capta costs $6K/year. The payback is one call per month.
 
-An HVAC company in San Antonio switched from a human receptionist ($45K/year) to Maria. They kept better hours (24/7 vs. 8–5), captured more leads, and saved $38K/year.
+An HVAC company in San Antonio switched from a human receptionist ($45K/year) to your receptionist. They kept better hours (24/7 vs. 8–5), captured more leads, and saved $38K/year.
 
 **Verdict:** Best value for growing operations. You get receptionist-quality lead capture at answering-service pricing, with no staff overhead.
 
@@ -1497,19 +1497,19 @@ An HVAC company in San Antonio switched from a human receptionist ($45K/year) to
 Ask yourself three questions:
 
 **1. How many calls do you get per day?**
-- Under 3: Voicemail might work, but you're bleeding money. Go to Maria.
-- 3–10: Traditional answering service or Maria. Maria is cheaper and smarter.
-- 10+: In-house receptionist or Maria. If you want to scale and stay lean, Maria.
+- Under 3: Voicemail might work, but you're bleeding money. Go to your receptionist.
+- 3–10: Traditional answering service or Capta. She is cheaper and smarter.
+- 10+: In-house receptionist or Capta. If you want to scale and stay lean, Capta.
 
 **2. Do you need coverage nights, weekends, and holidays?**
-- Yes: In-house receptionist (very expensive) or Maria (affordable, always on).
+- Yes: In-house receptionist (very expensive) or Capta (affordable, always on).
 - No: A traditional answering service works, but you'll lose some calls.
-- Maybe: Maria, because it's cheap enough to get 24/7 without the guilt of high overhead.
+- Maybe: Capta, because it's cheap enough to get 24/7 without the guilt of high overhead.
 
 **3. What's your annual revenue?**
-- Under $500K: Voicemail is costing you. Move to Maria ($6K/year, beats voicemail loss).
-- $500K–$2M: Maria is essential. You're losing leads without it.
-- $2M+: You might have an in-house receptionist, but Maria handles nights/weekends better and costs way less.
+- Under $500K: Voicemail is costing you. Move to your receptionist ($6K/year, beats voicemail loss).
+- $500K–$2M: She is essential. You're losing leads without it.
+- $2M+: You might have an in-house receptionist, but She handles nights/weekends better and costs way less.
 
 ---
 
@@ -1517,7 +1517,7 @@ Ask yourself three questions:
 
 Here's a fact: If your service area is any part of the US Southwest, South, or major metros, Spanish-speaking customers are a huge part of your revenue.
 
-Maria speaks Spanish and English fluently. You don't have to pick up to translate. The customer isn't held on an awkward bridge call. They get service in the language they use at home.
+She speaks Spanish and English fluently. You don't have to pick up to translate. The customer isn't held on an awkward bridge call. They get service in the language they use at home.
 
 That's not a nice-to-have. It's an advantage over 80% of your competitors who don't have it.
 
@@ -1529,19 +1529,19 @@ That's not a nice-to-have. It's an advantage over 80% of your competitors who do
 
 Here's where people get the math wrong.
 
-A traditional answering service might quote you $800/month. That sounds cheaper than Maria at $497/month... until you realize they charge per call on top. So it's really $800 + $1.50 × number of calls. If you get 100 calls a month, that's $950. If you get 200 calls a month, that's $1,100.
+A traditional answering service might quote you $800/month. That sounds cheaper than Capta at $497/month... until you realize they charge per call on top. So it's really $800 + $1.50 × number of calls. If you get 100 calls a month, that's $950. If you get 200 calls a month, that's $1,100.
 
 An in-house receptionist looks like $3,000/month salary, but it's actually $3,000 + taxes + benefits + office space + software. Real total: $4,000/month, or $48K/year.
 
-Maria is $497/month, no per-call fees, no hidden costs, no tax surprises.
+She is $497/month, no per-call fees, no hidden costs, no tax surprises.
 
 Over a year:
 - Voicemail + lost leads: You lose ~$15K–$30K in missed jobs (depending on size)
 - Traditional answering service (150 calls/month): ~$10,500
 - In-house receptionist: ~$48,000
-- Maria: $5,964
+- Capta: $5,964
 
-Maria wins unless you're so small you only get 5 calls a month and you're okay with missing most of them.
+Capta wins unless you're so small you only get 5 calls a month and you're okay with missing most of them.
 
 ---
 
@@ -1569,11 +1569,11 @@ You're busy. You're at job sites. You don't have time to miss calls or chase lea
 
 Voicemail doesn't cut it. A traditional answering service is slow and expensive when you add it all up. A full-time receptionist costs too much unless you're running 5+ trucks.
 
-Maria answers your phone like a real receptionist, works 24/7, speaks Spanish and English, integrates with your tools, and costs one-fifth what you'd pay for a human doing the same job.
+She answers your phone like a real receptionist, works 24/7, speaks Spanish and English, integrates with your tools, and costs one-fifth what you'd pay for a human doing the same job.
 
-**Ready to stop missing calls?** [Get Capta and try Maria free for 14 days.](https://captahq.com)
+**Ready to stop missing calls?** [Get Capta and try Capta free for 14 days.](https://captahq.com)
 
-Or call us: (830) 521-7133. Yeah, Maria will answer.
+Or call us: (830) 521-7133. Yeah, She will answer.
 
 ---
 
@@ -1691,9 +1691,9 @@ The good news? This is fixable.
 
 The best contractors aren't the ones who never get busy. They're the ones who never miss a call when they do. They've built systems—sometimes people, sometimes technology—that bridge the gap between "phone ringing" and "customer talking to a real human."
 
-That human doesn't have to be you. That human can be [Maria](https://captahq.com)—an AI receptionist who answers your phone 24/7, takes job details, follows up with estimates, and makes sure no customer falls through the cracks.
+That human doesn't have to be you. That human can be [Capta's AI receptionist](https://captahq.com)—an AI receptionist who answers your phone 24/7, takes job details, follows up with estimates, and makes sure no customer falls through the cracks.
 
-Maria speaks English and Spanish, works off-hours without burning you out, and costs way less than hiring a full-time receptionist. [Discover how Maria helps home service contractors capture calls their competitors are letting slip away](https://captahq.com/blog/we-called-200-plumbers-texas-how-many-answered).
+She speaks English and Spanish, works off-hours without burning you out, and costs way less than hiring a full-time receptionist. [Discover how Capta helps home service contractors capture calls their competitors are letting slip away](https://captahq.com/blog/we-called-200-plumbers-texas-how-many-answered).
 
 ---
 
@@ -1799,11 +1799,11 @@ Now multiply that by 12 months. For some trades, it's the difference between sur
 
 Here's the reality check: you could hire a human receptionist. Full-time. Around $32,000–$40,000 a year, plus benefits, plus the cost of an office phone line and software.
 
-Or you could use Maria, Capta's AI receptionist.
+Or you could use Capta, Capta's AI receptionist.
 
 Capta is **$497 per month** ($5,964 per year), or **$397 per month** if you prepay annually ($4,764 per year). One plan. No tiers.
 
-Maria answers calls 24/7. She qualifies leads. She schedules estimates. She sends you a summary via SMS or dashboard. She handles off-hours calls automatically.
+She answers calls 24/7. She qualifies leads. She schedules estimates. She sends you a summary via SMS or dashboard. She handles off-hours calls automatically.
 
 Let's look at the break-even point.
 
@@ -1811,13 +1811,13 @@ Let's look at the break-even point.
 
 You don't need to recover every missed call to make this work. You need to capture just 2–3 extra qualified leads per month.
 
-**For a plumber:** 2 extra jobs per month = 2 × $350 = $700. At a 15% close rate, that's actually about 13 calls you need to convert into jobs. Reasonable. Maria pays for herself.
+**For a plumber:** 2 extra jobs per month = 2 × $350 = $700. At a 15% close rate, that's actually about 13 calls you need to convert into jobs. Reasonable. Capta pays for itself.
 
 **For HVAC:** 2 extra jobs = $900. Same story. Pays for itself in month one.
 
 **For an electrician:** 2 extra jobs = $500. Pays for itself.
 
-**For a roofer:** 1 extra job per month = $10,000. Maria pays for herself on day one.
+**For a roofer:** 1 extra job per month = $10,000. Capta pays for itself on day one.
 
 But here's the thing: you're probably capturing way more than 2 extra leads per month. You're answering calls during lunch. You're getting off-hours calls when your crew's sleeping. You're catching prospects who would've called your competitor because you didn't answer.
 
@@ -1825,7 +1825,7 @@ In real deployments, contractors see 15–25% improvement in call capture. That'
 
 ## The Annual Impact: Real Numbers
 
-Let's be conservative and assume you capture just 10% of previously missed calls with Maria. That's not a bold claim. That's people who would've called you but got tired of your voicemail.
+Let's be conservative and assume you capture just 10% of previously missed calls with your receptionist. That's not a bold claim. That's people who would've called you but got tired of your voicemail.
 
 **Plumber:** 1,500 missed calls × 10% × 15% close rate × $350 = **$7,875 recovered revenue per year.** Cost: $5,964. **Profit: $1,911.**
 
@@ -1835,17 +1835,17 @@ But remember, you're also answering off-hours calls now. Add another $7,000–$1
 
 **Electrician:** $5,625 from standard hours. $5,000–$7,500 off-hours. **Total: $10,000+.**
 
-**Roofer:** One roofing job is $10,000. If you recover just one extra job per year from missed calls, you've paid for Maria five times over.
+**Roofer:** One roofing job is $10,000. If you recover just one extra job per year from missed calls, you've paid for Capta five times over.
 
-## What Maria Actually Does (Beyond Just Answering)
+## What She Actually Does (Beyond Just Answering)
 
-Let's not pretend Maria just picks up the phone and says "hold please."
+Let's not pretend She just picks up the phone and says "hold please."
 
 She:
 - Qualifies the call. Is this a real lead or a wrong number? She figures it out.
 - Schedules estimates into your calendar. No back-and-forth texts.
 - Sends you a summary—customer name, scope of work, budget, urgency. You know exactly what's coming.
-- Follows up with customers who don't show. You've lost deals to no-shows. Maria reduces that.
+- Follows up with customers who don't show. You've lost deals to no-shows. She reduces that.
 - Handles common questions. What's your service area? What are your rates? Do you work weekends? She knows.
 - Works in English or Spanish. You capture leads your competitors miss because they only speak English.
 - Never misses a shift. Never calls in sick. Never needs a vacation.
@@ -1856,9 +1856,9 @@ That's not just an answering service. That's a dispatcher that never sleeps.
 
 Think about what this means for your crew. They're not interrupted mid-job. They're not stressed about missed calls. They're not scrambling to call leads back from the truck.
 
-Maria handles it. They work. Estimates come to you already qualified. Your schedule fills in naturally.
+She handles it. They work. Estimates come to you already qualified. Your schedule fills in naturally.
 
-And here's the kicker: faster call response means higher close rates. People call you because they need something now. Maria picks up. They get a real quote, a real appointment time, and you're in the door before your competitor even calls back.
+And here's the kicker: faster call response means higher close rates. People call you because they need something now. She picks up. They get a real quote, a real appointment time, and you're in the door before your competitor even calls back.
 
 Some contractors see their close rates jump from 15% to 20% or higher. That's not because people magically want to buy more. It's because you answered when they called.
 
@@ -1868,19 +1868,19 @@ Let's be straight: you're leaving money on the table right now.
 
 Even if you think you're answering most of your calls, the math says you're not. And the off-hours calls? You're definitely missing those.
 
-A service business that runs on lead flow—plumbing, HVAC, electrical, roofing—lives and dies by how fast you pick up the phone. Maria makes sure you always do.
+A service business that runs on lead flow—plumbing, HVAC, electrical, roofing—lives and dies by how fast you pick up the phone. Capta makes sure you always do.
 
 At $497 a month, she pays for herself in the first month if you're a roofer. She pays for herself in the first few months if you're HVAC, plumbing, or electrical.
 
 The only question is: how long can you afford not to answer the phone?
 
-## Get Maria on Your Side
+## Get Capta on Your Side
 
 Ready to calculate your real missed call cost? [Call us](tel:+18305217133) at **(830) 521-7133** or [**get started at captahq.com**](https://captahq.com).
 
-We'll walk you through the specific numbers for your trade. Show you exactly how many leads you're losing right now. And prove that Maria pays for herself—usually in week one.
+We'll walk you through the specific numbers for your trade. Show you exactly how many leads you're losing right now. And prove that Capta pays for itself—usually in week one.
 
-You've already got the crew and the expertise. Maria just makes sure the leads keep coming.
+You've already got the crew and the expertise. She just makes sure the leads keep coming.
 
 ---
 
@@ -1964,16 +1964,16 @@ Let's look at what most HVAC companies are actually doing:
 
 This is where an AI receptionist changes the game. Not because it's trendy. Because it **eliminates the revenue leak.**
 
-Maria—Capta's AI receptionist—handles HVAC calls exactly like you'd want if you could clone yourself and have a copy sleep at night. She:
+Capta's AI receptionist handles HVAC calls exactly like you'd want if you could clone yourself and have a copy sleep at night. She:
 
 - **Picks up immediately.** No ring-and-die. Customers get an answer on call one.
-- **Triages emergencies.** If a customer says "My AC just died" or "No heat in winter," Maria flags it as urgent and texts your crew lead instantly. Routine maintenance calls get scheduled for next available. You never get woken up for a non-emergency.
+- **Triages emergencies.** If a customer says "My AC just died" or "No heat in winter," She flags it as urgent and texts your crew lead instantly. Routine maintenance calls get scheduled for next available. You never get woken up for a non-emergency.
 - **Books appointments in real time.** Customers don't wait for a callback. They get a confirmed appointment or an emergency dispatch time before they hang up.
 - **Sends details to the crew.** Address, problem description, contact info, photos if they texted them—all in the dispatch message. Your tech shows up informed, not guessing.
-- **Follows up via text.** After the appointment, Maria confirms, sends reminders, and captures reviews. Your office stays clean.
-- **Handles the off-hours surge without hiring.** You don't need a night dispatcher or a second admin. Maria scales with your call volume.
+- **Follows up via text.** After the appointment, She confirms, sends reminders, and captures reviews. Your office stays clean.
+- **Handles the off-hours surge without hiring.** You don't need a night dispatcher or a second admin. She scales with your call volume.
 
-For HVAC specifically, this matters because **seasonal surges don't require seasonal hiring.** July hits, your calls spike 40%, Maria handles the overflow, and you capture jobs you would've lost to voicemail.
+For HVAC specifically, this matters because **seasonal surges don't require seasonal hiring.** July hits, your calls spike 40%, She handles the overflow, and you capture jobs you would've lost to voicemail.
 
 And because she's available in English and Spanish, **you don't lose calls from the bilingual crew members** and customers across Texas who need service in their language.
 
@@ -1993,28 +1993,28 @@ Now add maintenance: routine calls you're also missing because the phone lines a
 
 Your current "solution" costs you somewhere between $0 (voicemail) and $12,000 (answering service). But the real cost is the revenue you're not capturing.
 
-An AI receptionist like Maria costs $497/month ($5,964/year), and she pays for herself by capturing **just eight extra jobs per year.** At an $800 average, that's $6,400. You're ahead by day eight.
+An AI receptionist like Capta costs $497/month ($5,964/year), and she pays for herself by capturing **just eight extra jobs per year.** At an $800 average, that's $6,400. You're ahead by day eight.
 
 In reality? You'll capture 50–100 extra jobs per year that voicemail was eating. That's $40,000–$80,000 in new revenue. Revenue that hits your bottom line because these are calls you were already getting—you just weren't answering them.
 
 ## Here's What Changes in 30 Days
 
-Install Maria on your Capta dashboard. Forward your after-hours number to her. Tell your crew: "After 6 PM, emergencies come to me via text."
+Set up Capta on your dashboard. Forward your after-hours number to her. Tell your crew: "After 6 PM, emergencies come to me via text."
 
 **Week 1:** She answers calls you'd normally miss. Your crew gets four emergency dispatch texts. Two of them are jobs you wouldn't have gotten otherwise.
 
-**Week 2:** A customer texts photos of their broken AC unit. Maria attaches them to the appointment. Your tech shows up, sees the photos, and knows exactly what replacement unit to bring. Job closes faster, profit margin stays clean.
+**Week 2:** A customer texts photos of their broken AC unit. She attaches them to the appointment. Your tech shows up, sees the photos, and knows exactly what replacement unit to bring. Job closes faster, profit margin stays clean.
 
-**Week 3:** It's Friday night. You're not at the shop. Maria books six appointments and sends all the details to your office manager's phone. Saturday morning, your crew is ready. No catch-up calls. No "Wait, what was that job on Saturday?"
+**Week 3:** It's Friday night. You're not at the shop. She books six appointments and sends all the details to your office manager's phone. Saturday morning, your crew is ready. No catch-up calls. No "Wait, what was that job on Saturday?"
 
 **Month 2 (and ongoing):** You stop looking at your voicemail because there isn't one anymore. Every call gets routed. Every customer gets an answer. Your crew works from the dispatch board, not from voicemail tag. You measure response time in seconds, not hours.
 
 ## The Math for Your Bottom Line
 
-Say you're currently capturing 60% of your after-hours calls (that's optimistic). Maria gets you to 95%.
+Say you're currently capturing 60% of your after-hours calls (that's optimistic). She gets you to 95%.
 
 - Current captured: 60% of 20 calls/week = 12 calls/week
-- Maria captured: 95% of 20 calls/week = 19 calls/week
+- Capta captured: 95% of 20 calls/week = 19 calls/week
 - **7 additional calls per week** during peak season
 
 At $800 average emergency job:
@@ -2022,7 +2022,7 @@ At $800 average emergency job:
 - $5,600/week × 16 weeks (peak season) = **$89,600 per season**
 - Year-round, accounting for off-season: **$100,000–$120,000 in new annual revenue**
 
-Against $5,964/year for Maria, you're looking at an ROI of **1,600–2,000%.**
+Against $5,964/year for Capta, you're looking at an ROI of **1,600–2,000%.**
 
 That's not a marketing expense. That's a revenue machine.
 
@@ -2032,7 +2032,7 @@ That's not a marketing expense. That's a revenue machine.
 
 Every HVAC company in Texas loses calls. Most lose $150,000+ per year to voicemail, answering services that don't understand HVAC, or crew members who are too tired to answer at 2 AM.
 
-Maria changes that. She answers after hours. She triages emergencies. She texts your crew. She books jobs. And she pays for herself within weeks.
+Capta changes that. She answers after hours. She triages emergencies. She texts your crew. She books jobs. And she pays for herself within weeks.
 
 [Check out our complete guide to AI receptionists for home service contractors](/blog/complete-guide-ai-receptionists-home-services) to see how other trades are already capturing this revenue. Or dive into [the ROI math](/blog/roi-never-missing-call-contractors) and see exactly what after-hours call capture is worth to your operation.
 
@@ -2055,7 +2055,7 @@ She answers. She quotes. She follows up. You do the work.`,
     language: "en",
     category: "bilingual-advantage",
     metaTitle: "Bilingual Answering Service for Contractors | Capta",
-    metaDescription: "Learn how bilingual phone answering captures 38% more customers in Texas. Maria handles Spanish calls 24/7 at a flat monthly rate.",
+    metaDescription: "Learn how bilingual phone answering captures 38% more customers in Texas. She handles Spanish calls 24/7 at a flat monthly rate.",
     targetKeyword: "bilingual answering service contractors",
     relatedPostSlugs: ["why-spanish-speaking-customers-not-leaving-voicemails", "we-called-200-plumbers-texas-how-many-answered"],
     authorName: "Ulysses Munoz",
@@ -2099,21 +2099,21 @@ Plus, traditional services don't integrate with your dispatch. The operator take
 
 ## What Actually Works: Native Bilingual AI
 
-Maria is Capta's AI receptionist, and she speaks Spanish natively—not translated, not robotic. She switches between Spanish and English naturally, the same way a bilingual person does.
+She is Capta's AI receptionist, and she speaks Spanish natively—not translated, not robotic. She switches between Spanish and English naturally, the same way a bilingual person does.
 
-When a Spanish-speaking customer calls, Maria answers immediately in Spanish. She asks about their problem, captures the details, and if it's an estimate, she can even quote pricing and handle the owner response loop. Everything happens in real time, in the customer's language.
+When a Spanish-speaking customer calls, She answers immediately in Spanish. She asks about their problem, captures the details, and if it's an estimate, she can even quote pricing and handle the owner response loop. Everything happens in real time, in the customer's language.
 
 Here's what changes:
 
-- **Spanish-speaking customers don't hang up.** They're talking to someone (Maria) who speaks their language fluently. They stay on the call and provide all the details you need to give an accurate estimate.
+- **Spanish-speaking customers don't hang up.** They're talking to someone (Capta) who speaks their language fluently. They stay on the call and provide all the details you need to give an accurate estimate.
 
-- **You capture the lead immediately.** Maria texts you the job details while you're still in the truck. You can respond while you're out, or circle back when you're back at the office.
+- **You capture the lead immediately.** She texts you the job details while you're still in the truck. You can respond while you're out, or circle back when you're back at the office.
 
-- **It works nights, weekends, and off-hours.** A customer calls at 7 PM on Thursday. Maria answers in Spanish. You don't have to pay for night shift staff, and you don't miss the call.
+- **It works nights, weekends, and off-hours.** A customer calls at 7 PM on Thursday. She answers in Spanish. You don't have to pay for night shift staff, and you don't miss the call.
 
-- **You're not stuck on the phone.** You're the one who should be working jobs, not taking calls. Maria handles it. Spanish-speaking customers never know they're talking to AI. They just know they reached someone who speaks their language and understands what they need.
+- **You're not stuck on the phone.** You're the one who should be working jobs, not taking calls. She handles it. Spanish-speaking customers never know they're talking to AI. They just know they reached someone who speaks their language and understands what they need.
 
-Capta is $497 a month. That's what you'd spend on 1.5 months of hiring a bilingual employee. And Maria doesn't take breaks, vacations, or sick days.
+Capta is $497 a month. That's what you'd spend on 1.5 months of hiring a bilingual employee. And She doesn't take breaks, vacations, or sick days.
 
 ## The Math on Revenue
 
@@ -2133,17 +2133,17 @@ Here's the objection we hear all the time: "I speak Spanish. I can handle it."
 
 You can. But you're also the person who should be working the job site, managing the crew, and handling the estimates. You're not a receptionist. You shouldn't be answering phones at 10 PM when you've got a 6 AM call the next morning.
 
-And here's the thing: customers don't want to talk to the owner for a phone quote. They want to talk to someone professional who can answer questions, check availability, and set expectations. That someone can be Maria. In Spanish.
+And here's the thing: customers don't want to talk to the owner for a phone quote. They want to talk to someone professional who can answer questions, check availability, and set expectations. That someone can be your AI receptionist. In Spanish.
 
-## How Maria Answers a Spanish Call
+## How She Answers a Spanish Call
 
-A customer calls your number. Maria picks up in Spanish within two rings.
+A customer calls your number. She picks up in Spanish within two rings.
 
 "Buenas tardes. Llama a [Your Company]. ¿Como puedo ayudarte?"
 
 The customer explains they need their AC fixed. It's not working in the upstairs bedroom. They ask if you can come tomorrow.
 
-Maria asks clarifying questions in natural Spanish. She captures the address, the problem, the best callback number. If you've set it up, she can quote pricing. She confirms the appointment window.
+She asks clarifying questions in natural Spanish. She captures the address, the problem, the best callback number. If you've set it up, she can quote pricing. She confirms the appointment window.
 
 Then she texts you the details while the customer is still on the phone.
 
@@ -2157,13 +2157,13 @@ The contractors who are winning in Texas right now aren't the ones hoping that b
 
 You can hire staff. You can hope customers will call back. Or you can solve the problem for less than $500 a month.
 
-**Ready to start answering in Spanish?** Call us at **(830) 521-7133** and ask for a demo—try calling in Spanish. You'll talk to Maria. She'll answer.
+**Ready to start answering in Spanish?** Call us at **(830) 521-7133** and ask for a demo—try calling in Spanish. You'll talk to your receptionist. She'll answer.
 
 Or [get Capta today](https://captahq.com).
 
 Want to know more about why Spanish-speaking customers stop calling? Read our post on [why Spanish-speaking customers aren't leaving voicemails](/blog/why-spanish-speaking-customers-not-leaving-voicemails). And if you're curious how many contractors can actually handle Spanish calls, check out [our survey of 200 Texas plumbers](/blog/we-called-200-plumbers-texas-how-many-answered).
 
-The revenue is out there. Maria's waiting to answer.`,
+The revenue is out there. your receptionist's waiting to answer.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -2219,11 +2219,11 @@ Scale that across a month. If 40% of your clicks come after hours and your conve
 
 Now imagine if that call connected. Not to a robot. Not to a voicemail box. To someone who could answer, take details, text you the job info, and let you decide if it's worth rolling the truck at 9:30 PM. You'd capture that revenue. You'd win the work.
 
-## Meet Maria: Your 24/7 Crew
+## Meet Your AI Receptionist: Your 24/7 Crew
 
-This is where Maria comes in. Maria is your after-hours receptionist. She's not a robot. She's not a recorded menu. She's an AI that answers calls like a person, takes job details like she's been in the business for years, and texts you everything the moment the call ends.
+This is where Capta comes in. She is your after-hours receptionist. She's not a robot. She's not a recorded menu. She's an AI that answers calls like a person, takes job details like she's been in the business for years, and texts you everything the moment the call ends.
 
-Here's what Maria handles every single call:
+Here's what She handles every single call:
 
 - **Answers on the first ring.** No "press 1 for..." No waiting. Just help.
 - **Takes the details.** Job type, address, urgency, contact info. She asks the right follow-up questions because she understands your trade.
@@ -2231,7 +2231,7 @@ Here's what Maria handles every single call:
 - **Covers everything.** 24/7. Weekends. Holidays. 2 AM emergency calls. She doesn't clock out.
 - **Speaks your customer's language.** English or Spanish. Whatever they need.
 
-You don't hire someone. You don't pay salary, benefits, or overtime. You don't have to train anyone to answer phones like a professional. Maria does all of it, every night, every weekend, every holiday.
+You don't hire someone. You don't pay salary, benefits, or overtime. You don't have to train anyone to answer phones like a professional. She does all of it, every night, every weekend, every holiday.
 
 The homeowner with the burst water heater at 9:30 PM? They get a real voice answering their call. They get someone who can walk them through immediate steps to prevent more damage. They get a promise that a crew will be in touch shortly. They feel taken care of. And your crew gets dispatched to a $600 emergency job before your competitor even knows it exists.
 
@@ -2246,7 +2246,7 @@ Let's say you're currently missing 40% of your after-hours calls. Not all of the
 
 **Current revenue from after-hours calls: $0**
 
-Now add Maria:
+Now add Capta:
 
 - Same 12 after-hours calls
 - You capture 80% of them because you can read a text at 9:30 PM and decide if it's worth responding (8 jobs)
@@ -2259,7 +2259,7 @@ For HVAC contractors, electricians dealing with emergency calls, and plumbers ha
 
 ## The Cost Is Trivial
 
-Here's the practical part: Maria costs less than your ad spend. A lot less. You're already paying hundreds or thousands a month to Google to generate calls. Adding 24/7/365 answering capacity costs a fraction of that. You get back to work-life balance, you capture the revenue you're currently bleeding away, and your crew stops sleeping with their phone in their hand waiting for the next emergency.
+Here's the practical part: Capta costs less than your ad spend. A lot less. You're already paying hundreds or thousands a month to Google to generate calls. Adding 24/7/365 answering capacity costs a fraction of that. You get back to work-life balance, you capture the revenue you're currently bleeding away, and your crew stops sleeping with their phone in their hand waiting for the next emergency.
 
 Your customers get better service. Your business gets smarter dispatch. Your profit margin gets fatter.
 
@@ -2267,7 +2267,7 @@ Your customers get better service. Your business gets smarter dispatch. Your pro
 
 Every night at 9 PM, the phone stops ringing in your office. But the phone calls keep coming. Homeowners searching for help. Google charging you per click. Revenue walking out the door.
 
-Maria changes that. [Get Capta set up today](https://captahq.com) and start capturing the after-hours revenue you've been sleeping through. It takes 10 minutes to get running.
+Capta changes that. [Get Capta set up today](https://captahq.com) and start capturing the after-hours revenue you've been sleeping through. It takes 10 minutes to get running.
 
 **Or call us direct:** (830) 521-7133
 
@@ -2277,7 +2277,7 @@ Learn more about the math behind this in our post on [ROI: The Math on Never Mis
 
 ## Stop Letting Voicemail Answer Your Phone
 
-Your business runs on relationships. Your revenue comes from showing up when customers need you. Maria makes sure you show up—even when you're asleep.
+Your business runs on relationships. Your revenue comes from showing up when customers need you. Capta makes sure you show up—even when you're asleep.
 
 **[Get Capta](https://captahq.com)** — The AI receptionist for crews who don't want to miss the next job.
 
@@ -2293,7 +2293,7 @@ Your business runs on relationships. Your revenue comes from showing up when cus
     language: "es",
     category: "guia-de-compra",
     metaTitle: "Mejor Servicio Contestador para Contratistas | Guía 2026 | Capta",
-    metaDescription: "Compara buzones de voz, recepcionistas y María IA. Calcula costos reales y elige la mejor opción para tu negocio de servicios domiciliarios.",
+    metaDescription: "Compara buzones de voz, recepcionistas e IA. Calcula costos reales y elige la mejor opción para tu negocio de servicios domiciliarios.",
     targetKeyword: "mejor servicio contestador contratistas",
     relatedPostSlugs: ["guia-completa-recepcionistas-ai-servicios-domiciliarios", "llamamos-200-plomeros-texas-cuantos-contestaron"],
     authorName: "Ulysses Munoz",
@@ -2356,8 +2356,8 @@ Traes a alguien a trabajar a tiempo completo en tu oficina.
 
 **La realidad:** Un técnico de HVAC me contó que contrató una recepcionista y al mes se dio cuenta que necesitaba a alguien que también hablara español bien. Tuvo que esperar 3 semanas a encontrar a la persona correcta.
 
-### 4. María de Capta ($497/mes)
-Aquí es donde vamos nosotros. María es una recepcionista de inteligencia artificial que contesta tus llamadas, habla español e inglés, toma información del cliente, y puede enviar presupuestos.
+### 4. la recepcionista de Capta ($497/mes)
+Aquí es donde vamos nosotros. Ella es una recepcionista de inteligencia artificial que contesta tus llamadas, habla español e inglés, toma información del cliente, y puede enviar presupuestos.
 
 **Ventajas:**
 - Abierta 24/7 sin pagar extra
@@ -2369,9 +2369,9 @@ Aquí es donde vamos nosotros. María es una recepcionista de inteligencia artif
 
 **Consideraciones:**
 - Es relativamente nuevo
-- Algunos clientes prefieren hablar con una persona (aunque muchos están sorprendidos por lo natural que suena María)
+- Algunos clientes prefieren hablar con una persona (aunque muchos están sorprendidos por lo natural que suena tu recepcionista)
 
-**Por qué funciona para contratistas:** Porque María está diseñada pensando en ti. Entiende que a veces necesitas un presupuesto rápido, que los clientes llaman en emergencias a las 2 AM, y que cuando alguien habla español, quiere atención en español.
+**Por qué funciona para contratistas:** Porque Ella está diseñada pensando en ti. Entiende que a veces necesitas un presupuesto rápido, que los clientes llaman en emergencias a las 2 AM, y que cuando alguien habla español, quiere atención en español.
 
 ## Comparación de Costos (Lo que Realmente Pagas)
 
@@ -2382,22 +2382,22 @@ Vamos con números reales. Voy a asumir que recibís 20 llamadas por día en pro
 | Buzón de voz | $0 | $0 | 2,000 (muchas no se contestan) | $0 pero pierdes clientes |
 | Contestadora tradicional | $1,000* | $12,000 | 6,000 | $2.00 |
 | Recepcionista | $3,200** | $38,400 | 6,000 | $6.40 |
-| María (Capta) | $497 | $5,964 | 7,300+ | $0.82 |
+| Capta | $497 | $5,964 | 7,300+ | $0.82 |
 
 *Promedio de contestadoras en Texas
 **Salario + impuestos + beneficios estimados para Texas
 
-## El Diferencial de María para Oficios en Texas
+## El Diferencial de tu recepcionista para Oficios en Texas
 
-Aquí es donde María se destaca porque fue diseñada para tu negocio específico.
+Aquí es donde tu recepcionista se destaca porque fue diseñada para tu negocio específico.
 
-**Bilingüe desde el inicio:** No estamos hablando de traducción automática. María entiende tanto español como inglés de forma natural. El cliente que llama en español, habla en español. Punto. Y eso importa porque aquí en Texas, tus clientes son una mezcla, y la mayoría de los contratistas pierden clientes porque solo atienden en inglés.
+**Bilingüe desde el inicio:** No estamos hablando de traducción automática. ella entiende tanto español como inglés de forma natural. El cliente que llama en español, habla en español. Punto. Y eso importa porque aquí en Texas, tus clientes son una mezcla, y la mayoría de los contratistas pierden clientes porque solo atienden en inglés.
 
-**Información de Calidad:** María no solo dice "okey, dejé el mensaje." Realmente escucha, entiende si es urgencia de plomería, HVAC, electricidad, o lo que sea. Toma la información correcta que tú necesitas para dar un presupuesto bueno.
+**Información de Calidad:** Ella no solo dice "okey, dejé el mensaje." Realmente escucha, entiende si es urgencia de plomería, HVAC, electricidad, o lo que sea. Toma la información correcta que tú necesitas para dar un presupuesto bueno.
 
 **Seguimiento Automático:** Puede enviar presupuestos por SMS, agendar llamadas de confirmación, o avisar cuando hay un job urgente. Todo sin que tú hagas nada.
 
-**Funciona en español para clientes latinos:** El 43% de los contratistas en Texas dijeron en una encuesta que pierden clientes porque no hay alguien que atienda bien en español. Con María, ese problema se acaba.
+**Funciona en español para clientes latinos:** El 43% de los contratistas en Texas dijeron en una encuesta que pierden clientes porque no hay alguien que atienda bien en español. Con Capta, ese problema se acaba.
 
 ## Cómo Decidir
 
@@ -2407,26 +2407,26 @@ Hazle estas preguntas a tu situación:
 Si contestas sí, el buzón de voz no te sirve.
 
 **¿Necesitas gente bilingüe?**
-Si sí, las contestadoras tradicionales van a necesitarte pagándoles más. María viene bilingüe.
+Si sí, las contestadoras tradicionales van a necesitarte pagándoles más. Capta viene bilingüe.
 
 **¿Puedes permitir una persona full-time?**
 Si no, olvidate de contratar recepcionista. Es caro y no vale la pena para muchos negocios pequeños y medianos.
 
 **¿Qué es lo más importante para ti?**
-- **Costo bajo + disponibilidad 24/7:** María
+- **Costo bajo + disponibilidad 24/7:** Capta
 - **Toque personal:** Recepcionista (si tienes presupuesto)
 - **Algo funcional y barato:** Contestadora tradicional (pero vas a necesitar supervisar)
 - **Nada:** Buzón de voz (pero no esperes crecer)
 
-## El Caso Real: María vs. Lo Demás
+## El Caso Real: Capta vs. Lo Demás
 
 Te voy a contar qué pasó con un plomero de San Antonio que usaba contestadora.
 
 Pagaba $1,100 al mes. Recibía entre 15-20 llamadas diarias. Pero de esas, solo capturaba información de calidad en el 60% de las llamadas porque la contestadora era lenta y el cliente se cansaba de esperar.
 
-Cambió a María hace 3 meses. El costo bajó a $497 al mes (ahorro de $603). Pero lo mejor: ahora captura el 95% de la información de calidad porque María habla rápido, en español cuando es necesario, y el cliente se siente atendido.
+Cambió a tu recepcionista hace 3 meses. El costo bajó a $497 al mes (ahorro de $603). Pero lo mejor: ahora captura el 95% de la información de calidad porque Ella habla rápido, en español cuando es necesario, y el cliente se siente atendido.
 
-¿Resultado? Ese plomero dice que en 3 meses hizo 2 jobs adicionales que antes hubiera perdido. Solo eso pagó 4 meses de María.
+¿Resultado? Ese plomero dice que en 3 meses hizo 2 jobs adicionales que antes hubiera perdido. Solo eso pagó 4 meses de tu recepcionista.
 
 ## Conclusión: No Es Solo Dinero
 
@@ -2436,19 +2436,19 @@ Mirar solo el costo es como mirar solo el precio de una herramienta sin ver la c
 2. **¿Qué calidad de información recibes?** (Si es mala, das presupuestos malos o pierdes tiempo)
 3. **¿A qué costo?** (Algo que no te quiebre)
 
-María soluciona las tres cosas. Por eso funciona para plomeros, técnicos de aire acondicionado, electricistas, y techadores aquí en Texas.
+Capta soluciona las tres cosas. Por eso funciona para plomeros, técnicos de aire acondicionado, electricistas, y techadores aquí en Texas.
 
-Si recibís más de 10 llamadas al día y no tienes a alguien contestando ahora mismo, María es prácticamente lo obvio. Es bilingüe, funciona 24/7, y cuesta menos que una contestadora tradicional a mitad del costo de un salario.
+Si recibís más de 10 llamadas al día y no tienes a alguien contestando ahora mismo, Ella es prácticamente lo obvio. Es bilingüe, funciona 24/7, y cuesta menos que una contestadora tradicional a mitad del costo de un salario.
 
 **¿Listo para no perder más clientes por no contestar?**
 
-Prueba María hoy. Puedes verla en acción en unos 5 minutos.
+Prueba tu recepcionista hoy. Puedes verla en acción en unos 5 minutos.
 
 ---
 
 ## Obtén Capta
 
-No pagues $600-$1,500 al mes por algo que no funciona bien. María atiende 24/7, habla español e inglés, y envía presupuestos automáticamente.
+No pagues $600-$1,500 al mes por algo que no funciona bien. Capta atiende 24/7, habla español e inglés, y envía presupuestos automáticamente.
 
 **[Empieza aquí: captahq.com](https://captahq.com)**
 
@@ -2471,7 +2471,7 @@ O si prefieres hablar directamente: **(830) 521-7133**
     language: "es",
     category: "lista",
     metaTitle: "¿Pierdes Clientes por No Contestar? 5 Señales | Capta",
-    metaDescription: "Identifica las 5 señales clave de que estás perdiendo clientes. Llamadas sin respuesta, competencia que crece, y cómo María te ayuda.",
+    metaDescription: "Identifica las 5 señales clave de que estás perdiendo clientes. Llamadas sin respuesta, competencia que crece, y cómo Ella te ayuda.",
     targetKeyword: "llamadas perdidas contratistas clientes",
     relatedPostSlugs: ["llamamos-200-plomeros-texas-cuantos-contestaron", "guia-completa-recepcionistas-ai-servicios-domiciliarios"],
     authorName: "Ulysses Munoz",
@@ -2505,7 +2505,7 @@ Esto pasa más de lo que crees. Eres el mejor plomero en tu zona, tienes 4.8 est
 
 ¿Por qué?
 
-Porque mientras tú estás instalando un calentador, el otro está contestando llamadas de nuevos clientes. Mientras tú estás en el teléfono cotizando un trabajo, el otro ya tiene a María (su recepcionista de IA) tomando la siguiente llamada, preguntando detalles, y agendando.
+Porque mientras tú estás instalando un calentador, el otro está contestando llamadas de nuevos clientes. Mientras tú estás en el teléfono cotizando un trabajo, el otro ya tiene a tu recepcionista (su recepcionista de IA) tomando la siguiente llamada, preguntando detalles, y agendando.
 
 La competencia no necesariamente es mejor que tú. Solo es **más disponible**.
 
@@ -2559,39 +2559,39 @@ Y la mayoría de los contratistas ni siquiera saben sus números.
 
 ---
 
-## Cómo María Resuelve Los 5 Problemas de Una Vez
+## Cómo Capta Resuelve Los 5 Problemas de Una Vez
 
-Aquí es donde entra María, la recepcionista de IA de Capta.
+Aquí es donde entra tu recepcionista, la recepcionista de IA de Capta.
 
-María contesta *siempre*. Llamadas, mensajes, emergencias a las 2 AM. Ella está ahí. Y habla español. Mexicano, de Texas, bilingüe sin acento robótico.
+Ella contesta *siempre*. Llamadas, mensajes, emergencias a las 2 AM. Ella está ahí. Y habla español. Mexicano, de Texas, bilingüe sin acento robótico.
 
 **En concreto:**
 
 - **Contesta cada llamada** que llega, incluso cuando tú estás en una chamba. Sin buzón de voz. Sin "déjame tu mensaje." Contesta y mantiene la conversación como lo harías tú.
 
-- **Toma presupuestos** por teléfono. El cliente describe el trabajo, María pregunta los detalles (tamaño del terreno, materiales, urgencia), y te envía un resumen para que tú cotices.
+- **Toma presupuestos** por teléfono. El cliente describe el trabajo, ella pregunta los detalles (tamaño del terreno, materiales, urgencia), y te envía un resumen para que tú cotices.
 
-- **Agenda citas** directamente en tu calendario. El cliente dice qué día le viene bien, María lo confirma, y listo. Sin ir y venir de mensajes.
+- **Agenda citas** directamente en tu calendario. El cliente dice qué día le viene bien, Ella lo confirma, y listo. Sin ir y venir de mensajes.
 
 - **Habla español fluido** todo el tiempo. No es traducción. Es mexicano. Para clientes hispanohablantes en Texas, eso es diferencia.
 
 - **Funciona 24/7.** No importa la hora. Llamada que entra, alguien contesta. Un cliente en emergencia a las 11 PM no va a encontrar buzón de voz.
 
-Con María, recuperas esos 10 clientes perdidos por semana. Después, 15. Después, 20. No porque seas mejor que antes. Solo porque ahora, *alguien contesta.*
+Con Capta, recuperas esos 10 clientes perdidos por semana. Después, 15. Después, 20. No porque seas mejor que antes. Solo porque ahora, *alguien contesta.*
 
 ---
 
-## El Siguiente Paso: Prueba María
+## El Siguiente Paso: Prueba tu recepcionista
 
 No tienes que creer nada de lo que lees acá. Simplemente prueba.
 
-Llama a María directamente. Cuéntale que tienes una emergencia de plomería, que necesitas un presupuesto urgente, que eres bilingüe, que prefieres hablar español. Mírala trabajar. Es el demo. Es la prueba.
+Llama a tu recepcionista directamente. Cuéntale que tienes una emergencia de plomería, que necesitas un presupuesto urgente, que eres bilingüe, que prefieres hablar español. Mírala trabajar. Es el demo. Es la prueba.
 
 **[Llama ahora: (830) 521-7133](tel:+18305217133)**
 
 Después, piensa en esto: ¿cuántas llamadas perdí esta semana? ¿Cuánta venta dejé en la mesa?
 
-Esa es la diferencia que María hace.
+Esa es la diferencia que ella hace.
 
 ---
 
@@ -2602,9 +2602,9 @@ Esa es la diferencia que María hace.
 
 ---
 
-## Obtén María Hoy
+## Obtén Capta Hoy
 
-No pierdas más clientes a la competencia. María te contesta cada llamada, toma presupuestos, agenda citas — todo en español, 24/7.
+No pierdas más clientes a la competencia. Ella te contesta cada llamada, toma presupuestos, agenda citas — todo en español, 24/7.
 
 **[Obtén Capta](https://captahq.com/es)** — $397/mes anual. Sin sorpresas. Sin contratos.
 
@@ -2624,7 +2624,7 @@ O llama directo: **(830) 521-7133**
     language: "es",
     category: "analisis-roi",
     metaTitle: "ROI de Servicio Contestador para Contratistas | Capta",
-    metaDescription: "Calcula cuánto dinero pierdes por llamadas sin contestar. Desglose real por oficio: plomería, HVAC, electricidad. María te paga sola.",
+    metaDescription: "Calcula cuánto dinero pierdes por llamadas sin contestar. Desglose real por oficio: plomería, HVAC, electricidad. Ella te paga sola.",
     targetKeyword: "costo llamadas perdidas contratistas",
     relatedPostSlugs: ["llamamos-200-plomeros-texas-cuantos-contestaron", "capta-vs-contratar-recepcionista-desglose-costos"],
     authorName: "Ulysses Munoz",
@@ -2688,13 +2688,13 @@ Espera. Así es. Si eres techador, esas 225 oportunidades perdidas representan *
 
 ¿Y si se enferma? ¿Si se va? ¿Si no atiende bien? Estás pagando por un problema, no por una solución.
 
-## La Solución Que Ya No Es Ciencia Ficción: María
+## La Solución Que Ya No Es Ciencia Ficción: Capta
 
-Aquí entra **María**, la recepcionista de Capta.
+Aquí entra **Capta** y su recepcionista IA.
 
-María contesta tus llamadas. **24/7**. En español e inglés. Sin "robot voice". Sin frustración. Tus clientes creen que hablan con una humana porque... suena como una humana. Porque lo es, pero mejorado.
+Ella contesta tus llamadas. **24/7**. En español e inglés. Sin "robot voice". Sin frustración. Tus clientes creen que hablan con una humana porque... suena como una humana. Porque lo es, pero mejorado.
 
-María cotiza trabajos. Toma fotos del sitio de trabajo (por mensajes MMS). Agenda citas. Avisa de trabajos después de horas —eso genera ingresos extra. Y todo esto por **$497 al mes**.
+ella cotiza trabajos. Toma fotos del sitio de trabajo (por mensajes MMS). Agenda citas. Avisa de trabajos después de horas —eso genera ingresos extra. Y todo esto por **$497 al mes**.
 
 Vamos a hacer la matemática simple:
 
@@ -2702,17 +2702,17 @@ Vamos a hacer la matemática simple:
 
 Regresemos a los números:
 
-- **Plomería:** Necesitas solo **17 trabajos extra al año** para que María se pague sola. Con 225 oportunidades recuperadas a 15% de cierre, estamos hablando de capturar 34 trabajos adicionales. María se paga **18 veces**.
+- **Plomería:** Necesitas solo **17 trabajos extra al año** para que Ella se pague sola. Con 225 oportunidades recuperadas a 15% de cierre, estamos hablando de capturar 34 trabajos adicionales. Ella se paga **18 veces**.
 
-- **HVAC:** Necesitas **13 trabajos** para break-even. Capturando 34 trabajos, María se paga **26 veces**.
+- **HVAC:** Necesitas **13 trabajos** para break-even. Capturando 34 trabajos, Ella se paga **26 veces**.
 
-- **Electricidad:** Necesitas **24 trabajos**. Capturando 34, María se paga **5.6 veces**.
+- **Electricidad:** Necesitas **24 trabajos**. Capturando 34, Ella se paga **5.6 veces**.
 
-- **Techumbre:** Con $10,000 por trabajo, necesitas menos de **1 trabajo** para que María se pague sola. Con 34 trabajos capturados, estamos hablando de **$340,000 en ganancia neta** después del costo de María.
+- **Techumbre:** Con $10,000 por trabajo, necesitas menos de **1 trabajo** para que Ella se pague sola. Con 34 trabajos capturados, estamos hablando de **$340,000 en ganancia neta** después del costo de tu recepcionista.
 
 ## El Dinero Extra Que No Esperabas: Después de Horas
 
-Aquí hay algo más. Las llamadas que llegan después de horas —cuando cierras la oficina, cuando ya saliste—no tienen por qué perderse. María sigue contestando. Sigue cotizando.
+Aquí hay algo más. Las llamadas que llegan después de horas —cuando cierras la oficina, cuando ya saliste—no tienen por qué perderse. Ella sigue contestando. Sigue cotizando.
 
 Eso genera ingresos que simplemente **no existían antes**. Un 10% adicional de captación en horarios fuera de oficina. Para un plomero, eso son $7,875 más al año.
 
@@ -2720,7 +2720,7 @@ Eso genera ingresos que simplemente **no existían antes**. Un 10% adicional de 
 
 No estamos inventando números. Hablamos con 200+ plomeros en Texas. Revisamos sus calendarios, sus ingresos, sus patrones de llamadas.
 
-Los que tienen María dicen lo mismo: "Es lo mejor que invertí este año."
+Los que tienen Capta dicen lo mismo: "Es lo mejor que invertí este año."
 
 Los que no la tienen siguen perdiendo llamadas. Siguen viendo a su competencia sacar trabajos que podrían ser suyos.
 
@@ -2728,15 +2728,15 @@ Los que no la tienen siguen perdiendo llamadas. Siguen viendo a su competencia s
 
 Toma tu facturación promedio por trabajo. Multiplícalo por 225 (esos son los trabajos que estadísticamente pierdes cada año si estás en un oficio competitivo). Eso es tu número.
 
-Luego réstale $5,964. Eso es lo que María cuesta.
+Luego réstale $5,964. Eso es lo que Capta cuesta.
 
-La diferencia es lo que María te genera cada año. Solo capturando llamadas que YA estaban llegando.
+La diferencia es lo que Ella te genera cada año. Solo capturando llamadas que YA estaban llegando.
 
 ## El Siguiente Paso
 
 No es "pensar en ello." No es "a ver si funciona." Es calcular tu número, aceptar la realidad de cuánto dinero estás perdiendo, y hacer algo al respecto.
 
-**Obtén Capta hoy.** María está lista para contestar tu teléfono mañana.
+**Obtén Capta hoy.** Ella está lista para contestar tu teléfono mañana.
 
 Llámanos: **(830) 521-7133**
 
@@ -2754,7 +2754,7 @@ Porque cada llamada que llega es dinero. Y el dinero no debe irse al buzón.`,
     language: "es",
     category: "vertical-especifico",
     metaTitle: "Servicio Contestador 24/7 para HVAC | Capta",
-    metaDescription: "María contesta tus llamadas de emergencia HVAC 24/7. Triaje automático, WhatsApp al técnico, citas reservadas. Evita perder $40K-$70K anuales.",
+    metaDescription: "Ella contesta tus llamadas de emergencia HVAC 24/7. Triaje automático, WhatsApp al técnico, citas reservadas. Evita perder $40K-$70K anuales.",
     targetKeyword: "servicio contestador HVAC fuera de horario",
     relatedPostSlugs: ["guia-completa-recepcionistas-ai-servicios-domiciliarios", "roi-nunca-perder-llamada-contratistas"],
     authorName: "Ulysses Munoz",
@@ -2807,34 +2807,34 @@ Excelente si tienes presupuesto para que alguien esté disponible 24/7. Pero ese
 **Opción 4: Apagar el Teléfono y Esperar Mañana**
 Es lo que hacen muchos. Y pierden dinero.
 
-## La Solución: María — Tu Recepcionista IA Disponible Siempre
+## La Solución: Capta — Tu Recepcionista IA Disponible Siempre
 
-Aquí es donde María entra.
+Aquí es donde tu recepcionista entra.
 
-María es una recepcionista de IA que contesta tus llamadas 24 horas al día, 7 días a la semana. No está cansada. No comete errores de apreciación. No necesita vacaciones.
+Ella es una recepcionista de IA que contesta tus llamadas 24 horas al día, 7 días a la semana. No está cansada. No comete errores de apreciación. No necesita vacaciones.
 
-Lo que María hace es esto:
+Lo que ella hace es esto:
 
 **1. Contesta Cada Llamada en Español o Inglés**
-Tienes clientes hispanohablantes. María habla Spanish nativo — entiendo sus emergencias, sus detalles técnicos, su urgencia. Contesta con profesionalismo. El cliente se siente atendido desde el primer segundo. No hay confusión, no hay barrera de idioma.
+Tienes clientes hispanohablantes. Ella habla Spanish nativo — entiendo sus emergencias, sus detalles técnicos, su urgencia. Contesta con profesionalismo. El cliente se siente atendido desde el primer segundo. No hay confusión, no hay barrera de idioma.
 
 **2. Triaje Automático de Emergencias**
-María hace preguntas. No preguntas genéricas. Preguntas que importan: ¿Cuál es el problema? ¿Cómo se llama el cliente? ¿Tiene niños pequeños en casa? ¿Dónde está ubicado el trabajo? En 60 segundos, María sabe si es una emergencia de verdad o una consulta que puede esperar hasta mañana.
+ella hace preguntas. No preguntas genéricas. Preguntas que importan: ¿Cuál es el problema? ¿Cómo se llama el cliente? ¿Tiene niños pequeños en casa? ¿Dónde está ubicado el trabajo? En 60 segundos, Ella sabe si es una emergencia de verdad o una consulta que puede esperar hasta mañana.
 
 **3. Texto Automático al Técnico de Turno**
-Antes de que María termine la llamada, ya tu técnico está recibiendo un WhatsApp con toda la información. Dirección, nombre del cliente, problema, número de teléfono. No hay que esperar, no hay que llamar a la oficina, no hay intermediarios. El técnico ve la oportunidad en tiempo real.
+Antes de que Ella termine la llamada, ya tu técnico está recibiendo un WhatsApp con toda la información. Dirección, nombre del cliente, problema, número de teléfono. No hay que esperar, no hay que llamar a la oficina, no hay intermediarios. El técnico ve la oportunidad en tiempo real.
 
 **4. Citas Reservadas Directamente**
-¿El cliente quiere programar? María puede verificar tu calendario en tiempo real y reservar una cita disponible. El cliente cuelga sabiendo exactamente cuándo llegarás. No hay necesidad de que llame de nuevo mañana para confirmar. El trabajo está hecho.
+¿El cliente quiere programar? Ella puede verificar tu calendario en tiempo real y reservar una cita disponible. El cliente cuelga sabiendo exactamente cuándo llegarás. No hay necesidad de que llame de nuevo mañana para confirmar. El trabajo está hecho.
 
 **5. Manejo de Múltiples Llamadas**
-Si tienes 3 emergencias en 15 minutos — cosa que pasa en junio — María contesta todas. No hay "línea ocupada". No hay frustración. Cada cliente obtiene atención inmediata.
+Si tienes 3 emergencias en 15 minutos — cosa que pasa en junio — Ella contesta todas. No hay "línea ocupada". No hay frustración. Cada cliente obtiene atención inmediata.
 
 ## El Caso de Estudio: La Operación de 5 Camiones
 
 Imagina esto. Tienes 5 camiones. 4 técnicos a tiempo completo más tú manejando las operaciones. Estás perdiendo aproximadamente $150,000 anuales en llamadas no respondidas.
 
-Instalas María. El costo: **$497 mensuales** (o $397 mensuales si pagas anual).
+Instalas Capta. El costo: **$497 mensuales** (o $397 mensuales si pagas anual).
 
 Eso es **$5,964 anuales**.
 
@@ -2849,24 +2849,24 @@ Ahora, ¿qué cambia?
 
 No es un typo. No es marketing hablando. Es matemática pura.
 
-Inviertes $5,964 anuales en María. Recuperas $78,000 a $156,000 en ingresos adicionales. El retorno es tan grande que ni necesitas optimizar nada más en tu negocio. Solo responde las llamadas que ya estaban ahí.
+Inviertes $5,964 anuales en Capta. Recuperas $78,000 a $156,000 en ingresos adicionales. El retorno es tan grande que ni necesitas optimizar nada más en tu negocio. Solo responde las llamadas que ya estaban ahí.
 
 ## Bilingüe, Siempre — Porque Texas Es Bilingüe
 
 Algo que muchos contratistas olvidan: en Texas, el 45% de tus clientes potenciales probablemente son hispanohablantes. Si tu receptora solo habla inglés, pierdes esa conexión inmediata. El cliente tiene que traducir en su cabeza, explicar la emergencia en un idioma que no es el suyo, esperar. Fricción. Frustración. Se va a otro lado.
 
-María habla Spanish perfectamente. No traducciones de Google. Spanish real. Entiende cuando alguien dice "el aire acondicionado está votando agua" o "la unidad exterior está haciendo un ruido horrible". Entiende la urgencia detrás de las palabras. Responde con autoridad y claridad.
+Ella habla Spanish perfectamente. No traducciones de Google. Spanish real. Entiende cuando alguien dice "el aire acondicionado está votando agua" o "la unidad exterior está haciendo un ruido horrible". Entiende la urgencia detrás de las palabras. Responde con autoridad y claridad.
 
-Para una empresa HVAC en Texas, María es bilingüe por defecto. Es una característica, no una opción.
+Para una empresa HVAC en Texas, Ella es bilingüe por defecto. Es una característica, no una opción.
 
-## Qué Más Hace María (Los Bonus)
+## Qué Más Hace Capta (Los Bonus)
 
 Además de contestar llamadas de emergencia:
 
-- **Seguimiento de clientes:** si alguien dejó un mensaje a las 2 de la mañana, María puede hacer un seguimiento automático a las 8 AM para confirmar que sigue siendo una prioridad
+- **Seguimiento de clientes:** si alguien dejó un mensaje a las 2 de la mañana, Ella puede hacer un seguimiento automático a las 8 AM para confirmar que sigue siendo una prioridad
 - **Integración con tu CRM:** cada llamada se registra automáticamente. Nada se pierde
-- **SMS inteligente:** María puede enviar actualizaciones al cliente ("El técnico llegará en 15 minutos") sin que tengas que hacerlo manualmente
-- **Historial de llamadas:** revisas exactamente qué preguntó María, qué respondió el cliente, cuánto tiempo duró todo. Es evidencia de que estás cuidando tus leads
+- **SMS inteligente:** Ella puede enviar actualizaciones al cliente ("El técnico llegará en 15 minutos") sin que tengas que hacerlo manualmente
+- **Historial de llamadas:** revisas exactamente qué preguntó tu recepcionista, qué respondió el cliente, cuánto tiempo duró todo. Es evidencia de que estás cuidando tus leads
 
 ## El Tiempo Es Lo Más Valioso Que Tienes
 
@@ -2878,15 +2878,15 @@ Si no contestas, pierdes dinero. Simple. Es uno de los costos más evitables del
 
 Si contestas — pero tienes que hacerlo manualmente — pierdes tiempo y energía mental. Estás respondiendo trabajo en lugar de administrar tu negocio.
 
-Si dejas que María conteste — mientras tú descansas, cenas con tu familia o manejas otra operación — el dinero sigue entrando. Las citas se reservan. Los clientes están satisfechos. Y tú tienes paz mental.
+Si dejas que Capta conteste — mientras tú descansas, cenas con tu familia o manejas otra operación — el dinero sigue entrando. Las citas se reservan. Los clientes están satisfechos. Y tú tienes paz mental.
 
 ## Cómo Empieza
 
-1. **Prueba María en tu línea actual.** No cambies nada de tu número telefónico. Solo agrega María a tu sistema telefónico existente.
+1. **Prueba tu recepcionista en tu línea actual.** No cambies nada de tu número telefónico. Solo agrega tu recepcionista a tu sistema telefónico existente.
 
-2. **Configura tu horario** (puedes decir "María contesta después de las 5 PM" o "María contesta siempre").
+2. **Configura tu horario** (puedes decir "Ella contesta después de las 5 PM" o "Ella contesta siempre").
 
-3. **Enseña a María cómo triajear** — qué preguntas hacer, cuándo marcar como emergencia, cómo hablar con tus clientes.
+3. **Enseña a tu recepcionista cómo triajear** — qué preguntas hacer, cuándo marcar como emergencia, cómo hablar con tus clientes.
 
 4. **Mira cómo el dinero comienza a entrar.**
 
@@ -2906,7 +2906,7 @@ No es un costo hipotético. Es dinero que tus competidores están captando en es
 
 ## Próximos Pasos
 
-Si diriges una empresa HVAC en Texas — o en cualquier lugar donde hace calor y los aires acondicionados fallan fuera de horario — María puede transformar tu negocio.
+Si diriges una empresa HVAC en Texas — o en cualquier lugar donde hace calor y los aires acondicionados fallan fuera de horario — Ella puede transformar tu negocio.
 
 No es una promesa. Es matemática.
 
@@ -2918,7 +2918,7 @@ Nosotros contestamos.
 
 ---
 
-**¿Perdiste una llamada de emergencia esta semana?** Probablemente sí. No eres el único. Pero no tiene que ser así. María está disponible 24/7, en español e inglés, lista para capturar cada oportunidad que tus clientes traigan. Invierte $497 mensuales, recupera $78,000-$156,000 anuales. El resto es ganancias.`,
+**¿Perdiste una llamada de emergencia esta semana?** Probablemente sí. No eres el único. Pero no tiene que ser así. Ella está disponible 24/7, en español e inglés, lista para capturar cada oportunidad que tus clientes traigan. Invierte $497 mensuales, recupera $78,000-$156,000 anuales. El resto es ganancias.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -2930,7 +2930,7 @@ Nosotros contestamos.
     language: "es",
     category: "ventaja-bilingue",
     metaTitle: "Servicio Contestador Bilingüe para Contratistas | Capta",
-    metaDescription: "María contesta llamadas en español 24/7. Captura leads hispanohablantes con tarifa fija mensual. Sin personal costoso.",
+    metaDescription: "Ella contesta llamadas en español 24/7. Captura leads hispanohablantes con tarifa fija mensual. Sin personal costoso.",
     targetKeyword: "servicio contestador bilingüe contratistas",
     relatedPostSlugs: ["por-que-clientes-hispanohablantes-no-dejan-mensajes-voz", "llamamos-200-plomeros-texas-cuantos-contestaron"],
     authorName: "Ulysses Munoz",
@@ -2978,13 +2978,13 @@ Es verdad. Y probablemente lo haces bien. El problema es el *cuándo*.
 
 Ser bilingüe no resuelve el problema. Necesitas alguien que conteste *siempre*. Alguien que no se toma días libres, que no duerme, que no está en el terreno. Ese es el reto.
 
-## ¿Qué hace María diferente?
+## ¿Qué hace Capta diferente?
 
-María es la recepcionista de Capta. Contesta en español nativo. No es un robot traducido. No suena robótica. Suena como una persona que entiende *tu negocio*, que habla el español de Mexico, que puede cambiar naturalmente entre español e inglés según el cliente.
+Ella es la recepcionista de Capta. Contesta en español nativo. No es un robot traducido. No suena robótica. Suena como una persona que entiende *tu negocio*, que habla el español de Mexico, que puede cambiar naturalmente entre español e inglés según el cliente.
 
-María:
+Tu recepcionista:
 - **Contesta todas tus llamadas en español.** 24 horas, 7 días a la semana, sin días libres.
-- **Cotiza trabajos** usando la información que tú proporcionas. Un cliente llama pidiendo una cotización de fontanería, María recoge los detalles y prepara la estimación.
+- **Cotiza trabajos** usando la información que tú proporcionas. Un cliente llama pidiendo una cotización de fontanería, ella recoge los detalles y prepara la estimación.
 - **Te avisa por SMS.** Inmediatamente envía un mensaje a tu teléfono con los detalles de la llamada. Mismo formato que uses.
 - **Habla como tú.** Lenguaje de contratista, vocabulario de construcción, sin jerga corporativa.
 - **Maneja el flujo de respuesta.** Envía cotizaciones, espera confirmación, ajusta detalles, todo por SMS en español.
@@ -3012,43 +3012,43 @@ Opción 1: **Contratar personal bilingüe a tiempo completo.** Salario $45K-$55K
 
 Opción 2: **Servicio contestador tradicional.** Costo: $300-$800/mes. Problema: no habla español, no cotiza, solo toma mensajes que después tienes que llamar.
 
-Opción 3: **María de Capta.** Costo: **$497/mes** ($5,964/año). Contesta en español nativo, cotiza, envía SMS, disponible 24/7, maneja el flujo de seguimiento, integrada con tus sistemas.
+Opción 3: **la recepcionista de Capta.** Costo: **$497/mes** ($5,964/año). Contesta en español nativo, cotiza, envía SMS, disponible 24/7, maneja el flujo de seguimiento, integrada con tus sistemas.
 
-La diferencia es enorme. Por el precio de uno o dos trabajos al mes, María captura clientes hispanohablantes que antes estaban colgando.
+La diferencia es enorme. Por el precio de uno o dos trabajos al mes, Capta captura clientes hispanohablantes que antes estaban colgando.
 
 ## Cómo Funciona en la Práctica
 
 Un cliente hispanohablante llama.
 
-María contesta: "Hola, gracias por llamar a [tu nombre/negocio]. ¿En qué puedo ayudarte?"
+Ella contesta: "Hola, gracias por llamar a [tu nombre/negocio]. ¿En qué puedo ayudarte?"
 
 El cliente explica: "Tengo un problema de plomería. Necesito que alguien venga hoy."
 
-María recoge los detalles: dirección, tipo de trabajo, urgencia, número de teléfono.
+ella recoge los detalles: dirección, tipo de trabajo, urgencia, número de teléfono.
 
-Mientras María conversa, ella accede a tus tarifas, zonas de servicio, disponibilidad. Cotiza el trabajo basado en la información del cliente.
+Mientras ella conversa, ella accede a tus tarifas, zonas de servicio, disponibilidad. Cotiza el trabajo basado en la información del cliente.
 
 Envía un SMS al cliente (en español) con la cotización: "Hola, revisé tu solicitud. Un trabajo de plomería para reparación de [x] cuesta normalmente $[cantidad]. ¿Confirmas? Responde 1=Sí, 2=Necesito ajustar, 3=No."
 
-El cliente responde. María recibe la confirmación, te envía a ti un SMS: "Nuevo trabajo confirmado: [detalles]. Cliente esperando confirmación de horario."
+El cliente responde. Ella recibe la confirmación, te envía a ti un SMS: "Nuevo trabajo confirmado: [detalles]. Cliente esperando confirmación de horario."
 
 Tú llamas, confirmas la cita, haces el trabajo. El cliente fue capturado, cotizado, confirmado, todo en español, todo mientras tú estabas en otro terreno.
 
-Esto no es teoría. Esto es cómo funciona María en negocios similares al tuyo hoy.
+Esto no es teoría. Esto es cómo funciona tu recepcionista en negocios similares al tuyo hoy.
 
 ## ¿Qué Pasa con Clientes Que Hablan Inglés?
 
-María también contesta en inglés. Cambia naturalmente según el cliente. Si llama alguien angloparlante, ella se comunica en inglés con la misma profesionalismo.
+Ella también contesta en inglés. Cambia naturalmente según el cliente. Si llama alguien angloparlante, ella se comunica en inglés con la misma profesionalismo.
 
 Es un sistema único. No dos lineas separadas. Una receptionist que habla ambos idiomas, que entiende ambas culturas, que sirve a todo tu mercado.
 
 ## La Objeción Final: "¿Y si necesito cambios?"
 
-María aprende de ti. Conforme pasan las llamadas, entiende mejor tu proceso, tus tarifas, tus zonas. Y es fácil actualizar:
+Ella aprende de ti. Conforme pasan las llamadas, entiende mejor tu proceso, tus tarifas, tus zonas. Y es fácil actualizar:
 
 - Nuevas zonas de servicio? Un mensaje y está hecho.
 - Cambio de tarifa? Actualizado en minutos.
-- Nuevo servicio? María lo integra al siguiente trabajo.
+- Nuevo servicio? Ella lo integra al siguiente trabajo.
 
 No hay contratación lenta, entrenamiento de semanas, rotación de personal. Es ágil, responsive, flexible.
 
@@ -3058,11 +3058,11 @@ Los contratistas que están capturando el mercado hispanohablante en Texas no es
 
 Estás dejando dinero sobre la mesa si no contestas en español. La pregunta no es si deberías hacerlo. La pregunta es: ¿cuánto dinero vas a perder antes de empezar?
 
-**Obtén Capta.** Llama a María en español y pruébala tú mismo. 30 días de garantía de devolución.
+**Obtén Capta.** Llama a tu recepcionista en español y pruébala tú mismo. 30 días de garantía de devolución.
 
 **Teléfono: (830) 521-7133**
 
-Llama ahora. En español. Pregunta por una cotización. Habla con María. Verás exactamente cómo captura tus clientes hispanohablantes.
+Llama ahora. En español. Pregunta por una cotización. Habla con tu recepcionista. Verás exactamente cómo captura tus clientes hispanohablantes.
 
 ---
 
@@ -3084,7 +3084,7 @@ Capta es $497/mes. Una inversión que se paga sola con dos o tres clientes nuevo
     language: "es",
     category: "punto-de-dolor",
     metaTitle: "Servicio Contestador Fuera de Horario para Contratistas | Capta",
-    metaDescription: "Descubre cómo capturar $312,000 al año en ingresos de emergencia. María contesta 24/7 mientras duermes.",
+    metaDescription: "Descubre cómo capturar $312,000 al año en ingresos de emergencia. Ella contesta 24/7 mientras duermes.",
     targetKeyword: "servicio contestador fuera de horario contratistas",
     relatedPostSlugs: ["hvac-servicio-contestador-24-7-fuera-horario", "roi-nunca-perder-llamada-contratistas"],
     authorName: "Ulysses Munoz",
@@ -3141,19 +3141,19 @@ Las tarifas de emergencia son más altas porque existe urgencia. Un plomero sabe
 
 Aquí viene lo bueno: no necesitas contratar a alguien más. No necesitas un guardián que duerma en tu oficina. No necesitas dejar el teléfono prendido toda la noche como loco.
 
-Necesitas a **María**.
+Necesitas a **Capta**.
 
-María es tu receptora de 24/7, bilingual, disponible ahora mismo. No se cansa. No pide vacaciones. No se enferma. Funciona mientras comes, mientras trabajas, y mientras duermes.
+Ella es tu receptora de 24/7, bilingual, disponible ahora mismo. No se cansa. No pide vacaciones. No se enferma. Funciona mientras comes, mientras trabajas, y mientras duermes.
 
 Así es cómo funciona en la práctica:
 
-**9:45 PM:** Un dueño tiene una fuga importante. Marca tu número. María contesta en segundos.
+**9:45 PM:** Un dueño tiene una fuga importante. Marca tu número. Ella contesta en segundos.
 
-**La llamada:** María habla español e inglés, con naturalidad. Toma todos los detalles—ubicación, qué pasó exactamente, si es vida o propiedad en riesgo, datos de contacto. Le hace preguntas como lo haría un profesional, porque eso es. No es un script robótico. Es una conversación de verdad.
+**La llamada:** Ella habla español e inglés, con naturalidad. Toma todos los detalles—ubicación, qué pasó exactamente, si es vida o propiedad en riesgo, datos de contacto. Le hace preguntas como lo haría un profesional, porque eso es. No es un script robótico. Es una conversación de verdad.
 
-**10:00 PM:** María envía un SMS a tu teléfono personal. El cliente esperará una respuesta mañana a primera hora, pero tú ya tienes todos los detalles en la mano mientras desayunas. Ubicación exacta, descripción del problema, número de teléfono, lista.
+**10:00 PM:** Ella envía un SMS a tu teléfono personal. El cliente esperará una respuesta mañana a primera hora, pero tú ya tienes todos los detalles en la mano mientras desayunas. Ubicación exacta, descripción del problema, número de teléfono, lista.
 
-**Mañana a las 6 AM:** Respondes al cliente. Cotizas. Ganas la chamba. María ya hizo el 80% del trabajo de ventas.
+**Mañana a las 6 AM:** Respondes al cliente. Cotizas. Ganas la chamba. Ella ya hizo el 80% del trabajo de ventas.
 
 ## El Matemático De Tu Crecimiento
 
@@ -3171,15 +3171,15 @@ Pero aquí la parte real: Capta cuesta $497 al mes. O $397 si pagas anual. Eso s
 
 Tu retorno sobre inversión es 49x. Prácticamente es gratis. Es dinero que ya estaba ahí, que solo necesitaba una mano para levantarlo.
 
-Y si María captura un 50% de esas llamadas en lugar del 80%, seguimos hablando de $125,000 al año nuevo. Sigue siendo un x25 de retorno.
+Y si Capta captura un 50% de esas llamadas en lugar del 80%, seguimos hablando de $125,000 al año nuevo. Sigue siendo un x25 de retorno.
 
 No hay matemática que te haga perder con esto. Solo hay matemática de por qué no lo hiciste hace un año.
 
-## Por Qué María Funciona Diferente
+## Por Qué Capta Funciona Diferente
 
 Muchos contratistas prueban servicios de respuesta telefónica tradicionales. Personas reales, pero lentas. Caras. Inconsistentes. Y aquí está el problema: esas personas no entienden tu negocio. No saben la diferencia entre una fuga menor y una emergencia. No hablan español con fluidez si tus clientes son latinos. No pueden cotizar. No pueden hacer seguimiento inteligente.
 
-María entiende el negocio de servicios. Habla tu idioma—literal y figuradamente. Toma información de la manera que tu equipo la necesita. Contesta cada llamada como si fuera tu recepcionista estrella. Y cuesta una fracción de lo que pagarías por una persona de verdad.
+ella entiende el negocio de servicios. Habla tu idioma—literal y figuradamente. Toma información de la manera que tu equipo la necesita. Contesta cada llamada como si fuera tu recepcionista estrella. Y cuesta una fracción de lo que pagarías por una persona de verdad.
 
 Es IA hecha para contratistas. No es tecnología por tecnología. Es tecnología que entiende que un plomero necesita detalles específicos, que un cliente de HVAC quiere saber si es garantía, que una llamada a las 11 PM a menudo significa dinero fácil si respondes.
 
@@ -3187,7 +3187,7 @@ Es IA hecha para contratistas. No es tecnología por tecnología. Es tecnología
 
 El próximo cliente que llame a las 9:30 PM mientras estés en la cama no será dinero perdido. Será un SMS esperándote.
 
-Obtén Capta. Actívalo en 20 minutos. Mañana por la noche, María está lista.
+Obtén Capta. Actívalo en 20 minutos. Mañana por la noche, Ella está lista.
 
 No estás agregando complejidad a tu negocio. Solo estás dejando de perder dinero.
 
@@ -3196,10 +3196,10 @@ No estás agregando complejidad a tu negocio. Solo estás dejando de perder dine
 
 Tu primer mes es para probar. Tu segundo mes paga por todo el primer año. Tu tercer mes es crecimiento puro.
 
-La pregunta no es si puedes permitirte María. La pregunta es si puedes permitirte seguir sin ella.
+La pregunta no es si puedes permitirte Capta. La pregunta es si puedes permitirte seguir sin ella.
 
 ---
 
-*Capta es para contratistas de servicios en casa—plomeros, técnicos de HVAC, electricistas, techistas, y más. María contesta 24/7 en español e inglés. Una llamada que no respondes es dinero que pierdes. Capta la captura.*`,
+*Capta es para contratistas de servicios en casa—plomeros, técnicos de HVAC, electricistas, techistas, y más. Ella contesta 24/7 en español e inglés. Una llamada que no respondes es dinero que pierdes. Capta la captura.*`,
   },
 ];

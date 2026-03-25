@@ -46,13 +46,13 @@ That's over $100,000 a year. Walking away because nobody picked up the phone.
 
 ## What Happens When Every Call Gets Answered
 
-Capta is an AI receptionist built for trades like plumbing. Her name is Maria, and she answers your phone around the clock — at 2 AM on a Tuesday, at noon on a Saturday, on Christmas morning if that's when the sewer backs up.
+Capta is an AI receptionist built for trades like plumbing. She answers your phone around the clock — at 2 AM on a Tuesday, at noon on a Saturday, on Christmas morning if that's when the sewer backs up.
 
-But Maria isn't a script-reader. She listens. She understands that "there's water everywhere" is a different call than "my faucet is dripping." She classifies every call by urgency:
+But she isn't a script-reader. She listens. She understands that "there's water everywhere" is a different call than "my faucet is dripping." She classifies every call by urgency:
 
-- **Code red** — burst pipe, active flooding, sewer backup, gas smell near a water heater. You get an instant SMS and email alert. Maria tells the caller you're on the way.
-- **Needs attention** — no hot water, slow drains, toilet won't stop running. Maria books a same-day or next-day appointment.
-- **Routine** — quote requests for remodels, fixture installations, water softener installs. Maria captures the details and schedules an estimate.
+- **Code red** — burst pipe, active flooding, sewer backup, gas smell near a water heater. You get an instant SMS and email alert. She tells the caller you're on the way.
+- **Needs attention** — no hot water, slow drains, toilet won't stop running. She books a same-day or next-day appointment.
+- **Routine** — quote requests for remodels, fixture installations, water softener installs. She captures the details and schedules an estimate.
 
 She also speaks fluent Spanish. Not translated-by-software Spanish — natural, conversational Spanish. In markets like Texas, Florida, California, and Arizona, this alone can expand your customer base by 15-25%.
 
@@ -76,23 +76,23 @@ You don't need Capta to double your business. You just need it to catch the jobs
 
 Emergency calls get the headlines, but the less dramatic calls matter too. The homeowner who wants a quote on a bathroom remodel. The property manager who needs a plumber on retainer. The couple building a new house who needs a rough-in bid.
 
-These calls come during business hours — when you're under a crawlspace or snaking a drain. Maria answers, captures the details, and books the estimate. No "leave a message and we'll call you back." No phone tag. The customer gets a confirmation text and feels taken care of before you even know they called.
+These calls come during business hours — when you're under a crawlspace or snaking a drain. She answers, captures the details, and books the estimate. No "leave a message and we'll call you back." No phone tag. The customer gets a confirmation text and feels taken care of before you even know they called.
 
-Every call Maria answers is a customer who didn't call your competitor.
+Every call She answers is a customer who didn't call your competitor.
 
 ## What Plumbers Ask Us
 
-**"What about warranty callbacks? Can Maria handle those?"**
-Yes. Maria identifies warranty-related calls and captures the original job details so you can reference the work history before calling back. She flags these separately from new business.
+**"What about warranty callbacks? Can she handle those?"**
+Yes. She identifies warranty-related calls and captures the original job details so you can reference the work history before calling back. She flags these separately from new business.
 
 **"Can she tell the difference between a standard water heater call and a tankless inquiry?"**
-She can. Maria asks clarifying questions — type of unit, age, symptoms — and captures the details so you can quote accurately before you arrive.
+She can. She asks clarifying questions — type of unit, age, symptoms — and captures the details so you can quote accurately before you arrive.
 
 **"I have a helper who answers phones during the day. Do I still need this?"**
-Most plumbers who hire Capta keep their daytime help and use Maria for after-hours, weekends, and overflow. When your helper is on another line or takes a sick day, Maria picks up. You never miss a call.
+Most plumbers who hire Capta keep their daytime help and use Capta for after-hours, weekends, and overflow. When your helper is on another line or takes a sick day, She picks up. You never miss a call.
 
 **"What if I'm already on-site and can handle the emergency myself?"**
-Maria alerts you. You decide. If you're available, you call the customer back directly. If you're not, the call is logged and you handle it when you're free. You stay in control.
+She alerts you. You decide. If you're available, you call the customer back directly. If you're not, the call is logged and you handle it when you're free. You stay in control.
 
 ---
 
@@ -139,9 +139,9 @@ Las tarifas de emergencia fuera de horario son 1.5x a 2x el precio estandar. Una
 
 ## Que Pasa Cuando Cada Llamada Se Contesta
 
-Capta es una recepcionista AI construida para oficios como plomeria. Se llama Maria y contesta tu telefono las 24 horas — a las 2 AM un martes, al mediodia un sabado, en Navidad si es cuando el drenaje se respalda.
+Capta es una recepcionista AI construida para oficios como plomeria. Contesta tu telefono las 24 horas — a las 2 AM un martes, al mediodia un sabado, en Navidad si es cuando el drenaje se respalda.
 
-Maria no lee guiones. Escucha. Entiende que "hay agua por todos lados" es una llamada diferente a "mi llave esta goteando." Clasifica cada llamada por urgencia:
+Tu recepcionista no lee guiones. Escucha. Entiende que "hay agua por todos lados" es una llamada diferente a "mi llave esta goteando." Clasifica cada llamada por urgencia:
 
 - **Codigo rojo** — tuberia reventada, inundacion activa, respaldo de drenaje. Alerta inmediata por SMS y email.
 - **Necesita atencion** — sin agua caliente, desagues lentos. Agenda cita para el mismo dia o siguiente.
@@ -160,13 +160,13 @@ No necesitas que Capta duplique tu negocio. Solo necesitas que atrape los trabaj
 ## Lo Que Preguntan los Plomeros
 
 **"Que pasa con los callbacks de garantia?"**
-Maria identifica llamadas relacionadas con garantia y captura los detalles del trabajo original. Las separa del negocio nuevo.
+Tu recepcionista identifica llamadas relacionadas con garantia y captura los detalles del trabajo original. Las separa del negocio nuevo.
 
 **"Puede distinguir entre un calentador estandar y uno sin tanque?"**
-Si. Maria hace preguntas clarificadoras — tipo de unidad, edad, sintomas — y captura los detalles para que puedas cotizar antes de llegar.
+Si. Tu recepcionista hace preguntas clarificadoras — tipo de unidad, edad, sintomas — y captura los detalles para que puedas cotizar antes de llegar.
 
 **"Que pasa si ya tengo alguien que contesta de dia?"**
-La mayoria de los plomeros que contratan Capta mantienen su ayuda de dia y usan a Maria para fuera de horario, fines de semana, y exceso de llamadas.
+La mayoria de los plomeros que contratan Capta mantienen su ayuda de dia y usan a la recepcionista IA para fuera de horario, fines de semana, y exceso de llamadas.
 
 ---
 
@@ -233,7 +233,7 @@ None of these work. The fundamental problem is that HVAC demand is seasonal, but
 
 ## Flat Pricing for a Seasonal Business
 
-Capta charges $497/month. Period. Whether Maria — your AI receptionist — handles 80 calls in March or 420 calls in July, the price doesn't change.
+Capta charges $497/month. Period. Whether your AI receptionist handles 80 calls in March or 420 calls in July, the price doesn't change.
 
 That is not a small detail. It's the entire point.
 
@@ -241,17 +241,17 @@ For an HVAC company, predictable phone costs mean you can actually budget. You k
 
 Annualized, that's $5,964/year — or $4,764 if you pay annually ($397/month effective). Compare that to a full-time receptionist ($32,000-$42,000) or an answering service ($6,000-$18,000 depending on volume).
 
-## What Maria Actually Does on an HVAC Call
+## What Your AI Receptionist Actually Does on an HVAC Call
 
-Maria doesn't read from a decision tree. She listens, understands the problem, and takes the right action.
+She doesn't read from a decision tree. She listens, understands the problem, and takes the right action.
 
-**Emergency call at 2 AM:** "My furnace just stopped and it's 15 degrees outside." Maria classifies this as a no-heat emergency, sends you an immediate SMS and email alert with the caller's name, address, and situation. She tells the caller you'll be in touch shortly. The whole interaction takes under two minutes.
+**Emergency call at 2 AM:** "My furnace just stopped and it's 15 degrees outside." She classifies this as a no-heat emergency, sends you an immediate SMS and email alert with the caller's name, address, and situation. She tells the caller you'll be in touch shortly. The whole interaction takes under two minutes.
 
-**System replacement inquiry:** "My AC is 18 years old and I think it's time for a new one." Maria captures the current system type, home square footage, and any preferences the caller mentions. She books an in-home estimate at a time that works for both of you.
+**System replacement inquiry:** "My AC is 18 years old and I think it's time for a new one." She captures the current system type, home square footage, and any preferences the caller mentions. She books an in-home estimate at a time that works for both of you.
 
-**Maintenance plan call:** "I want to sign up for annual service." This is where HVAC companies leave money on the table. These calls often come during busy periods and go unanswered. Maria captures the customer's information and books the first service visit, turning a one-time inquiry into recurring revenue.
+**Maintenance plan call:** "I want to sign up for annual service." This is where HVAC companies leave money on the table. These calls often come during busy periods and go unanswered. She captures the customer's information and books the first service visit, turning a one-time inquiry into recurring revenue.
 
-**Bilingual call:** "No tengo calefaccion y tengo ninos en la casa." Maria responds in fluent Spanish, treats this as a heating emergency, and alerts you immediately. No translation delay. No confusion. In bilingual markets, this capability is worth the entire cost of the service on its own.
+**Bilingual call:** "No tengo calefaccion y tengo ninos en la casa." She responds in fluent Spanish, treats this as a heating emergency, and alerts you immediately. No translation delay. No confusion. In bilingual markets, this capability is worth the entire cost of the service on its own.
 
 ## The Maintenance Plan Multiplier
 
@@ -261,7 +261,7 @@ A single maintenance plan generates $200-$400/year in recurring revenue. But mai
 
 Every missed call from a potential maintenance customer isn't just $200/year lost. It's potentially $12,000+ in future revenue that will never materialize.
 
-Maria captures every one of these calls. She doesn't let them go to voicemail because you're on a rooftop unit.
+She captures every one of these calls. She doesn't let them go to voicemail because you're on a rooftop unit.
 
 ## The Shoulder Season Opportunity
 
@@ -273,11 +273,11 @@ With per-minute answering services, you're paying for every call in these slow m
 
 ## What HVAC Companies Ask Us
 
-**"How does Maria handle maintenance plan upsells?"**
-Maria doesn't hard-sell, but she does ask the right questions. When a caller requests a one-time service, Maria mentions that your company offers maintenance plans and asks if they'd like information. She captures their interest and flags the lead for your follow-up.
+**"How does she handle maintenance plan upsells?"**
+She doesn't hard-sell, but she does ask the right questions. When a caller requests a one-time service, she mentions that your company offers maintenance plans and asks if they'd like information. She captures their interest and flags the lead for your follow-up.
 
 **"What about multi-system properties?"**
-Maria asks how many systems the property has, their approximate ages, and whether the issue affects one unit or all of them. For commercial properties with multiple rooftop units, she captures the unit number or zone. This detail saves you a trip and lets you quote more accurately.
+She asks how many systems the property has, their approximate ages, and whether the issue affects one unit or all of them. For commercial properties with multiple rooftop units, she captures the unit number or zone. This detail saves you a trip and lets you quote more accurately.
 
 **"Our busy season is different — we're in the South, so winter is slow."**
 Doesn't matter. Flat pricing means your geography and your seasonal curve are irrelevant. You pay the same whether you're a Phoenix company swamped in June or a Minneapolis company swamped in January.
@@ -334,19 +334,19 @@ Ninguna funciona. El problema fundamental: la demanda de HVAC es estacional, per
 
 ## Precio Fijo para un Negocio Estacional
 
-Capta cobra $497/mes. Punto. Ya sea que Maria maneje 80 llamadas en marzo o 420 en julio, el precio no cambia.
+Capta cobra $497/mes. Punto. Ya sea que tu recepcionista maneje 80 llamadas en marzo o 420 en julio, el precio no cambia.
 
 Anualizado: $5,964/ano — o $4,764 si pagas anual ($397/mes efectivos). Compara eso con una recepcionista de tiempo completo ($32,000-$42,000) o un servicio de contestacion ($6,000-$18,000 dependiendo del volumen).
 
-## Que Hace Maria en una Llamada de HVAC
+## Que Hace Tu Recepcionista en una Llamada de HVAC
 
-**Emergencia a las 2 AM:** "Mi calefaccion dejo de funcionar y estamos a -5 grados." Maria clasifica esto como emergencia sin calefaccion, te envia alerta inmediata por SMS y email con nombre, direccion y situacion del que llama.
+**Emergencia a las 2 AM:** "Mi calefaccion dejo de funcionar y estamos a -5 grados." Tu recepcionista clasifica esto como emergencia sin calefaccion, te envia alerta inmediata por SMS y email con nombre, direccion y situacion del que llama.
 
-**Consulta de reemplazo de sistema:** "Mi aire tiene 18 anos y creo que es hora de uno nuevo." Maria captura tipo de sistema actual, metros cuadrados de la casa, y preferencias. Agenda una estimacion a domicilio.
+**Consulta de reemplazo de sistema:** "Mi aire tiene 18 anos y creo que es hora de uno nuevo." Tu recepcionista captura tipo de sistema actual, metros cuadrados de la casa, y preferencias. Agenda una estimacion a domicilio.
 
-**Llamada de plan de mantenimiento:** "Quiero inscribirme en servicio anual." Maria captura la informacion del cliente y agenda la primera visita, convirtiendo una consulta unica en ingreso recurrente.
+**Llamada de plan de mantenimiento:** "Quiero inscribirme en servicio anual." Tu recepcionista captura la informacion del cliente y agenda la primera visita, convirtiendo una consulta unica en ingreso recurrente.
 
-**Llamada bilingue:** "My AC stopped working and I have elderly parents at home." Maria responde en ingles con fluidez, trata esto como emergencia, y te alerta inmediatamente.
+**Llamada bilingue:** "My AC stopped working and I have elderly parents at home." Tu recepcionista responde en ingles con fluidez, trata esto como emergencia, y te alerta inmediatamente.
 
 ## El Multiplicador de Planes de Mantenimiento
 
@@ -356,11 +356,11 @@ Cada llamada perdida de un cliente potencial de mantenimiento no es solo $200/an
 
 ## Lo Que Preguntan las Empresas de HVAC
 
-**"Como maneja Maria los upsells de planes de mantenimiento?"**
-Maria no vende agresivamente, pero hace las preguntas correctas. Cuando alguien solicita un servicio unico, Maria menciona que tu empresa ofrece planes de mantenimiento y pregunta si quieren informacion.
+**"Como maneja la recepcionista los upsells de planes de mantenimiento?"**
+Tu recepcionista no vende agresivamente, pero hace las preguntas correctas. Cuando alguien solicita un servicio unico, ella menciona que tu empresa ofrece planes de mantenimiento y pregunta si quieren informacion.
 
 **"Que pasa con propiedades con multiples sistemas?"**
-Maria pregunta cuantos sistemas tiene la propiedad, sus edades aproximadas, y si el problema afecta una unidad o todas. Para propiedades comerciales, captura el numero de unidad o zona.
+Tu recepcionista pregunta cuantos sistemas tiene la propiedad, sus edades aproximadas, y si el problema afecta una unidad o todas. Para propiedades comerciales, captura el numero de unidad o zona.
 
 ---
 
@@ -404,7 +404,7 @@ Plumbing calls are mostly about water damage and inconvenience. HVAC calls are a
 
 Your phone system needs to tell the difference — instantly.
 
-Capta's AI receptionist, Maria, is trained on the full range of electrical scenarios:
+Capta's AI receptionist is trained on the full range of electrical scenarios:
 
 **Immediate danger signals:**
 - Burning smell near any electrical component
@@ -413,7 +413,7 @@ Capta's AI receptionist, Maria, is trained on the full range of electrical scena
 - Exposed or damaged wiring
 - Water contact with electrical systems
 
-When Maria hears any of these, she does three things: (1) alerts you immediately via SMS and email, (2) advises the caller on basic safety — don't touch the panel, leave the room if there's smoke, call 911 if there's active fire — and (3) logs the call with full details so you can respond informed.
+When she hears any of these, she does three things: (1) alerts you immediately via SMS and email, (2) advises the caller on basic safety — don't touch the panel, leave the room if there's smoke, call 911 if there's active fire — and (3) logs the call with full details so you can respond informed.
 
 **Urgent but not dangerous:**
 - Partial outage (one room, one circuit)
@@ -421,7 +421,7 @@ When Maria hears any of these, she does three things: (1) alerts you immediately
 - Flickering lights throughout the house
 - GFCI outlets that won't reset
 
-Maria prioritizes these for same-day or next-day response and books an appointment.
+She prioritizes these for same-day or next-day response and books an appointment.
 
 **Routine service:**
 - Panel upgrades (100A to 200A)
@@ -432,13 +432,13 @@ Maria prioritizes these for same-day or next-day response and books an appointme
 - Outdoor lighting and landscape electrical
 - Code compliance inspections
 
-Maria captures the project scope, asks relevant questions (square footage, panel age, number of circuits needed), and schedules an estimate.
+She captures the project scope, asks relevant questions (square footage, panel age, number of circuits needed), and schedules an estimate.
 
 ## The Commercial-Residential Balancing Act
 
 Most electricians don't exclusively serve homeowners. You're bidding on tenant improvement projects at office buildings. You're wiring new construction for a developer. You have a property management company that calls you for three different buildings.
 
-Commercial calls are fundamentally different from residential calls. The information Maria needs to capture is different:
+Commercial calls are fundamentally different from residential calls. The information she needs to capture is different:
 
 | | Residential | Commercial |
 |---|---|---|
@@ -447,7 +447,7 @@ Commercial calls are fundamentally different from residential calls. The informa
 | **Decision maker** | Homeowner (usually on the call) | Property manager, GC, or building owner (may not be on the call) |
 | **Typical value** | $150 - $3,000 | $2,000 - $50,000+ |
 
-Maria adapts her questions based on what kind of call she's handling. A homeowner asking about an EV charger gets questions about their vehicle and garage setup. A property manager reporting flickering lights in a commercial space gets questions about the building, the affected area, and whether tenants have been notified.
+She adapts her questions based on what kind of call she's handling. A homeowner asking about an EV charger gets questions about their vehicle and garage setup. A property manager reporting flickering lights in a commercial space gets questions about the building, the affected area, and whether tenants have been notified.
 
 This distinction matters because commercial work is where electrical businesses scale. A single commercial relationship can generate $50,000+ per year in recurring work. Missing that first call is expensive in ways that compound over time.
 
@@ -455,30 +455,30 @@ This distinction matters because commercial work is where electrical businesses 
 
 The electrical trade is evolving faster than any other home service. Five years ago, "EV charger installation" wasn't a significant line of business. Now it's one of the fastest-growing service categories for residential electricians.
 
-Maria stays current with these categories:
+She stays current with these categories:
 - **EV charger installs** — captures vehicle make, desired charger level, panel capacity, and garage distance from panel
 - **Solar panel connections** — captures system size, inverter type, and utility interconnection status
 - **Generator installations** — captures home size, desired coverage (whole-home vs. critical circuits), and fuel preference
 - **Smart home wiring** — captures scope (lighting, security, audio, networking) and existing infrastructure
 
-Each category requires different information to quote accurately. A generic answering service asks "what do you need?" and writes down whatever the caller says. Maria asks the right follow-up questions for each category, saving you time on every estimate.
+Each category requires different information to quote accurately. A generic answering service asks "what do you need?" and writes down whatever the caller says. She asks the right follow-up questions for each category, saving you time on every estimate.
 
 ## Bilingual Service in a Changing Market
 
 Electrical work doesn't care what language you speak. Panel upgrades, rewiring, and safety inspections are needed in every neighborhood. But Spanish-speaking homeowners who can't communicate their electrical problem clearly over the phone face a real barrier — and a real safety risk.
 
-Maria handles these calls natively in Spanish. A homeowner can describe "hay un olor a quemado en la pared" and Maria will treat it with the same urgency as the English equivalent. She doesn't translate; she understands.
+She handles these calls natively in Spanish. A homeowner can describe "hay un olor a quemado en la pared" and she will treat it with the same urgency as the English equivalent. She doesn't translate; she understands.
 
 ## What Electricians Ask Us
 
-**"Can Maria distinguish a panel upgrade from a full rewire?"**
+**"Can she distinguish a panel upgrade from a full rewire?"**
 Yes. She asks about the home's age, current panel amperage, whether they're adding circuits or replacing existing wiring, and what's motivating the project (renovation, selling the home, code compliance). You get a qualified lead, not just a name and number.
 
 **"How does she handle commercial bid requests?"**
-Maria captures the project description, timeline, building type, square footage, and who the decision maker is. For new construction, she asks about the general contractor and project phase. She flags commercial leads separately from residential so you can prioritize.
+She captures the project description, timeline, building type, square footage, and who the decision maker is. For new construction, she asks about the general contractor and project phase. She flags commercial leads separately from residential so you can prioritize.
 
 **"I mostly work alone. What if I'm on a ladder and can't check my phone for hours?"**
-That's exactly the point. Maria handles every call while you work. When you check your phone, you'll find organized call summaries, booked appointments, and any emergency alerts waiting. Nothing fell through the cracks while you were pulling wire.
+That's exactly the point. She handles every call while you work. When you check your phone, you'll find organized call summaries, booked appointments, and any emergency alerts waiting. Nothing fell through the cracks while you were pulling wire.
 
 ---
 
@@ -519,7 +519,7 @@ Las llamadas de plomeria son principalmente sobre danos de agua. Las de HVAC son
 
 Tu sistema telefonico necesita distinguir la diferencia — instantaneamente.
 
-Maria, la recepcionista AI de Capta, esta entrenada en el rango completo de escenarios electricos:
+La recepcionista AI de Capta esta entrenada en el rango completo de escenarios electricos:
 
 **Senales de peligro inmediato:**
 - Olor a quemado cerca de cualquier componente electrico
@@ -528,7 +528,7 @@ Maria, la recepcionista AI de Capta, esta entrenada en el rango completo de esce
 - Cableado expuesto o danado
 - Contacto de agua con sistemas electricos
 
-Cuando Maria escucha cualquiera de estos, hace tres cosas: (1) te alerta inmediatamente por SMS y email, (2) aconseja al que llama sobre seguridad basica — no toques el panel, sal de la habitacion si hay humo, llama al 911 si hay fuego activo, y (3) registra la llamada con todos los detalles.
+Cuando tu recepcionista escucha cualquiera de estos, hace tres cosas: (1) te alerta inmediatamente por SMS y email, (2) aconseja al que llama sobre seguridad basica — no toques el panel, sal de la habitacion si hay humo, llama al 911 si hay fuego activo, y (3) registra la llamada con todos los detalles.
 
 **Urgente pero no peligroso:**
 - Apagon parcial, breakers saltando repetidamente, luces parpadeantes
@@ -536,13 +536,13 @@ Cuando Maria escucha cualquiera de estos, hace tres cosas: (1) te alerta inmedia
 **Servicio rutinario:**
 - Actualizaciones de panel, instalaciones de cargadores EV, recableado, generadores, casa inteligente
 
-Maria captura el alcance del proyecto, hace preguntas relevantes, y agenda una estimacion.
+Tu recepcionista captura el alcance del proyecto, hace preguntas relevantes, y agenda una estimacion.
 
 ## El Balance Comercial-Residencial
 
 La mayoria de los electricistas no sirven exclusivamente a propietarios de casas. Licitan proyectos de mejoras en edificios de oficinas. Cablean construccion nueva. Tienen companias de administracion de propiedades que les llaman para tres edificios diferentes.
 
-Maria adapta sus preguntas segun el tipo de llamada:
+Tu recepcionista adapta sus preguntas segun el tipo de llamada:
 
 | | Residencial | Comercial |
 |---|---|---|
@@ -556,18 +556,18 @@ El trabajo comercial es donde los negocios electricos escalan. Una sola relacion
 
 El oficio electrico esta evolucionando mas rapido que cualquier otro servicio del hogar. Cargadores EV, conexiones de paneles solares, instalaciones de generadores, cableado de casa inteligente — cada categoria requiere informacion diferente para cotizar con precision.
 
-Maria captura los detalles correctos para cada categoria, ahorrandote tiempo en cada estimacion.
+Tu recepcionista captura los detalles correctos para cada categoria, ahorrandote tiempo en cada estimacion.
 
 ## Lo Que Preguntan los Electricistas
 
-**"Puede Maria distinguir una actualizacion de panel de un recableado completo?"**
+**"Puede la recepcionista distinguir una actualizacion de panel de un recableado completo?"**
 Si. Pregunta sobre la edad de la casa, amperaje actual del panel, si estan agregando circuitos o reemplazando cableado existente, y que motiva el proyecto.
 
 **"Como maneja solicitudes de licitacion comercial?"**
-Maria captura descripcion del proyecto, plazo, tipo de edificio, metros cuadrados, y quien es el tomador de decisiones. Senala leads comerciales por separado de residenciales.
+Tu recepcionista captura descripcion del proyecto, plazo, tipo de edificio, metros cuadrados, y quien es el tomador de decisiones. Senala leads comerciales por separado de residenciales.
 
 **"Trabajo solo mayormente. Que pasa si estoy en una escalera y no puedo revisar mi telefono por horas?"**
-Ese es exactamente el punto. Maria maneja cada llamada mientras trabajas. Cuando revisas tu telefono, encuentras resumenes de llamadas organizados, citas agendadas, y alertas de emergencia esperandote.
+Ese es exactamente el punto. Tu recepcionista maneja cada llamada mientras trabajas. Cuando revisas tu telefono, encuentras resumenes de llamadas organizados, citas agendadas, y alertas de emergencia esperandote.
 
 ---
 
@@ -629,15 +629,15 @@ You're not losing customers to bad work. You're losing them to a missed call.
 
 ## What Changes When Every Call Gets Answered
 
-Capta's AI receptionist Maria answers your phone 24/7 at a flat $497/month. Here's what that looks like in the context of a landscaping business:
+Capta's AI receptionist answers your phone 24/7 at a flat $497/month. Here's what that looks like in the context of a landscaping business:
 
-**Monday 7:30 AM.** You're loading the trailer. A homeowner calls because their neighbor recommended you. Maria answers, captures the address, yard size, what services they want, and books an estimate for Wednesday afternoon. The caller gets a text confirmation. You see the appointment on your phone when you check at lunch.
+**Monday 7:30 AM.** You're loading the trailer. A homeowner calls because their neighbor recommended you. She answers, captures the address, yard size, what services they want, and books an estimate for Wednesday afternoon. The caller gets a text confirmation. You see the appointment on your phone when you check at lunch.
 
-**Tuesday 2:15 PM.** You're running a string trimmer. A property management company calls about maintaining three apartment complexes. Maria captures the property addresses, number of units, current service frequency, and their budget range. She flags this as a commercial lead. You see it when you finish the job and call them back with actual numbers ready.
+**Tuesday 2:15 PM.** You're running a string trimmer. A property management company calls about maintaining three apartment complexes. She captures the property addresses, number of units, current service frequency, and their budget range. She flags this as a commercial lead. You see it when you finish the job and call them back with actual numbers ready.
 
-**Wednesday 9:00 PM.** An HOA board member calls because they're unhappy with their current landscaper and want to switch. Maria answers — at 9 PM — treats the call with the same quality as a daytime call, and books a site visit. Your competitor's phone went to voicemail. You got the meeting.
+**Wednesday 9:00 PM.** An HOA board member calls because they're unhappy with their current landscaper and want to switch. She answers — at 9 PM — treats the call with the same quality as a daytime call, and books a site visit. Your competitor's phone went to voicemail. You got the meeting.
 
-**Saturday 11:00 AM.** A Spanish-speaking homeowner calls. "Necesito que alguien corte mi cesped todas las semanas." Maria handles the entire conversation in Spanish, captures the property details, and books the estimate. No language barrier. No lost customer.
+**Saturday 11:00 AM.** A Spanish-speaking homeowner calls. "Necesito que alguien corte mi cesped todas las semanas." She handles the entire conversation in Spanish, captures the property details, and books the estimate. No language barrier. No lost customer.
 
 None of these scenarios require you to stop working. None of them require you to hire someone. They just require a phone that gets answered.
 
@@ -672,25 +672,25 @@ A plumber fixes a pipe and might not hear from that customer for two years. An H
 
 The first call is the most valuable call in landscaping. Not because of the first job, but because of every job after it. A customer who signs up for weekly mowing in April might spend $15,000 with you over the next five years.
 
-Maria makes sure that first call gets answered.
+Capta makes sure that first call gets answered.
 
 ## What Landscapers Ask Us
 
-**"Can Maria manage recurring schedule changes?"**
-Yes. When a customer calls to skip a week, change their mow day, or add a service, Maria captures the change and logs it. You see all schedule modifications in your dashboard. No sticky notes, no forgotten voicemails.
+**"Can she manage recurring schedule changes?"**
+Yes. When a customer calls to skip a week, change their mow day, or add a service, She captures the change and logs it. You see all schedule modifications in your dashboard. No sticky notes, no forgotten voicemails.
 
 **"How does she handle HOA and commercial property inquiries?"**
-Maria asks different questions for commercial callers: property address, number of units or acres, current service provider (if switching), contract timeline, and decision-maker contact info. She flags these leads separately so you know to prioritize the callback.
+She asks different questions for commercial callers: property address, number of units or acres, current service provider (if switching), contract timeline, and decision-maker contact info. She flags these leads separately so you know to prioritize the callback.
 
 **"What about the off-season? I barely get calls in winter."**
 That's the beauty of flat pricing. Capta costs $497/month whether you get 300 calls in April or 30 calls in January. You're not penalized for seasonality. And those 30 winter calls? They might be early-bird customers booking spring cleanups. Every one of them matters.
 
 **"My crew leader sometimes takes calls for me. Can we both use the system?"**
-Maria handles all inbound calls and logs everything in your Capta dashboard, which you can access from any device. Your crew leader, your spouse, your office — anyone you authorize can see the call log, appointments, and customer details.
+She handles all inbound calls and logs everything in your Capta dashboard, which you can access from any device. Your crew leader, your spouse, your office — anyone you authorize can see the call log, appointments, and customer details.
 
 ---
 
-You didn't start a landscaping company to answer phones. You started it because you're good at the work. Let Maria handle the calls so you can break through the ceiling and keep growing.
+You didn't start a landscaping company to answer phones. You started it because you're good at the work. Let Capta handle the calls so you can break through the ceiling and keep growing.
 
 **[See pricing details →](https://captahq.com/pricing)** | Set up in under 10 minutes at [captahq.com](https://captahq.com) | Call (830) 521-7133`,
   },
@@ -743,15 +743,15 @@ No estas perdiendo clientes por mal trabajo. Los estas perdiendo por una llamada
 
 ## Que Cambia Cuando Cada Llamada Se Contesta
 
-Maria, la recepcionista AI de Capta, contesta tu telefono 24/7 a $497/mes fijo:
+La recepcionista AI de Capta contesta tu telefono 24/7 a $497/mes fijo:
 
-**Lunes 7:30 AM.** Estas cargando el remolque. Un propietario llama porque su vecino te recomendo. Maria contesta, captura la direccion, tamano del jardin, que servicios quieren, y agenda una estimacion para el miercoles. El que llama recibe confirmacion por texto.
+**Lunes 7:30 AM.** Estas cargando el remolque. Un propietario llama porque su vecino te recomendo. Tu recepcionista contesta, captura la direccion, tamano del jardin, que servicios quieren, y agenda una estimacion para el miercoles. El que llama recibe confirmacion por texto.
 
-**Martes 2:15 PM.** Estas usando la desbrozadora. Una empresa de administracion de propiedades llama sobre mantener tres complejos de apartamentos. Maria captura las direcciones, numero de unidades, y rango de presupuesto. La senala como lead comercial.
+**Martes 2:15 PM.** Estas usando la desbrozadora. Una empresa de administracion de propiedades llama sobre mantener tres complejos de apartamentos. Tu recepcionista captura las direcciones, numero de unidades, y rango de presupuesto. La senala como lead comercial.
 
-**Miercoles 9:00 PM.** Un miembro de la junta HOA llama porque estan insatisfechos con su paisajista actual. Maria contesta — a las 9 PM — y agenda una visita al sitio. El telefono de tu competidor fue al buzon de voz.
+**Miercoles 9:00 PM.** Un miembro de la junta HOA llama porque estan insatisfechos con su paisajista actual. Tu recepcionista contesta — a las 9 PM — y agenda una visita al sitio. El telefono de tu competidor fue al buzon de voz.
 
-**Sabado 11:00 AM.** Un propietario de habla inglesa llama. "I need someone to mow my lawn every week." Maria maneja toda la conversacion en ingles, captura los detalles, y agenda la estimacion.
+**Sabado 11:00 AM.** Un propietario de habla inglesa llama. "I need someone to mow my lawn every week." Tu recepcionista maneja toda la conversacion en ingles, captura los detalles, y agenda la estimacion.
 
 ## Rompiendo el Techo
 
@@ -780,18 +780,18 @@ La primera llamada es la llamada mas valiosa en paisajismo. No por el primer tra
 
 ## Lo Que Preguntan los Paisajistas
 
-**"Puede Maria manejar cambios de programacion recurrente?"**
-Si. Cuando un cliente llama para saltar una semana, cambiar su dia de corte, o agregar un servicio, Maria captura el cambio y lo registra. Ves todas las modificaciones en tu dashboard.
+**"Puede la recepcionista manejar cambios de programacion recurrente?"**
+Si. Cuando un cliente llama para saltar una semana, cambiar su dia de corte, o agregar un servicio, tu recepcionista captura el cambio y lo registra. Ves todas las modificaciones en tu dashboard.
 
 **"Como maneja consultas de HOA y propiedades comerciales?"**
-Maria hace preguntas diferentes para llamadas comerciales: direccion de propiedad, numero de unidades o acres, proveedor actual, plazo de contrato, e informacion de contacto del tomador de decisiones.
+Tu recepcionista hace preguntas diferentes para llamadas comerciales: direccion de propiedad, numero de unidades o acres, proveedor actual, plazo de contrato, e informacion de contacto del tomador de decisiones.
 
 **"Que pasa con la temporada baja? Apenas recibo llamadas en invierno."**
 Esa es la ventaja del precio fijo. Capta cuesta $497/mes ya sea que recibas 300 llamadas en abril o 30 en enero. Y esas 30 llamadas de invierno podrian ser clientes madrugadores reservando limpiezas de primavera.
 
 ---
 
-No empezaste una empresa de paisajismo para contestar telefonos. La empezaste porque eres bueno en el trabajo. Deja que Maria maneje las llamadas para que puedas romper el techo y seguir creciendo.
+No empezaste una empresa de paisajismo para contestar telefonos. La empezaste porque eres bueno en el trabajo. Deja que tu recepcionista IA maneje las llamadas para que puedas romper el techo y seguir creciendo.
 
 **[Ve los detalles de precio →](https://captahq.com/pricing)** | Configura en menos de 10 minutos en [captahq.com](https://captahq.com) | Llama al (830) 521-7133`,
   },

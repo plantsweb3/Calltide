@@ -174,9 +174,9 @@ First impressions form in seconds. A voicemail greeting is your first impression
 
 Modern AI voice technology sounds natural, responds conversationally, and handles the entire interaction the caller wanted: explain the problem, get acknowledged, book a time.
 
-Capta's AI receptionist Maria replaces your voicemail with a real conversation. She answers in under 2 seconds, speaks English and Spanish, books appointments, and sends SMS confirmations — all at a flat monthly rate with no per-call fees.
+Capta's AI receptionist replaces your voicemail with a real conversation. She answers in under 2 seconds, speaks English and Spanish, books appointments, and sends SMS confirmations — all at a flat monthly rate with no per-call fees.
 
-Your voicemail converts 3% of callers. Maria converts 35-50%. The math writes itself.
+Your voicemail converts 3% of callers. Capta converts 35-50%. The math writes itself.
 
 **[Replace your voicemail →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=voicemail)**
 
@@ -189,7 +189,7 @@ Most callers can't tell — and those who can generally don't care. They wanted 
 Even the best greeting doesn't change the fundamental problem: it's a one-way monologue that asks the caller to do work and wait. The medium is the problem, not the message.
 
 **Can I keep voicemail as a backup?**
-You can, but you won't need it. Maria handles every call. The only calls that might hit voicemail are ones where the caller hangs up in under 2 seconds — before Maria can even answer.`,
+You can, but you won't need it. She handles every call. The only calls that might hit voicemail are ones where the caller hangs up in under 2 seconds — before your receptionist can even answer.`,
   },
   /* ════ ES 2 ════ */
   {
@@ -230,9 +230,9 @@ De cada 100 personas que llegan a tu buzón:
 
 ## El Reemplazo
 
-María, la recepcionista AI de Capta, reemplaza tu buzón con una conversación real. Contesta en menos de 2 segundos, habla inglés y español, agenda citas, y envía confirmaciones SMS — todo por una tarifa fija mensual sin cargos por llamada.
+La recepcionista AI de Capta reemplaza tu buzón con una conversación real. Contesta en menos de 2 segundos, habla inglés y español, agenda citas, y envía confirmaciones SMS — todo por una tarifa fija mensual sin cargos por llamada.
 
-Tu buzón convierte 3% de las llamadas. María convierte 35-50%.
+Tu buzón convierte 3% de las llamadas. Capta convierte 35-50%.
 
 **[Reemplaza tu buzón →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=buzon)**
 
@@ -835,7 +835,7 @@ If your phone system can't handle that call in Spanish, you're not just losing o
 
 You don't need to learn Spanish. You need your phone to speak it.
 
-Capta's AI receptionist Maria speaks native-quality Spanish — not translated English. She understands urgency cues in both languages, books appointments, and sends bilingual SMS confirmations.
+Capta's AI receptionist speaks native-quality Spanish — not translated English. She understands urgency cues in both languages, books appointments, and sends bilingual SMS confirmations.
 
 **[See how bilingual answering works →](https://captahq.com/blog/how-bilingual-phone-answering-grows-revenue)**
 
@@ -891,7 +891,7 @@ Si tu sistema telefónico no puede manejar esa llamada en español, eres invisib
 
 No necesitas aprender español. Necesitas que tu teléfono lo hable.
 
-María habla español de calidad nativa — no inglés traducido. Entiende señales de urgencia en ambos idiomas, agenda citas, y envía confirmaciones SMS bilingües.
+Tu recepcionista de Capta habla español de calidad nativa — no inglés traducido. Entiende señales de urgencia en ambos idiomas, agenda citas, y envía confirmaciones SMS bilingües.
 
 **[Ve cómo funciona el contestador bilingüe →](https://captahq.com/es/blog/como-servicio-bilingue-crece-ingresos-negocio)**
 
@@ -958,7 +958,7 @@ Monthly: $10,800-$28,400 in premium revenue. Your voicemail is intercepting your
 
 ## The Fix Is Simple
 
-Capta answers your phone 24/7 at a flat monthly rate. Maria doesn't charge overtime. She doesn't complain about 11 PM calls. She books the appointment, sends you an alert, and the customer gets an SMS confirmation.
+Capta answers your phone 24/7 at a flat monthly rate. Your receptionist doesn't charge overtime. She doesn't complain about 11 PM calls. She books the appointment, sends you an alert, and the customer gets an SMS confirmation.
 
 You decide whether to respond tonight or first thing in the morning. Either way, the lead is captured.
 
@@ -967,10 +967,10 @@ You decide whether to respond tonight or first thing in the morning. Either way,
 ## FAQs
 
 **What if I don't offer after-hours service?**
-You don't have to. Maria can book the customer for your next available slot. You capture the lead instead of losing it.
+You don't have to. Your receptionist can book the customer for your next available slot. You capture the lead instead of losing it.
 
 **Won't I get calls at 3 AM?**
-Maria handles them. You sleep. You'll see a summary in the morning with every call, booking, and message from the night.`,
+She handles them. You sleep. You'll see a summary in the morning with every call, booking, and message from the night.`,
   },
   /* ════ ES 8 ════ */
   {
@@ -1018,17 +1018,17 @@ A tasa de conversión del 44% y precios premium: esas 14-23 llamadas representan
 
 ## La Solución
 
-Capta contesta 24/7 por una tarifa fija mensual. María no cobra horas extra. Agenda la cita, te envía una alerta, y el cliente recibe confirmación SMS.
+Capta contesta 24/7 por una tarifa fija mensual. Tu recepcionista no cobra horas extra. Agenda la cita, te envía una alerta, y el cliente recibe confirmación SMS.
 
 **[Empieza a capturar llamadas fuera de horario →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=fuera-horario)**
 
 ## Preguntas Frecuentes
 
 **¿Qué si no ofrezco servicio fuera de horario?**
-María puede agendar al cliente para tu próximo horario disponible. Capturas el cliente en vez de perderlo.
+Ella puede agendar al cliente para tu próximo horario disponible. Capturas el cliente en vez de perderlo.
 
 **¿Me llegarán llamadas a las 3 AM?**
-María las maneja. Tú duermes. Verás un resumen en la mañana.`,
+Ella las maneja. Tú duermes. Verás un resumen en la mañana.`,
   },
   /* ════ EN 9 — David vs Goliath ════ */
   {
@@ -1088,9 +1088,9 @@ The homeowner doesn't know (or care) whether they're talking to AI at a 3-person
 
 Here's the ironic twist: with AI phone answering, small contractors actually have a BETTER phone experience than big chains.
 
-Why? Because Capta is trained specifically for home services. Maria understands plumbing emergencies, HVAC urgency, electrical safety issues. A generic chain receptionist follows a script. Maria has context.
+Why? Because Capta is trained specifically for home services. Your receptionist understands plumbing emergencies, HVAC urgency, electrical safety issues. A generic chain receptionist follows a script. Capta has context.
 
-The homeowner who calls you and reaches Maria gets a better experience than calling the chain and getting a bored dispatcher reading from a screen.
+The homeowner who calls you and reaches your AI receptionist gets a better experience than calling the chain and getting a bored dispatcher reading from a screen.
 
 **[Level the playing field →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=compete)**
 
@@ -1151,7 +1151,7 @@ Una recepcionista AI le da a una operación de una persona la misma experiencia 
 
 Con AI, los contratistas pequeños tienen una MEJOR experiencia telefónica que las cadenas grandes.
 
-¿Por qué? Porque Capta está entrenada específicamente para servicios del hogar. María entiende emergencias de plomería, urgencia de HVAC, seguridad eléctrica. Una recepcionista genérica de cadena sigue un guión.
+¿Por qué? Porque Capta está entrenada específicamente para servicios del hogar. Tu recepcionista entiende emergencias de plomería, urgencia de HVAC, seguridad eléctrica. Una recepcionista genérica de cadena sigue un guión.
 
 **[Nivela el campo de juego →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=competir)**
 
@@ -1208,7 +1208,7 @@ For these, AI can transfer the call to you. Or take a detailed message and flag 
 
 The smartest contractors use AI as a front line, not a replacement:
 
-1. **Maria answers every call** — immediately, professionally, bilingually
+1. **Your receptionist answers every call** — immediately, professionally, bilingually
 2. **Transactional calls get handled** — appointments booked, info provided, SMS sent
 3. **Complex calls get flagged** — you see a priority alert and call back within the hour
 4. **You focus on relationships** — on-site, face-to-face, where it matters
@@ -1230,11 +1230,11 @@ Is THAT the personal touch you're protecting?
 
 ## FAQs
 
-**Can Maria transfer calls to me?**
-Yes. For calls that need your direct involvement, Maria can transfer the caller to your personal number.
+**Can your receptionist transfer calls to me?**
+Yes. For calls that need your direct involvement, she can transfer the caller to your personal number.
 
 **Will repeat customers be confused?**
-No. Maria identifies herself and handles the call professionally. Most repeat customers appreciate the consistency and the instant answer.`,
+No. Your receptionist identifies herself and handles the call professionally. Most repeat customers appreciate the consistency and the instant answer.`,
   },
   /* ════ ES 10 ════ */
   {
@@ -1275,7 +1275,7 @@ El otro 10% son llamadas de relación. Para estas, AI puede transferir la llamad
 
 Los contratistas más inteligentes usan AI como primera línea, no como reemplazo:
 
-1. **María contesta cada llamada** — inmediatamente, profesionalmente, bilingüe
+1. **Tu recepcionista contesta cada llamada** — inmediatamente, profesionalmente, bilingüe
 2. **Llamadas transaccionales se manejan** — citas agendadas, info proporcionada
 3. **Llamadas complejas se marcan** — ves una alerta y llamas en la hora
 4. **Tú te enfocas en relaciones** — en sitio, cara a cara
@@ -1290,11 +1290,11 @@ Si no automatizas, ¿cuál es el "toque personal" que tus clientes realmente rec
 
 ## Preguntas Frecuentes
 
-**¿Puede María transferir llamadas a mí?**
-Sí. Para llamadas que necesitan tu participación directa, María puede transferir al que llama a tu número personal.
+**¿Puede tu recepcionista transferir llamadas a mí?**
+Sí. Para llamadas que necesitan tu participación directa, ella puede transferir al que llama a tu número personal.
 
 **¿Se confundirán los clientes frecuentes?**
-No. María se identifica y maneja la llamada profesionalmente. La mayoría de los clientes frecuentes aprecian la consistencia y la respuesta instantánea.`,
+No. Tu recepcionista se identifica y maneja la llamada profesionalmente. La mayoría de los clientes frecuentes aprecian la consistencia y la respuesta instantánea.`,
   },
   /* ════ EN 11 — Diagnostic Tool ════ */
   {
@@ -1471,13 +1471,13 @@ The phone is a business function. Like accounting. Like marketing. Like scheduli
 
 ## The Delegation That Pays for Itself
 
-Capta's Maria handles your phone calls. All of them. You check your dashboard between jobs or at the end of the day. You see every call, every booking, every message. You respond to what needs your personal attention. You ignore what doesn't.
+Capta's AI receptionist handles your phone calls. All of them. You check your dashboard between jobs or at the end of the day. You see every call, every booking, every message. You respond to what needs your personal attention. You ignore what doesn't.
 
 The result: less stress, more focus, more completed jobs, more revenue. And ironically — more calls answered than when you were trying to do it yourself.
 
 **One flat monthly fee.** That's the cost of removing phone anxiety from your workday. [See what it costs →](https://captahq.com/pricing)
 
-**[Let Maria handle it →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=phone-anxiety)** — 30-day money-back guarantee.
+**[Let Capta handle it →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=phone-anxiety)** — 30-day money-back guarantee.
 
 ## FAQs
 
@@ -1540,13 +1540,13 @@ El teléfono es una función del negocio. Como la contabilidad. Como el marketin
 
 ## La Delegación Que Se Paga Sola
 
-María maneja tus llamadas. Todas. Tú revisas tu panel entre trabajos o al final del día. Ves cada llamada, cada reserva, cada mensaje. Respondes a lo que necesita tu atención personal. Ignoras lo que no.
+Tu recepcionista AI maneja tus llamadas. Todas. Tú revisas tu panel entre trabajos o al final del día. Ves cada llamada, cada reserva, cada mensaje. Respondes a lo que necesita tu atención personal. Ignoras lo que no.
 
 El resultado: menos estrés, más enfoque, más trabajos completados, más ingresos. E irónicamente — más llamadas contestadas que cuando intentabas hacerlo tú mismo.
 
 **Una tarifa fija mensual.** Ese es el costo de eliminar la ansiedad telefónica de tu día de trabajo. [Ver precios →](https://captahq.com/pricing)
 
-**[Deja que María lo maneje →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=ansiedad)** — garantía de 30 días.
+**[Deja que Capta lo maneje →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=ansiedad)** — garantía de 30 días.
 
 ## Preguntas Frecuentes
 

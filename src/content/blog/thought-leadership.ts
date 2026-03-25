@@ -1248,6 +1248,310 @@ No es hipotético. Ese empleado existe. La pregunta es si seguirás usando el bu
 
 **[Conoce a tu nuevo empleado](https://captahq.com/setup?utm_source=blog&utm_medium=pillar&utm_campaign=empleado-mas-importante)** | (830) 521-7133`,
   },
+
+  // ─── PAIR 9 ─────────────────────────────────────────────────────────
+  { title: "How Your AI Receptionist Learns Your Business (And Why That Matters)", slug: "how-ai-receptionist-learns-your-business", language: "en", category: "pillar",
+    metaTitle: "How Your AI Receptionist Learns Your Business | Capta",
+    metaDescription: "Your AI receptionist doesn't just answer calls — she studies every conversation, tracks quality trends, and builds customer intelligence. Here's how it works.",
+    targetKeyword: "ai receptionist learns your business",
+    relatedPostSlugs: ["future-phone-answering-service-businesses", "economics-of-answering-every-call", "why-phone-system-most-important-employee"],
+    markdown: `# How Your AI Receptionist Learns Your Business (And Why That Matters)
+
+Most AI answering services are static. You set them up, they read a script, and six months later they are saying the exact same thing to every caller. That is a phone tree with a friendlier voice.
+
+Capta works differently. Every call your receptionist handles makes her better at handling the next one. Not in some vague "machine learning" sense — in concrete, measurable ways you can see in your dashboard.
+
+## The Intelligence Dashboard
+
+Log into your Capta dashboard and open the Intelligence page. You will see five things:
+
+**1. Knowledge Mastery**
+A live count of everything your receptionist knows: FAQs she can answer, phrases she uses, emergency keywords she watches for, and topics she avoids. When a caller asks something she cannot answer, it shows up as a knowledge gap. You fill the gap once, and she never misses that question again.
+
+**2. Quality Trends**
+Every call gets scored on six dimensions: greeting quality, language match, need capture, action taken, accuracy, and caller sentiment. These scores are tracked weekly. You can see whether her performance is improving, plateauing, or slipping — and exactly which dimension needs attention.
+
+**3. Customer Intelligence**
+Your receptionist builds a profile for every caller. After a few months, she knows your top customers by name, tracks which ones call frequently, and segments them into tiers: hot leads, warm prospects, cold contacts, and dormant accounts. This is not a static CRM — it is a living customer database that updates with every conversation.
+
+**4. Business Insights**
+Which services get requested most? What hours are busiest? What percentage of your calls are in Spanish? Your receptionist compiles this data automatically. No surveys, no manual tracking, no guesswork.
+
+**5. Revenue Attribution**
+This is the number that matters most: how much money your receptionist earned you this month. Every appointment she books gets multiplied by your average job value. After-hours calls she catches, missed calls she recovers, bilingual customers she serves — all quantified in dollars.
+
+## Why This Creates a Switching Cost
+
+Here is the part no competitor talks about: the longer you use Capta, the harder it is to leave. Not because of contracts — there are none. Because your receptionist has accumulated months of customer relationships, quality improvements, and business intelligence that would take any replacement months to rebuild.
+
+After six months, she knows your top 50 customers by name. She has handled their complaints, booked their repeat appointments, and learned their preferences. She has identified your three busiest hours and your most profitable service category. She has improved her greeting score from 78 to 94. That institutional knowledge has real value.
+
+## The Compound Effect
+
+Week one, your receptionist answers calls and books appointments. That is table stakes.
+
+By month three, she has identified twelve knowledge gaps, you have filled them, and her accuracy score has climbed fifteen points. She is answering questions she used to transfer to you.
+
+By month six, she has built profiles for hundreds of customers, tracked seasonal patterns in your call volume, and generated enough revenue data to show you exactly which marketing channels drive the most valuable calls.
+
+By month twelve, she is effectively your most knowledgeable employee. She knows your business better than any human receptionist you could hire — because she has listened to every single call, remembered every customer interaction, and never forgotten a detail.
+
+## What This Means for Your Business
+
+Most contractors evaluate an AI receptionist on day one. "Does she sound natural? Can she book an appointment?" Those are the wrong questions. The right question is: "What will she know about my business twelve months from now?"
+
+The answer, with Capta, is everything. Every call makes her smarter. Every customer interaction builds her knowledge. Every week, her quality scores improve. And every month, the revenue she generates grows.
+
+That is not a phone answering service. That is a competitive advantage that compounds over time.
+
+**[See it for yourself](https://captahq.com/setup?utm_source=blog&utm_medium=pillar&utm_campaign=ai-learns-business)** | (830) 521-7133`,
+  },
+  { title: "Cómo Tu Recepcionista IA Aprende Tu Negocio (Y Por Qué Eso Importa)", slug: "como-recepcionista-ia-aprende-tu-negocio", language: "es", category: "pillar",
+    metaTitle: "Cómo Tu Recepcionista IA Aprende Tu Negocio | Capta",
+    metaDescription: "Tu recepcionista IA no solo contesta llamadas — estudia cada conversación, rastrea tendencias de calidad y construye inteligencia de clientes. Así funciona.",
+    targetKeyword: "recepcionista ia aprende tu negocio",
+    relatedPostSlugs: ["futuro-contestador-telefonico-negocios-servicios", "economia-contestar-cada-llamada", "por-que-sistema-telefonico-empleado-mas-importante"],
+    markdown: `# Cómo Tu Recepcionista IA Aprende Tu Negocio (Y Por Qué Eso Importa)
+
+La mayoría de los servicios de contestación con IA son estáticos. Los configuras, leen un guión, y seis meses después dicen exactamente lo mismo a cada persona que llama. Eso es un menú telefónico con una voz más amigable.
+
+Capta funciona diferente. Cada llamada que tu recepcionista maneja la hace mejor para manejar la siguiente. No en un sentido vago de "aprendizaje automático" — de maneras concretas y medibles que puedes ver en tu panel de control.
+
+## El Panel de Inteligencia
+
+Inicia sesión en tu panel de Capta y abre la página de Inteligencia. Verás cinco cosas:
+
+**1. Dominio del Conocimiento**
+Un conteo en vivo de todo lo que tu recepcionista sabe: preguntas frecuentes que puede responder, frases que usa, palabras clave de emergencia que vigila, y temas que evita. Cuando alguien pregunta algo que ella no puede responder, aparece como una brecha de conocimiento. Tú llenas la brecha una vez, y ella nunca vuelve a fallar esa pregunta.
+
+**2. Tendencias de Calidad**
+Cada llamada recibe una puntuación en seis dimensiones: calidad del saludo, coincidencia de idioma, captura de necesidad, acción tomada, precisión y sentimiento del llamante. Estas puntuaciones se rastrean semanalmente. Puedes ver si su rendimiento está mejorando, estancándose o bajando — y exactamente qué dimensión necesita atención.
+
+**3. Inteligencia de Clientes**
+Tu recepcionista construye un perfil para cada persona que llama. Después de unos meses, conoce a tus mejores clientes por nombre, rastrea cuáles llaman frecuentemente, y los segmenta en niveles: prospectos calientes, tibios, fríos y cuentas dormidas. Esto no es un CRM estático — es una base de datos de clientes viva que se actualiza con cada conversación.
+
+**4. Información del Negocio**
+¿Qué servicios se solicitan más? ¿Cuáles son las horas más ocupadas? ¿Qué porcentaje de tus llamadas son en español? Tu recepcionista compila estos datos automáticamente. Sin encuestas, sin rastreo manual, sin adivinanzas.
+
+**5. Atribución de Ingresos**
+Este es el número que más importa: cuánto dinero te ganó tu recepcionista este mes. Cada cita que agenda se multiplica por el valor promedio de tu trabajo. Llamadas fuera de horario que atrapa, llamadas perdidas que recupera, clientes bilingües que atiende — todo cuantificado en dólares.
+
+## Por Qué Esto Crea un Costo de Cambio
+
+Aquí está la parte de la que ningún competidor habla: cuanto más tiempo uses Capta, más difícil es irte. No por contratos — no hay ninguno. Porque tu recepcionista ha acumulado meses de relaciones con clientes, mejoras de calidad e inteligencia de negocio que cualquier reemplazo tardaría meses en reconstruir.
+
+Después de seis meses, ella conoce a tus 50 mejores clientes por nombre. Ha manejado sus quejas, agendado sus citas recurrentes y aprendido sus preferencias. Ha identificado tus tres horas más ocupadas y tu categoría de servicio más rentable. Ha mejorado su puntuación de saludo de 78 a 94. Ese conocimiento institucional tiene valor real.
+
+## El Efecto Compuesto
+
+La primera semana, tu recepcionista contesta llamadas y agenda citas. Eso es lo básico.
+
+Para el tercer mes, ha identificado doce brechas de conocimiento, tú las has llenado, y su puntuación de precisión ha subido quince puntos. Está respondiendo preguntas que antes te transfería a ti.
+
+Para el sexto mes, ha construido perfiles de cientos de clientes, rastreado patrones estacionales en tu volumen de llamadas, y generado suficientes datos de ingresos para mostrarte exactamente qué canales de marketing generan las llamadas más valiosas.
+
+Para el mes doce, es efectivamente tu empleada más conocedora. Conoce tu negocio mejor que cualquier recepcionista humana que pudieras contratar — porque ha escuchado cada llamada, recordado cada interacción con clientes, y nunca ha olvidado un detalle.
+
+## Qué Significa Esto Para Tu Negocio
+
+La mayoría de los contratistas evalúan una recepcionista IA el primer día. "¿Suena natural? ¿Puede agendar una cita?" Esas son las preguntas equivocadas. La pregunta correcta es: "¿Qué sabrá sobre mi negocio dentro de doce meses?"
+
+La respuesta, con Capta, es todo. Cada llamada la hace más inteligente. Cada interacción con clientes construye su conocimiento. Cada semana, sus puntuaciones de calidad mejoran. Y cada mes, los ingresos que genera crecen.
+
+Eso no es un servicio de contestación telefónica. Es una ventaja competitiva que se multiplica con el tiempo.
+
+**[Compruébalo tú mismo](https://captahq.com/setup?utm_source=blog&utm_medium=pillar&utm_campaign=ia-aprende-negocio)** | (830) 521-7133`,
+  },
+
+  // ─── PAIR 10 ────────────────────────────────────────────────────────
+  { title: "From Missed Call to 5-Star Review: What Full-Cycle Automation Actually Looks Like", slug: "missed-call-to-five-star-review-full-cycle-automation", language: "en", category: "pillar",
+    metaTitle: "Missed Call to 5-Star Review: Full-Cycle Automation for Contractors | Capta",
+    metaDescription: "Most answering services stop at 'message taken.' Capta automates 12 steps from missed call to Google review. Here's the complete automation chain.",
+    targetKeyword: "full cycle automation contractors",
+    relatedPostSlugs: ["economics-of-answering-every-call", "missed-calls-booked-jobs-contractor-ai-playbook", "how-ai-receptionist-learns-your-business"],
+    markdown: `# From Missed Call to 5-Star Review: What Full-Cycle Automation Actually Looks Like
+
+Every AI receptionist service promises to answer your phone. That is step one of twelve.
+
+Here is the thing nobody talks about: answering the call is the easy part. What happens after the call — the appointment confirmation, the estimate generation, the follow-up, the invoice, the review request — that is where revenue actually gets created or lost. And most services stop at step one.
+
+## The 12-Step Revenue Cycle
+
+Here is what happens when a customer calls a Capta-powered business:
+
+**Step 1: Call Answered (75ms)**
+Your phone rings. Your receptionist picks up before the second ring. No voicemail, no hold music, no "press 1 for..." menus. A natural voice greets the caller by your business name.
+
+**Step 2: Language Detected**
+Within the first sentence, your receptionist identifies whether the caller is speaking English or Spanish and responds in kind. No awkward "para español, oprima dos." Just seamless bilingual conversation.
+
+**Step 3: Need Identified**
+She asks the right questions. Not a script — a real conversation. "What kind of service do you need? When did the problem start? Is anyone in danger?" She captures the job type, urgency, and property details.
+
+**Step 4: Appointment Booked**
+She checks your calendar, finds an open slot, and books it. The caller gets an instant SMS confirmation with the date, time, and your business name. No phone tag, no "someone will call you back."
+
+**Step 5: Estimate Generated**
+Based on the job details — problem type, property size, urgency — she generates a price range using your configured rates. "Based on what you've described, a typical repair runs between $150 and $350. Would you like to schedule the service?"
+
+**Step 6: Owner Notified**
+You get a text: "New appointment booked. John Smith, AC repair, Tuesday 2pm. Estimate: $150-$350." You can reply right from your phone to adjust, approve, or add notes.
+
+**Step 7: Estimate Approved**
+You text back "Looks good" or adjust the numbers. Your receptionist follows up with the customer: "Great news — your estimate has been confirmed at $200-$300. See you Tuesday at 2pm."
+
+**Step 8: Reminder Sent**
+The day before the appointment, the customer gets an automatic SMS reminder. "Hi John, this is a reminder about your AC repair appointment tomorrow at 2pm with Smith's HVAC. Reply YES to confirm or RESCHEDULE to change the time."
+
+**Step 9: Job Completed**
+You mark the job as done in your dashboard (or your technician does from the field). The job card updates with completion details.
+
+**Step 10: Invoice Created**
+A job card with final charges is generated. You can send it as an invoice directly from the dashboard.
+
+**Step 11: Review Requested**
+Two to four hours after the job is marked complete, the customer gets an automatic text: "Hi John, thanks for choosing Smith's HVAC! We'd love your feedback. Would you leave us a quick Google review?" With a direct link to your Google Business Profile.
+
+**Step 12: 5-Star Review Posted**
+The customer taps the link, leaves a review, and your Google ranking improves. More reviews mean more visibility. More visibility means more calls. More calls mean more jobs. The cycle continues.
+
+## What Happens When Calls Go Sideways
+
+Not every call follows the happy path. Here is how the automation handles the exceptions:
+
+**Caller Hangs Up Early**
+Within 60 seconds, your receptionist auto-texts them: "Hi, it looks like we got disconnected. I'd love to help — text me back or call again anytime." Most callers re-engage before calling your competitor.
+
+**Emergency Detected**
+If the caller mentions a gas leak, burst pipe, flooding, or electrical fire, your receptionist immediately transfers to your emergency contact and sends you a priority SMS alert. No delay, no "let me check with someone."
+
+**After-Hours Call**
+At 2 AM, a homeowner's pipe bursts. Your receptionist answers, captures the emergency, alerts your on-call technician, and books the first available slot. That caller was about to Google "emergency plumber near me" — now they are your customer instead.
+
+**Caller Wants to Speak to a Human**
+Your receptionist offers to transfer. If you do not answer, she takes a detailed message and texts you immediately. No caller falls through the cracks.
+
+## Why Competitors Cannot Copy This
+
+Most AI receptionist services — Smith.ai, Ruby, Nexa — handle steps 1 through 3. Answer the call, take a message, maybe book an appointment. Everything after that is manual. You get an email, you follow up when you remember, and the estimate sits in a spreadsheet until it goes cold.
+
+Capta handles all twelve steps automatically because it is not just an answering service. It is a full front-office platform: CRM, appointment management, estimate pipeline, SMS automation, review solicitation, and AI receptionist — all integrated.
+
+The integration is the moat. When your receptionist books an appointment, it automatically appears in your calendar, creates a customer profile, and queues the reminder sequence. When the job completes, it triggers the review request. Each step feeds the next. There is no manual handoff, no copy-paste, no "I forgot to follow up."
+
+## The Math
+
+A typical contractor misses 5-10 calls per day. Each call is worth $300-$1,500 in potential revenue.
+
+If your full-cycle automation converts even 30% of those missed calls into completed jobs and 5-star reviews:
+
+- **5 recovered calls/day × $500 avg job × 30% close rate = $750/day**
+- **$750 × 21 workdays = $15,750/month in recovered revenue**
+- **Cost: $497/month**
+- **ROI: 31x**
+
+That is not a theoretical model. That is basic arithmetic applied to calls you are already missing.
+
+## See the Full Cycle
+
+Your Capta dashboard shows the complete automation chain in real time. Every call, every appointment, every estimate, every follow-up, every review request — visible in one feed. You can see exactly where each customer is in the cycle and what happens next.
+
+**[Start your full-cycle automation](https://captahq.com/setup?utm_source=blog&utm_medium=pillar&utm_campaign=full-cycle)** | (830) 521-7133`,
+  },
+  { title: "De Llamada Perdida a Reseña de 5 Estrellas: Cómo Se Ve la Automatización Completa", slug: "llamada-perdida-resena-cinco-estrellas-automatizacion-completa", language: "es", category: "pillar",
+    metaTitle: "De Llamada Perdida a Reseña 5 Estrellas: Automatización para Contratistas | Capta",
+    metaDescription: "La mayoría de los servicios de contestación paran en 'mensaje tomado.' Capta automatiza 12 pasos desde la llamada perdida hasta la reseña en Google.",
+    targetKeyword: "automatización completa contratistas",
+    relatedPostSlugs: ["economia-contestar-cada-llamada", "llamadas-perdidas-trabajos-agendados-guia-ai", "como-recepcionista-ia-aprende-tu-negocio"],
+    markdown: `# De Llamada Perdida a Reseña de 5 Estrellas: Cómo Se Ve la Automatización Completa
+
+Todos los servicios de recepcionista IA prometen contestar tu teléfono. Eso es el paso uno de doce.
+
+Esto es lo que nadie menciona: contestar la llamada es la parte fácil. Lo que pasa después — la confirmación de cita, la generación del presupuesto, el seguimiento, la factura, la solicitud de reseña — ahí es donde realmente se crea o se pierde el ingreso. Y la mayoría de los servicios se detienen en el paso uno.
+
+## El Ciclo de Ingresos de 12 Pasos
+
+Esto es lo que pasa cuando un cliente llama a un negocio con Capta:
+
+**Paso 1: Llamada Contestada (75ms)**
+Tu teléfono suena. Tu recepcionista contesta antes del segundo timbre. Sin buzón de voz, sin música de espera, sin menús de "presione 1 para..." Una voz natural saluda al llamante con el nombre de tu negocio.
+
+**Paso 2: Idioma Detectado**
+En la primera oración, tu recepcionista identifica si el llamante habla inglés o español y responde en el mismo idioma. Sin el incómodo "para español, oprima dos." Conversación bilingüe natural.
+
+**Paso 3: Necesidad Identificada**
+Ella hace las preguntas correctas. No un guión — una conversación real. "¿Qué tipo de servicio necesita? ¿Cuándo empezó el problema? ¿Alguien está en peligro?" Captura el tipo de trabajo, urgencia y detalles de la propiedad.
+
+**Paso 4: Cita Agendada**
+Revisa tu calendario, encuentra un espacio disponible y lo agenda. El llamante recibe una confirmación SMS instantánea con la fecha, hora y nombre de tu negocio. Sin juego de llamadas, sin "alguien le devolverá la llamada."
+
+**Paso 5: Presupuesto Generado**
+Basándose en los detalles del trabajo — tipo de problema, tamaño de propiedad, urgencia — genera un rango de precio usando tus tarifas configuradas. "Según lo que describe, una reparación típica cuesta entre $150 y $350. ¿Le gustaría agendar el servicio?"
+
+**Paso 6: Dueño Notificado**
+Recibes un texto: "Nueva cita agendada. Juan López, reparación de AC, martes 2pm. Presupuesto: $150-$350." Puedes responder directamente desde tu teléfono para ajustar, aprobar o agregar notas.
+
+**Paso 7: Presupuesto Aprobado**
+Respondes "Se ve bien" o ajustas los números. Tu recepcionista da seguimiento con el cliente: "Buenas noticias — su presupuesto ha sido confirmado en $200-$300. Lo vemos el martes a las 2pm."
+
+**Paso 8: Recordatorio Enviado**
+El día antes de la cita, el cliente recibe un SMS automático. "Hola Juan, este es un recordatorio de su cita de reparación de AC mañana a las 2pm con Smith's HVAC. Responda SÍ para confirmar o CAMBIAR para modificar la hora."
+
+**Paso 9: Trabajo Completado**
+Marcas el trabajo como terminado en tu panel (o tu técnico lo hace desde el campo). La tarjeta de trabajo se actualiza con los detalles de finalización.
+
+**Paso 10: Factura Creada**
+Se genera una tarjeta de trabajo con los cargos finales. Puedes enviarla como factura directamente desde el panel.
+
+**Paso 11: Reseña Solicitada**
+De dos a cuatro horas después de marcar el trabajo como completo, el cliente recibe un texto automático: "Hola Juan, ¡gracias por elegir Smith's HVAC! Nos encantaría saber su opinión. ¿Podría dejarnos una reseña rápida en Google?" Con un enlace directo a tu Perfil de Google Business.
+
+**Paso 12: Reseña de 5 Estrellas Publicada**
+El cliente toca el enlace, deja una reseña, y tu ranking en Google mejora. Más reseñas significan más visibilidad. Más visibilidad significa más llamadas. Más llamadas significan más trabajos. El ciclo continúa.
+
+## Qué Pasa Cuando Las Llamadas Se Complican
+
+No todas las llamadas siguen el camino feliz. Así es como la automatización maneja las excepciones:
+
+**El Llamante Cuelga Temprano**
+En 60 segundos, tu recepcionista le envía un texto automático: "Hola, parece que se cortó la llamada. Me encantaría ayudarle — respóndame por texto o llame de nuevo cuando guste." La mayoría vuelve a contactarse antes de llamar a tu competencia.
+
+**Emergencia Detectada**
+Si el llamante menciona fuga de gas, tubería rota, inundación o fuego eléctrico, tu recepcionista transfiere inmediatamente a tu contacto de emergencia y te envía una alerta SMS prioritaria. Sin demora, sin "déjeme consultar con alguien."
+
+**Llamada Fuera de Horario**
+A las 2 AM, la tubería de un propietario se rompe. Tu recepcionista contesta, captura la emergencia, alerta a tu técnico de guardia, y agenda el primer espacio disponible. Ese llamante estaba a punto de buscar en Google "plomero de emergencia cerca de mí" — ahora es tu cliente.
+
+**El Llamante Quiere Hablar con un Humano**
+Tu recepcionista ofrece transferir. Si no contestas, toma un mensaje detallado y te envía un texto inmediatamente. Ningún llamante se pierde.
+
+## Por Qué Los Competidores No Pueden Copiar Esto
+
+La mayoría de los servicios de recepcionista IA — Smith.ai, Ruby, Nexa — manejan los pasos 1 al 3. Contestar la llamada, tomar un mensaje, tal vez agendar una cita. Todo después de eso es manual. Te llega un correo, das seguimiento cuando te acuerdas, y el presupuesto se queda en una hoja de cálculo hasta que se enfría.
+
+Capta maneja los doce pasos automáticamente porque no es solo un servicio de contestación. Es una plataforma completa de oficina: CRM, gestión de citas, pipeline de presupuestos, automatización de SMS, solicitud de reseñas y recepcionista IA — todo integrado.
+
+La integración es la ventaja. Cuando tu recepcionista agenda una cita, automáticamente aparece en tu calendario, crea un perfil de cliente, y programa la secuencia de recordatorios. Cuando el trabajo se completa, dispara la solicitud de reseña. Cada paso alimenta el siguiente. Sin transferencias manuales, sin copiar y pegar, sin "se me olvidó dar seguimiento."
+
+## Las Matemáticas
+
+Un contratista típico pierde 5-10 llamadas por día. Cada llamada vale $300-$1,500 en ingresos potenciales.
+
+Si tu automatización de ciclo completo convierte incluso el 30% de esas llamadas perdidas en trabajos completados y reseñas de 5 estrellas:
+
+- **5 llamadas recuperadas/día × $500 trabajo promedio × 30% tasa de cierre = $750/día**
+- **$750 × 21 días laborales = $15,750/mes en ingresos recuperados**
+- **Costo: $497/mes**
+- **ROI: 31x**
+
+Ese no es un modelo teórico. Es aritmética básica aplicada a llamadas que ya estás perdiendo.
+
+## Ve el Ciclo Completo
+
+Tu panel de Capta muestra la cadena completa de automatización en tiempo real. Cada llamada, cada cita, cada presupuesto, cada seguimiento, cada solicitud de reseña — visible en un solo feed. Puedes ver exactamente dónde está cada cliente en el ciclo y qué pasa después.
+
+**[Comienza tu automatización completa](https://captahq.com/setup?utm_source=blog&utm_medium=pillar&utm_campaign=ciclo-completo)** | (830) 521-7133`,
+  },
 ];
 
 export const THOUGHT_LEADERSHIP_PAIRS: [string, string][] = [
@@ -1260,4 +1564,6 @@ export const THOUGHT_LEADERSHIP_PAIRS: [string, string][] = [
   ["missed-calls-booked-jobs-contractor-ai-playbook", "llamadas-perdidas-trabajos-agendados-guia-ai"],
   ["bilingual-business-advantage-nobody-talking-about", "ventaja-bilingue-nadie-aprovechando"],
   ["why-phone-system-most-important-employee", "por-que-sistema-telefonico-empleado-mas-importante"],
+  ["how-ai-receptionist-learns-your-business", "como-recepcionista-ia-aprende-tu-negocio"],
+  ["missed-call-to-five-star-review-full-cycle-automation", "llamada-perdida-resena-cinco-estrellas-automatizacion-completa"],
 ];

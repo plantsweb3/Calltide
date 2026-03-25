@@ -59,13 +59,13 @@ And if your call volume spikes during summer or after a storm? Your Capta bill s
 
 This is the biggest gap between the two services.
 
-Capta's AI receptionist, Maria, speaks English and Spanish natively. She doesn't translate—she thinks and responds in whichever language your caller uses. For contractors in Texas, Florida, California, Arizona, or anywhere with a significant Hispanic customer base, this isn't a nice-to-have. It's how you win jobs your competitors lose.
+Capta's AI receptionist speaks English and Spanish natively. She doesn't translate—she thinks and responds in whichever language your caller uses. For contractors in Texas, Florida, California, Arizona, or anywhere with a significant Hispanic customer base, this isn't a nice-to-have. It's how you win jobs your competitors lose.
 
 Smith.ai offers Spanish as an add-on. You pay extra, and it's handled through translation rather than native bilingual conversation. The difference is obvious to Spanish-speaking callers. A translated script feels robotic. A native conversation builds trust.
 
 ### Appointment Booking & SMS Confirmations
 
-Both services can book appointments. But Capta goes further—when Maria books a job, she immediately sends an SMS confirmation to the customer with the date, time, and your business name. No extra setup, no third-party integration. The customer gets peace of mind, and you get fewer no-shows.
+Both services can book appointments. But Capta goes further—when She books a job, she immediately sends an SMS confirmation to the customer with the date, time, and your business name. No extra setup, no third-party integration. The customer gets peace of mind, and you get fewer no-shows.
 
 Smith.ai can book appointments through integrations with your calendar, but SMS confirmations aren't part of the standard package. You'll need additional tools or plans to match what Capta includes out of the box.
 
@@ -79,11 +79,11 @@ Smith.ai provides call summaries and can integrate with external CRMs like Sales
 
 Smith.ai serves law firms, e-commerce companies, real estate agents, and dozens of other industries. They're good at a lot of things.
 
-Capta only serves home service contractors. Maria understands trade terminology. She knows the difference between a tankless water heater flush and a sewer line inspection. She asks the right qualifying questions—what type of system, what's the symptom, how urgent. She doesn't need a script for every scenario because she was built for this specific world.
+Capta only serves home service contractors. She understands trade terminology. She knows the difference between a tankless water heater flush and a sewer line inspection. She asks the right qualifying questions—what type of system, what's the symptom, how urgent. She doesn't need a script for every scenario because she was built for this specific world.
 
 ### Emergency Detection
 
-When a caller says "my basement is flooding" or "I smell gas," Maria flags it immediately and can transfer to your emergency line. She knows what counts as an emergency in the trades—not just keywords, but context and urgency.
+When a caller says "my basement is flooding" or "I smell gas," She flags it immediately and can transfer to your emergency line. She knows what counts as an emergency in the trades—not just keywords, but context and urgency.
 
 Smith.ai can route calls based on rules you set up, but the emergency detection isn't purpose-built for trade scenarios. You'll need to define every trigger yourself.
 
@@ -99,7 +99,7 @@ This matters more than most contractors realize. The trades are seasonal. HVAC c
 
 ### Setup and Onboarding
 
-Capta's setup takes 5 minutes through an 6-step wizard. Enter your business name, choose your services, set your hours, and forward your number. Maria starts answering calls immediately. No training period, no scripts to write, no integration headaches.
+Capta's setup takes 5 minutes through an 6-step wizard. Enter your business name, choose your services, set your hours, and forward your number. She starts answering calls immediately. No training period, no scripts to write, no integration headaches.
 
 Smith.ai's onboarding requires more configuration. You'll need to define call handling scripts, set up integrations with your calendar and CRM, and go through a training period where the receptionists learn your business. For their human plans, this can take days or weeks before the team handles your calls smoothly.
 
@@ -156,15 +156,15 @@ No. Solo operators and two-person crews use Capta. The $497 flat rate works whet
 
 ### What if I want human receptionists instead of AI?
 
-Smith.ai offers human receptionists at higher pricing. Capta is AI-powered, but most callers can't tell the difference. Maria handles natural conversations, understands context, and books appointments—without the $1,000+ monthly cost of human reception services.
+Smith.ai offers human receptionists at higher pricing. Capta is AI-powered, but most callers can't tell the difference. She handles natural conversations, understands context, and books appointments—without the $1,000+ monthly cost of human reception services.
 
 ### Does Capta have a free trial?
 
-Capta offers a 30-day money-back guarantee. Try Maria on your real calls for a full month. If she's not booking jobs and saving you time, you get your money back. No risk, no contracts.
+Capta offers a 30-day money-back guarantee. Try it on your real calls for a full month. If she's not booking jobs and saving you time, you get your money back. No risk, no contracts.
 
 ---
 
-Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—Maria answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
+Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—She answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -226,7 +226,7 @@ Con 200 llamadas, te ahorras $323 al mes comparado con el plan AI de Smith.ai y 
 
 Esta es la diferencia mas grande entre los dos servicios.
 
-La recepcionista AI de Capta, Maria, habla ingles y espanol de manera nativa. No traduce—piensa y responde en el idioma que use tu cliente. Para contratistas en Texas, Florida, California, Arizona o cualquier lugar con comunidades hispanas, esto no es un lujo. Es como ganas trabajos que tu competencia pierde.
+La recepcionista AI de Capta habla ingles y espanol de manera nativa. No traduce—piensa y responde en el idioma que use tu cliente. Para contratistas en Texas, Florida, California, Arizona o cualquier lugar con comunidades hispanas, esto no es un lujo. Es como ganas trabajos que tu competencia pierde.
 
 Smith.ai ofrece espanol como un complemento pagado. Se maneja a traves de traduccion, no como conversacion bilingue nativa. La diferencia es obvia para los clientes hispanohablantes. Un guion traducido suena robotico. Una conversacion natural genera confianza.
 
@@ -234,7 +234,7 @@ Yo construi Capta pensando en los duenos de negocios que atienden a comunidades 
 
 ### Reserva de citas y confirmaciones SMS
 
-Los dos servicios pueden agendar citas. Pero Capta va mas lejos—cuando Maria agenda un trabajo, inmediatamente envia un SMS de confirmacion al cliente con la fecha, hora y nombre de tu negocio. Sin configuracion adicional, sin herramientas de terceros. El cliente queda tranquilo y tu tienes menos cancelaciones de ultimo momento.
+Los dos servicios pueden agendar citas. Pero Capta va mas lejos—cuando tu recepcionista agenda un trabajo, inmediatamente envia un SMS de confirmacion al cliente con la fecha, hora y nombre de tu negocio. Sin configuracion adicional, sin herramientas de terceros. El cliente queda tranquilo y tu tienes menos cancelaciones de ultimo momento.
 
 Smith.ai puede agendar citas mediante integraciones con tu calendario, pero las confirmaciones por SMS no vienen incluidas. Necesitaras herramientas adicionales o planes mas caros para igualar lo que Capta incluye desde el inicio.
 
@@ -248,11 +248,11 @@ Smith.ai proporciona resumenes de llamadas y puede integrarse con CRMs externos 
 
 Smith.ai atiende bufetes de abogados, empresas de comercio electronico, agentes de bienes raices y docenas de otras industrias. Son buenos en muchas cosas.
 
-Capta solo atiende a contratistas de servicios del hogar. Maria entiende la terminologia de los oficios. Sabe la diferencia entre un flush de calentador de agua tankless y una inspeccion de linea de drenaje. Hace las preguntas correctas de calificacion—que tipo de sistema, cual es el sintoma, que tan urgente es. No necesita un guion para cada escenario porque fue construida para este mundo especifico.
+Capta solo atiende a contratistas de servicios del hogar. Ella entiende la terminologia de los oficios. Sabe la diferencia entre un flush de calentador de agua tankless y una inspeccion de linea de drenaje. Hace las preguntas correctas de calificacion—que tipo de sistema, cual es el sintoma, que tan urgente es. No necesita un guion para cada escenario porque fue construida para este mundo especifico.
 
 ### Deteccion de emergencias
 
-Cuando un cliente dice "se me esta inundando el sotano" o "huelo a gas," Maria lo marca inmediatamente y puede transferir la llamada a tu linea de emergencia. Sabe que cuenta como emergencia en los oficios—no solo palabras clave, sino contexto y urgencia.
+Cuando un cliente dice "se me esta inundando el sotano" o "huelo a gas," ella lo marca inmediatamente y puede transferir la llamada a tu linea de emergencia. Sabe que cuenta como emergencia en los oficios—no solo palabras clave, sino contexto y urgencia.
 
 Smith.ai puede enrutar llamadas basandose en reglas que tu configures, pero la deteccion de emergencias no esta construida especificamente para escenarios de oficios. Tendras que definir cada disparador tu mismo.
 
@@ -268,7 +268,7 @@ Esto importa mas de lo que la mayoria de los contratistas se dan cuenta. Los ofi
 
 ### Configuracion e incorporacion
 
-La configuracion de Capta toma 5 minutos a traves de un asistente de 8 pasos. Ingresa el nombre de tu negocio, elige tus servicios, establece tus horarios y redirige tu numero. Maria empieza a contestar llamadas de inmediato. Sin periodo de entrenamiento, sin guiones que escribir, sin dolores de cabeza de integracion.
+La configuracion de Capta toma 5 minutos a traves de un asistente de 8 pasos. Ingresa el nombre de tu negocio, elige tus servicios, establece tus horarios y redirige tu numero. Ella empieza a contestar llamadas de inmediato. Sin periodo de entrenamiento, sin guiones que escribir, sin dolores de cabeza de integracion.
 
 La incorporacion de Smith.ai requiere mas configuracion. Necesitaras definir guiones de manejo de llamadas, configurar integraciones con tu calendario y CRM, y pasar por un periodo de entrenamiento donde las recepcionistas aprenden tu negocio. Para sus planes humanos, esto puede tomar dias o semanas antes de que el equipo maneje tus llamadas sin problemas.
 
@@ -317,15 +317,15 @@ No. Operadores independientes y equipos de dos personas usan Capta. La tarifa fi
 
 ### ¿Que pasa si quiero recepcionistas humanas en vez de IA?
 
-Smith.ai ofrece recepcionistas humanas a precios mas altos. Capta funciona con IA, pero la mayoria de los clientes no notan la diferencia. Maria maneja conversaciones naturales, entiende contexto y agenda citas—sin el costo mensual de $1,000+ de servicios de recepcion humana.
+Smith.ai ofrece recepcionistas humanas a precios mas altos. Capta funciona con IA, pero la mayoria de los clientes no notan la diferencia. Ella maneja conversaciones naturales, entiende contexto y agenda citas—sin el costo mensual de $1,000+ de servicios de recepcion humana.
 
 ### ¿Capta tiene prueba gratis?
 
-Capta ofrece una garantia de devolucion de 30 dias. Prueba a Maria con tus llamadas reales durante un mes completo. Si no esta agendando trabajos y ahorrandote tiempo, recuperas tu dinero. Sin riesgo, sin contratos.
+Capta ofrece una garantia de devolucion de 30 dias. Pruebalo con tus llamadas reales durante un mes completo. Si no esta agendando trabajos y ahorrandote tiempo, recuperas tu dinero. Sin riesgo, sin contratos.
 
 ---
 
-¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantia de 30 dias de Capta—Maria contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obten Capta →](https://captahq.com)
+¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantia de 30 dias de Capta—Ella contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obten Capta →](https://captahq.com)
 `,
   },
 
@@ -338,13 +338,13 @@ Capta ofrece una garantia de devolucion de 30 dias. Prueba a Maria con tus llama
     language: "en",
     category: "comparison",
     metaTitle: "Ruby Receptionists to AI Receptionist | A Contractor's Switch Story | Capta",
-    metaDescription: "One HVAC contractor's week-by-week account of switching from Ruby Receptionists to Capta's AI receptionist Maria. Real numbers, real surprises, honest review.",
+    metaDescription: "One HVAC contractor's week-by-week account of switching from Ruby Receptionists to Capta's AI receptionist. Real numbers, real surprises, honest review.",
     targetKeyword: "ruby receptionists alternative",
     relatedPostSlugs: ["capta-vs-smith-ai", "capta-vs-dialzara", "capta-vs-jobber-ai-receptionist"],
     authorName: "Ulysses Munoz",
     markdown: `# I Switched from Ruby Receptionists to an AI Receptionist — Here's What Happened
 
-This is the story of a switch. Not a hypothetical comparison table — a real, week-by-week account of what happens when a mid-size HVAC and plumbing company moves from Ruby Receptionists to Capta's AI receptionist, Maria.
+This is the story of a switch. Not a hypothetical comparison table — a real, week-by-week account of what happens when a mid-size HVAC and plumbing company moves from Ruby Receptionists to Capta's AI receptionist.
 
 We're not going to pretend Ruby is bad. They're not. Their human receptionists are professional, friendly, and have served thousands of businesses well. But after 14 months on Ruby's 200-minute plan at $780/month, the math stopped working. Here's what happened when we made the change.
 
@@ -364,17 +364,17 @@ The final push was a Spanish-speaking customer who called three times, couldn't 
 
 **Monday morning.** We signed up for Capta at 6:47 AM before heading to a job site. The 6-step setup wizard took about 5 minutes. Business name, services we offer (HVAC and plumbing), service area, business hours, emergency protocols. We forwarded our number to Capta's line.
 
-Maria started answering calls at 7:02 AM.
+Capta started answering calls at 7:02 AM.
 
-The first surprise: no training period. With Ruby, we'd spent two weeks going back and forth on scripts, call handling preferences, and FAQs before the receptionists were comfortable. Maria already knew HVAC and plumbing terminology. When a caller said "my AC is blowing warm air," Maria knew to ask about the model, how long it's been happening, and whether all vents were affected. We didn't program those questions. She just knew them.
+The first surprise: no training period. With Ruby, we'd spent two weeks going back and forth on scripts, call handling preferences, and FAQs before the receptionists were comfortable. She already knew HVAC and plumbing terminology. When a caller said "my AC is blowing warm air," She knew to ask about the model, how long it's been happening, and whether all vents were affected. We didn't program those questions. She just knew them.
 
-**First call:** A homeowner needed a faucet repair. Maria booked the appointment, confirmed the time slot, and sent an SMS confirmation to the customer. We got a notification. Total time from ring to confirmed booking: about 90 seconds.
+**First call:** A homeowner needed a faucet repair. She booked the appointment, confirmed the time slot, and sent an SMS confirmation to the customer. We got a notification. Total time from ring to confirmed booking: about 90 seconds.
 
 With Ruby, the receptionist would have taken the customer's info, emailed us, and we'd have called back to confirm. That loop usually took 2-4 hours, and sometimes the customer booked with someone else in the meantime.
 
-**Tuesday:** 11 calls. Maria handled all of them. We spotted one issue — she offered a Wednesday morning slot that conflicted with an existing job. We adjusted the availability settings in the dashboard. Took 30 seconds. The rest of the week was seamless.
+**Tuesday:** 11 calls. She handled all of them. We spotted one issue — she offered a Wednesday morning slot that conflicted with an existing job. We adjusted the availability settings in the dashboard. Took 30 seconds. The rest of the week was seamless.
 
-**Friday night, 10:47 PM:** A caller reported a burst pipe in their kitchen. Maria flagged it as an emergency, offered to transfer the call live, and sent us an urgent alert. We called back within 3 minutes. The customer later told us they'd almost called someone else but were impressed that "someone" answered on a Friday night.
+**Friday night, 10:47 PM:** A caller reported a burst pipe in their kitchen. She flagged it as an emergency, offered to transfer the call live, and sent us an urgent alert. We called back within 3 minutes. The customer later told us they'd almost called someone else but were impressed that "someone" answered on a Friday night.
 
 **Week 1 stats:** 47 calls, 12 appointments booked, 1 emergency handled. Cost: $0 extra (covered by the $497 flat rate). What those same 47 calls would have cost on Ruby: approximately $752 in minutes alone, before overages.
 
@@ -384,11 +384,11 @@ Here's where things got interesting.
 
 We serve a part of town with a large Hispanic community. On Ruby, we'd occasionally get Spanish-language calls, and they'd go poorly. The receptionist would try to help, sometimes transfer to us (interrupting a job), or the caller would just hang up.
 
-**Wednesday, Week 2:** Maria answered a call in Spanish from a homeowner whose water heater wasn't producing hot water. The conversation was entirely in Spanish. Maria asked the right diagnostic questions, booked a same-day appointment, and sent the SMS confirmation in Spanish. We showed up, diagnosed a failing thermocouple, and completed the repair for $450.
+**Wednesday, Week 2:** She answered a call in Spanish from a homeowner whose water heater wasn't producing hot water. The conversation was entirely in Spanish. She asked the right diagnostic questions, booked a same-day appointment, and sent the SMS confirmation in Spanish. We showed up, diagnosed a failing thermocouple, and completed the repair for $450.
 
 That's $450 in revenue from a single call that Ruby couldn't have handled.
 
-Over the next two weeks, we received 9 Spanish-language calls. Maria handled all 9. Four became booked jobs totaling $2,100 in revenue. That's $2,100 that, for the past 14 months on Ruby, we'd been leaving on the table.
+Over the next two weeks, we received 9 Spanish-language calls. She handled all 9. Four became booked jobs totaling $2,100 in revenue. That's $2,100 that, for the past 14 months on Ruby, we'd been leaving on the table.
 
 To be fair to Ruby: bilingual reception isn't their core offering. They serve all industries, and their English-language service is genuinely good. But for our market, the bilingual gap was costing us real money.
 
@@ -404,7 +404,7 @@ Capta's dashboard showed us things we'd never known:
 
 - **Drain cleaning was our most-requested service.** We'd been spending our marketing budget emphasizing AC repair. But the data showed drain cleaning calls were outpacing AC calls 3-to-1 in the shoulder season. We shifted some ad spend and picked up 6 more drain jobs the following month.
 
-- **Our average response time to voicemails had been 3.2 hours.** We didn't have this metric before. With Maria booking directly, response time became zero — the appointment was confirmed during the call itself.
+- **Our average response time to voicemails had been 3.2 hours.** We didn't have this metric before. With Capta booking directly, response time became zero — the appointment was confirmed during the call itself.
 
 These insights didn't come from Capta's marketing materials. They came from actually using the dashboard. Ruby simply didn't offer this level of visibility into our phone operations.
 
@@ -412,9 +412,9 @@ These insights didn't come from Capta's marketing materials. They came from actu
 
 A month in, here's what Ruby did better:
 
-**Complex, emotionally charged conversations.** We had one caller who was upset about a previous job (not ours — a different contractor had done poor work, and she called us for a second opinion). She was frustrated, venting, and needed to feel heard before she'd trust anyone new. A human receptionist would have handled the emotional nuance better. Maria was professional and empathetic, but the caller later mentioned she "could tell it was a computer." For 95% of our calls, this doesn't matter. For this 5%, it does.
+**Complex, emotionally charged conversations.** We had one caller who was upset about a previous job (not ours — a different contractor had done poor work, and she called us for a second opinion). She was frustrated, venting, and needed to feel heard before she'd trust anyone new. A human receptionist would have handled the emotional nuance better. She was professional and empathetic, but the caller later mentioned she "could tell it was a computer." For 95% of our calls, this doesn't matter. For this 5%, it does.
 
-**Highly unusual requests.** One caller wanted to know if we could install a commercial-grade exhaust system in a residential kitchen for a home bakery. That's a niche question that required back-and-forth about local codes, ductwork modifications, and whether we even offer that service. Maria captured the request accurately and flagged it for our review, but she couldn't have the improvisational conversation a human would.
+**Highly unusual requests.** One caller wanted to know if we could install a commercial-grade exhaust system in a residential kitchen for a home bakery. That's a niche question that required back-and-forth about local codes, ductwork modifications, and whether we even offer that service. She captured the request accurately and flagged it for our review, but she couldn't have the improvisational conversation a human would.
 
 These are real limitations. If your business gets a high volume of complex, emotionally sensitive calls, human receptionists still have an edge. But for our business — where 90% of calls are "I need service X at my address, when can you come?" — the tradeoff is overwhelmingly in AI's favor.
 
@@ -441,7 +441,7 @@ No. And I say that while genuinely respecting what Ruby built. Their human recep
 
 But I'm a contractor. My phone rings 20-30 times a day. Calls come at midnight. A third of my customers speak Spanish. And every missed call is a missed job worth $200-$1,500.
 
-For that reality, Capta is the clear choice. The flat $497/month means my busiest months are my cheapest months per call. Maria speaks my customers' language. She books appointments before I even check my phone. And she never calls in sick.
+For that reality, Capta is the clear choice. The flat $497/month means my busiest months are my cheapest months per call. She speaks my customers' language. She books appointments before I even check my phone. And she never calls in sick.
 
 ## If You're Considering the Same Switch
 
@@ -451,11 +451,11 @@ Here's my advice:
 
 **Switch to Capta if** you're missing calls, missing jobs, or missing an entire segment of your market because of language barriers. The 30-day money-back guarantee means you can try it with zero risk — run both services in parallel for a month if you want to compare them directly.
 
-The setup takes 5 minutes. I did it from my truck before a 7 AM job. Maria was answering calls before I finished my coffee.
+The setup takes 5 minutes. I did it from my truck before a 7 AM job. She was answering calls before I finished my coffee.
 
 ---
 
-Ready to make the switch? Capta offers a 30-day money-back guarantee. Maria answers every call, books appointments, speaks English and Spanish, and never charges you extra for a busy month. [Get Capta →](https://captahq.com)
+Ready to make the switch? Capta offers a 30-day money-back guarantee. She answers every call, books appointments, speaks English and Spanish, and never charges you extra for a busy month. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -468,13 +468,13 @@ Ready to make the switch? Capta offers a 30-day money-back guarantee. Maria answ
     language: "es",
     category: "comparison",
     metaTitle: "De Ruby Receptionists a IA | Historia Real de un Contratista | Capta",
-    metaDescription: "Un contratista de HVAC cuenta semana a semana como fue cambiar de recepcionistas humanas de Ruby a la recepcionista AI Maria de Capta. Numeros reales y opinion honesta.",
+    metaDescription: "Un contratista de HVAC cuenta semana a semana como fue cambiar de recepcionistas humanas de Ruby a la recepcionista AI de Capta. Numeros reales y opinion honesta.",
     targetKeyword: "ruby receptionists alternativa",
     relatedPostSlugs: ["capta-vs-smith-ai-espanol", "capta-vs-dialzara-espanol", "capta-vs-jobber-ai-recepcionista-espanol"],
     authorName: "Ulysses Munoz",
     markdown: `# Cambie de recepcionistas humanas a una recepcionista de IA — esto fue lo que paso
 
-Esta es la historia de un cambio. No una tabla de comparacion hipotetica — un relato semana a semana de lo que pasa cuando un negocio de HVAC y plomeria de tamano mediano deja las recepcionistas humanas de Ruby y empieza a usar la recepcionista AI de Capta, Maria.
+Esta es la historia de un cambio. No una tabla de comparacion hipotetica — un relato semana a semana de lo que pasa cuando un negocio de HVAC y plomeria de tamano mediano deja las recepcionistas humanas de Ruby y empieza a usar la recepcionista AI de Capta.
 
 No vamos a fingir que Ruby es malo. No lo es. Sus recepcionistas humanas son profesionales, amables y han atendido a miles de negocios. Pero despues de 14 meses pagando su plan de 200 minutos a $780/mes, los numeros dejaron de cuadrar. Esto fue lo que paso cuando hicimos el cambio.
 
@@ -494,15 +494,15 @@ Lo que nos decidio fue un cliente hispanohablante que llamo tres veces, no pudo 
 
 **Lunes por la manana.** Nos registramos en Capta a las 6:47 AM antes de salir a un trabajo. El asistente de configuracion de 8 pasos tomo unos 5 minutos. Nombre del negocio, servicios que ofrecemos (HVAC y plomeria), area de servicio, horarios, protocolos de emergencia. Redirigimos nuestro numero a la linea de Capta.
 
-Maria empezo a contestar llamadas a las 7:02 AM.
+Ella empezo a contestar llamadas a las 7:02 AM.
 
-La primera sorpresa: no hubo periodo de entrenamiento. Con Ruby, pasamos dos semanas yendo y viniendo con guiones, preferencias de manejo de llamadas y preguntas frecuentes antes de que las recepcionistas estuvieran comodas. Maria ya conocia la terminologia de HVAC y plomeria. Cuando un cliente dijo "mi aire acondicionado esta soplando aire caliente," Maria supo preguntar sobre el modelo, cuanto tiempo llevaba asi y si todas las rejillas estaban afectadas. No programamos esas preguntas. Ella simplemente las sabia.
+La primera sorpresa: no hubo periodo de entrenamiento. Con Ruby, pasamos dos semanas yendo y viniendo con guiones, preferencias de manejo de llamadas y preguntas frecuentes antes de que las recepcionistas estuvieran comodas. Ella ya conocia la terminologia de HVAC y plomeria. Cuando un cliente dijo "mi aire acondicionado esta soplando aire caliente," ella supo preguntar sobre el modelo, cuanto tiempo llevaba asi y si todas las rejillas estaban afectadas. No programamos esas preguntas. Ella simplemente las sabia.
 
-**Primera llamada:** Un propietario necesitaba reparacion de un grifo. Maria agendo la cita, confirmo el horario y envio una confirmacion por SMS al cliente. Nos llego una notificacion. Tiempo total desde que sono el telefono hasta la cita confirmada: unos 90 segundos.
+**Primera llamada:** Un propietario necesitaba reparacion de un grifo. Ella agendo la cita, confirmo el horario y envio una confirmacion por SMS al cliente. Nos llego una notificacion. Tiempo total desde que sono el telefono hasta la cita confirmada: unos 90 segundos.
 
 Con Ruby, la recepcionista habria tomado los datos del cliente, nos mandaba un correo, y nosotros llamabamos para confirmar. Ese ciclo normalmente tomaba 2-4 horas, y a veces el cliente agendaba con alguien mas mientras tanto.
 
-**Viernes noche, 10:47 PM:** Un cliente reporto una tuberia rota en su cocina. Maria lo marco como emergencia, ofrecio transferir la llamada en vivo, y nos envio una alerta urgente. Llamamos en 3 minutos. El cliente despues nos dijo que casi llamaba a alguien mas pero le impresiono que "alguien" contestara un viernes en la noche.
+**Viernes noche, 10:47 PM:** Un cliente reporto una tuberia rota en su cocina. Ella lo marco como emergencia, ofrecio transferir la llamada en vivo, y nos envio una alerta urgente. Llamamos en 3 minutos. El cliente despues nos dijo que casi llamaba a alguien mas pero le impresiono que "alguien" contestara un viernes en la noche.
 
 **Estadisticas Semana 1:** 47 llamadas, 12 citas agendadas, 1 emergencia atendida. Costo: $0 extra (cubierto por la tarifa fija de $497). Lo que esas mismas 47 llamadas nos habrian costado en Ruby: aproximadamente $752 en minutos solamente, antes de excedentes.
 
@@ -512,15 +512,15 @@ Aqui es donde las cosas se pusieron interesantes.
 
 Atendemos una zona con una comunidad hispana grande. En Ruby, de vez en cuando recibiamos llamadas en espanol, y no salian bien. La recepcionista intentaba ayudar, a veces nos transferia (interrumpiendo un trabajo), o el cliente simplemente colgaba.
 
-**Miercoles, Semana 2:** Maria contesto una llamada en espanol de un propietario cuyo calentador de agua no estaba produciendo agua caliente. La conversacion fue completamente en espanol. Maria hizo las preguntas de diagnostico correctas, agendo una cita para el mismo dia y envio la confirmacion por SMS en espanol. Llegamos, diagnosticamos un termopar fallando y completamos la reparacion por $450.
+**Miercoles, Semana 2:** Ella contesto una llamada en espanol de un propietario cuyo calentador de agua no estaba produciendo agua caliente. La conversacion fue completamente en espanol. Ella hizo las preguntas de diagnostico correctas, agendo una cita para el mismo dia y envio la confirmacion por SMS en espanol. Llegamos, diagnosticamos un termopar fallando y completamos la reparacion por $450.
 
 Esos son $450 en ingresos de una sola llamada que Ruby no habria podido manejar.
 
-Durante las siguientes dos semanas, recibimos 9 llamadas en espanol. Maria manejo las 9. Cuatro se convirtieron en trabajos agendados por un total de $2,100 en ingresos. Esos son $2,100 que, durante los 14 meses con Ruby, habiamos estado dejando en la mesa.
+Durante las siguientes dos semanas, recibimos 9 llamadas en espanol. Ella manejo las 9. Cuatro se convirtieron en trabajos agendados por un total de $2,100 en ingresos. Esos son $2,100 que, durante los 14 meses con Ruby, habiamos estado dejando en la mesa.
 
 Para ser justos con Ruby: la recepcion bilingue no es su oferta principal. Atienden a todas las industrias, y su servicio en ingles es genuinamente bueno. Pero para nuestro mercado, esa brecha bilingue nos estaba costando dinero real.
 
-Esto es algo que muchos contratistas hispanos y latinos entienden intuitivamente. Nuestros clientes hispanohablantes no solo prefieren hablar en espanol — se sienten mas comodos explicando un problema de plomeria en su idioma. Cuando les dices "habla con Maria, ella habla espanol," la confianza se establece antes de que empiece la conversacion. Eso no se puede replicar con un servicio de traduccion.
+Esto es algo que muchos contratistas hispanos y latinos entienden intuitivamente. Nuestros clientes hispanohablantes no solo prefieren hablar en espanol — se sienten mas comodos explicando un problema de plomeria en su idioma. Cuando les dices "habla con tu recepcionista, ella habla espanol," la confianza se establece antes de que empiece la conversacion. Eso no se puede replicar con un servicio de traduccion.
 
 ## Semana 3: El efecto del panel de control
 
@@ -534,15 +534,15 @@ El panel de Capta nos mostro cosas que nunca habiamos sabido:
 
 - **La limpieza de drenajes era nuestro servicio mas solicitado.** Habiamos estado gastando nuestro presupuesto de marketing enfatizando reparacion de aire acondicionado. Pero los datos mostraban que las llamadas por drenajes superaban a las de AC 3 a 1 en la temporada intermedia. Movimos algo del gasto en anuncios y conseguimos 6 trabajos mas de drenaje el mes siguiente.
 
-- **Nuestro tiempo promedio de respuesta a mensajes de voz habia sido 3.2 horas.** No teniamos esa metrica antes. Con Maria agendando directamente, el tiempo de respuesta se convirtio en cero — la cita quedaba confirmada durante la llamada misma.
+- **Nuestro tiempo promedio de respuesta a mensajes de voz habia sido 3.2 horas.** No teniamos esa metrica antes. Con Capta agendando directamente, el tiempo de respuesta se convirtio en cero — la cita quedaba confirmada durante la llamada misma.
 
 ## Semana 4: Lo que extrano de Ruby (evaluacion honesta)
 
 Despues de un mes, esto es lo que Ruby hacia mejor:
 
-**Conversaciones complejas y emocionalmente cargadas.** Tuvimos una llamada de una persona frustrada con un trabajo anterior (no nuestro — otro contratista habia hecho mal trabajo y ella nos llamo para una segunda opinion). Estaba enojada, desahogandose, y necesitaba sentirse escuchada antes de confiar en alguien nuevo. Una recepcionista humana habria manejado mejor el matiz emocional. Maria fue profesional y empatica, pero la persona despues menciono que "se notaba que era computadora." Para el 95% de nuestras llamadas, esto no importa. Para el 5%, si.
+**Conversaciones complejas y emocionalmente cargadas.** Tuvimos una llamada de una persona frustrada con un trabajo anterior (no nuestro — otro contratista habia hecho mal trabajo y ella nos llamo para una segunda opinion). Estaba enojada, desahogandose, y necesitaba sentirse escuchada antes de confiar en alguien nuevo. Una recepcionista humana habria manejado mejor el matiz emocional. La recepcionista de Capta fue profesional y empatica, pero la persona despues menciono que "se notaba que era computadora." Para el 95% de nuestras llamadas, esto no importa. Para el 5%, si.
 
-**Solicitudes muy inusuales.** Un cliente queria saber si podiamos instalar un sistema de extraccion comercial en una cocina residencial para una panaderia casera. Es una pregunta de nicho que requeria ir y venir sobre codigos locales, modificaciones de ductos y si siquiera ofreciamos ese servicio. Maria capturo la solicitud con precision y la marco para nuestra revision, pero no pudo tener la conversacion improvisada que una humana tendria.
+**Solicitudes muy inusuales.** Un cliente queria saber si podiamos instalar un sistema de extraccion comercial en una cocina residencial para una panaderia casera. Es una pregunta de nicho que requeria ir y venir sobre codigos locales, modificaciones de ductos y si siquiera ofreciamos ese servicio. ella capturo la solicitud con precision y la marco para nuestra revision, pero no pudo tener la conversacion improvisada que una humana tendria.
 
 Estas son limitaciones reales. Si tu negocio recibe muchas llamadas complejas y emocionalmente sensibles, las recepcionistas humanas aun tienen ventaja. Pero para nuestro negocio — donde el 90% de las llamadas son "necesito el servicio X en mi direccion, cuando pueden venir?" — el balance esta abrumadoramente a favor de la IA.
 
@@ -569,7 +569,7 @@ No. Y lo digo respetando genuinamente lo que Ruby construyo. Sus recepcionistas 
 
 Pero soy contratista. Mi telefono suena 20-30 veces al dia. Las llamadas llegan a medianoche. Un tercio de mis clientes habla espanol. Y cada llamada perdida es un trabajo perdido que vale entre $200 y $1,500.
 
-Para esa realidad, Capta es la opcion clara. La tarifa fija de $497/mes significa que mis meses mas ocupados son mis meses mas baratos por llamada. Maria habla el idioma de mis clientes. Agenda citas antes de que yo revise el telefono. Y nunca se reporta enferma.
+Para esa realidad, Capta es la opcion clara. La tarifa fija de $497/mes significa que mis meses mas ocupados son mis meses mas baratos por llamada. Ella habla el idioma de mis clientes. Agenda citas antes de que yo revise el telefono. Y nunca se reporta enferma.
 
 ## Si estas considerando el mismo cambio
 
@@ -579,11 +579,11 @@ Aqui va mi consejo:
 
 **Cambiate a Capta si** estas perdiendo llamadas, perdiendo trabajos, o perdiendo un segmento entero de tu mercado por barreras de idioma. La garantia de devolucion de 30 dias significa que puedes probarlo sin riesgo — corre los dos servicios en paralelo por un mes si quieres compararlos directamente.
 
-La configuracion toma 5 minutos. Yo lo hice desde mi camioneta antes de un trabajo a las 7 AM. Maria estaba contestando llamadas antes de que terminara mi cafe.
+La configuracion toma 5 minutos. Yo lo hice desde mi camioneta antes de un trabajo a las 7 AM. Ella estaba contestando llamadas antes de que terminara mi cafe.
 
 ---
 
-¿Listo para hacer el cambio? Capta ofrece garantia de devolucion de 30 dias. Maria contesta cada llamada, agenda citas, habla ingles y espanol, y nunca te cobra extra por un mes ocupado. [Obten Capta →](https://captahq.com)
+¿Listo para hacer el cambio? Capta ofrece garantia de devolucion de 30 dias. Ella contesta cada llamada, agenda citas, habla ingles y espanol, y nunca te cobra extra por un mes ocupado. [Obten Capta →](https://captahq.com)
 `,
   },
 
@@ -612,7 +612,7 @@ But they're built for different businesses. Instead of throwing a comparison tab
 
 Dialzara is a general-purpose AI answering service. It works for dentists, law offices, real estate agents, and contractors alike. When a caller says "my AC is blowing warm air," Dialzara captures the message. It records the caller's name, number, and request. It does its job as a generic answering service.
 
-Capta is built exclusively for home service contractors. When a caller says "my AC is blowing warm air," Maria asks follow-up questions: What type of system do you have? Central or mini-split? How long has it been happening? Have you checked the filter? Is anyone in the home who's vulnerable to the heat — elderly family members, infants? Based on the answers, she either books a routine maintenance appointment or flags it as urgent and offers to transfer the call to your emergency line.
+Capta is built exclusively for home service contractors. When a caller says "my AC is blowing warm air," She asks follow-up questions: What type of system do you have? Central or mini-split? How long has it been happening? Have you checked the filter? Is anyone in the home who's vulnerable to the heat — elderly family members, infants? Based on the answers, she either books a routine maintenance appointment or flags it as urgent and offers to transfer the call to your emergency line.
 
 That's not a subtle difference. It's the difference between a message pad and a diagnostic intake.
 
@@ -628,7 +628,7 @@ This is the question that eliminates one option for a huge number of contractors
 
 Dialzara operates primarily in English. If a Spanish-speaking homeowner calls your business, they're getting an English-language interaction. For some businesses, that's fine. For contractors in Texas, California, Florida, Arizona, Nevada, New Mexico, Colorado, Georgia, North Carolina, or frankly most of the country, it's a problem.
 
-Capta's Maria is natively bilingual in English and Spanish. She detects the caller's language automatically and responds in kind. The Spanish isn't a translation layer — it was built into the product from day one. Maria discusses plumbing problems, HVAC diagnostics, and appointment scheduling in Spanish with the same quality and depth as English.
+Capta's receptionist is natively bilingual in English and Spanish. She detects the caller's language automatically and responds in kind. The Spanish isn't a translation layer — it was built into the product from day one. She discusses plumbing problems, HVAC diagnostics, and appointment scheduling in Spanish with the same quality and depth as English.
 
 Here's the business case: 42 million Americans speak Spanish at home. In the home services industry, Spanish-speaking households represent an enormous share of the market. If your AI answering service can't communicate with them, those callers hang up and call a competitor who can.
 
@@ -671,11 +671,11 @@ This is the question that reveals what you actually need from an answering servi
 
 The problem with message-taking for contractors: every hour between the initial call and your callback is an hour where the customer might call someone else. A homeowner with a broken AC in July isn't going to wait 3 hours for you to finish a job and call back. They'll call the next contractor on their list. By the time you return the call, the job belongs to someone else.
 
-**Capta** books appointments directly during the call. Maria checks your availability, offers time slots, confirms the booking, and sends an SMS confirmation to the customer — all before the call ends. The customer hangs up knowing they have a confirmed appointment. No waiting. No phone tag. No "I'll call you back."
+**Capta** books appointments directly during the call. She checks your availability, offers time slots, confirms the booking, and sends an SMS confirmation to the customer — all before the call ends. The customer hangs up knowing they have a confirmed appointment. No waiting. No phone tag. No "I'll call you back."
 
 For contractors, this is the difference between capturing a job and losing it. The value of instant booking is hard to overstate. Industry data suggests that the first contractor to confirm an appointment gets the job 70-80% of the time. If your answering service takes messages and you call back 2 hours later, you're competing against every other contractor the homeowner called in the meantime.
 
-SMS confirmations add another layer. When Maria sends a text confirming the appointment, the customer feels locked in. No-shows drop. Cancellations drop. The customer isn't still shopping — they have a confirmed appointment with your business.
+SMS confirmations add another layer. When She sends a text confirming the appointment, the customer feels locked in. No-shows drop. Cancellations drop. The customer isn't still shopping — they have a confirmed appointment with your business.
 
 **If you just need message-taking** and you handle all scheduling yourself, Dialzara works. It's a reliable message service.
 
@@ -691,7 +691,7 @@ Last question. And for many contractors, it's the most important one.
 
 **Dialzara** treats every call the same. A routine "I need a quote for a new faucet" gets the same handling as "my basement is flooding right now." The message gets recorded and sent to you. What happens next depends on when you check your messages.
 
-**Capta** has built-in emergency detection designed specifically for the trades. Maria recognizes emergency signals — flooding, gas leaks, electrical hazards, no heat in winter with vulnerable people at home, active fire or smoke — and responds differently:
+**Capta** has built-in emergency detection designed specifically for the trades. She recognizes emergency signals — flooding, gas leaks, electrical hazards, no heat in winter with vulnerable people at home, active fire or smoke — and responds differently:
 
 1. She flags the call as emergency priority.
 2. She sends you an immediate alert (not just a regular notification — an urgent one).
@@ -741,7 +741,7 @@ The right choice depends entirely on your business. This isn't about which produ
 
 ---
 
-If Capta is the right fit, the 30-day money-back guarantee means there's no risk in trying it. Setup takes 5 minutes. Maria starts answering calls immediately — in English and Spanish. [Get Capta →](https://captahq.com)
+If Capta is the right fit, the 30-day money-back guarantee means there's no risk in trying it. Setup takes 5 minutes. She starts answering calls immediately — in English and Spanish. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -770,7 +770,7 @@ Pero estan construidos para negocios diferentes. En vez de lanzarte una tabla de
 
 Dialzara es un servicio de contestacion AI de proposito general. Funciona para dentistas, bufetes de abogados, agentes de bienes raices y contratistas por igual. Cuando un cliente llama y dice "mi aire acondicionado esta soplando aire caliente," Dialzara captura el mensaje. Registra el nombre, numero y solicitud del cliente. Hace su trabajo como servicio generico.
 
-Capta esta construido exclusivamente para contratistas de servicios del hogar. Cuando un cliente llama y dice "mi aire acondicionado esta soplando aire caliente," Maria hace preguntas de seguimiento: ¿Que tipo de sistema tiene? ¿Central o mini-split? ¿Cuanto tiempo lleva asi? ¿Ha revisado el filtro? ¿Hay alguien vulnerable en la casa — personas mayores, bebes? Segun las respuestas, agenda una cita de mantenimiento rutinario o lo marca como urgente y ofrece transferir la llamada a tu linea de emergencia.
+Capta esta construido exclusivamente para contratistas de servicios del hogar. Cuando un cliente llama y dice "mi aire acondicionado esta soplando aire caliente," tu recepcionista hace preguntas de seguimiento: ¿Que tipo de sistema tiene? ¿Central o mini-split? ¿Cuanto tiempo lleva asi? ¿Ha revisado el filtro? ¿Hay alguien vulnerable en la casa — personas mayores, bebes? Segun las respuestas, agenda una cita de mantenimiento rutinario o lo marca como urgente y ofrece transferir la llamada a tu linea de emergencia.
 
 Esa no es una diferencia sutil. Es la diferencia entre un bloc de notas y una evaluacion diagnostica.
 
@@ -786,11 +786,11 @@ Esta es la pregunta que elimina una opcion para un numero enorme de contratistas
 
 Dialzara opera principalmente en ingles. Si un propietario hispanohablante llama a tu negocio, recibe una interaccion en ingles. Para algunos negocios, eso esta bien. Para contratistas en Texas, California, Florida, Arizona, Nevada, Nuevo Mexico, Colorado, Georgia, Carolina del Norte, o francamente la mayoria del pais, es un problema.
 
-Maria de Capta es nativamente bilingue en ingles y espanol. Detecta el idioma del cliente automaticamente y responde en el mismo. El espanol no es una capa de traduccion — fue integrado en el producto desde el primer dia. Maria discute problemas de plomeria, diagnosticos de HVAC y agendamiento de citas en espanol con la misma calidad y profundidad que en ingles.
+La recepcionista de Capta es nativamente bilingue en ingles y espanol. Detecta el idioma del cliente automaticamente y responde en el mismo. El espanol no es una capa de traduccion — fue integrado en el producto desde el primer dia. Ella discute problemas de plomeria, diagnosticos de HVAC y agendamiento de citas en espanol con la misma calidad y profundidad que en ingles.
 
 Aqui va el caso de negocio: 42 millones de estadounidenses hablan espanol en casa. En la industria de servicios del hogar, los hogares hispanohablantes representan una porcion enorme del mercado. Si tu servicio de contestacion AI no puede comunicarse con ellos, esos clientes cuelgan y llaman a un competidor que si puede.
 
-Para los contratistas hispanos y latinos, esto va mas alla de los numeros. Muchos de ustedes construyeron sus negocios sirviendo a comunidades donde el espanol es el idioma principal. Un servicio de contestacion que no habla espanol no solo pierde llamadas — contradice la identidad de tu negocio. Maria entiende eso porque fue construida con esa realidad en mente.
+Para los contratistas hispanos y latinos, esto va mas alla de los numeros. Muchos de ustedes construyeron sus negocios sirviendo a comunidades donde el espanol es el idioma principal. Un servicio de contestacion que no habla espanol no solo pierde llamadas — contradice la identidad de tu negocio. Ella entiende eso porque fue construida con esa realidad en mente.
 
 **Si atiendes a comunidades bilingues** o operas en un mercado con poblaciones hispanas significativas, esta pregunta sola podria tomar tu decision.
 
@@ -829,11 +829,11 @@ Esta es la pregunta que revela lo que realmente necesitas de un servicio de cont
 
 El problema con tomar mensajes para contratistas: cada hora entre la llamada inicial y tu devolucion de llamada es una hora donde el cliente puede llamar a alguien mas. Un propietario con un aire acondicionado descompuesto en julio no va a esperar 3 horas a que termines un trabajo y le devuelvas la llamada. Va a llamar al siguiente contratista de su lista. Para cuando le regresas la llamada, el trabajo ya es de alguien mas.
 
-**Capta** agenda citas directamente durante la llamada. Maria revisa tu disponibilidad, ofrece horarios, confirma la reservacion y envia una confirmacion por SMS al cliente — todo antes de que termine la llamada. El cliente cuelga sabiendo que tiene cita confirmada. Sin esperas. Sin juego del telefono. Sin "le devuelvo la llamada."
+**Capta** agenda citas directamente durante la llamada. Ella revisa tu disponibilidad, ofrece horarios, confirma la reservacion y envia una confirmacion por SMS al cliente — todo antes de que termine la llamada. El cliente cuelga sabiendo que tiene cita confirmada. Sin esperas. Sin juego del telefono. Sin "le devuelvo la llamada."
 
 Para contratistas, esta es la diferencia entre capturar un trabajo y perderlo. Los datos de la industria sugieren que el primer contratista que confirma una cita se queda con el trabajo el 70-80% de las veces.
 
-Las confirmaciones por SMS anaden otra capa. Cuando Maria envia un texto confirmando la cita, el cliente se siente comprometido. Las cancelaciones bajan. El cliente ya no sigue buscando — tiene una cita confirmada con tu negocio.
+Las confirmaciones por SMS anaden otra capa. Cuando Ella envia un texto confirmando la cita, el cliente se siente comprometido. Las cancelaciones bajan. El cliente ya no sigue buscando — tiene una cita confirmada con tu negocio.
 
 **Si solo necesitas que te tomen mensajes** y manejas todo el agendamiento tu mismo, Dialzara funciona. Es un servicio de mensajes confiable.
 
@@ -849,7 +849,7 @@ Ultima pregunta. Y para muchos contratistas, es la mas importante.
 
 **Dialzara** trata todas las llamadas igual. Una rutinaria "necesito cotizacion para un grifo nuevo" recibe el mismo manejo que "se me esta inundando el sotano ahorita." El mensaje se registra y se te envia. Lo que pasa despues depende de cuando revises tus mensajes.
 
-**Capta** tiene deteccion de emergencias integrada disenada especificamente para los oficios. Maria reconoce senales de emergencia — inundaciones, fugas de gas, peligros electricos, sin calefaccion en invierno con personas vulnerables en casa, fuego o humo activo — y responde diferente:
+**Capta** tiene deteccion de emergencias integrada disenada especificamente para los oficios. Ella reconoce senales de emergencia — inundaciones, fugas de gas, peligros electricos, sin calefaccion en invierno con personas vulnerables en casa, fuego o humo activo — y responde diferente:
 
 1. Marca la llamada como prioridad de emergencia.
 2. Te envia una alerta inmediata (no solo una notificacion regular — una urgente).
@@ -895,7 +895,7 @@ La eleccion correcta depende enteramente de tu negocio. Esto no se trata de cual
 
 ---
 
-Si Capta es la opcion correcta para ti, la garantia de devolucion de 30 dias significa que no hay riesgo en probarlo. La configuracion toma 5 minutos. Maria empieza a contestar llamadas de inmediato — en ingles y espanol. [Obten Capta →](https://captahq.com)
+Si Capta es la opcion correcta para ti, la garantia de devolucion de 30 dias significa que no hay riesgo en probarlo. La configuracion toma 5 minutos. Ella empieza a contestar llamadas de inmediato — en ingles y espanol. [Obten Capta →](https://captahq.com)
 `,
   },
 
@@ -957,13 +957,13 @@ If you DO need Jobber's FSM features (scheduling, invoicing, quoting), here's a 
 
 Jobber's AI receptionist has limited Spanish support. It's not their focus — Jobber is a Canadian company that built their platform primarily for English-speaking markets.
 
-Capta's Maria is natively bilingual. English and Spanish at equal quality, with automatic language detection. For contractors in bilingual markets, this is a significant differentiator.
+Capta's receptionist is natively bilingual. English and Spanish at equal quality, with automatic language detection. For contractors in bilingual markets, this is a significant differentiator.
 
 ### Emergency Detection
 
 Jobber's AI receptionist handles calls but doesn't have deep emergency detection built for the trades. It can follow basic call routing rules, but it won't autonomously recognize that "I smell gas and my kids are home" requires a fundamentally different response than "I need a quote for a new water heater."
 
-Capta's emergency detection is purpose-built for home service emergencies. Maria recognizes flooding, gas leaks, electrical hazards, heating failures, and other trade-specific emergencies. She escalates immediately with alerts and live transfer to your phone.
+Capta's emergency detection is purpose-built for home service emergencies. She recognizes flooding, gas leaks, electrical hazards, heating failures, and other trade-specific emergencies. She escalates immediately with alerts and live transfer to your phone.
 
 ### Call Analytics
 
@@ -981,7 +981,7 @@ Capta books appointments and sends immediate SMS confirmations to customers. If 
 
 Jobber's AI receptionist handles basic call answering and information capture. It's designed to supplement Jobber's platform, not replace a full reception experience.
 
-Capta's Maria conducts complete conversations. She asks trade-specific follow-up questions, qualifies the urgency of the request, provides relevant information about your services, and handles the full booking flow — including the SMS confirmation. The depth of conversation is noticeably different from an add-on phone feature.
+Capta's receptionist conducts complete conversations. She asks trade-specific follow-up questions, qualifies the urgency of the request, provides relevant information about your services, and handles the full booking flow — including the SMS confirmation. The depth of conversation is noticeably different from an add-on phone feature.
 
 ## Who Should Choose Jobber's AI Receptionist?
 
@@ -1040,7 +1040,7 @@ Capta books appointments and manages call data in its own dashboard. You can man
 
 ---
 
-Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—Maria answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
+Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 30-day money-back guarantee—She answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
 `,
   },
 
@@ -1102,7 +1102,7 @@ Si necesitas las funciones FSM de Jobber (agendamiento, facturacion, cotizacione
 
 La recepcionista AI de Jobber tiene soporte limitado en espanol. No es su enfoque — Jobber es una empresa canadiense que construyo su plataforma principalmente para mercados angloparlantes.
 
-Maria de Capta es nativamente bilingue. Ingles y espanol con la misma calidad, con deteccion automatica del idioma. Para contratistas en mercados bilingues, este es un diferenciador significativo.
+La recepcionista de Capta es nativamente bilingue. Ingles y espanol con la misma calidad, con deteccion automatica del idioma. Para contratistas en mercados bilingues, este es un diferenciador significativo.
 
 Para los contratistas hispanos que usan Jobber: probablemente elegiste Jobber por sus funciones de gestion, no por su capacidad telefonica. Tiene sentido mantener Jobber para lo que hace bien y agregar Capta para lo que Jobber no cubre — especialmente el manejo profesional de llamadas en espanol.
 
@@ -1110,7 +1110,7 @@ Para los contratistas hispanos que usan Jobber: probablemente elegiste Jobber po
 
 La recepcionista AI de Jobber maneja llamadas pero no tiene deteccion profunda de emergencias construida para los oficios. Puede seguir reglas basicas de enrutamiento, pero no reconocera autonomamente que "huelo a gas y mis hijos estan en casa" requiere una respuesta fundamentalmente diferente a "necesito cotizacion para un calentador nuevo."
 
-La deteccion de emergencias de Capta esta disenada para emergencias de servicios del hogar. Maria reconoce inundaciones, fugas de gas, peligros electricos, fallas de calefaccion y otras emergencias especificas de oficios. Escala inmediatamente con alertas y transferencia en vivo a tu telefono.
+La deteccion de emergencias de Capta esta disenada para emergencias de servicios del hogar. Ella reconoce inundaciones, fugas de gas, peligros electricos, fallas de calefaccion y otras emergencias especificas de oficios. Escala inmediatamente con alertas y transferencia en vivo a tu telefono.
 
 ### Analiticas de llamadas
 
@@ -1128,7 +1128,7 @@ Capta agenda citas y envia confirmaciones por SMS inmediatas a los clientes. Si 
 
 La recepcionista AI de Jobber maneja contestacion basica y captura de informacion. Esta disenada para complementar la plataforma de Jobber, no para reemplazar una experiencia completa de recepcion.
 
-Maria de Capta conduce conversaciones completas. Hace preguntas de seguimiento especificas del oficio, califica la urgencia de la solicitud, proporciona informacion relevante sobre tus servicios y maneja todo el flujo de reservacion — incluyendo la confirmacion por SMS. La profundidad de la conversacion es notablemente diferente de una funcion telefonica adicional.
+La recepcionista de Capta conduce conversaciones completas. Hace preguntas de seguimiento especificas del oficio, califica la urgencia de la solicitud, proporciona informacion relevante sobre tus servicios y maneja todo el flujo de reservacion — incluyendo la confirmacion por SMS. La profundidad de la conversacion es notablemente diferente de una funcion telefonica adicional.
 
 ## ¿Quien deberia elegir la recepcionista AI de Jobber?
 
@@ -1187,7 +1187,7 @@ Capta agenda citas y administra datos de llamadas en su propio panel. Puedes adm
 
 ---
 
-¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantia de 30 dias de Capta—Maria contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obten Capta →](https://captahq.com)
+¿Listo para ver lo que una recepcionista AI construida para contratistas puede hacer por tu negocio? Empieza con la garantia de 30 dias de Capta—Ella contesta cada llamada, agenda citas y habla el idioma de tus clientes. [Obten Capta →](https://captahq.com)
 `,
   },
 ];

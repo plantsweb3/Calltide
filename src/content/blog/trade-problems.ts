@@ -48,7 +48,7 @@ These are the calls going straight to voicemail every evening and weekend. Your 
 
 What if every call got answered — 24/7, in English and Spanish, with appointment booking and emergency detection?
 
-That's what Capta does. Maria, our AI receptionist, answers every call to your plumbing business. She books appointments, detects emergencies (burst pipes, flooding, sewer backups), sends SMS confirmations, and speaks fluent English and Spanish.
+That's what Capta does. Our AI receptionist answers every call to your plumbing business. She books appointments, detects emergencies (burst pipes, flooding, sewer backups), sends SMS confirmations, and speaks fluent English and Spanish.
 
 **The cost:** $497/month flat. No per-minute charges.
 
@@ -128,9 +128,9 @@ Pero esa red funciona en ambas direcciones. Si no contestas una llamada, no solo
 
 ¿Qué si cada llamada se contestara — 24/7, en español e inglés, con reserva de citas y detección de emergencias?
 
-Eso es lo que hace Capta. Maria, nuestra recepcionista AI, contesta cada llamada a tu negocio de plomería. Agenda citas, detecta emergencias (tuberías reventadas, inundaciones, problemas de drenaje), envía confirmaciones por SMS, y habla español e inglés con fluidez nativa.
+Eso es lo que hace Capta. Nuestra recepcionista AI contesta cada llamada a tu negocio de plomería. Agenda citas, detecta emergencias (tuberías reventadas, inundaciones, problemas de drenaje), envía confirmaciones por SMS, y habla español e inglés con fluidez nativa.
 
-No es software de traducción. Cuando un cliente llama y dice "se me reventó un tubo y se está inundando la cocina," Maria entiende la urgencia, te alerta inmediatamente, y calma al cliente mientras tú te preparas para llegar.
+No es software de traducción. Cuando un cliente llama y dice "se me reventó un tubo y se está inundando la cocina," tu recepcionista entiende la urgencia, te alerta inmediatamente, y calma al cliente mientras tú te preparas para llegar.
 
 **El costo:** $497/mes fijo. Sin cargos por minuto. Sin sorpresas.
 
@@ -152,7 +152,7 @@ Personal de oficina trabaja 40 horas. Tu teléfono suena 168 horas a la semana. 
 Dos trabajos extra por mes cubren el costo. La mayoría de los plomeros ven eso en la primera semana.
 
 **¿De verdad habla español bien?**
-Maria no traduce del inglés — conversa en español auténtico. Entiende modismos, jerga de plomería en español, y se adapta al dialecto del cliente.`,
+Tu recepcionista no traduce del inglés — conversa en español auténtico. Entiende modismos, jerga de plomería en español, y se adapta al dialecto del cliente.`,
   },
   /* ════ EN 2 — HVAC After-Hours Revenue ════ */
   {
@@ -206,9 +206,9 @@ Your highest-value, highest-volume calling period is the exact time when nobody'
 
 ## The Fix: AI That Never Sleeps
 
-Capta's AI receptionist Maria answers your phone 24/7/365. She understands HVAC emergencies, books appointments, and speaks English and Spanish.
+Capta's AI receptionist answers your phone 24/7/365. She understands HVAC emergencies, books appointments, and speaks English and Spanish.
 
-When someone calls at 11 PM because their heat died, Maria:
+When someone calls at 11 PM because their heat died, your receptionist:
 1. Answers immediately with your custom greeting
 2. Detects the emergency ("no heat" + winter = urgent)
 3. Alerts you via SMS and email
@@ -224,7 +224,7 @@ The after-hours calls you capture in the first week will likely cover the entire
 ## FAQs
 
 **What if I don't offer after-hours emergency service?**
-Maria can still book callers for the next available slot. You capture the lead instead of losing it to voicemail.
+Your receptionist can still book callers for the next available slot. You capture the lead instead of losing it to voicemail.
 
 **Can it detect the difference between "no AC" and "needs a tune-up"?**
 Yes. Capta classifies calls by urgency and handles each type appropriately.
@@ -292,9 +292,9 @@ Tu periodo de mayor valor y mayor volumen de llamadas es exactamente cuando nadi
 
 ## La Solución: AI Que Nunca Duerme
 
-Maria, la recepcionista AI de Capta, contesta tu teléfono 24/7/365. Entiende emergencias de HVAC, agenda citas, y habla español e inglés con fluidez nativa.
+La recepcionista AI de Capta contesta tu teléfono 24/7/365. Entiende emergencias de HVAC, agenda citas, y habla español e inglés con fluidez nativa.
 
-Cuando alguien llama a las 11 PM porque su calefacción murió, Maria:
+Cuando alguien llama a las 11 PM porque su calefacción murió, tu recepcionista:
 1. Contesta inmediatamente con tu saludo personalizado
 2. Detecta la emergencia ("sin calefacción" + invierno = urgente)
 3. Te alerta por SMS y email instantáneamente
@@ -311,7 +311,7 @@ Las llamadas fuera de horario que capturas en la primera semana probablemente cu
 ## Preguntas Frecuentes
 
 **¿Qué si no ofrezco servicio de emergencia fuera de horario?**
-Maria aún puede agendar para el próximo horario disponible. Capturas al cliente en vez de perderlo al buzón de voz. Un cliente agendado para mañana a primera hora es infinitamente mejor que un cliente que llamó a tu competidor.
+Tu recepcionista aún puede agendar para el próximo horario disponible. Capturas al cliente en vez de perderlo al buzón de voz. Un cliente agendado para mañana a primera hora es infinitamente mejor que un cliente que llamó a tu competidor.
 
 **¿Puede distinguir entre "no tengo aire" y "necesita mantenimiento"?**
 Sí. Capta clasifica las llamadas por urgencia y maneja cada tipo apropiadamente. Una emergencia recibe alerta inmediata; una solicitud de mantenimiento se agenda normalmente.
@@ -376,7 +376,7 @@ This is a permanent customer loss, not a delay. Once they find a Spanish-speakin
 
 ## The Solution
 
-Capta's Maria speaks fluent English and Spanish. Not translation software — genuine bilingual conversation. She understands electrical service requests in both languages and handles them with the same intelligence.
+Capta's AI receptionist speaks fluent English and Spanish. Not translation software — genuine bilingual conversation. She understands electrical service requests in both languages and handles them with the same intelligence.
 
 A Spanish-speaking homeowner calling about "chispas en mi panel eléctrico" gets the same emergency detection, same appointment booking, same SMS confirmation as an English-speaking caller saying "sparks from my breaker box."
 
@@ -391,7 +391,7 @@ No. Capta uses native-quality Spanish conversation. It's not translated English 
 If Spanish-speaking customers represent even 15% of your market, the jobs you capture pay for Capta many times over.
 
 **Do I need to be bilingual myself?**
-No. Maria handles the phone calls. You show up and do the electrical work. If you need to communicate on-site, that's a separate consideration.`,
+No. Your receptionist handles the phone calls. You show up and do the electrical work. If you need to communicate on-site, that's a separate consideration.`,
   },
   /* ════ ES 3 — Electricistas Bilingüe ════ */
   {
@@ -472,11 +472,11 @@ Un solo trabajo bien hecho — contestado en español, tratado con respeto, entr
 
 ## La Solución
 
-Maria, la recepcionista AI de Capta, habla inglés y español con fluidez nativa. No es software de traducción — es conversación bilingüe genuina. Entiende solicitudes de servicio eléctrico en ambos idiomas y las maneja con la misma inteligencia.
+La recepcionista AI de Capta habla inglés y español con fluidez nativa. No es software de traducción — es conversación bilingüe genuina. Entiende solicitudes de servicio eléctrico en ambos idiomas y las maneja con la misma inteligencia.
 
 Un propietario hispanohablante que llama por "chispas en mi panel eléctrico" recibe la misma detección de emergencias, misma reserva de citas, y misma confirmación por SMS que un anglohablante que dice "sparks from my breaker box."
 
-Cuando Don Miguel llama y dice "se me andan apagando las luces cuando prendo el microondas," Maria entiende que probablemente es un problema de panel, captura la dirección, agenda una inspección, y le envía confirmación por texto — todo en español, todo en menos de 3 minutos.
+Cuando Don Miguel llama y dice "se me andan apagando las luces cuando prendo el microondas," tu recepcionista entiende que probablemente es un problema de panel, captura la dirección, agenda una inspección, y le envía confirmación por texto — todo en español, todo en menos de 3 minutos.
 
 **$497/mes fijo.** Sin cargos por minuto. Garantía de devolución de 30 días.
 
@@ -491,7 +491,7 @@ Capta usa conversación en español de calidad nativa. No es inglés traducido �
 Si los clientes hispanohablantes representan aunque sea 15% de tu mercado, los trabajos que capturas pagan Capta muchas veces. Un solo panel eléctrico de $2,000 cubre 4 meses de servicio.
 
 **¿Necesito hablar español yo?**
-No. Maria maneja las llamadas telefónicas. Tú llegas y haces el trabajo eléctrico. Para comunicación en sitio, muchos electricistas usan apps de traducción o traen a un ayudante bilingüe.
+No. Tu recepcionista maneja las llamadas telefónicas. Tú llegas y haces el trabajo eléctrico. Para comunicación en sitio, muchos electricistas usan apps de traducción o traen a un ayudante bilingüe.
 
 **¿Funciona en mi ciudad?**
 Capta funciona en todo Estados Unidos. Si tu mercado tiene presencia hispana — y prácticamente todos los mercados la tienen — el soporte bilingüe te da una ventaja competitiva real.`,
@@ -532,7 +532,7 @@ The owner becomes the bottleneck. Every phone call that interrupts a job costs p
 
 ## The AI Office Manager
 
-Capta's AI receptionist Maria handles the phone work:
+Capta's AI receptionist handles the phone work:
 
 - **Answers every call** — while you're on a job, driving, meeting with a customer
 - **Books estimates and appointments** — directly into your calendar
@@ -551,7 +551,7 @@ Capta's AI receptionist Maria handles the phone work:
 | Training time | 2-4 weeks | 10 minutes |
 | Handles seasonal surge | Struggles | Effortlessly |
 
-Maria costs 1/6 of an office hire and works 4x the hours. The math is overwhelming.
+Capta costs 1/6 of an office hire and works 4x the hours. The math is overwhelming.
 
 ## What This Means for Growth
 
@@ -572,7 +572,7 @@ The landscaping companies growing fastest in 2026 aren't the ones with the bigge
 For phone answering and scheduling, yes. You'll still need someone for billing, payroll, and other admin — but the phone is the biggest time drain.
 
 **What about existing customers who want to talk to me?**
-Maria can transfer calls when needed. But most calls are booking requests that she handles automatically.
+Your receptionist can transfer calls when needed. But most calls are booking requests that she handles automatically.
 
 **Is $497/month really enough?**
 It includes unlimited calls, 24/7 coverage, bilingual support, and CRM. No surprise charges.`,
@@ -627,7 +627,7 @@ Pero si tu teléfono manda al buzón cuando un propietario hispanohablante llama
 
 ## La Administradora de Oficina AI
 
-Maria, la recepcionista AI de Capta, maneja todo el trabajo telefónico de tu negocio de paisajismo:
+La recepcionista AI de Capta maneja todo el trabajo telefónico de tu negocio de paisajismo:
 
 - **Contesta cada llamada** — mientras estás en un trabajo, manejando entre propiedades, o reunido con un cliente
 - **Agenda presupuestos y citas** — directo en tu calendario
@@ -646,7 +646,7 @@ Maria, la recepcionista AI de Capta, maneja todo el trabajo telefónico de tu ne
 | Tiempo de entrenamiento | 2-4 semanas | 10 minutos |
 | Maneja pico estacional | Con dificultad | Sin problema |
 
-Maria cuesta 1/6 de una contratación de oficina y trabaja 4x las horas. La matemática no tiene discusión.
+Capta cuesta 1/6 de una contratación de oficina y trabaja 4x las horas. La matemática no tiene discusión.
 
 ## Lo Que Significa para Tu Crecimiento
 
@@ -667,13 +667,13 @@ Las empresas de paisajismo que más están creciendo en 2026 no son las que tien
 Para contestar teléfonos y agendar citas, sí — y lo hace 24/7 sin días libres. Aún necesitarás manejar nómina y facturación tú mismo o con un contador, pero el teléfono es el mayor consumidor de tiempo.
 
 **¿Qué pasa con clientes existentes que quieren hablar conmigo?**
-Maria puede transferir llamadas cuando es necesario. Pero la gran mayoría de las llamadas son solicitudes de presupuesto o confirmaciones que ella maneja automáticamente.
+Tu recepcionista puede transferir llamadas cuando es necesario. Pero la gran mayoría de las llamadas son solicitudes de presupuesto o confirmaciones que ella maneja automáticamente.
 
 **¿$497/mes es realmente suficiente?**
 Incluye llamadas ilimitadas, cobertura 24/7, soporte bilingüe, y CRM. Sin cargos sorpresa. Con plan anual baja a $397/mes. Un solo presupuesto de paisajismo cerrado — digamos $2,000 por un proyecto de hardscaping — paga 4 meses de Capta.
 
 **¿Funciona para empresas de paisajismo grandes?**
-Sí. Capta escala contigo. Ya sea que tengas 2 equipos o 10, Maria maneja el volumen sin problema.`,
+Sí. Capta escala contigo. Ya sea que tengas 2 equipos o 10, tu recepcionista maneja el volumen sin problema.`,
   },
   /* ════ EN 5 — Roofer's Storm Season Guide ════ */
   {
@@ -709,9 +709,9 @@ And the calls don't spread out conveniently. They all come at once. The first 48
 
 ## The Solution: AI That Handles the Surge
 
-Capta's AI receptionist Maria handles unlimited calls at $497/month flat. Whether you get 20 calls or 2,000, same price.
+Capta's AI receptionist handles unlimited calls at $497/month flat. Whether you get 20 calls or 2,000, same price.
 
-During storm season, Maria:
+During storm season, your receptionist:
 - Books free inspection appointments efficiently
 - Captures property address and damage description
 - Handles insurance-related questions
@@ -737,7 +737,7 @@ That's not a typo. The ROI during storm season alone can be 500x-1,600x.
 Yes. AI doesn't get tired, doesn't need breaks, and handles each call with the same quality.
 
 **What about insurance claim questions?**
-Maria captures insurance details and caller questions. For complex claims, she can flag them for your personal follow-up.
+Your receptionist captures insurance details and caller questions. For complex claims, she can flag them for your personal follow-up.
 
 **Should I only get Capta during storm season?**
 No. Storm season is when the ROI is most dramatic, but you lose money to missed calls year-round.`,
@@ -797,9 +797,9 @@ Si tu sistema telefónico manda estas preguntas al buzón de voz — especialmen
 
 ## La Solución: AI Que Maneja el Pico Sin Límite
 
-Maria, la recepcionista AI de Capta, maneja llamadas ilimitadas a $497/mes fijo. Ya sea que recibas 20 o 2,000 llamadas, mismo precio. No hay cargos extra por volumen — que es exactamente lo que necesitas cuando tu teléfono explota después de una tormenta.
+La recepcionista AI de Capta maneja llamadas ilimitadas a $497/mes fijo. Ya sea que recibas 20 o 2,000 llamadas, mismo precio. No hay cargos extra por volumen — que es exactamente lo que necesitas cuando tu teléfono explota después de una tormenta.
 
-Durante temporada de tormentas, Maria:
+Durante temporada de tormentas, tu recepcionista:
 
 - **Agenda inspecciones gratuitas eficientemente** — captura dirección, disponibilidad del propietario, y detalles de acceso
 - **Captura dirección de la propiedad y descripción del daño** — tejas faltantes, goteras, daño visible, para que llegues preparado
@@ -818,7 +818,7 @@ Hagamos la matemática:
 - **Ingresos capturados con Capta: $240,000 - $800,000**
 - **Costo de Capta durante temporada de tormentas: $497**
 
-No es un error de imprenta. El retorno de inversión durante temporada de tormentas puede ser de 500x a 1,600x. Un solo techo de $8,000 que cierras porque Maria contestó la llamada cubre 16 meses de servicio.
+No es un error de imprenta. El retorno de inversión durante temporada de tormentas puede ser de 500x a 1,600x. Un solo techo de $8,000 que cierras porque tu recepcionista contestó la llamada cubre 16 meses de servicio.
 
 **[Lee la guía completa para techadores →](https://captahq.com/es/blog/mejor-recepcionista-ai-techadores-2026)**
 
@@ -828,7 +828,7 @@ No es un error de imprenta. El retorno de inversión durante temporada de tormen
 Sí. AI no se cansa, no necesita descansos, y maneja cada llamada con la misma calidad. No importa si es la primera llamada del día o la número 200.
 
 **¿Qué pasa con las preguntas sobre reclamaciones de seguro?**
-Maria captura los detalles del seguro y las preguntas del cliente. Para reclamaciones complejas, las marca para tu seguimiento personal. No da asesoría legal ni de seguros, pero captura toda la información que necesitas.
+Tu recepcionista captura los detalles del seguro y las preguntas del cliente. Para reclamaciones complejas, las marca para tu seguimiento personal. No da asesoría legal ni de seguros, pero captura toda la información que necesitas.
 
 **¿Solo debería tener Capta durante temporada de tormentas?**
 No. La temporada de tormentas es cuando el ROI es más dramático, pero pierdes dinero por llamadas perdidas todo el año. Mantenimiento de techos, reparaciones menores, canaletas — esos trabajos también se pierden cuando no contestas. Y con precio fijo de $497/mes, no tiene sentido activar y desactivar el servicio.
@@ -873,9 +873,9 @@ The traditional solution — hiring temp office staff for summer — creates mor
 
 ## The AI Solution
 
-Capta's AI receptionist Maria handles unlimited calls at $497/month. Your February phone bill equals your July phone bill.
+Capta's AI receptionist handles unlimited calls at $497/month. Your February phone bill equals your July phone bill.
 
-For pest control companies, Maria:
+For pest control companies, your receptionist:
 - Books initial treatment appointments and free inspections
 - Captures pest type, location, and severity
 - Schedules recurring treatment programs
@@ -901,10 +901,10 @@ Capta costs $497/month. Your first captured call pays for the month.
 Yes. Bees near a playground, rodent inside the house, and similar urgency gets priority alerts sent to you immediately.
 
 **Does it understand recurring treatment programs?**
-Yes. Maria explains your recurring options and books the initial service.
+Yes. Your receptionist explains your recurring options and books the initial service.
 
 **What about bilingual customers?**
-Maria speaks fluent English and Spanish. Essential in diverse markets.`,
+Your receptionist speaks fluent English and Spanish. Essential in diverse markets.`,
   },
   /* ════ ES 6 — Control de Plagas Picos Estacionales ════ */
   {
@@ -963,9 +963,9 @@ Cuando un cliente hispanohablante llama con una de estas emergencias y llega a u
 
 ## La Solución AI Que Escala Con las Estaciones
 
-Maria, la recepcionista AI de Capta, maneja llamadas ilimitadas a $497/mes fijo. Tu factura de febrero es igual que tu factura de julio. No importa si recibes 20 llamadas o 200 en un día — mismo precio, misma calidad.
+La recepcionista AI de Capta maneja llamadas ilimitadas a $497/mes fijo. Tu factura de febrero es igual que tu factura de julio. No importa si recibes 20 llamadas o 200 en un día — mismo precio, misma calidad.
 
-Para empresas de control de plagas, Maria:
+Para empresas de control de plagas, tu recepcionista:
 
 - **Agenda tratamientos iniciales e inspecciones gratuitas** — captura dirección, tipo de propiedad, y disponibilidad del cliente
 - **Captura tipo de plaga, ubicación, y severidad** — llega preparado con el equipo y los productos correctos
@@ -994,13 +994,13 @@ Piénsalo de otra manera: si pierdes 12 llamadas al día durante 4 meses de temp
 Sí. Abejas cerca de un área de juegos, alacranes dentro de casa, roedores, y situaciones similares reciben alertas prioritarias que te llegan inmediatamente por SMS y email.
 
 **¿Entiende programas de tratamiento recurrente?**
-Sí. Maria explica tus opciones de servicio recurrente — mensual, bimestral, trimestral — y agenda el tratamiento inicial. El cliente recibe toda la información en su idioma preferido.
+Sí. Tu recepcionista explica tus opciones de servicio recurrente — mensual, bimestral, trimestral — y agenda el tratamiento inicial. El cliente recibe toda la información en su idioma preferido.
 
 **¿Qué pasa con el volumen durante temporada alta?**
 Precio fijo. Tu factura no cambia cuando las llamadas se triplican. Esa es la ventaja más grande de Capta para negocios estacionales como control de plagas.
 
 **¿De verdad habla bien el español?**
-Maria no traduce del inglés — conversa en español nativo. Entiende cuando un cliente dice "alacrán" en vez de "escorpión," o "zancudos" en vez de "mosquitos." Se adapta al vocabulario del cliente.`,
+Tu recepcionista no traduce del inglés — conversa en español nativo. Entiende cuando un cliente dice "alacrán" en vez de "escorpión," o "zancudos" en vez de "mosquitos." Se adapta al vocabulario del cliente.`,
   },
   /* ════ EN 7 — GCs 24/7 Answering ════ */
   {
@@ -1044,7 +1044,7 @@ Most GCs report missing 40-50% of their calls. That's not laziness — it's the 
 
 ## The Solution
 
-Capta's AI receptionist Maria answers every call and handles each type appropriately:
+Capta's AI receptionist answers every call and handles each type appropriately:
 
 - **New project inquiries:** Captures project details, timeline, and budget range. Books a consultation.
 - **Existing client calls:** Takes messages with context, flags urgent concerns.
@@ -1058,17 +1058,17 @@ All at $497/month flat. No matter how many calls you get.
 
 Generic call centers don't understand construction. When a sub calls about a concrete pour schedule, the call center agent doesn't know what that means. When a client calls with a change order, they can't capture the right details.
 
-Maria understands construction terminology and context. She captures the right information from each caller type and routes it appropriately.
+Your receptionist understands construction terminology and context. She captures the right information from each caller type and routes it appropriately.
 
 **[Try Capta risk-free for 30 days →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=gc)**
 
 ## FAQs
 
 **Can AI handle the variety of calls GCs receive?**
-Yes. Maria adapts to each caller type — new clients, existing clients, subs, suppliers, and inspectors.
+Yes. Your receptionist adapts to each caller type — new clients, existing clients, subs, suppliers, and inspectors.
 
 **What about complex project questions?**
-Maria captures details and takes messages for complex questions that need your personal attention. She can also transfer urgent calls.
+Your receptionist captures details and takes messages for complex questions that need your personal attention. She can also transfer urgent calls.
 
 **Does it work for commercial GCs?**
 Yes. Capta handles both residential and commercial contractor phone needs.`,
@@ -1126,7 +1126,7 @@ En barrios hispanos de ciudades como San Antonio, Phoenix, Las Vegas, y Houston,
 
 ## La Solución: Una Recepcionista AI Que Entiende Construcción
 
-Maria, la recepcionista AI de Capta, contesta cada llamada y maneja cada tipo apropiadamente:
+La recepcionista AI de Capta contesta cada llamada y maneja cada tipo apropiadamente:
 
 - **Consultas de proyecto nuevo:** Captura detalles del proyecto (tipo de trabajo, tamaño estimado, dirección), plazo deseado, y rango de presupuesto. Agenda una consulta o visita al sitio.
 - **Llamadas de clientes existentes:** Toma mensajes con contexto detallado, marca preocupaciones urgentes para tu seguimiento inmediato.
@@ -1140,23 +1140,23 @@ Todo a $497/mes fijo. Sin importar cuántas llamadas recibas. Con plan anual, $3
 
 Los centros de llamadas genéricos no entienden construcción. Cuando un subcontratista llama sobre el horario de un vaciado de concreto, el agente del call center no sabe qué significa eso. Cuando un cliente llama con una orden de cambio para agregar un closet al cuarto de visitas, no pueden capturar los detalles correctos. Y cuando un proveedor llama en español diciendo que el pedido de azulejo se retrasó dos semanas, un agente que no habla español no puede tomar el mensaje.
 
-Maria entiende terminología de construcción en inglés y español. Captura la información correcta de cada tipo de llamante y la organiza para que tú puedas revisarla eficientemente entre reuniones, entre visitas a obra, o al final del día.
+Tu recepcionista entiende terminología de construcción en inglés y español. Captura la información correcta de cada tipo de llamante y la organiza para que tú puedas revisarla eficientemente entre reuniones, entre visitas a obra, o al final del día.
 
 **[Prueba Capta sin riesgo por 30 días →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=gc)**
 
 ## Preguntas Frecuentes
 
 **¿Puede AI manejar la variedad de llamadas que reciben los GC?**
-Sí. Maria se adapta a cada tipo de llamante — nuevos clientes, clientes existentes, subcontratistas, proveedores, e inspectores. Captura la información relevante para cada tipo y la organiza en tu panel de control.
+Sí. Tu recepcionista se adapta a cada tipo de llamante — nuevos clientes, clientes existentes, subcontratistas, proveedores, e inspectores. Captura la información relevante para cada tipo y la organiza en tu panel de control.
 
 **¿Qué pasa con preguntas complejas de proyecto?**
-Maria captura los detalles y toma mensajes detallados para preguntas que necesitan tu atención personal. También puede transferir llamadas urgentes directamente a tu celular si configuras esa opción.
+Tu recepcionista captura los detalles y toma mensajes detallados para preguntas que necesitan tu atención personal. También puede transferir llamadas urgentes directamente a tu celular si configuras esa opción.
 
 **¿Funciona para GC comerciales?**
-Sí. Capta maneja las necesidades telefónicas de contratistas residenciales y comerciales. La complejidad del proyecto no cambia la capacidad de Maria para contestar profesionalmente, capturar información, y agendar reuniones.
+Sí. Capta maneja las necesidades telefónicas de contratistas residenciales y comerciales. La complejidad del proyecto no cambia la capacidad de tu recepcionista para contestar profesionalmente, capturar información, y agendar reuniones.
 
 **¿Cuánto cuesta?**
-$497/mes fijo, o $397/mes con plan anual ($4,764/año). Llamadas ilimitadas, cobertura 24/7, bilingüe, sin cargos por minuto. Garantía de devolución de 30 días. Si un solo proyecto nuevo que capturas porque Maria contestó la llamada vale $20,000, Capta se pagó por todo el año.`,
+$497/mes fijo, o $397/mes con plan anual ($4,764/año). Llamadas ilimitadas, cobertura 24/7, bilingüe, sin cargos por minuto. Garantía de devolución de 30 días. Si un solo proyecto nuevo que capturas porque tu recepcionista contestó la llamada vale $20,000, Capta se pagó por todo el año.`,
   },
 ];
 

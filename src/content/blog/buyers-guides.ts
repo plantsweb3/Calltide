@@ -37,7 +37,7 @@ A general-purpose AI receptionist will take a message. A plumbing-aware system s
 
 - **Ruby** offers genuinely excellent customer experience. Their live receptionists are among the best in the industry. But Ruby is built for professional services -- law firms, financial advisors, medical offices. They do not have plumbing-specific triage, and after-hours coverage costs extra. If your budget supports $800-$1,200/mo and you mainly need daytime coverage, Ruby is a legitimate option.
 
-- **Capta** uses an AI receptionist named Maria that is specifically trained on plumbing terminology and emergency scenarios. She recognizes "burst pipe," "sewage backup," "no hot water," and dozens of other urgency signals, then follows a different call flow: immediate SMS alert to you, caller guidance, and priority booking. $497/mo flat, 24/7, no per-call charges.
+- **Capta** uses an AI receptionist built by Capta that is specifically trained on plumbing terminology and emergency scenarios. She recognizes "burst pipe," "sewage backup," "no hot water," and dozens of other urgency signals, then follows a different call flow: immediate SMS alert to you, caller guidance, and priority booking. $497/mo flat, 24/7, no per-call charges.
 
 - **Dialzara** and **Rosie** are budget AI options that work fine for low call volumes. If you are a solo plumber getting 5-8 calls a day, they handle basic answering at a lower price point. But neither has plumbing-specific emergency logic -- a burst pipe call gets the same treatment as a quote request for a faucet install.
 
@@ -63,7 +63,7 @@ Census data from 2024 shows that 13.7% of U.S. households are primarily Spanish-
 
 **How each service handles Spanish:**
 
-- **Capta:** Native-quality bilingual (EN/ES). Maria detects the caller's language and responds accordingly. No toggle, no transfer, no delay. This is Capta's strongest differentiator.
+- **Capta:** Native-quality bilingual (EN/ES). She detects the caller's language and responds accordingly. No toggle, no transfer, no delay. This is Capta's strongest differentiator.
 - **Nexa:** Offers bilingual agents, and many of them are genuinely good Spanish speakers. The inconsistency is in availability -- you might get a bilingual agent, or you might get one who transfers the call. Still, Nexa is the best traditional call center option for bilingual needs.
 - **Smith.ai:** English only for most plans. They offer limited Spanish through select agents, but it is not a core capability.
 - **Ruby, Dialzara, Rosie:** English only.
@@ -140,7 +140,7 @@ Una recepcionista AI generica tomara un mensaje. Un sistema consciente de plomer
 
 - **Smith.ai** usa recepcionistas humanos respaldados por AI. Profesionales y bien entrenados, pero siguen guiones generales. A $3-5 por llamada, la calidad es solida, pero un plomero ocupado con 25+ llamadas al dia paga $500+ solo en contestar, ademas del plan mensual.
 
-- **Capta** usa una recepcionista AI llamada Maria, entrenada especificamente en terminologia de plomeria y escenarios de emergencia. Reconoce "tuberia rota," "respaldo de drenaje," "sin agua caliente," y docenas de senales de urgencia. $497/mes fijo, 24/7, sin cargos por llamada. Y lo mas importante: Maria habla espanol de calidad nativa, sin traduccion automatica.
+- **Capta** usa una recepcionista AI entrenada especificamente en terminologia de plomeria y escenarios de emergencia. Reconoce "tuberia rota," "respaldo de drenaje," "sin agua caliente," y docenas de senales de urgencia. $497/mes fijo, 24/7, sin cargos por llamada. Y lo mas importante: ella habla espanol de calidad nativa, sin traduccion automatica.
 
 - **Dialzara** y **Rosie** son opciones AI economicas que funcionan bien para bajo volumen. Si eres un plomero solo con 5-8 llamadas al dia, manejan lo basico a menor precio. Pero ninguna tiene logica de emergencia especifica para plomeria. Solo estan en ingles.
 
@@ -158,7 +158,7 @@ El volumen de llamadas de plomeria no es plano. Un plomero en Texas puede recibi
 
 Si estas en Texas, Florida, California, Arizona, o cualquier parte del Sun Belt, la respuesta es casi seguro que si. Datos del censo 2024 muestran que el 13.7% de los hogares en EE.UU. hablan principalmente espanol. En areas metropolitanas como Houston, San Antonio, Miami y Los Angeles, ese numero supera el 30%.
 
-**Capta** es la unica opcion AI con bilingue nativo EN/ES. Maria detecta el idioma del llamante y responde en consecuencia. **Nexa** ofrece agentes bilingues pero con disponibilidad inconsistente. Las demas opciones -- Smith.ai, Ruby, Dialzara, Rosie -- son solo en ingles.
+**Capta** es la unica opcion AI con bilingue nativo EN/ES. Ella detecta el idioma del llamante y responde en consecuencia. **Nexa** ofrece agentes bilingues pero con disponibilidad inconsistente. Las demas opciones -- Smith.ai, Ruby, Dialzara, Rosie -- son solo en ingles.
 
 ## Pregunta 4: "Va a agendar citas, o solo tomar mensajes?"
 
@@ -253,7 +253,7 @@ HVAC emergencies are time-sensitive but rarely life-threatening -- unlike electr
 
 **Smith.ai** handles this through human judgment, which is reliable but dependent on the individual agent. Their receptionists are well-trained and generally make good triage decisions. The challenge is that their scripts are not HVAC-specific -- they learn your preferences over time, which means the first few weeks may have some miscategorized calls.
 
-**Capta** handles this through AI that is specifically trained on HVAC scenarios. Maria categorizes calls into emergency, urgent, and routine tiers automatically, alerting you differently for each. The advantage is consistency -- the 500th call gets the same quality triage as the 5th. The tradeoff is that AI occasionally misclassifies ambiguous calls (though Capta's system learns from corrections).
+**Capta** handles this through AI that is specifically trained on HVAC scenarios. She categorizes calls into emergency, urgent, and routine tiers automatically, alerting you differently for each. The advantage is consistency -- the 500th call gets the same quality triage as the 5th. The tradeoff is that AI occasionally misclassifies ambiguous calls (though Capta's system learns from corrections).
 
 **Nexa** uses scripted human agents. They have decent bilingual capability here -- several of their agents speak strong Spanish. But script-based triage means the quality depends heavily on how well your specific script covers edge cases.
 
@@ -262,7 +262,7 @@ HVAC emergencies are time-sensitive but rarely life-threatening -- unlike electr
 According to the U.S. Department of Energy, HVAC is the largest single energy expense for American households. In areas with large Hispanic populations, Spanish-speaking homeowners are making these same purchase decisions. In Houston, 37% of households speak Spanish at home. In San Antonio, it is 41%.
 
 Only two services offer meaningful bilingual support:
-- **Capta:** Full bilingual EN/ES by default. Maria switches languages mid-call if needed. No extra cost.
+- **Capta:** Full bilingual EN/ES by default. She switches languages mid-call if needed. No extra cost.
 - **Nexa:** Bilingual agents available, genuinely solid when you get one. The inconsistency is in routing -- peak times sometimes mean English-only agents handle Spanish calls with a warm transfer, which adds friction.
 
 Smith.ai and Ruby are English-only for practical purposes. Budget AI options (Dialzara, Rosie) are English-only.
@@ -317,7 +317,7 @@ Yes. Capta categorizes calls into emergency, urgent, and routine tiers. A gas sm
 AI can capture the customer's information and intent, then book a callback or schedule a renewal visit. For complex negotiations on multi-year contracts, you will want to handle those yourself -- but AI can qualify the call and capture details so you are prepared when you call back.
 
 **I already use ServiceTitan. Will this integrate?**
-Capta integrates with most scheduling systems through calendar sync. For ServiceTitan specifically, appointments booked by Maria appear on your calendar, which ServiceTitan can then pull from. Direct API integration is on the roadmap.`,
+Capta integrates with most scheduling systems through calendar sync. For ServiceTitan specifically, appointments booked by your receptionist appear on your calendar, which ServiceTitan can then pull from. Direct API integration is on the roadmap.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -374,14 +374,14 @@ Las emergencias de HVAC son urgentes pero rara vez ponen en riesgo la vida -- a 
 - **Urgente pero agendable:** AC apagado en verano, calefaccion sin funcionar en invierno
 - **Rutina:** Agendamiento de mantenimiento, preguntas de filtros, solicitudes de presupuesto
 
-**Capta** maneja esto con AI entrenada especificamente en escenarios HVAC. Maria categoriza llamadas en niveles de emergencia, urgente, y rutina automaticamente. **Smith.ai** lo maneja con juicio humano, que es confiable pero depende del agente individual. **Nexa** usa agentes con guiones -- tienen buena capacidad bilingue aqui, pero la calidad depende del guion.
+**Capta** maneja esto con AI entrenada especificamente en escenarios HVAC. Ella categoriza llamadas en niveles de emergencia, urgente, y rutina automaticamente. **Smith.ai** lo maneja con juicio humano, que es confiable pero depende del agente individual. **Nexa** usa agentes con guiones -- tienen buena capacidad bilingue aqui, pero la calidad depende del guion.
 
 ### Cobertura Bilingue
 
 Segun el Departamento de Energia de EE.UU., HVAC es el mayor gasto de energia para hogares americanos. En areas con grandes poblaciones hispanas, propietarios hispanohablantes toman estas mismas decisiones de compra. En Houston, el 37% de los hogares hablan espanol. En San Antonio, el 41%.
 
 Solo dos servicios ofrecen soporte bilingue significativo:
-- **Capta:** Bilingue completo EN/ES por defecto. Maria cambia de idioma durante la llamada si es necesario.
+- **Capta:** Bilingue completo EN/ES por defecto. Ella cambia de idioma durante la llamada si es necesario.
 - **Nexa:** Agentes bilingues disponibles, solidos cuando te toca uno. La inconsistencia esta en la asignacion durante horas pico.
 
 Smith.ai, Ruby, Dialzara y Rosie son solo en ingles.
@@ -424,7 +424,7 @@ Pagas $497/mes ya sea que recibas 200 llamadas o 2,000. El precio no cambia. Tus
 Si. Capta categoriza llamadas en niveles de emergencia, urgente, y rutina. Un olor a gas activa una alerta inmediata. Un ruido raro se agenda como cita de diagnostico.
 
 **Ya uso ServiceTitan. Se integra?**
-Capta se integra con la mayoria de sistemas de agenda a traves de sincronizacion de calendario. Las citas agendadas por Maria aparecen en tu calendario, que ServiceTitan puede leer.`,
+Capta se integra con la mayoria de sistemas de agenda a traves de sincronizacion de calendario. Las citas agendadas por tu recepcionista aparecen en tu calendario, que ServiceTitan puede leer.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -492,7 +492,7 @@ Let us look at the real options honestly.
 
 ### Capta -- Best Value for Most Electricians
 
-Maria, Capta's AI receptionist, is trained on electrical service terminology. She knows the difference between a panel upgrade, an EV charger install, a flickering light complaint, and "I smell something burning near my breaker box" (emergency). She speaks English and Spanish, books appointments, and sends SMS confirmations.
+Capta's AI receptionist is trained on electrical service terminology. She knows the difference between a panel upgrade, an EV charger install, a flickering light complaint, and "I smell something burning near my breaker box" (emergency). She speaks English and Spanish, books appointments, and sends SMS confirmations.
 
 **Strengths:**
 - $497/mo flat -- the math is unbeatable above 6-7 calls/day
@@ -502,7 +502,7 @@ Maria, Capta's AI receptionist, is trained on electrical service terminology. Sh
 - 30-day money-back guarantee
 
 **Honest limitations:**
-- AI, not human. For complex commercial project discussions, Maria captures details for your callback rather than having a consultative conversation.
+- AI, not human. For complex commercial project discussions, your receptionist captures details for your callback rather than having a consultative conversation.
 - New product. Less track record than established services like Smith.ai or Ruby.
 
 ### Smith.ai -- Best Human Option If Budget Allows
@@ -636,7 +636,7 @@ Estas pagando $4 por cada llamada spam. A 3 llamadas spam/dia, son $264/mes por 
 
 ### Capta -- Mejor Valor para la Mayoria
 
-Maria, la recepcionista AI de Capta, esta entrenada en terminologia de servicios electricos. Sabe la diferencia entre una actualizacion de panel, una instalacion de cargador EV, una queja de luces parpadeantes, y "huelo algo quemandose cerca de mi caja de breakers" (emergencia). Habla ingles y espanol, agenda citas, y envia confirmaciones SMS.
+La recepcionista AI de Capta esta entrenada en terminologia de servicios electricos. Sabe la diferencia entre una actualizacion de panel, una instalacion de cargador EV, una queja de luces parpadeantes, y "huelo algo quemandose cerca de mi caja de breakers" (emergencia). Habla ingles y espanol, agenda citas, y envia confirmaciones SMS.
 
 **Fortalezas:**
 - $497/mes fijo -- la matematica es imbatible arriba de 6-7 llamadas/dia
@@ -646,7 +646,7 @@ Maria, la recepcionista AI de Capta, esta entrenada en terminologia de servicios
 - Garantia de devolucion de 30 dias
 
 **Limitaciones honestas:**
-- Es AI, no humano. Para discusiones complejas de proyectos comerciales, Maria captura detalles para tu devolucion de llamada en vez de tener una conversacion consultiva.
+- Es AI, no humano. Para discusiones complejas de proyectos comerciales, tu recepcionista captura detalles para tu devolucion de llamada en vez de tener una conversacion consultiva.
 
 ### Smith.ai -- Mejor Opcion Humana Si el Presupuesto Lo Permite
 
@@ -776,7 +776,7 @@ In landscaping, $4/call is your profit on a lawn mow.
 
 The highest-value call a landscaper gets is "Can someone come give me a quote?" Your system needs to capture the property address, what services they want, and when they are available. Then book the estimate visit.
 
-**Capta** does this well. Maria captures the details and books the visit. **Smith.ai** does this well too -- arguably better for complex landscape design projects where the caller has lots of questions. **Budget AI options** handle basic "capture address, book a time" scenarios but struggle with callers who want to discuss project scope.
+**Capta** does this well. Your receptionist captures the details and books the visit. **Smith.ai** does this well too -- arguably better for complex landscape design projects where the caller has lots of questions. **Budget AI options** handle basic "capture address, book a time" scenarios but struggle with callers who want to discuss project scope.
 
 ### You Need: Bilingual Support (In Most Markets)
 
@@ -784,7 +784,7 @@ This is where landscaping is unique among trades. The customer base in Sun Belt 
 
 The National Association of Landscape Professionals reported in 2024 that 35% of landscape company revenue in Texas, Florida, and California comes from Hispanic homeowners. That is not a niche -- it is a third of the market.
 
-**Capta:** Full bilingual EN/ES. Maria handles both without prompting.
+**Capta:** Full bilingual EN/ES. Your receptionist handles both without prompting.
 **Nexa:** Bilingual agents available. When you get one, the quality is solid. Availability can be inconsistent during peak hours.
 **Everyone else:** English only.
 
@@ -823,7 +823,7 @@ It depends on the call type. A missed estimate request for a new weekly mowing a
 Yes, and it will not charge extra for them (on flat pricing). However, you might want to give crews a separate internal line or use a dispatch app. Having your AI receptionist answer crew calls works, but it is not the ideal use of the tool.
 
 **Can it handle calls about irrigation systems, hardscaping, and specialty services?**
-Capta captures whatever the caller describes and books accordingly. Maria does not need to know the technical details of drip irrigation design -- she needs to capture the request, confirm the address, and book the estimate. For that workflow, AI works well.
+Capta captures whatever the caller describes and books accordingly. Your receptionist does not need to know the technical details of drip irrigation design -- she needs to capture the request, confirm the address, and book the estimate. For that workflow, AI works well.
 
 **Should I answer my own phone during winter when calls are slow?**
 This is a legitimate question. If you are getting under 8 calls/day and can answer most of them, you might not need any answering service during off-season. Some landscapers use Capta only during March-October and pause during winter. The 30-day money-back guarantee lets you try it during your busiest months risk-free.`,
@@ -890,13 +890,13 @@ En paisajismo, $4 por llamada es tu ganancia en un corte de cesped.
 
 La llamada de mayor valor es "Pueden venir a darme un presupuesto?" Tu sistema debe capturar la direccion, que servicios quieren, y cuando estan disponibles. Luego agendar la visita.
 
-**Capta** hace esto bien. Maria captura los detalles y agenda la visita. **Smith.ai** tambien lo hace bien -- mejor para proyectos complejos de diseno de paisaje. **Opciones AI economicas** manejan escenarios basicos pero tienen dificultad con llamantes que quieren discutir el alcance del proyecto.
+**Capta** hace esto bien. Tu recepcionista captura los detalles y agenda la visita. **Smith.ai** tambien lo hace bien -- mejor para proyectos complejos de diseno de paisaje. **Opciones AI economicas** manejan escenarios basicos pero tienen dificultad con llamantes que quieren discutir el alcance del proyecto.
 
 ### Necesitas: Soporte Bilingue (En la Mayoria de los Mercados)
 
 Aqui es donde el paisajismo es unico. La base de clientes en ciudades del Sun Belt es fuertemente bilingue, y la fuerza laboral tambien. La Asociacion Nacional de Profesionales de Paisajismo reporto en 2024 que el 35% de los ingresos de empresas de paisajismo en Texas, Florida, y California viene de propietarios hispanos. Eso no es un nicho -- es un tercio del mercado.
 
-**Capta:** Bilingue completo EN/ES. Maria maneja ambos sin necesidad de configurar nada.
+**Capta:** Bilingue completo EN/ES. Tu recepcionista maneja ambos sin necesidad de configurar nada.
 **Nexa:** Agentes bilingues disponibles. Calidad solida cuando te toca uno. Disponibilidad inconsistente en horas pico.
 **Todos los demas:** Solo ingles.
 
@@ -998,7 +998,7 @@ According to the National Roofing Contractors Association, 65% of residential ro
 
 An answering service needs to handle these questions gracefully. Here is how the options compare:
 
-**Capta:** Maria captures the caller's insurance information (carrier, claim number if they have one), explains that your company works with insurance companies, and books a free inspection. She does not give insurance advice (nor should any answering service), but she handles the intake well and captures the details you need for follow-up.
+**Capta:** Your receptionist captures the caller's insurance information (carrier, claim number if they have one), explains that your company works with insurance companies, and books a free inspection. She does not give insurance advice (nor should any answering service), but she handles the intake well and captures the details you need for follow-up.
 
 **Smith.ai:** Human receptionists can have a more natural conversation about insurance questions. They are better at reassuring nervous homeowners who do not understand the claims process. This is one area where human service genuinely outperforms AI -- the emotional labor of calming an anxious homeowner after storm damage is real, and humans are better at it.
 
@@ -1023,7 +1023,7 @@ Here is something that does not get discussed enough in roofing: Hispanic homeow
 
 A bilingual answering service is not just a competitive advantage for roofers -- it is a community service. These homeowners need help, and if you can answer their calls in Spanish, you will earn their trust and their business.
 
-**Capta:** Full bilingual EN/ES. Maria handles storm damage calls in either language.
+**Capta:** Full bilingual EN/ES. Your receptionist handles storm damage calls in either language.
 **Nexa:** Bilingual agents available but inconsistent availability during high-volume periods -- which is exactly when you need them most.
 **Everyone else:** English only.
 
@@ -1074,7 +1074,7 @@ Most services, including Capta, take 10-15 minutes to set up. You forward your p
 Many roofers use AI as overflow and after-hours coverage. Your office manager handles calls during business hours; Capta catches everything she misses, plus weekends and evenings. During storm surges, both handle calls simultaneously.
 
 **Can AI handle the "my roof is leaking RIGHT NOW" call?**
-Yes. Capta classifies active leaks as urgent and alerts you immediately. Maria captures the address and damage details, books a priority inspection, and sends the caller an SMS confirmation. She does not dispatch a crew -- that decision stays with you.
+Yes. Capta classifies active leaks as urgent and alerts you immediately. Your receptionist captures the address and damage details, books a priority inspection, and sends the caller an SMS confirmation. She does not dispatch a crew -- that decision stays with you.
 
 **What about door-knocker leads and canvasser callbacks?**
 If your sales team is canvassing a neighborhood after a storm and leaving door hangers, those callbacks go to your business line. Your AI receptionist handles them the same as any inbound call -- captures the address, notes the storm damage, and books the inspection. No per-call charges means your canvassing ROI stays intact.
@@ -1139,7 +1139,7 @@ Segun la Asociacion Nacional de Contratistas de Techos, el 65% de los reemplazos
 "Trabajan con mi compania de seguros?"
 "Que cubre mi deducible?"
 
-**Capta:** Maria captura la informacion de seguro del llamante (aseguradora, numero de reclamo si lo tienen), explica que tu empresa trabaja con companias de seguros, y agenda una inspeccion gratuita. No da consejos de seguros, pero maneja la recepcion bien y captura los detalles que necesitas.
+**Capta:** Tu recepcionista captura la informacion de seguro del llamante (aseguradora, numero de reclamo si lo tienen), explica que tu empresa trabaja con companias de seguros, y agenda una inspeccion gratuita. No da consejos de seguros, pero maneja la recepcion bien y captura los detalles que necesitas.
 
 **Smith.ai:** Los recepcionistas humanos pueden tener una conversacion mas natural sobre preguntas de seguros. Son mejores tranquilizando a propietarios nerviosos que no entienden el proceso de reclamos. Esta es un area donde el servicio humano genuinamente supera a la AI.
 
@@ -1151,7 +1151,7 @@ Algo que no se discute suficiente: los propietarios hispanos en areas afectadas 
 
 Un servicio de contestador bilingue no es solo una ventaja competitiva para techadores -- es un servicio comunitario.
 
-**Capta:** Bilingue completo EN/ES. Maria maneja llamadas de danos por tormenta en cualquier idioma.
+**Capta:** Bilingue completo EN/ES. Tu recepcionista maneja llamadas de danos por tormenta en cualquier idioma.
 **Nexa:** Agentes bilingues disponibles pero disponibilidad inconsistente durante periodos de alto volumen -- que es exactamente cuando mas los necesitas.
 **Todos los demas:** Solo ingles.
 
@@ -1188,7 +1188,7 @@ Capta cuesta $497/mes ya sea que recibas 50 llamadas o 500. Para un oficio donde
 La mayoria de los servicios, incluyendo Capta, toman 10-15 minutos. Desvias tu numero y proporcionas los detalles de tu negocio. Puedes configurarlo la manana de una tormenta pronosticada y tenerlo funcionando antes de la primera llamada.
 
 **Puede AI manejar la llamada de "mi techo esta goteando AHORA MISMO"?**
-Si. Capta clasifica goteras activas como urgentes y te alerta inmediatamente. Maria captura la direccion y detalles del dano, agenda una inspeccion prioritaria, y envia al llamante una confirmacion SMS. Ella no despacha una cuadrilla -- esa decision queda contigo.
+Si. Capta clasifica goteras activas como urgentes y te alerta inmediatamente. Tu recepcionista captura la direccion y detalles del dano, agenda una inspeccion prioritaria, y envia al llamante una confirmacion SMS. Ella no despacha una cuadrilla -- esa decision queda contigo.
 
 **Que pasa con los leads de vendedores puerta a puerta?**
 Si tu equipo de ventas esta tocando puertas en un vecindario despues de una tormenta y dejando volantes, esas devoluciones de llamada van a tu linea de negocio. Tu recepcionista AI las maneja igual que cualquier llamada entrante -- captura la direccion, anota el dano de tormenta, y agenda la inspeccion. Sin cargos por llamada significa que tu ROI de venta puerta a puerta se mantiene intacto.

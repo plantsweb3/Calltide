@@ -35,7 +35,7 @@ In San Antonio, bilingual isn't a marketing checkbox. It's table stakes.
 
 A Spanish-speaking homeowner in the Westside calls about a clogged sewer line. They want to explain the problem, understand the pricing, and feel confident they chose the right person. If your phone sends them to a voicemail greeting in English, they hang up and call someone else. It happens hundreds of times a day across the city.
 
-Capta's AI receptionist Maria handles this natively. She doesn't translate — she converses. When a caller speaks Spanish, Maria responds in natural, colloquial Spanish. She understands that "se me tapó el drenaje" means something different from "tengo una fuga." She collects the address, asks the right follow-up questions, books the appointment, and sends an SMS confirmation — all in Spanish.
+Capta's AI receptionist handles this natively. She doesn't translate — she converses. When a caller speaks Spanish, she responds in natural, colloquial Spanish. She understands that "se me tapó el drenaje" means something different from "tengo una fuga." She collects the address, asks the right follow-up questions, books the appointment, and sends an SMS confirmation — all in Spanish.
 
 The result: you capture the calls you were never even hearing before.
 
@@ -49,9 +49,9 @@ Capta costs $497/month. Flat. Unlimited calls. Bilingual included. One recovered
 
 ## Getting Started
 
-Most San Antonio contractors are set up and taking calls through Maria within 10 minutes. Forward your existing business number, and Maria starts answering immediately — in whatever language the caller speaks.
+Most San Antonio contractors are set up and taking calls through Capta within 10 minutes. Forward your existing business number, and your receptionist starts answering immediately — in whatever language the caller speaks.
 
-**[Run a free missed call audit](https://captahq.com/audit)** to see how many calls you're actually missing, or **[start setup](https://captahq.com/setup)** to get Maria on your phones today.`,
+**[Run a free missed call audit](https://captahq.com/audit)** to see how many calls you're actually missing, or **[start setup](https://captahq.com/setup)** to get Capta on your phones today.`,
   },
   {
     title: "Por Qué los Contratistas de San Antonio Que No Contestan en Español Pierden la Mitad del Mercado",
@@ -86,7 +86,7 @@ En San Antonio, bilingüe no es un checkbox de marketing. Es lo mínimo.
 
 Un propietario hispanohablante en el Westside llama por un drenaje tapado. Quiere explicar el problema, entender el precio, y sentirse seguro de que eligió bien. Si tu teléfono lo manda a un buzón en inglés, cuelga y llama a otro.
 
-María, la recepcionista AI de Capta, maneja esto de forma nativa. No traduce — conversa. Cuando un llamante habla español, María responde en español natural y coloquial. Entiende que "se me tapó el drenaje" es diferente de "tengo una fuga." Toma la dirección, hace las preguntas correctas, agenda la cita, y envía confirmación por SMS — todo en español.
+La recepcionista AI de Capta maneja esto de forma nativa. No traduce — conversa. Cuando un llamante habla español, ella responde en español natural y coloquial. Entiende que "se me tapó el drenaje" es diferente de "tengo una fuga." Toma la dirección, hace las preguntas correctas, agenda la cita, y envía confirmación por SMS — todo en español.
 
 ## Los Números
 
@@ -96,7 +96,7 @@ Si pierdes solo 5 llamadas por semana de clientes hispanohablantes — y en este
 
 Capta cuesta $497/mes. Fijo. Llamadas ilimitadas. Bilingüe incluido.
 
-**[Haz una auditoría gratis de llamadas perdidas](https://captahq.com/audit)** o **[empieza la configuración](https://captahq.com/setup)** para tener a María en tus teléfonos hoy.`,
+**[Haz una auditoría gratis de llamadas perdidas](https://captahq.com/audit)** o **[empieza la configuración](https://captahq.com/setup)** para tener a Capta en tus teléfonos hoy.`,
   },
 
   /* ═══ 2. Houston ═══ */
@@ -139,11 +139,11 @@ The frustrating part: most of those callers don't leave voicemail. They call the
 
 ## Why the Smart Houston Contractors Never Miss a Storm
 
-Capta's AI receptionist Maria handles unlimited simultaneous calls. When your phone lights up with 80 calls after a thunderstorm, Maria answers every single one — in English or Spanish — within two seconds. She triages emergencies, books appointments, and sends you SMS summaries so you can prioritize without stopping work.
+Capta's AI receptionist handles unlimited simultaneous calls. When your phone lights up with 80 calls after a thunderstorm, she answers every single one — in English or Spanish — within two seconds. She triages emergencies, books appointments, and sends you SMS summaries so you can prioritize without stopping work.
 
 Your post-storm phone bill? The same $497 you pay every other month. No per-call charges. No surge pricing.
 
-**[Get storm-ready before the next season](https://captahq.com/setup)** — setup takes 10 minutes, and Maria starts answering immediately.`,
+**[Get storm-ready before the next season](https://captahq.com/setup)** — setup takes 10 minutes, and your receptionist starts answering immediately.`,
   },
   {
     title: "Lo Que el Huracán Harvey Enseñó a los Contratistas de Houston Sobre Contestar el Teléfono",
@@ -176,7 +176,7 @@ Houston es la cuarta ciudad más grande de Estados Unidos con más de 7 millones
 
 Un plomero que contesta 30 de 150 llamadas post-tormenta agenda quizás 20 trabajos promediando $500 cada uno — $10,000 en un solo día. Un plomero que pierde 120 de esas llamadas agenda 3 trabajos y ve $50,000 irse a la competencia.
 
-María, la recepcionista AI de Capta, maneja llamadas simultáneas ilimitadas. Cuando tu teléfono se enciende con 80 llamadas después de una tormenta, María contesta cada una — en inglés o español — en menos de dos segundos.
+La recepcionista AI de Capta maneja llamadas simultáneas ilimitadas. Cuando tu teléfono se enciende con 80 llamadas después de una tormenta, ella contesta cada una — en inglés o español — en menos de dos segundos.
 
 Tu factura post-tormenta: los mismos $497 que pagas cada mes. Sin cargos por llamada. Sin precios de emergencia.
 
@@ -217,7 +217,7 @@ A typical DFW HVAC company might handle 20 calls on a normal summer day. On a 11
 
 The contractor who answers 50 of those calls and books 30 jobs is looking at $15,000–$50,000 in a single day. The contractor who misses 80 of them because they were already on a job site just lost a month of revenue in an afternoon.
 
-Capta's flat pricing means weather spikes don't spike your costs. Maria answers every call — simultaneous, unlimited — for the same $497/month whether it's a quiet February Tuesday or a 110°F Saturday in August.
+Capta's flat pricing means weather spikes don't spike your costs. She answers every call — simultaneous, unlimited — for the same $497/month whether it's a quiet February Tuesday or a 110°F Saturday in August.
 
 **[See how many calls you're missing](https://captahq.com/audit)** — the free audit takes 2 minutes and shows you the real numbers.`,
   },
@@ -252,7 +252,7 @@ El metro de Dallas-Fort Worth es el cuarto más grande de EE.UU. con 8 millones 
 
 Un contratista de HVAC que contesta 50 de 100 llamadas en un día de calor extremo y agenda 30 trabajos puede ver $15,000–$50,000 en un solo día. El que pierde 80 llamadas porque estaba en otra obra acaba de perder un mes de ingresos en una tarde.
 
-El precio fijo de Capta significa que los picos de clima no aumentan tus costos. María contesta cada llamada — simultáneas, ilimitadas — por los mismos $497/mes.
+El precio fijo de Capta significa que los picos de clima no aumentan tus costos. Ella contesta cada llamada — simultáneas, ilimitadas — por los mismos $497/mes.
 
 **[Descubre cuántas llamadas estás perdiendo](https://captahq.com/audit)** — la auditoría gratis toma 2 minutos.`,
   },
@@ -289,11 +289,11 @@ The Austin metro has grown from 1.7 million to 2.4 million people in a decade, d
 
 In a market where response time is everything, the contractor who answers in 2 seconds has a massive advantage over the one who calls back in 2 hours.
 
-Capta's Maria answers every call instantly. She handles appointment booking, collects job details, sends SMS confirmations — all the things Austin's tech-native homeowners expect from a modern business. And she does it 24/7, because in Austin, a lot of home improvement research (and calling) happens at 10 PM after the kids are in bed.
+Capta's AI receptionist answers every call instantly. She handles appointment booking, collects job details, sends SMS confirmations — all the things Austin's tech-native homeowners expect from a modern business. And she does it 24/7, because in Austin, a lot of home improvement research (and calling) happens at 10 PM after the kids are in bed.
 
 Flat monthly fee. No per-call charges. No app for your customers to download. Just a phone that always gets answered by someone who sounds like they've worked at your company for years. [See pricing →](https://captahq.com/pricing)
 
-**[Start setup](https://captahq.com/setup)** — 10 minutes and Maria's live on your line.`,
+**[Start setup](https://captahq.com/setup)** — 10 minutes and your receptionist is live on your line.`,
   },
   {
     title: "Los Propietarios Tech de Austin Esperan Servicio a Velocidad Amazon de su Contratista",
@@ -326,11 +326,11 @@ El metro de Austin ha crecido de 1.7 millones a 2.4 millones en una década, imp
 
 En un mercado donde el tiempo de respuesta es todo, el contratista que contesta en 2 segundos tiene una ventaja masiva sobre el que devuelve la llamada en 2 horas.
 
-María contesta cada llamada instantáneamente. Maneja reservas de citas, recolecta detalles del trabajo, envía confirmaciones por SMS — todo lo que los propietarios tech de Austin esperan. Y lo hace 24/7.
+Tu recepcionista AI contesta cada llamada instantáneamente. Maneja reservas de citas, recolecta detalles del trabajo, envía confirmaciones por SMS — todo lo que los propietarios tech de Austin esperan. Y lo hace 24/7.
 
 Tarifa fija mensual. Sin cargos por llamada. Sin apps que descargar. [Ver precios →](https://captahq.com/pricing)
 
-**[Empieza la configuración](https://captahq.com/setup)** — 10 minutos y María está en tu línea.`,
+**[Empieza la configuración](https://captahq.com/setup)** — 10 minutos y tu recepcionista está en tu línea.`,
   },
 
   /* ═══ 5. El Paso ═══ */
@@ -367,11 +367,11 @@ Here's what happens in El Paso when a Spanish-speaking homeowner hits an English
 
 In a market that's 82% Hispanic, this isn't a minor leak in your funnel. It's a broken pipe.
 
-María speaks the same Spanish your El Paso customers speak. Not textbook Spanish — natural, border-region Spanish. She understands context, colloquialisms, and the way people actually talk about plumbing problems, electrical issues, and AC repairs in this market.
+Capta's receptionist speaks the same Spanish your El Paso customers speak. Not textbook Spanish — natural, border-region Spanish. She understands context, colloquialisms, and the way people actually talk about plumbing problems, electrical issues, and AC repairs in this market.
 
 Every call answered. Every language handled. The same flat monthly price whether you get 50 calls or 500. [See what Capta costs →](https://captahq.com/pricing)
 
-**[Start setup](https://captahq.com/setup)** — María can be answering your calls in 10 minutes.`,
+**[Start setup](https://captahq.com/setup)** — your receptionist can be answering calls in 10 minutes.`,
   },
   {
     title: "En El Paso, Bilingüe No Es una Función — Es Supervivencia",
@@ -406,11 +406,11 @@ Cuando un propietario hispanohablante de El Paso llega a un buzón de voz en ing
 
 En un mercado que es 82% hispano, esto no es una fuga menor. Es una tubería rota.
 
-María habla el mismo español que tus clientes de El Paso hablan. No español de libro — español natural, fronterizo. Entiende el contexto, los coloquialismos, y cómo la gente realmente habla de problemas de plomería, electricidad y aire acondicionado en este mercado.
+Tu recepcionista de Capta habla el mismo español que tus clientes de El Paso hablan. No español de libro — español natural, fronterizo. Entiende el contexto, los coloquialismos, y cómo la gente realmente habla de problemas de plomería, electricidad y aire acondicionado en este mercado.
 
 Cada llamada contestada. Cada idioma manejado. Tarifa fija mensual sin importar el volumen. [Ver precios →](https://captahq.com/pricing)
 
-**[Empieza la configuración](https://captahq.com/setup)** — María puede estar contestando tus llamadas en 10 minutos.`,
+**[Empieza la configuración](https://captahq.com/setup)** — tu recepcionista puede estar contestando tus llamadas en 10 minutos.`,
   },
 
   /* ═══ 6. Miami ═══ */
@@ -445,9 +445,9 @@ South Florida's contractor market is shaped by forces you won't find anywhere el
 
 When a hurricane warning goes up, call volume doesn't increase — it multiplies. A roofing company that handles 10 calls per day will get 200 in the 48 hours after a storm. The ones who capture those calls lock in six figures of work in a weekend.
 
-María handles unlimited simultaneous calls at the same flat rate. No per-call charges, no surge pricing. Hurricane Sunday costs the same as a quiet Tuesday in February.
+Capta handles unlimited simultaneous calls at the same flat rate. No per-call charges, no surge pricing. Hurricane Sunday costs the same as a quiet Tuesday in February.
 
-**[Get hurricane-ready](https://captahq.com/setup)** — 10 minutes to set up. María answers the next call.`,
+**[Get hurricane-ready](https://captahq.com/setup)** — 10 minutes to set up. Your receptionist answers the next call.`,
   },
   {
     title: "Los Contratistas de Miami Funcionan Con Dos Calendarios: Temporada de Huracanes y Temporada de Snowbirds",
@@ -476,9 +476,9 @@ Ambos ciclos generan volumen masivo de llamadas. Ambos son urgentes. Y ambos rec
 
 ## El Multiplicador de Huracanes
 
-Cuando sube una advertencia de huracán, el volumen de llamadas no aumenta — se multiplica. María maneja llamadas simultáneas ilimitadas a la misma tarifa fija. Sin cargos por llamada, sin precios de emergencia.
+Cuando sube una advertencia de huracán, el volumen de llamadas no aumenta — se multiplica. Capta maneja llamadas simultáneas ilimitadas a la misma tarifa fija. Sin cargos por llamada, sin precios de emergencia.
 
-**[Prepárate para la temporada](https://captahq.com/setup)** — 10 minutos de configuración. María contesta la siguiente llamada.`,
+**[Prepárate para la temporada](https://captahq.com/setup)** — 10 minutos de configuración. Tu recepcionista contesta la siguiente llamada.`,
   },
 
   /* ═══ 7. Los Angeles ═══ */
@@ -515,7 +515,7 @@ In a market with 47,000 competitors, the funnel works like this: a homeowner nee
 
 The contractor who answers first isn't necessarily better. They're just available. In LA, availability is the strategy.
 
-María answers in under 2 seconds, handles the intake, books the appointment, and sends the confirmation — while you're stuck on the 405. Same $497/month whether you're getting 30 calls or 300.
+Capta's receptionist answers in under 2 seconds, handles the intake, books the appointment, and sends the confirmation — while you're stuck on the 405. Same $497/month whether you're getting 30 calls or 300.
 
 **[See what you're missing](https://captahq.com/audit)** — the free missed call audit shows you the real cost of not answering.`,
   },
@@ -548,7 +548,7 @@ Con 47,000 competidores, el embudo funciona así: un propietario necesita un plo
 
 El contratista que contesta primero no es necesariamente mejor. Solo está disponible. En LA, la disponibilidad es la estrategia.
 
-María contesta en menos de 2 segundos. Mismos $497/mes ya sea que recibas 30 llamadas o 300.
+Tu recepcionista de Capta contesta en menos de 2 segundos. Mismos $497/mes ya sea que recibas 30 llamadas o 300.
 
 **[Descubre lo que estás perdiendo](https://captahq.com/audit)** — la auditoría gratis muestra el costo real de no contestar.`,
   },
@@ -587,7 +587,7 @@ An emergency AC repair in Phoenix during summer runs $400–$1,200. A full syste
 
 If you miss that call because you were installing a unit in Chandler, that homeowner calls the next company on Google. At $8,000+ per replacement, one missed call per week during summer is $32,000 per month you'll never see.
 
-María answers every call instantly, detects emergencies based on what the caller describes, sends you an SMS alert for urgent situations, and books the appointment — all while you're finishing the current job.
+Capta's receptionist answers every call instantly, detects emergencies based on what the caller describes, sends you an SMS alert for urgent situations, and books the appointment — all while you're finishing the current job.
 
 **[Get set up before summer hits](https://captahq.com/setup)** — 10 minutes. $497/month flat. No per-call charges when the heat spikes.`,
   },
@@ -622,7 +622,7 @@ Una reparación de AC de emergencia en Phoenix en verano cuesta $400–$1,200. U
 
 Si pierdes esa llamada, el propietario llama a la siguiente empresa. A $8,000+ por reemplazo, una llamada perdida por semana en verano son $32,000 al mes que nunca verás.
 
-María contesta cada llamada, detecta emergencias, te envía alerta por SMS, y agenda la cita — mientras tú terminas el trabajo actual.
+Tu recepcionista de Capta contesta cada llamada, detecta emergencias, te envía alerta por SMS, y agenda la cita — mientras tú terminas el trabajo actual.
 
 **[Configúrate antes de que llegue el verano](https://captahq.com/setup)** — 10 minutos. $497/mes fijo.`,
   },
@@ -661,7 +661,7 @@ In a year-round market, a missed call means a lost job. In Denver, a missed call
 
 If you miss 3 calls per week during your 26-week busy season, at an average job value of $500, that's $39,000 in annual revenue — gone. In a year-round market, you could recover some of that in the off-months. In Denver, those calls are just gone.
 
-María answers every call, year-round. During the busy season, she handles the volume surge without additional cost. During the slow season, she catches the emergency heating calls and books the spring schedule. Same $497/month regardless.
+Capta's receptionist answers every call, year-round. During the busy season, she handles the volume surge without additional cost. During the slow season, she catches the emergency heating calls and books the spring schedule. Same $497/month regardless.
 
 **[Check your numbers](https://captahq.com/audit)** — the free missed call audit shows what your compressed season is actually costing you.`,
   },
@@ -692,7 +692,7 @@ El metro de Denver tiene casi 3 millones de personas y ha sido uno de los mercad
 
 Si pierdes 3 llamadas por semana durante tu temporada alta de 26 semanas, a un valor promedio de trabajo de $500, son $39,000 en ingresos anuales — desaparecidos. En Denver, esas llamadas simplemente se van. No puedes recuperarlas en meses lentos.
 
-María contesta cada llamada, todo el año. Durante la temporada alta, maneja el aumento de volumen sin costo adicional. Durante la temporada lenta, captura las llamadas de emergencia de calefacción. Mismos $497/mes.
+Tu recepcionista de Capta contesta cada llamada, todo el año. Durante la temporada alta, maneja el aumento de volumen sin costo adicional. Durante la temporada lenta, captura las llamadas de emergencia de calefacción. Mismos $497/mes.
 
 **[Revisa tus números](https://captahq.com/audit)** — la auditoría gratis muestra lo que tu temporada comprimida realmente te está costando.`,
   },
@@ -737,7 +737,7 @@ A home built in 1920 needs work at a rate that newer homes simply don't. Here's 
 
 Each of these starts with a phone call. Often an urgent one, because the problem became visible when something started leaking, sparking, or failing to heat.
 
-María answers every one of those calls, 24/7, regardless of weather. She handles the emergency triage ("Is there active flooding?"), collects the details, books the appointment, and sends you the summary — while you're warm in bed or finishing another job.
+Capta's receptionist answers every one of those calls, 24/7, regardless of weather. She handles the emergency triage ("Is there active flooding?"), collects the details, books the appointment, and sends you the summary — while you're warm in bed or finishing another job.
 
 Flat monthly rate. The same cost in a quiet August as during a January polar vortex. [See pricing →](https://captahq.com/pricing)
 
@@ -776,7 +776,7 @@ Una casa construida en 1920 necesita trabajo a un ritmo que las casas nuevas sim
 - Actualización de panel eléctrico ($2,000–$4,000)
 - Reparación de línea de drenaje ($3,000–$15,000)
 
-Cada uno comienza con una llamada telefónica. A menudo urgente. María contesta cada una, 24/7, sin importar el clima.
+Cada uno comienza con una llamada telefónica. A menudo urgente. Tu recepcionista de Capta contesta cada una, 24/7, sin importar el clima.
 
 Tarifa fija mensual. El mismo costo en un agosto tranquilo que durante un vórtice polar de enero. [Ver precios →](https://captahq.com/pricing)
 
@@ -817,7 +817,7 @@ An AI receptionist that costs $497/month and answers every one of those calls is
 
 Here's the simple math: if you're spending $3,000/month on Google Ads and missing 20% of the resulting calls, you're wasting $600/month in ad spend alone. Add the job revenue from those missed calls (average NYC plumbing job: $500–$1,500), and the total cost of not answering is $3,000–$6,000 per month.
 
-María costs $497/month and answers every call your ads generate. She handles intake, books appointments, sends confirmations, and makes sure that $80 click turns into a paying job instead of a voicemail nobody listens to.
+Capta costs $497/month and answers every call your ads generate. She handles intake, books appointments, sends confirmations, and makes sure that $80 click turns into a paying job instead of a voicemail nobody listens to.
 
 **[Calculate what you're wasting](https://captahq.com/audit)** — the free audit shows exactly how much your unanswered calls are costing.`,
   },
@@ -852,7 +852,7 @@ Una recepcionista AI que cuesta $497/mes y contesta cada una de esas llamadas no
 
 Matemática simple: si gastas $3,000/mes en Google Ads y pierdes 20% de las llamadas resultantes, estás desperdiciando $600/mes solo en publicidad. Suma los ingresos de esos trabajos perdidos y el costo total de no contestar es $3,000–$6,000 al mes.
 
-María cuesta $497/mes y contesta cada llamada que tus anuncios generan.
+Capta cuesta $497/mes y contesta cada llamada que tus anuncios generan.
 
 **[Calcula lo que estás desperdiciando](https://captahq.com/audit)** — la auditoría gratis muestra exactamente cuánto te cuestan tus llamadas sin respuesta.`,
   },
@@ -893,11 +893,11 @@ New residents are the best leads in any market. They don't have a regular plumbe
 
 The contractor who answers that first call doesn't just get one job — they get a customer who might call them for the next 5, 10, or 20 years. The lifetime value of a new-resident customer is enormous.
 
-María makes sure you answer every one of those calls. She handles the intake, books the appointment, and sends the confirmation — while you're stuck on I-285.
+Capta makes sure you answer every one of those calls. She handles the intake, books the appointment, and sends the confirmation — while you're stuck on I-285.
 
 No per-call charges. No limits. Just a phone that always gets answered, capturing the growth that's literally driving into your market every single day. [See what it costs →](https://captahq.com/pricing)
 
-**[Start capturing new residents](https://captahq.com/setup)** — 10 minutes to set up. María handles the rest.`,
+**[Start capturing new residents](https://captahq.com/setup)** — 10 minutes to set up. Capta handles the rest.`,
   },
   {
     title: "Atlanta Sumó 75,000 Nuevos Residentes el Año Pasado. Cada Uno Necesita un Contratista.",
@@ -934,9 +934,9 @@ Los nuevos residentes son los mejores leads. No tienen un plomero regular todav�
 
 El contratista que contesta esa primera llamada no solo consigue un trabajo — consigue un cliente que podría llamar por los próximos 5, 10 o 20 años.
 
-María se asegura de que contestes cada una de esas llamadas. Sin cargos por llamada. Sin límites. [Ver precios →](https://captahq.com/pricing)
+Capta se asegura de que contestes cada una de esas llamadas. Sin cargos por llamada. Sin límites. [Ver precios →](https://captahq.com/pricing)
 
-**[Empieza a capturar nuevos residentes](https://captahq.com/setup)** — 10 minutos de configuración. María maneja el resto.`,
+**[Empieza a capturar nuevos residentes](https://captahq.com/setup)** — 10 minutos de configuración. Capta maneja el resto.`,
   },
 ];
 
