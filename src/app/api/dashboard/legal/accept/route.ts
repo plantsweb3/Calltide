@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { recordConsent } from "@/lib/compliance/consent";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const acceptSchema = z.object({
   documentTypes: z.array(z.string().min(1)).min(1).max(10),
@@ -18,6 +19,9 @@ export async function POST(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`legal-accept:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;
   try {

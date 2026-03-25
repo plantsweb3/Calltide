@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { businesses, outboundCalls } from "@/db/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const DEMO_BUSINESS_ID = "demo-client-001";
 
@@ -25,6 +26,9 @@ export async function GET(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Missing business ID" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`outbound-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({
@@ -118,6 +122,9 @@ export async function PUT(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Missing business ID" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`outbound-put:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ success: true });

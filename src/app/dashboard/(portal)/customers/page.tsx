@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 import { TableSkeleton } from "@/components/skeleton";
 import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 import DataTable, { type Column } from "@/components/data-table";
@@ -36,29 +38,30 @@ const LEAD_TIER_CONFIG: Record<string, { label: string; bg: string; fg: string }
   hot: { label: "Hot", bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
   warm: { label: "Warm", bg: "rgba(245,158,11,0.12)", fg: "var(--db-warning-alt)" },
   cold: { label: "Cold", bg: "rgba(59,130,246,0.12)", fg: "#3b82f6" },
-  dormant: { label: "Dormant", bg: "rgba(148,163,184,0.12)", fg: "#94a3b8" },
+  dormant: { label: "Dormant", bg: "rgba(148,163,184,0.12)", fg: "var(--db-text-muted)" },
   new: { label: "New", bg: "rgba(96,165,250,0.12)", fg: "#60a5fa" },
   loyal: { label: "Loyal", bg: "var(--db-success-bg)", fg: "var(--db-success)" },
-  vip: { label: "VIP", bg: "rgba(250,204,21,0.12)", fg: "#facc15" },
+  vip: { label: "VIP", bg: "rgba(250,204,21,0.12)", fg: "var(--db-warning)" },
   "at-risk": { label: "At Risk", bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
 };
 
 const TIER_FILTER_OPTIONS = [
-  { value: "", label: "All Tiers" },
-  { value: "hot", label: "Hot" },
-  { value: "warm", label: "Warm" },
-  { value: "cold", label: "Cold" },
-  { value: "dormant", label: "Dormant" },
+  { value: "", key: "customers.allTiers" as const },
+  { value: "hot", key: "customers.hot" as const },
+  { value: "warm", key: "customers.warm" as const },
+  { value: "cold", key: "customers.cold" as const },
+  { value: "dormant", key: "customers.dormant" as const },
 ] as const;
 
 const SORT_OPTIONS = [
-  { value: "lastCallDate", label: "Last Call" },
-  { value: "name", label: "Name" },
-  { value: "leadScore", label: "Lead Score" },
+  { value: "lastCallDate", key: "customers.lastCall" as const },
+  { value: "name", key: "customers.name" as const },
+  { value: "leadScore", key: "customers.leadScore" as const },
 ] as const;
 
 export default function CustomersPage() {
   const receptionistName = useReceptionistName();
+  const [lang] = useLang();
   const router = useRouter();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -119,7 +122,7 @@ export default function CustomersPage() {
   const columns: Column<Customer>[] = [
     {
       key: "name",
-      label: "Name",
+      label: t("customers.name", lang),
       sortable: true,
       render: (c) => (
         <div className="flex items-center gap-2">
@@ -132,14 +135,14 @@ export default function CustomersPage() {
     },
     {
       key: "phone",
-      label: "Phone",
+      label: t("customers.phone", lang),
       render: (c) => (
         <PhoneLink phone={c.phone} className="text-sm font-medium hover:underline" />
       ),
     },
     {
       key: "leadScore",
-      label: "Lead Score",
+      label: t("customers.leadScore", lang),
       sortable: true,
       render: (c) => {
         const score = c.leadScore ?? 0;
@@ -175,7 +178,7 @@ export default function CustomersPage() {
     },
     {
       key: "totalCalls",
-      label: "Calls",
+      label: t("customers.totalCalls", lang),
       render: (c) => (
         <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{c.totalCalls}</span>
       ),
@@ -189,7 +192,7 @@ export default function CustomersPage() {
     },
     {
       key: "lastCallAt",
-      label: "Last Call",
+      label: t("customers.lastCall", lang),
       sortable: true,
       render: (c) => (
         <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{formatDate(c.lastCallAt)}</span>
@@ -222,7 +225,7 @@ export default function CustomersPage() {
   return (
     <div>
       <PageHeader
-        title="Customers"
+        title={t("customers.title", lang)}
         description={`${total} total customers`}
         actions={
           <div className="flex flex-wrap items-center gap-2">
@@ -231,7 +234,7 @@ export default function CustomersPage() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M8 6L12 2L16 6" /><path d="M12 2V15" /><circle cx="6" cy="20" r="2" /><circle cx="18" cy="20" r="2" /><path d="M12 15C12 18 6 18 6 18" /><path d="M12 15C12 18 18 18 18 18" />
                 </svg>
-                Merge ({selectedIds.size})
+                {t("customers.mergeCustomers", lang)} ({selectedIds.size})
               </Button>
             )}
             <Link
@@ -266,7 +269,7 @@ export default function CustomersPage() {
               filename="customers"
             />
             <Button onClick={() => setShowAddModal(true)}>
-              + Add Customer
+              + {t("customers.addCustomer", lang)}
             </Button>
           </div>
         }
@@ -276,7 +279,7 @@ export default function CustomersPage() {
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <input
           type="text"
-          placeholder="Search by name or phone..."
+          placeholder={t("customers.search", lang)}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="w-full max-w-md rounded-lg border px-4 py-2 text-sm"
@@ -298,7 +301,7 @@ export default function CustomersPage() {
           }}
         >
           {TIER_FILTER_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value}>{t(opt.key, lang)}</option>
           ))}
         </select>
 
@@ -313,7 +316,7 @@ export default function CustomersPage() {
           }}
         >
           {SORT_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>Sort: {opt.label}</option>
+            <option key={opt.value} value={opt.value}>Sort: {t(opt.key, lang)}</option>
           ))}
         </select>
 
@@ -332,7 +335,7 @@ export default function CustomersPage() {
       </div>
 
       {error && (
-        <div className="db-card mb-4 flex items-center justify-between p-4" style={{ borderColor: "var(--db-danger)" }}>
+        <div role="alert" aria-live="assertive" className="db-card mb-4 flex items-center justify-between p-4" style={{ borderColor: "var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
           <Button variant="danger" size="sm" onClick={fetchCustomers}>Retry</Button>
         </div>
@@ -346,7 +349,7 @@ export default function CustomersPage() {
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
           <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
-            {search ? "No customers match your search" : "No customers yet"}
+            {search ? "No customers match your search" : t("empty.noCustomers", lang, { name: receptionistName })}
           </p>
           <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
             {search
@@ -402,6 +405,7 @@ export default function CustomersPage() {
 // ── Add Customer Modal ──
 
 function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
+  const [lang] = useLang();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -492,10 +496,10 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
           {error && <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>}
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
-              Cancel
+              {t("action.cancel", lang)}
             </Button>
             <Button type="submit" disabled={saving} className="flex-1">
-              {saving ? "Saving..." : "Add Customer"}
+              {saving ? "Saving..." : t("customers.addCustomer", lang)}
             </Button>
           </div>
         </form>
@@ -515,6 +519,7 @@ function MergeCustomerModal({
   onClose: () => void;
   onMerged: () => void;
 }) {
+  const [lang] = useLang();
   const [a, b] = customers;
   const [primaryId, setPrimaryId] = useState(a.id);
   const [keepFields, setKeepFields] = useState<Record<string, string>>({
@@ -618,7 +623,7 @@ function MergeCustomerModal({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="merge-customers-title" className="text-lg font-semibold mb-1" style={{ color: "var(--db-text)" }}>
-          Merge Customers
+          {t("customers.mergeCustomers", lang)}
         </h2>
         <p className="text-xs mb-5" style={{ color: "var(--db-text-muted)" }}>
           Choose which customer record to keep as primary. Select which field values to preserve.
@@ -709,10 +714,10 @@ function MergeCustomerModal({
 
           <div className="flex gap-2">
             <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
-              Cancel
+              {t("action.cancel", lang)}
             </Button>
             <Button type="submit" disabled={merging} className="flex-1">
-              {merging ? "Merging..." : "Merge Customers"}
+              {merging ? "Merging..." : t("customers.mergeCustomers", lang)}
             </Button>
           </div>
         </form>

@@ -11,6 +11,7 @@ import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/ra
 
 const sendLinkSchema = z.object({
   email: z.string().email("Valid email is required"),
+  lang: z.enum(["en", "es"]).optional().default("en"),
 });
 
 export async function POST(req: NextRequest) {
@@ -26,6 +27,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
     const email = parsed.data.email;
+    const lang = parsed.data.lang;
 
     // Always return the same response regardless of whether the email exists
     // to prevent user enumeration attacks
@@ -75,26 +77,33 @@ export async function POST(req: NextRequest) {
       secret,
     );
 
+    const safeName = business.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    const isEs = lang === "es";
+
     const resend = getResend();
     await resend.emails.send({
       from: env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>",
       to: email,
-      subject: "Your Capta login link",
+      subject: isEs ? "Tu enlace de acceso a Capta" : "Your Capta login link",
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
-          <h2 style="color: #1A1D24; margin-bottom: 8px;">Sign in to Capta</h2>
+          <h2 style="color: #1A1D24; margin-bottom: 8px;">${isEs ? "Inicia sesion en Capta" : "Sign in to Capta"}</h2>
           <p style="color: #475569; margin-bottom: 24px;">
-            Click the button below to access your ${business.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")} dashboard. This link expires in 15 minutes.
+            ${isEs
+              ? `Haz clic en el boton para acceder al panel de ${safeName}. Este enlace expira en 15 minutos.`
+              : `Click the button below to access your ${safeName} dashboard. This link expires in 15 minutes.`}
           </p>
-          <a href="${link}" style="display: inline-block; background: #C59A27; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-            Sign In to Dashboard
+          <a href="${link}" style="display: inline-block; background: #D4A843; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+            ${isEs ? "Iniciar sesion" : "Sign In to Dashboard"}
           </a>
           <p style="color: #94A3B8; font-size: 13px; margin-top: 32px;">
-            If you didn't request this link, you can safely ignore this email.
+            ${isEs
+              ? "Si no solicitaste este enlace, puedes ignorar este correo."
+              : "If you didn't request this link, you can safely ignore this email."}
           </p>
           <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 24px 0;" />
           <p style="color: #94A3B8; font-size: 12px;">
-            &copy; Capta &mdash; AI Receptionist for Home Services
+            &copy; Capta &mdash; ${isEs ? "Recepcionista AI para Servicios del Hogar" : "AI Receptionist for Home Services"}
           </p>
         </div>
       `,

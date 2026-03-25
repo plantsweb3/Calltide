@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { getRecentReferrals } from "@/lib/referrals/partners";
 import { reportError } from "@/lib/error-reporting";
 import { DEMO_BUSINESS_ID } from "../../demo-data";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`partners-referrals-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({

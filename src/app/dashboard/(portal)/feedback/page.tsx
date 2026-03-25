@@ -6,6 +6,8 @@ import Button from "@/components/ui/button";
 import StatusBadge from "@/components/ui/status-badge";
 import PageHeader from "@/components/page-header";
 import EmptyState from "@/components/empty-state";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface FeedbackItem {
   id: string;
@@ -55,6 +57,7 @@ const FEEDBACK_STATUS_VARIANT: Record<string, "info" | "accent" | "warning" | "s
 };
 
 export default function ClientFeedbackPage() {
+  const [lang] = useLang();
   const [tab, setTab] = useState<"feedback" | "reviews">("feedback");
   const [items, setItems] = useState<FeedbackItem[]>([]);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
@@ -125,7 +128,7 @@ export default function ClientFeedbackPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Feedback & Reviews"
+        title={t("feedback.title", lang)}
         description="Manage customer reviews and share ideas with our team."
         actions={
           tab === "feedback" ? (
@@ -160,7 +163,7 @@ export default function ClientFeedbackPage() {
       {tab === "feedback" && (
         <>
           {formSuccess && (
-            <div className="rounded-lg p-3 text-sm" style={{ background: "rgba(34, 197, 94, 0.1)", color: "#22c55e" }}>
+            <div className="rounded-lg p-3 text-sm" style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}>
               Thank you! Your feedback has been submitted.
             </div>
           )}
@@ -229,7 +232,7 @@ export default function ClientFeedbackPage() {
               )}
 
               <Button type="submit" disabled={submitting}>
-                {submitting ? "Submitting..." : "Submit Feedback"}
+                {submitting ? "Submitting..." : t("feedback.submitFeedback", lang)}
               </Button>
             </form>
           )}
@@ -293,6 +296,7 @@ export default function ClientFeedbackPage() {
 }
 
 function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: React.Dispatch<React.SetStateAction<ReviewItem[]>> }) {
+  const [lang] = useLang();
   const [drafting, setDrafting] = useState<string | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
@@ -307,8 +311,8 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
           r.id === reviewId ? { ...r, replyDraft: data.draft, replyStatus: "drafted" } : r
         ));
       }
-    } catch {
-      // silently fail
+    } catch (err) {
+      console.error(err);
     } finally {
       setDrafting(null);
     }
@@ -326,7 +330,9 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
           r.id === reviewId ? { ...r, replyStatus: "approved" } : r
         ));
       }
-    } catch {}
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async function saveEdit(reviewId: string) {
@@ -343,7 +349,9 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
         setEditing(null);
         setEditText("");
       }
-    } catch {}
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const REPLY_STATUS_VARIANT: Record<string, "neutral" | "warning" | "success" | "info"> = {
@@ -439,8 +447,8 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
                     <p className="text-sm" style={{ color: "var(--db-text)" }}>{review.replyDraft}</p>
                     {review.replyStatus === "drafted" && (
                       <div className="mt-2 flex gap-2">
-                        <Button size="sm" onClick={() => approveDraft(review.id)} style={{ background: "#22c55e", color: "#fff" }}>
-                          Approve
+                        <Button size="sm" onClick={() => approveDraft(review.id)} style={{ background: "var(--db-success)", color: "#fff" }}>
+                          {t("feedback.approve", lang)}
                         </Button>
                         <Button size="sm" variant="secondary" onClick={() => { setEditing(review.id); setEditText(review.replyDraft || ""); }}>
                           Edit

@@ -16,7 +16,7 @@ function PasswordStrengthBar({ password, lang }: { password: string; lang: "en" 
   const strength = getStrength(password);
   const config = {
     weak: { color: "var(--db-danger)", label: t("auth.strength.weak", lang), width: "33%" },
-    fair: { color: "#facc15", label: t("auth.strength.fair", lang), width: "66%" },
+    fair: { color: "var(--db-warning)", label: t("auth.strength.fair", lang), width: "66%" },
     strong: { color: "var(--db-success)", label: t("auth.strength.strong", lang), width: "100%" },
   } as const;
   const c = config[strength];
@@ -34,9 +34,9 @@ function PasswordStrengthBar({ password, lang }: { password: string; lang: "en" 
       <div className="flex items-center justify-between">
         <span className="text-xs" style={{ color: c.color }}>{c.label}</span>
         <div className="text-xs space-x-3" style={{ color: "var(--db-text-muted)" }}>
-          <span style={{ color: password.length >= 8 ? "var(--db-success)" : undefined }}>8+ chars</span>
-          <span style={{ color: /[a-zA-Z]/.test(password) ? "var(--db-success)" : undefined }}>{lang === "es" ? "Letra" : "Letter"}</span>
-          <span style={{ color: /[0-9]/.test(password) ? "var(--db-success)" : undefined }}>{lang === "es" ? "Numero" : "Number"}</span>
+          <span style={{ color: password.length >= 8 ? "var(--db-success)" : undefined }}>{t("auth.requirement.chars", lang)}</span>
+          <span style={{ color: /[a-zA-Z]/.test(password) ? "var(--db-success)" : undefined }}>{t("auth.requirement.letter", lang)}</span>
+          <span style={{ color: /[0-9]/.test(password) ? "var(--db-success)" : undefined }}>{t("auth.requirement.number", lang)}</span>
         </div>
       </div>
     </div>
@@ -75,10 +75,11 @@ function ResetPasswordForm() {
         }}
       >
         <div
+          role="alert"
           className="rounded-lg px-4 py-3 text-sm"
           style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
-          {lang === "es" ? "Enlace invalido. Solicita uno nuevo." : "Invalid reset link. Please request a new one."}
+          {t("auth.error.invalidLink", lang)}
         </div>
         <div className="text-center">
           <Link
@@ -108,6 +109,7 @@ function ResetPasswordForm() {
 
       if (res.ok) {
         router.push("/dashboard/login?msg=password_updated");
+        return;
       } else {
         const data = await res.json();
         setError(data.error || t("error.somethingWentWrong", lang));
@@ -135,12 +137,14 @@ function ResetPasswordForm() {
           {t("auth.setNewPassword", lang)}
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          {lang === "es" ? "Elige una contrasena segura para tu cuenta" : "Choose a strong password for your account"}
+          {t("auth.chooseStrongPassword", lang)}
         </p>
       </div>
 
       {error && (
         <div
+          role="alert"
+          aria-live="assertive"
           className="rounded-lg px-4 py-3 text-sm"
           style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
@@ -169,7 +173,7 @@ function ResetPasswordForm() {
                 border: "1px solid var(--db-border)",
                 color: "var(--db-text)",
               }}
-              placeholder={lang === "es" ? "Minimo 8 caracteres" : "Min 8 characters"}
+              placeholder={t("auth.minChars", lang)}
               autoFocus
               required
             />
@@ -178,14 +182,15 @@ function ResetPasswordForm() {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-sm"
               style={{ color: "var(--db-text-muted)" }}
-              tabIndex={-1}
+              tabIndex={0}
+              aria-label={showPassword ? t("auth.hidePassword", lang) : t("auth.showPassword", lang)}
             >
               {showPassword ? (
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                   <path d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               ) : (
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                   <path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -216,7 +221,7 @@ function ResetPasswordForm() {
               border: `1px solid ${confirmPassword && confirmPassword !== password ? "var(--db-danger)" : "var(--db-border)"}`,
               color: "var(--db-text)",
             }}
-            placeholder={lang === "es" ? "Confirma tu contrasena" : "Re-enter your password"}
+            placeholder={t("auth.confirmYourPassword", lang)}
             required
           />
           {confirmPassword && confirmPassword !== password && (
@@ -256,7 +261,7 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
-      <Suspense>
+      <Suspense fallback={null}>
         <ResetPasswordForm />
       </Suspense>
     </div>

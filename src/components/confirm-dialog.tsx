@@ -8,6 +8,8 @@ interface ConfirmDialogProps {
   title: string;
   description: string;
   confirmLabel?: string;
+  cancelLabel?: string;
+  loadingLabel?: string;
   variant?: "danger" | "primary";
   loading?: boolean;
   onConfirm: () => void;
@@ -19,6 +21,8 @@ export default function ConfirmDialog({
   title,
   description,
   confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  loadingLabel = "Please wait...",
   variant = "primary",
   loading = false,
   onConfirm,
@@ -110,7 +114,7 @@ export default function ConfirmDialog({
         </p>
         <div className="flex items-center justify-end gap-3 pt-2">
           <Button variant="ghost" onClick={onCancel} disabled={loading}>
-            Cancel
+            {cancelLabel}
           </Button>
           <Button
             ref={confirmRef}
@@ -118,7 +122,7 @@ export default function ConfirmDialog({
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? "Please wait..." : confirmLabel}
+            {loading ? loadingLabel : confirmLabel}
           </Button>
         </div>
       </div>

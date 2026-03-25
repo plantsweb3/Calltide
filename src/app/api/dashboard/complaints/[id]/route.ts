@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { complaintTickets } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const updateComplaintSchema = z.object({
   status: z.enum(["open", "investigating", "resolved", "closed"]).optional(),
@@ -20,6 +21,9 @@ export async function PUT(
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`complaints-put:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const { id } = await params;
 

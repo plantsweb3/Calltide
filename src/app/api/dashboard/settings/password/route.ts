@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { hashPassword, verifyPassword, validatePassword } from "@/lib/password";
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+import { isSessionInvalidated } from "@/lib/session-check";
 
 const changePasswordSchema = z.object({
   currentPassword: z.string().optional(),
@@ -51,6 +52,12 @@ export async function POST(req: NextRequest) {
     const accountId = req.headers.get("x-account-id");
     if (!accountId) {
       return NextResponse.json({ error: "Account not found" }, { status: 400 });
+    }
+
+    // Reject sessions issued before a password change
+    const sessionIat = req.headers.get("x-session-iat");
+    if (await isSessionInvalidated(accountId, sessionIat)) {
+      return NextResponse.json({ error: "Session expired" }, { status: 401 });
     }
 
     const body = await req.json();

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
 import { accounts, businesses } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { signClientCookie } from "@/lib/client-auth";
 import { verifyPassword } from "@/lib/password";
@@ -67,14 +67,16 @@ export async function POST(req: NextRequest) {
     // Verify password
     const valid = await verifyPassword(password, account.passwordHash);
     if (!valid) {
-      const attempts = (account.failedLoginAttempts ?? 0) + 1;
-      const updates: Record<string, unknown> = { failedLoginAttempts: attempts };
-      if (attempts >= MAX_FAILED_ATTEMPTS) {
-        updates.lockedUntil = new Date(Date.now() + LOCKOUT_DURATION_MS).toISOString();
-      }
-      await db.update(accounts).set(updates).where(eq(accounts.id, account.id));
+      // Atomic increment to prevent race condition under concurrent requests
+      await db.update(accounts).set({
+        failedLoginAttempts: sql`COALESCE(${accounts.failedLoginAttempts}, 0) + 1`,
+      }).where(eq(accounts.id, account.id));
 
-      if (attempts >= MAX_FAILED_ATTEMPTS) {
+      const newAttempts = (account.failedLoginAttempts ?? 0) + 1;
+      if (newAttempts >= MAX_FAILED_ATTEMPTS) {
+        await db.update(accounts).set({
+          lockedUntil: new Date(Date.now() + LOCKOUT_DURATION_MS).toISOString(),
+        }).where(eq(accounts.id, account.id));
         return NextResponse.json(
           { error: "Too many failed attempts. Account locked for 30 minutes." },
           { status: 423 },

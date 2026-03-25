@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { seasonalServices } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const DEMO_BUSINESS_ID = "demo-client-001";
 
@@ -25,6 +26,9 @@ export async function PUT(
   if (!businessId) {
     return NextResponse.json({ error: "Missing business ID" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`seasonal-services-put:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ success: true });
@@ -63,6 +67,9 @@ export async function DELETE(
   if (!businessId) {
     return NextResponse.json({ error: "Missing business ID" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`seasonal-services-delete:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ success: true });

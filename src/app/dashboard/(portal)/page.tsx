@@ -11,6 +11,8 @@ import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import SetupChecklist from "@/app/dashboard/_components/setup-checklist";
 import DashboardTour from "@/components/dashboard-tour";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t, getGreeting } from "@/lib/i18n/strings";
 import { IconSparkles, IconClock, IconTarget, IconParty } from "@/components/icons";
 import { IconPhone } from "@/components/marketing/icons";
 
@@ -123,15 +125,9 @@ interface ActiveCall {
   durationSeconds: number;
 }
 
-function getGreeting(): string {
-  const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  return "Good evening";
-}
-
 export default function OverviewPage() {
   const receptionistName = useReceptionistName();
+  const [lang] = useLang();
   const [data, setData] = useState<Overview | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
@@ -167,14 +163,14 @@ export default function OverviewPage() {
 
   if (error) {
     return (
-      <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)", color: "var(--db-danger)" }}>
-        <p className="text-sm">{error}</p>
+      <div role="alert" aria-live="assertive" className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)", color: "var(--db-danger)" }}>
+        <p className="text-sm">{t("error.failedToLoad", lang)}</p>
         <button
           onClick={loadOverview}
           className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
           style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
-          Retry
+          {t("action.retry", lang)}
         </button>
       </div>
     );
@@ -207,10 +203,10 @@ export default function OverviewPage() {
             className="text-2xl font-semibold"
             style={{ color: "var(--db-text)" }}
           >
-            {getGreeting()}, welcome to Capta
+            {getGreeting(lang)}, {t("greeting.welcome", lang)}
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Let&apos;s get {receptionistName} answering calls in the next 10 minutes.
+            {t("overview.noCallsSub", lang, { name: receptionistName })}
           </p>
         </div>
 
@@ -219,7 +215,7 @@ export default function OverviewPage() {
           style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
         >
           <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-            Quick Setup
+            {t("overview.quickSetup", lang)}
           </h2>
           <div className="mt-4 space-y-4">
             {steps.map((step, i) => (
@@ -243,10 +239,10 @@ export default function OverviewPage() {
         </div>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 stagger-grid">
-          <MetricCard label="Calls Today" value={0} />
-          <MetricCard label="This Week" value={0} change="Appointments" changeType="neutral" />
-          <MetricCard label="Missed Saved" value={0} />
-          <MetricCard label="Total Calls" value={0} />
+          <MetricCard label={t("overview.callsToday", lang)} value={0} />
+          <MetricCard label={t("overview.thisWeek", lang)} value={0} change={t("overview.appointmentsToday", lang)} changeType="neutral" />
+          <MetricCard label={t("metric.missedSaved", lang)} value={0} />
+          <MetricCard label={t("overview.totalCalls", lang)} value={0} />
         </div>
       </div>
     );
@@ -261,7 +257,7 @@ export default function OverviewPage() {
           className="text-2xl font-semibold"
           style={{ color: "var(--db-text)" }}
         >
-          {getGreeting()}, {data.businessName?.split(" ")[0] || "there"}
+          {getGreeting(lang)}, {data.businessName?.split(" ")[0] || "there"}
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
           Here&apos;s how {receptionistName} is performing
@@ -273,8 +269,8 @@ export default function OverviewPage() {
         <div
           className="rounded-xl p-4"
           style={{
-            background: "rgba(74,222,128,0.06)",
-            border: "1px solid rgba(74,222,128,0.2)",
+            background: "var(--db-success-bg)",
+            border: "1px solid var(--db-success)",
           }}
         >
           <div className="flex items-center gap-2 mb-2">
@@ -283,7 +279,7 @@ export default function OverviewPage() {
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
             </span>
             <span className="text-sm font-semibold" style={{ color: "var(--db-success)" }}>
-              {activeCalls.length} active call{activeCalls.length > 1 ? "s" : ""} right now
+              {t("overview.liveNow", lang)} — {activeCalls.length} {activeCalls.length > 1 ? t("overview.activeCallsNowPlural", lang) : t("overview.callInProgress", lang)}
             </span>
           </div>
           <div className="space-y-1.5">
@@ -386,7 +382,7 @@ export default function OverviewPage() {
                     className="h-2 rounded-full transition-all duration-1000"
                     style={{
                       width: `${Math.min((data.roiMultiple / 10) * 100, 100)}%`,
-                      background: "linear-gradient(90deg, var(--db-accent) 0%, #4ade80 100%)",
+                      background: "linear-gradient(90deg, var(--db-accent) 0%, var(--db-success) 100%)",
                     }}
                   />
                 </div>
@@ -503,7 +499,7 @@ export default function OverviewPage() {
               </h3>
               <div className="grid grid-cols-3 gap-3 mb-4">
                 {[
-                  { label: "Active Pipeline", value: `$${data.estimatePipeline.totalPipelineValue.toLocaleString()}`, color: "var(--db-accent)" },
+                  { label: t("metric.activePipeline", lang), value: `$${data.estimatePipeline.totalPipelineValue.toLocaleString()}`, color: "var(--db-accent)" },
                   { label: "Won This Month", value: `$${data.estimatePipeline.wonThisMonth.value.toLocaleString()}`, color: "var(--db-success)" },
                   { label: "Won Deals", value: String(data.estimatePipeline.wonThisMonth.count), color: "var(--db-success)" },
                 ].map((s) => (
@@ -516,7 +512,7 @@ export default function OverviewPage() {
               <div className="flex gap-2">
                 {(["new", "sent", "follow_up", "won", "lost"] as const).map((status) => {
                   const d = data.estimatePipeline![status];
-                  const colors: Record<string, string> = { new: "#3b82f6", sent: "#6366f1", follow_up: "var(--db-warning-alt)", won: "#22c55e", lost: "var(--db-danger)" };
+                  const colors: Record<string, string> = { new: "#3b82f6", sent: "#6366f1", follow_up: "var(--db-warning-alt)", won: "var(--db-success)", lost: "var(--db-danger)" };
                   return (
                     <div key={status} className="flex-1 rounded-lg p-2 text-center" style={{ background: "var(--db-hover)" }}>
                       <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{status.replace(/_/g, " ")}</p>
@@ -589,19 +585,19 @@ export default function OverviewPage() {
             </h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Total Calls Handled</span>
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{t("overview.totalCalls", lang)}</span>
                 <span className="text-lg font-semibold tabular-nums" style={{ color: "var(--db-text)" }}>
                   <AnimatedCounter value={data.totalCalls} />
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Calls Today</span>
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{t("overview.callsToday", lang)}</span>
                 <span className="text-lg font-semibold tabular-nums" style={{ color: "var(--db-text)" }}>
                   <AnimatedCounter value={data.callsToday} />
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Missed Calls Saved</span>
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{t("metric.missedSaved", lang)}</span>
                 <span className="text-lg font-semibold tabular-nums" style={{ color: "var(--db-success)" }}>
                   <AnimatedCounter value={data.missedCallsSaved} />
                 </span>
@@ -714,7 +710,7 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
               <div
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
                 style={{
-                  background: card.priority === "urgent" ? "var(--db-danger-bg)" : "rgba(245,158,11,0.1)",
+                  background: card.priority === "urgent" ? "var(--db-danger-bg)" : "var(--db-warning-bg)",
                   color: card.priority === "urgent" ? "var(--db-danger)" : "var(--db-warning)",
                 }}
               >
@@ -863,8 +859,8 @@ function FirstCallBanner({
     <div
       className="relative overflow-hidden rounded-xl p-6"
       style={{
-        background: "linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(74,222,128,0.06) 100%)",
-        border: "1px solid rgba(34,197,94,0.3)",
+        background: "linear-gradient(135deg, var(--db-success-bg) 0%, var(--db-success-bg) 100%)",
+        border: "1px solid var(--db-success)",
       }}
     >
       <button
@@ -878,14 +874,14 @@ function FirstCallBanner({
       <div className="flex items-start gap-4">
         <div
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl"
-          style={{ background: "rgba(34,197,94,0.15)" }}
+          style={{ background: "var(--db-success-bg)" }}
         >
           <IconParty size={20} />
         </div>
         <div>
           <h3
             className="text-lg font-bold"
-            style={{ color: "#22c55e" }}
+            style={{ color: "var(--db-success)" }}
           >
             {receptionistName} handled the first call!
           </h3>

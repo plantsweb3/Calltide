@@ -6,6 +6,8 @@ import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-nam
 import PageHeader from "@/components/page-header";
 import EmptyState from "@/components/empty-state";
 import Button from "@/components/ui/button";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface OwnerResponse {
   id: string;
@@ -79,20 +81,21 @@ interface Stats {
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; label: string }> = {
   pending_review: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)", label: "Pending" },
-  confirmed: { bg: "rgba(34,197,94,0.15)", text: "var(--db-success)", label: "Confirmed" },
+  confirmed: { bg: "var(--db-success-bg)", text: "var(--db-success)", label: "Confirmed" },
   adjusted: { bg: "rgba(99,102,241,0.15)", text: "#818cf8", label: "Adjusted" },
   awaiting_adjustment: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)", label: "Awaiting Adj." },
   site_visit_requested: { bg: "rgba(59,130,246,0.15)", text: "#60a5fa", label: "Site Visit" },
-  expired: { bg: "rgba(148,163,184,0.15)", text: "#94a3b8", label: "Expired" },
+  expired: { bg: "rgba(148,163,184,0.15)", text: "var(--db-text-muted)", label: "Expired" },
 };
 
 const CONFIDENCE_COLORS: Record<string, { bg: string; text: string }> = {
   ballpark: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)" },
-  estimated: { bg: "rgba(34,197,94,0.15)", text: "var(--db-success)" },
-  no_match: { bg: "rgba(148,163,184,0.15)", text: "#94a3b8" },
+  estimated: { bg: "var(--db-success-bg)", text: "var(--db-success)" },
+  no_match: { bg: "rgba(148,163,184,0.15)", text: "var(--db-text-muted)" },
 };
 
 export default function JobCardsPage() {
+  const [lang] = useLang();
   const receptionistName = useReceptionistName();
   const [cards, setCards] = useState<JobCard[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -178,7 +181,7 @@ export default function JobCardsPage() {
   return (
     <div>
       <PageHeader
-        title="Job Cards"
+        title={t("jobCards.title", lang)}
         actions={
           <div className="flex items-center gap-3">
             <input
@@ -227,7 +230,7 @@ export default function JobCardsPage() {
       </div>
 
       {error && (
-        <div className="p-4 mb-4 rounded-lg text-sm" style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}>
+        <div role="alert" aria-live="assertive" className="p-4 mb-4 rounded-lg text-sm" style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}>
           {error}
         </div>
       )}
@@ -340,7 +343,7 @@ export default function JobCardsPage() {
                   <div className="px-4 pb-4 space-y-4" style={{ borderTop: "1px solid var(--db-border)" }}>
                     {/* Job details */}
                     <div className="grid grid-cols-2 gap-4 pt-4 sm:grid-cols-4">
-                      <Detail label="Job Type" value={card.jobTypeLabel} />
+                      <Detail label={t("jobCards.serviceType", lang)} value={card.jobTypeLabel} />
                       <Detail label="Scope" value={card.scopeLevel} />
                       <Detail label="Estimate Mode" value={card.estimateMode} />
                       <Detail label="Unit" value={card.estimateUnit} />
@@ -410,7 +413,7 @@ export default function JobCardsPage() {
 
                     {/* Owner response */}
                     {card.ownerRespondedAt && (
-                      <div className="p-3 rounded-lg" style={{ background: "rgba(34,197,94,0.08)" }}>
+                      <div className="p-3 rounded-lg" style={{ background: "var(--db-success-bg)" }}>
                         <div className="text-xs mb-1" style={{ color: "var(--db-success)" }}>Owner Response</div>
                         <div className="text-sm" style={{ color: "var(--db-text)" }}>
                           {card.ownerResponse === "confirmed" && "Estimate confirmed"}
@@ -443,7 +446,7 @@ export default function JobCardsPage() {
                               <span
                                 className="px-1.5 py-0.5 rounded shrink-0"
                                 style={{
-                                  background: r.direction === "inbound" ? "rgba(34,197,94,0.15)" : "rgba(59,130,246,0.15)",
+                                  background: r.direction === "inbound" ? "var(--db-success-bg)" : "rgba(59,130,246,0.15)",
                                   color: r.direction === "inbound" ? "var(--db-success)" : "#60a5fa",
                                 }}
                               >

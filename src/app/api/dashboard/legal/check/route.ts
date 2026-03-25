@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { legalDocuments, consentRecords } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 /**
  * GET /api/dashboard/legal/check
@@ -14,6 +15,9 @@ export async function GET(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`legal-check:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   // Get all current legal documents
   const currentDocs = await db

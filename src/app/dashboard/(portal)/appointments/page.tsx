@@ -14,6 +14,9 @@ import DateRangePicker, { type DateRange } from "@/components/date-range-picker"
 import EmptyState from "@/components/empty-state";
 import PhoneLink from "@/components/phone-link";
 import { formatPhone } from "@/lib/format";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
+import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
 
 interface Appointment {
   id: string;
@@ -43,19 +46,21 @@ function toISO(d: Date): string {
   return d.toISOString().split("T")[0];
 }
 
-const STATUS_ACTIONS: Record<string, { label: string; status: string; variant: "primary" | "danger" }[]> = {
+const STATUS_ACTIONS: Record<string, { labelKey: string; label: string; status: string; variant: "primary" | "danger" }[]> = {
   pending: [
-    { label: "Confirm", status: "confirmed", variant: "primary" },
-    { label: "Cancel", status: "cancelled", variant: "danger" },
+    { labelKey: "appointments.confirm", label: "Confirm", status: "confirmed", variant: "primary" },
+    { labelKey: "action.cancel", label: "Cancel", status: "cancelled", variant: "danger" },
   ],
   confirmed: [
-    { label: "Complete", status: "completed", variant: "primary" },
-    { label: "No-Show", status: "no_show", variant: "danger" },
-    { label: "Cancel", status: "cancelled", variant: "danger" },
+    { labelKey: "appointments.complete", label: "Complete", status: "completed", variant: "primary" },
+    { labelKey: "appointments.noShow", label: "No-Show", status: "no_show", variant: "danger" },
+    { labelKey: "action.cancel", label: "Cancel", status: "cancelled", variant: "danger" },
   ],
 };
 
 export default function AppointmentsPage() {
+  const [lang] = useLang();
+  const receptionistName = useReceptionistName();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [filter, setFilter] = useState<"upcoming" | "past">("upcoming");
   const [view, setView] = useState<"calendar" | "list">("calendar");
@@ -168,13 +173,13 @@ export default function AppointmentsPage() {
   const columns: Column<Appointment>[] = [
     {
       key: "dateTime",
-      label: "Date & Time",
+      label: `${t("appointments.date", lang)} & ${t("appointments.time", lang)}`,
       render: (row) => formatDateTime(row.date, row.time),
     },
-    { key: "service", label: "Service" },
+    { key: "service", label: t("appointments.service", lang) },
     {
       key: "caller",
-      label: "Caller",
+      label: t("appointments.customer", lang),
       render: (row) => row.leadName ? (
         <div>
           <span style={{ color: "var(--db-text)" }}>{row.leadName}</span>
@@ -186,7 +191,7 @@ export default function AppointmentsPage() {
     },
     {
       key: "status",
-      label: "Status",
+      label: t("appointments.status", lang),
       render: (row) => (
         <StatusBadge label={row.status} variant={statusToVariant(row.status)} />
       ),
@@ -214,7 +219,7 @@ export default function AppointmentsPage() {
                   }
                 }}
               >
-                {a.label}
+                {t(a.labelKey, lang)}
               </Button>
             ))}
           </div>
@@ -228,7 +233,7 @@ export default function AppointmentsPage() {
   return (
     <div>
       <PageHeader
-        title="Appointments"
+        title={t("appointments.title", lang)}
         actions={
           <div className="flex items-center gap-3">
             {filter === "past" && (
@@ -285,7 +290,7 @@ export default function AppointmentsPage() {
                   color: filter === "upcoming" ? "#fff" : "var(--db-text-muted)",
                 }}
               >
-                Upcoming
+                {t("appointments.upcoming", lang)}
               </button>
               <button
                 onClick={() => { setFilter("past"); setView("list"); setSelectedIds(new Set()); }}
@@ -295,7 +300,7 @@ export default function AppointmentsPage() {
                   color: filter === "past" ? "#fff" : "var(--db-text-muted)",
                 }}
               >
-                Past
+                {t("appointments.past", lang)}
               </button>
             </div>
           </div>
@@ -303,9 +308,9 @@ export default function AppointmentsPage() {
       />
 
       {error && (
-        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <div role="alert" aria-live="assertive" className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
-          <Button variant="danger" size="sm" onClick={fetchAppointments}>Retry</Button>
+          <Button variant="danger" size="sm" onClick={fetchAppointments}>{t("action.retry", lang)}</Button>
         </div>
       )}
 
@@ -318,7 +323,7 @@ export default function AppointmentsPage() {
               <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
             </svg>
           }
-          title={`No ${filter} appointments`}
+          title={t("empty.noAppointments", lang, { name: receptionistName })}
           description="When your AI receptionist books appointments, they'll appear here."
           action={{ label: "Customize Scheduling", href: "/dashboard/settings#receptionist" }}
         />
@@ -360,28 +365,28 @@ export default function AppointmentsPage() {
             size="sm"
             variant="primary"
             onClick={() => {
-              setBulkConfirmAction({ status: "completed", label: "Mark Completed" });
+              setBulkConfirmAction({ status: "completed", label: t("appointments.complete", lang) });
             }}
           >
-            Mark Completed ({selectedIds.size})
+            {t("appointments.complete", lang)} ({selectedIds.size})
           </Button>
           <Button
             size="sm"
             variant="secondary"
             onClick={() => {
-              setBulkConfirmAction({ status: "no_show", label: "Mark No-Show" });
+              setBulkConfirmAction({ status: "no_show", label: t("appointments.noShow", lang) });
             }}
           >
-            No-Show ({selectedIds.size})
+            {t("appointments.noShow", lang)} ({selectedIds.size})
           </Button>
           <Button
             size="sm"
             variant="danger"
             onClick={() => {
-              setBulkConfirmAction({ status: "cancelled", label: "Cancel" });
+              setBulkConfirmAction({ status: "cancelled", label: t("action.cancel", lang) });
             }}
           >
-            Cancel ({selectedIds.size})
+            {t("action.cancel", lang)} ({selectedIds.size})
           </Button>
           <button
             onClick={() => setSelectedIds(new Set())}
@@ -407,6 +412,8 @@ export default function AppointmentsPage() {
           aria-labelledby="modal-title"
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="modal-content db-card w-full max-w-lg rounded-xl p-6 space-y-5"
             onClick={(e) => e.stopPropagation()}
           >
@@ -433,12 +440,12 @@ export default function AppointmentsPage() {
 
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <span className="text-xs font-medium uppercase tracking-wider w-20" style={{ color: "var(--db-text-muted)" }}>Status</span>
+                <span className="text-xs font-medium uppercase tracking-wider w-20" style={{ color: "var(--db-text-muted)" }}>{t("appointments.status", lang)}</span>
                 <StatusBadge label={selected.status} variant={statusToVariant(selected.status)} dot />
               </div>
               {(selected.leadName || selected.leadPhone) && (
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-medium uppercase tracking-wider w-20" style={{ color: "var(--db-text-muted)" }}>Customer</span>
+                  <span className="text-xs font-medium uppercase tracking-wider w-20" style={{ color: "var(--db-text-muted)" }}>{t("appointments.customer", lang)}</span>
                   <span className="text-sm" style={{ color: "var(--db-text)" }}>
                     {selected.leadName || ""}{selected.leadName && selected.leadPhone ? " \u00B7 " : ""}{formatPhone(selected.leadPhone)}
                   </span>
@@ -446,7 +453,7 @@ export default function AppointmentsPage() {
               )}
               {selected.notes && (
                 <div>
-                  <span className="text-xs font-medium uppercase tracking-wider block mb-1" style={{ color: "var(--db-text-muted)" }}>Notes</span>
+                  <span className="text-xs font-medium uppercase tracking-wider block mb-1" style={{ color: "var(--db-text-muted)" }}>{t("appointments.notes", lang)}</span>
                   <p className="text-sm rounded-lg p-3" style={{ background: "var(--db-hover)", color: "var(--db-text-secondary)" }}>
                     {selected.notes}
                   </p>
@@ -464,7 +471,7 @@ export default function AppointmentsPage() {
                     onClick={() => handleAction(action)}
                     disabled={actionLoading}
                   >
-                    {action.label}
+                    {t(action.labelKey, lang)}
                   </Button>
                 ))}
               </div>

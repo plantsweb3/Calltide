@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const TEMPLATES: Record<string, { filename: string; content: string }> = {
   customers: {
@@ -22,6 +23,10 @@ EXAMPLE - Maria Garcia,2105550100,maria@example.com,"456 Oak Ave, San Antonio TX
 };
 
 export async function GET(req: NextRequest) {
+  const businessId = req.headers.get("x-business-id") ?? "anonymous";
+  const rl = await rateLimit(`import-templates:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
+
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type");
 

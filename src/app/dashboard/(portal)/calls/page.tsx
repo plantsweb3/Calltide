@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import DataTable, { type Column } from "@/components/data-table";
 import CallTranscript from "@/app/dashboard/_components/call-transcript";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 import { TableSkeleton } from "@/components/skeleton";
 import AudioPlayer from "@/app/dashboard/_components/audio-player";
 import ExportCsvButton from "@/app/dashboard/_components/csv-export";
@@ -78,6 +80,7 @@ const callTypeLabels: Record<string, string> = {
 };
 
 export default function CallsPage() {
+  const [lang] = useLang();
   const receptionistName = useReceptionistName();
   const [tab, setTab] = useState<"inbound" | "outbound">("inbound");
   const [calls, setCalls] = useState<Call[]>([]);
@@ -183,12 +186,12 @@ export default function CallsPage() {
   const columns: Column<Call>[] = [
     {
       key: "createdAt",
-      label: "Date",
+      label: t("billing.date", lang),
       render: (row) => formatDate(row.createdAt),
     },
     {
       key: "caller",
-      label: "Caller",
+      label: t("calls.caller", lang),
       render: (row) => (
         <button
           className="text-left hover:underline"
@@ -204,14 +207,14 @@ export default function CallsPage() {
     },
     {
       key: "duration",
-      label: "Duration",
+      label: t("calls.duration", lang),
       render: (row) => formatDuration(row.duration),
     },
     {
       key: "language",
-      label: "Language",
+      label: t("calls.language", lang),
       render: (row) => {
-        const lang = (row.language || "-").toUpperCase();
+        const langCode = (row.language || "-").toUpperCase();
         return (
           <span
             className="rounded px-1.5 py-0.5 text-[10px] font-medium"
@@ -220,14 +223,14 @@ export default function CallsPage() {
               color: row.language === "es" ? "var(--db-warning)" : "var(--db-info)",
             }}
           >
-            {lang}
+            {langCode}
           </span>
         );
       },
     },
     {
       key: "sentiment",
-      label: "Sentiment",
+      label: t("calls.sentiment", lang),
       render: (row) => {
         if (!row.sentiment) return <span style={{ color: "var(--db-text-muted)" }}>---</span>;
         const sentimentVariant: Record<string, "success" | "neutral" | "danger"> = {
@@ -242,7 +245,7 @@ export default function CallsPage() {
     },
     {
       key: "status",
-      label: "Outcome",
+      label: t("calls.outcome", lang),
       render: (row) => (
         <StatusBadge label={row.status} variant={statusToVariant(row.status)} />
       ),
@@ -252,21 +255,21 @@ export default function CallsPage() {
   return (
     <div>
       <PageHeader
-        title="Calls"
+        title={t("calls.title", lang)}
         actions={
           <div className="flex items-center gap-2">
             <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
-              {(["inbound", "outbound"] as const).map((t) => (
+              {(["inbound", "outbound"] as const).map((tabKey) => (
                 <button
-                  key={t}
-                  onClick={() => setTab(t)}
+                  key={tabKey}
+                  onClick={() => setTab(tabKey)}
                   className="px-3 py-1.5 text-xs font-medium transition-colors"
                   style={{
-                    background: tab === t ? "var(--db-accent)" : "var(--db-card)",
-                    color: tab === t ? "#fff" : "var(--db-text-secondary)",
+                    background: tab === tabKey ? "var(--db-accent)" : "var(--db-card)",
+                    color: tab === tabKey ? "#fff" : "var(--db-text-secondary)",
                   }}
                 >
-                  {t === "inbound" ? "Inbound" : "Outbound"}
+                  {tabKey === "inbound" ? t("calls.inbound", lang) : t("calls.outbound", lang)}
                 </button>
               ))}
             </div>
@@ -275,7 +278,7 @@ export default function CallsPage() {
                 <input
                   key={tab}
                   type="text"
-                  placeholder="Search by phone or name..."
+                  placeholder={t("calls.search", lang)}
                   defaultValue={search}
                   onChange={(e) => {
                     const val = e.target.value;
@@ -340,21 +343,21 @@ export default function CallsPage() {
                 },
                 {
                   key: "customerPhone" as keyof OutboundCall,
-                  label: "Phone",
+                  label: t("calls.phone", lang),
                   render: (row: OutboundCall) => (
                     <PhoneLink phone={row.customerPhone} className="text-sm font-medium hover:underline" />
                   ),
                 },
                 {
                   key: "status" as keyof OutboundCall,
-                  label: "Outcome",
+                  label: t("calls.outcome", lang),
                   render: (row: OutboundCall) => (
                     <StatusBadge label={row.outcome ?? row.status} variant={statusToVariant(row.status)} />
                   ),
                 },
                 {
                   key: "duration" as keyof OutboundCall,
-                  label: "Duration",
+                  label: t("calls.duration", lang),
                   render: (row: OutboundCall) => (
                     <span className="text-sm tabular-nums" style={{ color: "var(--db-text-muted)" }}>
                       {row.duration != null ? formatDuration(row.duration) : "\u2014"}
@@ -384,9 +387,9 @@ export default function CallsPage() {
       >
         {/* Date presets */}
         {[
-          { label: "Today", days: 0 },
-          { label: "7d", days: 6 },
-          { label: "30d", days: 29 },
+          { label: t("calls.datePresets.today", lang), days: 0 },
+          { label: t("calls.datePresets.7d", lang), days: 6 },
+          { label: t("calls.datePresets.30d", lang), days: 29 },
         ].map((preset) => {
           const today = new Date().toISOString().split("T")[0];
           const from = preset.days === 0
@@ -450,11 +453,11 @@ export default function CallsPage() {
             color: "var(--db-text)",
           }}
         >
-          <option value="">All Statuses</option>
-          <option value="completed">Completed</option>
-          <option value="missed">Missed</option>
+          <option value="">{t("calls.allStatuses", lang)}</option>
+          <option value="completed">{t("status.completed", lang)}</option>
+          <option value="missed">{t("status.missed", lang)}</option>
           <option value="voicemail">Voicemail</option>
-          <option value="in_progress">In Progress</option>
+          <option value="in_progress">{t("status.inProgress", lang)}</option>
         </select>
         <select
           value={filterOutcome}
@@ -506,10 +509,10 @@ export default function CallsPage() {
       </div>
 
       {error && (
-        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <div role="alert" aria-live="assertive" className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
           <Button variant="danger" size="sm" onClick={fetchCalls}>
-            Retry
+            {t("action.retry", lang)}
           </Button>
         </div>
       )}
@@ -525,7 +528,7 @@ export default function CallsPage() {
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
             </svg>
           }
-          title="No calls yet"
+          title={t("calls.noCalls", lang)}
           description="When your AI receptionist handles calls, they'll show up here with full transcripts and summaries."
           action={{ label: "Set Up Call Forwarding", href: "/dashboard/settings#general" }}
         />
@@ -589,7 +592,7 @@ export default function CallsPage() {
                     className="text-xs font-medium uppercase tracking-wider"
                     style={{ color: "var(--db-text-muted)" }}
                   >
-                    {receptionistName}&apos;s Summary
+                    {receptionistName}&apos;s {t("calls.summary", lang)}
                   </p>
                   <p
                     className="whitespace-pre-wrap text-sm"
@@ -620,7 +623,7 @@ export default function CallsPage() {
                     className="text-xs font-medium uppercase tracking-wider"
                     style={{ color: "var(--db-text-muted)" }}
                   >
-                    Recovery Timeline
+                    {t("calls.recoveryTimeline", lang)}
                   </p>
                   <div className="mt-2 space-y-0">
                     {row.recoveryTimeline.map((step, i) => {

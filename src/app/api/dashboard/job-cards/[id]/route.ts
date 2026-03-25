@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { jobCards, ownerResponses, customerNotifications } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(
   req: NextRequest,
@@ -12,6 +13,9 @@ export async function GET(
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`job-cards-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const { id } = await params;
 

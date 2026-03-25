@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { accounts, businesses } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`locations-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   // Get current business to find accountId
   const [currentBiz] = await db

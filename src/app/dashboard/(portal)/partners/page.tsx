@@ -8,6 +8,8 @@ import ConfirmDialog from "@/components/confirm-dialog";
 import EmptyState from "@/components/empty-state";
 import PageHeader from "@/components/page-header";
 import { formatPhone } from "@/lib/format";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface Partner {
   id: string;
@@ -57,17 +59,18 @@ const TRADE_LABELS: Record<string, string> = {
 const RELATIONSHIP_STYLES: Record<string, { bg: string; color: string }> = {
   preferred: { bg: "rgba(212,168,67,0.15)", color: "#D4A843" },
   trusted: { bg: "rgba(96,165,250,0.15)", color: "#60a5fa" },
-  occasional: { bg: "rgba(148,163,184,0.15)", color: "#94a3b8" },
+  occasional: { bg: "rgba(148,163,184,0.15)", color: "var(--db-text-muted)" },
 };
 
 const OUTCOME_STYLES: Record<string, { bg: string; color: string }> = {
-  pending: { bg: "rgba(148,163,184,0.15)", color: "#94a3b8" },
+  pending: { bg: "rgba(148,163,184,0.15)", color: "var(--db-text-muted)" },
   connected: { bg: "var(--db-success-bg)", color: "var(--db-success)" },
   no_response: { bg: "var(--db-warning-bg)", color: "var(--db-warning)" },
   declined: { bg: "var(--db-danger-bg)", color: "var(--db-danger)" },
 };
 
 export default function PartnersPage() {
+  const [lang] = useLang();
   const [tab, setTab] = useState<Tab>("partners");
   const [partners, setPartners] = useState<Partner[]>([]);
   const [referrals, setReferrals] = useState<Referral[]>([]);
@@ -206,11 +209,11 @@ export default function PartnersPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Referral Partners"
+        title={t("partners.title", lang)}
         description="Add trusted partners so your receptionist can refer callers who need services you don't offer"
         actions={
           tab === "partners" && !showForm ? (
-            <Button onClick={() => setShowForm(true)}>+ Add Partner</Button>
+            <Button onClick={() => setShowForm(true)}>+ {t("partners.addPartner", lang)}</Button>
           ) : undefined
         }
       />
@@ -315,7 +318,7 @@ export default function PartnersPage() {
                     className="w-full rounded-lg px-3 py-2 text-sm"
                     style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
                   >
-                    <option value="preferred">Preferred (top pick)</option>
+                    <option value="preferred">{t("partners.preferred", lang)} (top pick)</option>
                     <option value="trusted">Trusted</option>
                     <option value="occasional">Occasional</option>
                   </select>

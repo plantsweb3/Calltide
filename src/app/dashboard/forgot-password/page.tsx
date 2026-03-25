@@ -21,11 +21,12 @@ export default function ForgotPasswordPage() {
       const res = await fetch("/api/dashboard/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, lang }),
       });
 
       if (res.ok) {
         setSubmitted(true);
+        return;
       } else {
         const data = await res.json();
         setError(data.error || t("error.somethingWentWrong", lang));
@@ -55,13 +56,15 @@ export default function ForgotPasswordPage() {
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
             {submitted
-              ? (lang === "es" ? "Revisa tu correo para el enlace de restablecimiento" : "Check your email for a reset link")
+              ? t("auth.checkEmailForReset", lang)
               : t("auth.resetPasswordSub", lang)}
           </p>
         </div>
 
         {error && (
           <div
+            role="alert"
+            aria-live="assertive"
             className="rounded-lg px-4 py-3 text-sm"
             style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
           >
@@ -71,12 +74,12 @@ export default function ForgotPasswordPage() {
 
         {submitted ? (
           <div
+            role="alert"
+            aria-live="polite"
             className="rounded-lg px-4 py-3 text-sm"
             style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
           >
-            {lang === "es"
-              ? <>Si existe una cuenta para <strong>{email}</strong>, recibiras un enlace. Expira en 1 hora.</>
-              : <>If an account exists for <strong>{email}</strong>, you&apos;ll receive a reset link. It expires in 1 hour.</>}
+            {t("auth.resetLinkSentConfirm", lang, { email })}
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">

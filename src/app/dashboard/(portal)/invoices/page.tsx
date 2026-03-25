@@ -17,6 +17,8 @@ import LineItemsEditor, {
   calculateTaxAmount,
   calculateTotal,
 } from "@/app/dashboard/_components/line-items-editor";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 /* ─── Types ─── */
 
@@ -84,28 +86,10 @@ function isOverdue(invoice: Invoice): boolean {
 
 type TabKey = "all" | "pending" | "sent" | "overdue" | "paid";
 
-const TABS: { key: TabKey; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "pending", label: "Draft" },
-  { key: "sent", label: "Sent" },
-  { key: "overdue", label: "Overdue" },
-  { key: "paid", label: "Paid" },
-];
-
-/* ─── Payment method options ─── */
-
-const PAYMENT_METHODS = [
-  { value: "cash", label: "Cash" },
-  { value: "check", label: "Check" },
-  { value: "zelle", label: "Zelle" },
-  { value: "venmo", label: "Venmo" },
-  { value: "stripe", label: "Card / Stripe" },
-  { value: "other", label: "Other" },
-];
-
 /* ─── Page Component ─── */
 
 export default function InvoicesPage() {
+  const [lang] = useLang();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [stats, setStats] = useState<Stats>({
     outstanding: 0, overdue: 0, paidThisMonth: 0, avgDaysToPay: 0,
@@ -154,6 +138,25 @@ export default function InvoicesPage() {
   // Date filter state
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+
+  /* ─── Tab and payment method config (needs lang) ─── */
+
+  const TABS: { key: TabKey; label: string }[] = [
+    { key: "all", label: t("invoices.all", lang) },
+    { key: "pending", label: t("invoices.draft", lang) },
+    { key: "sent", label: t("status.sent", lang) },
+    { key: "overdue", label: t("invoices.overdue", lang) },
+    { key: "paid", label: t("invoices.paid", lang) },
+  ];
+
+  const PAYMENT_METHODS = [
+    { value: "cash", label: t("invoices.paymentMethods.cash", lang) },
+    { value: "check", label: t("invoices.paymentMethods.check", lang) },
+    { value: "zelle", label: "Zelle" },
+    { value: "venmo", label: "Venmo" },
+    { value: "stripe", label: t("invoices.paymentMethods.card", lang) },
+    { value: "other", label: "Other" },
+  ];
 
   /* ─── Data fetching ─── */
 
@@ -523,7 +526,7 @@ export default function InvoicesPage() {
   return (
     <div>
       <PageHeader
-        title="Invoices"
+        title={t("invoices.title", lang)}
         description="Create, send, and track payments from your customers."
         actions={
           <div className="flex items-center gap-2">
@@ -541,7 +544,7 @@ export default function InvoicesPage() {
               ]}
               filename="invoices"
             />
-            <Button onClick={() => setShowCreate(true)}>+ New Invoice</Button>
+            <Button onClick={() => setShowCreate(true)}>+ {t("invoices.newInvoice", lang)}</Button>
           </div>
         }
       />
@@ -571,9 +574,9 @@ export default function InvoicesPage() {
 
       {/* Error Banner */}
       {error && (
-        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <div role="alert" aria-live="assertive" className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
-          <Button variant="danger" size="sm" onClick={fetchInvoices}>Retry</Button>
+          <Button variant="danger" size="sm" onClick={fetchInvoices}>{t("action.retry", lang)}</Button>
         </div>
       )}
 
@@ -764,11 +767,13 @@ export default function InvoicesPage() {
           aria-labelledby="create-invoice-title"
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="modal-content db-card w-full max-w-2xl rounded-xl p-6 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="create-invoice-title" className="text-lg font-semibold mb-5" style={{ color: "var(--db-text)" }}>
-              New Invoice
+              {t("invoices.newInvoice", lang)}
             </h3>
             <form onSubmit={handleCreate} className="space-y-5">
               {/* Customer selection */}
@@ -836,10 +841,10 @@ export default function InvoicesPage() {
               {/* Actions */}
               <div className="flex items-center justify-end gap-3 pt-2">
                 <Button variant="ghost" type="button" onClick={resetCreateForm}>
-                  Cancel
+                  {t("action.cancel", lang)}
                 </Button>
                 <Button type="submit" disabled={creating}>
-                  {creating ? "Creating..." : "Create Invoice"}
+                  {creating ? "Creating..." : t("invoices.newInvoice", lang)}
                 </Button>
               </div>
             </form>
@@ -858,11 +863,13 @@ export default function InvoicesPage() {
           aria-labelledby="edit-invoice-title"
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="modal-content db-card w-full max-w-2xl rounded-xl p-6 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="edit-invoice-title" className="text-lg font-semibold mb-1" style={{ color: "var(--db-text)" }}>
-              Edit Invoice
+              {t("invoices.editInvoice", lang)}
             </h3>
             <p className="text-sm mb-5" style={{ color: "var(--db-text-muted)" }}>
               {showEdit.invoiceNumber || showEdit.id.slice(0, 8).toUpperCase()}
@@ -929,10 +936,10 @@ export default function InvoicesPage() {
 
               <div className="flex items-center justify-end gap-3 pt-2">
                 <Button variant="ghost" type="button" onClick={() => setShowEdit(null)}>
-                  Cancel
+                  {t("action.cancel", lang)}
                 </Button>
                 <Button type="submit" disabled={editSaving}>
-                  {editSaving ? "Saving..." : "Save Changes"}
+                  {editSaving ? "Saving..." : t("action.save", lang)}
                 </Button>
               </div>
             </form>
@@ -951,11 +958,13 @@ export default function InvoicesPage() {
           aria-labelledby="mark-paid-title"
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="modal-content db-card w-full max-w-sm rounded-xl p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="mark-paid-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>
-              Mark as Paid
+              {t("invoices.markPaid", lang)}
             </h3>
             <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
               Payment Method
@@ -973,7 +982,7 @@ export default function InvoicesPage() {
             </select>
             <div className="flex gap-2">
               <Button variant="ghost" className="flex-1" onClick={() => setMarkPaidId(null)}>
-                Cancel
+                {t("action.cancel", lang)}
               </Button>
               <Button
                 className="flex-1"
@@ -981,7 +990,7 @@ export default function InvoicesPage() {
                 disabled={markPaidLoading}
                 style={{ background: "var(--db-success)", color: "#fff" }}
               >
-                {markPaidLoading ? "Saving..." : "Confirm Paid"}
+                {markPaidLoading ? "Saving..." : t("invoices.recordPayment", lang)}
               </Button>
             </div>
           </div>

@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { intakeAttachments, jobIntakes } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const DEMO_BUSINESS_ID = "demo-business-id";
 
@@ -11,6 +12,9 @@ export async function GET(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`photos-stats:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({

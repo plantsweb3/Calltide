@@ -6,6 +6,9 @@ import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import { CaptaSpinnerInline } from "@/components/capta-spinner";
 import WebhookManager from "@/components/webhook-manager";
 import { formatPhone } from "@/lib/format";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
+import type { Lang } from "@/lib/i18n/strings";
 
 interface BusinessHourEntry {
   open: string;
@@ -53,14 +56,8 @@ interface SettingsData {
 
 type SettingsTab = "general" | "receptionist" | "responses" | "notifications" | "pricing" | "automations" | "integrations";
 
-const SETTINGS_TABS: { key: SettingsTab; label: string }[] = [
-  { key: "general", label: "General" },
-  { key: "receptionist", label: "Receptionist" },
-  { key: "responses", label: "Custom Responses" },
-  { key: "notifications", label: "Notifications" },
-  { key: "pricing", label: "Pricing" },
-  { key: "automations", label: "Automations" },
-  { key: "integrations", label: "Integrations" },
+const SETTINGS_TAB_KEYS: SettingsTab[] = [
+  "general", "receptionist", "responses", "notifications", "pricing", "automations", "integrations",
 ];
 
 interface CustomResponse {
@@ -74,9 +71,9 @@ interface CustomResponse {
 }
 
 const PERSONALITY_OPTIONS = [
-  { key: "professional", label: "Professional", desc: "Polished and efficient. Gets straight to business.", color: "#3B82F6", icon: "briefcase" },
-  { key: "friendly", label: "Friendly", desc: "Warm and approachable. Makes every caller feel welcome.", color: "#10B981", icon: "smile" },
-  { key: "warm", label: "Warm & Caring", desc: "Extra empathetic. Perfect for sensitive clients.", color: "#F59E0B", icon: "heart" },
+  { key: "professional", labelKey: "settings.professional" as const, descKey: "settings.professionalDesc" as const, color: "#3B82F6", icon: "briefcase" },
+  { key: "friendly", labelKey: "settings.friendly" as const, descKey: "settings.friendlyDesc" as const, color: "#10B981", icon: "smile" },
+  { key: "warm", labelKey: "settings.warmCaring" as const, descKey: "settings.warmCaringDesc" as const, color: "#F59E0B", icon: "heart" },
 ] as const;
 
 interface PricingEntry {
@@ -90,9 +87,9 @@ interface PricingEntry {
 }
 
 const DAY_KEYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
-const DAY_LABELS: Record<string, string> = {
-  Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday",
-  Fri: "Friday", Sat: "Saturday", Sun: "Sunday",
+const DAY_I18N_KEYS: Record<string, string> = {
+  Mon: "day.monday", Tue: "day.tuesday", Wed: "day.wednesday", Thu: "day.thursday",
+  Fri: "day.friday", Sat: "day.saturday", Sun: "day.sunday",
 };
 
 const TIME_OPTIONS: string[] = [];
@@ -115,38 +112,38 @@ interface FieldError {
   message: string;
 }
 
-function validateField(field: string, value: string): string | null {
+function validateField(field: string, value: string, lang: Lang): string | null {
   switch (field) {
     case "name":
     case "ownerName":
-      if (!value.trim()) return "This field is required";
-      if (value.length > 100) return "Max 100 characters";
+      if (!value.trim()) return t("settings.validation.required", lang);
+      if (value.length > 100) return t("settings.validation.max100", lang);
       return null;
     case "ownerEmail":
-      if (!value.trim()) return "Email is required";
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Invalid email address";
+      if (!value.trim()) return t("settings.validation.emailRequired", lang);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return t("settings.validation.invalidEmail", lang);
       return null;
     case "ownerPhone":
     case "emergencyPhone":
-      if (field === "ownerPhone" && !value.trim()) return "Phone is required";
-      if (value.trim() && !/^\+?1?\d{10,11}$/.test(value.replace(/\D/g, ""))) return "Invalid US phone number";
+      if (field === "ownerPhone" && !value.trim()) return t("settings.validation.phoneRequired", lang);
+      if (value.trim() && !/^\+?1?\d{10,11}$/.test(value.replace(/\D/g, ""))) return t("settings.validation.invalidPhone", lang);
       return null;
     case "serviceArea":
-      if (value.length > 200) return "Max 200 characters";
+      if (value.length > 200) return t("settings.validation.max200", lang);
       return null;
     case "additionalInfo":
-      if (value.length > 1000) return "Max 1000 characters";
+      if (value.length > 1000) return t("settings.validation.max1000", lang);
       return null;
     case "greeting":
     case "greetingEs":
-      if (value.length > 500) return "Max 500 characters";
+      if (value.length > 500) return t("settings.validation.max500", lang);
       return null;
     default:
       return null;
   }
 }
 
-function VoicePreviewButton({ voiceId, name, greeting }: { voiceId: string; name: string; greeting: string | null }) {
+function VoicePreviewButton({ voiceId, name, greeting, lang }: { voiceId: string; name: string; greeting: string | null; lang: Lang }) {
   const [playing, setPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -178,16 +175,17 @@ function VoicePreviewButton({ voiceId, name, greeting }: { voiceId: string; name
 
   return (
     <button onClick={play} className="mt-1 text-xs font-medium transition-colors" style={{ color: playing ? "#D4A843" : "var(--db-text-muted)" }}>
-      {playing ? "Stop" : "Preview"}
+      {playing ? t("settings.stop", lang) : t("settings.preview", lang)}
     </button>
   );
 }
 
 export default function SettingsPage() {
+  const [lang] = useLang();
   const [activeTab, setActiveTab] = useState<SettingsTab>(() => {
     if (typeof window !== "undefined") {
       const hash = window.location.hash.replace("#", "") as SettingsTab;
-      if (SETTINGS_TABS.some((t) => t.key === hash)) return hash;
+      if (SETTINGS_TAB_KEYS.includes(hash)) return hash;
     }
     return "general";
   });
@@ -235,14 +233,14 @@ export default function SettingsPage() {
     setError(null);
     fetch("/api/dashboard/settings")
       .then((r) => {
-        if (!r.ok) throw new Error("Failed to load settings");
+        if (!r.ok) throw new Error(t("settings.failedLoad", lang));
         return r.json();
       })
       .then((d: SettingsData) => {
         setData(d);
         setInitialData(JSON.stringify(d));
       })
-      .catch(() => setError("Failed to load settings"));
+      .catch(() => setError(t("settings.failedLoad", lang)));
 
     fetch("/api/dashboard/pricing")
       .then((r) => r.ok ? r.json() : { pricing: [] })
@@ -266,7 +264,7 @@ export default function SettingsPage() {
       .then((r) => r.ok ? r.json() : { responses: {} })
       .then((d) => setCustomResponses(d.responses || {}))
       .catch(() => {});
-  }, []);
+  }, [lang]);
 
   useEffect(() => { loadSettings(); }, [loadSettings]);
 
@@ -274,7 +272,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const onHashChange = () => {
       const hash = window.location.hash.replace("#", "") as SettingsTab;
-      if (SETTINGS_TABS.some((t) => t.key === hash)) setActiveTab(hash);
+      if (SETTINGS_TAB_KEYS.includes(hash)) setActiveTab(hash);
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
@@ -293,13 +291,13 @@ export default function SettingsPage() {
   }, []);
 
   const handleBlur = useCallback((field: string, value: string) => {
-    const err = validateField(field, value);
+    const err = validateField(field, value, lang);
     setFieldErrors((prev) => {
       const filtered = prev.filter((e) => e.field !== field);
       if (err) filtered.push({ field, message: err });
       return filtered;
     });
-  }, []);
+  }, [lang]);
 
   const getFieldError = useCallback((field: string) => {
     return fieldErrors.find((e) => e.field === field)?.message;
@@ -316,7 +314,7 @@ export default function SettingsPage() {
       serviceArea: data.serviceArea || "", additionalInfo: data.additionalInfo || "",
       greeting: data.greeting || "", greetingEs: data.greetingEs || "",
     })) {
-      const err = validateField(field, val);
+      const err = validateField(field, val, lang);
       if (err) errors.push({ field, message: err });
     }
 
@@ -373,17 +371,17 @@ export default function SettingsPage() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => null);
-        throw new Error(errData?.error || "Failed to save settings");
+        throw new Error(errData?.error || t("settings.failedSave", lang));
       }
 
       const updated: SettingsData = await res.json();
       setData(updated);
       setInitialData(JSON.stringify(updated));
-      setSuccessMsg("Settings saved successfully");
-      toast.success("Settings saved — changes take effect on the next call");
+      setSuccessMsg(t("settings.savedSuccess", lang));
+      toast.success(t("settings.savedToast", lang));
       setFieldErrors([]);
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Failed to save settings";
+      const msg = e instanceof Error ? e.message : t("settings.failedSave", lang);
       setError(msg);
       toast.error(msg);
     } finally {
@@ -430,20 +428,20 @@ export default function SettingsPage() {
 
   if (error && !data) {
     return (
-      <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+      <div className="rounded-xl p-4 flex items-center justify-between" role="alert" aria-live="assertive" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
         <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
         <button
           onClick={loadSettings}
           className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
           style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
-          Retry
+          {t("action.retry", lang)}
         </button>
       </div>
     );
   }
 
-  if (!data) return <LoadingSpinner message="Loading settings..." />;
+  if (!data) return <LoadingSpinner message={t("settings.loadingSettings", lang)} />;
 
   const rName = data.receptionistName || "Maria";
   const defaultGreeting = `Thank you for calling ${data.name}, this is ${rName}. How can I help you?`;
@@ -457,10 +455,10 @@ export default function SettingsPage() {
             className="text-2xl font-semibold"
             style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
           >
-            Settings
+            {t("settings.title", lang)}
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Customize {rName} and your business information
+            {t("settings.subtitle", lang, { name: rName })}
           </p>
         </div>
         <button
@@ -477,10 +475,10 @@ export default function SettingsPage() {
           {saving ? (
             <span className="flex items-center gap-2">
               <CaptaSpinnerInline size={16} />
-              Saving...
+              {t("settings.saving", lang)}
             </span>
           ) : (
-            "Save Changes"
+            t("settings.save", lang)
           )}
         </button>
       </div>
@@ -500,6 +498,8 @@ export default function SettingsPage() {
       {error && data && (
         <div
           className="rounded-xl p-4 flex items-center gap-2"
+          role="alert"
+          aria-live="assertive"
           style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}
         >
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
@@ -528,10 +528,10 @@ export default function SettingsPage() {
         </span>
         <div>
           <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-            {rName} — {data.active ? "Active" : "Inactive"}
+            {rName} — {data.active ? t("settings.activeStatus", lang) : t("settings.inactiveStatus", lang)}
           </p>
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            {data.active ? `${rName} is answering calls 24/7` : "Contact support to reactivate"}
+            {data.active ? t("settings.answering247", lang, { name: rName }) : t("settings.contactSupport", lang)}
           </p>
         </div>
       </div>
@@ -541,18 +541,18 @@ export default function SettingsPage() {
         className="flex gap-1 overflow-x-auto rounded-xl p-1"
         style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
       >
-        {SETTINGS_TABS.map((tab) => (
+        {SETTINGS_TAB_KEYS.map((tabKey) => (
           <button
-            key={tab.key}
-            onClick={() => switchTab(tab.key)}
+            key={tabKey}
+            onClick={() => switchTab(tabKey)}
             className="whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all"
             style={{
-              background: activeTab === tab.key ? "var(--db-accent)" : "transparent",
-              color: activeTab === tab.key ? "#fff" : "var(--db-text-muted)",
+              background: activeTab === tabKey ? "var(--db-accent)" : "transparent",
+              color: activeTab === tabKey ? "#fff" : "var(--db-text-muted)",
               cursor: "pointer",
             }}
           >
-            {tab.label}
+            {t(`settings.tab.${tabKey}`, lang)}
           </button>
         ))}
       </div>
@@ -561,10 +561,10 @@ export default function SettingsPage() {
       {activeTab === "general" && <>
 
       {/* ── Section: Business Information ── */}
-      <Card title="Business Information">
+      <Card title={t("settings.businessInfo", lang)}>
         <div className="grid gap-4 sm:grid-cols-2">
           <InputField
-            label="Business Name"
+            label={t("settings.businessName", lang)}
             value={data.name}
             onChange={(v) => setField("name", v)}
             onBlur={() => handleBlur("name", data.name)}
@@ -573,7 +573,7 @@ export default function SettingsPage() {
           />
           <div>
             <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-              Industry
+              {t("settings.industry", lang)}
             </label>
             <div
               className="rounded-lg px-3 py-2 text-sm"
@@ -584,20 +584,20 @@ export default function SettingsPage() {
               }}
             >
               {data.type}
-              <span className="ml-2 text-xs opacity-60">(read-only)</span>
+              <span className="ml-2 text-xs opacity-60">{t("settings.readOnly", lang)}</span>
             </div>
           </div>
           <InputField
-            label="Service Area"
+            label={t("settings.serviceArea", lang)}
             value={data.serviceArea || ""}
             onChange={(v) => setField("serviceArea", v || null)}
             onBlur={() => handleBlur("serviceArea", data.serviceArea || "")}
             error={getFieldError("serviceArea")}
-            placeholder="e.g. San Antonio and surrounding areas"
+            placeholder={t("settings.placeholder.serviceArea", lang)}
           />
           <div>
             <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-              AI Phone Number
+              {t("settings.aiPhoneNumber", lang)}
             </label>
             <div
               className="rounded-lg px-3 py-2 text-sm font-medium"
@@ -608,12 +608,12 @@ export default function SettingsPage() {
               }}
             >
               {formatPhone(data.twilioNumber)}
-              <span className="ml-2 text-xs opacity-60" style={{ color: "var(--db-text-muted)" }}>(managed by Capta)</span>
+              <span className="ml-2 text-xs opacity-60" style={{ color: "var(--db-text-muted)" }}>{t("settings.managedByCapta", lang)}</span>
             </div>
           </div>
           <div className="sm:col-span-2">
             <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-              Business Description
+              {t("settings.businessDescription", lang)}
             </label>
             <textarea
               value={data.additionalInfo || ""}
@@ -621,7 +621,7 @@ export default function SettingsPage() {
               onBlur={() => handleBlur("additionalInfo", data.additionalInfo || "")}
               rows={3}
               maxLength={1000}
-              placeholder="Extra context for your AI receptionist (e.g. specialties, policies)"
+              placeholder={t("settings.descriptionPlaceholder", lang)}
               className="w-full rounded-lg px-3 py-2 text-sm resize-none"
               style={{
                 background: "var(--db-bg)",
@@ -647,10 +647,10 @@ export default function SettingsPage() {
       {activeTab === "receptionist" && <>
 
       {/* ── Section: Your Receptionist ── */}
-      <Card title="Your Receptionist">
+      <Card title={t("settings.yourReceptionist", lang)}>
         <div className="space-y-4">
           <InputField
-            label="Name"
+            label={t("settings.receptionistNameField", lang)}
             value={data.receptionistName || "Maria"}
             onChange={(v) => {
               const val = v.replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑüÜ\s]/g, "");
@@ -660,7 +660,7 @@ export default function SettingsPage() {
           />
           <div>
             <label className="block text-xs font-medium mb-2" style={{ color: "var(--db-text-muted)" }}>
-              Personality
+              {t("settings.personality", lang)}
             </label>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               {PERSONALITY_OPTIONS.map((p) => (
@@ -673,8 +673,8 @@ export default function SettingsPage() {
                     background: data.personalityPreset === p.key ? `${p.color}08` : "var(--db-bg)",
                   }}
                 >
-                  <p className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>{p.label}</p>
-                  <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>{p.desc}</p>
+                  <p className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>{t(p.labelKey, lang)}</p>
+                  <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>{t(p.descKey, lang)}</p>
                 </button>
               ))}
             </div>
@@ -683,16 +683,16 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Voice ── */}
-      <Card title={`${rName}'s Voice`}>
+      <Card title={t("settings.voiceTitle", lang, { name: rName })}>
         <p className="text-sm mb-3" style={{ color: "var(--db-text-muted)" }}>
-          Choose how {rName} sounds on calls. Click the play button to preview.
+          {t("settings.voiceDesc", lang, { name: rName })}
         </p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {[
-            { id: "EXAVITQu4vr4xnSDxMaL", name: "Sarah", desc: "Professional" },
-            { id: "jBpfAFnaylXS5xpurlZD", name: "Lily", desc: "Friendly" },
-            { id: "onwK4e9ZLuTAKqWW03F9", name: "Daniel", desc: "Warm" },
-            { id: "pFZP5JQG7iQjIQuC4Bku", name: "Rachel", desc: "Clear" },
+            { id: "EXAVITQu4vr4xnSDxMaL", name: "Sarah", descKey: "settings.voiceProfessional" },
+            { id: "jBpfAFnaylXS5xpurlZD", name: "Lily", descKey: "settings.voiceFriendly" },
+            { id: "onwK4e9ZLuTAKqWW03F9", name: "Daniel", descKey: "settings.voiceWarm" },
+            { id: "pFZP5JQG7iQjIQuC4Bku", name: "Rachel", descKey: "settings.voiceClear" },
           ].map((voice) => (
             <div key={voice.id} className="flex flex-col">
               <button
@@ -707,21 +707,21 @@ export default function SettingsPage() {
                 }}
               >
                 <p className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>{voice.name}</p>
-                <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>{voice.desc}</p>
+                <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>{t(voice.descKey, lang)}</p>
               </button>
-              <VoicePreviewButton voiceId={voice.id} name={voice.name} greeting={data.greeting} />
+              <VoicePreviewButton voiceId={voice.id} name={voice.name} greeting={data.greeting} lang={lang} />
             </div>
           ))}
         </div>
         <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
-          Voice changes take effect on the next call.
+          {t("settings.voiceChanges", lang)}
         </p>
       </Card>
 
       {/* ── Section: Special Instructions ── */}
-      <Card title={`${rName}'s Special Instructions`}>
+      <Card title={t("settings.specialInstructionsTitle", lang, { name: rName })}>
         <p className="text-sm mb-3" style={{ color: "var(--db-text-muted)" }}>
-          Customize how {rName} sounds on calls. These instructions shape her tone and behavior.
+          {t("settings.specialInstructionsDesc", lang, { name: rName })}
         </p>
         <textarea
           value={data.personalityNotes || ""}
@@ -729,7 +729,7 @@ export default function SettingsPage() {
           onBlur={() => handleBlur("personalityNotes", data.personalityNotes || "")}
           rows={4}
           maxLength={1000}
-          placeholder={"Examples:\n• Be extra friendly and casual\n• Always mention we offer military discounts\n• If someone asks about pricing, say we offer free estimates\n• Mention our satisfaction guarantee"}
+          placeholder={t("settings.specialInstructionsPlaceholder", lang)}
           className="w-full rounded-lg px-3 py-2 text-sm resize-none"
           style={{
             background: "var(--db-bg)",
@@ -750,10 +750,10 @@ export default function SettingsPage() {
       {activeTab === "general" && <>
 
       {/* ── Section: Owner Contact ── */}
-      <Card title="Owner Contact">
+      <Card title={t("settings.ownerContact", lang)}>
         <div className="grid gap-4 sm:grid-cols-2">
           <InputField
-            label="Owner Name"
+            label={t("settings.ownerName", lang)}
             value={data.ownerName}
             onChange={(v) => setField("ownerName", v)}
             onBlur={() => handleBlur("ownerName", data.ownerName)}
@@ -761,7 +761,7 @@ export default function SettingsPage() {
             required
           />
           <InputField
-            label="Email"
+            label={t("settings.ownerEmail", lang)}
             type="email"
             value={data.ownerEmail || ""}
             onChange={(v) => setField("ownerEmail", v)}
@@ -770,7 +770,7 @@ export default function SettingsPage() {
             required
           />
           <InputField
-            label="Phone"
+            label={t("settings.ownerPhone", lang)}
             value={data.ownerPhone}
             onChange={(v) => setField("ownerPhone", v)}
             onBlur={() => handleBlur("ownerPhone", data.ownerPhone)}
@@ -782,7 +782,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Security ── */}
-      <SecuritySection />
+      <SecuritySection lang={lang} />
 
       </>}
 
@@ -790,17 +790,17 @@ export default function SettingsPage() {
       {activeTab === "notifications" && <>
 
       {/* ── Section: Weekly Digest ── */}
-      <Card title="Weekly Digest">
+      <Card title={t("settings.weeklyDigest", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            Get a weekly performance report every Monday — calls answered, appointments booked, revenue estimates, and more.
+            {t("settings.weeklyDigestLong", lang)}
           </p>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Enable Weekly Digest
+                {t("settings.weeklyDigestEnable", lang)}
               </p>
-              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Performance report delivered every Monday</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.weeklyDigestDesc", lang)}</p>
             </div>
             <ToggleSwitch
               checked={data.enableWeeklyDigest}
@@ -810,13 +810,13 @@ export default function SettingsPage() {
           {data.enableWeeklyDigest && (
             <div>
               <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                Delivery Method
+                {t("settings.deliveryMethod", lang)}
               </label>
               <div className="flex gap-2">
                 {[
-                  { value: "both", label: "Email + SMS" },
-                  { value: "email", label: "Email Only" },
-                  { value: "sms", label: "SMS Only" },
+                  { value: "both", labelKey: "settings.emailPlusSms" },
+                  { value: "email", labelKey: "settings.emailOnly" },
+                  { value: "sms", labelKey: "settings.smsOnly" },
                 ].map((opt) => (
                   <button
                     key={opt.value}
@@ -829,7 +829,7 @@ export default function SettingsPage() {
                         : { background: "var(--db-hover)", color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }
                     }
                   >
-                    {opt.label}
+                    {t(opt.labelKey, lang)}
                   </button>
                 ))}
               </div>
@@ -839,17 +839,17 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Daily Report ── */}
-      <Card title="Daily Report">
+      <Card title={t("settings.dailyReport", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            {data.receptionistName || "Maria"} sends you a daily end-of-day briefing with new leads, estimates, tomorrow&apos;s appointments, and action items.
+            {t("settings.dailySummaryDesc", lang, { name: data.receptionistName || "Maria" })}
           </p>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Enable Daily Summary
+                {t("settings.enableDailySummary", lang)}
               </p>
-              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>End-of-day briefing with key stats and action items</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.dailySummarySubDesc", lang)}</p>
             </div>
             <ToggleSwitch
               checked={data.enableDailySummary}
@@ -860,13 +860,13 @@ export default function SettingsPage() {
             <>
               <div>
                 <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                  How do you want to receive your daily report?
+                  {t("settings.howReceiveDaily", lang)}
                 </label>
                 <div className="flex gap-2">
                   {[
-                    { value: "sms", label: "Text Message" },
-                    { value: "email", label: "Email" },
-                    { value: "both", label: "Both" },
+                    { value: "sms", labelKey: "settings.textMessage" },
+                    { value: "email", labelKey: "misc.email" },
+                    { value: "both", labelKey: "settings.both" },
                   ].map((opt) => (
                     <button
                       key={opt.value}
@@ -879,14 +879,14 @@ export default function SettingsPage() {
                           : { background: "var(--db-hover)", color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }
                       }
                     >
-                      {opt.label}
+                      {t(opt.labelKey, lang)}
                     </button>
                   ))}
                 </div>
               </div>
               <div>
                 <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                  Delivery Time
+                  {t("settings.deliveryTime", lang)}
                 </label>
                 <select
                   value={data.digestTime}
@@ -905,29 +905,29 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Automations ── */}
-      <Card title="Automated Features">
+      <Card title={t("settings.automatedFeatures", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            Toggle automated SMS features that run in the background to help you grow.
+            {t("settings.automatedFeaturesDesc", lang)}
           </p>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Google Review Requests</p>
-              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Auto-text customers after appointments asking for a Google review</p>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{t("settings.googleReviewRequestsLabel", lang)}</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.googleReviewRequestsDesc", lang)}</p>
             </div>
             <ToggleSwitch checked={data.enableReviewRequests} onChange={(v) => setField("enableReviewRequests", v)} />
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Missed Call Recovery</p>
-              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Auto-text callers who hang up within 15 seconds to recover the lead</p>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{t("settings.missedCallRecoveryLabel", lang)}</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.missedCallRecoveryDesc", lang)}</p>
             </div>
             <ToggleSwitch checked={data.enableMissedCallRecovery} onChange={(v) => setField("enableMissedCallRecovery", v)} />
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Customer Recall</p>
-              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Remind past customers when seasonal maintenance is due</p>
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{t("settings.customerRecall", lang)}</p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.customerRecallDesc", lang)}</p>
             </div>
             <ToggleSwitch checked={data.enableCustomerRecall} onChange={(v) => setField("enableCustomerRecall", v)} />
           </div>
@@ -935,10 +935,10 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Call Notifications ── */}
-      <Card title="Call Notifications">
+      <Card title={t("settings.callNotifications", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            Control when and how you receive notifications about calls.
+            {t("settings.callNotificationsDesc", lang)}
           </p>
           <div className="space-y-3">
             <label
@@ -969,8 +969,8 @@ export default function SettingsPage() {
                 )}
               </span>
               <div>
-                <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Every call</p>
-                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Get an SMS after every answered call</p>
+                <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{t("settings.everyCall", lang)}</p>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.everyCallDesc", lang)}</p>
               </div>
             </label>
 
@@ -1002,8 +1002,8 @@ export default function SettingsPage() {
                 )}
               </span>
               <div>
-                <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>Missed calls only</p>
-                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Only get notified when a call is missed or abandoned</p>
+                <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{t("settings.missedCallsOnly", lang)}</p>
+                <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.missedCallsOnlyDesc", lang)}</p>
               </div>
             </label>
           </div>
@@ -1011,14 +1011,14 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Quiet Hours ── */}
-      <Card title="Quiet Hours">
+      <Card title={t("settings.quietHours", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            No owner notifications will be sent during these hours (except emergencies). Skipped notifications are included in your daily digest instead.
+            {t("settings.quietHoursDesc", lang)}
           </p>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>Start</label>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>{t("settings.quietHoursStart", lang)}</label>
               <select
                 value={data.ownerQuietHoursStart}
                 onChange={(e) => setField("ownerQuietHoursStart", e.target.value)}
@@ -1029,7 +1029,7 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>End</label>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>{t("settings.quietHoursEnd", lang)}</label>
               <select
                 value={data.ownerQuietHoursEnd}
                 onChange={(e) => setField("ownerQuietHoursEnd", e.target.value)}
@@ -1045,10 +1045,10 @@ export default function SettingsPage() {
             style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)" }}
           >
             <p className="text-xs font-medium" style={{ color: "var(--db-text)" }}>
-              Current window: {formatTime12(data.ownerQuietHoursStart)} &mdash; {formatTime12(data.ownerQuietHoursEnd)}
+              {t("settings.currentWindow", lang)} {formatTime12(data.ownerQuietHoursStart)} &mdash; {formatTime12(data.ownerQuietHoursEnd)}
             </p>
             <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
-              {data.receptionistName || "Maria"} still answers calls 24/7 &mdash; only your personal notifications are paused.
+              {t("settings.quietHoursNote", lang, { name: data.receptionistName || "Maria" })}
             </p>
           </div>
         </div>
@@ -1060,15 +1060,15 @@ export default function SettingsPage() {
       {activeTab === "automations" && <>
 
       {/* ── Section: Google Review Requests ── */}
-      <Card title="Google Review Requests">
+      <Card title={t("settings.googleReviewRequests", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            Automatically text customers 24 hours after their appointment asking for a Google review. Bilingual EN/ES, max once per customer every 90 days.
+            {t("settings.googleReviewAutoDesc", lang)}
           </p>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Enable Review Requests
+                {t("settings.enableReviewRequests", lang)}
               </p>
             </div>
             <button
@@ -1088,7 +1088,7 @@ export default function SettingsPage() {
           {data.enableReviewRequests && (
             <div>
               <label className="block text-sm font-medium mb-1" style={{ color: "var(--db-text)" }}>
-                Google Review URL
+                {t("settings.googleReviewUrl", lang)}
               </label>
               <input
                 type="url"
@@ -1103,7 +1103,7 @@ export default function SettingsPage() {
                 }}
               />
               <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
-                Find your link in Google Business Profile → Share review form
+                {t("settings.googleReviewUrlHint", lang)}
               </p>
             </div>
           )}
@@ -1111,15 +1111,15 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Missed Call Recovery ── */}
-      <Card title="Missed Call Recovery">
+      <Card title={t("settings.missedCallRecovery", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            If a caller hangs up within 15 seconds, automatically text them to recover the lead. They can reply YES to request a callback.
+            {t("settings.missedCallRecoveryAutoDesc", lang)}
           </p>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Enable Missed Call Recovery
+                {t("settings.enableMissedCallRecovery", lang)}
               </p>
             </div>
             <button
@@ -1145,7 +1145,7 @@ export default function SettingsPage() {
       {activeTab === "general" && <>
 
       {/* ── Section: Business Hours ── */}
-      <Card title="Business Hours">
+      <Card title={t("settings.businessHours", lang)}>
         <div className="space-y-3">
           {DAY_KEYS.map((day) => {
             const hours = data.businessHours[day];
@@ -1153,7 +1153,7 @@ export default function SettingsPage() {
             return (
               <div key={day} className="flex items-center gap-3 py-1">
                 <span className="text-sm font-medium w-24 shrink-0" style={{ color: "var(--db-text)" }}>
-                  {DAY_LABELS[day]}
+                  {t(DAY_I18N_KEYS[day], lang)}
                 </span>
                 <div className="flex items-center gap-2 flex-1 flex-wrap">
                   {!isClosed ? (
@@ -1168,7 +1168,7 @@ export default function SettingsPage() {
                           <option key={t} value={t}>{formatTime12(t)}</option>
                         ))}
                       </select>
-                      <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>to</span>
+                      <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.to", lang)}</span>
                       <select
                         value={hours?.close || "17:00"}
                         onChange={(e) => updateHours(day, "close", e.target.value)}
@@ -1181,7 +1181,7 @@ export default function SettingsPage() {
                       </select>
                     </>
                   ) : (
-                    <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>Closed</span>
+                    <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{t("settings.closed", lang)}</span>
                   )}
                 </div>
                 <button
@@ -1193,19 +1193,19 @@ export default function SettingsPage() {
                     border: `1px solid ${isClosed ? "rgba(239,68,68,0.2)" : "rgba(74,222,128,0.2)"}`,
                   }}
                 >
-                  {isClosed ? "Closed" : "Open"}
+                  {isClosed ? t("settings.closed", lang) : t("settings.open", lang)}
                 </button>
               </div>
             );
           })}
         </div>
         <p className="mt-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
-          {rName} answers calls 24/7, but appointments are only scheduled during business hours.
+          {t("settings.hoursScheduleNote", lang, { name: rName })}
         </p>
       </Card>
 
       {/* ── Section: Services ── */}
-      <Card title="Services Your AI Can Book">
+      <Card title={t("settings.servicesCanBook", lang)}>
         <div className="flex flex-wrap gap-2 mb-3">
           {data.services.map((service, i) => (
             <span
@@ -1222,7 +1222,7 @@ export default function SettingsPage() {
                 onClick={() => removeService(i)}
                 className="ml-1 hover:opacity-100 opacity-50 transition-opacity"
                 style={{ color: "var(--db-danger)" }}
-                title="Remove service"
+                title={t("settings.removeService", lang)}
               >
                 &times;
               </button>
@@ -1236,7 +1236,7 @@ export default function SettingsPage() {
               value={newService}
               onChange={(e) => setNewService(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addService(); } }}
-              placeholder="Add a service..."
+              placeholder={t("settings.addServicePlaceholder", lang)}
               maxLength={50}
               className="flex-1 rounded-lg px-3 py-2 text-sm"
               style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
@@ -1250,12 +1250,12 @@ export default function SettingsPage() {
                 color: newService.trim() ? "#fff" : "var(--db-text-muted)",
               }}
             >
-              Add
+              {t("action.add", lang)}
             </button>
           </div>
         )}
         <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
-          {data.services.length}/20 services
+          {t("settings.servicesCount", lang, { n: data.services.length })}
         </p>
       </Card>
 
@@ -1265,16 +1265,16 @@ export default function SettingsPage() {
       {activeTab === "automations" && <>
 
       {/* ── Section: Service Pricing ── */}
-      <Card title="Service Pricing">
+      <Card title={t("settings.servicePricing", lang)}>
         <div className="space-y-4">
           {/* Master toggle */}
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Enable {rName} to discuss pricing
+                {t("settings.enablePricingDiscuss", lang, { name: rName })}
               </p>
               <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
-                When enabled, {rName} will quote ballpark prices with a &quot;final price may vary&quot; disclaimer
+                {t("settings.enablePricingDiscussDesc", lang, { name: rName })}
               </p>
             </div>
             <button
@@ -1287,10 +1287,10 @@ export default function SettingsPage() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ enabled: newVal }),
                   });
-                  toast.success(newVal ? "Pricing quotes enabled" : "Pricing quotes disabled");
+                  toast.success(newVal ? t("settings.toast.pricingEnabled", lang) : t("settings.toast.pricingDisabled", lang));
                 } catch {
                   setPricingEnabled(!newVal);
-                  toast.error("Failed to toggle pricing");
+                  toast.error(t("settings.toast.failedTogglePricing", lang));
                 }
               }}
               className={`relative w-11 h-6 rounded-full transition-colors ${pricingEnabled ? "" : ""}`}
@@ -1307,7 +1307,7 @@ export default function SettingsPage() {
             <>
               {/* Pricing table */}
               {pricingLoading ? (
-                <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>Loading pricing...</p>
+                <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>{t("settings.loadingPricing", lang)}</p>
               ) : (
                 <div className="space-y-2">
                   {pricing.map((p) => (
@@ -1352,10 +1352,10 @@ export default function SettingsPage() {
                             className="rounded px-2 py-1 text-xs"
                             style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                           >
-                            <option value="per_job">per job</option>
-                            <option value="per_hour">per hour</option>
-                            <option value="per_sqft">per sq ft</option>
-                            <option value="per_unit">per unit</option>
+                            <option value="per_job">{t("settings.perJob", lang)}</option>
+                            <option value="per_hour">{t("settings.perHour", lang)}</option>
+                            <option value="per_sqft">{t("settings.perSqft", lang)}</option>
+                            <option value="per_unit">{t("settings.perUnit", lang)}</option>
                           </select>
                           <button
                             onClick={async () => {
@@ -1374,23 +1374,23 @@ export default function SettingsPage() {
                                   const { pricing: updated } = await res.json();
                                   setPricing((prev) => prev.map((x) => x.id === p.id ? updated : x));
                                   setEditingPriceId(null);
-                                  toast.success("Pricing updated");
+                                  toast.success(t("settings.toast.pricingUpdated", lang));
                                 }
                               } catch {
-                                toast.error("Failed to save");
+                                toast.error(t("settings.toast.failedSave", lang));
                               }
                             }}
                             className="rounded px-2 py-1 text-xs font-medium"
                             style={{ background: "var(--db-accent)", color: "#fff" }}
                           >
-                            Save
+                            {t("action.save", lang)}
                           </button>
                           <button
                             onClick={() => setEditingPriceId(null)}
                             className="rounded px-2 py-1 text-xs"
                             style={{ color: "var(--db-text-muted)" }}
                           >
-                            Cancel
+                            {t("action.cancel", lang)}
                           </button>
                         </>
                       ) : (
@@ -1402,9 +1402,9 @@ export default function SettingsPage() {
                             {p.priceMin != null && p.priceMax != null
                               ? `$${p.priceMin} – $${p.priceMax}`
                               : p.priceMin != null
-                              ? `from $${p.priceMin}`
+                              ? t("settings.price.from", lang, { amount: `$${p.priceMin}` })
                               : p.priceMax != null
-                              ? `up to $${p.priceMax}`
+                              ? t("settings.price.upTo", lang, { amount: `$${p.priceMax}` })
                               : "—"}
                           </span>
                           <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
@@ -1423,14 +1423,14 @@ export default function SettingsPage() {
                             className="text-xs font-medium"
                             style={{ color: "var(--db-accent)" }}
                           >
-                            Edit
+                            {t("action.edit", lang)}
                           </button>
                           <button
                             onClick={() => setConfirmDeletePriceId(p.id)}
                             className="text-xs"
                             style={{ color: "var(--db-danger)" }}
                           >
-                            Delete
+                            {t("action.delete", lang)}
                           </button>
                         </>
                       )}
@@ -1449,7 +1449,7 @@ export default function SettingsPage() {
                     type="text"
                     value={newPriceRow.serviceName}
                     onChange={(e) => setNewPriceRow({ ...newPriceRow, serviceName: e.target.value })}
-                    placeholder="Service name"
+                    placeholder={t("settings.placeholder.serviceName", lang)}
                     className="flex-1 min-w-[120px] rounded px-2 py-1 text-sm"
                     style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                   />
@@ -1480,10 +1480,10 @@ export default function SettingsPage() {
                     className="rounded px-2 py-1 text-xs"
                     style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                   >
-                    <option value="per_job">per job</option>
-                    <option value="per_hour">per hour</option>
-                    <option value="per_sqft">per sq ft</option>
-                    <option value="per_unit">per unit</option>
+                    <option value="per_job">{t("settings.perJob", lang)}</option>
+                    <option value="per_hour">{t("settings.perHour", lang)}</option>
+                    <option value="per_sqft">{t("settings.perSqft", lang)}</option>
+                    <option value="per_unit">{t("settings.perUnit", lang)}</option>
                   </select>
                   <button
                     onClick={async () => {
@@ -1503,24 +1503,24 @@ export default function SettingsPage() {
                           const { pricing: created } = await res.json();
                           if (created) setPricing((prev) => [...prev, created]);
                           setNewPriceRow(null);
-                          toast.success("Pricing added");
+                          toast.success(t("settings.toast.pricingAdded", lang));
                         }
                       } catch {
-                        toast.error("Failed to add pricing");
+                        toast.error(t("settings.toast.failedAddPricing", lang));
                       }
                     }}
                     disabled={!newPriceRow.serviceName.trim()}
                     className="rounded px-2 py-1 text-xs font-medium"
                     style={{ background: "var(--db-accent)", color: "#fff", opacity: newPriceRow.serviceName.trim() ? 1 : 0.5 }}
                   >
-                    Add
+                    {t("action.add", lang)}
                   </button>
                   <button
                     onClick={() => setNewPriceRow(null)}
                     className="rounded px-2 py-1 text-xs"
                     style={{ color: "var(--db-text-muted)" }}
                   >
-                    Cancel
+                    {t("action.cancel", lang)}
                   </button>
                 </div>
               ) : (
@@ -1529,7 +1529,7 @@ export default function SettingsPage() {
                   className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                   style={{ background: "var(--db-hover)", color: "var(--db-text-secondary)", border: "1px dashed var(--db-border)" }}
                 >
-                  + Add Service Pricing
+                  {t("settings.addServicePricing", lang)}
                 </button>
               )}
             </>
@@ -1538,14 +1538,14 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Import Data ── */}
-      <Card title="Import Your Data">
+      <Card title={t("settings.importData", lang)}>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm" style={{ color: "var(--db-text)" }}>
-              Switching from another system? Import your customers, appointments, and estimates from a CSV file.
+              {t("settings.importDataDesc", lang)}
             </p>
             <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
-              Supports exports from Jobber, ServiceTitan, Housecall Pro, and more.
+              {t("settings.importDataSupports", lang)}
             </p>
           </div>
           <a
@@ -1553,7 +1553,7 @@ export default function SettingsPage() {
             className="shrink-0 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
             style={{ background: "var(--db-accent)" }}
           >
-            Import Data
+            {t("settings.importDataButton", lang)}
           </a>
         </div>
       </Card>
@@ -1564,11 +1564,11 @@ export default function SettingsPage() {
       {activeTab === "receptionist" && <>
 
       {/* ── Section: Greeting ── */}
-      <Card title={`${rName}'s Greeting`}>
+      <Card title={t("settings.greetingTitle", lang, { name: rName })}>
         <div className="space-y-4">
           <div>
             <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-              English Greeting
+              {t("settings.englishGreeting", lang)}
             </label>
             <textarea
               value={data.greeting || ""}
@@ -1595,7 +1595,7 @@ export default function SettingsPage() {
           </div>
           <div>
             <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-              Spanish Greeting
+              {t("settings.spanishGreeting", lang)}
             </label>
             <textarea
               value={data.greetingEs || ""}
@@ -1625,7 +1625,7 @@ export default function SettingsPage() {
             className="text-sm font-medium transition-colors"
             style={{ color: "var(--db-accent)" }}
           >
-            {showGreetingPreview ? "Hide Preview" : "Preview Greeting"}
+            {showGreetingPreview ? t("settings.hidePreview", lang) : t("settings.previewGreeting", lang)}
           </button>
           {showGreetingPreview && (
             <div
@@ -1636,7 +1636,7 @@ export default function SettingsPage() {
               }}
             >
               <p className="text-xs font-medium mb-2" style={{ color: "var(--db-text-muted)" }}>
-                When someone calls, {rName} will say:
+                {t("settings.whenSomeoneCalls", lang, { name: rName })}
               </p>
               <p className="text-sm italic" style={{ color: "var(--db-text)" }}>
                 &ldquo;{data.greeting || defaultGreeting}&rdquo;
@@ -1644,7 +1644,7 @@ export default function SettingsPage() {
               {(data.greetingEs || data.defaultLanguage === "es") && (
                 <>
                   <p className="text-xs font-medium mt-3 mb-2" style={{ color: "var(--db-text-muted)" }}>
-                    For Spanish callers:
+                    {t("settings.forSpanishCallers", lang)}
                   </p>
                   <p className="text-sm italic" style={{ color: "var(--db-text)" }}>
                     &ldquo;{data.greetingEs || `Gracias por llamar a ${data.name}, habla ${rName}. ¿En qué le puedo ayudar?`}&rdquo;
@@ -1657,40 +1657,40 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Language Preference ── */}
-      <Card title="Language Preference">
+      <Card title={t("settings.languagePreference", lang)}>
         <div className="flex gap-4">
-          {(["en", "es"] as const).map((lang) => (
+          {(["en", "es"] as const).map((langOpt) => (
             <label
-              key={lang}
+              key={langOpt}
               className="flex items-center gap-2 cursor-pointer rounded-lg px-4 py-3 transition-colors"
               style={{
-                background: data.defaultLanguage === lang ? "rgba(99,102,241,0.08)" : "var(--db-hover)",
-                border: `1px solid ${data.defaultLanguage === lang ? "rgba(99,102,241,0.3)" : "var(--db-border)"}`,
+                background: data.defaultLanguage === langOpt ? "rgba(99,102,241,0.08)" : "var(--db-hover)",
+                border: `1px solid ${data.defaultLanguage === langOpt ? "rgba(99,102,241,0.3)" : "var(--db-border)"}`,
               }}
             >
               <input
                 type="radio"
                 name="language"
-                value={lang}
-                checked={data.defaultLanguage === lang}
-                onChange={() => setField("defaultLanguage", lang)}
+                value={langOpt}
+                checked={data.defaultLanguage === langOpt}
+                onChange={() => setField("defaultLanguage", langOpt)}
                 className="accent-[var(--db-accent)]"
               />
               <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                {lang === "en" ? "English" : "Spanish"}
+                {langOpt === "en" ? t("settings.english", lang) : t("settings.spanish", lang)}
               </span>
             </label>
           ))}
         </div>
         <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
-          {rName} is bilingual and will switch languages automatically. This sets the default.
+          {t("settings.bilingualNote", lang, { name: rName })}
         </p>
       </Card>
 
       {/* ── Section: Emergency Contact ── */}
-      <Card title="Emergency Contact">
+      <Card title={t("settings.emergencyContact", lang)}>
         <InputField
-          label="Emergency Phone Number"
+          label={t("settings.emergencyPhoneLabel", lang)}
           value={data.emergencyPhone || ""}
           onChange={(v) => setField("emergencyPhone", v || null)}
           onBlur={() => handleBlur("emergencyPhone", data.emergencyPhone || "")}
@@ -1698,8 +1698,7 @@ export default function SettingsPage() {
           placeholder="+15125559999"
         />
         <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
-          If set, {rName} will SMS this number in addition to the owner during emergency transfers.
-          Leave blank to only notify the owner phone.
+          {t("settings.emergencyNote", lang, { name: rName })}
         </p>
       </Card>
 
@@ -1709,16 +1708,16 @@ export default function SettingsPage() {
       {activeTab === "responses" && <>
 
       {/* ── Section: Train Your Receptionist ── */}
-      <Card title={`Train ${rName}`}>
+      <Card title={t("settings.trainReceptionist", lang, { name: rName })}>
         <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
-          Teach {rName} custom responses for common questions, off-limits topics, preferred phrases, and additional emergency triggers.
+          {t("settings.trainDesc", lang, { name: rName })}
         </p>
         <div className="space-y-2">
           {([
-            { key: "faq", label: "FAQ Responses", desc: "Custom answers to common questions", max: 20, hasResponse: true },
-            { key: "off_limits", label: "Off-Limits Topics", desc: "Topics to avoid, with optional redirect", max: 10, hasResponse: true },
-            { key: "phrase", label: "Preferred Phrases", desc: "Phrases to naturally weave in", max: 10, hasResponse: false },
-            { key: "emergency_keyword", label: "Emergency Keywords", desc: "Additional emergency triggers", max: 10, hasResponse: false },
+            { key: "faq", labelKey: "settings.faqResponses", descKey: "settings.faqResponsesDesc", max: 20, hasResponse: true },
+            { key: "off_limits", labelKey: "settings.offLimitsTopics", descKey: "settings.offLimitsTopicsDesc", max: 10, hasResponse: true },
+            { key: "phrase", labelKey: "settings.preferredPhrases", descKey: "settings.preferredPhrasesDesc", max: 10, hasResponse: false },
+            { key: "emergency_keyword", labelKey: "settings.emergencyKeywords", descKey: "settings.emergencyKeywordsDesc", max: 10, hasResponse: false },
           ] as const).map((cat) => {
             const items = customResponses[cat.key] || [];
             const isExpanded = expandedCategory === cat.key;
@@ -1729,8 +1728,8 @@ export default function SettingsPage() {
                   className="flex w-full items-center justify-between px-4 py-3 text-left"
                 >
                   <div>
-                    <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{cat.label}</p>
-                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{cat.desc} ({items.length}/{cat.max})</p>
+                    <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{t(cat.labelKey, lang)}</p>
+                    <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t(cat.descKey, lang)} ({items.length}/{cat.max})</p>
                   </div>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--db-text-muted)", transform: isExpanded ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
                     <path d="M6 9l6 6 6-6" />
@@ -1748,17 +1747,17 @@ export default function SettingsPage() {
                         </div>
                         <button
                           onClick={async () => {
-                            if (!confirm("Remove this response?")) return;
+                            if (!confirm(t("settings.removeResponse", lang))) return;
                             await fetch(`/api/receptionist/responses/${item.id}`, { method: "DELETE" });
                             setCustomResponses((prev) => ({
                               ...prev,
                               [cat.key]: prev[cat.key].filter((r) => r.id !== item.id),
                             }));
-                            toast.success("Removed");
+                            toast.success(t("settings.toast.removed", lang));
                           }}
                           className="shrink-0 p-1 rounded transition-colors"
                           style={{ color: "var(--db-danger)" }}
-                          title="Delete"
+                          title={t("action.delete", lang)}
                         >
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
                         </button>
@@ -1770,7 +1769,7 @@ export default function SettingsPage() {
                           type="text"
                           value={newResponse.triggerText}
                           onChange={(e) => setNewResponse({ ...newResponse, triggerText: e.target.value })}
-                          placeholder={cat.key === "faq" ? "Question or topic..." : cat.key === "off_limits" ? "Topic to avoid..." : cat.key === "phrase" ? "Phrase to use..." : "Emergency keyword..."}
+                          placeholder={cat.key === "faq" ? t("settings.placeholder.faqTrigger", lang) : cat.key === "off_limits" ? t("settings.placeholder.offLimitsTrigger", lang) : cat.key === "phrase" ? t("settings.placeholder.phraseTrigger", lang) : t("settings.placeholder.emergencyTrigger", lang)}
                           className="w-full rounded-lg px-3 py-1.5 text-sm"
                           style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                           maxLength={200}
@@ -1780,7 +1779,7 @@ export default function SettingsPage() {
                             type="text"
                             value={newResponse.responseText}
                             onChange={(e) => setNewResponse({ ...newResponse, responseText: e.target.value })}
-                            placeholder={cat.key === "faq" ? "Answer..." : "Redirect message (optional)..."}
+                            placeholder={cat.key === "faq" ? t("settings.placeholder.faqResponse", lang) : t("settings.placeholder.offLimitsResponse", lang)}
                             className="w-full rounded-lg px-3 py-1.5 text-sm"
                             style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                             maxLength={500}
@@ -1806,23 +1805,23 @@ export default function SettingsPage() {
                                   [cat.key]: [...(prev[cat.key] || []), created],
                                 }));
                                 setNewResponse(null);
-                                toast.success("Added");
+                                toast.success(t("settings.toast.added", lang));
                               } else {
                                 const err = await res.json().catch(() => null);
-                                toast.error(err?.error || "Failed to add");
+                                toast.error(err?.error || t("settings.toast.failedAdd", lang));
                               }
                             }}
                             className="rounded-lg px-3 py-1.5 text-xs font-medium text-white"
                             style={{ background: "var(--db-accent)" }}
                           >
-                            Save
+                            {t("action.save", lang)}
                           </button>
                           <button
                             onClick={() => setNewResponse(null)}
                             className="rounded-lg px-3 py-1.5 text-xs font-medium"
                             style={{ color: "var(--db-text-muted)", border: "1px solid var(--db-border)" }}
                           >
-                            Cancel
+                            {t("action.cancel", lang)}
                           </button>
                         </div>
                       </div>
@@ -1832,7 +1831,7 @@ export default function SettingsPage() {
                         className="w-full rounded-lg py-2 text-xs font-medium transition-colors"
                         style={{ color: "var(--db-text-secondary)", border: "1px dashed var(--db-border)" }}
                       >
-                        + Add {cat.label.replace(/s$/, "")}
+                        + {t("action.add", lang)}
                       </button>
                     )}
                   </div>
@@ -1849,10 +1848,10 @@ export default function SettingsPage() {
       {activeTab === "pricing" && <>
 
       {/* ── Section: Estimate Mode ── */}
-      <Card title="Estimate Mode">
+      <Card title={t("settings.estimateMode", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            Choose how {data?.receptionistName || "Maria"} quotes prices to callers. Quick mode uses flat min/max ranges. Advanced mode uses formula-based calculations with multipliers.
+            {t("settings.estimateModeDesc", lang, { name: data?.receptionistName || "Maria" })}
           </p>
           <div className="flex gap-2">
             {(["quick", "advanced", "both"] as const).map((mode) => (
@@ -1866,9 +1865,9 @@ export default function SettingsPage() {
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ estimateMode: mode }),
                     });
-                    toast.success(`Estimate mode set to ${mode}`);
+                    toast.success(t("settings.toast.estimateModeSet", lang, { mode }));
                   } catch {
-                    toast.error("Failed to update estimate mode");
+                    toast.error(t("settings.toast.failedUpdateEstimateMode", lang));
                   }
                 }}
                 className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
@@ -1878,7 +1877,7 @@ export default function SettingsPage() {
                   border: `1px solid ${estimateMode === mode ? "var(--db-accent)" : "var(--db-border)"}`,
                 }}
               >
-                {mode === "quick" ? "Quick Setup" : mode === "advanced" ? "Advanced" : "Both"}
+                {mode === "quick" ? t("settings.quickSetup", lang) : mode === "advanced" ? t("settings.advanced", lang) : t("settings.both", lang)}
               </button>
             ))}
           </div>
@@ -1886,10 +1885,10 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Quick Pricing Ranges ── */}
-      <Card title="Pricing Ranges">
+      <Card title={t("settings.pricingRanges", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-            Set min/max price ranges for common job types. {data?.receptionistName || "Maria"} will share these as ballpark estimates with callers.
+            {t("settings.pricingRangesDesc", lang, { name: data?.receptionistName || "Maria" })}
           </p>
 
           {estimateRangesLoading ? (
@@ -1917,9 +1916,9 @@ export default function SettingsPage() {
                         try {
                           await fetch(`/api/dashboard/estimate-pricing/${range.id}`, { method: "DELETE" });
                           setEstimateRanges((prev) => prev.filter((r) => r.id !== range.id));
-                          toast.success("Pricing range removed");
+                          toast.success(t("settings.toast.pricingRangeRemoved", lang));
                         } catch {
-                          toast.error("Failed to delete");
+                          toast.error(t("settings.toast.failedDelete", lang));
                         }
                         setConfirmDeleteEstimateId(null);
                       } else {
@@ -1930,7 +1929,7 @@ export default function SettingsPage() {
                     className="text-xs px-2 py-1 rounded"
                     style={{ color: confirmDeleteEstimateId === range.id ? "var(--db-danger)" : "var(--db-text-muted)" }}
                   >
-                    {confirmDeleteEstimateId === range.id ? "Confirm?" : "×"}
+                    {confirmDeleteEstimateId === range.id ? t("settings.confirm", lang) : "×"}
                   </button>
                 </div>
               ))}
@@ -1943,7 +1942,7 @@ export default function SettingsPage() {
                 >
                   <input
                     type="text"
-                    placeholder="Job type (e.g. Drain Cleaning)"
+                    placeholder={t("settings.placeholder.jobType", lang)}
                     value={newEstimateRow.jobTypeLabel}
                     onChange={(e) => setNewEstimateRow({ ...newEstimateRow, jobTypeLabel: e.target.value })}
                     className="flex-1 rounded border px-2 py-1 text-sm"
@@ -1973,11 +1972,11 @@ export default function SettingsPage() {
                     className="rounded border px-2 py-1 text-sm"
                     style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
                   >
-                    <option value="per_job">per job</option>
-                    <option value="per_hour">per hour</option>
-                    <option value="per_room">per room</option>
-                    <option value="per_sqft">per sqft</option>
-                    <option value="per_unit">per unit</option>
+                    <option value="per_job">{t("settings.perJob", lang)}</option>
+                    <option value="per_hour">{t("settings.perHour", lang)}</option>
+                    <option value="per_room">{t("settings.perRoom", lang)}</option>
+                    <option value="per_sqft">{t("settings.perSqft", lang)}</option>
+                    <option value="per_unit">{t("settings.perUnit", lang)}</option>
                   </select>
                   <button
                     onClick={async () => {
@@ -2001,23 +2000,23 @@ export default function SettingsPage() {
                           const { range: created } = await res.json();
                           setEstimateRanges((prev) => [...prev, created]);
                           setNewEstimateRow(null);
-                          toast.success("Pricing range added");
+                          toast.success(t("settings.toast.pricingRangeAdded", lang));
                         }
                       } catch {
-                        toast.error("Failed to create pricing range");
+                        toast.error(t("settings.toast.failedCreatePricingRange", lang));
                       }
                     }}
                     className="rounded px-3 py-1 text-sm font-medium"
                     style={{ background: "var(--db-accent)", color: "#fff" }}
                   >
-                    Save
+                    {t("action.save", lang)}
                   </button>
                   <button
                     onClick={() => setNewEstimateRow(null)}
                     className="text-sm"
                     style={{ color: "var(--db-text-muted)" }}
                   >
-                    Cancel
+                    {t("action.cancel", lang)}
                   </button>
                 </div>
               ) : (
@@ -2026,7 +2025,7 @@ export default function SettingsPage() {
                   className="w-full rounded-lg border border-dashed py-2 text-sm"
                   style={{ borderColor: "var(--db-border)", color: "var(--db-text-muted)" }}
                 >
-                  + Add Job Type
+                  {t("settings.addJobType", lang)}
                 </button>
               )}
             </div>
@@ -2036,10 +2035,10 @@ export default function SettingsPage() {
 
       {/* ── Section: Advanced Formula Builder ── */}
       {(estimateMode === "advanced" || estimateMode === "both") && (
-        <Card title="Advanced Formulas">
+        <Card title={t("settings.advancedFormulas", lang)}>
           <div className="space-y-4">
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-              Formula-based pricing for complex or commercial jobs. Creates calculated estimates using intake data.
+              {t("settings.advancedFormulasDesc", lang)}
             </p>
 
             {/* Existing advanced ranges */}
@@ -2055,22 +2054,22 @@ export default function SettingsPage() {
                   </span>
                   <div className="flex items-center gap-2">
                     <span className="text-xs px-2 py-0.5 rounded" style={{ background: "#dbeafe", color: "#1d4ed8" }}>
-                      Advanced
+                      {t("settings.advancedBadge", lang)}
                     </span>
                     <button
                       onClick={async () => {
                         try {
                           await fetch(`/api/dashboard/estimate-pricing/${range.id}`, { method: "DELETE" });
                           setEstimateRanges((prev) => prev.filter((r) => r.id !== range.id));
-                          toast.success("Formula removed");
+                          toast.success(t("settings.toast.formulaRemoved", lang));
                         } catch {
-                          toast.error("Failed to delete");
+                          toast.error(t("settings.toast.failedDelete", lang));
                         }
                       }}
                       className="text-xs"
                       style={{ color: "var(--db-text-muted)" }}
                     >
-                      Remove
+                      {t("action.remove", lang)}
                     </button>
                   </div>
                 </div>
@@ -2089,7 +2088,7 @@ export default function SettingsPage() {
               <div className="rounded-lg border p-4 space-y-4" style={{ borderColor: "var(--db-accent)" }}>
                 <input
                   type="text"
-                  placeholder="Job Type Label (e.g. Apartment Complex Repaint)"
+                  placeholder={t("settings.placeholder.formulaJobType", lang)}
                   value={advancedFormula.jobTypeLabel}
                   onChange={(e) => setAdvancedFormula({ ...advancedFormula, jobTypeLabel: e.target.value })}
                   className="w-full rounded border px-3 py-2 text-sm"
@@ -2097,7 +2096,7 @@ export default function SettingsPage() {
                 />
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>Base Rate ($)</label>
+                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.baseRate", lang)}</label>
                     <input
                       type="number"
                       value={advancedFormula.baseRate}
@@ -2107,7 +2106,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>Per</label>
+                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.per", lang)}</label>
                     <select
                       value={advancedFormula.baseUnit}
                       onChange={(e) => setAdvancedFormula({ ...advancedFormula, baseUnit: e.target.value })}
@@ -2121,7 +2120,7 @@ export default function SettingsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>Variable Key</label>
+                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.variableKey", lang)}</label>
                     <input
                       type="text"
                       placeholder="e.g. unit_count"
@@ -2135,7 +2134,7 @@ export default function SettingsPage() {
 
                 {/* Additional rates */}
                 <div>
-                  <label className="text-xs font-medium" style={{ color: "var(--db-text)" }}>Additional Rates</label>
+                  <label className="text-xs font-medium" style={{ color: "var(--db-text)" }}>{t("settings.additionalRates", lang)}</label>
                   {advancedFormula.additionalRates.map((rate, i) => (
                     <div key={i} className="flex gap-2 mt-1">
                       <input type="number" placeholder="Rate" value={rate.rate}
@@ -2189,13 +2188,13 @@ export default function SettingsPage() {
                       additionalRates: [...advancedFormula.additionalRates, { rate: "", unit: "sqft", variable: "", label: "" }],
                     })}
                     className="mt-1 text-xs" style={{ color: "var(--db-accent)" }}
-                  >+ Add rate</button>
+                  >{t("settings.addRate", lang)}</button>
                 </div>
 
                 {/* Margin range */}
                 <div className="flex gap-4">
                   <div>
-                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>Margin Low (%)</label>
+                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.marginLow", lang)}</label>
                     <input
                       type="number"
                       value={advancedFormula.marginLow}
@@ -2205,7 +2204,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>Margin High (%)</label>
+                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.marginHigh", lang)}</label>
                     <input
                       type="number"
                       value={advancedFormula.marginHigh}
@@ -2262,23 +2261,23 @@ export default function SettingsPage() {
                           const { range: created } = await res.json();
                           setEstimateRanges((prev) => [...prev, created]);
                           setAdvancedFormula(null);
-                          toast.success("Formula added");
+                          toast.success(t("settings.toast.formulaAdded", lang));
                         }
                       } catch {
-                        toast.error("Failed to create formula");
+                        toast.error(t("settings.toast.failedCreateFormula", lang));
                       }
                     }}
                     className="rounded px-4 py-2 text-sm font-medium"
                     style={{ background: "var(--db-accent)", color: "#fff" }}
                   >
-                    Save Formula
+                    {t("settings.saveFormula", lang)}
                   </button>
                   <button
                     onClick={() => setAdvancedFormula(null)}
                     className="rounded px-4 py-2 text-sm"
                     style={{ color: "var(--db-text-muted)" }}
                   >
-                    Cancel
+                    {t("action.cancel", lang)}
                   </button>
                 </div>
               </div>
@@ -2291,7 +2290,7 @@ export default function SettingsPage() {
                 className="w-full rounded-lg border border-dashed py-2 text-sm"
                 style={{ borderColor: "var(--db-border)", color: "var(--db-text-muted)" }}
               >
-                + Add Advanced Formula
+                {t("settings.addAdvancedFormula", lang)}
               </button>
             )}
           </div>
@@ -2304,14 +2303,14 @@ export default function SettingsPage() {
       {activeTab === "automations" && <>
 
       {/* ── Section: Outbound Calling ── */}
-      <OutboundSettingsSection />
+      <OutboundSettingsSection lang={lang} />
 
       </>}
 
       {/* ═══ INTEGRATIONS TAB ═══ */}
       {activeTab === "integrations" && <>
 
-      <GoogleCalendarSection />
+      <GoogleCalendarSection lang={lang} />
       <WebhookManager />
 
       </>}
@@ -2328,7 +2327,7 @@ export default function SettingsPage() {
             className="w-full rounded-lg py-3 text-sm font-medium"
             style={{ background: "var(--db-accent)", color: "#fff" }}
           >
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? t("settings.saving", lang) : t("settings.save", lang)}
           </button>
         </div>
       )}
@@ -2350,10 +2349,10 @@ export default function SettingsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="delete-price-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
-              Delete Pricing?
+              {t("settings.deletePricing", lang)}
             </h3>
             <p className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-              This will remove the pricing entry. This action cannot be undone.
+              {t("settings.deletePricingDesc", lang)}
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
@@ -2361,7 +2360,7 @@ export default function SettingsPage() {
                 className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                 style={{ color: "var(--db-text-secondary)" }}
               >
-                Cancel
+                {t("action.cancel", lang)}
               </button>
               <button
                 autoFocus
@@ -2371,15 +2370,15 @@ export default function SettingsPage() {
                   try {
                     await fetch(`/api/dashboard/pricing/${id}`, { method: "DELETE" });
                     setPricing((prev) => prev.filter((x) => x.id !== id));
-                    toast.success("Pricing removed");
+                    toast.success(t("settings.toast.pricingRemoved", lang));
                   } catch {
-                    toast.error("Failed to delete");
+                    toast.error(t("settings.toast.failedDelete", lang));
                   }
                 }}
                 className="rounded-lg px-4 py-2 text-sm font-semibold text-white"
                 style={{ background: "var(--db-danger)" }}
               >
-                Delete
+                {t("action.delete", lang)}
               </button>
             </div>
           </div>
@@ -2480,10 +2479,10 @@ interface SeasonalService {
   isActive: boolean;
 }
 
-const CALL_TYPE_LABELS: Record<string, string> = {
-  appointment_reminder: "Apt Reminder",
-  estimate_followup: "Estimate F/U",
-  seasonal_reminder: "Seasonal",
+const CALL_TYPE_I18N_KEYS: Record<string, string> = {
+  appointment_reminder: "settings.outbound.aptReminder",
+  estimate_followup: "settings.outbound.estimateFollowup",
+  seasonal_reminder: "settings.outbound.seasonal",
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -2497,7 +2496,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 const MONTH_LABELS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-function OutboundSettingsSection() {
+function OutboundSettingsSection({ lang }: { lang: Lang }) {
   const [settings, setSettings] = useState<OutboundSettings | null>(null);
   const [calls, setCalls] = useState<OutboundCallItem[]>([]);
   const [seasonal, setSeasonal] = useState<SeasonalService[]>([]);
@@ -2534,9 +2533,9 @@ function OutboundSettingsSection() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [key]: value }),
       });
-      toast.success("Setting updated");
+      toast.success(t("settings.toast.settingUpdated", lang));
     } catch {
-      toast.error("Failed to save");
+      toast.error(t("settings.toast.failedSave", lang));
     } finally {
       setSaving(false);
     }
@@ -2561,10 +2560,10 @@ function OutboundSettingsSection() {
         const data = await res.json();
         setSeasonal((prev) => [...prev, { ...newService, id: data.id, reminderIntervalMonths: parseInt(newService.reminderIntervalMonths) || 12, isActive: true, seasonStart: newService.seasonStart ? parseInt(newService.seasonStart) : null, seasonEnd: newService.seasonEnd ? parseInt(newService.seasonEnd) : null }]);
         setNewService({ serviceName: "", reminderIntervalMonths: "12", reminderMessage: "", seasonStart: "", seasonEnd: "" });
-        toast.success("Service added");
+        toast.success(t("settings.toast.serviceAdded", lang));
       }
     } catch {
-      toast.error("Failed to add");
+      toast.error(t("settings.toast.failedAddService", lang));
     } finally {
       setAddingService(false);
     }
@@ -2574,25 +2573,25 @@ function OutboundSettingsSection() {
     try {
       await fetch(`/api/dashboard/seasonal-services/${id}`, { method: "DELETE" });
       setSeasonal((prev) => prev.filter((s) => s.id !== id));
-      toast.success("Service removed");
+      toast.success(t("settings.toast.serviceRemoved", lang));
     } catch {
-      toast.error("Failed to remove");
+      toast.error(t("settings.toast.failedRemove", lang));
     }
   };
 
   if (!settings) return null;
 
   return (
-    <Card title="Outbound Calling">
+    <Card title={t("settings.outboundCalling", lang)}>
       <div className="space-y-4">
         {/* Master toggle */}
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-              Enable Outbound Calls
+              {t("settings.enableOutbound", lang)}
             </p>
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-              Let María make calls on your behalf
+              {t("settings.letMariaCalls", lang, { name: "Maria" })}
             </p>
           </div>
           <ToggleSwitch
@@ -2606,21 +2605,21 @@ function OutboundSettingsSection() {
             {/* Call type toggles */}
             <div className="space-y-3 pl-1">
               <div className="flex items-center justify-between">
-                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Appointment Reminders</span>
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{t("settings.appointmentReminders", lang)}</span>
                 <ToggleSwitch
                   checked={settings.appointmentReminders}
                   onChange={(v) => updateSetting("appointmentReminders", v)}
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Estimate Follow-ups</span>
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{t("settings.estimateFollowups", lang)}</span>
                 <ToggleSwitch
                   checked={settings.estimateFollowups}
                   onChange={(v) => updateSetting("estimateFollowups", v)}
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>Seasonal Reminders</span>
+                <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{t("settings.seasonalReminders", lang)}</span>
                 <ToggleSwitch
                   checked={settings.seasonalReminders}
                   onChange={(v) => updateSetting("seasonalReminders", v)}
@@ -2632,7 +2631,7 @@ function OutboundSettingsSection() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                  Call Window Start
+                  {t("settings.callWindowStart", lang)}
                 </label>
                 <select
                   value={settings.outboundCallingHoursStart}
@@ -2649,7 +2648,7 @@ function OutboundSettingsSection() {
               </div>
               <div>
                 <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                  Call Window End
+                  {t("settings.callWindowEnd", lang)}
                 </label>
                 <select
                   value={settings.outboundCallingHoursEnd}
@@ -2669,7 +2668,7 @@ function OutboundSettingsSection() {
             {/* Max calls per day */}
             <div>
               <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                Max Calls Per Day
+                {t("settings.maxCallsPerDay", lang)}
               </label>
               <input
                 type="number"
@@ -2690,7 +2689,7 @@ function OutboundSettingsSection() {
                   className="text-sm font-medium transition-colors"
                   style={{ color: "var(--db-accent)" }}
                 >
-                  {showSeasonal ? "Hide Seasonal Services" : "Manage Seasonal Services"} ({seasonal.length})
+                  {showSeasonal ? t("settings.hideSeasonalServices", lang) : t("settings.manageSeasonalServices", lang)} ({seasonal.length})
                 </button>
 
                 {showSeasonal && (
@@ -2706,7 +2705,7 @@ function OutboundSettingsSection() {
                             {svc.serviceName}
                           </p>
                           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                            Every {svc.reminderIntervalMonths} months
+                            {t("settings.outbound.everyNMonths", lang, { n: svc.reminderIntervalMonths })}
                             {svc.seasonStart && svc.seasonEnd
                               ? ` (${MONTH_LABELS[svc.seasonStart]}–${MONTH_LABELS[svc.seasonEnd]})`
                               : ""}
@@ -2717,7 +2716,7 @@ function OutboundSettingsSection() {
                           className="text-xs font-medium px-2 py-1 rounded"
                           style={{ color: "var(--db-danger)" }}
                         >
-                          Remove
+                          {t("action.remove", lang)}
                         </button>
                       </div>
                     ))}
@@ -2730,7 +2729,7 @@ function OutboundSettingsSection() {
                       <input
                         value={newService.serviceName}
                         onChange={(e) => setNewService((p) => ({ ...p, serviceName: e.target.value }))}
-                        placeholder="Service name (e.g., AC Tune-Up)"
+                        placeholder={t("settings.placeholder.seasonalServiceName", lang)}
                         className="w-full rounded px-2 py-1.5 text-sm"
                         style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                       />
@@ -2742,7 +2741,7 @@ function OutboundSettingsSection() {
                           style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                         >
                           {[3, 6, 12, 18, 24].map((m) => (
-                            <option key={m} value={m}>Every {m} months</option>
+                            <option key={m} value={m}>{t("settings.outbound.everyNMonths", lang, { n: m })}</option>
                           ))}
                         </select>
                         <select
@@ -2751,7 +2750,7 @@ function OutboundSettingsSection() {
                           className="rounded px-2 py-1.5 text-xs"
                           style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                         >
-                          <option value="">Season start</option>
+                          <option value="">{t("settings.outbound.seasonStart", lang)}</option>
                           {MONTH_LABELS.slice(1).map((m, i) => (
                             <option key={i + 1} value={i + 1}>{m}</option>
                           ))}
@@ -2762,7 +2761,7 @@ function OutboundSettingsSection() {
                           className="rounded px-2 py-1.5 text-xs"
                           style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                         >
-                          <option value="">Season end</option>
+                          <option value="">{t("settings.outbound.seasonEnd", lang)}</option>
                           {MONTH_LABELS.slice(1).map((m, i) => (
                             <option key={i + 1} value={i + 1}>{m}</option>
                           ))}
@@ -2771,7 +2770,7 @@ function OutboundSettingsSection() {
                       <input
                         value={newService.reminderMessage}
                         onChange={(e) => setNewService((p) => ({ ...p, reminderMessage: e.target.value }))}
-                        placeholder="Custom message (optional)"
+                        placeholder={t("settings.placeholder.customMessage", lang)}
                         className="w-full rounded px-2 py-1.5 text-sm"
                         style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
                       />
@@ -2784,7 +2783,7 @@ function OutboundSettingsSection() {
                           color: newService.serviceName ? "#fff" : "var(--db-text-muted)",
                         }}
                       >
-                        {addingService ? "Adding..." : "Add Service"}
+                        {addingService ? t("settings.adding", lang) : t("settings.addService", lang)}
                       </button>
                     </div>
                   </div>
@@ -2797,16 +2796,16 @@ function OutboundSettingsSection() {
               <div className="pt-2">
                 <div className="flex items-center gap-4 mb-3">
                   <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
-                    Total: {stats.total}
+                    {t("settings.outbound.total", lang)} {stats.total}
                   </span>
                   <span className="text-xs" style={{ color: "#22c55e" }}>
-                    Answered: {stats.answered}
+                    {t("settings.outbound.answered", lang)} {stats.answered}
                   </span>
                   <span className="text-xs" style={{ color: "var(--db-warning-alt)" }}>
-                    No Answer: {stats.noAnswer}
+                    {t("settings.outbound.noAnswer", lang)} {stats.noAnswer}
                   </span>
                   <span className="text-xs" style={{ color: "#3b82f6" }}>
-                    Scheduled: {stats.scheduled}
+                    {t("settings.outbound.scheduled", lang)} {stats.scheduled}
                   </span>
                 </div>
 
@@ -2821,7 +2820,7 @@ function OutboundSettingsSection() {
                         className="rounded px-1.5 py-0.5 text-[10px] font-semibold"
                         style={{ background: `${STATUS_COLORS[c.status] ?? "#94a3b8"}15`, color: STATUS_COLORS[c.status] ?? "#94a3b8" }}
                       >
-                        {CALL_TYPE_LABELS[c.callType] ?? c.callType}
+                        {CALL_TYPE_I18N_KEYS[c.callType] ? t(CALL_TYPE_I18N_KEYS[c.callType], lang) : c.callType}
                       </span>
                       <span className="flex-1 truncate text-xs" style={{ color: "var(--db-text-secondary)" }}>
                         {c.customerPhone}
@@ -2855,12 +2854,12 @@ function getStrength(pw: string): "weak" | "fair" | "strong" {
 }
 
 const STRENGTH_CONFIG = {
-  weak: { color: "var(--db-danger)", label: "Weak", width: "33%" },
-  fair: { color: "#facc15", label: "Fair", width: "66%" },
-  strong: { color: "var(--db-success)", label: "Strong", width: "100%" },
+  weak: { color: "var(--db-danger)", labelKey: "auth.strength.weak", width: "33%" },
+  fair: { color: "#facc15", labelKey: "auth.strength.fair", width: "66%" },
+  strong: { color: "var(--db-success)", labelKey: "auth.strength.strong", width: "100%" },
 } as const;
 
-function SecuritySection() {
+function SecuritySection({ lang }: { lang: Lang }) {
   const [hasPassword, setHasPassword] = useState(false);
   const [passwordChangedAt, setPasswordChangedAt] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
@@ -2904,38 +2903,38 @@ function SecuritySection() {
       });
 
       if (res.ok) {
-        setSecSuccess(hasPassword ? "Password updated" : "Password set successfully");
+        setSecSuccess(hasPassword ? t("settings.passwordUpdated", lang) : t("settings.passwordSetSuccess", lang));
         setHasPassword(true);
         setPasswordChangedAt(new Date().toISOString());
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
         setExpanded(false);
-        toast.success(hasPassword ? "Password updated" : "Password set");
+        toast.success(hasPassword ? t("settings.passwordUpdated", lang) : t("settings.passwordSetLabel", lang));
       } else {
         const data = await res.json();
-        setSecError(data.error || "Something went wrong");
+        setSecError(data.error || t("error.somethingWentWrong", lang));
       }
     } catch {
-      setSecError("Something went wrong");
+      setSecError(t("error.somethingWentWrong", lang));
     }
     setSaving(false);
   }
 
   return (
-    <Card title="Security">
+    <Card title={t("settings.security", lang)}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-              Password
+              {t("settings.password", lang)}
             </p>
             <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
               {hasPassword
                 ? passwordChangedAt
-                  ? `Last changed ${new Date(passwordChangedAt).toLocaleDateString()}`
-                  : "Password is set"
-                : "No password set — using magic link only"}
+                  ? t("settings.lastChanged", lang, { date: new Date(passwordChangedAt).toLocaleDateString() })
+                  : t("settings.passwordSet", lang)
+                : t("settings.noPasswordSet", lang)}
             </p>
           </div>
           <button
@@ -2947,7 +2946,7 @@ function SecuritySection() {
               color: "var(--db-text)",
             }}
           >
-            {expanded ? "Cancel" : hasPassword ? "Change" : "Set Password"}
+            {expanded ? t("action.cancel", lang) : hasPassword ? t("settings.change", lang) : t("settings.setPassword", lang)}
           </button>
         </div>
 
@@ -2968,7 +2967,7 @@ function SecuritySection() {
             {hasPassword && (
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                  Current Password
+                  {t("settings.currentPassword", lang)}
                 </label>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -2986,7 +2985,7 @@ function SecuritySection() {
 
             <div>
               <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                New Password
+                {t("settings.newPassword", lang)}
               </label>
               <div className="relative">
                 <input
@@ -2999,7 +2998,7 @@ function SecuritySection() {
                     border: "1px solid var(--db-border)",
                     color: "var(--db-text)",
                   }}
-                  placeholder="Min 8 characters"
+                  placeholder={t("settings.validation.min8chars", lang)}
                 />
                 <button
                   type="button"
@@ -3028,14 +3027,14 @@ function SecuritySection() {
                       style={{ background: strengthCfg.color, width: strengthCfg.width }}
                     />
                   </div>
-                  <span className="text-xs" style={{ color: strengthCfg.color }}>{strengthCfg.label}</span>
+                  <span className="text-xs" style={{ color: strengthCfg.color }}>{t(strengthCfg.labelKey, lang)}</span>
                 </div>
               )}
             </div>
 
             <div>
               <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                Confirm New Password
+                {t("settings.confirmNewPassword", lang)}
               </label>
               <input
                 type={showPassword ? "text" : "password"}
@@ -3049,7 +3048,7 @@ function SecuritySection() {
                 }}
               />
               {confirmPassword && !passwordsMatch && (
-                <p className="mt-0.5 text-xs" style={{ color: "var(--db-danger)" }}>Passwords don&apos;t match</p>
+                <p className="mt-0.5 text-xs" style={{ color: "var(--db-danger)" }}>{t("settings.passwordsDontMatch", lang)}</p>
               )}
             </div>
 
@@ -3060,14 +3059,14 @@ function SecuritySection() {
                 className="rounded-lg px-4 py-2 text-sm font-medium text-white disabled:opacity-50 transition-colors"
                 style={{ background: "var(--db-accent)" }}
               >
-                {saving ? "Saving..." : hasPassword ? "Update Password" : "Set Password"}
+                {saving ? t("settings.saving", lang) : hasPassword ? t("settings.updatePassword", lang) : t("settings.setPassword", lang)}
               </button>
               <button
                 onClick={() => { setExpanded(false); setSecError(""); }}
                 className="rounded-lg px-4 py-2 text-sm transition-colors"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                Cancel
+                {t("action.cancel", lang)}
               </button>
             </div>
           </div>
@@ -3087,7 +3086,7 @@ interface GCalStatus {
   syncEnabled?: boolean;
 }
 
-function GoogleCalendarSection() {
+function GoogleCalendarSection({ lang }: { lang: Lang }) {
   const [status, setStatus] = useState<GCalStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
@@ -3105,20 +3104,20 @@ function GoogleCalendarSection() {
       const params = new URLSearchParams(window.location.search);
       const gcal = params.get("gcal");
       if (gcal === "connected") {
-        toast.success("Google Calendar connected");
+        toast.success(t("settings.toast.gcalConnected", lang));
         // Clean up URL
         const url = new URL(window.location.href);
         url.searchParams.delete("gcal");
         window.history.replaceState({}, "", url.pathname + url.hash);
       } else if (gcal === "error") {
-        toast.error("Failed to connect Google Calendar");
+        toast.error(t("settings.toast.gcalFailedConnect", lang));
         const url = new URL(window.location.href);
         url.searchParams.delete("gcal");
         url.searchParams.delete("reason");
         window.history.replaceState({}, "", url.pathname + url.hash);
       }
     }
-  }, []);
+  }, [lang]);
 
   const handleConnect = async () => {
     setConnecting(true);
@@ -3126,13 +3125,13 @@ function GoogleCalendarSection() {
       const res = await fetch("/api/dashboard/integrations/google/auth");
       if (!res.ok) {
         const data = await res.json();
-        toast.error(data.error || "Failed to start connection");
+        toast.error(data.error || t("settings.toast.gcalFailedStart", lang));
         return;
       }
       const { url } = await res.json();
       window.location.href = url;
     } catch {
-      toast.error("Failed to connect");
+      toast.error(t("settings.toast.failedConnect", lang));
     } finally {
       setConnecting(false);
     }
@@ -3144,12 +3143,12 @@ function GoogleCalendarSection() {
       const res = await fetch("/api/dashboard/integrations/google/auth", { method: "DELETE" });
       if (res.ok) {
         setStatus({ connected: false });
-        toast.success("Google Calendar disconnected");
+        toast.success(t("settings.toast.gcalDisconnected", lang));
       } else {
-        toast.error("Failed to disconnect");
+        toast.error(t("settings.toast.failedDisconnect", lang));
       }
     } catch {
-      toast.error("Failed to disconnect");
+      toast.error(t("settings.toast.failedDisconnect", lang));
     } finally {
       setDisconnecting(false);
     }
@@ -3157,17 +3156,17 @@ function GoogleCalendarSection() {
 
   if (loading) {
     return (
-      <Card title="Integrations">
+      <Card title={t("settings.integrations", lang)}>
         <div className="flex items-center gap-2">
           <CaptaSpinnerInline />
-          <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>Loading...</span>
+          <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{t("action.loading", lang)}</span>
         </div>
       </Card>
     );
   }
 
   return (
-    <Card title="Google Calendar">
+    <Card title={t("settings.googleCalendar", lang)}>
       <div className="space-y-4">
         {status?.connected ? (
           <>
@@ -3183,7 +3182,7 @@ function GoogleCalendarSection() {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                  Connected
+                  {t("settings.connected", lang)}
                 </p>
                 <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
                   {status.googleEmail}
@@ -3194,19 +3193,18 @@ function GoogleCalendarSection() {
                 style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}
               >
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: "#22c55e" }} />
-                Active
+                {t("settings.active", lang)}
               </span>
             </div>
 
             {status.lastSyncAt && (
               <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                Last sync: {new Date(status.lastSyncAt).toLocaleString()}
+                {t("settings.lastSync", lang)} {new Date(status.lastSyncAt).toLocaleString()}
               </p>
             )}
 
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-              New appointments booked by your receptionist will appear on your Google Calendar.
-              Busy times on your Google Calendar will be respected when checking availability.
+              {t("settings.gcalConnectedDesc", lang)}
             </p>
 
             <button
@@ -3219,7 +3217,7 @@ function GoogleCalendarSection() {
                 color: "var(--db-danger)",
               }}
             >
-              {disconnecting ? "Disconnecting..." : "Disconnect"}
+              {disconnecting ? t("settings.disconnecting", lang) : t("settings.disconnect", lang)}
             </button>
           </>
         ) : (
@@ -3236,30 +3234,30 @@ function GoogleCalendarSection() {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                  Google Calendar
+                  {t("settings.googleCalendar", lang)}
                 </p>
                 <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                  Sync appointments with your calendar and prevent double-bookings.
+                  {t("settings.gcalDesc", lang)}
                 </p>
               </div>
             </div>
 
             <div className="rounded-lg p-3" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
               <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                When connected, your receptionist will:
+                {t("settings.gcalFeatures", lang)}
               </p>
               <ul className="mt-2 space-y-1 text-xs" style={{ color: "var(--db-text-secondary)" }}>
                 <li className="flex items-start gap-2">
                   <span style={{ color: "#22c55e" }}>&#10003;</span>
-                  Add new appointments to your Google Calendar
+                  {t("settings.gcalFeature1", lang)}
                 </li>
                 <li className="flex items-start gap-2">
                   <span style={{ color: "#22c55e" }}>&#10003;</span>
-                  Check your calendar for conflicts before booking
+                  {t("settings.gcalFeature2", lang)}
                 </li>
                 <li className="flex items-start gap-2">
                   <span style={{ color: "#22c55e" }}>&#10003;</span>
-                  Remove cancelled appointments from your calendar
+                  {t("settings.gcalFeature3", lang)}
                 </li>
               </ul>
             </div>
@@ -3270,7 +3268,7 @@ function GoogleCalendarSection() {
               className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
               style={{ background: "#4285F4" }}
             >
-              {connecting ? "Connecting..." : "Connect Google Calendar"}
+              {connecting ? t("settings.connecting", lang) : t("settings.connectGoogleCalendar", lang)}
             </button>
           </>
         )}

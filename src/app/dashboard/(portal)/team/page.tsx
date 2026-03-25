@@ -9,6 +9,8 @@ import Button from "@/components/ui/button";
 import EmptyState from "@/components/empty-state";
 import ConfirmDialog from "@/components/confirm-dialog";
 import { formatPhone } from "@/lib/format";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 /* ── Types ── */
 
@@ -53,6 +55,7 @@ function toDateInput(d: Date): string {
 /* ── Component ── */
 
 export default function TeamPage() {
+  const [lang] = useLang();
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -284,7 +287,7 @@ export default function TeamPage() {
   const columns: Column<Technician>[] = [
     {
       key: "name",
-      label: "Name",
+      label: t("misc.name", lang),
       render: (row) => (
         <div className="flex items-center gap-2.5">
           <span
@@ -302,7 +305,7 @@ export default function TeamPage() {
     },
     {
       key: "phone",
-      label: "Phone",
+      label: t("misc.phone", lang),
       render: (row) => (
         <span className="text-sm" style={{ color: "var(--db-text)" }}>
           {formatPhone(row.phone)}
@@ -311,7 +314,7 @@ export default function TeamPage() {
     },
     {
       key: "skills",
-      label: "Skills",
+      label: t("team.skills", lang),
       render: (row) => (
         <div className="flex flex-wrap gap-1">
           {(row.skills || []).slice(0, 3).map((skill) => (
@@ -445,11 +448,11 @@ export default function TeamPage() {
   return (
     <div>
       <PageHeader
-        title="Team"
+        title={t("team.title", lang)}
         description={`${activeTechs.length} technician${activeTechs.length !== 1 ? "s" : ""}${onCallTechs.length > 0 ? ` \u00B7 ${onCallTechs.length} on call` : ""}${unavailableTechs.length > 0 ? ` \u00B7 ${unavailableTechs.length} unavailable` : ""}`}
         actions={
           <div className="flex items-center gap-2">
-            {technicians.some((t) => !t.isActive) && (
+            {technicians.some((tech) => !tech.isActive) && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -462,7 +465,7 @@ export default function TeamPage() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-              Add Technician
+              {t("team.addTechnician", lang)}
             </Button>
           </div>
         }
@@ -470,9 +473,9 @@ export default function TeamPage() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <div role="alert" aria-live="assertive" className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
-          <Button variant="danger" size="sm" onClick={fetchTechnicians}>Retry</Button>
+          <Button variant="danger" size="sm" onClick={fetchTechnicians}>{t("action.retry", lang)}</Button>
         </div>
       )}
 
@@ -502,7 +505,7 @@ export default function TeamPage() {
           }
           title="No team members yet"
           description="Add your technicians to start dispatching jobs and sending schedules."
-          action={{ label: "Add Technician", onClick: openAddModal }}
+          action={{ label: t("team.addTechnician", lang), onClick: openAddModal }}
         />
       )}
 
@@ -525,12 +528,14 @@ export default function TeamPage() {
           aria-labelledby="tech-form-title"
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="modal-content db-card w-full max-w-lg rounded-xl p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
               <h3 id="tech-form-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
-                {editingTech ? "Edit Technician" : "Add Technician"}
+                {editingTech ? "Edit Technician" : t("team.addTechnician", lang)}
               </h3>
               <button
                 onClick={() => { if (!formLoading) setModalOpen(false); }}
@@ -548,7 +553,7 @@ export default function TeamPage() {
               {/* Name */}
               <div>
                 <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                  Name *
+                  {t("misc.name", lang)} *
                 </label>
                 <input
                   type="text"
@@ -572,7 +577,7 @@ export default function TeamPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                    Phone
+                    {t("misc.phone", lang)}
                   </label>
                   <input
                     type="tel"
@@ -592,7 +597,7 @@ export default function TeamPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                    Email
+                    {t("misc.email", lang)}
                   </label>
                   <input
                     type="email"
@@ -615,7 +620,7 @@ export default function TeamPage() {
               {/* Skills */}
               <div>
                 <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                  Skills
+                  {t("team.skills", lang)}
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -668,7 +673,7 @@ export default function TeamPage() {
               {/* Color Picker */}
               <div>
                 <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-                  Color
+                  {t("team.color", lang)}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {COLOR_OPTIONS.map((c) => (
@@ -691,10 +696,10 @@ export default function TeamPage() {
               {/* Actions */}
               <div className="flex items-center justify-end gap-3 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
                 <Button type="button" variant="ghost" onClick={() => { if (!formLoading) setModalOpen(false); }} disabled={formLoading}>
-                  Cancel
+                  {t("action.cancel", lang)}
                 </Button>
                 <Button type="submit" disabled={formLoading}>
-                  {formLoading ? "Saving..." : editingTech ? "Save Changes" : "Add Technician"}
+                  {formLoading ? "Saving..." : editingTech ? t("action.save", lang) : t("team.addTechnician", lang)}
                 </Button>
               </div>
             </form>
@@ -712,6 +717,8 @@ export default function TeamPage() {
           aria-labelledby="unavail-dialog-title"
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="modal-content db-card w-full max-w-md rounded-xl p-6"
             onClick={(e) => e.stopPropagation()}
           >
@@ -774,7 +781,7 @@ export default function TeamPage() {
 
               <div className="flex items-center justify-end gap-3 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
                 <Button type="button" variant="ghost" onClick={() => { if (!unavailLoading) setUnavailTarget(null); }} disabled={unavailLoading}>
-                  Cancel
+                  {t("action.cancel", lang)}
                 </Button>
                 <Button onClick={handleMarkUnavailable} disabled={unavailLoading}>
                   {unavailLoading ? "Saving..." : "Mark Unavailable"}

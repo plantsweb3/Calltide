@@ -5,6 +5,7 @@ import { googleCalendarConnections } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const encoder = new TextEncoder();
 
@@ -26,6 +27,9 @@ export async function GET(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`google-auth-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET) {
     return NextResponse.json(
@@ -64,6 +68,9 @@ export async function DELETE(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`google-auth-delete:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   try {
     const [conn] = await db

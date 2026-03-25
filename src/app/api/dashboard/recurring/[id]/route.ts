@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { recurringRules } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const updateRecurringSchema = z.object({
   service: z.string().min(1).max(200).optional(),
@@ -26,6 +27,9 @@ export async function PUT(
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`recurring-put:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const { id } = await params;
 
@@ -87,6 +91,9 @@ export async function DELETE(
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`recurring-delete:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const { id } = await params;
 

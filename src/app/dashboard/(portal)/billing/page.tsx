@@ -6,6 +6,8 @@ import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import Button from "@/components/ui/button";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import PageHeader from "@/components/page-header";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface BillingData {
   plan: string;
@@ -30,6 +32,7 @@ function fmt(cents: number): string {
 }
 
 export default function BillingPage() {
+  const [lang] = useLang();
   const [data, setData] = useState<BillingData | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [switchLoading, setSwitchLoading] = useState(false);
@@ -48,7 +51,7 @@ export default function BillingPage() {
 
   if (error) {
     return (
-      <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+      <div role="alert" aria-live="assertive" className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
         <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
         <button
           onClick={loadBilling}
@@ -126,7 +129,7 @@ export default function BillingPage() {
           </svg>
           <div className="flex-1">
             <p className="text-sm font-medium" style={{ color: "var(--db-danger)" }}>
-              Payment Past Due
+              {t("billing.paymentPastDue", lang)}
             </p>
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
               Your recent payment was declined. Please update your payment method to avoid service interruption.
@@ -134,7 +137,7 @@ export default function BillingPage() {
           </div>
           {data.hasStripeCustomer && (
             <Button variant="danger" onClick={openPortal} disabled={portalLoading}>
-              {portalLoading ? "Loading..." : "Update Payment"}
+              {portalLoading ? "Loading..." : t("billing.updatePaymentMethod", lang)}
             </Button>
           )}
         </div>
@@ -190,7 +193,7 @@ export default function BillingPage() {
           className="mb-4 text-sm font-semibold uppercase tracking-wider"
           style={{ color: "var(--db-text-muted)" }}
         >
-          Your Plan
+          {t("billing.yourPlan", lang)}
         </h3>
         <div className="flex items-center justify-between">
           <div>
@@ -252,7 +255,7 @@ export default function BillingPage() {
             className="text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
           >
-            Payment Method
+            {t("billing.paymentMethod", lang)}
           </h3>
           {data.hasStripeCustomer && (
             <Button variant="ghost" size="sm" onClick={openPortal} disabled={portalLoading}>
@@ -291,7 +294,7 @@ export default function BillingPage() {
             className="mb-2 text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
           >
-            Next Billing Date
+            {t("billing.nextBillingDate", lang)}
           </h3>
           <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
             {new Date(data.nextBillingAt).toLocaleDateString("en", {
@@ -311,7 +314,7 @@ export default function BillingPage() {
             className="mb-4 text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
           >
-            Invoice History
+            {t("billing.invoiceHistory", lang)}
           </h3>
           <div className="space-y-2">
             {data.invoices.map((inv) => (
@@ -345,7 +348,7 @@ export default function BillingPage() {
       {data.hasStripeCustomer && (
         <div className="flex justify-center">
           <Button size="lg" onClick={openPortal} disabled={portalLoading}>
-            {portalLoading ? "Opening Portal..." : "Manage Billing in Stripe"}
+            {portalLoading ? "Opening Portal..." : t("billing.manageBilling", lang)}
           </Button>
         </div>
       )}
@@ -361,6 +364,8 @@ export default function BillingPage() {
           aria-labelledby="switch-confirm-title"
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="modal-content db-card w-full max-w-md rounded-xl p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
           >

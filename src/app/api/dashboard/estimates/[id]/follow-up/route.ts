@@ -7,6 +7,7 @@ import { canSendSms } from "@/lib/compliance/sms";
 import { getEstimateFollowUpMessage } from "@/lib/sms-templates";
 import { reportError } from "@/lib/error-reporting";
 import { DEMO_BUSINESS_ID } from "../../../demo-data";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(
   req: NextRequest,
@@ -16,6 +17,9 @@ export async function POST(
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`estimates-follow-up:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const { id } = await params;
 

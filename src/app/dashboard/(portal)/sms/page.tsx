@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import DataTable, { type Column } from "@/components/data-table";
 import { TableSkeleton } from "@/components/skeleton";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 import Button from "@/components/ui/button";
 import StatusBadge from "@/components/ui/status-badge";
 import PageHeader from "@/components/page-header";
@@ -23,6 +25,7 @@ interface SmsMessage {
 }
 
 export default function SmsPage() {
+  const [lang] = useLang();
   const receptionistName = useReceptionistName();
   const [messages, setMessages] = useState<SmsMessage[]>([]);
   const [page, setPage] = useState(1);
@@ -72,32 +75,32 @@ export default function SmsPage() {
   const columns: Column<SmsMessage>[] = [
     {
       key: "createdAt",
-      label: "Date",
+      label: t("billing.date", lang),
       render: (row) => formatDate(row.createdAt),
     },
     {
       key: "direction",
-      label: "Direction",
+      label: t("calls.direction", lang),
       render: (row) => {
         const isIn = row.direction === "inbound";
         return (
-          <StatusBadge label={isIn ? "IN" : "OUT"} variant={isIn ? "info" : "success"} />
+          <StatusBadge label={isIn ? t("sms.in", lang) : t("sms.out", lang)} variant={isIn ? "info" : "success"} />
         );
       },
     },
     {
       key: "fromNumber",
-      label: "From",
+      label: t("sms.from", lang),
       render: (row) => formatPhone(row.fromNumber),
     },
     {
       key: "toNumber",
-      label: "To",
+      label: t("sms.to", lang),
       render: (row) => formatPhone(row.toNumber),
     },
     {
       key: "body",
-      label: "Message",
+      label: t("sms.fullMessage", lang),
       render: (row) => (
         <span className="block max-w-xs truncate" title={row.body}>
           {row.body}
@@ -106,7 +109,7 @@ export default function SmsPage() {
     },
     {
       key: "status",
-      label: "Status",
+      label: t("billing.status", lang),
       render: (row) => {
         const smsVariant: Record<string, "info" | "success" | "danger" | "neutral"> = {
           sent: "info",
@@ -123,12 +126,12 @@ export default function SmsPage() {
   return (
     <div>
       <PageHeader
-        title="SMS Log"
+        title={t("sms.title", lang)}
         actions={
           <>
             <input
               type="text"
-              placeholder="Search by phone number..."
+              placeholder={t("sms.search", lang)}
               defaultValue={search}
               onChange={(e) => {
                 const val = e.target.value;
@@ -164,10 +167,10 @@ export default function SmsPage() {
       />
 
       {error && (
-        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <div role="alert" aria-live="assertive" className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
           <Button variant="danger" size="sm" onClick={fetchMessages}>
-            Retry
+            {t("action.retry", lang)}
           </Button>
         </div>
       )}
@@ -183,9 +186,9 @@ export default function SmsPage() {
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
           }
-          title="No messages yet"
+          title={t("sms.noMessages", lang)}
           description={`SMS confirmations and reminders will show up here as ${receptionistName} handles calls.`}
-          action={{ label: "View SMS Settings", href: "/dashboard/settings#notifications" }}
+          action={{ label: t("sms.viewSettings", lang), href: "/dashboard/settings#notifications" }}
         />
       )}
 
@@ -213,7 +216,7 @@ export default function SmsPage() {
                 className="text-xs font-medium uppercase tracking-wider"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                Full Message
+                {t("sms.fullMessage", lang)}
               </p>
               <p
                 className="whitespace-pre-wrap text-sm"
@@ -223,10 +226,10 @@ export default function SmsPage() {
               </p>
               <div className="flex items-center gap-4 pt-1">
                 <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                  From: {formatPhone(row.fromNumber)}
+                  {t("sms.from", lang)}: {formatPhone(row.fromNumber)}
                 </span>
                 <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                  To: {formatPhone(row.toNumber)}
+                  {t("sms.to", lang)}: {formatPhone(row.toNumber)}
                 </span>
                 {row.templateType && (
                   <span

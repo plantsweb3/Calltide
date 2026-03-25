@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { recurringRules, customers } from "@/db/schema";
 import { eq, and, desc, count } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const PAGE_SIZE = 25;
 
@@ -87,6 +88,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const rl = await rateLimit(`recurring-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
+
   const { searchParams } = new URL(req.url);
   const page = Math.min(Math.max(1, parseInt(searchParams.get("page") || "1")), 10000);
   const activeOnly = searchParams.get("active") !== "false";
@@ -153,6 +157,9 @@ export async function POST(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`recurring-post:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;
   try {

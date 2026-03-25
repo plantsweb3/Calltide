@@ -5,6 +5,7 @@ import { businesses, pricingRanges } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { DEMO_BUSINESS_ID } from "../demo-data";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const createSchema = z.object({
   mode: z.enum(["quick", "advanced"]).default("quick"),
@@ -33,6 +34,9 @@ export async function GET(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`estimate-pricing-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ ranges: [], mode: "quick" });
@@ -68,6 +72,9 @@ export async function POST(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`estimate-pricing-post:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ success: true, message: "Demo mode — changes not saved" });

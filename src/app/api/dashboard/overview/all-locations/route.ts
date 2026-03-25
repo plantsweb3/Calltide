@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { businesses, calls, appointments, customers } from "@/db/schema";
 import { eq, and, sql, gte, inArray } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
@@ -11,6 +12,9 @@ export async function GET(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`overview-all-locations:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (!accountId) {
     return NextResponse.json({ error: "Multi-location not enabled" }, { status: 400 });

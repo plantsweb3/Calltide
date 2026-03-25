@@ -91,7 +91,7 @@ export default function AllLocationsPage() {
                 <div className="flex items-center gap-2">
                   <span
                     className="h-2 w-2 rounded-full shrink-0"
-                    style={{ background: loc.active ? "var(--db-success)" : "#94a3b8" }}
+                    style={{ background: loc.active ? "var(--db-success)" : "var(--db-text-muted)" }}
                   />
                   <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
                     {loc.locationName}

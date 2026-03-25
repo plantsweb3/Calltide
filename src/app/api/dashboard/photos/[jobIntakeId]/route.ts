@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { intakeAttachments } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const DEMO_BUSINESS_ID = "demo-business-id";
 
@@ -14,6 +15,9 @@ export async function GET(
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`photos-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const { jobIntakeId } = await params;
 

@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 import { syncAgent } from "@/lib/elevenlabs/sync-agent";
 import { DEMO_BUSINESS_ID } from "../demo-data";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const progressSchema = z.object({
   step: z.number().int().min(1).max(8),
@@ -22,6 +23,9 @@ export async function GET(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`onboarding-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({
@@ -105,6 +109,9 @@ export async function PUT(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`onboarding-put:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ success: true, message: "Demo mode" });

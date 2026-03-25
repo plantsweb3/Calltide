@@ -4,12 +4,16 @@ import { smsMessages } from "@/db/schema";
 import { eq, and, or, like, desc, count } from "drizzle-orm";
 import { DEMO_BUSINESS_ID, DEMO_SMS } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`sms-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const page = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1")), 10000);
   const limit = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") || "20")), 100);

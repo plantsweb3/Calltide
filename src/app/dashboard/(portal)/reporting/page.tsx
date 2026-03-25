@@ -8,6 +8,8 @@ import PageHeader from "@/components/page-header";
 import DateRangePicker, { type DateRange } from "@/components/date-range-picker";
 import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 import Button from "@/components/ui/button";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface ReportingData {
   callsByHour: { hour: number; total: number }[];
@@ -31,6 +33,7 @@ interface ReportingData {
 function toISO(d: Date): string { return d.toISOString().split("T")[0]; }
 
 export default function ReportingPage() {
+  const [lang] = useLang();
   const [data, setData] = useState<ReportingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +64,7 @@ export default function ReportingPage() {
   if (loading) {
     return (
       <div>
-        <PageHeader title="Reporting" />
+        <PageHeader title={t("reporting.title", lang)} />
         <div className="mt-6">
           <PageSkeleton />
         </div>
@@ -72,8 +75,8 @@ export default function ReportingPage() {
   if (error || !data) {
     return (
       <div>
-        <PageHeader title="Reporting" />
-        <div className="rounded-xl p-4 mt-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <PageHeader title={t("reporting.title", lang)} />
+        <div role="alert" aria-live="assertive" className="rounded-xl p-4 mt-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error || "Unable to load reporting data."}</p>
           <Button variant="danger" size="sm" onClick={fetchData}>Retry</Button>
         </div>
@@ -99,7 +102,7 @@ export default function ReportingPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Reporting"
+        title={t("reporting.title", lang)}
         description="Call analytics and business insights"
         actions={
           <div className="flex items-center gap-2">
@@ -127,7 +130,7 @@ export default function ReportingPage() {
       {/* Row 1: Calls by Hour (horizontal bars) + Calls by Day of Week */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Calls by Hour - Horizontal bar chart */}
-        <Card title="Calls by Hour of Day">
+        <Card title={t("reporting.callVolume", lang)}>
           <div className="space-y-1 max-h-[400px] overflow-y-auto">
             {data.callsByHour.map((h) => (
               <div key={h.hour} className="flex items-center gap-2" style={{ height: "20px" }}>
@@ -192,7 +195,7 @@ export default function ReportingPage() {
                         className="w-full rounded-t-sm"
                         style={{
                           height: `${missedPct > 0 ? (missedPct / (answeredPct + missedPct)) * 100 : 0}%`,
-                          background: "var(--db-danger, #ef4444)",
+                          background: "var(--db-danger)",
                           minHeight: d.missed > 0 ? "2px" : "0",
                         }}
                       />
@@ -202,7 +205,7 @@ export default function ReportingPage() {
                         className="w-full"
                         style={{
                           height: `${answeredPct > 0 ? (answeredPct / (answeredPct + missedPct)) * 100 : 0}%`,
-                          background: "var(--db-success, #10B981)",
+                          background: "var(--db-success)",
                           minHeight: d.answered > 0 ? "2px" : "0",
                           borderRadius: (d.missed ?? 0) > 0 ? "0" : "2px 2px 0 0",
                         }}
@@ -222,11 +225,11 @@ export default function ReportingPage() {
           <div className="mt-3 flex items-center justify-between">
             <div className="flex gap-4">
               <div className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--db-success, #10B981)" }} />
+                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--db-success)" }} />
                 <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)" }}>Answered</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--db-danger, #ef4444)" }} />
+                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--db-danger)" }} />
                 <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)" }}>Missed</span>
               </div>
             </div>
@@ -314,7 +317,7 @@ export default function ReportingPage() {
       {/* Row 4: Top Services + Estimates + Callers */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {/* Top Services - Horizontal bar chart */}
-        <Card title="Top Services Booked">
+        <Card title={t("reporting.topServices", lang)}>
           {data.topServices.length === 0 ? (
             <p className="py-8 text-center text-sm" style={{ color: "var(--db-text-muted)" }}>No appointments yet</p>
           ) : (
@@ -341,14 +344,14 @@ export default function ReportingPage() {
         </Card>
 
         {/* Estimate Pipeline */}
-        <Card title="Estimate Pipeline">
+        <Card title={t("reporting.revenuePipeline", lang)}>
           {data.estimatePipeline.length === 0 ? (
             <p className="py-8 text-center text-sm" style={{ color: "var(--db-text-muted)" }}>No estimates yet</p>
           ) : (
             <div className="space-y-3">
               {data.closeRate != null && (
                 <div className="rounded-lg p-3 mb-2 text-center" style={{ background: "var(--db-hover)" }}>
-                  <p className="text-2xl font-bold" style={{ color: data.closeRate >= 50 ? "#22c55e" : "var(--db-text)" }}>{data.closeRate}%</p>
+                  <p className="text-2xl font-bold" style={{ color: data.closeRate >= 50 ? "var(--db-success)" : "var(--db-text)" }}>{data.closeRate}%</p>
                   <p className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
                     Close Rate ({data.estimatePipeline.find(e => e.status === "won")?.total ?? 0}/{(data.estimatePipeline.find(e => e.status === "won")?.total ?? 0) + (data.estimatePipeline.find(e => e.status === "lost")?.total ?? 0)} decided)
                   </p>
@@ -367,7 +370,7 @@ export default function ReportingPage() {
         </Card>
 
         {/* Caller Stats */}
-        <Card title="Caller Breakdown">
+        <Card title={t("reporting.callerStats", lang)}>
           <div className="flex items-center justify-center py-4">
             <div className="relative h-32 w-32">
               <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
@@ -438,7 +441,7 @@ export default function ReportingPage() {
                     <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
                       {t.answered}/{t.total}
                     </span>
-                    <span className="text-xs font-semibold" style={{ color: t.total > 0 ? "#22c55e" : "var(--db-text)" }}>
+                    <span className="text-xs font-semibold" style={{ color: t.total > 0 ? "var(--db-success)" : "var(--db-text)" }}>
                       {t.total > 0 ? Math.round((t.answered / t.total) * 100) : 0}%
                     </span>
                   </div>

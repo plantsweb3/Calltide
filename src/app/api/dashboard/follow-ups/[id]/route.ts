@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { followUps } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const updateFollowUpSchema = z.object({
   status: z.enum(["pending", "in_progress", "completed", "dismissed"]).optional(),
@@ -22,6 +23,9 @@ export async function PUT(
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`follow-ups-put:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const { id } = await params;
 
@@ -84,6 +88,9 @@ export async function DELETE(
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`follow-ups-delete:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const { id } = await params;
 

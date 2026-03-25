@@ -11,6 +11,7 @@ import { getResend } from "@/lib/email/client";
 
 const forgotSchema = z.object({
   email: z.string().email("Valid email is required"),
+  lang: z.enum(["en", "es"]).optional().default("en"),
 });
 
 const RESET_TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
@@ -30,6 +31,7 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedEmail = parsed.data.email.toLowerCase().trim();
+    const lang = parsed.data.lang;
 
     const [account] = await db
       .select({ id: accounts.id, ownerName: accounts.ownerName })
@@ -54,26 +56,33 @@ export async function POST(req: NextRequest) {
     // Send reset email
     const resetUrl = `${env.NEXT_PUBLIC_APP_URL}/dashboard/reset-password?token=${rawToken}&email=${encodeURIComponent(normalizedEmail)}`;
 
+    const safeName = (account.ownerName || (lang === "es" ? "usuario" : "there")).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    const isEs = lang === "es";
+
     const resend = getResend();
     await resend.emails.send({
       from: env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>",
       to: normalizedEmail,
-      subject: "Reset your Capta password",
+      subject: isEs ? "Restablece tu contrasena de Capta" : "Reset your Capta password",
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
-          <h2 style="color: #1A1D24; margin-bottom: 8px;">Reset your password</h2>
+          <h2 style="color: #1A1D24; margin-bottom: 8px;">${isEs ? "Restablece tu contrasena" : "Reset your password"}</h2>
           <p style="color: #475569; margin-bottom: 24px;">
-            Hi ${(account.ownerName || "there").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")}, we received a request to reset your Capta password. Click the button below to set a new one. This link expires in 1 hour.
+            ${isEs
+              ? `Hola ${safeName}, recibimos una solicitud para restablecer tu contrasena de Capta. Haz clic en el boton para crear una nueva. Este enlace expira en 1 hora.`
+              : `Hi ${safeName}, we received a request to reset your Capta password. Click the button below to set a new one. This link expires in 1 hour.`}
           </p>
-          <a href="${resetUrl}" style="display: inline-block; background: #C59A27; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-            Reset Password
+          <a href="${resetUrl}" style="display: inline-block; background: #D4A843; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+            ${isEs ? "Restablecer contrasena" : "Reset Password"}
           </a>
           <p style="color: #94A3B8; font-size: 13px; margin-top: 32px;">
-            If you didn't request this, you can safely ignore this email. Your password won't be changed.
+            ${isEs
+              ? "Si no solicitaste esto, puedes ignorar este correo. Tu contrasena no cambiara."
+              : "If you didn't request this, you can safely ignore this email. Your password won't be changed."}
           </p>
           <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 24px 0;" />
           <p style="color: #94A3B8; font-size: 12px;">
-            &copy; Capta &mdash; AI Receptionist for Home Services
+            &copy; Capta &mdash; ${isEs ? "Recepcionista AI para Servicios del Hogar" : "AI Receptionist for Home Services"}
           </p>
         </div>
       `,

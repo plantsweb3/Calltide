@@ -45,16 +45,16 @@ function LoginForm() {
     const errParam = searchParams.get("error");
     const msg = searchParams.get("msg");
     if (errParam === "invalid") {
-      setError("Login link expired or invalid. Please try again.");
+      setError(t("auth.error.linkExpired", lang));
     } else if (errParam === "expired") {
-      setError("This login link has already been used. Please request a new one.");
+      setError(t("auth.error.linkUsed", lang));
     } else if (errParam === "rate_limited") {
       setError(t("auth.error.rateLimited", lang));
     } else if (errParam === "session_expired") {
       setError(t("error.sessionExpired", lang));
     }
     if (msg === "password_updated") {
-      setSuccessMsg(lang === "es" ? "Contrasena actualizada. Inicia sesion con tu nueva contrasena." : "Password updated successfully. Sign in with your new password.");
+      setSuccessMsg(t("auth.passwordUpdated", lang));
     }
   }, [searchParams, lang]);
 
@@ -73,6 +73,7 @@ function LoginForm() {
 
       if (res.ok) {
         router.push("/dashboard");
+        return;
       } else {
         const data = await res.json();
         setError(data.error || t("error.somethingWentWrong", lang));
@@ -96,7 +97,7 @@ function LoginForm() {
       const res = await fetch("/api/dashboard/auth/send-link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, lang }),
       });
 
       if (res.ok) {
@@ -138,6 +139,8 @@ function LoginForm() {
 
       {error && (
         <div
+          role="alert"
+          aria-live="assertive"
           className="rounded-lg px-4 py-3 text-sm"
           style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
         >
@@ -147,6 +150,8 @@ function LoginForm() {
 
       {successMsg && (
         <div
+          role="alert"
+          aria-live="polite"
           className="rounded-lg px-4 py-3 text-sm"
           style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
         >
@@ -156,6 +161,8 @@ function LoginForm() {
 
       {magicLinkSent ? (
         <div
+          role="alert"
+          aria-live="polite"
           className="rounded-lg px-4 py-3 text-sm"
           style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
         >
@@ -210,7 +217,7 @@ function LoginForm() {
                     border: "1px solid var(--db-border)",
                     color: "var(--db-text)",
                   }}
-                  placeholder={lang === "es" ? "Ingresa tu contrasena" : "Enter your password"}
+                  placeholder={t("auth.enterPassword", lang)}
                   required
                 />
                 <button
@@ -218,14 +225,15 @@ function LoginForm() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-sm"
                   style={{ color: "var(--db-text-muted)" }}
-                  tabIndex={-1}
+                  tabIndex={0}
+                  aria-label={showPassword ? t("auth.hidePassword", lang) : t("auth.showPassword", lang)}
                 >
                   {showPassword ? (
-                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                       <path d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   ) : (
-                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                       <path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" strokeLinecap="round" strokeLinejoin="round" />
                       <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -325,7 +333,7 @@ function LoginForm() {
 export default function ClientLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
-      <Suspense>
+      <Suspense fallback={null}>
         <LoginForm />
       </Suspense>
     </div>

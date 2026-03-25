@@ -44,7 +44,7 @@ const TIMELINE_CONFIG: Record<
   { label: string; borderColor: string; iconColor: string }
 > = {
   call: { label: "Call", borderColor: "#3b82f6", iconColor: "#3b82f6" },
-  appointment: { label: "Appointment", borderColor: "#22c55e", iconColor: "#22c55e" },
+  appointment: { label: "Appointment", borderColor: "var(--db-success)", iconColor: "var(--db-success)" },
   estimate: { label: "Estimate", borderColor: "#f97316", iconColor: "#f97316" },
   sms: { label: "SMS", borderColor: "#8b5cf6", iconColor: "#8b5cf6" },
 };
@@ -147,7 +147,7 @@ function tierColor(tier: string): { bg: string; fg: string } {
   const map: Record<string, { bg: string; fg: string }> = {
     new: { bg: "rgba(96,165,250,0.15)", fg: "#60a5fa" },
     loyal: { bg: "var(--db-success-bg)", fg: "var(--db-success)" },
-    vip: { bg: "rgba(250,204,21,0.15)", fg: "#facc15" },
+    vip: { bg: "rgba(250,204,21,0.15)", fg: "var(--db-warning)" },
     dormant: { bg: "rgba(156,163,175,0.15)", fg: "#9ca3af" },
     "at-risk": { bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
   };
@@ -168,12 +168,12 @@ function StatusBadge({ status, type }: { status: string; type: TimelineItem["typ
     if (status === "confirmed") { bg = "var(--db-success-bg)"; fg = "var(--db-success)"; }
     else if (status === "completed") { bg = "rgba(96,165,250,0.15)"; fg = "#60a5fa"; }
     else if (status === "cancelled") { bg = "var(--db-danger-bg)"; fg = "var(--db-danger)"; }
-    else if (status === "no_show") { bg = "rgba(250,204,21,0.15)"; fg = "#facc15"; }
+    else if (status === "no_show") { bg = "rgba(250,204,21,0.15)"; fg = "var(--db-warning)"; }
   } else if (type === "estimate") {
     if (status === "won") { bg = "var(--db-success-bg)"; fg = "var(--db-success)"; }
     else if (status === "lost" || status === "expired") { bg = "var(--db-danger-bg)"; fg = "var(--db-danger)"; }
     else if (status === "sent" || status === "follow_up") { bg = "rgba(96,165,250,0.15)"; fg = "#60a5fa"; }
-    else if (status === "new") { bg = "rgba(250,204,21,0.15)"; fg = "#facc15"; }
+    else if (status === "new") { bg = "rgba(250,204,21,0.15)"; fg = "var(--db-warning)"; }
   }
 
   return (

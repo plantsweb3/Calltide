@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { complaintTickets, customers } from "@/db/schema";
 import { eq, and, desc, gte, lte, count } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const PAGE_SIZE = 25;
 
@@ -12,6 +13,9 @@ export async function GET(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`complaints-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const { searchParams } = new URL(req.url);
   const page = Math.min(Math.max(1, parseInt(searchParams.get("page") || "1")), 10000);
@@ -97,6 +101,9 @@ export async function POST(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`complaints-post:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;
   try {

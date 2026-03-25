@@ -6,6 +6,8 @@ import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import Button from "@/components/ui/button";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import PageHeader from "@/components/page-header";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface ReferralData {
   referralCode: string | null;
@@ -23,6 +25,7 @@ interface ReferralData {
 }
 
 export default function ReferralsPage() {
+  const [lang] = useLang();
   const [data, setData] = useState<ReferralData | null>(null);
   const [copied, setCopied] = useState<"code" | "link" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -68,7 +71,7 @@ export default function ReferralsPage() {
 
   if (error) {
     return (
-      <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+      <div role="alert" aria-live="assertive" className="rounded-xl p-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
         <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
         <button
           onClick={loadReferrals}
@@ -88,7 +91,7 @@ export default function ReferralsPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Referral Program"
+        title={t("referrals.title", lang)}
         description="Refer a business → they get 50% off first month → you get 1 month free ($497 credit)"
       />
 
@@ -98,7 +101,7 @@ export default function ReferralsPage() {
           <>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--db-text-muted)" }}>
-                Your Referral Code
+                {t("referrals.yourCode", lang)}
               </p>
               <div className="flex items-center gap-3">
                 <code
@@ -112,7 +115,7 @@ export default function ReferralsPage() {
                   size="sm"
                   onClick={() => copyToClipboard(data.referralCode!, "code")}
                 >
-                  {copied === "code" ? "Copied!" : "Copy"}
+                  {copied === "code" ? "Copied!" : t("referrals.copyLink", lang)}
                 </Button>
               </div>
             </div>
@@ -134,7 +137,7 @@ export default function ReferralsPage() {
                   size="sm"
                   onClick={() => data.shareLink && copyToClipboard(data.shareLink, "link")}
                 >
-                  {copied === "link" ? "Copied!" : "Copy"}
+                  {copied === "link" ? "Copied!" : t("referrals.copyLink", lang)}
                 </Button>
               </div>
             </div>
@@ -149,9 +152,9 @@ export default function ReferralsPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 stagger-grid">
         {[
-          { label: "Referred", value: data.stats.totalReferred },
-          { label: "Active", value: data.stats.active },
-          { label: "Credits Earned", value: `$${data.stats.creditsEarned}` },
+          { label: t("referrals.earned", lang), value: data.stats.totalReferred },
+          { label: t("status.active", lang), value: data.stats.active },
+          { label: t("referrals.reward", lang), value: `$${data.stats.creditsEarned}` },
         ].map((stat) => (
           <div
             key={stat.label}

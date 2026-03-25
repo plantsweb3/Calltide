@@ -24,7 +24,7 @@ const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }
 };
 
 function getStatusColor(status: string) {
-  return STATUS_COLORS[status] || { bg: "rgba(148,163,184,0.12)", text: "#94a3b8", border: "#94a3b8" };
+  return STATUS_COLORS[status] || { bg: "rgba(148,163,184,0.12)", text: "var(--db-text-muted)", border: "var(--db-text-muted)" };
 }
 
 // Fixed hours: 7 AM to 7 PM

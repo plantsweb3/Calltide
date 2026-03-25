@@ -4,8 +4,13 @@ import { accounts } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { verifyClientCookie } from "@/lib/client-auth";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
+  const businessId = req.headers.get("x-business-id") ?? req.cookies.get("capta_client")?.value ?? "anonymous";
+  const rl = await rateLimit(`session-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
+
   try {
     const cookie = req.cookies.get("capta_client")?.value;
     const secret = env.CLIENT_AUTH_SECRET;

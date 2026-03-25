@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { jobIntakes, calls, leads } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`intakes-get:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   const page = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1")), 10000);
   const limit = Math.min(Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") || "20")), 100);

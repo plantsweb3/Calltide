@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { signClientCookie } from "@/lib/client-auth";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const switchSchema = z.object({
   businessId: z.string().min(1),
@@ -15,6 +16,9 @@ export async function POST(req: NextRequest) {
   if (!currentBusinessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`locations-switch:${currentBusinessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;
   try {

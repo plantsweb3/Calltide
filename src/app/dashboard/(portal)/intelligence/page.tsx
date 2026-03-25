@@ -5,6 +5,8 @@ import Link from "next/link";
 import MetricCard from "@/components/metric-card";
 import { PageSkeleton } from "@/components/skeleton";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface IntelligenceData {
   receptionistName: string;
@@ -72,6 +74,7 @@ const GAP_STATUS_COLORS: Record<string, string> = {
 };
 
 export default function IntelligencePage() {
+  const [lang] = useLang();
   const receptionistName = useReceptionistName();
   const [data, setData] = useState<IntelligenceData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +95,8 @@ export default function IntelligencePage() {
   if (error) {
     return (
       <div
+        role="alert"
+        aria-live="assertive"
         className="rounded-xl p-4 flex items-center justify-between"
         style={{
           background: "var(--db-danger-bg)",
@@ -126,20 +131,20 @@ export default function IntelligencePage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)" }}>
-          {receptionistName}&apos;s Brain
+          {t("intelligence.title", lang, { name: receptionistName })}
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Everything {receptionistName} has learned about your business
+          {t("intelligence.subtitle", lang, { name: receptionistName })}
         </p>
       </div>
 
       {/* A. Stats Hero — 4 MetricCards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 stagger-grid">
-        <MetricCard label="Calls Handled" value={data.totalCalls} />
-        <MetricCard label="Customers Served" value={data.totalCustomers} />
-        <MetricCard label="FAQs Mastered" value={data.totalCustomResponses} />
+        <MetricCard label={t("intelligence.callsHandled", lang)} value={data.totalCalls} />
+        <MetricCard label={t("intelligence.customersServed", lang)} value={data.totalCustomers} />
+        <MetricCard label={t("intelligence.faqsMastered", lang)} value={data.totalCustomResponses} />
         <MetricCard
-          label="Avg QA Score"
+          label={t("intelligence.avgQaScore", lang)}
           value={data.avgQaScore}
           suffix="/100"
           changeType={
@@ -201,7 +206,7 @@ export default function IntelligencePage() {
             className="mb-4 text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
           >
-            Knowledge Mastery
+            {t("intelligence.knowledgeMastery", lang)}
           </h3>
 
           {/* Custom responses by category */}
@@ -217,8 +222,8 @@ export default function IntelligencePage() {
                     className="rounded-full px-2.5 py-0.5 text-xs font-semibold"
                     style={{
                       background:
-                        cnt > 0 ? "rgba(34,197,94,0.1)" : "var(--db-hover)",
-                      color: cnt > 0 ? "#22c55e" : "var(--db-text-muted)",
+                        cnt > 0 ? "var(--db-success-bg)" : "var(--db-hover)",
+                      color: cnt > 0 ? "var(--db-success)" : "var(--db-text-muted)",
                     }}
                   >
                     {cnt}
@@ -238,7 +243,7 @@ export default function IntelligencePage() {
                 className="text-xs font-semibold uppercase tracking-wider"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                Knowledge Gaps
+                {t("intelligence.knowledgeGaps", lang)}
               </p>
               <div className="flex gap-2">
                 {(["pending", "answered", "dismissed"] as const).map((s) => (
@@ -265,7 +270,7 @@ export default function IntelligencePage() {
                     <span
                       className="mt-1.5 h-2 w-2 rounded-full shrink-0"
                       style={{
-                        background: GAP_STATUS_COLORS[gap.status] || "#94a3b8",
+                        background: GAP_STATUS_COLORS[gap.status] || "var(--db-text-muted)",
                       }}
                     />
                     <p
@@ -293,7 +298,7 @@ export default function IntelligencePage() {
               color: "#fff",
             }}
           >
-            Teach {receptionistName} &rarr;
+            {t("intelligence.teach", lang, { name: receptionistName })} &rarr;
           </Link>
         </div>
 
@@ -303,7 +308,7 @@ export default function IntelligencePage() {
             className="mb-4 text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
           >
-            Quality Trends
+            {t("intelligence.qualityTrends", lang)}
           </h3>
 
           {/* QA breakdown bars */}
@@ -349,10 +354,10 @@ export default function IntelligencePage() {
                           width: `${val}%`,
                           background:
                             val >= 80
-                              ? "#22c55e"
+                              ? "var(--db-success)"
                               : val >= 50
-                                ? "#f59e0b"
-                                : "#ef4444",
+                                ? "var(--db-warning-alt)"
+                                : "var(--db-danger)",
                         }}
                       />
                     </div>
@@ -373,7 +378,7 @@ export default function IntelligencePage() {
                 className="text-xs font-semibold uppercase tracking-wider mb-3"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                Weekly Score Trend
+                {t("intelligence.weeklyTrend", lang)}
               </p>
               <div className="flex items-end gap-1" style={{ height: "80px" }}>
                 {data.weeklyQaTrend.map((w, i) => (
@@ -402,7 +407,7 @@ export default function IntelligencePage() {
             className="mb-4 text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
           >
-            Customer Intelligence
+            {t("intelligence.customerIntelligence", lang)}
           </h3>
 
           {/* Top 5 customers */}
@@ -412,7 +417,7 @@ export default function IntelligencePage() {
                 className="text-xs mb-2"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                Top Callers
+                {t("intelligence.topCallers", lang)}
               </p>
               {data.topCustomers.map((c, i) => (
                 <div
@@ -430,8 +435,8 @@ export default function IntelligencePage() {
                       <span
                         className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
                         style={{
-                          background: `${TIER_COLORS[c.tier] || "#94a3b8"}15`,
-                          color: TIER_COLORS[c.tier] || "#94a3b8",
+                          background: `${TIER_COLORS[c.tier] || "var(--db-text-muted)"}15`,
+                          color: TIER_COLORS[c.tier] || "var(--db-text-muted)",
                         }}
                       >
                         {c.tier}
@@ -456,7 +461,7 @@ export default function IntelligencePage() {
                 className="text-xs mb-2"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                Customer Tiers
+                {t("intelligence.customerTiers", lang)}
               </p>
               <div className="flex rounded-full overflow-hidden h-3">
                 {Object.entries(data.tierDistribution).map(([tier, cnt]) =>
@@ -466,7 +471,7 @@ export default function IntelligencePage() {
                       className="transition-all duration-500"
                       style={{
                         width: `${(cnt / totalTierCount) * 100}%`,
-                        background: TIER_COLORS[tier] || "#94a3b8",
+                        background: TIER_COLORS[tier] || "var(--db-text-muted)",
                       }}
                       title={`${tier}: ${cnt}`}
                     />
@@ -485,7 +490,7 @@ export default function IntelligencePage() {
                         <span
                           className="inline-block h-2 w-2 rounded-full"
                           style={{
-                            background: TIER_COLORS[tier] || "#94a3b8",
+                            background: TIER_COLORS[tier] || "var(--db-text-muted)",
                           }}
                         />
                         {tier} ({cnt})
@@ -499,7 +504,7 @@ export default function IntelligencePage() {
           {/* Repeat rate */}
           <div className="flex items-center justify-between">
             <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-              Repeat Caller Rate
+              {t("intelligence.repeatCallerRate", lang)}
             </span>
             <span
               className="text-lg font-bold"
@@ -516,7 +521,7 @@ export default function IntelligencePage() {
             className="mb-4 text-sm font-semibold uppercase tracking-wider"
             style={{ color: "var(--db-text-muted)" }}
           >
-            Business Insights
+            {t("intelligence.businessInsights", lang)}
           </h3>
 
           {/* Top services */}
@@ -526,7 +531,7 @@ export default function IntelligencePage() {
                 className="text-xs mb-2"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                Top Requested Services
+                {t("intelligence.topServices", lang)}
               </p>
               {data.topServices.map((s, i) => (
                 <div
@@ -556,7 +561,7 @@ export default function IntelligencePage() {
               className="text-xs mb-2"
               style={{ color: "var(--db-text-muted)" }}
             >
-              Busiest Hours
+              {t("intelligence.busiestHours", lang)}
             </p>
             <div className="grid grid-cols-12 gap-0.5">
               {data.hourCounts.map((cnt, h) => {
@@ -601,7 +606,7 @@ export default function IntelligencePage() {
           {/* Bilingual percentage */}
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-              Bilingual Calls
+              {t("intelligence.bilingualCalls", lang)}
             </span>
             <span
               className="text-sm font-semibold"
@@ -618,7 +623,7 @@ export default function IntelligencePage() {
                 className="text-xs mb-2"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                Monthly Call Volume
+                {t("intelligence.monthlyVolume", lang)}
               </p>
               <div className="flex items-end gap-1" style={{ height: "64px" }}>
                 {data.monthlyTrend.map((m, i) => (

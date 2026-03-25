@@ -58,7 +58,7 @@ async function verifyToken(token: string, secret: string): Promise<boolean> {
   return crypto.subtle.verify("HMAC", key, sigBytes, encoder.encode(payload));
 }
 
-function parseClientPayload(cookie: string): { businessId: string; accountId?: string } | null {
+function parseClientPayload(cookie: string): { businessId: string; accountId?: string; iat?: number } | null {
   const lastDot = cookie.lastIndexOf(".");
   if (lastDot === -1) return null;
   // Guard against oversized payloads (cookies are typically < 4KB)
@@ -67,7 +67,7 @@ function parseClientPayload(cookie: string): { businessId: string; accountId?: s
     const data = JSON.parse(atob(cookie.slice(0, lastDot)));
     if (data.exp && data.exp < Date.now()) return null;
     if (!data.businessId) return null;
-    return { businessId: data.businessId, accountId: data.accountId };
+    return { businessId: data.businessId, accountId: data.accountId, iat: data.iat };
   } catch {
     return null;
   }
@@ -151,6 +151,7 @@ async function requireClientAuth(req: NextRequest, isApi: boolean): Promise<Next
   const headers = new Headers(req.headers);
   headers.set("x-business-id", clientPayload.businessId);
   if (clientPayload.accountId) headers.set("x-account-id", clientPayload.accountId);
+  if (clientPayload.iat) headers.set("x-session-iat", String(clientPayload.iat));
   return NextResponse.next({ request: { headers } });
 }
 

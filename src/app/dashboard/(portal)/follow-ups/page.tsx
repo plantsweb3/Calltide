@@ -9,6 +9,8 @@ import PageHeader from "@/components/page-header";
 import EmptyState from "@/components/empty-state";
 import { TableSkeleton } from "@/components/skeleton";
 import PhoneLink from "@/components/phone-link";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface FollowUp {
   id: string;
@@ -30,30 +32,31 @@ const priorityColors: Record<string, string> = {
   urgent: "var(--db-danger)",
   high: "var(--db-warning-alt)",
   normal: "#3b82f6",
-  low: "#94a3b8",
+  low: "var(--db-text-muted)",
 };
 
-const STATUS_TABS = [
-  { key: "all", label: "All" },
-  { key: "pending", label: "Pending" },
-  { key: "in_progress", label: "In Progress" },
-  { key: "completed", label: "Completed" },
-] as const;
-
-const SORT_OPTIONS = [
-  { value: "dueDate", label: "Due Date" },
-  { value: "priority", label: "Priority" },
-  { value: "createdAt", label: "Created" },
-] as const;
-
-const DUE_DATE_FILTERS = [
-  { value: "all", label: "All" },
-  { value: "overdue", label: "Overdue" },
-  { value: "today", label: "Due Today" },
-  { value: "this_week", label: "Due This Week" },
-] as const;
-
 export default function FollowUpsPage() {
+  const [lang] = useLang();
+
+  const STATUS_TABS = [
+    { key: "all", label: t("followUps.all", lang) },
+    { key: "pending", label: t("status.pending", lang) },
+    { key: "in_progress", label: t("status.inProgress", lang) },
+    { key: "completed", label: t("status.completed", lang) },
+  ] as const;
+
+  const SORT_OPTIONS = [
+    { value: "dueDate", label: t("followUps.sortBy.dueDate", lang) },
+    { value: "priority", label: t("followUps.sortBy.priority", lang) },
+    { value: "createdAt", label: t("followUps.sortBy.created", lang) },
+  ] as const;
+
+  const DUE_DATE_FILTERS = [
+    { value: "all", label: t("followUps.all", lang) },
+    { value: "overdue", label: t("followUps.overdue", lang) },
+    { value: "today", label: "Due Today" },
+    { value: "this_week", label: t("followUps.thisWeek", lang) },
+  ] as const;
   const [followUps, setFollowUps] = useState<FollowUp[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("pending");
@@ -169,7 +172,7 @@ export default function FollowUpsPage() {
               color: isOverdue ? "var(--db-danger)" : isToday ? "var(--db-warning-alt)" : "var(--db-text-muted)",
             }}
           >
-            {isOverdue ? "Overdue" : isToday ? "Today" : due.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            {isOverdue ? t("followUps.overdue", lang) : isToday ? "Today" : due.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           </span>
         );
       },
@@ -201,7 +204,7 @@ export default function FollowUpsPage() {
               style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
               onClick={(e) => e.stopPropagation()}
             >
-              Call Back
+              {t("followUps.callBack", lang)}
             </a>
           )}
           {row.status === "pending" && (
@@ -221,7 +224,7 @@ export default function FollowUpsPage() {
               onClick={(e) => { e.stopPropagation(); updateStatus(row.id, "completed"); }}
               disabled={updating === row.id}
             >
-              Done
+              {t("followUps.markDone", lang)}
             </Button>
           )}
           {row.status !== "dismissed" && row.status !== "completed" && (
@@ -231,7 +234,7 @@ export default function FollowUpsPage() {
               onClick={(e) => { e.stopPropagation(); updateStatus(row.id, "dismissed"); }}
               disabled={updating === row.id}
             >
-              Dismiss
+              {t("followUps.skip", lang)}
             </Button>
           )}
         </div>
@@ -244,7 +247,7 @@ export default function FollowUpsPage() {
   return (
     <div>
       <PageHeader
-        title="Follow-ups"
+        title={t("followUps.title", lang)}
         description={
           pendingCount > 0
             ? `${pendingCount} pending${urgentCount > 0 ? ` (${urgentCount} urgent)` : ""}`
@@ -256,7 +259,7 @@ export default function FollowUpsPage() {
               className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
               style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
             >
-              {overdueCount} overdue
+              {overdueCount} {t("followUps.overdue", lang)}
             </span>
           ) : undefined
         }
@@ -266,18 +269,18 @@ export default function FollowUpsPage() {
       <div className="flex flex-wrap items-center gap-3 mb-6">
         {/* Tab filters */}
         <div className="flex gap-1 p-1 rounded-lg" style={{ background: "var(--db-surface)" }}>
-          {STATUS_TABS.map((t) => (
+          {STATUS_TABS.map((tab_item) => (
             <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
+              key={tab_item.key}
+              onClick={() => setTab(tab_item.key)}
               className="px-4 py-2 text-sm font-medium rounded-md transition-all"
               style={{
-                background: tab === t.key ? "var(--db-card)" : "transparent",
-                color: tab === t.key ? "var(--db-text)" : "var(--db-text-muted)",
-                boxShadow: tab === t.key ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+                background: tab === tab_item.key ? "var(--db-card)" : "transparent",
+                color: tab === tab_item.key ? "var(--db-text)" : "var(--db-text-muted)",
+                boxShadow: tab === tab_item.key ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
               }}
             >
-              {t.label}
+              {tab_item.label}
             </button>
           ))}
         </div>
@@ -377,6 +380,7 @@ function EditFollowUpModal({
   onClose: () => void;
   onSaved: () => void;
 }) {
+  const [lang] = useLang();
   const [title, setTitle] = useState(followUp.title);
   const [description, setDescription] = useState(followUp.description || "");
   const [dueDate, setDueDate] = useState(followUp.dueDate ? followUp.dueDate.slice(0, 16) : "");
@@ -542,10 +546,10 @@ function EditFollowUpModal({
           {error && <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>}
           <div className="flex gap-2 pt-2">
             <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
-              Cancel
+              {t("action.cancel", lang)}
             </Button>
             <Button type="submit" disabled={saving} className="flex-1">
-              {saving ? "Saving..." : "Save Changes"}
+              {saving ? "Saving..." : t("action.save", lang)}
             </Button>
           </div>
         </form>

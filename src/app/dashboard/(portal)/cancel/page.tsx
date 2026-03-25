@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { CaptaSpinnerInline } from "@/components/capta-spinner";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 const REASONS = [
   { value: "too_expensive", label: "Too Expensive" },
@@ -15,6 +17,7 @@ const REASONS = [
 ] as const;
 
 export default function CancelPage() {
+  const [lang] = useLang();
   const router = useRouter();
   const [reason, setReason] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
@@ -75,10 +78,10 @@ export default function CancelPage() {
           className="text-2xl font-semibold"
           style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
         >
-          Cancel Subscription
+          {t("cancel.title", lang)}
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          We&apos;re sorry to see you go. Your feedback helps us improve.
+          {t("cancel.sorryToSeeYouGo", lang)}
         </p>
       </div>
 
@@ -91,7 +94,7 @@ export default function CancelPage() {
           className="mb-4 text-sm font-semibold uppercase tracking-wider"
           style={{ color: "var(--db-text-muted)" }}
         >
-          Why are you leaving?
+          {t("cancel.tellUsWhy", lang)}
         </h3>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {REASONS.map((r) => (
@@ -108,7 +111,7 @@ export default function CancelPage() {
                 color: reason === r.value ? "var(--db-accent)" : "var(--db-text)",
               }}
             >
-              {r.label}
+              {r.value === "other" ? t("cancel.otherReason", lang) : r.label}
             </button>
           ))}
         </div>
@@ -238,7 +241,7 @@ export default function CancelPage() {
             flex: 1,
           }}
         >
-          Never Mind, Keep My Account
+          {t("cancel.keepSubscription", lang)}
         </button>
 
         {/* Cancel — danger, requires confirmation */}
@@ -280,7 +283,7 @@ export default function CancelPage() {
                 Canceling...
               </span>
             ) : (
-              "Confirm Cancellation"
+              t("cancel.confirmCancel", lang)
             )}
           </button>
         )}

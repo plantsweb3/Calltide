@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { TableSkeleton } from "@/components/skeleton";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 import ExportCsvButton from "@/app/dashboard/_components/csv-export";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import Button from "@/components/ui/button";
@@ -40,19 +42,20 @@ const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   follow_up: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)" },
   won: { bg: "var(--db-success-bg)", text: "var(--db-success)" },
   lost: { bg: "var(--db-danger-bg)", text: "var(--db-danger)" },
-  expired: { bg: "rgba(148,163,184,0.15)", text: "#94a3b8" },
+  expired: { bg: "rgba(148,163,184,0.15)", text: "var(--db-text-muted)" },
 };
 
 const LOST_REASONS = [
-  { value: "too_expensive", label: "Too expensive" },
-  { value: "went_with_competitor", label: "Went with competitor" },
-  { value: "no_longer_needed", label: "No longer needed" },
-  { value: "no_response", label: "No response" },
-  { value: "other", label: "Other" },
+  { value: "too_expensive", i18nKey: "estimates.lostReasons.tooExpensive" as const, label: null },
+  { value: "went_with_competitor", i18nKey: "estimates.lostReasons.competitor" as const, label: null },
+  { value: "no_longer_needed", i18nKey: null, label: "No longer needed" },
+  { value: "no_response", i18nKey: "estimates.lostReasons.noResponse" as const, label: null },
+  { value: "other", i18nKey: null, label: "Other" },
 ];
 
 export default function EstimatesPage() {
   const receptionistName = useReceptionistName();
+  const [lang] = useLang();
   const [estimates, setEstimates] = useState<Estimate[]>([]);
   const [pipeline, setPipeline] = useState<Pipeline>({});
   const [loading, setLoading] = useState(true);
@@ -145,17 +148,17 @@ export default function EstimatesPage() {
   }
 
   const pipelineCards = [
-    { key: "new", label: "New" },
-    { key: "sent", label: "Sent" },
-    { key: "follow_up", label: "Follow Up" },
-    { key: "won", label: "Won" },
-    { key: "lost", label: "Lost" },
+    { key: "new", label: t("estimates.new", lang) },
+    { key: "sent", label: t("estimates.sent", lang) },
+    { key: "follow_up", label: t("estimates.followUp", lang) },
+    { key: "won", label: t("estimates.won", lang) },
+    { key: "lost", label: t("estimates.lost", lang) },
   ];
 
   return (
     <div>
       <PageHeader
-        title="Estimates Pipeline"
+        title={t("estimates.title", lang)}
         actions={
           <div className="flex items-center gap-2">
             <input
@@ -219,7 +222,7 @@ export default function EstimatesPage() {
       </div>
 
       {error && (
-        <div className="db-card mb-4 flex items-center justify-between p-4" style={{ borderColor: "var(--db-danger)" }}>
+        <div role="alert" aria-live="assertive" className="db-card mb-4 flex items-center justify-between p-4" style={{ borderColor: "var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
           <Button variant="danger" size="sm" onClick={fetchEstimates}>Retry</Button>
         </div>
@@ -232,7 +235,7 @@ export default function EstimatesPage() {
           <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
           </svg>
-          <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>No estimates yet</p>
+          <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>{t("empty.noEstimates", lang, { name: receptionistName })}</p>
           <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
             Estimates are auto-created when callers request quotes through {receptionistName}.
           </p>
@@ -256,7 +259,7 @@ export default function EstimatesPage() {
             },
             {
               key: "amount",
-              label: "Amount",
+              label: t("estimates.amount", lang),
               render: (row) => <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{formatCurrency(row.amount)}</span>,
             },
             {
@@ -429,7 +432,7 @@ export default function EstimatesPage() {
               autoFocus
             >
               {LOST_REASONS.map((r) => (
-                <option key={r.value} value={r.value}>{r.label}</option>
+                <option key={r.value} value={r.value}>{r.i18nKey ? t(r.i18nKey, lang) : r.label}</option>
               ))}
             </select>
             <div className="flex gap-2">

@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { aggregateDailyDigest } from "@/lib/digest/aggregator";
 import { formatDigestSMS, formatDigestEmail } from "@/lib/digest/formatter";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const DEMO_BUSINESS_ID = "demo-business-id";
 
@@ -13,6 +14,9 @@ export async function GET(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`digest-preview:${businessId}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({

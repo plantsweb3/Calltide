@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { webhookEndpoints, webhookDeliveries } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../../demo-data";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const VALID_EVENTS = [
   "appointment.created",
@@ -29,6 +30,9 @@ export async function PATCH(
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`webhooks-patch:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ error: "Demo mode" }, { status: 403 });
@@ -100,6 +104,9 @@ export async function DELETE(
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`webhooks-delete:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   if (businessId === DEMO_BUSINESS_ID) {
     return NextResponse.json({ error: "Demo mode" }, { status: 403 });

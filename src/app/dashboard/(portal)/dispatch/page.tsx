@@ -8,6 +8,8 @@ import Button from "@/components/ui/button";
 import EmptyState from "@/components/empty-state";
 import ConfirmDialog from "@/components/confirm-dialog";
 import { formatPhone } from "@/lib/format";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 /* ── Types ── */
 
@@ -69,6 +71,7 @@ function getTechColor(tech: Technician, index: number): string {
 /* ── Main Component ── */
 
 export default function DispatchPage() {
+  const [lang] = useLang();
   const [date, setDate] = useState(toDateString(new Date()));
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [unassigned, setUnassigned] = useState<DispatchAppointment[]>([]);
@@ -210,7 +213,7 @@ export default function DispatchPage() {
   return (
     <div>
       <PageHeader
-        title="Dispatch Board"
+        title={t("dispatch.title", lang)}
         description={`${totalJobs} job${totalJobs !== 1 ? "s" : ""} ${isToday ? "today" : `on ${formatDateLabel(date)}`}`}
         actions={
           <div className="flex items-center gap-2">
@@ -275,9 +278,9 @@ export default function DispatchPage() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
+        <div role="alert" aria-live="assertive" className="rounded-xl p-4 mb-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
           <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
-          <Button variant="danger" size="sm" onClick={fetchDispatch}>Retry</Button>
+          <Button variant="danger" size="sm" onClick={fetchDispatch}>{t("action.retry", lang)}</Button>
         </div>
       )}
 
@@ -327,13 +330,13 @@ export default function DispatchPage() {
                 style={{ background: "var(--db-hover)" }}
               >
                 <div className="flex items-center gap-2">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-warning, #f59e0b)" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-warning)" }}>
                     <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                     <line x1="12" y1="9" x2="12" y2="13" />
                     <line x1="12" y1="17" x2="12.01" y2="17" />
                   </svg>
                   <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
-                    Unassigned ({unassigned.length})
+                    {t("dispatch.unassigned", lang)} ({unassigned.length})
                   </span>
                 </div>
               </div>
@@ -476,7 +479,7 @@ export default function DispatchPage() {
           {unavailableTechs.length > 0 && (
             <div>
               <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--db-text-muted)" }}>
-                Unavailable ({unavailableTechs.length})
+                {t("team.offDuty", lang)} ({unavailableTechs.length})
               </h3>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {unavailableTechs.map((tech, idx) => {
@@ -507,7 +510,7 @@ export default function DispatchPage() {
                               className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
                               style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
                             >
-                              Unavailable
+                              {t("team.offDuty", lang)}
                             </span>
                           </div>
                         </div>
@@ -537,11 +540,13 @@ export default function DispatchPage() {
           aria-labelledby="assign-dialog-title"
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="modal-content db-card w-full max-w-md rounded-xl p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="assign-dialog-title" className="text-lg font-semibold mb-1" style={{ color: "var(--db-text)" }}>
-              Assign Technician
+              {t("dispatch.assign", lang)}
             </h3>
             <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
               {assignAppt.service} at {formatTime12h(assignAppt.time)}
@@ -576,7 +581,7 @@ export default function DispatchPage() {
 
             <div className="mt-4 flex justify-end">
               <Button variant="ghost" size="sm" onClick={() => setAssignAppt(null)} disabled={assignLoading}>
-                Cancel
+                {t("action.cancel", lang)}
               </Button>
             </div>
           </div>
@@ -594,6 +599,8 @@ export default function DispatchPage() {
           aria-labelledby="modal-title"
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="modal-content db-card w-full max-w-lg rounded-xl p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
@@ -661,7 +668,7 @@ export default function DispatchPage() {
                   setAssignAppt(selectedAppt);
                 }}
               >
-                {selectedAppt.technicianId ? "Reassign" : "Assign Tech"}
+                {selectedAppt.technicianId ? t("dispatch.reschedule", lang) : t("dispatch.assign", lang)}
               </Button>
               {selectedAppt.technicianId && (
                 <Button
@@ -672,7 +679,7 @@ export default function DispatchPage() {
                     setSelectedAppt(null);
                   }}
                 >
-                  Unassign
+                  {t("dispatch.unassigned", lang)}
                 </Button>
               )}
             </div>
@@ -787,6 +794,7 @@ function AppointmentCard({
   onReassign,
   onUnassign,
 }: AppointmentCardProps) {
+  const [lang] = useLang();
   return (
     <div
       className="rounded-lg p-3 transition-all"
@@ -842,7 +850,7 @@ function AppointmentCard({
       {quickAssignTechs && quickAssignTechs.length > 0 && onQuickAssign && (
         <div className="mt-2.5 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
           <p className="text-[10px] font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
-            Quick assign
+            {t("dispatch.dragToAssign", lang)}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {quickAssignTechs.map((tech, idx) => (
@@ -875,7 +883,7 @@ function AppointmentCard({
                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" />
                 <polyline points="17 11 19 13 23 9" />
               </svg>
-              Reassign
+              {t("dispatch.reschedule", lang)}
             </button>
           )}
           {showUnassign && (
@@ -890,7 +898,7 @@ function AppointmentCard({
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
               </svg>
-              Unassign
+              {t("dispatch.unassigned", lang)}
             </button>
           )}
         </div>
