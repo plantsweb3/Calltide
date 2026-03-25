@@ -39,7 +39,7 @@ export default function SetupChecklist({
     { label: "Account created", done: true },
     { label: "Set business hours", done: hasBusinessHours, link: "/dashboard/settings#general" },
     { label: "Customize greeting", done: !!greeting, link: "/dashboard/settings#receptionist" },
-    { label: "Add service pricing", done: hasPricing, link: "/dashboard/settings#automations" },
+    { label: "Add service pricing", done: hasPricing, link: "/dashboard/settings#pricing" },
     { label: "Make your first call", done: totalCalls > 0 },
     { label: "Set up call forwarding", done: false, link: "/dashboard/settings#general" },
   ];

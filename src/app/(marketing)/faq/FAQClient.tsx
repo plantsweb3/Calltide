@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PHONE, PHONE_TEL, BOOKING_URL, type Lang } from "@/lib/marketing/translations";
+import { PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
 import { useScrollReveal } from "@/lib/marketing/hooks";
 
 interface FAQItem {

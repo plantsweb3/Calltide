@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { PHONE, PHONE_TEL, BOOKING_URL } from "@/lib/marketing/translations";
+import { PHONE, PHONE_TEL } from "@/lib/marketing/translations";
 import type { Lang } from "@/lib/marketing/translations";
 
 /* ── Lucide-style SVG icons ── */
@@ -425,7 +425,7 @@ export default function PlatformClient() {
             <a href="/pricing" className="rounded-xl border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:border-white/40">
               {t.ctaPricing} &rarr;
             </a>
-            <a href={BOOKING_URL} className="cta-gold cta-shimmer rounded-xl px-8 py-4 text-base font-semibold text-white">
+            <a href="/setup" className="cta-gold cta-shimmer rounded-xl px-8 py-4 text-base font-semibold text-white">
               {t.ctaGet} &rarr;
             </a>
           </div>

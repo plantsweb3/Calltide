@@ -6,7 +6,7 @@ import { reportError } from "@/lib/error-reporting";
 
 import { BRAND_COLOR, COMPANY_ADDRESS, MARKETING_URL } from "@/lib/constants";
 
-const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.com/capta/onboarding";
+const BOOKING_URL = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com"}/setup`;
 
 const REVENUE_PER_CALL: Record<string, number> = {
   plumber: 250,

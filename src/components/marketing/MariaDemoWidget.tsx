@@ -85,7 +85,42 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
+function DemoPhoneFallback({ lang = "en", phoneTel = "" }: { lang?: Lang; phoneTel?: string }) {
+  return (
+    <div className="space-y-5 text-center">
+      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full" style={{ background: "rgba(197,154,39,0.15)" }}>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.7 2.35a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.75.34 1.54.57 2.35.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+      </div>
+      <h3 className="text-xl font-bold tracking-tight text-white">
+        {lang === "en" ? "Talk to Your Receptionist" : "Habla con Tu Recepcionista"}
+      </h3>
+      <p className="text-sm leading-relaxed text-slate-400">
+        {lang === "en"
+          ? "Call to hear how she handles your calls — live, right now."
+          : "Llama para escuchar cómo maneja tus llamadas — en vivo, ahora mismo."}
+      </p>
+      <a
+        href={phoneTel || "tel:+18305217133"}
+        className="block w-full rounded-lg px-6 py-4 text-center text-base font-semibold text-white transition-all hover:brightness-110"
+        style={{ background: "linear-gradient(135deg, #C59A27, #A17D1F)" }}
+      >
+        {lang === "en" ? "Call to try Maria" : "Llama para probar a Maria"} &rarr;
+      </a>
+      <p className="text-center text-xs font-medium text-amber-400/70">
+        {lang === "en" ? "Try speaking Spanish — she'll switch instantly." : "Intenta hablar en español — ella cambia al instante."}
+      </p>
+    </div>
+  );
+}
+
 export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?: Lang; phoneTel?: string }) {
+  // If no demo agent configured, show phone CTA fallback
+  if (!process.env.NEXT_PUBLIC_ELEVENLABS_DEMO_AGENT_ID) {
+    return <DemoPhoneFallback lang={lang} phoneTel={phoneTel} />;
+  }
+
   const [state, setState] = useState<DemoState>("idle");
   const [error, setError] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);

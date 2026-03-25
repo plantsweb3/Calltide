@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { T, PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
 
 interface NavProps {
@@ -11,26 +12,36 @@ interface NavProps {
 
 export function Nav({ lang, toggleLang, scrolled }: NavProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
   const t = T[lang];
+
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
+
+  const navLinkClass = (href: string) =>
+    `text-sm font-medium transition hover:text-charcoal relative pb-0.5 ${
+      isActive(href)
+        ? "text-charcoal border-b-2 border-[#1B2A4A]"
+        : "text-charcoal-muted"
+    }`;
 
   return (
     <nav className={`sticky top-0 z-40 border-b transition-all duration-300 ${scrolled ? "nav-scrolled border-transparent" : "border-cream-border bg-cream"}`}>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 sm:px-8 py-4">
         <a href="/"><img src="/images/logo-inline-navy.webp" alt="Capta" className="h-7 w-auto sm:h-8" /></a>
         <div className="hidden items-center gap-8 md:flex">
-          <a href="/platform" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">
+          <a href="/platform" className={navLinkClass("/platform")}>
             {t.footer.platform}
           </a>
-          <a href="/pricing" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">
+          <a href="/pricing" className={navLinkClass("/pricing")}>
             {t.pricing.label}
           </a>
-          <a href="/about" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">
+          <a href="/about" className={navLinkClass("/about")}>
             {t.footer.about}
           </a>
-          <a href={lang === "en" ? "/blog" : "/es/blog"} className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">
+          <a href={lang === "en" ? "/blog" : "/es/blog"} className={navLinkClass("/blog")}>
             Blog
           </a>
-          <a href={lang === "en" ? "/help" : "/es/help"} className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">
+          <a href={lang === "en" ? "/help" : "/es/help"} className={navLinkClass("/help")}>
             {t.nav.help}
           </a>
           <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">
@@ -58,11 +69,11 @@ export function Nav({ lang, toggleLang, scrolled }: NavProps) {
       {mobileMenuOpen && (
         <div className="border-t border-cream-border bg-white px-6 py-4 md:hidden">
           <div className="flex flex-col gap-4">
-            <a href="/platform" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">{t.footer.platform}</a>
-            <a href="/pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">{t.pricing.label}</a>
-            <a href="/about" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">{t.footer.about}</a>
-            <a href={lang === "en" ? "/blog" : "/es/blog"} onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Blog</a>
-            <a href={lang === "en" ? "/help" : "/es/help"} onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">{t.nav.help}</a>
+            <a href="/platform" onClick={() => setMobileMenuOpen(false)} className={`text-sm font-medium ${isActive("/platform") ? "text-charcoal font-semibold" : "text-charcoal-muted"}`}>{t.footer.platform}</a>
+            <a href="/pricing" onClick={() => setMobileMenuOpen(false)} className={`text-sm font-medium ${isActive("/pricing") ? "text-charcoal font-semibold" : "text-charcoal-muted"}`}>{t.pricing.label}</a>
+            <a href="/about" onClick={() => setMobileMenuOpen(false)} className={`text-sm font-medium ${isActive("/about") ? "text-charcoal font-semibold" : "text-charcoal-muted"}`}>{t.footer.about}</a>
+            <a href={lang === "en" ? "/blog" : "/es/blog"} onClick={() => setMobileMenuOpen(false)} className={`text-sm font-medium ${isActive("/blog") ? "text-charcoal font-semibold" : "text-charcoal-muted"}`}>Blog</a>
+            <a href={lang === "en" ? "/help" : "/es/help"} onClick={() => setMobileMenuOpen(false)} className={`text-sm font-medium ${isActive("/help") ? "text-charcoal font-semibold" : "text-charcoal-muted"}`}>{t.nav.help}</a>
             <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted">{PHONE}</a>
             <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">{t.nav.login}</a>
             <a href="/setup" onClick={() => setMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white">{t.nav.cta}</a>

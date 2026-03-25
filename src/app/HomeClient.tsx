@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, MotionConfig } from "framer-motion";
 import dynamic from "next/dynamic";
 
-import { T, PHONE, PHONE_TEL, BOOKING_URL, type Lang } from "@/lib/marketing/translations";
+import { T, PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
 import { useScrolled, useScrollReveal } from "@/lib/marketing/hooks";
 import { HERO_FEATURE_ICONS, STEP_ICONS } from "@/components/marketing/icons";
 import Image from "next/image";

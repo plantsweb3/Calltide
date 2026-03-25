@@ -823,7 +823,7 @@ function SetupClient() {
 
   // Step 5
   const [faqAnswers, setFaqAnswers] = useState<Record<string, string>>({});
-  const [offLimits, setOffLimits] = useState<Record<string, boolean>>({ pricing: false, competitors: false, timing: false });
+  const [offLimits, setOffLimits] = useState<Record<string, boolean>>({ pricing: true, competitors: false, timing: false });
 
   // Step 6
   const [planToggle, setPlanToggle] = useState<PlanType>("monthly");
@@ -1338,7 +1338,7 @@ function SetupClient() {
             {authState === "pending" && (
               <div>
                 <p style={{ color: "#D4A843", fontSize: 14 }}>
-                  {t.authenticating} {pollAttempt > 0 && <span style={{ color: "#94a3b8" }}>({pollAttempt}/10)</span>}
+                  {t.authenticating}
                 </p>
                 {pollAttempt >= 5 && (
                   <div style={{ marginTop: 12 }}>
@@ -1534,14 +1534,17 @@ function SetupClient() {
               </div>
               <div className={s.field} style={{ flex: 1 }}>
                 <label className={s.label} htmlFor="state">{t.state}</label>
-                <input
+                <select
                   id="state"
-                  className={`${s.input} ${errors.state ? s.inputError : ""}`}
-                  placeholder={t.statePlaceholder}
+                  className={`${s.select} ${errors.state ? s.inputError : ""}`}
                   value={state}
-                  onChange={(e) => { setState(e.target.value.toUpperCase()); clearFieldError("state"); }}
-                  maxLength={2}
-                />
+                  onChange={(e) => { setState(e.target.value); clearFieldError("state"); }}
+                >
+                  <option value="">{t.statePlaceholder}</option>
+                  {["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","PR","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"].map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
                 {errors.state && <span className={s.error}>{errors.state}</span>}
               </div>
             </div>
@@ -2022,6 +2025,10 @@ function SetupClient() {
                 {t.tryMariaSkip}
               </button>
             )}
+
+            <div style={{ marginTop: 12 }}>
+              <button onClick={() => setStep(4)} className={s.backBtn}>{t.back}</button>
+            </div>
           </div>
         )}
 

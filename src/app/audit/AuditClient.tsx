@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const PHONE = process.env.NEXT_PUBLIC_PHONE ?? "(830) 521-7133";
 const PHONE_TEL = `tel:${process.env.NEXT_PUBLIC_PHONE_TEL ?? "+18305217133"}`;
-const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://cal.com/capta/onboarding";
+const BOOKING_URL = "/setup";
 
 const BUSINESS_TYPES = [
   { value: "plumber", en: "Plumber", es: "Plomero" },

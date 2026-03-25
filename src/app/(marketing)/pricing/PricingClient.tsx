@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { PHONE, PHONE_TEL, BOOKING_URL } from "@/lib/marketing/translations";
+import { PHONE, PHONE_TEL } from "@/lib/marketing/translations";
 import type { Lang } from "@/lib/marketing/translations";
 import { useScrollReveal } from "@/lib/marketing/hooks";
 import { SignupForm } from "@/components/marketing/SignupForm";
@@ -339,7 +339,7 @@ export default function PricingClient() {
             {/* CTA */}
             <div className="mt-8 text-center">
               <a
-                href={BOOKING_URL}
+                href="/setup"
                 className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white"
               >
                 {t.cta} &rarr;
@@ -432,7 +432,8 @@ export default function PricingClient() {
           <p className="text-center text-sm text-slate-400 mb-10 max-w-xl mx-auto">
             {t.compSub}
           </p>
-          <div className="overflow-x-auto">
+          <div className="relative overflow-x-auto md:overflow-visible">
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#0f1729] to-transparent md:hidden z-10" />
             <table className="w-full text-sm" style={{ minWidth: "640px" }}>
               <thead>
                 <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
