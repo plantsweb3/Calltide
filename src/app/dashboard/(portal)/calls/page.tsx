@@ -217,7 +217,7 @@ export default function CallsPage() {
         const langCode = (row.language || "-").toUpperCase();
         return (
           <span
-            className="rounded px-1.5 py-0.5 text-[10px] font-medium"
+            className="rounded px-1.5 py-0.5 text-xs font-medium"
             style={{
               background: row.language === "es" ? "var(--db-warning-bg)" : "var(--db-info-bg)",
               color: row.language === "es" ? "var(--db-warning)" : "var(--db-info)",
@@ -412,7 +412,7 @@ export default function CallsPage() {
           );
         })}
         <div className="flex items-center gap-1.5">
-          <label className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+          <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
             From
           </label>
           <input
@@ -428,7 +428,7 @@ export default function CallsPage() {
           />
         </div>
         <div className="flex items-center gap-1.5">
-          <label className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+          <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
             To
           </label>
           <input
@@ -653,7 +653,7 @@ export default function CallsPage() {
                               </span>
                               {step.status === "recovered" && (
                                 <span
-                                  className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase"
+                                  className="rounded px-1.5 py-0.5 text-xs font-bold uppercase"
                                   style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                                 >
                                   Saved
@@ -728,7 +728,7 @@ export default function CallsPage() {
                     setSelectedCall(row);
                   }}
                   style={{
-                    background: "rgba(197,154,39,0.12)",
+                    background: "var(--db-accent-bg)",
                     color: "var(--db-accent)",
                   }}
                 >

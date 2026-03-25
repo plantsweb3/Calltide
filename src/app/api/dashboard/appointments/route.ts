@@ -52,7 +52,8 @@ export async function GET(req: NextRequest) {
       .from(appointments)
       .leftJoin(leads, eq(appointments.leadId, leads.id))
       .where(and(eq(appointments.businessId, businessId), dateCondition))
-      .orderBy(filter === "past" ? desc(appointments.date) : asc(appointments.date));
+      .orderBy(filter === "past" ? desc(appointments.date) : asc(appointments.date))
+      .limit(200);
 
     return NextResponse.json({ appointments: rows });
   } catch (err) {

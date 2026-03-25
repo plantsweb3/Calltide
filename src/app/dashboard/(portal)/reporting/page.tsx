@@ -134,7 +134,7 @@ export default function ReportingPage() {
           <div className="space-y-1 max-h-[400px] overflow-y-auto">
             {data.callsByHour.map((h) => (
               <div key={h.hour} className="flex items-center gap-2" style={{ height: "20px" }}>
-                <span className="w-12 text-[10px] font-medium text-right flex-shrink-0" style={{ color: "var(--db-text-muted)" }}>
+                <span className="w-12 text-xs font-medium text-right flex-shrink-0" style={{ color: "var(--db-text-muted)" }}>
                   {formatHour(h.hour)}
                 </span>
                 <div className="flex-1 h-3.5 rounded-sm overflow-hidden" style={{ background: "var(--db-hover)" }}>
@@ -146,7 +146,7 @@ export default function ReportingPage() {
                     }}
                   />
                 </div>
-                <span className="w-6 text-right text-[10px] font-semibold flex-shrink-0" style={{ color: "var(--db-text)" }}>
+                <span className="w-6 text-right text-xs font-semibold flex-shrink-0" style={{ color: "var(--db-text)" }}>
                   {h.total}
                 </span>
               </div>
@@ -226,15 +226,15 @@ export default function ReportingPage() {
             <div className="flex gap-4">
               <div className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--db-success)" }} />
-                <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)" }}>Answered</span>
+                <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Answered</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--db-danger)" }} />
-                <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)" }}>Missed</span>
+                <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Missed</span>
               </div>
             </div>
             {dailyVolumeSlice.length > 0 && (
-              <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+              <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
                 {new Date(dailyVolumeSlice[0].date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                 {" - "}
                 {new Date(dailyVolumeSlice[dailyVolumeSlice.length - 1].date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
@@ -291,7 +291,7 @@ export default function ReportingPage() {
                       style={{ width: `${pct}%`, background: langColor }}
                     />
                   </div>
-                  <p className="text-[10px] mt-1" style={{ color: "var(--db-text-muted)" }}>{l.total} calls</p>
+                  <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>{l.total} calls</p>
                 </div>
               );
             })}
@@ -324,7 +324,7 @@ export default function ReportingPage() {
             <div className="space-y-3">
               {data.topServices.map((s, i) => (
                 <div key={s.service} className="flex items-center gap-3">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold flex-shrink-0" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold flex-shrink-0" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
                     {i + 1}
                   </span>
                   <div className="flex-1 min-w-0">
@@ -352,7 +352,7 @@ export default function ReportingPage() {
               {data.closeRate != null && (
                 <div className="rounded-lg p-3 mb-2 text-center" style={{ background: "var(--db-hover)" }}>
                   <p className="text-2xl font-bold" style={{ color: data.closeRate >= 50 ? "var(--db-success)" : "var(--db-text)" }}>{data.closeRate}%</p>
-                  <p className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                  <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
                     Close Rate ({data.estimatePipeline.find(e => e.status === "won")?.total ?? 0}/{(data.estimatePipeline.find(e => e.status === "won")?.total ?? 0) + (data.estimatePipeline.find(e => e.status === "lost")?.total ?? 0)} decided)
                   </p>
                 </div>
@@ -393,7 +393,7 @@ export default function ReportingPage() {
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>{data.callerStats.total}</span>
-                <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>Total</span>
+                <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>Total</span>
               </div>
             </div>
           </div>
@@ -468,7 +468,7 @@ function StatMini({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-lg p-2.5 text-center" style={{ background: "var(--db-hover)" }}>
       <p className="text-lg font-bold" style={{ color: "var(--db-text)" }}>{value}</p>
-      <p className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>{label}</p>
+      <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{label}</p>
     </div>
   );
 }

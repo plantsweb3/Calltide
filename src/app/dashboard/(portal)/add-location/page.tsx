@@ -264,7 +264,7 @@ export default function AddLocationPage() {
                 />
                 <button
                   onClick={() => setHours((prev) => ({ ...prev, [day]: { open: "closed", close: "closed" } }))}
-                  className="text-[10px] font-medium"
+                  className="text-xs font-medium"
                   style={{ color: hours[day]?.open === "closed" ? "var(--db-accent)" : "var(--db-text-muted)" }}
                 >
                   {hours[day]?.open === "closed" ? "Closed" : "Set Closed"}

@@ -82,7 +82,7 @@ export default function LineItemsEditor({
   return (
     <div className="space-y-3">
       {/* Header row */}
-      <div className="grid grid-cols-12 gap-2 text-[11px] font-semibold uppercase tracking-wider px-1"
+      <div className="grid grid-cols-12 gap-2 text-xs font-semibold uppercase tracking-wider px-1"
         style={{ color: "var(--db-text-muted)" }}
       >
         <div className="col-span-5">Description</div>

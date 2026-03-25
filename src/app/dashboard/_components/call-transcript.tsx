@@ -94,7 +94,7 @@ export default function CallTranscript({
               </span>
               {call.language && (
                 <span
-                  className="rounded px-1.5 py-0.5 text-[10px] font-medium uppercase"
+                  className="rounded px-1.5 py-0.5 text-xs font-medium uppercase"
                   style={{
                     background: call.language === "es" ? "var(--db-accent-bg)" : "rgba(96,165,250,0.1)",
                     color: call.language === "es" ? "#C59A27" : "#60a5fa",
@@ -154,7 +154,7 @@ export default function CallTranscript({
                     borderBottomRightRadius: line.speaker === "caller" ? "4px" : undefined,
                   }}
                 >
-                  <p className="text-[10px] font-medium uppercase tracking-wider mb-1"
+                  <p className="text-xs font-medium uppercase tracking-wider mb-1"
                     style={{
                       color: line.speaker === "ai" ? "#60a5fa" : "var(--db-accent)",
                     }}
@@ -185,7 +185,7 @@ export default function CallTranscript({
               borderTop: "1px solid var(--db-border)",
             }}
           >
-            <p className="text-[10px] font-medium uppercase tracking-wider mb-1"
+            <p className="text-xs font-medium uppercase tracking-wider mb-1"
               style={{ color: "var(--db-text-muted)" }}
             >
               AI Summary

@@ -150,7 +150,7 @@ export default function CustomersPage() {
         return (
           <div className="flex items-center gap-2">
             <span
-              className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase"
+              className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold uppercase"
               style={{ background: tierConf.bg, color: tierConf.fg }}
             >
               {tierConf.label}
@@ -168,7 +168,7 @@ export default function CustomersPage() {
                   }}
                 />
               </span>
-              <span className="text-[10px] font-medium tabular-nums" style={{ color: "var(--db-text-muted)" }}>
+              <span className="text-xs font-medium tabular-nums" style={{ color: "var(--db-text-muted)" }}>
                 {score}
               </span>
             </div>
@@ -206,14 +206,14 @@ export default function CustomersPage() {
           {(c.tags || []).slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="rounded-full px-2 py-0.5 text-[10px] font-medium"
+              className="rounded-full px-2 py-0.5 text-xs font-medium"
               style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
             >
               {tag}
             </span>
           ))}
           {(c.tags || []).length > 3 && (
-            <span className="text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+            <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
               +{c.tags.length - 3}
             </span>
           )}
@@ -649,7 +649,7 @@ function MergeCustomerModal({
                   </span>
                   {primaryId === cust.id && (
                     <span
-                      className="rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase"
+                      className="rounded px-1.5 py-0.5 text-xs font-semibold uppercase"
                       style={{ background: "rgba(212,168,67,0.15)", color: "var(--db-accent)" }}
                     >
                       Primary
@@ -671,13 +671,13 @@ function MergeCustomerModal({
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ borderBottom: "1px solid var(--db-border)", background: "var(--db-hover)" }}>
-                  <th className="px-4 py-2 text-left text-[11px] font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
+                  <th className="px-4 py-2 text-left text-xs font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
                     Field
                   </th>
-                  <th className="px-4 py-2 text-center text-[11px] font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
+                  <th className="px-4 py-2 text-center text-xs font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
                     {a.name || "Customer A"}
                   </th>
-                  <th className="px-4 py-2 text-center text-[11px] font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
+                  <th className="px-4 py-2 text-center text-xs font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
                     {b.name || "Customer B"}
                   </th>
                 </tr>

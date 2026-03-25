@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { googleReviews } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { rateLimit, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+import { reportError } from "@/lib/error-reporting";
 import { z } from "zod";
 
 /**
@@ -16,32 +17,37 @@ export async function GET(req: NextRequest) {
   const rl = await rateLimit(`dashboard-reviews:${businessId}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
 
-  const reviews = await db
-    .select()
-    .from(googleReviews)
-    .where(eq(googleReviews.businessId, businessId))
-    .orderBy(desc(googleReviews.createdAt))
-    .limit(50);
+  try {
+    const reviews = await db
+      .select()
+      .from(googleReviews)
+      .where(eq(googleReviews.businessId, businessId))
+      .orderBy(desc(googleReviews.createdAt))
+      .limit(50);
 
-  // Calculate stats
-  const totalReviews = reviews.length;
-  const avgRating = totalReviews > 0
-    ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
-    : 0;
-  const ratingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-  for (const r of reviews) {
-    const key = r.rating as keyof typeof ratingDistribution;
-    if (key >= 1 && key <= 5) ratingDistribution[key]++;
+    // Calculate stats
+    const totalReviews = reviews.length;
+    const avgRating = totalReviews > 0
+      ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
+      : 0;
+    const ratingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    for (const r of reviews) {
+      const key = r.rating as keyof typeof ratingDistribution;
+      if (key >= 1 && key <= 5) ratingDistribution[key]++;
+    }
+
+    return NextResponse.json({
+      reviews,
+      stats: {
+        total: totalReviews,
+        avgRating: Math.round(avgRating * 10) / 10,
+        distribution: ratingDistribution,
+      },
+    });
+  } catch (error) {
+    reportError("Reviews route error", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-
-  return NextResponse.json({
-    reviews,
-    stats: {
-      total: totalReviews,
-      avgRating: Math.round(avgRating * 10) / 10,
-      distribution: ratingDistribution,
-    },
-  });
 }
 
 const addReviewSchema = z.object({
@@ -63,20 +69,25 @@ export async function POST(req: NextRequest) {
   const rl = await rateLimit(`dashboard-reviews-create:${businessId}`, RATE_LIMITS.standard);
   if (!rl.success) return rateLimitResponse(rl);
 
-  const body = await req.json();
-  const parsed = addReviewSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.issues.map((i) => i.message).join(", ") }, { status: 400 });
+  try {
+    const body = await req.json();
+    const parsed = addReviewSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues.map((i) => i.message).join(", ") }, { status: 400 });
+    }
+
+    const [review] = await db.insert(googleReviews).values({
+      businessId,
+      rating: parsed.data.rating,
+      authorName: parsed.data.authorName || null,
+      text: parsed.data.text || null,
+      reviewId: parsed.data.reviewId || null,
+      publishedAt: parsed.data.publishedAt || new Date().toISOString(),
+    }).returning();
+
+    return NextResponse.json({ review });
+  } catch (error) {
+    reportError("Reviews route error", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-
-  const [review] = await db.insert(googleReviews).values({
-    businessId,
-    rating: parsed.data.rating,
-    authorName: parsed.data.authorName || null,
-    text: parsed.data.text || null,
-    reviewId: parsed.data.reviewId || null,
-    publishedAt: parsed.data.publishedAt || new Date().toISOString(),
-  }).returning();
-
-  return NextResponse.json({ review });
 }

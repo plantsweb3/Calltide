@@ -392,7 +392,7 @@ export default function DispatchPage() {
                       <div className="flex items-center gap-2">
                         {tech.isOnCall && (
                           <span
-                            className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
+                            className="text-xs font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
                             style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
                           >
                             On Call
@@ -413,7 +413,7 @@ export default function DispatchPage() {
                         {tech.skills.slice(0, 3).map((skill) => (
                           <span
                             key={skill}
-                            className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                            className="text-xs font-medium px-1.5 py-0.5 rounded"
                             style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
                           >
                             {skill}
@@ -421,7 +421,7 @@ export default function DispatchPage() {
                         ))}
                         {tech.skills.length > 3 && (
                           <span
-                            className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                            className="text-xs font-medium px-1.5 py-0.5 rounded"
                             style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
                           >
                             +{tech.skills.length - 3}
@@ -507,7 +507,7 @@ export default function DispatchPage() {
                           </div>
                           <div className="flex items-center gap-2">
                             <span
-                              className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
+                              className="text-xs font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
                               style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
                             >
                               {t("team.offDuty", lang)}
@@ -535,15 +535,14 @@ export default function DispatchPage() {
         <div
           className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => !assignLoading && setAssignAppt(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="assign-dialog-title"
         >
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="assign-dialog-title"
             className="modal-content db-card w-full max-w-md rounded-xl p-6"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => { if (e.key === "Escape" && !assignLoading) setAssignAppt(null); }}
           >
             <h3 id="assign-dialog-title" className="text-lg font-semibold mb-1" style={{ color: "var(--db-text)" }}>
               {t("dispatch.assign", lang)}
@@ -593,16 +592,14 @@ export default function DispatchPage() {
         <div
           className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setSelectedAppt(null)}
-          onKeyDown={(e) => { if (e.key === "Escape") setSelectedAppt(null); }}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
         >
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="modal-title"
             className="modal-content db-card w-full max-w-lg rounded-xl p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => { if (e.key === "Escape") setSelectedAppt(null); }}
           >
             <div className="flex items-start justify-between">
               <div>
@@ -725,7 +722,7 @@ function TechCircle({ tech, index, isRecommended, recommendedReason, onClick }: 
         }}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        className="h-7 w-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white transition-transform hover:scale-110"
+        className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold text-white transition-transform hover:scale-110"
         style={{
           background: color,
           boxShadow: isRecommended ? `0 0 0 2px var(--db-card), 0 0 0 4px var(--db-accent)` : "none",
@@ -736,7 +733,7 @@ function TechCircle({ tech, index, isRecommended, recommendedReason, onClick }: 
       </button>
       {showTooltip && (
         <div
-          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1.5 rounded-md text-[10px] font-medium whitespace-nowrap z-10 pointer-events-none"
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1.5 rounded-md text-xs font-medium whitespace-nowrap z-10 pointer-events-none"
           style={{
             background: "var(--db-surface, var(--db-card))",
             color: "var(--db-text)",
@@ -838,7 +835,7 @@ function AppointmentCard({
           <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
             <StatusBadge label={appointment.status} variant={statusToVariant(appointment.status)} />
             {appointment.duration > 0 && (
-              <span className="text-[10px] font-medium" style={{ color: "var(--db-text-muted)" }}>
+              <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
                 {appointment.duration}m
               </span>
             )}
@@ -849,7 +846,7 @@ function AppointmentCard({
       {/* Quick-assign circles for unassigned appointments */}
       {quickAssignTechs && quickAssignTechs.length > 0 && onQuickAssign && (
         <div className="mt-2.5 pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
-          <p className="text-[10px] font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+          <p className="text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
             {t("dispatch.dragToAssign", lang)}
           </p>
           <div className="flex flex-wrap gap-1.5">

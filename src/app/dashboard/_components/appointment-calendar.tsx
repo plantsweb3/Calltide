@@ -154,7 +154,7 @@ export default function AppointmentCalendar({
         onClick={() => onSelect?.(appt)}
       >
         <p
-          className="text-[11px] font-medium truncate"
+          className="text-xs font-medium truncate"
           style={{
             color: c.text,
             textDecoration: isCancelled ? "line-through" : "none",
@@ -163,7 +163,7 @@ export default function AppointmentCalendar({
           {appt.service}
         </p>
         <p
-          className="text-[10px] truncate"
+          className="text-xs truncate"
           style={{
             color: "var(--db-text-muted)",
             textDecoration: isCancelled ? "line-through" : "none",
@@ -239,7 +239,7 @@ export default function AppointmentCalendar({
                   i === selectedDayIndex
                     ? "var(--db-accent)"
                     : day.isToday
-                    ? "rgba(197,154,39,0.1)"
+                    ? "var(--db-accent-bg)"
                     : "transparent",
                 color:
                   i === selectedDayIndex
@@ -249,7 +249,7 @@ export default function AppointmentCalendar({
                     : "var(--db-text-muted)",
               }}
             >
-              <span className="text-[10px] font-medium">{day.label}</span>
+              <span className="text-xs font-medium">{day.label}</span>
               <span className="text-sm font-semibold">{day.short}</span>
             </button>
           ))}
@@ -273,7 +273,7 @@ export default function AppointmentCalendar({
                 style={{ borderBottom: "1px solid var(--db-border-light)", minHeight: "48px" }}
               >
                 <div className="w-[52px] shrink-0 p-2 flex items-start justify-end pr-2">
-                  <span className="text-[11px] tabular-nums" style={{ color: "var(--db-text-muted)" }}>
+                  <span className="text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
                     {formatHour(hour)}
                   </span>
                 </div>
@@ -296,7 +296,7 @@ export default function AppointmentCalendar({
                 className="w-2.5 h-2.5 rounded-sm"
                 style={{ background: c.border }}
               />
-              <span className="text-[10px] capitalize" style={{ color: "var(--db-text-muted)" }}>
+              <span className="text-xs capitalize" style={{ color: "var(--db-text-muted)" }}>
                 {status.replace(/_/g, " ")}
               </span>
             </div>
@@ -370,7 +370,7 @@ export default function AppointmentCalendar({
                 className="p-2 text-center"
                 style={{
                   borderLeft: "1px solid var(--db-border-light)",
-                  background: day.isToday ? "rgba(197,154,39,0.04)" : "transparent",
+                  background: day.isToday ? "var(--db-accent-bg)" : "transparent",
                 }}
               >
                 <p className="text-xs" style={{ color: day.isToday ? "var(--db-accent)" : "var(--db-text-muted)" }}>
@@ -397,7 +397,7 @@ export default function AppointmentCalendar({
               style={{ borderBottom: "1px solid var(--db-border-light)", minHeight: "56px" }}
             >
               <div className="p-2 flex items-start justify-end pr-3">
-                <span className="text-[11px] tabular-nums" style={{ color: "var(--db-text-muted)" }}>
+                <span className="text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
                   {formatHour(hour)}
                 </span>
               </div>
@@ -409,7 +409,7 @@ export default function AppointmentCalendar({
                     className="p-1"
                     style={{
                       borderLeft: "1px solid var(--db-border-light)",
-                      background: day.isToday ? "rgba(197,154,39,0.02)" : "transparent",
+                      background: day.isToday ? "var(--db-accent-bg)" : "transparent",
                     }}
                   >
                     {appts.map(renderAppointmentBlock)}
@@ -429,7 +429,7 @@ export default function AppointmentCalendar({
               className="w-2.5 h-2.5 rounded-sm"
               style={{ background: c.border }}
             />
-            <span className="text-[10px] capitalize" style={{ color: "var(--db-text-muted)" }}>
+            <span className="text-xs capitalize" style={{ color: "var(--db-text-muted)" }}>
               {status.replace(/_/g, " ")}
             </span>
           </div>

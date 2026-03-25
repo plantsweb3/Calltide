@@ -57,7 +57,7 @@ export default function LocationSwitcher() {
         className="mx-4 mb-2 rounded-lg px-3 py-2"
         style={{ background: "var(--db-hover)" }}
       >
-        <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
           Location
         </p>
         <p className="text-xs font-medium truncate" style={{ color: "var(--db-text-secondary)" }}>
@@ -97,7 +97,7 @@ export default function LocationSwitcher() {
         className="w-full rounded-lg px-3 py-2 text-left transition-colors"
         style={{ background: "var(--db-hover)" }}
       >
-        <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
           Location
         </p>
         <div className="flex items-center justify-between">

@@ -6,6 +6,7 @@ import { eq, sql } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
 import { syncAgent } from "@/lib/elevenlabs/sync-agent";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { reportError } from "@/lib/error-reporting";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 
 const dayEnum = z.enum([
@@ -255,22 +256,27 @@ export async function PUT(req: NextRequest) {
     updatedAt: new Date().toISOString(),
   };
 
-  await db
-    .update(businesses)
-    .set(sanitized)
-    .where(eq(businesses.id, businessId));
+  try {
+    await db
+      .update(businesses)
+      .set(sanitized)
+      .where(eq(businesses.id, businessId));
 
-  // Log the activity
-  await logActivity({
-    type: "settings_updated",
-    entityType: "business",
-    entityId: businessId,
-    title: `Settings updated for ${sanitized.name}`,
-    detail: "Client updated business settings via self-service portal",
-  });
+    // Log the activity
+    await logActivity({
+      type: "settings_updated",
+      entityType: "business",
+      entityId: businessId,
+      title: `Settings updated for ${sanitized.name}`,
+      detail: "Client updated business settings via self-service portal",
+    });
 
-  // Sync ElevenLabs voice agent with updated settings
-  syncAgent(businessId).catch(() => {});
+    // Sync ElevenLabs voice agent with updated settings
+    syncAgent(businessId).catch(() => {});
+  } catch (error) {
+    reportError("Settings update failed", error, { businessId });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 
   // Return updated business
   const [updated] = await db

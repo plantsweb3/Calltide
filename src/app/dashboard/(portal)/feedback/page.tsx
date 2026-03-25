@@ -275,7 +275,7 @@ export default function ClientFeedbackPage() {
                       <p className="text-xs font-medium" style={{ color: "var(--db-accent)" }}>Team Response</p>
                       <p className="mt-1 text-sm" style={{ color: "var(--db-text)" }}>{item.adminResponse}</p>
                       {item.adminRespondedAt && (
-                        <p className="mt-1 text-[10px]" style={{ color: "var(--db-text-muted)" }}>
+                        <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
                           {new Date(item.adminRespondedAt).toLocaleDateString()}
                         </p>
                       )}

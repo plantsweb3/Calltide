@@ -319,7 +319,7 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
           <div className="mt-4">
             <button
               onClick={() => setMoreOpen((o) => !o)}
-              className="flex w-full items-center justify-between px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest"
+              className="flex w-full items-center justify-between px-3 py-1.5 text-xs font-semibold uppercase tracking-widest"
               style={{ color: "var(--sidebar-section)" }}
             >
               <span>{lang === "es" ? "Mas" : "More"}</span>

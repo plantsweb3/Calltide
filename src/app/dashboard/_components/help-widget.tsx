@@ -281,7 +281,7 @@ export default function HelpWidget() {
                     )}
                     {articles.length > 0 && (
                       <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--db-text-muted)" }}>
+                        <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--db-text-muted)" }}>
                           Suggested for this page
                         </p>
                         <div className="space-y-1">

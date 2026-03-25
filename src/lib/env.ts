@@ -50,6 +50,17 @@ const envSchema = z.object({
   NEXT_PUBLIC_GSC_VERIFICATION: z.string().min(1).optional(),
   INDEXNOW_KEY: z.string().min(1).optional(),
 
+  // Google Ads tracking (optional)
+  NEXT_PUBLIC_GADS_ID: z.string().min(1).optional(),
+  NEXT_PUBLIC_GADS_ONBOARDING_LABEL: z.string().min(1).optional(),
+  NEXT_PUBLIC_GADS_SUBSCRIPTION_LABEL: z.string().min(1).optional(),
+
+  // Demo mode (optional)
+  DEMO_MODE: z.string().optional(),
+
+  // Company info (optional)
+  COMPANY_ADDRESS: z.string().min(1).optional(),
+
   // Phase 2: Outreach Engine (optional)
   GOOGLE_PLACES_API_KEY: z.string().min(1).optional(),
   RESEND_API_KEY: z.string().min(1).optional(),

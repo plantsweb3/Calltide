@@ -1854,6 +1854,7 @@ export const winBackEmails = sqliteTable("win_back_emails", {
   openedAt: text("opened_at"),
   clickedAt: text("clicked_at"),
   reactivated: integer("reactivated", { mode: "boolean" }).default(false),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
 export const usageAlerts = sqliteTable("usage_alerts", {

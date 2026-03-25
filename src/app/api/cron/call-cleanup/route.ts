@@ -16,29 +16,35 @@ export async function GET(req: NextRequest) {
 
   const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
 
+  // Query IDs first for logging (with safety bound)
   const zombies = await db
-    .select({ id: calls.id, businessId: calls.businessId, twilioCallSid: calls.twilioCallSid })
+    .select({ id: calls.id })
     .from(calls)
     .where(
       and(
         eq(calls.status, "in_progress"),
         lt(calls.createdAt, thirtyMinAgo),
       ),
-    );
+    )
+    .limit(200);
 
   let cleaned = 0;
-  for (const zombie of zombies) {
+  if (zombies.length > 0) {
+    // Batch update all zombie calls at once
     await db
       .update(calls)
       .set({
         status: "failed",
         updatedAt: new Date().toISOString(),
       })
-      .where(eq(calls.id, zombie.id));
-    cleaned++;
-  }
+      .where(
+        and(
+          eq(calls.status, "in_progress"),
+          lt(calls.createdAt, thirtyMinAgo),
+        ),
+      );
+    cleaned = zombies.length;
 
-  if (cleaned > 0) {
     reportWarning(`[call-cleanup] Cleaned ${cleaned} zombie call(s)`, {
       callIds: zombies.map((z) => z.id),
     });

@@ -177,7 +177,7 @@ export default function ReferralsPage() {
             Your Referrals
           </h2>
           <div
-            className="rounded-xl overflow-hidden"
+            className="rounded-xl overflow-hidden overflow-x-auto"
             style={{ border: "1px solid var(--db-border)" }}
           >
             <table className="w-full text-sm">

@@ -149,10 +149,17 @@ export async function POST(req: NextRequest) {
         .limit(1);
 
       if (recentCall) {
-        await db.update(calls).set({
+        // Atomic claim: only update if status is still in_progress (prevents two webhooks matching the same record)
+        const updated = await db.update(calls).set({
           elevenlabsConversationId: conversationId,
-        }).where(eq(calls.id, recentCall.id));
-        call = { ...recentCall, elevenlabsConversationId: conversationId };
+        }).where(and(
+          eq(calls.id, recentCall.id),
+          eq(calls.status, "in_progress"),
+        )).returning({ id: calls.id });
+
+        if (updated.length > 0) {
+          call = { ...recentCall, elevenlabsConversationId: conversationId };
+        }
       }
     }
   }

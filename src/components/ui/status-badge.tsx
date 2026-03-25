@@ -15,7 +15,7 @@ const variantStyles: Record<BadgeVariant, { bg: string; color: string; dot?: str
   warning: { bg: "var(--db-warning-bg)", color: "var(--db-warning)", dot: "var(--db-warning)" },
   info: { bg: "var(--db-info-bg)", color: "var(--db-info)", dot: "var(--db-info)" },
   neutral: { bg: "var(--db-hover)", color: "var(--db-text-muted)" },
-  accent: { bg: "rgba(197,154,39,0.12)", color: "var(--db-accent)" },
+  accent: { bg: "var(--db-accent-bg)", color: "var(--db-accent)" },
 };
 
 /** Map common status strings to badge variants */

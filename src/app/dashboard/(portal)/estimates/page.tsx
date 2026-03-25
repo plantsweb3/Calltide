@@ -205,7 +205,7 @@ export default function EstimatesPage() {
                 ...(isActive && { borderColor: colors.text, background: colors.bg }),
               }}
             >
-              <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: colors.text }}>
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: colors.text }}>
                 {card.label}
               </p>
               <p className="text-2xl font-bold mt-1 tracking-tight" style={{ color: "var(--db-text)" }}>
@@ -304,7 +304,7 @@ export default function EstimatesPage() {
                         variant="ghost"
                         onClick={() => convertToInvoice(est.id)}
                         disabled={convertingId === est.id}
-                        style={{ background: "rgba(197,154,39,0.12)", color: "var(--db-accent)" }}
+                        style={{ background: "var(--db-accent-bg)", color: "var(--db-accent)" }}
                       >
                         {convertingId === est.id ? "Converting..." : "Convert to Invoice"}
                       </Button>

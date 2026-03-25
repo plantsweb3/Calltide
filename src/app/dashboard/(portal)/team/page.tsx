@@ -320,14 +320,14 @@ export default function TeamPage() {
           {(row.skills || []).slice(0, 3).map((skill) => (
             <span
               key={skill}
-              className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+              className="text-xs font-medium px-1.5 py-0.5 rounded"
               style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
             >
               {skill}
             </span>
           ))}
           {(row.skills || []).length > 3 && (
-            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
+            <span className="text-xs font-medium px-1.5 py-0.5 rounded" style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}>
               +{row.skills.length - 3}
             </span>
           )}
@@ -523,15 +523,14 @@ export default function TeamPage() {
         <div
           className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => !formLoading && setModalOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="tech-form-title"
         >
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="tech-form-title"
             className="modal-content db-card w-full max-w-lg rounded-xl p-6"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => { if (e.key === "Escape" && !formLoading) setModalOpen(false); }}
           >
             <div className="flex items-center justify-between mb-5">
               <h3 id="tech-form-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
@@ -712,15 +711,14 @@ export default function TeamPage() {
         <div
           className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => !unavailLoading && setUnavailTarget(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="unavail-dialog-title"
         >
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="unavail-dialog-title"
             className="modal-content db-card w-full max-w-md rounded-xl p-6"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => { if (e.key === "Escape" && !unavailLoading) setUnavailTarget(null); }}
           >
             <div className="flex items-center justify-between mb-5">
               <h3 id="unavail-dialog-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>

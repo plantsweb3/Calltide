@@ -30,19 +30,45 @@ export async function GET(req: NextRequest) {
             inArray(estimates.status, ["new", "sent", "follow_up"]),
             lt(estimates.followUpCount, 3),
           )
-        );
+        )
+        .limit(50);
+
+      // Batch-fetch customers and businesses to avoid N+1 queries
+      const customerIds = [...new Set(dueEstimates.map((e) => e.customerId).filter(Boolean))] as string[];
+      const businessIds = [...new Set(dueEstimates.map((e) => e.businessId).filter(Boolean))] as string[];
+
+      const customerRows = customerIds.length > 0
+        ? await db.select().from(customers).where(inArray(customers.id, customerIds))
+        : [];
+      const customerMap = new Map(customerRows.map((c) => [c.id, c]));
+
+      const bizRows = businessIds.length > 0
+        ? await db.select().from(businesses).where(inArray(businesses.id, businessIds))
+        : [];
+      const bizMap = new Map(bizRows.map((b) => [b.id, b]));
+
+      // Batch-fetch lead opt-outs for all relevant business+phone pairs
+      const leadPhonePairs = dueEstimates
+        .map((e) => ({ businessId: e.businessId, phone: customerMap.get(e.customerId!)?.phone }))
+        .filter((p) => p.businessId && p.phone);
+      const leadBusinessIds = [...new Set(leadPhonePairs.map((p) => p.businessId).filter(Boolean))] as string[];
+      const leadRows = leadBusinessIds.length > 0
+        ? await db.select().from(leads).where(inArray(leads.businessId, leadBusinessIds))
+        : [];
+      const leadOptOutSet = new Set(
+        leadRows.filter((l) => l.smsOptOut).map((l) => `${l.businessId}:${l.phone}`)
+      );
 
       for (const est of dueEstimates) {
         try {
-          const [customer] = await db.select().from(customers).where(eq(customers.id, est.customerId)).limit(1);
+          const customer = customerMap.get(est.customerId!);
           if (!customer) continue;
 
-          const [biz] = await db.select().from(businesses).where(eq(businesses.id, est.businessId)).limit(1);
+          const biz = bizMap.get(est.businessId);
           if (!biz) continue;
 
           // Lead-level opt-out check
-          const [lead] = await db.select().from(leads).where(and(eq(leads.businessId, est.businessId), eq(leads.phone, customer.phone))).limit(1);
-          if (lead?.smsOptOut) continue;
+          if (leadOptOutSet.has(`${est.businessId}:${customer.phone}`)) continue;
 
           // TCPA check (global smsOptOuts table + quiet hours)
           const smsCheck = await canSendSms(customer.phone);

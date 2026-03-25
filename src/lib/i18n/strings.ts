@@ -1632,6 +1632,740 @@ const strings: Record<string, Record<Lang, string>> = {
   // ── Settings: Misc labels ──
   "settings.advancedBadge": { en: "Advanced", es: "Avanzado" },
   "settings.placeholder.serviceArea": { en: "e.g. San Antonio and surrounding areas", es: "ej. San Antonio y areas cercanas" },
+
+  // ── Team page toasts & strings ─────────────────────────────
+  "toast.nameRequired": { en: "Name is required", es: "El nombre es obligatorio" },
+  "toast.teamMemberUpdated": { en: "Team member updated", es: "Miembro del equipo actualizado" },
+  "toast.teamMemberAdded": { en: "Team member added", es: "Miembro del equipo agregado" },
+  "toast.failedToRemoveTeamMember": {
+    en: "Failed to remove team member",
+    es: "No se pudo eliminar al miembro del equipo",
+  },
+  "toast.failedToUpdateOnCall": {
+    en: "Failed to update on-call status",
+    es: "No se pudo actualizar el estado de guardia",
+  },
+  "toast.markedUnavailable": {
+    en: "{name} marked as unavailable",
+    es: "{name} marcado como no disponible",
+  },
+  "toast.failedToUpdateAvailability": {
+    en: "Failed to update availability",
+    es: "No se pudo actualizar la disponibilidad",
+  },
+  "toast.nowAvailable": {
+    en: "{name} is now available",
+    es: "{name} ahora esta disponible",
+  },
+  "toast.nowOnCall": {
+    en: "{name} is now on call",
+    es: "{name} ahora esta de guardia",
+  },
+  "toast.noLongerOnCall": {
+    en: "{name} is no longer on call",
+    es: "{name} ya no esta de guardia",
+  },
+  "toast.nameRemoved": {
+    en: "{name} removed",
+    es: "{name} eliminado",
+  },
+  "team.editTechnician": { en: "Edit Technician", es: "Editar tecnico" },
+  "team.status": { en: "Status", es: "Estado" },
+  "team.active": { en: "Active", es: "Activo" },
+  "team.inactive": { en: "Inactive", es: "Inactivo" },
+  "team.onCall": { en: "On Call", es: "De guardia" },
+  "team.unavailable": { en: "Unavailable", es: "No disponible" },
+  "team.today": { en: "Today", es: "Hoy" },
+  "team.job": { en: "job", es: "trabajo" },
+  "team.jobs": { en: "jobs", es: "trabajos" },
+  "team.markAvailable": { en: "Mark Available", es: "Marcar disponible" },
+  "team.markUnavailable": { en: "Mark Unavailable", es: "Marcar no disponible" },
+  "team.removeFromOnCall": { en: "Remove from on-call", es: "Quitar de guardia" },
+  "team.setOnCall": { en: "Set on-call", es: "Poner de guardia" },
+  "team.hideInactive": { en: "Hide Inactive", es: "Ocultar inactivos" },
+  "team.showInactive": { en: "Show Inactive", es: "Mostrar inactivos" },
+  "team.saving": { en: "Saving...", es: "Guardando..." },
+  "team.noTeamMembers": { en: "No team members yet", es: "Aun no hay miembros del equipo" },
+  "team.noTeamMembersDesc": {
+    en: "Add your technicians to start dispatching jobs and sending schedules.",
+    es: "Agrega a tus tecnicos para empezar a despachar trabajos y enviar horarios.",
+  },
+  "team.markNameUnavailable": {
+    en: "Mark {name} Unavailable",
+    es: "Marcar a {name} como no disponible",
+  },
+  "team.reason": { en: "Reason", es: "Razon" },
+  "team.reasonPlaceholder": {
+    en: "e.g., Sick, Vacation, Personal",
+    es: "ej., Enfermo, Vacaciones, Personal",
+  },
+  "team.until": { en: "Until", es: "Hasta" },
+  "team.skillPlaceholder": {
+    en: "Type a skill and press Enter",
+    es: "Escribe una habilidad y presiona Enter",
+  },
+  "team.removeConfirmTitle": { en: "Remove {name}?", es: "Eliminar a {name}?" },
+  "team.removeConfirmDesc": {
+    en: "This will deactivate the technician. They can be reactivated later. Their existing job assignments will remain.",
+    es: "Esto desactivara al tecnico. Se puede reactivar despues. Sus asignaciones de trabajo existentes permaneceran.",
+  },
+  "team.technicians": { en: "technician", es: "tecnico" },
+  "team.techniciansPlural": { en: "technicians", es: "tecnicos" },
+  "team.onCallCount": { en: "on call", es: "de guardia" },
+  "team.unavailableCount": { en: "unavailable", es: "no disponible" },
+
+  // ── Invoices page toasts & strings ─────────────────────────
+  "toast.failedToLoadInvoices": {
+    en: "Failed to load invoices",
+    es: "No se pudieron cargar las facturas",
+  },
+  "toast.invoiceTotalRequired": {
+    en: "Invoice total must be greater than $0",
+    es: "El total de la factura debe ser mayor a $0",
+  },
+  "toast.lineItemRequired": {
+    en: "Add at least one line item with a description",
+    es: "Agrega al menos una linea con una descripcion",
+  },
+  "toast.invoiceCreated": { en: "Invoice created", es: "Factura creada" },
+  "toast.failedToCreateInvoice": {
+    en: "Failed to create invoice",
+    es: "No se pudo crear la factura",
+  },
+  "toast.invoiceSent": {
+    en: "Invoice sent to customer via SMS",
+    es: "Factura enviada al cliente por SMS",
+  },
+  "toast.failedToSendInvoice": {
+    en: "Failed to send invoice",
+    es: "No se pudo enviar la factura",
+  },
+  "toast.invoiceMarkedPaid": { en: "Invoice marked as paid", es: "Factura marcada como pagada" },
+  "toast.failedToMarkPaid": {
+    en: "Failed to mark as paid",
+    es: "No se pudo marcar como pagada",
+  },
+  "toast.invoiceCancelled": { en: "Invoice cancelled", es: "Factura cancelada" },
+  "toast.failedToCancelInvoice": {
+    en: "Failed to cancel invoice",
+    es: "No se pudo cancelar la factura",
+  },
+  "toast.invoiceUpdated": { en: "Invoice updated", es: "Factura actualizada" },
+  "toast.failedToUpdateInvoice": {
+    en: "Failed to update invoice",
+    es: "No se pudo actualizar la factura",
+  },
+  "invoices.description": {
+    en: "Create, send, and track payments from your customers.",
+    es: "Crea, envia y rastrea pagos de tus clientes.",
+  },
+  "invoices.invoiceNumber": { en: "Invoice #", es: "Factura #" },
+  "invoices.customer": { en: "Customer", es: "Cliente" },
+  "invoices.noCustomer": { en: "No customer", es: "Sin cliente" },
+  "invoices.amount": { en: "Amount", es: "Monto" },
+  "invoices.status": { en: "Status", es: "Estado" },
+  "invoices.dueDate": { en: "Due Date", es: "Fecha de vencimiento" },
+  "invoices.outstanding": { en: "Outstanding", es: "Pendiente" },
+  "invoices.paidThisMonth": { en: "Paid This Month", es: "Pagado este mes" },
+  "invoices.avgDaysToPay": { en: "Avg. Days to Pay", es: "Dias promedio de pago" },
+  "invoices.noInvoices": { en: "No invoices yet", es: "Aun no hay facturas" },
+  "invoices.noInvoicesDesc": {
+    en: "Create your first invoice to start tracking payments and collecting money from customers.",
+    es: "Crea tu primera factura para empezar a rastrear pagos y cobrar a tus clientes.",
+  },
+  "invoices.createInvoice": { en: "Create Invoice", es: "Crear factura" },
+  "invoices.noCustomerSelected": { en: "No customer selected", es: "Sin cliente seleccionado" },
+  "invoices.lineItems": { en: "Line Items", es: "Lineas de detalle" },
+  "invoices.notes": { en: "Notes", es: "Notas" },
+  "invoices.notesPlaceholder": {
+    en: "Payment terms, special instructions...",
+    es: "Terminos de pago, instrucciones especiales...",
+  },
+  "invoices.creating": { en: "Creating...", es: "Creando..." },
+  "invoices.sending": { en: "Sending...", es: "Enviando..." },
+  "invoices.paymentMethod": { en: "Payment Method", es: "Metodo de pago" },
+  "invoices.cancelInvoice": { en: "Cancel Invoice", es: "Cancelar factura" },
+  "invoices.cancelInvoiceDesc": {
+    en: "This will cancel the invoice. This action cannot be undone. The customer will no longer be able to pay via the payment link.",
+    es: "Esto cancelara la factura. Esta accion no se puede deshacer. El cliente ya no podra pagar a traves del enlace de pago.",
+  },
+  "invoices.smsSent": { en: "SMS sent", es: "SMS enviado" },
+  "invoices.reminders": { en: "Reminders", es: "Recordatorios" },
+  "invoices.paidVia": { en: "Paid: {date} via {method}", es: "Pagado: {date} via {method}" },
+  "invoices.convertedFromEstimate": { en: "Converted from estimate", es: "Convertida desde cotizacion" },
+  "invoices.paymentLink": { en: "Payment link", es: "Enlace de pago" },
+  "invoices.searchPlaceholder": { en: "Search invoices...", es: "Buscar facturas..." },
+  "invoices.clear": { en: "Clear", es: "Limpiar" },
+  "invoices.other": { en: "Other", es: "Otro" },
+
+  // ── Billing page toasts & strings ──────────────────────────
+  "toast.failedToLoadBilling": {
+    en: "Failed to load billing data",
+    es: "No se pudieron cargar los datos de facturacion",
+  },
+  "toast.couldNotOpenPortal": {
+    en: "Could not open billing portal",
+    es: "No se pudo abrir el portal de facturacion",
+  },
+  "toast.switchedToAnnual": {
+    en: "Switched to annual plan! You're saving $1,200/year.",
+    es: "Cambiado a plan anual! Estas ahorrando $1,200/ano.",
+  },
+  "toast.failedToSwitchPlan": {
+    en: "Failed to switch plan",
+    es: "No se pudo cambiar el plan",
+  },
+  "billing.loadingBilling": { en: "Loading billing...", es: "Cargando facturacion..." },
+  "billing.openingPortal": { en: "Opening Portal...", es: "Abriendo portal..." },
+  "billing.description": {
+    en: "Manage your subscription and payment method",
+    es: "Administra tu suscripcion y metodo de pago",
+  },
+  "billing.paymentDeclined": {
+    en: "Your recent payment was declined. Please update your payment method to avoid service interruption.",
+    es: "Tu pago reciente fue rechazado. Actualiza tu metodo de pago para evitar interrupciones del servicio.",
+  },
+  "billing.saveAnnual": {
+    en: "Save $1,200/year with Annual Billing",
+    es: "Ahorra $1,200/ano con facturacion anual",
+  },
+  "billing.save20": { en: "SAVE 20%", es: "AHORRA 20%" },
+  "billing.switchDesc": {
+    en: "Switch from $497/mo to $397/mo billed annually at $4,764/year. Same features, same service — just $100/mo less.",
+    es: "Cambia de $497/mes a $397/mes facturado anualmente a $4,764/ano. Mismas funciones, mismo servicio — solo $100/mes menos.",
+  },
+  "billing.switchToAnnual": { en: "Switch to Annual", es: "Cambiar a anual" },
+  "billing.switching": { en: "Switching...", es: "Cambiando..." },
+  "billing.annual": { en: "Annual", es: "Anual" },
+  "billing.perMonth": { en: "/month", es: "/mes" },
+  "billing.billedAnnually": { en: "(billed annually)", es: "(facturado anualmente)" },
+  "billing.locations": { en: "Locations", es: "Ubicaciones" },
+  "billing.basePlan": { en: "Base plan (1 location)", es: "Plan base (1 ubicacion)" },
+  "billing.additionalLocations": {
+    en: "Additional locations",
+    es: "Ubicaciones adicionales",
+  },
+  "billing.total": { en: "Total", es: "Total" },
+  "billing.update": { en: "Update", es: "Actualizar" },
+  "billing.cardExpires": { en: "Expires", es: "Vence" },
+  "billing.noPaymentMethod": {
+    en: "No payment method on file",
+    es: "Sin metodo de pago registrado",
+  },
+  "billing.switchToAnnualConfirm": {
+    en: "Switch to Annual Billing?",
+    es: "Cambiar a facturacion anual?",
+  },
+  "billing.switchConfirmDesc": {
+    en: "Your plan will change from $497/mo to $397/mo billed annually at $4,764/year.",
+    es: "Tu plan cambiara de $497/mes a $397/mes facturado anualmente a $4,764/ano.",
+  },
+  "billing.savesYou": {
+    en: "This saves you $1,200/year.",
+    es: "Esto te ahorra $1,200/ano.",
+  },
+  "billing.confirmSwitch": { en: "Confirm Switch", es: "Confirmar cambio" },
+  "billing.retry": { en: "Retry", es: "Reintentar" },
+
+  // ── Dispatch page toasts & strings ─────────────────────────
+  "toast.failedToLoadDispatch": {
+    en: "Failed to load dispatch data",
+    es: "No se pudieron cargar los datos de despacho",
+  },
+  "toast.technicianAssigned": {
+    en: "Technician assigned",
+    es: "Tecnico asignado",
+  },
+  "toast.technicianUnassigned": {
+    en: "Technician unassigned",
+    es: "Tecnico desasignado",
+  },
+  "toast.failedToAssign": {
+    en: "Failed to assign technician",
+    es: "No se pudo asignar al tecnico",
+  },
+  "toast.scheduleSent": {
+    en: "Schedule sent ({count} jobs)",
+    es: "Horario enviado ({count} trabajos)",
+  },
+  "toast.failedToSendSchedule": {
+    en: "Failed to send schedule",
+    es: "No se pudo enviar el horario",
+  },
+  "toast.noTechsToNotify": {
+    en: "No technicians with jobs and phone numbers to notify",
+    es: "No hay tecnicos con trabajos y telefonos para notificar",
+  },
+  "toast.schedulesSent": {
+    en: "Schedules sent to {sent} of {total} technicians",
+    es: "Horarios enviados a {sent} de {total} tecnicos",
+  },
+  "dispatch.sendAllSchedules": { en: "Send All Schedules", es: "Enviar todos los horarios" },
+  "dispatch.sendSchedule": { en: "Send schedule", es: "Enviar horario" },
+  "dispatch.sending": { en: "Sending...", es: "Enviando..." },
+  "dispatch.prev": { en: "Prev", es: "Ant" },
+  "dispatch.next": { en: "Next", es: "Sig" },
+  "dispatch.today": { en: "Today", es: "Hoy" },
+  "dispatch.noJobsScheduled": { en: "No jobs scheduled", es: "Sin trabajos programados" },
+  "dispatch.noTechniciansYet": { en: "No technicians yet", es: "Aun no hay tecnicos" },
+  "dispatch.noTechniciansDesc": {
+    en: "Add your team members to start dispatching jobs.",
+    es: "Agrega a tu equipo para empezar a despachar trabajos.",
+  },
+  "dispatch.addTeam": { en: "Add Team", es: "Agregar equipo" },
+  "dispatch.noOtherTechs": { en: "No other techs available", es: "No hay otros tecnicos disponibles" },
+  "dispatch.recommended": { en: "Recommended", es: "Recomendado" },
+  "dispatch.jobsToday": { en: "jobs today", es: "trabajos hoy" },
+  "dispatch.detailStatus": { en: "Status", es: "Estado" },
+  "dispatch.detailCustomer": { en: "Customer", es: "Cliente" },
+  "dispatch.detailAddress": { en: "Address", es: "Direccion" },
+  "dispatch.detailNotes": { en: "Notes", es: "Notas" },
+  "dispatch.detailAssigned": { en: "Assigned", es: "Asignado" },
+  "dispatch.unknown": { en: "Unknown", es: "Desconocido" },
+  "dispatch.untilDate": { en: "until {date}", es: "hasta {date}" },
+
+  // ── Estimates page toasts & strings ────────────────────────
+  "toast.failedToLoadEstimates": {
+    en: "Failed to load estimates",
+    es: "No se pudieron cargar las cotizaciones",
+  },
+  "toast.estimateMarkedWon": { en: "Estimate marked as won", es: "Cotizacion marcada como ganada" },
+  "toast.estimateMarkedLost": { en: "Estimate marked as lost", es: "Cotizacion marcada como perdida" },
+  "toast.estimateUpdated": { en: "Estimate updated", es: "Cotizacion actualizada" },
+  "toast.failedToUpdateEstimate": {
+    en: "Failed to update estimate",
+    es: "No se pudo actualizar la cotizacion",
+  },
+  "toast.followUpSmsSent": { en: "Follow-up SMS sent", es: "SMS de seguimiento enviado" },
+  "toast.failedToSendFollowUp": {
+    en: "Failed to send follow-up",
+    es: "No se pudo enviar el seguimiento",
+  },
+  "toast.estimateConvertedToInvoice": {
+    en: "Estimate converted to invoice",
+    es: "Cotizacion convertida a factura",
+  },
+  "toast.failedToConvertEstimate": {
+    en: "Failed to convert estimate",
+    es: "No se pudo convertir la cotizacion",
+  },
+  "estimates.searchPlaceholder": { en: "Search by customer...", es: "Buscar por cliente..." },
+  "estimates.autoCreated": {
+    en: "Estimates are auto-created when callers request quotes through {name}.",
+    es: "Las cotizaciones se crean automaticamente cuando los clientes solicitan presupuestos a traves de {name}.",
+  },
+  "estimates.customer": { en: "Customer", es: "Cliente" },
+  "estimates.service": { en: "Service", es: "Servicio" },
+  "estimates.status": { en: "Status", es: "Estado" },
+  "estimates.created": { en: "Created", es: "Creada" },
+  "estimates.nextFollowUp": { en: "Next Follow-Up", es: "Proximo seguimiento" },
+  "estimates.followUpsSent": { en: "Follow-ups sent", es: "Seguimientos enviados" },
+  "estimates.last": { en: "Last", es: "Ultimo" },
+  "estimates.sendFollowUp": { en: "Send Follow-Up", es: "Enviar seguimiento" },
+  "estimates.convertToInvoice": { en: "Convert to Invoice", es: "Convertir a factura" },
+  "estimates.converting": { en: "Converting...", es: "Convirtiendo..." },
+  "estimates.markWon": { en: "Mark Won", es: "Marcar ganada" },
+  "estimates.markLost": { en: "Mark Lost", es: "Marcar perdida" },
+  "estimates.wonOn": { en: "Won on {date}", es: "Ganada el {date}" },
+  "estimates.lostNoReason": { en: "no reason", es: "sin razon" },
+  "estimates.sendFollowUpSms": { en: "Send Follow-Up SMS?", es: "Enviar SMS de seguimiento?" },
+  "estimates.sendFollowUpDesc": {
+    en: "This will send a follow-up text message to the customer.",
+    es: "Esto enviara un mensaje de seguimiento al cliente.",
+  },
+  "estimates.sendSms": { en: "Send SMS", es: "Enviar SMS" },
+  "estimates.markAsWon": { en: "Mark as Won", es: "Marcar como ganada" },
+  "estimates.finalAmount": { en: "Final Amount ($)", es: "Monto final ($)" },
+  "estimates.confirmWon": { en: "Confirm Won", es: "Confirmar ganada" },
+  "estimates.markAsLost": { en: "Mark as Lost", es: "Marcar como perdida" },
+  "estimates.reason": { en: "Reason", es: "Razon" },
+  "estimates.confirmLost": { en: "Confirm Lost", es: "Confirmar perdida" },
+  "estimates.lostReasons.noLongerNeeded": { en: "No longer needed", es: "Ya no se necesita" },
+  "estimates.lostReasons.other": { en: "Other", es: "Otra" },
+  "estimates.notes": { en: "Notes", es: "Notas" },
+
+  // ── Appointments page toasts & strings ─────────────────────
+  "toast.failedToLoadAppointments": {
+    en: "Failed to load appointments",
+    es: "No se pudieron cargar las citas",
+  },
+  "toast.appointmentUpdated": {
+    en: "Appointment {status}",
+    es: "Cita {status}",
+  },
+  "toast.failedToUpdateAppointment": {
+    en: "Failed to update appointment status",
+    es: "No se pudo actualizar el estado de la cita",
+  },
+  "toast.failedToUpdateAppointments": {
+    en: "Failed to update appointments",
+    es: "No se pudieron actualizar las citas",
+  },
+  "toast.appointmentsBulkUpdated": {
+    en: "{count} appointment(s) {status}",
+    es: "{count} cita(s) {status}",
+  },
+
+  // ── Cancel page strings ────────────────────────────────────
+  "toast.selectCancelReason": {
+    en: "Please select a reason for canceling",
+    es: "Por favor selecciona una razon para cancelar",
+  },
+  "toast.selectReasonFirst": {
+    en: "Please select a reason first",
+    es: "Por favor selecciona una razon primero",
+  },
+  "toast.retentionOfferSubmitted": {
+    en: "Your retention offer has been submitted. Our team will apply the discount within 24 hours.",
+    es: "Tu oferta de retencion ha sido enviada. Nuestro equipo aplicara el descuento en 24 horas.",
+  },
+  "toast.subscriptionCanceled": {
+    en: "Your subscription has been canceled. You'll retain access until the end of your billing period.",
+    es: "Tu suscripcion ha sido cancelada. Conservaras el acceso hasta el final de tu periodo de facturacion.",
+  },
+  "cancel.reasons.tooExpensive": { en: "Too Expensive", es: "Muy caro" },
+  "cancel.reasons.notEnoughValue": { en: "Not Enough Value", es: "Valor insuficiente" },
+  "cancel.reasons.switchingCompetitor": {
+    en: "Switching to a Competitor",
+    es: "Cambiando a un competidor",
+  },
+  "cancel.reasons.goingManual": { en: "Going Back to Manual", es: "Volviendo a lo manual" },
+  "cancel.reasons.seasonalBusiness": { en: "Seasonal Business", es: "Negocio de temporada" },
+  "cancel.rateExperience": {
+    en: "How would you rate your experience?",
+    es: "Como calificarias tu experiencia?",
+  },
+  "cancel.ratingLow": {
+    en: "We're sorry we didn't meet your expectations.",
+    es: "Lamentamos no haber cumplido tus expectativas.",
+  },
+  "cancel.ratingMid": {
+    en: "Thank you for the honest feedback.",
+    es: "Gracias por tu comentario honesto.",
+  },
+  "cancel.ratingHigh": {
+    en: "We're glad you had a positive experience!",
+    es: "Nos alegra que hayas tenido una buena experiencia!",
+  },
+  "cancel.anythingElse": {
+    en: "Anything else you'd like to share?",
+    es: "Algo mas que quieras compartir?",
+  },
+  "cancel.feedbackPlaceholder": {
+    en: "Your feedback helps us improve Capta for everyone...",
+    es: "Tu opinion nos ayuda a mejorar Capta para todos...",
+  },
+  "cancel.beforeYouGo": { en: "Before you go...", es: "Antes de irte..." },
+  "cancel.recoveryOffer": {
+    en: "We'd hate to lose you. How about 2 months free on us? Keep your AI receptionist running, and our team will apply the discount to your account within 24 hours.",
+    es: "No queremos perderte. Que tal 2 meses gratis? Mantiene tu recepcionista AI activa, y nuestro equipo aplicara el descuento a tu cuenta en 24 horas.",
+  },
+  "cancel.processing": { en: "Processing...", es: "Procesando..." },
+  "cancel.acceptOffer": {
+    en: "Yes, I'll Stay — Give Me 2 Months Free",
+    es: "Si, me quedo — Dame 2 meses gratis",
+  },
+  "cancel.cancelMySubscription": {
+    en: "Cancel My Subscription",
+    es: "Cancelar mi suscripcion",
+  },
+  "cancel.canceling": { en: "Canceling...", es: "Cancelando..." },
+  "cancel.accessUntilEnd": {
+    en: "Your access will continue until the end of your current billing period.",
+    es: "Tu acceso continuara hasta el final de tu periodo de facturacion actual.",
+  },
+
+  // ── Add Location page strings ──────────────────────────────
+  "toast.locationNameRequired": {
+    en: "Location name is required",
+    es: "El nombre de la ubicacion es obligatorio",
+  },
+  "toast.locationCreated": {
+    en: "Location \"{name}\" created!",
+    es: "Ubicacion \"{name}\" creada!",
+  },
+  "toast.failedToAddLocation": {
+    en: "Failed to add location",
+    es: "No se pudo agregar la ubicacion",
+  },
+  "location.addNewLocation": { en: "Add New Location", es: "Agregar nueva ubicacion" },
+  "location.stepOf": { en: "Step {step} of 5", es: "Paso {step} de 5" },
+  "location.stepInfo": { en: "Location Info", es: "Informacion de la ubicacion" },
+  "location.stepServices": { en: "Services", es: "Servicios" },
+  "location.stepHours": { en: "Business Hours", es: "Horario de atencion" },
+  "location.stepGreeting": { en: "Greeting", es: "Saludo" },
+  "location.stepReview": { en: "Review", es: "Revision" },
+  "location.locationName": { en: "Location Name", es: "Nombre de la ubicacion" },
+  "location.locationNamePlaceholder": {
+    en: "e.g., San Antonio, Downtown Office",
+    es: "ej., San Antonio, Oficina centro",
+  },
+  "location.industry": { en: "Industry", es: "Industria" },
+  "location.selectIndustry": { en: "Select industry", es: "Seleccionar industria" },
+  "location.serviceArea": { en: "Service Area", es: "Area de servicio" },
+  "location.serviceAreaPlaceholder": {
+    en: "e.g., Austin and surrounding areas",
+    es: "ej., Austin y areas cercanas",
+  },
+  "location.copiedFromPrimary": {
+    en: "These were copied from your primary location. Add, remove, or keep as-is.",
+    es: "Estos fueron copiados de tu ubicacion principal. Agrega, elimina o deja como estan.",
+  },
+  "location.addServicePlaceholder": { en: "Add a service...", es: "Agregar un servicio..." },
+  "location.noServicesYet": { en: "No services added yet.", es: "Aun no se han agregado servicios." },
+  "location.copiedHours": {
+    en: "Copied from your primary location. Adjust as needed.",
+    es: "Copiado de tu ubicacion principal. Ajusta segun sea necesario.",
+  },
+  "location.setClosed": { en: "Set Closed", es: "Cerrar" },
+  "location.closed": { en: "Closed", es: "Cerrado" },
+  "location.greetingDesc": {
+    en: "Customize how {name} greets callers at this location. Leave blank to use the default.",
+    es: "Personaliza como {name} saluda a los llamantes en esta ubicacion. Deja en blanco para usar el predeterminado.",
+  },
+  "location.location": { en: "Location", es: "Ubicacion" },
+  "location.services": { en: "Services", es: "Servicios" },
+  "location.servicesCount": { en: "{n} services", es: "{n} servicios" },
+  "location.additionalCost": { en: "Additional Cost", es: "Costo adicional" },
+  "location.continue": { en: "Continue", es: "Continuar" },
+  "location.creating": { en: "Creating...", es: "Creando..." },
+  "location.createLocation": { en: "Create Location", es: "Crear ubicacion" },
+
+  // ── Partners page toasts & strings ─────────────────────────
+  "toast.failedToLoadPartners": {
+    en: "Failed to load partner data",
+    es: "No se pudieron cargar los datos de socios",
+  },
+  "toast.namePhoneRequired": {
+    en: "Name and phone are required",
+    es: "El nombre y telefono son obligatorios",
+  },
+  "toast.partnerUpdated": { en: "Partner updated", es: "Socio actualizado" },
+  "toast.partnerAdded": { en: "Partner added", es: "Socio agregado" },
+  "toast.failedToSavePartner": {
+    en: "Failed to save partner",
+    es: "No se pudo guardar el socio",
+  },
+  "toast.partnerRemoved": { en: "Partner removed", es: "Socio eliminado" },
+  "toast.failedToRemovePartner": {
+    en: "Failed to remove partner",
+    es: "No se pudo eliminar al socio",
+  },
+  "partners.description": {
+    en: "Add trusted partners so your receptionist can refer callers who need services you don't offer",
+    es: "Agrega socios de confianza para que tu recepcionista pueda referir a quienes necesitan servicios que no ofreces",
+  },
+  "partners.partners": { en: "Partners", es: "Socios" },
+  "partners.referralLog": { en: "Referral Log", es: "Registro de referidos" },
+  "partners.editPartner": { en: "Edit Partner", es: "Editar socio" },
+  "partners.addNewPartner": { en: "Add New Partner", es: "Agregar nuevo socio" },
+  "partners.businessName": { en: "Business Name", es: "Nombre del negocio" },
+  "partners.trade": { en: "Trade", es: "Oficio" },
+  "partners.phone": { en: "Phone", es: "Telefono" },
+  "partners.contactName": { en: "Contact Name", es: "Nombre de contacto" },
+  "partners.email": { en: "Email", es: "Correo" },
+  "partners.language": { en: "Language", es: "Idioma" },
+  "partners.notes": { en: "Notes", es: "Notas" },
+  "partners.trusted": { en: "Trusted", es: "De confianza" },
+  "partners.occasional": { en: "Occasional", es: "Ocasional" },
+  "partners.loadingPartners": { en: "Loading partners...", es: "Cargando socios..." },
+  "partners.noPartnersYet": {
+    en: "No partners yet. Add your first referral partner so Maria can connect callers to your network.",
+    es: "Aun no hay socios. Agrega tu primer socio de referidos para que Maria conecte a los llamantes con tu red.",
+  },
+  "partners.noReferralsYet": { en: "No referrals yet", es: "Aun no hay referidos" },
+  "partners.noReferralsDesc": {
+    en: "When your receptionist refers a caller to one of your partners, it'll show up here.",
+    es: "Cuando tu recepcionista refiera a un llamante a uno de tus socios, aparecera aqui.",
+  },
+  "partners.date": { en: "Date", es: "Fecha" },
+  "partners.caller": { en: "Caller", es: "Llamante" },
+  "partners.partner": { en: "Partner", es: "Socio" },
+  "partners.status": { en: "Status", es: "Estado" },
+  "partners.removePartner": { en: "Remove Partner?", es: "Eliminar socio?" },
+  "partners.removePartnerDesc": {
+    en: "This will remove the partner from your referral network. Existing referral history will be preserved.",
+    es: "Esto eliminara al socio de tu red de referidos. El historial de referidos existente se conservara.",
+  },
+  "partners.removePartnerConfirm": { en: "Remove Partner", es: "Eliminar socio" },
+
+  // ── Customers page toasts & strings ────────────────────────
+  "toast.customerAdded": { en: "Customer added successfully", es: "Cliente agregado exitosamente" },
+  "toast.failedToCreateCustomer": {
+    en: "Failed to create customer",
+    es: "No se pudo crear el cliente",
+  },
+  "toast.customersMerged": {
+    en: "Customers merged successfully",
+    es: "Clientes combinados exitosamente",
+  },
+  "toast.failedToMergeCustomers": {
+    en: "Failed to merge customers",
+    es: "No se pudieron combinar los clientes",
+  },
+  "customers.addCustomerTitle": { en: "Add Customer", es: "Agregar cliente" },
+  "customers.nameLabel": { en: "Name *", es: "Nombre *" },
+  "customers.phoneLabel": { en: "Phone *", es: "Telefono *" },
+  "customers.emailOptional": { en: "Email (optional)", es: "Correo (opcional)" },
+
+  // ── Referrals page toasts & strings ────────────────────────
+  "toast.failedToLoadReferrals": {
+    en: "Failed to load referral data",
+    es: "No se pudieron cargar los datos de referidos",
+  },
+  "toast.referralCodeCopied": {
+    en: "Referral code copied!",
+    es: "Codigo de referido copiado!",
+  },
+  "toast.shareLinkCopied": {
+    en: "Share link copied!",
+    es: "Enlace copiado!",
+  },
+  "referrals.description": {
+    en: "Refer a business \u2192 they get 50% off first month \u2192 you get 1 month free ($497 credit)",
+    es: "Refiere un negocio \u2192 obtienen 50% de descuento el primer mes \u2192 tu obtienes 1 mes gratis (credito de $497)",
+  },
+  "referrals.shareThisLink": { en: "Share This Link", es: "Comparte este enlace" },
+  "referrals.noCodeYet": {
+    en: "No referral code assigned yet. Contact support.",
+    es: "Aun no se ha asignado un codigo de referido. Contacta soporte.",
+  },
+  "referrals.yourReferrals": { en: "Your Referrals", es: "Tus referidos" },
+  "referrals.date": { en: "Date", es: "Fecha" },
+  "referrals.status": { en: "Status", es: "Estado" },
+  "referrals.credit": { en: "Credit", es: "Credito" },
+  "referrals.applied": { en: "{amount} applied", es: "{amount} aplicado" },
+  "referrals.pending": { en: "{amount} pending", es: "{amount} pendiente" },
+  "referrals.loadingReferrals": { en: "Loading referrals...", es: "Cargando referidos..." },
+
+  // ── Follow-ups page toasts & strings ───────────────────────
+  "toast.followUpUpdated": { en: "Follow-up updated", es: "Seguimiento actualizado" },
+  "toast.failedToUpdateFollowUp": {
+    en: "Failed to update follow-up",
+    es: "No se pudo actualizar el seguimiento",
+  },
+
+  // ── Job Cards page strings ─────────────────────────────────
+  "toast.failedToLoadJobCards": {
+    en: "Failed to load job cards",
+    es: "No se pudieron cargar las ordenes de trabajo",
+  },
+
+  // ── Calls page strings ────────────────────────────────────
+  "calls.seasonalReminder": {
+    en: "Seasonal Reminder",
+    es: "Recordatorio de temporada",
+  },
+
+  // ── Overview / Dashboard page strings ──────────────────────
+  "overview.returning": { en: "returning", es: "recurrente" },
+  "overview.hereIsHowPerforming": {
+    en: "Here's how {name} is performing",
+    es: "Asi va {name} con tu negocio",
+  },
+  "overview.forwardNumberDesc": {
+    en: "Dial *72 then your Capta number (Verizon/landline), or *21* then number and # (AT&T/T-Mobile). Check your carrier's instructions for conditional forwarding.",
+    es: "Marca *72 y luego tu numero Capta (Verizon/linea fija), o *21* y luego el numero y # (AT&T/T-Mobile). Consulta las instrucciones de tu operador para desvio condicional.",
+  },
+  "overview.customizeReceptionistDesc": {
+    en: "Set her name, greeting, personality, and the services you offer.",
+    es: "Ponle nombre, saludo, personalidad y los servicios que ofreces.",
+  },
+  "overview.setBusinessHoursDesc": {
+    en: "Tell her when you're available so she books appointments at the right times.",
+    es: "Dile cuando estas disponible para que agende citas en los horarios correctos.",
+  },
+  "overview.makeTestCallDesc": {
+    en: "Call your Capta number to hear how she handles a real conversation.",
+    es: "Llama a tu numero de Capta para escuchar como maneja una conversacion real.",
+  },
+
+  // ── Intelligence page strings ──────────────────────────────
+  "toast.failedToLoadIntelligence": {
+    en: "Failed to load intelligence data",
+    es: "No se pudieron cargar los datos de inteligencia",
+  },
+
+  // ── Reporting page strings ─────────────────────────────────
+  "toast.failedToLoadReporting": {
+    en: "Failed to load reporting data",
+    es: "No se pudieron cargar los datos de reportes",
+  },
+
+  // ── SMS page strings ───────────────────────────────────────
+  "toast.failedToLoadSms": {
+    en: "Failed to load SMS messages",
+    es: "No se pudieron cargar los mensajes SMS",
+  },
+  "sms.noMatchingMessages": {
+    en: "No messages matching \"{query}\"",
+    es: "No hay mensajes que coincidan con \"{query}\"",
+  },
+  "sms.smsDescription": {
+    en: "SMS confirmations and reminders will show up here as {name} handles calls.",
+    es: "Las confirmaciones y recordatorios SMS apareceran aqui a medida que {name} atienda llamadas.",
+  },
+
+  // ── Feedback page strings ──────────────────────────────────
+  "feedback.description": {
+    en: "Manage customer reviews and share ideas with our team.",
+    es: "Administra resenas de clientes y comparte ideas con nuestro equipo.",
+  },
+  "feedback.newFeedback": { en: "New Feedback", es: "Nuevo comentario" },
+  "feedback.feedbackTab": { en: "Feedback", es: "Comentarios" },
+  "feedback.reviewsTab": { en: "Reviews", es: "Resenas" },
+  "feedback.thankYou": {
+    en: "Thank you! Your feedback has been submitted.",
+    es: "Gracias! Tu comentario ha sido enviado.",
+  },
+  "feedback.type": { en: "Type", es: "Tipo" },
+  "feedback.category": { en: "Category", es: "Categoria" },
+  "feedback.titleLabel": { en: "Title", es: "Titulo" },
+  "feedback.titlePlaceholder": {
+    en: "Brief summary of your feedback...",
+    es: "Breve resumen de tu comentario...",
+  },
+  "feedback.descriptionLabel": { en: "Description", es: "Descripcion" },
+  "feedback.descriptionPlaceholder": {
+    en: "Please describe in detail...",
+    es: "Por favor describe en detalle...",
+  },
+  "feedback.submitting": { en: "Submitting...", es: "Enviando..." },
+  "feedback.networkError": {
+    en: "Network error. Please try again.",
+    es: "Error de red. Por favor intenta de nuevo.",
+  },
+  "feedback.noFeedbackYet": { en: "No feedback yet", es: "Aun no hay comentarios" },
+  "feedback.noFeedbackDesc": {
+    en: "Share your first idea or feature request with our team.",
+    es: "Comparte tu primera idea o solicitud de funcion con nuestro equipo.",
+  },
+  "feedback.teamResponse": { en: "Team Response", es: "Respuesta del equipo" },
+  "feedback.noReviewsYet": { en: "No reviews yet", es: "Aun no hay resenas" },
+  "feedback.noReviewsDesc": {
+    en: "Reviews will appear here when imported or synced.",
+    es: "Las resenas apareceran aqui cuando se importen o sincronicen.",
+  },
+  "feedback.anonymous": { en: "Anonymous", es: "Anonimo" },
+  "feedback.generateReply": { en: "Generate Reply", es: "Generar respuesta" },
+  "feedback.generating": { en: "Generating...", es: "Generando..." },
+  "feedback.aiDraft": { en: "AI Draft", es: "Borrador AI" },
+  "feedback.approved": { en: "(Approved)", es: "(Aprobado)" },
+  "feedback.regenerate": { en: "Regenerate", es: "Regenerar" },
+  "feedback.regenerating": { en: "Regenerating...", es: "Regenerando..." },
+  "feedback.featureRequestLabel": { en: "Feature Request", es: "Solicitud de funcion" },
+  "feedback.bugReportLabel": { en: "Bug Report", es: "Reporte de error" },
+  "feedback.feedbackLabel": { en: "Feedback", es: "Comentario" },
+  "feedback.general": { en: "General", es: "General" },
+  "feedback.calls": { en: "Calls", es: "Llamadas" },
+  "feedback.billing": { en: "Billing", es: "Facturacion" },
+  "feedback.appointments": { en: "Appointments", es: "Citas" },
+  "feedback.sms": { en: "SMS", es: "SMS" },
+  "feedback.other": { en: "Other", es: "Otro" },
+
+  // ── Shared / Generic strings ───────────────────────────────
+  "action.saving": { en: "Saving...", es: "Guardando..." },
+  "misc.unknown": { en: "Unknown", es: "Desconocido" },
 };
 
 /**

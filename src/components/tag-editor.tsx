@@ -45,7 +45,7 @@ export default function TagEditor({ tags, onChange, maxTags = 10 }: TagEditorPro
         <span
           key={tag}
           className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium"
-          style={{ background: "rgba(197,154,39,0.12)", color: "var(--db-accent)" }}
+          style={{ background: "var(--db-accent-bg)", color: "var(--db-accent)" }}
         >
           {tag}
           <button

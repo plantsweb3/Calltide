@@ -249,7 +249,7 @@ export default function IntelligencePage() {
                 {(["pending", "answered", "dismissed"] as const).map((s) => (
                   <span
                     key={s}
-                    className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                    className="rounded-full px-2 py-0.5 text-xs font-semibold"
                     style={{
                       background: `${GAP_STATUS_COLORS[s]}20`,
                       color: GAP_STATUS_COLORS[s],
@@ -433,7 +433,7 @@ export default function IntelligencePage() {
                     </span>
                     {c.tier && (
                       <span
-                        className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                        className="rounded-full px-2 py-0.5 text-xs font-semibold"
                         style={{
                           background: `${TIER_COLORS[c.tier] || "var(--db-text-muted)"}15`,
                           color: TIER_COLORS[c.tier] || "var(--db-text-muted)",
@@ -484,7 +484,7 @@ export default function IntelligencePage() {
                     cnt > 0 && (
                       <span
                         key={tier}
-                        className="flex items-center gap-1 text-[10px]"
+                        className="flex items-center gap-1 text-xs"
                         style={{ color: "var(--db-text-muted)" }}
                       >
                         <span

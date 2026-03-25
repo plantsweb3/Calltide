@@ -178,7 +178,7 @@ function StatusBadge({ status, type }: { status: string; type: TimelineItem["typ
 
   return (
     <span
-      className="rounded px-1.5 py-0.5 text-[10px] font-medium uppercase"
+      className="rounded px-1.5 py-0.5 text-xs font-medium uppercase"
       style={{ background: bg, color: fg }}
     >
       {status.replace(/_/g, " ")}
@@ -553,7 +553,7 @@ export default function CustomerDetailPage() {
               <div className="flex items-center gap-1.5">
                 <a
                   href={`tel:${customer.phone}`}
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium transition-colors"
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium transition-colors"
                   style={{ background: "rgba(59,130,246,0.1)", color: "#3b82f6" }}
                   title="Call customer"
                 >
@@ -564,7 +564,7 @@ export default function CustomerDetailPage() {
                 </a>
                 <button
                   onClick={() => setShowSmsModal(true)}
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium transition-colors"
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium transition-colors"
                   style={{ background: "rgba(139,92,246,0.1)", color: "#8b5cf6" }}
                   title="Send SMS"
                 >
@@ -738,7 +738,7 @@ export default function CustomerDetailPage() {
                               e.stopPropagation();
                               setShowFollowUpForm(item);
                             }}
-                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium transition-all"
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-all"
                             style={{
                               background: "var(--db-hover)",
                               color: "var(--db-text-muted)",
@@ -756,7 +756,7 @@ export default function CustomerDetailPage() {
                               e.stopPropagation();
                               router.push(`/dashboard/invoices?customerId=${customer.id}`);
                             }}
-                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium transition-all"
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-all"
                             style={{
                               background: "var(--db-hover)",
                               color: "var(--db-text-muted)",
@@ -775,7 +775,7 @@ export default function CustomerDetailPage() {
                               convertEstimateToInvoice(item.id);
                             }}
                             disabled={convertingEstimate === item.id}
-                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium transition-all disabled:opacity-50"
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-all disabled:opacity-50"
                             style={{
                               background: "var(--db-hover)",
                               color: "var(--db-text-muted)",
@@ -1095,7 +1095,7 @@ function SendSmsModal({
               style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
               autoFocus
             />
-            <p className="text-[10px] text-right mt-0.5" style={{ color: "var(--db-text-muted)" }}>
+            <p className="text-xs text-right mt-0.5" style={{ color: "var(--db-text-muted)" }}>
               {message.length}/1600
             </p>
           </div>

@@ -148,8 +148,8 @@ export default function BillingPage() {
         <div
           className="rounded-xl p-5"
           style={{
-            background: "linear-gradient(135deg, rgba(197,154,39,0.08), rgba(197,154,39,0.02))",
-            border: "1px solid rgba(197,154,39,0.3)",
+            background: "linear-gradient(135deg, var(--db-accent-bg), transparent)",
+            border: "1px solid var(--db-accent)",
           }}
         >
           <div className="flex items-start justify-between gap-4">
@@ -159,7 +159,7 @@ export default function BillingPage() {
                   Save $1,200/year with Annual Billing
                 </h3>
                 <span
-                  className="rounded-full px-2 py-0.5 text-[10px] font-bold"
+                  className="rounded-full px-2 py-0.5 text-xs font-bold"
                   style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                 >
                   SAVE 20%
@@ -358,16 +358,14 @@ export default function BillingPage() {
         <div
           className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setShowSwitchConfirm(false)}
-          onKeyDown={(e) => { if (e.key === "Escape") setShowSwitchConfirm(false); }}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="switch-confirm-title"
         >
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="switch-confirm-title"
             className="modal-content db-card w-full max-w-md rounded-xl p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => { if (e.key === "Escape") setShowSwitchConfirm(false); }}
           >
             <h3 id="switch-confirm-title" className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
               Switch to Annual Billing?

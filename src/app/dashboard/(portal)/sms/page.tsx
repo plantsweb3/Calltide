@@ -233,7 +233,7 @@ export default function SmsPage() {
                 </span>
                 {row.templateType && (
                   <span
-                    className="rounded px-1.5 py-0.5 text-[10px] font-medium"
+                    className="rounded px-1.5 py-0.5 text-xs font-medium"
                     style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
                   >
                     {row.templateType}

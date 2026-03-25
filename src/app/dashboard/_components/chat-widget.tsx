@@ -235,7 +235,7 @@ export default function ChatWidget() {
 
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-semibold text-white leading-tight">{receptionistName}</p>
-                <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.45)" }}>
+                <p className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
                   AI Office Manager
                 </p>
               </div>
@@ -374,7 +374,7 @@ export default function ChatWidget() {
                 >
                   {msg.role === "assistant" && (
                     <div
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold mt-0.5"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold mt-0.5"
                       style={{
                         background: "rgba(212, 168, 67, 0.1)",
                         color: "#D4A843",
@@ -404,7 +404,7 @@ export default function ChatWidget() {
                       <p className="text-[13px] leading-[1.5] whitespace-pre-wrap">{msg.content}</p>
                     </div>
                     <div className="flex items-center gap-1.5 mt-1 px-1">
-                      <span className="text-[10px]" style={{ color: "var(--db-text-muted)", opacity: 0.6 }}>
+                      <span className="text-xs" style={{ color: "var(--db-text-muted)", opacity: 0.6 }}>
                         {formatTime(msg.createdAt)}
                       </span>
                       {msg.toolsUsed && msg.toolsUsed.length > 0 && (
@@ -423,7 +423,7 @@ export default function ChatWidget() {
               {sending && (
                 <div className="chatMsgIn flex gap-2.5">
                   <div
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold mt-0.5"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold mt-0.5"
                     style={{ background: "rgba(212, 168, 67, 0.1)", color: "#D4A843" }}
                   >
                     {receptionistName[0]}
@@ -482,7 +482,7 @@ export default function ChatWidget() {
                   </svg>
                 </button>
               </div>
-              <p className="mt-1.5 text-center text-[10px]" style={{ color: "var(--db-text-muted)", opacity: 0.5 }}>
+              <p className="mt-1.5 text-center text-xs" style={{ color: "var(--db-text-muted)", opacity: 0.5 }}>
                 {receptionistName} can look up your calls, appointments, customers, and more
               </p>
             </div>

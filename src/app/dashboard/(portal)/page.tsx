@@ -295,12 +295,12 @@ export default function OverviewPage() {
                     {call.customerName || call.callerPhone || "Unknown"}
                   </span>
                   {call.isReturningCaller && (
-                    <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={{ background: "rgba(99,102,241,0.1)", color: "rgb(129,140,248)" }}>
+                    <span className="rounded-full px-1.5 py-0.5 text-xs font-medium" style={{ background: "rgba(99,102,241,0.1)", color: "rgb(129,140,248)" }}>
                       returning
                     </span>
                   )}
                   {call.currentIntent && (
-                    <span className="text-[10px] uppercase tracking-wide" style={{ color: "var(--db-text-muted)" }}>
+                    <span className="text-xs uppercase tracking-wide" style={{ color: "var(--db-text-muted)" }}>
                       {call.currentIntent}
                     </span>
                   )}

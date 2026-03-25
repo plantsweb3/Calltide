@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { jobCards, ownerResponses, businesses } from "@/db/schema";
-import { eq, and, isNull, lt } from "drizzle-orm";
+import { eq, and, isNull, lt, inArray } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { env } from "@/lib/env";
 import { reportError } from "@/lib/error-reporting";
@@ -40,15 +40,19 @@ export async function GET(req: NextRequest) {
           isNull(jobCards.reminderSentAt),
           lt(jobCards.createdAt, fourHoursAgo),
         ),
-      );
+      )
+      .limit(100);
+
+    // Batch-fetch businesses for pending cards
+    const pendingBizIds = [...new Set(pendingCards.map((c) => c.businessId).filter(Boolean))] as string[];
+    const pendingBizRows = pendingBizIds.length > 0
+      ? await db.select().from(businesses).where(inArray(businesses.id, pendingBizIds))
+      : [];
+    const pendingBizMap = new Map(pendingBizRows.map((b) => [b.id, b]));
 
     for (const card of pendingCards) {
       try {
-        const [biz] = await db
-          .select()
-          .from(businesses)
-          .where(eq(businesses.id, card.businessId))
-          .limit(1);
+        const biz = pendingBizMap.get(card.businessId);
 
         if (!biz?.ownerPhone) continue;
 
@@ -101,30 +105,36 @@ export async function GET(req: NextRequest) {
           eq(jobCards.status, "pending_review"),
           lt(jobCards.createdAt, twentyFourHoursAgo),
         ),
-      );
+      )
+      .limit(100);
+
+    // Batch-fetch businesses for expired cards
+    const expiredBizIds = [...new Set(expiredCards.map((c) => c.businessId).filter(Boolean))] as string[];
+    const expiredBizRows = expiredBizIds.length > 0
+      ? await db.select().from(businesses).where(inArray(businesses.id, expiredBizIds))
+      : [];
+    const expiredBizMap = new Map(expiredBizRows.map((b) => [b.id, b]));
 
     for (const card of expiredCards) {
       try {
-        await db.update(jobCards).set({
-          status: "expired",
-          expiredAt: now.toISOString(),
-          updatedAt: now.toISOString(),
-        }).where(eq(jobCards.id, card.id));
+        await db.transaction(async (tx) => {
+          await tx.update(jobCards).set({
+            status: "expired",
+            expiredAt: now.toISOString(),
+            updatedAt: now.toISOString(),
+          }).where(eq(jobCards.id, card.id));
 
-        await db.insert(ownerResponses).values({
-          businessId: card.businessId,
-          jobCardId: card.id,
-          direction: "outbound",
-          messageType: "expiry",
-          messageText: "Job card expired after 24 hours without response.",
+          await tx.insert(ownerResponses).values({
+            businessId: card.businessId,
+            jobCardId: card.id,
+            direction: "outbound",
+            messageType: "expiry",
+            messageText: "Job card expired after 24 hours without response.",
+          });
         });
 
         // Notify owner that the card expired
-        const [biz] = await db
-          .select()
-          .from(businesses)
-          .where(eq(businesses.id, card.businessId))
-          .limit(1);
+        const biz = expiredBizMap.get(card.businessId);
 
         if (biz?.ownerPhone) {
           const fromNumber = biz.twilioNumber || env.TWILIO_PHONE_NUMBER;

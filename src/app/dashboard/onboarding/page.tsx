@@ -943,15 +943,15 @@ function OnboardingPage() {
               {(["Maria", "Sofia", "Isabella"] as const).map((name, i) => (
                 <button key={name} onClick={() => { setReceptionistName(name); setUseCustomName(false); }}
                   className="relative flex flex-col items-center rounded-xl border-2 p-4 text-center transition-all hover:shadow-md"
-                  style={{ borderColor: !useCustomName && receptionistName === name ? "#C59A27" : "#E5E7EB", background: !useCustomName && receptionistName === name ? "rgba(197,154,39,0.05)" : "#fff" }}>
+                  style={{ borderColor: !useCustomName && receptionistName === name ? "var(--db-accent)" : "#E5E7EB", background: !useCustomName && receptionistName === name ? "var(--db-accent-bg)" : "#fff" }}>
                   <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 text-lg font-bold text-amber-600">{name[0]}</div>
                   <p className="text-sm font-semibold text-gray-900">{name}</p>
-                  {i === 0 && <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-amber-500">{t.nameRecommended}</span>}
+                  {i === 0 && <span className="mt-1 text-xs font-medium uppercase tracking-wider text-amber-500">{t.nameRecommended}</span>}
                 </button>
               ))}
               <button onClick={() => { setUseCustomName(true); if (["Maria", "Sofia", "Isabella"].includes(receptionistName)) setReceptionistName(""); }}
                 className="flex flex-col items-center rounded-xl border-2 border-dashed p-4 text-center transition-all hover:shadow-md"
-                style={{ borderColor: useCustomName ? "#C59A27" : "#D1D5DB", background: useCustomName ? "rgba(197,154,39,0.05)" : "#fff" }}>
+                style={{ borderColor: useCustomName ? "var(--db-accent)" : "#D1D5DB", background: useCustomName ? "var(--db-accent-bg)" : "#fff" }}>
                 <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-lg text-gray-400">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 </div>
@@ -1627,7 +1627,7 @@ function OnboardingPage() {
           width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #E5E7EB; border-radius: 0.5rem;
           font-size: 0.875rem; color: #111827; background: white; transition: border-color 0.15s; outline: none;
         }
-        .input-field:focus { border-color: #C59A27; box-shadow: 0 0 0 3px rgba(197,154,39,0.1); }
+        .input-field:focus { border-color: var(--db-accent); box-shadow: 0 0 0 3px var(--db-accent-bg); }
         .input-field::placeholder { color: #9CA3AF; }
       `}</style>
     </div>

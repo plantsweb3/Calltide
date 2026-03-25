@@ -261,7 +261,7 @@ export default function ActivityFeed({
                       </span>
                       {evt.language && (
                         <span
-                          className="rounded px-1.5 py-0.5 text-[10px] font-medium uppercase"
+                          className="rounded px-1.5 py-0.5 text-xs font-medium uppercase"
                           style={{
                             background: evt.language === "es" ? "var(--db-accent-bg)" : "rgba(96,165,250,0.1)",
                             color: evt.language === "es" ? "#C59A27" : "#60a5fa",
@@ -272,7 +272,7 @@ export default function ActivityFeed({
                       )}
                       {evt.recovered && (
                         <span
-                          className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase"
+                          className="rounded px-1.5 py-0.5 text-xs font-bold uppercase"
                           style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                         >
                           Recovered
@@ -280,7 +280,7 @@ export default function ActivityFeed({
                       )}
                       {evt.value && (
                         <span
-                          className="rounded px-1.5 py-0.5 text-[10px] font-medium"
+                          className="rounded px-1.5 py-0.5 text-xs font-medium"
                           style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                         >
                           +${evt.value}
@@ -310,7 +310,7 @@ export default function ActivityFeed({
                     e.preventDefault();
                     toggleChain(chain.chainId);
                   }}
-                  className="ml-11 mb-1 text-[11px] font-medium transition-colors"
+                  className="ml-11 mb-1 text-xs font-medium transition-colors"
                   style={{ color: "var(--db-accent)" }}
                 >
                   {isExpanded

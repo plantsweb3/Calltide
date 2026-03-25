@@ -9,7 +9,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const sizeClasses = {
   sm: "px-3 py-1.5 text-xs gap-1.5 rounded-lg min-h-[44px]",
-  md: "px-4 py-2 text-sm gap-2 rounded-lg",
+  md: "px-4 py-2 text-sm gap-2 rounded-lg min-h-[44px]",
   lg: "px-5 py-2.5 text-sm gap-2 rounded-xl",
 };
 

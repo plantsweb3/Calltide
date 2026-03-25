@@ -139,8 +139,11 @@ describe("Rate Limiter", () => {
     expect(RATE_LIMITS.write).toEqual({ limit: 20, windowSeconds: 60 });
     expect(RATE_LIMITS.webhook).toEqual({ limit: 200, windowSeconds: 60 });
     expect(RATE_LIMITS.admin).toEqual({ limit: 120, windowSeconds: 60 });
-    expect(RATE_LIMITS.demo).toEqual({ limit: 1, windowSeconds: 3600 });
-    expect(RATE_LIMITS.demoDaily).toEqual({ limit: 5, windowSeconds: 86400 });
+    expect(RATE_LIMITS.demo).toEqual({ limit: 5, windowSeconds: 900 });
+    expect(RATE_LIMITS.demoDaily).toEqual({ limit: 30, windowSeconds: 86400 });
+    expect(RATE_LIMITS.passwordLogin).toEqual({ limit: 5, windowSeconds: 900 });
+    expect(RATE_LIMITS.passwordReset).toEqual({ limit: 3, windowSeconds: 3600 });
+    expect(RATE_LIMITS.passwordChange).toEqual({ limit: 5, windowSeconds: 3600 });
   });
 });
 

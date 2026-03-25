@@ -431,7 +431,7 @@ export default function InvoicesPage() {
         return (
           <span className="text-sm" style={{ color: overdue ? "var(--db-danger)" : "var(--db-text-muted)" }}>
             {formatDate(row.dueDate)}
-            {overdue && <span className="ml-1 text-[10px] font-semibold uppercase">overdue</span>}
+            {overdue && <span className="ml-1 text-xs font-semibold uppercase">overdue</span>}
           </span>
         );
       },
@@ -602,7 +602,7 @@ export default function InvoicesPage() {
               {tab.label}
               {badge && (
                 <span
-                  className="inline-flex items-center justify-center rounded-full px-1.5 min-w-[20px] h-5 text-[10px] font-bold"
+                  className="inline-flex items-center justify-center rounded-full px-1.5 min-w-[20px] h-5 text-xs font-bold"
                   style={{
                     background: isActive ? "var(--db-accent)" : "var(--db-border)",
                     color: isActive ? "#fff" : "var(--db-text-muted)",
@@ -700,7 +700,7 @@ export default function InvoicesPage() {
               {/* Line items preview */}
               {row.lineItems && row.lineItems.length > 0 && (
                 <div className="space-y-1">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
                     Line Items
                   </p>
                   {row.lineItems.map((item, i) => (
@@ -761,16 +761,14 @@ export default function InvoicesPage() {
         <div
           className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => resetCreateForm()}
-          onKeyDown={(e) => { if (e.key === "Escape") resetCreateForm(); }}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="create-invoice-title"
         >
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="create-invoice-title"
             className="modal-content db-card w-full max-w-2xl rounded-xl p-6 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => { if (e.key === "Escape") resetCreateForm(); }}
           >
             <h3 id="create-invoice-title" className="text-lg font-semibold mb-5" style={{ color: "var(--db-text)" }}>
               {t("invoices.newInvoice", lang)}
@@ -857,16 +855,14 @@ export default function InvoicesPage() {
         <div
           className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setShowEdit(null)}
-          onKeyDown={(e) => { if (e.key === "Escape") setShowEdit(null); }}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="edit-invoice-title"
         >
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="edit-invoice-title"
             className="modal-content db-card w-full max-w-2xl rounded-xl p-6 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => { if (e.key === "Escape") setShowEdit(null); }}
           >
             <h3 id="edit-invoice-title" className="text-lg font-semibold mb-1" style={{ color: "var(--db-text)" }}>
               {t("invoices.editInvoice", lang)}
@@ -952,16 +948,14 @@ export default function InvoicesPage() {
         <div
           className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setMarkPaidId(null)}
-          onKeyDown={(e) => { if (e.key === "Escape") setMarkPaidId(null); }}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="mark-paid-title"
         >
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="mark-paid-title"
             className="modal-content db-card w-full max-w-sm rounded-xl p-6"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => { if (e.key === "Escape") setMarkPaidId(null); }}
           >
             <h3 id="mark-paid-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>
               {t("invoices.markPaid", lang)}

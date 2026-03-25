@@ -406,16 +406,14 @@ export default function AppointmentsPage() {
         <div
           className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setSelected(null)}
-          onKeyDown={(e) => { if (e.key === "Escape") setSelected(null); }}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
         >
           <div
             role="dialog"
             aria-modal="true"
+            aria-labelledby="modal-title"
             className="modal-content db-card w-full max-w-lg rounded-xl p-6 space-y-5"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => { if (e.key === "Escape") setSelected(null); }}
           >
             <div className="flex items-start justify-between">
               <div>
