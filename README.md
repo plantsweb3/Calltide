@@ -4,9 +4,9 @@ AI-powered bilingual virtual receptionist for home service businesses. Answers c
 
 ## Tech Stack
 
-- **Framework:** Next.js 15 (App Router), TypeScript
+- **Framework:** Next.js 16 (App Router), TypeScript
 - **Database:** Drizzle ORM + SQLite/Turso (libsql)
-- **Voice AI:** Hume EVI (WebSocket-based voice conversations)
+- **Voice AI:** ElevenLabs Conversational AI (Twilio WebSocket bridge)
 - **LLM:** Anthropic Claude (call summaries, QA scoring, content generation)
 - **SMS/Calls:** Twilio
 - **Email:** Resend
@@ -54,13 +54,13 @@ npm run dev
 src/
 ├── app/
 │   ├── admin/          # Admin portal (cookie auth, HMAC-SHA256)
-│   ├── dashboard/      # Client portal (magic link auth)
+│   ├── dashboard/      # Client portal (password + magic link auth)
 │   ├── api/
 │   │   ├── admin/      # Admin API routes
 │   │   ├── dashboard/  # Client API routes
 │   │   ├── agents/     # AI agent cron routes (6 agents)
 │   │   ├── cron/       # Scheduled task routes
-│   │   ├── webhooks/   # Hume + Twilio webhooks
+│   │   ├── webhooks/   # ElevenLabs + Twilio webhooks
 │   │   ├── stripe/     # Stripe webhook + portal
 │   │   └── ...
 │   ├── (marketing)/    # Public marketing pages
@@ -68,12 +68,13 @@ src/
 │   └── blog/           # Blog (EN/ES)
 ├── components/         # Shared UI components
 ├── db/
-│   ├── schema.ts       # Drizzle schema (65 tables)
-│   └── migrations/     # SQL migrations
+│   ├── schema.ts       # Drizzle schema (107 tables)
+│   └── migrations/     # SQL migrations (0000-0077)
 ├── lib/
 │   ├── ai/             # System prompts, context builder, call summary
 │   ├── agents/         # Agent runtime, tools, prompts
-│   ├── hume/           # Tool handlers, webhook verification
+│   ├── elevenlabs/     # Client, agent config, agent sync
+│   ├── voice/          # Voice tool handlers (9 tools)
 │   ├── capacity/       # Provider metrics, modeling, thresholds
 │   ├── compliance/     # GDPR/CCPA consent, SMS opt-out, retention
 │   ├── financial/      # Dunning, cost tracking
@@ -90,7 +91,7 @@ tests/
 ## Authentication
 
 - **Admin:** Cookie-based with HMAC-SHA256 signed tokens
-- **Client:** Magic link via email → signed token → cookie
+- **Client:** Password login (primary) + magic link fallback → signed token → cookie
 - **Crons:** Bearer token via `CRON_SECRET`
 
 ## Environment Variables
@@ -105,10 +106,10 @@ Required environment variables (see `.env.example` for full list):
 | `CRON_SECRET` | Cron job authorization |
 | `STRIPE_SECRET_KEY` | Stripe API key |
 | `TWILIO_ACCOUNT_SID` | Twilio account SID |
-| `HUME_API_KEY` | Hume EVI API key |
+| `ELEVENLABS_API_KEY` | ElevenLabs API key |
 | `ANTHROPIC_API_KEY` | Anthropic Claude API key |
 | `RESEND_API_KEY` | Resend email API key |
 
 ## Deployment
 
-Deployed on Vercel with 18 scheduled cron jobs for agents, capacity monitoring, financial tracking, and outbound campaigns. See `vercel.json` for the full schedule.
+Deployed on Vercel with 37 scheduled cron jobs for agents, capacity monitoring, financial tracking, and outbound campaigns. See `vercel.json` for the full schedule.

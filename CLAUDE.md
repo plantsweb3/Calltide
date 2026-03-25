@@ -34,9 +34,9 @@ src/
 │   └── page.tsx        # Landing page
 ├── components/         # Shared UI components
 ├── db/
-│   ├── schema.ts       # Drizzle schema (98 tables)
+│   ├── schema.ts       # Drizzle schema (107 tables)
 │   ├── index.ts        # DB connection
-│   └── migrations/     # SQL migrations (0000-0069)
+│   └── migrations/     # SQL migrations (0000-0077)
 ├── lib/
 │   ├── ai/             # System prompts, context builder, call summary
 │   ├── elevenlabs/     # Client, agent config, agent sync
@@ -44,7 +44,6 @@ src/
 │   ├── receptionist/   # Personality presets, custom responses, trade profiles
 │   ├── rate-limit.ts   # Turso-backed rate limiter with in-memory L1 cache
 │   ├── error-reporting.ts  # Sentry integration
-│   ├── integrations.ts     # Graceful API key availability checks
 │   └── ...
 ├── middleware.ts       # Auth + CSRF + rate limiting
 └── types/              # TypeScript type definitions
@@ -55,11 +54,12 @@ tests/
 
 ## Architecture Overview
 
-- `/app/(marketing)/*` — Public pages (homepage, pricing, platform, about, faq, blog, help, legal, status)
-- `/app/dashboard/*` — Client portal (21 pages: calls, appointments, CRM, estimates, billing, settings, referrals, partners, import, onboarding, SMS, feedback, reporting, job cards)
-- `/app/admin/*` — Admin portal (32 pages: Founder HQ, Ops Dashboard, clients, prospects, agents, campaigns, blog CMS, KB, compliance, financials, incidents, outreach)
-- `/app/api/*` — 250 API routes
-- `/src/db/*` — Drizzle schema (98 tables) + migrations
+- `/app/(marketing)/*` — Public pages (about, faq, pricing, platform, growth-playbook, roi-calculator)
+- `/app/blog/*`, `/app/help/*`, `/app/legal/*`, `/app/status/*`, `/app/setup/*`, `/app/es/*` — Top-level public routes
+- `/app/dashboard/*` — Client portal (23 pages: overview, calls, appointments, customers, estimates, invoices, billing, settings, referrals, partners, import, onboarding, SMS, feedback, reporting, job-cards, intelligence, dispatch, follow-ups, team, cancel, add-location, all-locations)
+- `/app/admin/*` — Admin portal (32 pages: Founder HQ, Ops Dashboard, clients, prospects, agents, campaigns, blog CMS, KB, compliance, financials, incidents, outreach, and more)
+- `/app/api/*` — 290 API routes
+- `/src/db/*` — Drizzle schema (107 tables) + migrations
 - `/src/lib/*` — Shared utilities (auth, env, rate-limit, error-reporting)
 
 ## Authentication
@@ -74,8 +74,8 @@ tests/
 - Zod on all POST/PUT
 - Password login + magic link auth, middleware sessions
 - External: Twilio, ElevenLabs, Stripe, Resend, Anthropic
-- 37 cron-scheduled routes (CRON_SECRET protected): 22 cron jobs, 6 AI agents, 3 capacity, 3 financial, 1 compliance, 2 outbound
-- 250 API routes
+- 37 cron-scheduled routes (CRON_SECRET protected): 24 cron jobs, 6 AI agents, 3 capacity, 3 financial, 1 compliance
+- 290 API routes
 - Demo mode with isolated data
 - Onboarding: 6-step wizard (business info, contact, personality, FAQ, test call, paywall), incomplete signups saved for retargeting
 - Webhooks: 7 event types (appointment CRUD, call.completed, customer.created, estimate.created, message.taken), HMAC-SHA256 signed
@@ -89,7 +89,7 @@ tests/
 
 ### Database
 - Drizzle ORM with SQLite/Turso
-- Migrations in `src/db/migrations/` (numbered 0000-0072)
+- Migrations in `src/db/migrations/` (numbered 0000-0077)
 - Journal in `src/db/migrations/meta/_journal.json`
 - All tables defined in `src/db/schema.ts`
 
@@ -146,7 +146,7 @@ ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers.
 - **Receptionist name is dynamic:** Use `biz.receptionistName || "Maria"` — never hardcode "María"
 - **Rate limiting is async:** All `rateLimit()` calls require `await`
 - **No PII in logs:** Never log phone numbers, emails, or customer data
-- **Anthropic API key:** May be invalid/placeholder — agents and AI features gracefully degrade via `isAnthropicConfigured()`
+- **Anthropic API key:** May be invalid/placeholder — agents and AI features should gracefully degrade when unavailable
 - **ElevenLabs agent sync:** Each business gets its own ElevenLabs agent. `syncAgent()` in `src/lib/elevenlabs/sync-agent.ts` creates/updates agents when business settings change.
 - **Voice tools:** 9 customer-facing tools dispatched via webhook from ElevenLabs to `/api/webhooks/elevenlabs/tools`. Tool handlers in `src/lib/voice/tool-handlers.ts`.
 - **Post-call webhook:** ElevenLabs fires `post_call_transcription` to `/api/webhooks/elevenlabs`. Stores transcript, recording URL, cost, latency.

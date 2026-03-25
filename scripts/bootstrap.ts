@@ -31,7 +31,7 @@ const RECOMMENDED_ENV = [
   "STRIPE_WEBHOOK_SECRET",
   "STRIPE_PRICE_ID",
   "GOOGLE_PLACES_API_KEY",
-  "CLM_API_KEY",
+  "ELEVENLABS_WEBHOOK_SECRET",
 ] as const;
 
 function log(msg: string) {

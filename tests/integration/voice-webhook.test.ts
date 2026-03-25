@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { activeBusiness } from "../fixtures/businesses";
 
 vi.mock("@/db", () => {
+  // Drizzle queries are thenable — make mock chains support await at any point
   const createChain = (returnValue: unknown[] = []) => {
     const chain: Record<string, ReturnType<typeof vi.fn>> = {};
     for (const m of [
@@ -10,22 +11,40 @@ vi.mock("@/db", () => {
     ]) {
       chain[m] = vi.fn().mockReturnThis();
     }
+    // Override terminal methods to resolve
     chain.limit = vi.fn().mockResolvedValue(returnValue);
     chain.returning = vi.fn().mockResolvedValue(returnValue);
+    // Make chain thenable so `await db.select().from().where()` works without .limit()
+    chain.then = (resolve: (v: unknown) => void) => resolve(returnValue);
     return chain;
   };
 
+  let selectCallCount = 0;
   return {
     db: {
-      select: vi.fn(() => createChain([{
-        id: activeBusiness.id,
-        name: activeBusiness.name,
-        active: true,
-        humeConfigId: "hume_config_test",
-      }])),
-      insert: vi.fn(() => createChain()),
+      select: vi.fn(() => {
+        selectCallCount++;
+        // 1st call: business lookup, 2nd call: concurrent call count, 3rd call: duplicate check
+        if (selectCallCount === 1) {
+          return createChain([{
+            id: activeBusiness.id,
+            name: activeBusiness.name,
+            active: true,
+            elevenlabsAgentId: "el_agent_test",
+            ownerPhone: "+10000000000",
+            receptionistName: "Maria",
+            paymentStatus: "active",
+          }]);
+        }
+        if (selectCallCount === 2) {
+          return createChain([{ count: 0 }]);
+        }
+        return createChain([]);
+      }),
+      insert: vi.fn(() => createChain([{ id: "call_test_001" }])),
       update: vi.fn(() => createChain()),
     },
+    __resetSelectCount: () => { selectCallCount = 0; },
   };
 });
 
@@ -35,7 +54,20 @@ vi.mock("@/db/schema", () => ({
     name: "name",
     active: "active",
     twilioNumber: "twilioNumber",
-    humeConfigId: "humeConfigId",
+    elevenlabsAgentId: "elevenlabsAgentId",
+    ownerPhone: "ownerPhone",
+    receptionistName: "receptionistName",
+    paymentStatus: "paymentStatus",
+    defaultLanguage: "defaultLanguage",
+  },
+  calls: {
+    id: "id",
+    businessId: "businessId",
+    status: "status",
+    twilioCallSid: "twilioCallSid",
+  },
+  leads: {
+    id: "id",
   },
 }));
 
@@ -48,7 +80,7 @@ vi.mock("@/lib/rate-limit", () => ({
   rateLimit: vi.fn().mockResolvedValue({ success: true }),
   getClientIp: vi.fn().mockReturnValue("127.0.0.1"),
   rateLimitResponse: vi.fn(),
-  RATE_LIMITS: { webhook: { maxRequests: 100, windowMs: 60000 } },
+  RATE_LIMITS: { webhook: { limit: 100, windowSeconds: 60 } },
 }));
 
 vi.mock("twilio", () => ({
@@ -57,12 +89,47 @@ vi.mock("twilio", () => ({
   },
 }));
 
+vi.mock("drizzle-orm", () => ({
+  eq: vi.fn(),
+  and: vi.fn(),
+  count: vi.fn(),
+}));
+
+vi.mock("@/lib/compliance/sms", () => ({
+  normalizePhone: vi.fn((p: string) => p?.replace(/\D/g, "") || ""),
+}));
+
+vi.mock("@/lib/elevenlabs/client", () => ({
+  getElevenLabsClient: vi.fn().mockReturnValue({
+    conversationalAi: {
+      getSignedUrl: vi.fn().mockResolvedValue({
+        signed_url: "wss://api.elevenlabs.io/v1/convai/twilio/inbound?agent_id=el_agent_test&signed=1",
+      }),
+    },
+  }),
+}));
+
+vi.mock("@/lib/monitoring/active-calls", () => ({
+  trackCallStart: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock("@/lib/ai/context-builder", () => ({
+  findOrCreateLead: vi.fn().mockResolvedValue({ id: "lead_test_001" }),
+}));
+
+vi.mock("@/lib/voice/caller-context", () => ({
+  buildCallerContext: vi.fn().mockResolvedValue(null),
+}));
+
 beforeEach(async () => {
   vi.clearAllMocks();
   process.env.TWILIO_AUTH_TOKEN = "test_auth_token";
   process.env.NEXT_PUBLIC_APP_URL = "https://test.captahq.com";
-  process.env.HUME_API_KEY = "test_hume_api_key";
-  process.env.HUME_CONFIG_ID = "test_hume_config_id";
+  process.env.ELEVENLABS_API_KEY = "test_elevenlabs_api_key";
+
+  // Reset select call counter
+  const dbMod = await import("@/db");
+  (dbMod as unknown as { __resetSelectCount: () => void }).__resetSelectCount?.();
 
   // Re-set twilio mock after clearAllMocks
   const twilio = await import("twilio");
@@ -93,9 +160,9 @@ describe("Voice Webhook — TwiML Generation", () => {
     const body = await res.text();
     expect(body).toContain("<Connect>");
     expect(body).toContain("<Stream");
-    expect(body).toContain("wss://api.hume.ai/v0/evi/twilio");
-    expect(body).toContain("called_phone");
+    expect(body).toContain("wss://api.elevenlabs.io/v1/convai/twilio/inbound");
     expect(body).toContain("caller_phone");
+    expect(body).toContain("called_phone");
     expect(body).toContain("business_id");
     expect(res.headers.get("Content-Type")).toBe("text/xml");
   });
@@ -146,13 +213,15 @@ describe("Voice Webhook — TwiML Generation", () => {
 
   it("returns spoken fallback when business is not found", async () => {
     const { db } = await import("@/db");
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        where: vi.fn().mockReturnValue({
-          limit: vi.fn().mockResolvedValue([]),
-        }),
-      }),
-    } as never);
+    vi.mocked(db.select).mockImplementation(() => {
+      const chain: Record<string, unknown> = {};
+      for (const m of ["select", "from", "where", "limit", "set", "values", "orderBy"]) {
+        chain[m] = vi.fn().mockReturnThis();
+      }
+      chain.limit = vi.fn().mockResolvedValue([]);
+      chain.then = (resolve: (v: unknown) => void) => resolve([]);
+      return chain as never;
+    });
 
     const { POST } = await import("@/app/api/webhooks/twilio/voice/route");
 
@@ -176,21 +245,34 @@ describe("Voice Webhook — TwiML Generation", () => {
   });
 
   it("returns voicemail fallback when ElevenLabs is not configured", async () => {
-    delete process.env.HUME_API_KEY;
+    delete process.env.ELEVENLABS_API_KEY;
 
     const { db } = await import("@/db");
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        where: vi.fn().mockReturnValue({
-          limit: vi.fn().mockResolvedValue([{
-            id: activeBusiness.id,
-            name: activeBusiness.name,
-            active: true,
-            humeConfigId: null,
-          }]),
-        }),
-      }),
-    } as never);
+    let voicemailSelectCount = 0;
+    const createThenableChain = (returnValue: unknown[]) => {
+      const chain: Record<string, unknown> = {};
+      for (const m of ["select", "from", "where", "limit", "set", "values", "insert", "update", "returning", "orderBy"]) {
+        chain[m] = vi.fn().mockReturnThis();
+      }
+      chain.limit = vi.fn().mockResolvedValue(returnValue);
+      chain.then = (resolve: (v: unknown) => void) => resolve(returnValue);
+      return chain;
+    };
+    vi.mocked(db.select).mockImplementation(() => {
+      voicemailSelectCount++;
+      if (voicemailSelectCount === 1) {
+        return createThenableChain([{
+          id: activeBusiness.id,
+          name: activeBusiness.name,
+          active: true,
+          elevenlabsAgentId: null,
+          ownerPhone: "+10000000000",
+          receptionistName: "Maria",
+          paymentStatus: "active",
+        }]) as never;
+      }
+      return createThenableChain([{ count: 0 }]) as never;
+    });
 
     const { POST } = await import("@/app/api/webhooks/twilio/voice/route");
 

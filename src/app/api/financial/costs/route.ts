@@ -63,9 +63,9 @@ export async function POST(request: NextRequest) {
 
       // Costs (in cents): actual ElevenLabs cost from webhook, Twilio estimate, Anthropic estimate
       const twilioCost = Math.round(minutes * 1.3 + smsCount * 0.79); // $0.013/min + $0.0079/SMS
-      const humeCost = voiceCostActual; // ElevenLabs cost tracked via webhook (column name is legacy)
+      const voiceCost = voiceCostActual; // ElevenLabs cost tracked via webhook
       const anthropicCost = Math.round(callCount * 3); // $0.03/call = 3 cents
-      const totalCost = twilioCost + humeCost + anthropicCost;
+      const totalCost = twilioCost + voiceCost + anthropicCost;
       const revenue = biz.mrr ?? 49700;
       const margin = revenue - totalCost;
       const marginPct = revenue > 0 ? (margin / revenue) * 100 : 0;
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
         callCount,
         smsCount,
         twilioCost,
-        humeCost,
+        humeCost: voiceCost, // DB column name is legacy from Hume migration
         anthropicCost,
         totalCost,
         revenue,
