@@ -319,7 +319,7 @@ export default function PlatformClient() {
       {/* Hero */}
       <section className="relative px-6 sm:px-8 pt-24 pb-12 sm:pt-32 sm:pb-16" style={{ background: "#0f1729" }}>
         <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.heroLabel}</p>
+          <p className="section-label text-slate-400">{t.heroLabel}</p>
           <h1 className="mt-4 text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[52px]">
             {t.heroH1}
           </h1>
@@ -393,7 +393,7 @@ export default function PlatformClient() {
       <section className="px-6 sm:px-8 py-24 sm:py-32" style={{ background: "#111a2e" }}>
         <div className="mx-auto max-w-5xl">
           <div className="text-center mb-14">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.tradeLabel}</p>
+            <p className="section-label text-slate-400">{t.tradeLabel}</p>
             <h2 className="mt-4 text-[28px] font-extrabold tracking-tight text-white sm:text-[36px]">
               {t.tradeH2}
             </h2>

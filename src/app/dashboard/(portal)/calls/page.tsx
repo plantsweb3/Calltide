@@ -427,7 +427,7 @@ export default function CallsPage() {
           <option value="">{t("calls.allStatuses", lang)}</option>
           <option value="completed">{t("status.completed", lang)}</option>
           <option value="missed">{t("status.missed", lang)}</option>
-          <option value="voicemail">Voicemail</option>
+          <option value="voicemail">{t("calls.voicemail", lang)}</option>
           <option value="in_progress">{t("status.inProgress", lang)}</option>
         </select>
         <select
@@ -435,12 +435,12 @@ export default function CallsPage() {
           onChange={(e) => { setFilterOutcome(e.target.value); setPage(1); }}
           className="db-select text-xs"
         >
-          <option value="">All Outcomes</option>
-          <option value="appointment_booked">Booked Appointment</option>
-          <option value="estimate_requested">Estimate Requested</option>
-          <option value="message_taken">Message Taken</option>
-          <option value="transfer">Transferred</option>
-          <option value="no_action">No Action</option>
+          <option value="">{t("calls.allOutcomes", lang)}</option>
+          <option value="appointment_booked">{t("calls.bookedAppointment", lang)}</option>
+          <option value="estimate_requested">{t("calls.estimateRequested", lang)}</option>
+          <option value="message_taken">{t("calls.messageTaken", lang)}</option>
+          <option value="transfer">{t("calls.transferred", lang)}</option>
+          <option value="no_action">{t("calls.noAction", lang)}</option>
         </select>
         <select
           value={filterLanguage}
@@ -498,7 +498,7 @@ export default function CallsPage() {
       {!loading && calls.length === 0 && search && (
         <div className="db-card rounded-xl p-12 text-center">
           <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-            No calls matching &ldquo;{search}&rdquo;
+            {t("calls.noMatching", lang)}
           </p>
         </div>
       )}
@@ -640,7 +640,7 @@ export default function CallsPage() {
                       className="text-xs font-medium uppercase tracking-wider"
                       style={{ color: "var(--db-text-muted)" }}
                     >
-                      Job Intake
+                      {t("calls.jobIntake", lang)}
                     </p>
                     <StatusBadge
                       label={intake.intakeComplete ? "Complete" : "Partial"}

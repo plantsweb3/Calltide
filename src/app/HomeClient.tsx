@@ -110,8 +110,8 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
                   <span className="status-dot" />
                   <span className="text-xs font-medium tracking-wide text-slate-400 transition group-hover:text-white">{lang === "en" ? "Answering calls right now" : "Contestando llamadas ahora"}</span>
                 </a>
-                <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-amber">{t.hero.badge}</p>
-                <h1 className="mt-6 text-[clamp(40px,5.5vw,72px)] font-black leading-[1.05] tracking-tight text-white">
+                <p className="section-label text-amber">{t.hero.badge}</p>
+                <h1 className="mt-6 text-[clamp(28px,5.5vw,64px)] font-black leading-[1.05] tracking-tight text-white">
                   {t.hero.h1}
                 </h1>
                 <p className="mt-6 max-w-xl text-xl font-medium leading-[1.7] text-slate-300">{t.hero.sub}</p>
@@ -140,7 +140,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
             {/* Demo Widget */}
             <div className="md:col-span-2 relative">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(212,145,10,0.15),transparent_70%)]" />
-              <div className="relative rounded-2xl p-6" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(16px)" }}>
+              <div className="glass-card-demo relative rounded-2xl p-6">
                 <ErrorBoundary fallback={null}><MariaDemoWidget lang={lang} phoneTel={PHONE_TEL} /></ErrorBoundary>
               </div>
             </div>
@@ -173,7 +173,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
       <section className="bg-[#1B2A4A] px-6 sm:px-8 py-24 sm:py-32 dark-section">
         <div className="mx-auto max-w-5xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.differentiator.label}</p>
+            <p className="section-label text-slate-400">{t.differentiator.label}</p>
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">
               {t.differentiator.h2}
             </h2>
@@ -182,7 +182,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
 
           <div className="mt-16 grid gap-8 md:grid-cols-2">
             {/* Left — Answering Services */}
-            <div className="rounded-2xl p-8" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            <div className="dark-surface rounded-2xl p-8">
               <h3 className="text-lg font-bold text-slate-400 mb-6">{t.differentiator.leftTitle}</h3>
               <ul className="space-y-4">
                 {t.differentiator.leftItems.map((item, i) => (
@@ -195,7 +195,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
             </div>
 
             {/* Right — Capta */}
-            <div className="rounded-2xl p-8" style={{ background: "rgba(212,168,67,0.04)", border: "1px solid rgba(212,168,67,0.15)" }}>
+            <div className="dark-surface-amber rounded-2xl p-8">
               <h3 className="text-lg font-bold text-white mb-6">{t.differentiator.rightTitle}</h3>
               <ul className="space-y-4">
                 {t.differentiator.rightItems.map((item, i) => (
@@ -232,7 +232,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
       {/* ── 4. DEMO CTA BANNER ── */}
       <section className="bg-navy px-6 sm:px-8 py-16 sm:py-20 dark-section">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.hero.demoSection}</p>
+          <p className="section-label text-slate-400">{t.hero.demoSection}</p>
           <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{t.hero.demoSub}</h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">{t.hero.demoDetail}</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
@@ -247,7 +247,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
       <section id="how-it-works" className="relative bg-navy px-6 sm:px-8 py-24 sm:py-32 dark-section grain-overlay" style={{ background: "#0f1729" }}>
         <div className="relative z-10 mx-auto max-w-5xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.howItWorks.label}</p>
+            <p className="section-label text-slate-400">{t.howItWorks.label}</p>
             <h2 className="mt-4 text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[48px]">
               {t.howItWorks.h2}
             </h2>
@@ -282,7 +282,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
       <section id="features" className="relative bg-[#1B2A4A] px-6 sm:px-8 py-24 sm:py-32 dark-section grain-overlay">
         <div className="relative z-10 mx-auto max-w-5xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.features.label}</p>
+            <p className="section-label text-slate-400">{t.features.label}</p>
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">
               {t.features.h2}
             </h2>
@@ -323,7 +323,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
       {/* ── 6b. SOCIAL PROOF ── */}
       <section className="bg-[#FBFBFC] px-6 sm:px-8 py-16 sm:py-20">
         <div className="mx-auto max-w-5xl text-center">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">
+          <p className="section-label text-charcoal-light">
             {lang === "en" ? "FOUNDING MEMBERS" : "MIEMBROS FUNDADORES"}
           </p>
           <h2 className="mt-4 text-[28px] font-extrabold leading-[1.1] tracking-tight text-charcoal sm:text-[36px]">
@@ -366,7 +366,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
       <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
         <div className="mx-auto max-w-5xl">
           <div className="reveal text-center mb-16">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">{t.officeManager.label}</p>
+            <p className="section-label text-charcoal-light">{t.officeManager.label}</p>
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-tight text-charcoal sm:text-[44px] max-w-3xl mx-auto">
               {t.officeManager.h2}
             </h2>
@@ -445,7 +445,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
       <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#111a2e" }}>
         <div className="mx-auto max-w-3xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.softwareReplace.label}</p>
+            <p className="section-label text-slate-400">{t.softwareReplace.label}</p>
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">
               {t.softwareReplace.h2}
             </h2>
@@ -455,8 +455,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
             {t.softwareReplace.items.map((item, i) => (
               <motion.div
                 key={i}
-                className="flex items-center justify-between rounded-2xl px-6 py-5"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
+                className="dark-surface flex items-center justify-between rounded-2xl px-6 py-5"
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
@@ -494,7 +493,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
       <section id="pricing" className="bg-[#111317] px-6 sm:px-8 py-24 sm:py-32 dark-section">
         <div className="mx-auto max-w-3xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.pricing.label}</p>
+            <p className="section-label text-slate-400">{t.pricing.label}</p>
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-[#E8E9EB] sm:text-[44px]">
               {t.pricing.h2}
             </h2>
@@ -598,7 +597,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
         <section className="bg-[#FBFBFC] px-6 sm:px-8 py-20 sm:py-24">
           <div className="mx-auto max-w-5xl">
             <div className="text-center">
-              <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">
+              <p className="section-label text-charcoal-light">
                 {lang === "en" ? "From the Blog" : "Del Blog"}
               </p>
               <h2 className="mt-4 text-[28px] font-extrabold leading-[1.1] tracking-tight text-charcoal sm:text-[36px]">

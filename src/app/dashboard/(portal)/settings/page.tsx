@@ -539,8 +539,7 @@ export default function SettingsPage() {
 
       {/* Tab Navigation */}
       <div
-        className="flex gap-1 overflow-x-auto rounded-xl p-1"
-        style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
+        className="flex gap-1 overflow-x-auto"
       >
         {SETTINGS_TAB_KEYS.map((tabKey) => (
           <button

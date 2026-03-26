@@ -111,7 +111,7 @@ export default function EsHomepage() {
                   <span className="status-dot" />
                   <span className="text-xs font-medium tracking-wide text-slate-400 transition group-hover:text-white">Contestando llamadas ahora</span>
                 </a>
-                <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-amber">{t.hero.badge}</p>
+                <p className="section-label text-amber">{t.hero.badge}</p>
                 <h1 className="mt-6 text-[clamp(40px,5.5vw,72px)] font-black leading-[1.05] tracking-tight text-white">{t.hero.h1}</h1>
                 <p className="mt-6 max-w-xl text-xl font-medium leading-[1.7] text-slate-300">{t.hero.sub}</p>
 
@@ -149,7 +149,7 @@ export default function EsHomepage() {
       <section id="problem" className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
         <div className="mx-auto max-w-5xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">{t.problem.label}</p>
+            <p className="section-label text-charcoal-light">{t.problem.label}</p>
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-tight text-charcoal sm:text-[44px] max-w-3xl mx-auto">{t.problem.h2}</h2>
           </div>
           <div className="snap-scroll-mobile reveal mt-16 grid gap-8 sm:grid-cols-2">
@@ -170,7 +170,7 @@ export default function EsHomepage() {
       {/* ── 3. DEMO CTA BANNER ── */}
       <section className="bg-navy px-6 sm:px-8 py-16 sm:py-20 dark-section">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.hero.demoSection}</p>
+          <p className="section-label text-slate-400">{t.hero.demoSection}</p>
           <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{t.hero.demoSub}</h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">{t.hero.demoDetail}</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
@@ -185,7 +185,7 @@ export default function EsHomepage() {
       <section id="how-it-works" className="relative bg-navy px-6 sm:px-8 py-24 sm:py-32 dark-section grain-overlay">
         <div className="relative z-10 mx-auto max-w-5xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.howItWorks.label}</p>
+            <p className="section-label text-slate-400">{t.howItWorks.label}</p>
             <h2 className="mt-4 text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[48px]">{t.howItWorks.h2}</h2>
           </div>
           <div className="mt-20 steps-timeline space-y-14 mx-auto max-w-2xl">
@@ -209,7 +209,7 @@ export default function EsHomepage() {
       <section id="features" className="relative bg-[#1B2A4A] px-6 sm:px-8 py-24 sm:py-32 dark-section grain-overlay">
         <div className="relative z-10 mx-auto max-w-5xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.features.label}</p>
+            <p className="section-label text-slate-400">{t.features.label}</p>
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">{t.features.h2}</h2>
           </div>
           <div className="snap-scroll-mobile mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -238,7 +238,7 @@ export default function EsHomepage() {
       <section className="bg-[#FBFBFC] px-6 sm:px-8 pb-24 sm:pb-32">
         <div className="mx-auto max-w-5xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">{t.social.label}</p>
+            <p className="section-label text-charcoal-light">{t.social.label}</p>
           </div>
           <div className="snap-scroll-mobile mt-12 grid gap-8 sm:grid-cols-3">
             {t.social.stats.map((stat, i) => (
@@ -274,7 +274,7 @@ export default function EsHomepage() {
       <section id="pricing" className="bg-[#111317] px-6 sm:px-8 py-24 sm:py-32 dark-section">
         <div className="mx-auto max-w-3xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.pricing.label}</p>
+            <p className="section-label text-slate-400">{t.pricing.label}</p>
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-[#E8E9EB] sm:text-[44px]">{t.pricing.h2}</h2>
           </div>
           <div className="reveal mt-8 flex items-center justify-center gap-3">
@@ -327,7 +327,7 @@ export default function EsHomepage() {
       <section className="bg-[#FBFBFC] px-6 sm:px-8 pb-24 sm:pb-32">
         <div className="mx-auto max-w-5xl">
           <div className="reveal text-center">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">{t.resources.label}</p>
+            <p className="section-label text-charcoal-light">{t.resources.label}</p>
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-tight text-charcoal sm:text-[44px] max-w-3xl mx-auto">
               {t.resources.h2}
             </h2>

@@ -150,7 +150,7 @@ export default function CallShowcase({ lang }: { lang: Lang }) {
     <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
       <div className="mx-auto max-w-5xl">
         <div className="reveal text-center mb-16">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-charcoal-light">
+          <p className="section-label text-charcoal-light">
             {lang === "en" ? "Hear Her in Action" : "Esc\u00FAchala en Acci\u00F3n"}
           </p>
           <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-charcoal sm:text-[44px]">

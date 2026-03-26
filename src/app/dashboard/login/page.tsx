@@ -126,7 +126,7 @@ function LoginForm() {
           <img src="/images/logo-inline-navy.webp" alt="Capta" className="h-8 w-auto mb-4" />
           <h1
             className="text-2xl font-semibold"
-            style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+            style={{ color: "var(--db-text)" }}
           >
             {t("auth.clientPortal", lang)}
           </h1>
@@ -236,8 +236,7 @@ function LoginForm() {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded"
-                  style={{ accentColor: "var(--db-accent)" }}
+                  className="h-4 w-4 rounded border-[var(--db-border)] bg-[var(--db-surface)] accent-[var(--db-accent)]"
                 />
                 <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>
                   {t("auth.rememberMe", lang)}
@@ -309,7 +308,7 @@ function LoginForm() {
 
 export default function ClientLoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center px-4" style={{ background: "linear-gradient(135deg, var(--db-bg) 0%, var(--db-surface) 100%)" }}>
       <Suspense fallback={null}>
         <LoginForm />
       </Suspense>

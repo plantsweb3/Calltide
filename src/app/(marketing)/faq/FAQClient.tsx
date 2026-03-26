@@ -325,7 +325,7 @@ export default function FAQClient() {
       <section className="relative px-6 sm:px-8 py-28 sm:py-36 dark-section grain-overlay" style={{ background: "#0f1729" }}>
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(212,168,67,0.06) 0%, transparent 70%)" }} />
         <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{c.badge}</p>
+          <p className="section-label text-slate-400">{c.badge}</p>
           <h1 className="mt-6 text-[36px] font-black leading-[1.1] tracking-tight text-white sm:text-[52px] whitespace-pre-line">
             {c.hero}
           </h1>

@@ -447,8 +447,8 @@ function HoursSchedule({ lang, value, onChange }: { lang: Lang; value: string; o
             style={{
               display: "flex", alignItems: "center", gap: 10,
               padding: "8px 12px", borderRadius: 8,
-              background: day.open ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.02)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: day.open ? "var(--db-surface, rgba(255,255,255,0.06))" : "var(--db-bg, rgba(255,255,255,0.02))",
+              border: "1px solid var(--db-border, rgba(255,255,255,0.08))",
             }}
           >
             <button
@@ -456,7 +456,7 @@ function HoursSchedule({ lang, value, onChange }: { lang: Lang; value: string; o
               onClick={() => update(dayKey, { open: !day.open })}
               style={{
                 width: 48, flexShrink: 0, fontWeight: 600, fontSize: 13,
-                color: day.open ? "#D4A843" : "#64748b",
+                color: day.open ? "var(--db-accent, #D4A843)" : "var(--db-text-muted, #64748b)",
                 background: "none", border: "none", cursor: "pointer",
                 textAlign: "left", padding: 0,
               }}
@@ -474,7 +474,7 @@ function HoursSchedule({ lang, value, onChange }: { lang: Lang; value: string; o
                 >
                   {TIME_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
                 </select>
-                <span style={{ color: "#64748b", fontSize: 13, flexShrink: 0 }}>–</span>
+                <span style={{ color: "var(--db-text-muted, #64748b)", fontSize: 13, flexShrink: 0 }}>–</span>
                 <select
                   value={day.to}
                   onChange={(e) => update(dayKey, { to: e.target.value })}
@@ -489,7 +489,7 @@ function HoursSchedule({ lang, value, onChange }: { lang: Lang; value: string; o
                 type="button"
                 onClick={() => update(dayKey, { open: true })}
                 style={{
-                  flex: 1, color: "#64748b", fontSize: 13,
+                  flex: 1, color: "var(--db-text-muted, #64748b)", fontSize: 13,
                   background: "none", border: "none", cursor: "pointer",
                   textAlign: "left", padding: 0,
                 }}
@@ -503,7 +503,7 @@ function HoursSchedule({ lang, value, onChange }: { lang: Lang; value: string; o
               onClick={() => update(dayKey, { open: !day.open })}
               style={{
                 width: 36, height: 20, borderRadius: 10, flexShrink: 0,
-                background: day.open ? "#D4A843" : "rgba(255,255,255,0.12)",
+                background: day.open ? "var(--db-accent, #D4A843)" : "var(--db-border, rgba(255,255,255,0.12))",
                 border: "none", cursor: "pointer", position: "relative",
                 transition: "background 0.2s",
               }}
@@ -569,13 +569,13 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
     <div style={{ marginBottom: 24 }}>
       <div
         style={{
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          background: "var(--db-surface, rgba(255,255,255,0.04))",
+          border: "1px solid var(--db-border, rgba(255,255,255,0.08))",
           borderRadius: 12,
           padding: "24px 20px",
         }}
       >
-        <h3 style={{ color: "#fff", fontSize: 15, fontWeight: 700, margin: "0 0 20px", textAlign: "center" }}>
+        <h3 style={{ color: "var(--db-text, #fff)", fontSize: 15, fontWeight: 700, margin: "0 0 20px", textAlign: "center" }}>
           {l.title}
         </h3>
 
@@ -584,8 +584,8 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
           {/* Job Value */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
-              <span style={{ color: "#94a3b8", fontSize: 13 }}>{l.jobLabel}</span>
-              <span style={{ color: "#fff", fontWeight: 700, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ color: "var(--db-text-muted, #94a3b8)", fontSize: 13 }}>{l.jobLabel}</span>
+              <span style={{ color: "var(--db-text, #fff)", fontWeight: 700, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>
                 ${jobValue.toLocaleString()}
               </span>
             </div>
@@ -596,20 +596,20 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
               step={50}
               value={jobValue}
               onChange={(e) => setJobValue(+e.target.value)}
-              className="setup-roi-slider"
+              className="roi-slider"
               style={{ "--fill": `${jobPct}%` } as React.CSSProperties}
             />
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-              <span style={{ color: "#475569", fontSize: 11 }}>$100</span>
-              <span style={{ color: "#475569", fontSize: 11 }}>$5,000</span>
+              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>$100</span>
+              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>$5,000</span>
             </div>
           </div>
 
           {/* Missed Calls */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
-              <span style={{ color: "#94a3b8", fontSize: 13 }}>{l.callsLabel}</span>
-              <span style={{ color: "#fff", fontWeight: 700, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ color: "var(--db-text-muted, #94a3b8)", fontSize: 13 }}>{l.callsLabel}</span>
+              <span style={{ color: "var(--db-text, #fff)", fontWeight: 700, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>
                 {missedCalls}
               </span>
             </div>
@@ -620,98 +620,49 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
               step={1}
               value={missedCalls}
               onChange={(e) => setMissedCalls(+e.target.value)}
-              className="setup-roi-slider"
+              className="roi-slider"
               style={{ "--fill": `${callsPct}%` } as React.CSSProperties}
             />
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-              <span style={{ color: "#475569", fontSize: 11 }}>1</span>
-              <span style={{ color: "#475569", fontSize: 11 }}>10</span>
+              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>1</span>
+              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>10</span>
             </div>
           </div>
         </div>
 
         {/* Divider */}
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "20px 0" }} />
+        <div style={{ borderTop: "1px solid var(--db-border, rgba(255,255,255,0.06))", margin: "20px 0" }} />
 
         {/* Output */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, textAlign: "center" }}>
           <div>
-            <p style={{ color: "#94a3b8", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.losing}</p>
-            <p style={{ color: "#ef4444", fontSize: 22, fontWeight: 800, margin: 0, fontVariantNumeric: "tabular-nums" }}>
+            <p style={{ color: "var(--db-text-muted, #94a3b8)", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.losing}</p>
+            <p style={{ color: "var(--db-danger, #ef4444)", fontSize: 22, fontWeight: 800, margin: 0, fontVariantNumeric: "tabular-nums" }}>
               ${monthlyLoss.toLocaleString()}
             </p>
-            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
+            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
           </div>
           <div>
-            <p style={{ color: "#94a3b8", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.costs}</p>
-            <p style={{ color: "#fff", fontSize: 22, fontWeight: 800, margin: 0 }}>$497</p>
-            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
+            <p style={{ color: "var(--db-text-muted, #94a3b8)", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.costs}</p>
+            <p style={{ color: "var(--db-text, #fff)", fontSize: 22, fontWeight: 800, margin: 0 }}>$497</p>
+            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
           </div>
           <div>
-            <p style={{ color: "#94a3b8", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.roi}</p>
-            <p style={{ color: "#d4a843", fontSize: 22, fontWeight: 800, margin: 0 }}>
+            <p style={{ color: "var(--db-text-muted, #94a3b8)", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.roi}</p>
+            <p style={{ color: "var(--db-accent, #d4a843)", fontSize: 22, fontWeight: 800, margin: 0 }}>
               {roiMultiple > 0 ? `${roiMultiple.toFixed(1)}x` : "—"}
             </p>
-            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.returnLabel}</p>
+            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 10, margin: "2px 0 0" }}>{l.returnLabel}</p>
           </div>
         </div>
 
         {/* Source note */}
         {tradeName && city && (
-          <p style={{ textAlign: "center", color: "#475569", fontSize: 11, margin: "16px 0 0" }}>
+          <p style={{ textAlign: "center", color: "var(--db-text-muted, #475569)", fontSize: 11, margin: "16px 0 0" }}>
             {l.source}
           </p>
         )}
       </div>
-
-      {/* Slider styles */}
-      <style>{`
-        .setup-roi-slider {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 100%;
-          height: 5px;
-          border-radius: 3px;
-          background: linear-gradient(to right, #d4a843 0%, #d4a843 var(--fill), rgba(255,255,255,0.1) var(--fill), rgba(255,255,255,0.1) 100%);
-          outline: none;
-          cursor: pointer;
-        }
-        .setup-roi-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          background: #d4a843;
-          border: 2px solid #0f1729;
-          box-shadow: 0 0 8px rgba(212,168,67,0.4);
-          cursor: pointer;
-          transition: box-shadow 0.2s, transform 0.15s;
-        }
-        .setup-roi-slider::-webkit-slider-thumb:hover {
-          box-shadow: 0 0 14px rgba(212,168,67,0.6);
-          transform: scale(1.1);
-        }
-        .setup-roi-slider::-moz-range-thumb {
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          background: #d4a843;
-          border: 2px solid #0f1729;
-          box-shadow: 0 0 8px rgba(212,168,67,0.4);
-          cursor: pointer;
-        }
-        .setup-roi-slider::-moz-range-track {
-          height: 5px;
-          border-radius: 3px;
-          background: rgba(255,255,255,0.1);
-        }
-        .setup-roi-slider::-moz-range-progress {
-          height: 5px;
-          border-radius: 3px;
-          background: #d4a843;
-        }
-      `}</style>
     </div>
   );
 }

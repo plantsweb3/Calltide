@@ -40,7 +40,7 @@ export function StaticFooter({ lang }: StaticFooterProps) {
             <a href={PHONE_TEL} className="mt-3 inline-block text-sm font-semibold text-amber hover:underline">{PHONE}</a>
           </div>
           <div>
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">{labels.platform}</p>
+            <p className="section-label text-white/50">{labels.platform}</p>
             <ul className="mt-4 space-y-3 text-sm">
               <li><Link href="/platform" className="text-white/40 transition hover:text-white/60">{labels.platform}</Link></li>
               <li><Link href="/pricing" className="text-white/40 transition hover:text-white/60">{labels.pricing}</Link></li>
@@ -49,7 +49,7 @@ export function StaticFooter({ lang }: StaticFooterProps) {
             </ul>
           </div>
           <div>
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">{labels.company}</p>
+            <p className="section-label text-white/50">{labels.company}</p>
             <ul className="mt-4 space-y-3 text-sm">
               <li><Link href="/about" className="text-white/40 transition hover:text-white/60">{labels.about}</Link></li>
               <li><a href="mailto:hello@captahq.com" className="text-white/40 transition hover:text-white/60">{labels.contact}</a></li>
@@ -59,7 +59,7 @@ export function StaticFooter({ lang }: StaticFooterProps) {
             </ul>
           </div>
           <div>
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">{labels.legal}</p>
+            <p className="section-label text-white/50">{labels.legal}</p>
             <ul className="mt-4 space-y-3 text-sm">
               <li><Link href={lang === "en" ? "/legal/terms" : "/es/legal/terms"} className="text-white/40 transition hover:text-white/60">{labels.terms}</Link></li>
               <li><Link href={lang === "en" ? "/legal/privacy" : "/es/legal/privacy"} className="text-white/40 transition hover:text-white/60">{labels.privacy}</Link></li>

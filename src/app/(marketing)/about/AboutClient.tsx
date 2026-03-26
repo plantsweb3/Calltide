@@ -88,7 +88,7 @@ export default function AboutPage() {
       <section className="relative px-6 sm:px-8 py-28 sm:py-36 dark-section grain-overlay" style={{ background: "#0f1729" }}>
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(212,168,67,0.06) 0%, transparent 70%)" }} />
         <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{c.badge}</p>
+          <p className="section-label text-slate-400">{c.badge}</p>
           <h1 className="mt-6 text-[36px] font-black leading-[1.1] tracking-tight text-white sm:text-[56px] whitespace-pre-line">
             {c.hero}
           </h1>
@@ -99,7 +99,7 @@ export default function AboutPage() {
       {/* The Story */}
       <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#0f1729" }}>
         <div className="reveal mx-auto max-w-3xl">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{c.storyLabel}</p>
+          <p className="section-label text-slate-400">{c.storyLabel}</p>
           <h2 className="mt-4 text-[28px] font-extrabold tracking-tight text-white sm:text-[36px]">{c.storyH}</h2>
           <div className="mt-8 space-y-5">
             <p className="text-base leading-[1.8] text-slate-300">{c.storyP1}</p>
@@ -113,7 +113,7 @@ export default function AboutPage() {
       <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#111827" }}>
         <div className="reveal mx-auto max-w-5xl">
           <div className="text-center mb-14">
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{c.numbersLabel}</p>
+            <p className="section-label text-slate-400">{c.numbersLabel}</p>
             <h2 className="mt-4 text-[28px] font-extrabold tracking-tight text-white sm:text-[36px]">{c.numbersH}</h2>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -138,7 +138,7 @@ export default function AboutPage() {
       {/* Mission */}
       <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#0f1729" }}>
         <div className="reveal mx-auto max-w-3xl text-center">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{c.missionLabel}</p>
+          <p className="section-label text-slate-400">{c.missionLabel}</p>
           <h2 className="mt-4 text-[32px] font-black leading-[1.1] tracking-tight text-white sm:text-[44px]">
             {c.missionH}
           </h2>

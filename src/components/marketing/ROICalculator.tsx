@@ -126,7 +126,7 @@ export function ROICalculator({ lang = "en" }: { lang?: "en" | "es" }) {
   return (
     <div className="reveal">
       <div className="text-center mb-12">
-        <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">{t.heading}</p>
+        <p className="section-label text-slate-400">{t.heading}</p>
         <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">
           {t.title}
         </h2>

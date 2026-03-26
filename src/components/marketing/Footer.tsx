@@ -17,7 +17,7 @@ export function Footer({ lang }: { lang: Lang }) {
             <a href={PHONE_TEL} className="mt-3 inline-block text-sm font-semibold text-amber hover:underline">{PHONE}</a>
           </div>
           <div>
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">{t.footer.platform}</p>
+            <p className="section-label text-white/50">{t.footer.platform}</p>
             <ul className="mt-4 space-y-3 text-sm">
               <li><a href="/platform" className="text-white/40 transition hover:text-white/60">{t.footer.platform}</a></li>
               <li><a href="/pricing" className="text-white/40 transition hover:text-white/60">{t.pricing.label}</a></li>
@@ -26,7 +26,7 @@ export function Footer({ lang }: { lang: Lang }) {
             </ul>
           </div>
           <div>
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">{t.footer.company}</p>
+            <p className="section-label text-white/50">{t.footer.company}</p>
             <ul className="mt-4 space-y-3 text-sm">
               <li><a href="/about" className="text-white/40 transition hover:text-white/60">{t.footer.about}</a></li>
               <li><a href="mailto:hello@captahq.com" className="text-white/40 transition hover:text-white/60">{t.footer.contact}</a></li>
@@ -36,7 +36,7 @@ export function Footer({ lang }: { lang: Lang }) {
             </ul>
           </div>
           <div>
-            <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-white/50">{t.footer.legal}</p>
+            <p className="section-label text-white/50">{t.footer.legal}</p>
             <ul className="mt-4 space-y-3 text-sm">
               <li><a href={`${p}/legal/terms`} className="text-white/40 transition hover:text-white/60">{t.footer.terms}</a></li>
               <li><a href={`${p}/legal/privacy`} className="text-white/40 transition hover:text-white/60">{t.footer.privacy}</a></li>

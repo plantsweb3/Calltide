@@ -225,11 +225,13 @@ function FAQAccordion({ faqs }: { faqs: { q: string; a: string }[] }) {
               <path d="M5 7.5L10 12.5L15 7.5" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-          {open === i && (
-            <div className="px-6 pb-5">
-              <p className="text-[15px] leading-relaxed text-slate-400">{faq.a}</p>
+          <div className={`faq-answer ${open === i ? "open" : ""}`}>
+            <div>
+              <div className="px-6 pb-5">
+                <p className="text-[15px] leading-relaxed text-slate-400">{faq.a}</p>
+              </div>
             </div>
-          )}
+          </div>
         </div>
       ))}
     </div>
@@ -237,7 +239,7 @@ function FAQAccordion({ faqs }: { faqs: { q: string; a: string }[] }) {
 }
 
 export default function PricingClient() {
-  const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
+  const [billing, setBilling] = useState<"monthly" | "annual">("annual");
   const [lang, setLang] = useState<Lang>("en");
   useScrollReveal();
 

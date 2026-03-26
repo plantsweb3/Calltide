@@ -163,7 +163,6 @@ function NavLink({ item, pathname, badges, onClose, lang }: { item: NavItem; pat
         background: isActive ? "var(--sidebar-active-bg)" : "transparent",
         color: isActive ? "var(--sidebar-text-active)" : "var(--sidebar-text)",
         fontWeight: isActive ? 500 : 400,
-        borderLeft: isActive ? "2px solid var(--sidebar-accent)" : "2px solid transparent",
       }}
     >
       <span className="relative" style={{ color: isActive ? "var(--sidebar-accent)" : "var(--sidebar-text)" }}>
@@ -310,7 +309,7 @@ export default function ClientNav({ open, onClose }: ClientNavProps) {
               className="flex w-full items-center justify-between px-3 py-1.5 text-xs font-semibold uppercase tracking-widest"
               style={{ color: "var(--sidebar-section)" }}
             >
-              <span>{lang === "es" ? "Mas" : "More"}</span>
+              <span>{lang === "es" ? "Más" : "More"}</span>
               <svg
                 width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"

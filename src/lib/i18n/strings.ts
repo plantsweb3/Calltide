@@ -2392,6 +2392,31 @@ const strings: Record<string, Record<Lang, string>> = {
   // ── Shared / Generic strings ───────────────────────────────
   "action.saving": { en: "Saving...", es: "Guardando..." },
   "misc.unknown": { en: "Unknown", es: "Desconocido" },
+
+  // ── Dashboard overview i18n ────────────────────────────────
+  "dashboard.topCallers": { en: "Top Callers", es: "Llamadores Frecuentes" },
+  "dashboard.calls": { en: "calls", es: "llamadas" },
+  "dashboard.actionRequired": { en: "Action Required", es: "Accion Requerida" },
+  "dashboard.overdueInvoices": { en: "Overdue invoice(s)", es: "Factura(s) vencida(s)" },
+  "dashboard.unassignedToday": { en: "Unassigned appointment(s) today", es: "Cita(s) sin asignar hoy" },
+  "dashboard.urgentFollowUps": { en: "Urgent follow-up(s)", es: "Seguimiento(s) urgente(s)" },
+  "dashboard.expiredEstimates": { en: "Expired estimate(s)", es: "Presupuesto(s) vencido(s)" },
+  "dashboard.healthExcellent": { en: "Excellent", es: "Excelente" },
+  "dashboard.healthGood": { en: "Good", es: "Bueno" },
+  "dashboard.healthNeedsAttention": { en: "Needs Attention", es: "Necesita Atencion" },
+  "dashboard.savedYou": { en: "Saved You", es: "Te Ahorro" },
+  "dashboard.noDataYet": { en: "No data yet", es: "Sin datos aun" },
+
+  // ── Calls page i18n ────────────────────────────────────────
+  "calls.allOutcomes": { en: "All Outcomes", es: "Todos los Resultados" },
+  "calls.bookedAppointment": { en: "Booked Appointment", es: "Cita Agendada" },
+  "calls.estimateRequested": { en: "Estimate Requested", es: "Presupuesto Solicitado" },
+  "calls.messageTaken": { en: "Message Taken", es: "Mensaje Tomado" },
+  "calls.transferred": { en: "Transferred", es: "Transferida" },
+  "calls.noAction": { en: "No Action", es: "Sin Accion" },
+  "calls.voicemail": { en: "Voicemail", es: "Correo de Voz" },
+  "calls.noMatching": { en: "No calls matching your filters", es: "No hay llamadas que coincidan con tus filtros" },
+  "calls.jobIntake": { en: "Job Intake", es: "Recepcion de Trabajo" },
 };
 
 /**

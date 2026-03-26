@@ -166,7 +166,7 @@ export default function RevenueCycle({ lang }: { lang: Lang }) {
     >
       <div className="relative z-10 mx-auto max-w-6xl">
         <div className="reveal text-center mb-16">
-          <p className="text-[14px] font-bold uppercase tracking-[0.15em] text-slate-400">
+          <p className="section-label text-slate-400">
             {lang === "en" ? "The Full Revenue Cycle" : "El Ciclo Completo de Ingresos"}
           </p>
           <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">

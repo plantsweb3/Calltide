@@ -34,8 +34,8 @@ body {
   background: #FBFBFC;
   color: #1A1D24;
   font-family: var(--font-body), system-ui, sans-serif;
-  font-weight: 500;
-  line-height: 1.7;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 /* Selection color */
@@ -77,18 +77,19 @@ select:focus-visible,
   background-size: 256px 256px;
 }
 
-/* Noise grain for all dark sections (Part 12) */
+/* dark-section: alias for grain-overlay */
 .dark-section {
   position: relative;
   overflow: hidden;
 }
 .dark-section::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  opacity: 0.03;
+  z-index: 1;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 256px 256px;
 }
@@ -104,14 +105,10 @@ select:focus-visible,
   animation: wave-pulse 1.5s ease-in-out infinite;
 }
 
-/* ── V5: Generative Voice Waveform ── */
-@keyframes waveform-bounce {
-  0%, 100% { transform: scaleY(0.3); }
-  50% { transform: scaleY(1); }
-}
+/* waveform-bar: alias for wave-bar with slight variation */
 .waveform-bar {
   transform-origin: bottom;
-  animation: waveform-bounce 1.2s ease-in-out infinite;
+  animation: wave-pulse 1.2s ease-in-out infinite;
 }
 
 /* FAQ accordion */
@@ -207,15 +204,6 @@ select:focus-visible,
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
-/* Legacy card-shadow-hover (kept for compat) */
-.card-shadow-hover {
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-.card-shadow-hover:hover {
-  box-shadow: 0px 8px 24px rgba(15, 23, 42, 0.12), 0px 16px 48px rgba(15, 23, 42, 0.08);
-  transform: translateY(-4px);
-}
-
 /* Sticky nav state */
 .nav-scrolled {
   background: rgba(251, 251, 252, 0.97);
@@ -257,16 +245,6 @@ select:focus-visible,
 /* Phone mockup glow */
 .phone-mockup-glow {
   filter: drop-shadow(0 0 40px rgba(212, 145, 10, 0.15));
-}
-
-/* Problem cards — enhanced hover */
-.problem-card {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.problem-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
 /* Glassmorphic feature cards */
@@ -344,6 +322,18 @@ select:focus-visible,
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Dark section subtle surface (no blur) */
+.dark-surface {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Dark section amber-tinted surface */
+.dark-surface-amber {
+  background: rgba(212, 168, 67, 0.04);
+  border: 1px solid rgba(212, 168, 67, 0.15);
 }
 
 /* Pulse ring animation */
@@ -638,6 +628,16 @@ select:focus-visible,
 .db-btn[data-variant="secondary"]:hover:not(:disabled) { background: var(--db-border); }
 .db-btn[data-variant="ghost"]:hover:not(:disabled) { background: var(--db-hover); color: var(--db-text); }
 .db-btn[data-variant="danger"]:hover:not(:disabled) { background: var(--db-danger); color: #fff; }
+
+.db-btn:active:not(:disabled) { transform: scale(0.97); }
+
+/* Section label — reusable uppercase badge */
+.section-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
 
 /* Dashboard form inputs — Apple-level consistency */
 .db-input {

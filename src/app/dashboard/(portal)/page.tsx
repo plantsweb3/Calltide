@@ -439,7 +439,7 @@ export default function OverviewPage() {
       ) : null}
 
       {/* Metric Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 stagger-grid" data-tour="overview-metrics">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-grid [&>*:last-child:nth-child(odd)]:sm:col-span-2 [&>*:last-child:nth-child(odd)]:lg:col-span-1" data-tour="overview-metrics">
         <HealthScoreCard score={data.healthScore ?? 50} />
         {hasRevenue && (
           <MetricCard
@@ -567,11 +567,11 @@ export default function OverviewPage() {
               </div>
               {data.customerInsights.topByCallCount.length > 0 && (
                 <div>
-                  <p className="text-xs mb-2" style={{ color: "var(--db-text-muted)" }}>Top Callers</p>
+                  <p className="text-xs mb-2" style={{ color: "var(--db-text-muted)" }}>{t("dashboard.topCallers", lang)}</p>
                   {data.customerInsights.topByCallCount.map((c, i) => (
                     <div key={i} className="flex items-center justify-between py-1">
                       <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{c.name || c.phone}</span>
-                      <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{c.totalCalls} calls</span>
+                      <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{c.totalCalls} {t("dashboard.calls", lang)}</span>
                     </div>
                   ))}
                 </div>
@@ -627,6 +627,7 @@ export default function OverviewPage() {
 }
 
 function ActionRequiredSection({ items }: { items: ActionItems | null }) {
+  const [lang] = useLang();
   if (!items) return null;
 
   const cards: {
@@ -642,7 +643,7 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
     cards.push({
       key: "overdue",
       count: items.overdueInvoices,
-      label: `Overdue invoice${items.overdueInvoices > 1 ? "s" : ""}`,
+      label: t("dashboard.overdueInvoices", lang),
       href: "/dashboard/invoices",
       priority: "urgent",
       icon: (
@@ -657,7 +658,7 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
     cards.push({
       key: "unassigned",
       count: items.unassignedToday,
-      label: `Unassigned appointment${items.unassignedToday > 1 ? "s" : ""} today`,
+      label: t("dashboard.unassignedToday", lang),
       href: "/dashboard/dispatch",
       priority: "urgent",
       icon: (
@@ -672,7 +673,7 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
     cards.push({
       key: "followups",
       count: items.urgentFollowUps,
-      label: `Urgent follow-up${items.urgentFollowUps > 1 ? "s" : ""}`,
+      label: t("dashboard.urgentFollowUps", lang),
       href: "/dashboard/follow-ups",
       priority: "urgent",
       icon: (
@@ -687,7 +688,7 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
     cards.push({
       key: "estimates",
       count: items.expiredEstimates,
-      label: `Expired estimate${items.expiredEstimates > 1 ? "s" : ""}`,
+      label: t("dashboard.expiredEstimates", lang),
       href: "/dashboard/estimates",
       priority: "medium",
       icon: (
@@ -706,7 +707,7 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
         className="mb-3 text-sm font-semibold uppercase tracking-wider"
         style={{ color: "var(--db-text-muted)" }}
       >
-        Action Required
+        {t("dashboard.actionRequired", lang)}
       </h3>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
@@ -750,7 +751,7 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
 function HealthScoreCard({ score }: { score: number }) {
   const [lang] = useLang();
   const color = score >= 80 ? "var(--db-success)" : score >= 50 ? "var(--db-warning)" : "var(--db-danger)";
-  const label = score >= 80 ? "Excellent" : score >= 50 ? "Good" : "Needs Attention";
+  const label = score >= 80 ? t("dashboard.healthExcellent", lang) : score >= 50 ? t("dashboard.healthGood", lang) : t("dashboard.healthNeedsAttention", lang);
 
   return (
     <div
@@ -810,7 +811,7 @@ function MariaSavedCard({
   return (
     <div className="db-card p-5">
       <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-        {receptionistName} Saved You
+        {receptionistName} {t("dashboard.savedYou", lang)}
       </p>
       <p className="mt-1 text-2xl font-bold" style={{ color: "var(--db-success)" }}>
         ${total.toLocaleString()}
