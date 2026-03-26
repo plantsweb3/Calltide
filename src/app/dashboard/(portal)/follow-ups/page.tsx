@@ -54,7 +54,7 @@ export default function FollowUpsPage() {
   const DUE_DATE_FILTERS = [
     { value: "all", label: t("followUps.all", lang) },
     { value: "overdue", label: t("followUps.overdue", lang) },
-    { value: "today", label: "Due Today" },
+    { value: "today", label: t("followUps.dueToday", lang) },
     { value: "this_week", label: t("followUps.thisWeek", lang) },
   ] as const;
   const [followUps, setFollowUps] = useState<FollowUp[]>([]);
@@ -112,7 +112,7 @@ export default function FollowUpsPage() {
   const columns: Column<FollowUp>[] = [
     {
       key: "priority",
-      label: "Priority",
+      label: t("followUps.col.priority", lang),
       sortable: true,
       render: (row) => (
         <div className="flex items-center gap-2">
@@ -120,13 +120,13 @@ export default function FollowUpsPage() {
             className="h-2.5 w-2.5 rounded-full flex-shrink-0"
             style={{ background: priorityColors[row.priority] || priorityColors.normal }}
           />
-          <span className="text-xs font-medium capitalize">{row.priority}</span>
+          <span className="text-xs font-medium capitalize">{t(`followUps.priority.${row.priority}`, lang)}</span>
         </div>
       ),
     },
     {
       key: "title",
-      label: "Follow-up",
+      label: t("followUps.col.followUp", lang),
       sortable: true,
       render: (row) => (
         <div className="min-w-0">
@@ -141,7 +141,7 @@ export default function FollowUpsPage() {
     },
     {
       key: "customerName",
-      label: "Customer",
+      label: t("followUps.col.customer", lang),
       sortable: true,
       render: (row) => (
         <div>
@@ -158,7 +158,7 @@ export default function FollowUpsPage() {
     },
     {
       key: "dueDate",
-      label: "Due",
+      label: t("followUps.col.due", lang),
       sortable: true,
       render: (row) => {
         const due = new Date(row.dueDate);
@@ -172,14 +172,14 @@ export default function FollowUpsPage() {
               color: isOverdue ? "var(--db-danger)" : isToday ? "var(--db-warning-alt)" : "var(--db-text-muted)",
             }}
           >
-            {isOverdue ? t("followUps.overdue", lang) : isToday ? "Today" : due.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            {isOverdue ? t("followUps.overdue", lang) : isToday ? t("followUps.today", lang) : due.toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { month: "short", day: "numeric" })}
           </span>
         );
       },
     },
     {
       key: "status",
-      label: "Status",
+      label: t("followUps.col.status", lang),
       sortable: true,
       render: (row) => (
         <StatusBadge label={row.status} variant={statusToVariant(row.status)} />
@@ -195,7 +195,7 @@ export default function FollowUpsPage() {
             variant="ghost"
             onClick={(e) => { e.stopPropagation(); setEditingFollowUp(row); }}
           >
-            Edit
+            {t("action.edit", lang)}
           </Button>
           {row.customerPhone && (
             <a
@@ -214,7 +214,7 @@ export default function FollowUpsPage() {
               onClick={(e) => { e.stopPropagation(); updateStatus(row.id, "in_progress"); }}
               disabled={updating === row.id}
             >
-              Start
+              {t("followUps.start", lang)}
             </Button>
           )}
           {(row.status === "pending" || row.status === "in_progress") && (
@@ -250,8 +250,8 @@ export default function FollowUpsPage() {
         title={t("followUps.title", lang)}
         description={
           pendingCount > 0
-            ? `${pendingCount} pending${urgentCount > 0 ? ` (${urgentCount} urgent)` : ""}`
-            : "All caught up"
+            ? `${t("followUps.pendingCount", lang, { n: pendingCount })}${urgentCount > 0 ? ` ${t("followUps.urgentCount", lang, { n: urgentCount })}` : ""}`
+            : t("followUps.allCaughtUp", lang)
         }
         actions={
           overdueCount > 0 ? (
@@ -295,7 +295,7 @@ export default function FollowUpsPage() {
           >
             {DUE_DATE_FILTERS.map((f) => (
               <option key={f.value} value={f.value}>
-                Show: {f.label}
+                {t("followUps.showPrefix", lang)} {f.label}
               </option>
             ))}
           </select>
@@ -309,7 +309,7 @@ export default function FollowUpsPage() {
           >
             {SORT_OPTIONS.map((s) => (
               <option key={s.value} value={s.value}>
-                Sort: {s.label}
+                {t("followUps.sortPrefix", lang)} {s.label}
               </option>
             ))}
           </select>
@@ -322,7 +322,7 @@ export default function FollowUpsPage() {
               borderColor: "var(--db-border)",
               color: "var(--db-text-muted)",
             }}
-            title={sortOrder === "asc" ? "Ascending" : "Descending"}
+            title={sortOrder === "asc" ? t("followUps.ascending", lang) : t("followUps.descending", lang)}
           >
             {sortOrder === "asc" ? "\u2191" : "\u2193"}
           </button>
@@ -336,8 +336,8 @@ export default function FollowUpsPage() {
               <polyline points="9 11 12 14 22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
             </svg>
           }
-          title={tab === "pending" ? "No pending follow-ups" : "No follow-ups found"}
-          description="Follow-ups are automatically created when Maria takes a message during a call. You can also create them manually."
+          title={tab === "pending" ? t("followUps.emptyPending", lang) : t("followUps.emptyGeneric", lang)}
+          description={t("followUps.emptyDescription", lang)}
         />
       ) : (
         <DataTable
@@ -385,7 +385,7 @@ function EditFollowUpModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!title.trim()) {
-      setError("Title is required.");
+      setError(t("followUps.form.titleRequired", lang));
       return;
     }
     setSaving(true);
@@ -405,13 +405,13 @@ function EditFollowUpModal({
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to update follow-up");
+        setError(data.error || t("followUps.updateFailed", lang));
         return;
       }
-      toast.success("Follow-up updated");
+      toast.success(t("followUps.updated", lang));
       onSaved();
     } catch {
-      setError("Failed to update follow-up");
+      setError(t("followUps.updateFailed", lang));
     } finally {
       setSaving(false);
     }
@@ -440,17 +440,17 @@ function EditFollowUpModal({
           className="text-lg font-semibold mb-4"
           style={{ color: "var(--db-text)" }}
         >
-          Edit Follow-up
+          {t("followUps.editTitle", lang)}
         </h2>
         {followUp.customerName && (
           <p className="text-xs mb-4" style={{ color: "var(--db-text-muted)" }}>
-            Customer: {followUp.customerName}
+            {t("followUps.customerLabel", lang)} {followUp.customerName}
           </p>
         )}
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="db-label">
-              Title *
+              {t("followUps.form.title", lang)} *
             </label>
             <input
               type="text"
@@ -462,7 +462,7 @@ function EditFollowUpModal({
           </div>
           <div>
             <label className="db-label">
-              Description
+              {t("followUps.form.description", lang)}
             </label>
             <textarea
               value={description}
@@ -475,7 +475,7 @@ function EditFollowUpModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="db-label">
-                Due Date
+                {t("followUps.form.dueDate", lang)}
               </label>
               <input
                 type="datetime-local"
@@ -486,46 +486,46 @@ function EditFollowUpModal({
             </div>
             <div>
               <label className="db-label">
-                Priority
+                {t("followUps.form.priority", lang)}
               </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
                 className="db-select"
               >
-                <option value="low">Low</option>
-                <option value="normal">Normal</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent</option>
+                <option value="low">{t("followUps.priority.low", lang)}</option>
+                <option value="normal">{t("followUps.priority.normal", lang)}</option>
+                <option value="high">{t("followUps.priority.high", lang)}</option>
+                <option value="urgent">{t("followUps.priority.urgent", lang)}</option>
               </select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="db-label">
-                Assigned To
+                {t("followUps.form.assignedTo", lang)}
               </label>
               <input
                 type="text"
                 value={assignedTo}
                 onChange={(e) => setAssignedTo(e.target.value)}
-                placeholder="Technician name..."
+                placeholder={t("followUps.form.assignedPlaceholder", lang)}
                 className="db-input"
               />
             </div>
             <div>
               <label className="db-label">
-                Status
+                {t("followUps.form.status", lang)}
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 className="db-select"
               >
-                <option value="pending">Pending</option>
-                <option value="in_progress">In Progress</option>
-                <option value="completed">Completed</option>
-                <option value="dismissed">Dismissed</option>
+                <option value="pending">{t("followUps.status.pending", lang)}</option>
+                <option value="in_progress">{t("followUps.status.inProgress", lang)}</option>
+                <option value="completed">{t("followUps.status.completed", lang)}</option>
+                <option value="dismissed">{t("followUps.status.dismissed", lang)}</option>
               </select>
             </div>
           </div>
@@ -535,7 +535,7 @@ function EditFollowUpModal({
               {t("action.cancel", lang)}
             </Button>
             <Button type="submit" disabled={saving} className="flex-1">
-              {saving ? "Saving..." : t("action.save", lang)}
+              {saving ? t("followUps.saving", lang) : t("action.save", lang)}
             </Button>
           </div>
         </form>

@@ -53,7 +53,7 @@ export default function SmsPage() {
       setTotal(data.total);
       setTotalPages(data.totalPages);
     } catch {
-      setError("Failed to load SMS messages. Please try again.");
+      setError(t("toast.failedToLoadSms", lang));
     } finally {
       setLoading(false);
     }
@@ -146,12 +146,12 @@ export default function SmsPage() {
             <ExportCsvButton
               data={messages}
               columns={[
-                { header: "Date", accessor: (r) => r.createdAt },
-                { header: "Direction", accessor: (r) => r.direction },
-                { header: "From", accessor: (r) => r.fromNumber },
-                { header: "To", accessor: (r) => r.toNumber },
-                { header: "Message", accessor: (r) => r.body },
-                { header: "Status", accessor: (r) => r.status },
+                { header: t("sms.csvDate", lang), accessor: (r) => r.createdAt },
+                { header: t("sms.csvDirection", lang), accessor: (r) => r.direction },
+                { header: t("sms.csvFrom", lang), accessor: (r) => r.fromNumber },
+                { header: t("sms.csvTo", lang), accessor: (r) => r.toNumber },
+                { header: t("sms.csvMessage", lang), accessor: (r) => r.body },
+                { header: t("sms.csvStatus", lang), accessor: (r) => r.status },
               ]}
               filename="sms"
             />
@@ -188,7 +188,7 @@ export default function SmsPage() {
       {!loading && messages.length === 0 && search && (
         <div className="db-card rounded-xl p-12 text-center">
           <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-            No messages matching &ldquo;{search}&rdquo;
+            {t("sms.noMatchingMessages", lang, { query: search })}
           </p>
         </div>
       )}

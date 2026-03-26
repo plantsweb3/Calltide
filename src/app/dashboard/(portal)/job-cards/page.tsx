@@ -79,13 +79,13 @@ interface Stats {
   avgResponseTimeMinutes: number | null;
 }
 
-const STATUS_COLORS: Record<string, { bg: string; text: string; label: string }> = {
-  pending_review: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)", label: "Pending" },
-  confirmed: { bg: "var(--db-success-bg)", text: "var(--db-success)", label: "Confirmed" },
-  adjusted: { bg: "rgba(99,102,241,0.15)", text: "#818cf8", label: "Adjusted" },
-  awaiting_adjustment: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)", label: "Awaiting Adj." },
-  site_visit_requested: { bg: "rgba(59,130,246,0.15)", text: "#60a5fa", label: "Site Visit" },
-  expired: { bg: "rgba(148,163,184,0.15)", text: "var(--db-text-muted)", label: "Expired" },
+const STATUS_COLORS: Record<string, { bg: string; text: string; i18nKey: string }> = {
+  pending_review: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)", i18nKey: "jobCards.status.pending" },
+  confirmed: { bg: "var(--db-success-bg)", text: "var(--db-success)", i18nKey: "jobCards.status.confirmed" },
+  adjusted: { bg: "rgba(99,102,241,0.15)", text: "#818cf8", i18nKey: "jobCards.status.adjusted" },
+  awaiting_adjustment: { bg: "rgba(245,158,11,0.15)", text: "var(--db-warning)", i18nKey: "jobCards.status.awaitingAdj" },
+  site_visit_requested: { bg: "rgba(59,130,246,0.15)", text: "#60a5fa", i18nKey: "jobCards.status.siteVisit" },
+  expired: { bg: "rgba(148,163,184,0.15)", text: "var(--db-text-muted)", i18nKey: "jobCards.status.expired" },
 };
 
 const CONFIDENCE_COLORS: Record<string, { bg: string; text: string }> = {
@@ -137,7 +137,7 @@ export default function JobCardsPage() {
       setCards(data.cards || []);
       setTotalPages(data.totalPages || 0);
     } catch {
-      setError("Failed to load job cards. Please try again.");
+      setError(t("jobCards.loadError", lang));
       setCards([]);
     } finally {
       setLoading(false);
@@ -159,23 +159,25 @@ export default function JobCardsPage() {
     fetchStats();
   }, [fetchCards, fetchStats]);
 
+  const locale = lang === "es" ? "es-MX" : "en-US";
+
   function formatDate(d: string | null) {
     if (!d) return "\u2014";
-    return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    return new Date(d).toLocaleDateString(locale, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   }
 
   function formatCurrency(n: number | null) {
     if (n == null) return "\u2014";
-    return n >= 1000 ? `$${n.toLocaleString("en-US", { maximumFractionDigits: 0 })}` : `$${n.toFixed(0)}`;
+    return n >= 1000 ? `$${n.toLocaleString(locale, { maximumFractionDigits: 0 })}` : `$${n.toFixed(0)}`;
   }
 
   const statCards = [
-    { key: null, label: "All", count: stats?.total || 0 },
-    { key: "pending_review", label: "Pending", count: stats?.pending || 0 },
-    { key: "confirmed", label: "Confirmed", count: stats?.confirmed || 0 },
-    { key: "adjusted", label: "Adjusted", count: stats?.adjusted || 0 },
-    { key: "site_visit_requested", label: "Site Visit", count: stats?.siteVisit || 0 },
-    { key: "expired", label: "Expired", count: stats?.expired || 0 },
+    { key: null, label: t("jobCards.status.all", lang), count: stats?.total || 0 },
+    { key: "pending_review", label: t("jobCards.status.pending", lang), count: stats?.pending || 0 },
+    { key: "confirmed", label: t("jobCards.status.confirmed", lang), count: stats?.confirmed || 0 },
+    { key: "adjusted", label: t("jobCards.status.adjusted", lang), count: stats?.adjusted || 0 },
+    { key: "site_visit_requested", label: t("jobCards.status.siteVisit", lang), count: stats?.siteVisit || 0 },
+    { key: "expired", label: t("jobCards.status.expired", lang), count: stats?.expired || 0 },
   ];
 
   return (
@@ -186,16 +188,16 @@ export default function JobCardsPage() {
           <div className="flex items-center gap-3">
             <input
               type="text"
-              placeholder="Search jobs..."
+              placeholder={t("jobCards.searchPlaceholder", lang)}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="db-input w-full sm:w-52"
             />
             {stats != null && (
               <div className="hidden sm:flex items-center gap-4 text-sm" style={{ color: "var(--db-text-muted)" }}>
-                <span>Response rate: <strong style={{ color: "var(--db-text)" }}>{stats.responseRate}%</strong></span>
+                <span>{t("jobCards.responseRate", lang)} <strong style={{ color: "var(--db-text)" }}>{stats.responseRate}%</strong></span>
                 {stats.avgResponseTimeMinutes != null && (
-                  <span>Avg response: <strong style={{ color: "var(--db-text)" }}>{stats.avgResponseTimeMinutes}min</strong></span>
+                  <span>{t("jobCards.avgResponse", lang)} <strong style={{ color: "var(--db-text)" }}>{stats.avgResponseTimeMinutes}min</strong></span>
                 )}
               </div>
             )}
@@ -239,8 +241,8 @@ export default function JobCardsPage() {
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
             </svg>
           }
-          title="No job cards yet"
-          description={`Job cards are created automatically when ${receptionistName} completes an intake during a call.`}
+          title={t("jobCards.emptyTitle", lang)}
+          description={t("jobCards.emptyDescription", lang, { name: receptionistName })}
         />
       ) : (
         <div className="space-y-3">
@@ -271,7 +273,7 @@ export default function JobCardsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium truncate" style={{ color: "var(--db-text)" }}>
-                        {card.callerName || "Unknown caller"}
+                        {card.callerName || t("jobCards.unknownCaller", lang)}
                       </span>
                       {card.callerPhone && (
                         <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
@@ -280,7 +282,7 @@ export default function JobCardsPage() {
                       )}
                     </div>
                     <div className="text-sm truncate" style={{ color: "var(--db-text-muted)" }}>
-                      {card.scopeDescription || card.jobTypeLabel || "Service requested"}
+                      {card.scopeDescription || card.jobTypeLabel || t("jobCards.serviceRequested", lang)}
                     </div>
                   </div>
 
@@ -291,7 +293,7 @@ export default function JobCardsPage() {
                         {formatCurrency(card.ownerAdjustedMin || card.estimateMin)}&ndash;{formatCurrency(card.ownerAdjustedMax || card.estimateMax)}
                       </div>
                     ) : (
-                      <div className="text-sm" style={{ color: "var(--db-text-muted)" }}>No estimate</div>
+                      <div className="text-sm" style={{ color: "var(--db-text-muted)" }}>{t("jobCards.noEstimate", lang)}</div>
                     )}
                     <div className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
                       {formatDate(card.createdAt)}
@@ -304,13 +306,13 @@ export default function JobCardsPage() {
                       className="px-2 py-0.5 rounded-full text-xs font-medium"
                       style={{ background: sc.bg, color: sc.text }}
                     >
-                      {sc.label}
+                      {t(sc.i18nKey, lang)}
                     </span>
                     <span
                       className="px-2 py-0.5 rounded-full text-xs font-medium"
                       style={{ background: cc.bg, color: cc.text }}
                     >
-                      {card.estimateConfidence || "no match"}
+                      {card.estimateConfidence || t("jobCards.noMatch", lang)}
                     </span>
                     {card.photoCount > 0 && (
                       <span
@@ -339,14 +341,14 @@ export default function JobCardsPage() {
                     {/* Job details */}
                     <div className="grid grid-cols-2 gap-4 pt-4 sm:grid-cols-4">
                       <Detail label={t("jobCards.serviceType", lang)} value={card.jobTypeLabel} />
-                      <Detail label="Scope" value={card.scopeLevel} />
-                      <Detail label="Estimate Mode" value={card.estimateMode} />
-                      <Detail label="Unit" value={card.estimateUnit} />
+                      <Detail label={t("jobCards.scope", lang)} value={card.scopeLevel} />
+                      <Detail label={t("jobCards.estimateMode", lang)} value={card.estimateMode} />
+                      <Detail label={t("jobCards.unit", lang)} value={card.estimateUnit} />
                     </div>
 
                     {card.scopeDescription && (
                       <div>
-                        <div className="text-xs mb-1" style={{ color: "var(--db-text-muted)" }}>Description</div>
+                        <div className="text-xs mb-1" style={{ color: "var(--db-text-muted)" }}>{t("jobCards.description", lang)}</div>
                         <div className="text-sm" style={{ color: "var(--db-text)" }}>{card.scopeDescription}</div>
                       </div>
                     )}
@@ -355,7 +357,7 @@ export default function JobCardsPage() {
                     {card.photoCount > 0 && card.jobIntakeId && (
                       <div>
                         <div className="text-xs mb-2" style={{ color: "var(--db-text-muted)" }}>
-                          Photos ({card.photoCount})
+                          {t("jobCards.photos", lang)} ({card.photoCount})
                         </div>
                         {photos[card.jobIntakeId] ? (
                           <div>
@@ -372,7 +374,7 @@ export default function JobCardsPage() {
                                   {/* eslint-disable-next-line @next/next/no-img-element */}
                                   <img
                                     src={att.mediaUrl}
-                                    alt={att.caption || "Job site photo"}
+                                    alt={att.caption || t("jobCards.photoAlt", lang)}
                                     className="w-full h-full object-cover"
                                     loading="lazy"
                                   />
@@ -386,12 +388,12 @@ export default function JobCardsPage() {
                             )}
                             {photos[card.jobIntakeId][0]?.createdAt && (
                               <div className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
-                                Received: {formatDate(photos[card.jobIntakeId][0].createdAt)}
+                                {t("jobCards.received", lang)} {formatDate(photos[card.jobIntakeId][0].createdAt)}
                               </div>
                             )}
                           </div>
                         ) : (
-                          <div className="text-xs" style={{ color: "var(--db-text-muted)" }}>Loading photos...</div>
+                          <div className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("jobCards.loadingPhotos", lang)}</div>
                         )}
                       </div>
                     )}
@@ -399,9 +401,9 @@ export default function JobCardsPage() {
                     {/* Calculation breakdown */}
                     {card.estimateMode === "advanced" && card.estimateCalculationJson && (
                       <div>
-                        <div className="text-xs mb-1" style={{ color: "var(--db-text-muted)" }}>Calculation Breakdown</div>
+                        <div className="text-xs mb-1" style={{ color: "var(--db-text-muted)" }}>{t("jobCards.calcBreakdown", lang)}</div>
                         <div className="p-3 rounded-lg text-sm font-mono" style={{ background: "var(--db-surface)" }}>
-                          {formatCalculation(card.estimateCalculationJson)}
+                          {formatCalculation(card.estimateCalculationJson, lang)}
                         </div>
                       </div>
                     )}
@@ -409,11 +411,11 @@ export default function JobCardsPage() {
                     {/* Owner response */}
                     {card.ownerRespondedAt && (
                       <div className="p-3 rounded-lg" style={{ background: "var(--db-success-bg)" }}>
-                        <div className="text-xs mb-1" style={{ color: "var(--db-success)" }}>Owner Response</div>
+                        <div className="text-xs mb-1" style={{ color: "var(--db-success)" }}>{t("jobCards.ownerResponse", lang)}</div>
                         <div className="text-sm" style={{ color: "var(--db-text)" }}>
-                          {card.ownerResponse === "confirmed" && "Estimate confirmed"}
-                          {card.ownerResponse === "adjusted" && `Adjusted to ${formatCurrency(card.ownerAdjustedMin)}\u2013${formatCurrency(card.ownerAdjustedMax)}`}
-                          {card.ownerResponse === "site_visit" && "Site visit requested"}
+                          {card.ownerResponse === "confirmed" && t("jobCards.estimateConfirmed", lang)}
+                          {card.ownerResponse === "adjusted" && `${t("jobCards.adjustedTo", lang)} ${formatCurrency(card.ownerAdjustedMin)}\u2013${formatCurrency(card.ownerAdjustedMax)}`}
+                          {card.ownerResponse === "site_visit" && t("jobCards.siteVisitRequested", lang)}
                           <span className="ml-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
                             {formatDate(card.ownerRespondedAt)}
                           </span>
@@ -424,7 +426,7 @@ export default function JobCardsPage() {
                     {/* Customer notification */}
                     {card.customerNotifiedAt && (
                       <div className="p-3 rounded-lg" style={{ background: "rgba(59,130,246,0.08)" }}>
-                        <div className="text-xs mb-1" style={{ color: "#60a5fa" }}>Customer Notified</div>
+                        <div className="text-xs mb-1" style={{ color: "#60a5fa" }}>{t("jobCards.customerNotified", lang)}</div>
                         <div className="text-sm" style={{ color: "var(--db-text)" }}>
                           {formatDate(card.customerNotifiedAt)}
                         </div>
@@ -434,7 +436,7 @@ export default function JobCardsPage() {
                     {/* Response timeline */}
                     {card.responses.length > 0 && (
                       <div>
-                        <div className="text-xs mb-2" style={{ color: "var(--db-text-muted)" }}>Response Timeline</div>
+                        <div className="text-xs mb-2" style={{ color: "var(--db-text-muted)" }}>{t("jobCards.responseTimeline", lang)}</div>
                         <div className="space-y-2">
                           {card.responses.map((r) => (
                             <div key={r.id} className="flex items-start gap-2 text-xs">
@@ -445,7 +447,7 @@ export default function JobCardsPage() {
                                   color: r.direction === "inbound" ? "var(--db-success)" : "#60a5fa",
                                 }}
                               >
-                                {r.direction === "inbound" ? "Owner" : "System"}
+                                {r.direction === "inbound" ? t("jobCards.directionOwner", lang) : t("jobCards.directionSystem", lang)}
                               </span>
                               <span style={{ color: "var(--db-text)" }}>
                                 {r.rawReply || r.messageType}
@@ -475,10 +477,10 @@ export default function JobCardsPage() {
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
           >
-            Previous
+            {t("jobCards.previous", lang)}
           </Button>
           <span className="px-3 py-1.5 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            Page {page} of {totalPages}
+            {t("jobCards.pageOf", lang, { page, total: totalPages })}
           </span>
           <Button
             variant="ghost"
@@ -486,7 +488,7 @@ export default function JobCardsPage() {
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
           >
-            Next
+            {t("jobCards.next", lang)}
           </Button>
         </div>
       )}
@@ -505,7 +507,7 @@ function Detail({ label, value }: { label: string; value: string | null }) {
   );
 }
 
-function formatCalculation(calc: Record<string, unknown>): string {
+function formatCalculation(calc: Record<string, unknown>, lang: "en" | "es"): string {
   const lines: string[] = [];
   const baseRate = calc.base_rate as number;
   const baseUnits = calc.base_units as number;
@@ -529,5 +531,5 @@ function formatCalculation(calc: Record<string, unknown>): string {
     }
   }
 
-  return lines.join("\n") || "No breakdown available";
+  return lines.join("\n") || t("jobCards.noBreakdown", lang);
 }

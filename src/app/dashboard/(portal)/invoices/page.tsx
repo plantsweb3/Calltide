@@ -71,9 +71,9 @@ function formatCurrency(amount: number): string {
   return `$${amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function formatDate(d: string | null): string {
+function formatDate(d: string | null, locale: string = "en-US"): string {
   if (!d) return "\u2014";
-  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return new Date(d).toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" });
 }
 
 function isOverdue(invoice: Invoice): boolean {
@@ -90,6 +90,8 @@ type TabKey = "all" | "pending" | "sent" | "overdue" | "paid";
 
 export default function InvoicesPage() {
   const [lang] = useLang();
+  const dateLocale = lang === "es" ? "es-MX" : "en-US";
+  const fmtDate = (d: string | null) => formatDate(d, dateLocale);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [stats, setStats] = useState<Stats>({
     outstanding: 0, overdue: 0, paidThisMonth: 0, avgDaysToPay: 0,
@@ -155,7 +157,7 @@ export default function InvoicesPage() {
     { value: "zelle", label: "Zelle" },
     { value: "venmo", label: "Venmo" },
     { value: "stripe", label: t("invoices.paymentMethods.card", lang) },
-    { value: "other", label: "Other" },
+    { value: "other", label: t("invoices.other", lang) },
   ];
 
   /* ─── Data fetching ─── */
@@ -432,7 +434,7 @@ export default function InvoicesPage() {
         const overdue = isOverdue(row);
         return (
           <span className="text-sm" style={{ color: overdue ? "var(--db-danger)" : "var(--db-text-muted)" }}>
-            {formatDate(row.dueDate)}
+            {fmtDate(row.dueDate)}
             {overdue && <span className="ml-1 text-xs font-semibold uppercase">{t("invoices.overdue", lang)}</span>}
           </span>
         );
@@ -443,7 +445,7 @@ export default function InvoicesPage() {
       label: t("status.sent", lang),
       render: (row) => (
         <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>
-          {row.smsSentAt ? formatDate(row.smsSentAt) : "\u2014"}
+          {row.smsSentAt ? fmtDate(row.smsSentAt) : "\u2014"}
         </span>
       ),
     },
@@ -529,14 +531,14 @@ export default function InvoicesPage() {
             <ExportCsvButton
               data={invoices}
               columns={[
-                { header: "Invoice #", accessor: (r) => r.invoiceNumber },
-                { header: "Customer", accessor: (r) => r.customerName || r.customerPhone },
-                { header: "Amount", accessor: (r) => r.amount.toFixed(2) },
-                { header: "Status", accessor: (r) => r.status },
-                { header: "Due Date", accessor: (r) => r.dueDate },
-                { header: "Paid At", accessor: (r) => r.paidAt },
-                { header: "Created", accessor: (r) => r.createdAt },
-                { header: "Notes", accessor: (r) => r.notes },
+                { header: t("csv.invoiceNumber", lang), accessor: (r) => r.invoiceNumber },
+                { header: t("csv.customer", lang), accessor: (r) => r.customerName || r.customerPhone },
+                { header: t("csv.amount", lang), accessor: (r) => r.amount.toFixed(2) },
+                { header: t("csv.status", lang), accessor: (r) => r.status },
+                { header: t("csv.dueDate", lang), accessor: (r) => r.dueDate },
+                { header: t("csv.paidAt", lang), accessor: (r) => r.paidAt },
+                { header: t("csv.created", lang), accessor: (r) => r.createdAt },
+                { header: t("csv.notes", lang), accessor: (r) => r.notes },
               ]}
               filename="invoices"
             />
@@ -555,7 +557,7 @@ export default function InvoicesPage() {
           label={t("invoices.overdue", lang)}
           value={formatCurrency(stats.overdue)}
           changeType={stats.overdue > 0 ? "negative" : "neutral"}
-          change={stats.overdueCount > 0 ? `${stats.overdueCount} invoice${stats.overdueCount > 1 ? "s" : ""}` : undefined}
+          change={stats.overdueCount > 0 ? t(stats.overdueCount > 1 ? "invoices.invoicePluralMultiple" : "invoices.invoicePlural", lang, { count: stats.overdueCount }) : undefined}
         />
         <MetricCard
           label={t("invoices.paidThisMonth", lang)}
@@ -615,7 +617,7 @@ export default function InvoicesPage() {
               value={dateFrom}
               onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
               className="db-input !w-auto !px-2 !py-1.5 !text-xs"
-              title="From date"
+              title={t("invoices.fromDate", lang)}
             />
             <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>-</span>
             <input
@@ -623,14 +625,14 @@ export default function InvoicesPage() {
               value={dateTo}
               onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
               className="db-input !w-auto !px-2 !py-1.5 !text-xs"
-              title="To date"
+              title={t("invoices.toDate", lang)}
             />
             {(dateFrom || dateTo) && (
               <button
                 onClick={() => { setDateFrom(""); setDateTo(""); setPage(1); }}
                 className="text-xs font-medium px-1.5"
                 style={{ color: "var(--db-accent)" }}
-                title="Clear date filter"
+                title={t("invoices.clearDateFilter", lang)}
               >
                 {t("invoices.clear", lang)}
               </button>
@@ -692,7 +694,7 @@ export default function InvoicesPage() {
                   ))}
                   {row.taxRate != null && row.taxRate > 0 && (
                     <div className="flex items-center justify-between text-sm pt-1 border-t" style={{ borderColor: "var(--db-border)" }}>
-                      <span style={{ color: "var(--db-text-muted)" }}>Tax ({row.taxRate}%)</span>
+                      <span style={{ color: "var(--db-text-muted)" }}>{t("invoices.tax", lang, { rate: row.taxRate })}</span>
                       <span className="font-mono tabular-nums" style={{ color: "var(--db-text)" }}>
                         ${(row.taxAmount || 0).toFixed(2)}
                       </span>
@@ -704,16 +706,15 @@ export default function InvoicesPage() {
                 <p className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{row.notes}</p>
               )}
               <div className="flex items-center gap-4 text-xs" style={{ color: "var(--db-text-muted)" }}>
-                {row.smsSentAt && <span>SMS sent: {formatDate(row.smsSentAt)}</span>}
-                {row.reminderCount > 0 && <span>Reminders: {row.reminderCount}</span>}
+                {row.smsSentAt && <span>{t("invoices.smsSent", lang)}: {fmtDate(row.smsSentAt)}</span>}
+                {row.reminderCount > 0 && <span>{t("invoices.reminders", lang)}: {row.reminderCount}</span>}
                 {row.paidAt && (
                   <span style={{ color: "var(--db-success)" }}>
-                    Paid: {formatDate(row.paidAt)}
-                    {row.paymentMethod && ` via ${row.paymentMethod}`}
+                    {t("invoices.paidVia", lang, { date: fmtDate(row.paidAt), method: row.paymentMethod || "" })}
                   </span>
                 )}
                 {row.estimateId && (
-                  <span style={{ color: "var(--db-accent)" }}>Converted from estimate</span>
+                  <span style={{ color: "var(--db-accent)" }}>{t("invoices.convertedFromEstimate", lang)}</span>
                 )}
                 {row.paymentLinkUrl && (
                   <a
@@ -724,7 +725,7 @@ export default function InvoicesPage() {
                     style={{ color: "var(--db-accent)" }}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    Payment link
+                    {t("invoices.paymentLink", lang)}
                   </a>
                 )}
               </div>

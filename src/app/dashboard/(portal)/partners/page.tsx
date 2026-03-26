@@ -49,18 +49,42 @@ const TRADE_OPTIONS = [
   "flooring", "concrete", "fencing", "windows", "insulation", "other",
 ];
 
-const TRADE_LABELS: Record<string, string> = {
-  hvac: "HVAC", plumbing: "Plumbing", electrical: "Electrical", roofing: "Roofing",
-  general_contractor: "General Contracting", restoration: "Restoration",
-  landscaping: "Landscaping", pest_control: "Pest Control", garage_door: "Garage Door",
-  painting: "Painting", flooring: "Flooring", concrete: "Concrete",
-  fencing: "Fencing", windows: "Windows & Doors", insulation: "Insulation", other: "Other",
+const TRADE_I18N_KEYS: Record<string, string> = {
+  hvac: "partners.tradeHvac",
+  plumbing: "partners.tradePlumbing",
+  electrical: "partners.tradeElectrical",
+  roofing: "partners.tradeRoofing",
+  general_contractor: "partners.tradeGeneralContractor",
+  restoration: "partners.tradeRestoration",
+  landscaping: "partners.tradeLandscaping",
+  pest_control: "partners.tradePestControl",
+  garage_door: "partners.tradeGarageDoor",
+  painting: "partners.tradePainting",
+  flooring: "partners.tradeFlooring",
+  concrete: "partners.tradeConcrete",
+  fencing: "partners.tradeFencing",
+  windows: "partners.tradeWindows",
+  insulation: "partners.tradeInsulation",
+  other: "partners.tradeOther",
+};
+
+const RELATIONSHIP_I18N_KEYS: Record<string, string> = {
+  preferred: "partners.preferred",
+  trusted: "partners.trusted",
+  occasional: "partners.occasional",
 };
 
 const RELATIONSHIP_STYLES: Record<string, { bg: string; color: string }> = {
   preferred: { bg: "rgba(212,168,67,0.15)", color: "#D4A843" },
   trusted: { bg: "rgba(96,165,250,0.15)", color: "#60a5fa" },
   occasional: { bg: "rgba(148,163,184,0.15)", color: "var(--db-text-muted)" },
+};
+
+const OUTCOME_I18N_KEYS: Record<string, string> = {
+  pending: "partners.outcomePending",
+  connected: "partners.outcomeConnected",
+  no_response: "partners.outcomeNoResponse",
+  declined: "partners.outcomeDeclined",
 };
 
 const OUTCOME_STYLES: Record<string, { bg: string; color: string }> = {
@@ -113,7 +137,7 @@ export default function PartnersPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [lang]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -206,6 +230,24 @@ export default function PartnersPage() {
     }
   }
 
+  /** Resolve a trade key to its translated label */
+  function tradeLabel(trade: string): string {
+    const key = TRADE_I18N_KEYS[trade];
+    return key ? t(key, lang) : trade;
+  }
+
+  /** Resolve a relationship key to its translated label */
+  function relationshipLabel(rel: string): string {
+    const key = RELATIONSHIP_I18N_KEYS[rel];
+    return key ? t(key, lang) : rel;
+  }
+
+  /** Resolve an outcome key to its translated label */
+  function outcomeLabel(outcome: string): string {
+    const key = OUTCOME_I18N_KEYS[outcome];
+    return key ? t(key, lang) : outcome.replace(/_/g, " ");
+  }
+
   if (loading) return <LoadingSpinner message={t("partners.loadingPartners", lang)} />;
 
   return (
@@ -272,8 +314,8 @@ export default function PartnersPage() {
                     onChange={(e) => setFormTrade(e.target.value)}
                     className="db-select"
                   >
-                    {TRADE_OPTIONS.map((t) => (
-                      <option key={t} value={t}>{TRADE_LABELS[t] || t}</option>
+                    {TRADE_OPTIONS.map((tradeKey) => (
+                      <option key={tradeKey} value={tradeKey}>{tradeLabel(tradeKey)}</option>
                     ))}
                   </select>
                 </div>
@@ -326,8 +368,8 @@ export default function PartnersPage() {
                     onChange={(e) => setFormLanguage(e.target.value)}
                     className="db-select"
                   >
-                    <option value="en">English</option>
-                    <option value="es">Spanish</option>
+                    <option value="en">{t("partners.english", lang)}</option>
+                    <option value="es">{t("partners.spanish", lang)}</option>
                   </select>
                 </div>
               </div>
@@ -393,11 +435,11 @@ export default function PartnersPage() {
                           className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
                           style={{ background: relStyle.bg, color: relStyle.color }}
                         >
-                          {p.relationship}
+                          {relationshipLabel(p.relationship)}
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
-                        <span>{TRADE_LABELS[p.partnerTrade] || p.partnerTrade}</span>
+                        <span>{tradeLabel(p.partnerTrade)}</span>
                         <span>{formatPhone(p.partnerPhone)}</span>
                         {p.partnerContactName && <span>{p.partnerContactName}</span>}
                         {p.partnerEmail && <span>{p.partnerEmail}</span>}
@@ -464,10 +506,10 @@ export default function PartnersPage() {
                     return (
                       <tr key={r.id} className="db-table-row" style={{ borderTop: "1px solid var(--db-border)" }}>
                         <td className="px-4 py-3 tabular-nums whitespace-nowrap" style={{ color: "var(--db-text-secondary)" }}>
-                          {new Date(r.createdAt).toLocaleDateString()}
+                          {new Date(r.createdAt).toLocaleDateString(lang === "es" ? "es-MX" : "en-US")}
                         </td>
                         <td className="px-4 py-3" style={{ color: "var(--db-text)" }}>
-                          <div>{r.callerName || "Unknown"}</div>
+                          <div>{r.callerName || t("partners.unknown", lang)}</div>
                           {r.jobDescription && (
                             <div className="text-xs truncate max-w-[200px]" style={{ color: "var(--db-text-muted)" }}>
                               {r.jobDescription}
@@ -475,7 +517,7 @@ export default function PartnersPage() {
                           )}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap" style={{ color: "var(--db-text-secondary)" }}>
-                          {TRADE_LABELS[r.requestedTrade] || r.requestedTrade}
+                          {tradeLabel(r.requestedTrade)}
                         </td>
                         <td className="px-4 py-3" style={{ color: "var(--db-text)" }}>
                           {r.partnerName}
@@ -486,7 +528,7 @@ export default function PartnersPage() {
                             style={{ background: outcomeStyle.bg, color: outcomeStyle.color }}
                           >
                             <span className="h-1.5 w-1.5 rounded-full" style={{ background: outcomeStyle.color }} />
-                            {r.outcome.replace(/_/g, " ")}
+                            {outcomeLabel(r.outcome)}
                           </span>
                         </td>
                       </tr>

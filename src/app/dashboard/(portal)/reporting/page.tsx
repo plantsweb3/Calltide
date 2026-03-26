@@ -53,11 +53,11 @@ export default function ReportingPage() {
       })
       .then(setData)
       .catch(() => {
-        setError("Failed to load reporting data. Please try again.");
-        toast.error("Failed to load reporting data");
+        setError(t("reporting.failedToLoad", lang));
+        toast.error(t("reporting.failedToLoadToast", lang));
       })
       .finally(() => setLoading(false));
-  }, [dateRange]);
+  }, [dateRange, lang]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -77,8 +77,8 @@ export default function ReportingPage() {
       <div>
         <PageHeader title={t("reporting.title", lang)} />
         <div role="alert" aria-live="assertive" className="rounded-xl p-4 mt-4 flex items-center justify-between" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
-          <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error || "Unable to load reporting data."}</p>
-          <Button variant="danger" size="sm" onClick={fetchData}>Retry</Button>
+          <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error || t("reporting.unableToLoad", lang)}</p>
+          <Button variant="danger" size="sm" onClick={fetchData}>{t("action.retry", lang)}</Button>
         </div>
       </div>
     );
@@ -96,22 +96,22 @@ export default function ReportingPage() {
   const dailyVolumeSlice = data.dailyVolume.slice(-30);
   const maxDailyVolume = Math.max(...dailyVolumeSlice.map((d) => d.total), 1);
 
-  const pipelineLabels: Record<string, string> = { new: "New", sent: "Sent", follow_up: "Follow Up", won: "Won", lost: "Lost" };
+  const pipelineLabels: Record<string, string> = { new: t("reporting.pipelineNew", lang), sent: t("reporting.pipelineSent", lang), follow_up: t("reporting.pipelineFollowUp", lang), won: t("reporting.pipelineWon", lang), lost: t("reporting.pipelineLost", lang) };
   const pipelineColors: Record<string, string> = { new: "#3B82F6", sent: "#F59E0B", follow_up: "#8B5CF6", won: "#10B981", lost: "#EF4444" };
 
   return (
     <div className="space-y-6">
       <PageHeader
         title={t("reporting.title", lang)}
-        description="Call analytics and business insights"
+        description={t("reporting.description", lang)}
         actions={
           <div className="flex items-center gap-2">
             <DateRangePicker value={dateRange} onChange={setDateRange} />
             <ExportCsvButton
               data={data.callsByHour.map((h) => ({ hour: formatHour(h.hour), calls: h.total }))}
               columns={[
-                { header: "Hour", accessor: (r: { hour: string }) => r.hour },
-                { header: "Calls", accessor: (r: { calls: number }) => r.calls },
+                { header: t("reporting.csvHour", lang), accessor: (r: { hour: string }) => r.hour },
+                { header: t("reporting.csvCalls", lang), accessor: (r: { calls: number }) => r.calls },
               ]}
               filename="reporting"
             />
@@ -121,10 +121,10 @@ export default function ReportingPage() {
 
       {/* Summary Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-grid">
-        <MetricCard label="Total Calls" value={totalCalls} />
-        <MetricCard label="Busiest Hour" value={formatHour(busiestHour.hour)} />
-        <MetricCard label="Busiest Day" value={busiestDay.label} />
-        <MetricCard label="Recovery Rate" value={data.recoveryStats.rate} suffix="%" />
+        <MetricCard label={t("reporting.totalCalls", lang)} value={totalCalls} />
+        <MetricCard label={t("reporting.busiestHour", lang)} value={formatHour(busiestHour.hour)} />
+        <MetricCard label={t("reporting.busiestDay", lang)} value={busiestDay.label} />
+        <MetricCard label={t("reporting.recoveryRate", lang)} value={data.recoveryStats.rate} suffix="%" />
       </div>
 
       {/* Row 1: Calls by Hour (horizontal bars) + Calls by Day of Week */}
@@ -155,7 +155,7 @@ export default function ReportingPage() {
         </Card>
 
         {/* Calls by Day - Horizontal bar chart */}
-        <Card title="Calls by Day of Week">
+        <Card title={t("reporting.callsByDay", lang)}>
           <div className="space-y-3">
             {data.callsByDay.map((d) => {
               const maxDay = Math.max(...data.callsByDay.map((x) => x.total), 1);
@@ -181,12 +181,12 @@ export default function ReportingPage() {
 
       {/* Row 2: Daily Volume - Vertical stacked bar chart */}
       {dailyVolumeSlice.length > 0 && (
-        <Card title="Daily Call Volume">
+        <Card title={t("reporting.dailyCallVolume", lang)}>
           <div className="flex items-end gap-[2px]" style={{ height: "180px" }}>
             {dailyVolumeSlice.map((d) => {
               const answeredPct = maxDailyVolume > 0 ? ((d.answered ?? 0) / maxDailyVolume) * 100 : 0;
               const missedPct = maxDailyVolume > 0 ? ((d.missed ?? 0) / maxDailyVolume) * 100 : 0;
-              const dateLabel = new Date(d.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+              const dateLabel = new Date(d.date + "T12:00:00").toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { month: "short", day: "numeric" });
               return (
                 <div key={d.date} className="flex-1 flex flex-col items-center justify-end h-full group relative" style={{ minWidth: "4px" }}>
                   <div className="w-full flex flex-col justify-end" style={{ height: `${answeredPct + missedPct}%` }}>
@@ -226,18 +226,18 @@ export default function ReportingPage() {
             <div className="flex gap-4">
               <div className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--db-success)" }} />
-                <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Answered</span>
+                <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("reporting.answered", lang)}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--db-danger)" }} />
-                <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>Missed</span>
+                <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("reporting.missed", lang)}</span>
               </div>
             </div>
             {dailyVolumeSlice.length > 0 && (
               <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                {new Date(dailyVolumeSlice[0].date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                {new Date(dailyVolumeSlice[0].date + "T12:00:00").toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { month: "short", day: "numeric" })}
                 {" - "}
-                {new Date(dailyVolumeSlice[dailyVolumeSlice.length - 1].date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                {new Date(dailyVolumeSlice[dailyVolumeSlice.length - 1].date + "T12:00:00").toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { month: "short", day: "numeric" })}
               </span>
             )}
           </div>
@@ -247,7 +247,7 @@ export default function ReportingPage() {
       {/* Row 3: Duration + Language + Recovery */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {/* Call Duration - Horizontal bar chart */}
-        <Card title="Call Duration">
+        <Card title={t("reporting.callDuration", lang)}>
           <div className="space-y-3">
             {data.durationBuckets.map((b) => (
               <div key={b.bucket} className="flex items-center gap-3">
@@ -268,11 +268,11 @@ export default function ReportingPage() {
         </Card>
 
         {/* Language - Progress bar style */}
-        <Card title="Language Breakdown">
+        <Card title={t("reporting.languageBreakdown", lang)}>
           <div className="space-y-4 py-2">
             {data.languageBreakdown.map((l) => {
               const pct = totalLang > 0 ? Math.round((l.total / totalLang) * 100) : 0;
-              const langLabel = l.language === "en" ? "English" : l.language === "es" ? "Spanish" : l.language;
+              const langLabel = l.language === "en" ? t("reporting.english", lang) : l.language === "es" ? t("reporting.spanish", lang) : l.language;
               const langColor = l.language === "en" ? "var(--db-accent)" : "#10B981";
               return (
                 <div key={l.language}>
@@ -291,7 +291,7 @@ export default function ReportingPage() {
                       style={{ width: `${pct}%`, background: langColor }}
                     />
                   </div>
-                  <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>{l.total} calls</p>
+                  <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>{l.total} {t("reporting.calls", lang)}</p>
                 </div>
               );
             })}
@@ -299,16 +299,16 @@ export default function ReportingPage() {
         </Card>
 
         {/* Recovery */}
-        <Card title="Missed Call Recovery">
+        <Card title={t("reporting.missedCallRecovery", lang)}>
           <div className="space-y-4 py-2">
             <div className="text-center">
               <p className="text-3xl font-bold tabular-nums" style={{ color: "var(--db-accent)" }}>{data.recoveryStats.rate}%</p>
-              <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>Recovery Rate</p>
+              <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>{t("reporting.recoveryRate", lang)}</p>
             </div>
             <div className="grid grid-cols-3 gap-2">
-              <StatMini label="Missed" value={data.recoveryStats.totalMissed} />
-              <StatMini label="SMS Sent" value={data.recoveryStats.smsSent} />
-              <StatMini label="Recovered" value={data.recoveryStats.recovered} />
+              <StatMini label={t("reporting.missed", lang)} value={data.recoveryStats.totalMissed} />
+              <StatMini label={t("reporting.smsSent", lang)} value={data.recoveryStats.smsSent} />
+              <StatMini label={t("reporting.recovered", lang)} value={data.recoveryStats.recovered} />
             </div>
           </div>
         </Card>
@@ -319,7 +319,7 @@ export default function ReportingPage() {
         {/* Top Services - Horizontal bar chart */}
         <Card title={t("reporting.topServices", lang)}>
           {data.topServices.length === 0 ? (
-            <p className="py-8 text-center text-sm" style={{ color: "var(--db-text-muted)" }}>No appointments yet</p>
+            <p className="py-8 text-center text-sm" style={{ color: "var(--db-text-muted)" }}>{t("reporting.noAppointmentsYet", lang)}</p>
           ) : (
             <div className="space-y-3">
               {data.topServices.map((s, i) => (
@@ -346,14 +346,14 @@ export default function ReportingPage() {
         {/* Estimate Pipeline */}
         <Card title={t("reporting.revenuePipeline", lang)}>
           {data.estimatePipeline.length === 0 ? (
-            <p className="py-8 text-center text-sm" style={{ color: "var(--db-text-muted)" }}>No estimates yet</p>
+            <p className="py-8 text-center text-sm" style={{ color: "var(--db-text-muted)" }}>{t("reporting.noEstimatesYet", lang)}</p>
           ) : (
             <div className="space-y-3">
               {data.closeRate != null && (
                 <div className="rounded-lg p-3 mb-2 text-center" style={{ background: "var(--db-hover)" }}>
                   <p className="text-2xl font-bold tabular-nums" style={{ color: data.closeRate >= 50 ? "var(--db-success)" : "var(--db-text)" }}>{data.closeRate}%</p>
                   <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                    Close Rate ({data.estimatePipeline.find(e => e.status === "won")?.total ?? 0}/{(data.estimatePipeline.find(e => e.status === "won")?.total ?? 0) + (data.estimatePipeline.find(e => e.status === "lost")?.total ?? 0)} decided)
+                    {t("reporting.closeRate", lang)} ({data.estimatePipeline.find(e => e.status === "won")?.total ?? 0}/{(data.estimatePipeline.find(e => e.status === "won")?.total ?? 0) + (data.estimatePipeline.find(e => e.status === "lost")?.total ?? 0)} {t("reporting.decided", lang)})
                   </p>
                 </div>
               )}
@@ -393,18 +393,18 @@ export default function ReportingPage() {
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-2xl font-bold tabular-nums" style={{ color: "var(--db-text)" }}>{data.callerStats.total}</span>
-                <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>Total</span>
+                <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("reporting.total", lang)}</span>
               </div>
             </div>
           </div>
           <div className="flex justify-center gap-6">
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full" style={{ background: "#3B82F6" }} />
-              <span className="text-xs font-medium" style={{ color: "var(--db-text)" }}>New ({data.callerStats.new})</span>
+              <span className="text-xs font-medium" style={{ color: "var(--db-text)" }}>{t("reporting.new", lang)} ({data.callerStats.new})</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full" style={{ background: "#10B981" }} />
-              <span className="text-xs font-medium" style={{ color: "var(--db-text)" }}>Repeat ({data.callerStats.repeat})</span>
+              <span className="text-xs font-medium" style={{ color: "var(--db-text)" }}>{t("reporting.repeat", lang)} ({data.callerStats.repeat})</span>
             </div>
           </div>
         </Card>
@@ -413,36 +413,36 @@ export default function ReportingPage() {
       {/* Row 5: Outbound Calls */}
       {data.outboundSummary && data.outboundSummary.total > 0 && (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <Card title="Outbound Calls">
+          <Card title={t("reporting.outboundCalls", lang)}>
             <div className="space-y-4 py-2">
               <div className="text-center">
                 <p className="text-3xl font-bold tabular-nums" style={{ color: "var(--db-accent)" }}>{data.outboundSummary.total}</p>
-                <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>Total Outbound (30 days)</p>
+                <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>{t("reporting.totalOutbound", lang)}</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <StatMini label="Answered" value={data.outboundSummary.answered} />
-                <StatMini label="Answer Rate" value={data.outboundSummary.answerRate} />
+                <StatMini label={t("reporting.answered", lang)} value={data.outboundSummary.answered} />
+                <StatMini label={t("reporting.answerRate", lang)} value={data.outboundSummary.answerRate} />
               </div>
             </div>
           </Card>
-          <Card title="Outbound by Type">
+          <Card title={t("reporting.outboundByType", lang)}>
             <div className="space-y-3">
-              {data.outboundSummary.byType.map((t) => {
+              {data.outboundSummary.byType.map((ob) => {
                 const typeLabels: Record<string, string> = {
-                  appointment_reminder: "Reminders",
-                  estimate_followup: "Estimate Follow-ups",
-                  seasonal_reminder: "Seasonal",
+                  appointment_reminder: t("reporting.reminders", lang),
+                  estimate_followup: t("reporting.estimateFollowUps", lang),
+                  seasonal_reminder: t("reporting.seasonal", lang),
                 };
                 return (
-                  <div key={t.callType} className="flex items-center gap-3">
+                  <div key={ob.callType} className="flex items-center gap-3">
                     <span className="flex-1 text-sm" style={{ color: "var(--db-text)" }}>
-                      {typeLabels[t.callType] ?? t.callType.replace(/_/g, " ")}
+                      {typeLabels[ob.callType] ?? ob.callType.replace(/_/g, " ")}
                     </span>
                     <span className="text-xs font-medium tabular-nums" style={{ color: "var(--db-text-muted)" }}>
-                      {t.answered}/{t.total}
+                      {ob.answered}/{ob.total}
                     </span>
-                    <span className="text-xs font-semibold tabular-nums" style={{ color: t.total > 0 ? "var(--db-success)" : "var(--db-text)" }}>
-                      {t.total > 0 ? Math.round((t.answered / t.total) * 100) : 0}%
+                    <span className="text-xs font-semibold tabular-nums" style={{ color: ob.total > 0 ? "var(--db-success)" : "var(--db-text)" }}>
+                      {ob.total > 0 ? Math.round((ob.answered / ob.total) * 100) : 0}%
                     </span>
                   </div>
                 );

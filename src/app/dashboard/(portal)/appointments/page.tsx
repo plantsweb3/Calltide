@@ -46,15 +46,15 @@ function toISO(d: Date): string {
   return d.toISOString().split("T")[0];
 }
 
-const STATUS_ACTIONS: Record<string, { labelKey: string; label: string; status: string; variant: "primary" | "danger" }[]> = {
+const STATUS_ACTIONS: Record<string, { labelKey: string; status: string; variant: "primary" | "danger" }[]> = {
   pending: [
-    { labelKey: "appointments.confirm", label: "Confirm", status: "confirmed", variant: "primary" },
-    { labelKey: "action.cancel", label: "Cancel", status: "cancelled", variant: "danger" },
+    { labelKey: "appointments.confirm", status: "confirmed", variant: "primary" },
+    { labelKey: "action.cancel", status: "cancelled", variant: "danger" },
   ],
   confirmed: [
-    { labelKey: "appointments.complete", label: "Complete", status: "completed", variant: "primary" },
-    { labelKey: "appointments.noShow", label: "No-Show", status: "no_show", variant: "danger" },
-    { labelKey: "action.cancel", label: "Cancel", status: "cancelled", variant: "danger" },
+    { labelKey: "appointments.complete", status: "completed", variant: "primary" },
+    { labelKey: "appointments.noShow", status: "no_show", variant: "danger" },
+    { labelKey: "action.cancel", status: "cancelled", variant: "danger" },
   ],
 };
 
@@ -67,12 +67,12 @@ export default function AppointmentsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Appointment | null>(null);
-  const [confirmAction, setConfirmAction] = useState<{ status: string; label: string } | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{ status: string; labelKey: string } | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
   // Bulk selection
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [bulkConfirmAction, setBulkConfirmAction] = useState<{ status: string; label: string } | null>(null);
+  const [bulkConfirmAction, setBulkConfirmAction] = useState<{ status: string; labelKey: string } | null>(null);
   const [bulkLoading, setBulkLoading] = useState(false);
 
   const now = new Date();
@@ -93,7 +93,7 @@ export default function AppointmentsPage() {
       setAppointments(data.appointments);
       setSelectedIds(new Set());
     } catch {
-      setError("Failed to load appointments. Please try again.");
+      setError(t("appointments.failedToLoad", lang));
     } finally {
       setLoading(false);
     }
@@ -118,7 +118,7 @@ export default function AppointmentsPage() {
         body: JSON.stringify({ id: apptId, status: newStatus }),
       });
       if (!res.ok) throw new Error("Failed to update appointment");
-      toast.success(`Appointment ${newStatus.replace(/_/g, " ")}`);
+      toast.success(t("appointments.appointmentStatus", lang, { status: newStatus.replace(/_/g, " ") }));
       // Update local state
       setAppointments((prev) =>
         prev.map((a) => (a.id === apptId ? { ...a, status: newStatus } : a))
@@ -128,7 +128,7 @@ export default function AppointmentsPage() {
       }
       setConfirmAction(null);
     } catch {
-      toast.error("Failed to update appointment status");
+      toast.error(t("appointments.failedToUpdate", lang));
     } finally {
       setActionLoading(false);
     }
@@ -147,7 +147,7 @@ export default function AppointmentsPage() {
       });
       if (!res.ok) throw new Error("Failed to update appointments");
       const data = await res.json();
-      toast.success(`${data.updated} appointment${data.updated !== 1 ? "s" : ""} ${status.replace(/_/g, " ")}`);
+      toast.success(t(data.updated !== 1 ? "appointments.bulkUpdatedPlural" : "appointments.bulkUpdated", lang, { count: data.updated, status: status.replace(/_/g, " ") }));
 
       // Update local state
       setAppointments((prev) =>
@@ -156,13 +156,13 @@ export default function AppointmentsPage() {
       setSelectedIds(new Set());
       setBulkConfirmAction(null);
     } catch {
-      toast.error("Failed to update appointments");
+      toast.error(t("appointments.failedBulkUpdate", lang));
     } finally {
       setBulkLoading(false);
     }
   }
 
-  function handleAction(action: { status: string; label: string }) {
+  function handleAction(action: { status: string; labelKey: string }) {
     if (action.status === "cancelled" || action.status === "no_show") {
       setConfirmAction(action);
     } else {
@@ -242,12 +242,12 @@ export default function AppointmentsPage() {
             <ExportCsvButton
               data={filteredAppointments}
               columns={[
-                { header: "Date", accessor: (r) => r.date },
-                { header: "Time", accessor: (r) => r.time },
-                { header: "Service", accessor: (r) => r.service },
-                { header: "Customer", accessor: (r) => r.leadName || r.leadPhone },
-                { header: "Status", accessor: (r) => r.status },
-                { header: "Notes", accessor: (r) => r.notes },
+                { header: t("appointments.csvDate", lang), accessor: (r) => r.date },
+                { header: t("appointments.csvTime", lang), accessor: (r) => r.time },
+                { header: t("appointments.csvService", lang), accessor: (r) => r.service },
+                { header: t("appointments.csvCustomer", lang), accessor: (r) => r.leadName || r.leadPhone },
+                { header: t("appointments.csvStatus", lang), accessor: (r) => r.status },
+                { header: t("appointments.csvNotes", lang), accessor: (r) => r.notes },
               ]}
               filename="appointments"
             />
@@ -260,7 +260,7 @@ export default function AppointmentsPage() {
                     background: view === "calendar" ? "var(--db-accent)" : "var(--db-card)",
                     color: view === "calendar" ? "#fff" : "var(--db-text-muted)",
                   }}
-                  title="Calendar view"
+                  title={t("appointments.calendarView", lang)}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
@@ -273,7 +273,7 @@ export default function AppointmentsPage() {
                     background: view === "list" ? "var(--db-accent)" : "var(--db-card)",
                     color: view === "list" ? "#fff" : "var(--db-text-muted)",
                   }}
-                  title="List view"
+                  title={t("appointments.listView", lang)}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
@@ -318,8 +318,8 @@ export default function AppointmentsPage() {
             </svg>
           }
           title={t("empty.noAppointments", lang, { name: receptionistName })}
-          description="When your AI receptionist books appointments, they'll appear here."
-          action={{ label: "Customize Scheduling", href: "/dashboard/settings#receptionist" }}
+          description={t("appointments.emptyDescription", lang)}
+          action={{ label: t("appointments.customizeScheduling", lang), href: "/dashboard/settings#receptionist" }}
         />
       )}
 
@@ -352,14 +352,14 @@ export default function AppointmentsPage() {
           }}
         >
           <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-            {selectedIds.size} selected
+            {t("appointments.nSelected", lang, { count: selectedIds.size })}
           </span>
           <div className="h-5 w-px" style={{ background: "var(--db-border)" }} />
           <Button
             size="sm"
             variant="primary"
             onClick={() => {
-              setBulkConfirmAction({ status: "completed", label: t("appointments.complete", lang) });
+              setBulkConfirmAction({ status: "completed", labelKey: "appointments.complete" });
             }}
           >
             {t("appointments.complete", lang)} ({selectedIds.size})
@@ -368,7 +368,7 @@ export default function AppointmentsPage() {
             size="sm"
             variant="secondary"
             onClick={() => {
-              setBulkConfirmAction({ status: "no_show", label: t("appointments.noShow", lang) });
+              setBulkConfirmAction({ status: "no_show", labelKey: "appointments.noShow" });
             }}
           >
             {t("appointments.noShow", lang)} ({selectedIds.size})
@@ -377,7 +377,7 @@ export default function AppointmentsPage() {
             size="sm"
             variant="danger"
             onClick={() => {
-              setBulkConfirmAction({ status: "cancelled", label: t("action.cancel", lang) });
+              setBulkConfirmAction({ status: "cancelled", labelKey: "action.cancel" });
             }}
           >
             {t("action.cancel", lang)} ({selectedIds.size})
@@ -386,7 +386,7 @@ export default function AppointmentsPage() {
             onClick={() => setSelectedIds(new Set())}
             className="p-1 rounded-xl transition-colors ml-1"
             style={{ color: "var(--db-text-muted)" }}
-            title="Clear selection"
+            title={t("appointments.clearSelection", lang)}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -475,13 +475,13 @@ export default function AppointmentsPage() {
       {/* Confirm destructive action (single) */}
       <ConfirmDialog
         open={!!confirmAction}
-        title={`${confirmAction?.label} Appointment?`}
+        title={t("appointments.confirmActionTitle", lang, { action: confirmAction ? t(confirmAction.labelKey, lang) : "" })}
         description={
           confirmAction?.status === "cancelled"
-            ? "This will cancel the appointment. The customer will be notified via SMS."
-            : "This will mark the appointment as a no-show."
+            ? t("appointments.cancelDescription", lang)
+            : t("appointments.noShowDescription", lang)
         }
-        confirmLabel={confirmAction?.label || "Confirm"}
+        confirmLabel={confirmAction ? t(confirmAction.labelKey, lang) : t("action.confirm", lang)}
         variant="danger"
         loading={actionLoading}
         onConfirm={() => {
@@ -495,15 +495,19 @@ export default function AppointmentsPage() {
       {/* Confirm destructive bulk action */}
       <ConfirmDialog
         open={!!bulkConfirmAction}
-        title={`${bulkConfirmAction?.label} ${selectedIds.size} Appointment${selectedIds.size !== 1 ? "s" : ""}?`}
+        title={t(
+          selectedIds.size !== 1 ? "appointments.bulkConfirmTitlePlural" : "appointments.bulkConfirmTitle",
+          lang,
+          { action: bulkConfirmAction ? t(bulkConfirmAction.labelKey, lang) : "", count: selectedIds.size }
+        )}
         description={
           bulkConfirmAction?.status === "cancelled"
-            ? `This will cancel ${selectedIds.size} appointment${selectedIds.size !== 1 ? "s" : ""}. Customers will be notified.`
+            ? t(selectedIds.size !== 1 ? "appointments.bulkCancelDescriptionPlural" : "appointments.bulkCancelDescription", lang, { count: selectedIds.size })
             : bulkConfirmAction?.status === "no_show"
-            ? `This will mark ${selectedIds.size} appointment${selectedIds.size !== 1 ? "s" : ""} as no-show.`
-            : `This will mark ${selectedIds.size} appointment${selectedIds.size !== 1 ? "s" : ""} as completed.`
+            ? t(selectedIds.size !== 1 ? "appointments.bulkNoShowDescriptionPlural" : "appointments.bulkNoShowDescription", lang, { count: selectedIds.size })
+            : t(selectedIds.size !== 1 ? "appointments.bulkCompleteDescriptionPlural" : "appointments.bulkCompleteDescription", lang, { count: selectedIds.size })
         }
-        confirmLabel={bulkConfirmAction?.label || "Confirm"}
+        confirmLabel={bulkConfirmAction ? t(bulkConfirmAction.labelKey, lang) : t("action.confirm", lang)}
         variant={bulkConfirmAction?.status === "completed" ? "primary" : "danger"}
         loading={bulkLoading}
         onConfirm={() => {

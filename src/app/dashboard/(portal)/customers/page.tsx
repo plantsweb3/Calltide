@@ -34,15 +34,15 @@ interface Customer {
   tier: string | null;
 }
 
-const LEAD_TIER_CONFIG: Record<string, { label: string; bg: string; fg: string }> = {
-  hot: { label: "Hot", bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
-  warm: { label: "Warm", bg: "rgba(245,158,11,0.12)", fg: "var(--db-warning-alt)" },
-  cold: { label: "Cold", bg: "rgba(59,130,246,0.12)", fg: "#3b82f6" },
-  dormant: { label: "Dormant", bg: "rgba(148,163,184,0.12)", fg: "var(--db-text-muted)" },
-  new: { label: "New", bg: "rgba(96,165,250,0.12)", fg: "#60a5fa" },
-  loyal: { label: "Loyal", bg: "var(--db-success-bg)", fg: "var(--db-success)" },
-  vip: { label: "VIP", bg: "rgba(250,204,21,0.12)", fg: "var(--db-warning)" },
-  "at-risk": { label: "At Risk", bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
+const LEAD_TIER_CONFIG: Record<string, { i18nKey: string; bg: string; fg: string }> = {
+  hot: { i18nKey: "customers.tierHot", bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
+  warm: { i18nKey: "customers.tierWarm", bg: "rgba(245,158,11,0.12)", fg: "var(--db-warning-alt)" },
+  cold: { i18nKey: "customers.tierCold", bg: "rgba(59,130,246,0.12)", fg: "#3b82f6" },
+  dormant: { i18nKey: "customers.tierDormant", bg: "rgba(148,163,184,0.12)", fg: "var(--db-text-muted)" },
+  new: { i18nKey: "customers.tierNew", bg: "rgba(96,165,250,0.12)", fg: "#60a5fa" },
+  loyal: { i18nKey: "customers.tierLoyal", bg: "var(--db-success-bg)", fg: "var(--db-success)" },
+  vip: { i18nKey: "customers.tierVip", bg: "rgba(250,204,21,0.12)", fg: "var(--db-warning)" },
+  "at-risk": { i18nKey: "customers.tierAtRisk", bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
 };
 
 const TIER_FILTER_OPTIONS = [
@@ -93,12 +93,12 @@ export default function CustomersPage() {
       setTotalPages(data.totalPages || 1);
       setTotal(data.total || 0);
     } catch {
-      setError("Failed to load customers. Please try again.");
+      setError(t("customers.failedToLoad", lang));
       setCustomers([]);
     } finally {
       setLoading(false);
     }
-  }, [page, search, tierFilter, sortBy, sortOrder]);
+  }, [page, search, tierFilter, sortBy, sortOrder, lang]);
 
   useEffect(() => { fetchCustomers(); }, [fetchCustomers]);
 
@@ -110,7 +110,7 @@ export default function CustomersPage() {
 
   function formatDate(d: string | null) {
     if (!d) return "\u2014";
-    return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    return new Date(d).toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { month: "short", day: "numeric", year: "numeric" });
   }
 
   function handleMergeClick() {
@@ -127,9 +127,9 @@ export default function CustomersPage() {
       render: (c) => (
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-            {c.name || "Unknown"}
+            {c.name || t("customers.unknown", lang)}
           </span>
-          {c.isRepeat && <StatusBadge label="Repeat" variant="accent" />}
+          {c.isRepeat && <StatusBadge label={t("customers.repeat", lang)} variant="accent" />}
         </div>
       ),
     },
@@ -153,7 +153,7 @@ export default function CustomersPage() {
               className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold uppercase"
               style={{ background: tierConf.bg, color: tierConf.fg }}
             >
-              {tierConf.label}
+              {t(tierConf.i18nKey, lang)}
             </span>
             <div className="flex items-center gap-1.5">
               <span
@@ -200,7 +200,7 @@ export default function CustomersPage() {
     },
     {
       key: "tags",
-      label: "Tags",
+      label: t("customers.tags", lang),
       render: (c) => (
         <div className="flex gap-1">
           {(c.tags || []).slice(0, 3).map((tag) => (
@@ -256,15 +256,15 @@ export default function CustomersPage() {
             <ExportCsvButton
               data={customers}
               columns={[
-                { header: "Name", accessor: (r) => r.name },
-                { header: "Phone", accessor: (r) => r.phone },
-                { header: "Email", accessor: (r) => r.email },
-                { header: "Calls", accessor: (r) => r.totalCalls },
-                { header: "Appointments", accessor: (r) => r.totalAppointments },
-                { header: "Last Call", accessor: (r) => r.lastCallAt },
-                { header: "Lead Score", accessor: (r) => r.leadScore },
-                { header: "Tier", accessor: (r) => r.tier },
-                { header: "Tags", accessor: (r) => r.tags.join("; ") },
+                { header: t("customers.csvName", lang), accessor: (r) => r.name },
+                { header: t("customers.csvPhone", lang), accessor: (r) => r.phone },
+                { header: t("customers.csvEmail", lang), accessor: (r) => r.email },
+                { header: t("customers.csvCalls", lang), accessor: (r) => r.totalCalls },
+                { header: t("customers.csvAppointments", lang), accessor: (r) => r.totalAppointments },
+                { header: t("customers.csvLastCall", lang), accessor: (r) => r.lastCallAt },
+                { header: t("customers.csvLeadScore", lang), accessor: (r) => r.leadScore },
+                { header: t("customers.csvTier", lang), accessor: (r) => r.tier },
+                { header: t("customers.csvTags", lang), accessor: (r) => r.tags.join("; ") },
               ]}
               filename="customers"
             />
@@ -311,7 +311,7 @@ export default function CustomersPage() {
           }}
         >
           {SORT_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>Sort: {t(opt.key, lang)}</option>
+            <option key={opt.value} value={opt.value}>{t("customers.sortPrefix", lang, { label: t(opt.key, lang) })}</option>
           ))}
         </select>
 
@@ -323,7 +323,7 @@ export default function CustomersPage() {
             borderColor: "var(--db-border)",
             color: "var(--db-text-muted)",
           }}
-          title={sortOrder === "asc" ? "Ascending" : "Descending"}
+          title={sortOrder === "asc" ? t("customers.ascending", lang) : t("customers.descending", lang)}
         >
           {sortOrder === "asc" ? "\u2191" : "\u2193"}
         </button>
@@ -344,7 +344,7 @@ export default function CustomersPage() {
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
           <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
-            {search ? "No customers match your search" : t("empty.noCustomers", lang, { name: receptionistName })}
+            {search ? t("customers.noMatchSearch", lang) : t("empty.noCustomers", lang, { name: receptionistName })}
           </p>
           <p className="mt-2 text-sm max-w-sm mx-auto" style={{ color: "var(--db-text-muted)" }}>
             {search
@@ -371,7 +371,7 @@ export default function CustomersPage() {
             total,
             onPageChange: setPage,
           } : undefined}
-          emptyMessage={search ? "No customers match your search" : "No customers yet"}
+          emptyMessage={search ? t("customers.noMatchSearch", lang) : t("customers.noCustomersYet", lang)}
         />
       )}
 
@@ -410,7 +410,7 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim() || !phone.trim()) {
-      setError("Name and phone are required.");
+      setError(t("customers.namePhoneRequired", lang));
       return;
     }
     setSaving(true);
@@ -423,13 +423,13 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to create customer");
+        setError(data.error || t("customers.failedToCreate", lang));
         return;
       }
       toast.success(t("toast.customerAdded", lang));
       onCreated();
     } catch {
-      setError("Failed to create customer");
+      setError(t("customers.failedToCreate", lang));
     } finally {
       setSaving(false);
     }
@@ -529,10 +529,10 @@ function MergeCustomerModal({
   }
 
   const MERGE_FIELDS = [
-    { key: "name" as const, label: "Name" },
-    { key: "phone" as const, label: "Phone" },
-    { key: "email" as const, label: "Email" },
-    { key: "address" as const, label: "Address" },
+    { key: "name" as const, i18nKey: "customers.fieldName" },
+    { key: "phone" as const, i18nKey: "customers.fieldPhone" },
+    { key: "email" as const, i18nKey: "customers.fieldEmail" },
+    { key: "address" as const, i18nKey: "customers.fieldAddress" },
   ];
 
   // The primary customer is the one whose ID matches primaryId
@@ -558,7 +558,7 @@ function MergeCustomerModal({
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to merge customers");
+        setError(data.error || t("customers.failedToMerge", lang));
         return;
       }
 
@@ -588,7 +588,7 @@ function MergeCustomerModal({
       toast.success(t("toast.customersMerged", lang));
       onMerged();
     } catch {
-      setError("Failed to merge customers");
+      setError(t("customers.failedToMerge", lang));
     } finally {
       setMerging(false);
     }
@@ -616,7 +616,7 @@ function MergeCustomerModal({
           {t("customers.mergeCustomers", lang)}
         </h2>
         <p className="text-xs mb-5" style={{ color: "var(--db-text-muted)" }}>
-          Choose which customer record to keep as primary. Select which field values to preserve.
+          {t("customers.mergeDescription", lang)}
         </p>
 
         <form onSubmit={handleMerge}>
@@ -635,14 +635,14 @@ function MergeCustomerModal({
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
-                    {cust.name || "Unknown"}
+                    {cust.name || t("customers.unknown", lang)}
                   </span>
                   {primaryId === cust.id && (
                     <span
                       className="rounded px-1.5 py-0.5 text-xs font-semibold uppercase"
                       style={{ background: "rgba(212,168,67,0.15)", color: "var(--db-accent)" }}
                     >
-                      Primary
+                      {t("customers.primary", lang)}
                     </span>
                   )}
                 </div>
@@ -650,7 +650,7 @@ function MergeCustomerModal({
                   {cust.phone} {cust.email ? `\u00B7 ${cust.email}` : ""}
                 </p>
                 <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
-                  {cust.totalCalls} calls \u00B7 {cust.totalAppointments} appts
+                  {cust.totalCalls} {t("customers.calls", lang)} {"\u00B7"} {cust.totalAppointments} {t("customers.appts", lang)}
                 </p>
               </button>
             ))}
@@ -662,13 +662,13 @@ function MergeCustomerModal({
               <thead>
                 <tr style={{ borderBottom: "1px solid var(--db-border)", background: "var(--db-hover)" }}>
                   <th className="px-4 py-2 text-left text-xs font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
-                    Field
+                    {t("customers.fieldHeader", lang)}
                   </th>
                   <th className="px-4 py-2 text-center text-xs font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
-                    {a.name || "Customer A"}
+                    {a.name || t("customers.customerA", lang)}
                   </th>
                   <th className="px-4 py-2 text-center text-xs font-semibold uppercase" style={{ color: "var(--db-text-muted)" }}>
-                    {b.name || "Customer B"}
+                    {b.name || t("customers.customerB", lang)}
                   </th>
                 </tr>
               </thead>
@@ -676,7 +676,7 @@ function MergeCustomerModal({
                 {MERGE_FIELDS.map((field) => (
                   <tr key={field.key} style={{ borderBottom: "1px solid var(--db-border)" }}>
                     <td className="px-4 py-2 font-medium" style={{ color: "var(--db-text)" }}>
-                      {field.label}
+                      {t(field.i18nKey, lang)}
                     </td>
                     {[a, b].map((cust) => (
                       <td key={cust.id} className="px-4 py-2 text-center">

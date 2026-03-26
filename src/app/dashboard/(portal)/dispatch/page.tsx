@@ -57,9 +57,9 @@ function toDateString(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
-function formatDateLabel(date: string): string {
+function formatDateLabel(date: string, locale: string = "en-US"): string {
   const d = new Date(date + "T12:00:00");
-  return d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  return d.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 }
 
 const DEFAULT_COLORS = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899", "#14B8A6", "#F97316"];
@@ -150,7 +150,7 @@ export default function DispatchPage() {
         body: JSON.stringify({ technicianId }),
       });
       if (!res.ok) throw new Error("Failed to assign");
-      toast.success("Technician assigned");
+      toast.success(t("toast.technicianAssigned", lang));
       fetchDispatch();
     } catch {
       toast.error(t("toast.failedToAssign", lang));
@@ -214,7 +214,11 @@ export default function DispatchPage() {
     <div>
       <PageHeader
         title={t("dispatch.title", lang)}
-        description={`${totalJobs} job${totalJobs !== 1 ? "s" : ""} ${isToday ? "today" : `on ${formatDateLabel(date)}`}`}
+        description={
+          isToday
+            ? t(totalJobs !== 1 ? "dispatch.jobCountPlural" : "dispatch.jobCount", lang, { count: totalJobs })
+            : t(totalJobs !== 1 ? "dispatch.jobCountOnDatePlural" : "dispatch.jobCountOnDate", lang, { count: totalJobs, date: formatDateLabel(date, lang === "es" ? "es-MX" : "en-US") })
+        }
         actions={
           <div className="flex items-center gap-2">
             <Button
@@ -247,7 +251,7 @@ export default function DispatchPage() {
 
         <div className="flex items-center gap-3">
           <h2 className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
-            {formatDateLabel(date)}
+            {formatDateLabel(date, lang === "es" ? "es-MX" : "en-US")}
           </h2>
           {!isToday && (
             <button
@@ -513,7 +517,7 @@ export default function DispatchPage() {
                         {tech.unavailableReason && (
                           <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
                             {tech.unavailableReason}
-                            {tech.unavailableUntil && ` - until ${new Date(tech.unavailableUntil + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}`}
+                            {tech.unavailableUntil && ` - ${t("dispatch.untilLabel", lang, { date: new Date(tech.unavailableUntil + "T12:00:00").toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { month: "short", day: "numeric" }) })}`}
                           </p>
                         )}
                       </div>
@@ -544,7 +548,7 @@ export default function DispatchPage() {
               {t("dispatch.assign", lang)}
             </h3>
             <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
-              {assignAppt.service} at {formatTime12h(assignAppt.time)}
+              {t("dispatch.serviceAtTime", lang, { service: assignAppt.service, time: formatTime12h(assignAppt.time) })}
               {assignAppt.customerName ? ` - ${assignAppt.customerName}` : ""}
             </p>
 
@@ -670,7 +674,7 @@ export default function DispatchPage() {
                     setSelectedAppt(null);
                   }}
                 >
-                  {t("dispatch.unassigned", lang)}
+                  {t("dispatch.unassign", lang)}
                 </Button>
               )}
             </div>
@@ -722,7 +726,7 @@ function TechCircle({ tech, index, isRecommended, recommendedReason, onClick }: 
           background: color,
           boxShadow: isRecommended ? `0 0 0 2px var(--db-card), 0 0 0 4px var(--db-accent)` : "none",
         }}
-        title={`${tech.name} - ${tech.appointments.length} jobs`}
+        title={`${tech.name} - ${t("dispatch.jobsCountLabel", lang, { count: tech.appointments.length })}`}
       >
         {initial}
       </button>
@@ -873,7 +877,7 @@ function AppointmentCard({
                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" />
                 <polyline points="17 11 19 13 23 9" />
               </svg>
-              {t("dispatch.reschedule", lang)}
+              {t("dispatch.reassign", lang)}
             </button>
           )}
           {showUnassign && (
@@ -888,7 +892,7 @@ function AppointmentCard({
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
               </svg>
-              {t("dispatch.unassigned", lang)}
+              {t("dispatch.unassign", lang)}
             </button>
           )}
         </div>
@@ -914,7 +918,7 @@ function AppointmentCard({
                 >
                   <span className="h-2.5 w-2.5 rounded-full flex-shrink-0" style={{ background: color }} />
                   <span className="font-medium" style={{ color: "var(--db-text)" }}>{tech.name}</span>
-                  <span style={{ color: "var(--db-text-muted)" }}>({tech.appointments.length} jobs)</span>
+                  <span style={{ color: "var(--db-text-muted)" }}>({t("dispatch.jobsCountLabel", lang, { count: tech.appointments.length })})</span>
                 </button>
               );
             })

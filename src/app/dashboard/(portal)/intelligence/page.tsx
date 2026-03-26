@@ -58,11 +58,11 @@ const TIER_COLORS: Record<string, string> = {
   "at-risk": "#f97316",
 };
 
-const CATEGORY_LABELS: Record<string, string> = {
-  faq: "FAQs",
-  off_limits: "Off Limits",
-  phrase: "Custom Phrases",
-  emergency_keyword: "Emergency Keywords",
+const CATEGORY_KEYS: Record<string, string> = {
+  faq: "intelligence.categoryFaq",
+  off_limits: "intelligence.categoryOffLimits",
+  phrase: "intelligence.categoryPhrase",
+  emergency_keyword: "intelligence.categoryEmergency",
 };
 
 const GAP_STATUS_COLORS: Record<string, string> = {
@@ -87,7 +87,7 @@ export default function IntelligencePage() {
         return r.json();
       })
       .then(setData)
-      .catch(() => setError("Failed to load intelligence data"));
+      .catch(() => setError("failed"));
   }, []);
 
   useEffect(() => { loadIntelligence(); }, [loadIntelligence]);
@@ -104,13 +104,13 @@ export default function IntelligencePage() {
           color: "var(--db-danger)",
         }}
       >
-        <p className="text-sm">{error}</p>
+        <p className="text-sm">{t("intelligence.failedToLoad", lang)}</p>
         <button
           onClick={loadIntelligence}
           className="rounded-lg px-3 py-1.5 text-xs font-medium"
           style={{ color: "var(--db-danger)" }}
         >
-          Retry
+          {t("action.retry", lang)}
         </button>
       </div>
     );
@@ -156,10 +156,10 @@ export default function IntelligencePage() {
           }
           change={
             data.avgQaScore >= 80
-              ? "Excellent"
+              ? t("intelligence.excellent", lang)
               : data.avgQaScore >= 50
-                ? "Good"
-                : "Needs attention"
+                ? t("intelligence.good", lang)
+                : t("intelligence.needsAttention", lang)
           }
         />
       </div>
@@ -192,9 +192,9 @@ export default function IntelligencePage() {
         </div>
         <p className="text-sm" style={{ color: "var(--db-text)" }}>
           <strong style={{ color: "var(--db-accent)" }}>{receptionistName}</strong>{" "}
-          has been learning for{" "}
-          <strong>{data.daysLearning} day{data.daysLearning !== 1 ? "s" : ""}</strong>{" "}
-          — handling calls, building customer profiles, and mastering your FAQs.
+          {t("intelligence.learningBanner", lang)}{" "}
+          <strong>{data.daysLearning} {data.daysLearning !== 1 ? t("intelligence.learningBannerDays", lang) : t("intelligence.learningBannerDay", lang)}</strong>{" "}
+          {t("intelligence.learningBannerSuffix", lang)}
         </p>
       </div>
 
@@ -211,12 +211,12 @@ export default function IntelligencePage() {
 
           {/* Custom responses by category */}
           <div className="space-y-3 mb-5">
-            {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
+            {Object.entries(CATEGORY_KEYS).map(([key, labelKey]) => {
               const cnt = data.customResponsesByCategory[key] || 0;
               return (
                 <div key={key} className="flex items-center justify-between">
                   <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>
-                    {label}
+                    {t(labelKey, lang)}
                   </span>
                   <span
                     className="rounded-full px-2.5 py-0.5 text-xs font-semibold"
@@ -246,18 +246,25 @@ export default function IntelligencePage() {
                 {t("intelligence.knowledgeGaps", lang)}
               </p>
               <div className="flex gap-2">
-                {(["pending", "answered", "dismissed"] as const).map((s) => (
-                  <span
-                    key={s}
-                    className="rounded-full px-2 py-0.5 text-xs font-semibold"
-                    style={{
-                      background: `${GAP_STATUS_COLORS[s]}20`,
-                      color: GAP_STATUS_COLORS[s],
-                    }}
-                  >
-                    {data.gapCounts[s] || 0} {s}
-                  </span>
-                ))}
+                {(["pending", "answered", "dismissed"] as const).map((s) => {
+                  const gapLabels: Record<string, string> = {
+                    pending: t("intelligence.gapPending", lang),
+                    answered: t("intelligence.gapAnswered", lang),
+                    dismissed: t("intelligence.gapDismissed", lang),
+                  };
+                  return (
+                    <span
+                      key={s}
+                      className="rounded-full px-2 py-0.5 text-xs font-semibold"
+                      style={{
+                        background: `${GAP_STATUS_COLORS[s]}20`,
+                        color: GAP_STATUS_COLORS[s],
+                      }}
+                    >
+                      {data.gapCounts[s] || 0} {gapLabels[s]}
+                    </span>
+                  );
+                })}
               </div>
             </div>
             {data.recentGaps.length > 0 ? (
@@ -284,7 +291,7 @@ export default function IntelligencePage() {
               </div>
             ) : (
               <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                No knowledge gaps detected yet.
+                {t("intelligence.noGapsYet", lang)}
               </p>
             )}
           </div>
@@ -316,18 +323,15 @@ export default function IntelligencePage() {
             <div className="space-y-3 mb-5">
               {(
                 [
-                  { key: "greeting", label: "Greeting" },
-                  { key: "languageMatch", label: "Language Match" },
-                  { key: "needCapture", label: "Need Capture" },
-                  { key: "actionTaken", label: "Action Taken" },
-                  { key: "accuracy", label: "Accuracy" },
-                  { key: "sentiment", label: "Sentiment" },
-                ] as const
+                  { key: "greeting", label: t("intelligence.qaGreeting", lang) },
+                  { key: "languageMatch", label: t("intelligence.qaLanguageMatch", lang) },
+                  { key: "needCapture", label: t("intelligence.qaNeedCapture", lang) },
+                  { key: "actionTaken", label: t("intelligence.qaActionTaken", lang) },
+                  { key: "accuracy", label: t("intelligence.qaAccuracy", lang) },
+                  { key: "sentiment", label: t("intelligence.qaSentiment", lang) },
+                ] as { key: keyof NonNullable<IntelligenceData["avgBreakdown"]>; label: string }[]
               ).map((item) => {
-                const val =
-                  data.avgBreakdown![
-                    item.key as keyof NonNullable<IntelligenceData["avgBreakdown"]>
-                  ];
+                const val = data.avgBreakdown![item.key];
                 return (
                   <div key={item.key}>
                     <div className="flex items-center justify-between mb-1">
@@ -367,7 +371,7 @@ export default function IntelligencePage() {
             </div>
           ) : (
             <p className="text-xs mb-5" style={{ color: "var(--db-text-muted)" }}>
-              QA scores will appear after calls are analyzed.
+              {t("intelligence.qaWillAppear", lang)}
             </p>
           )}
 
@@ -447,7 +451,7 @@ export default function IntelligencePage() {
                     className="text-sm font-medium tabular-nums"
                     style={{ color: "var(--db-text-muted)" }}
                   >
-                    {c.totalCalls} calls
+                    {c.totalCalls} {t("intelligence.callsSuffix", lang)}
                   </span>
                 </div>
               ))}
@@ -576,7 +580,7 @@ export default function IntelligencePage() {
                           ? `rgba(197,154,39,${0.15 + intensity * 0.85})`
                           : "var(--db-hover)",
                     }}
-                    title={`${h % 12 || 12}${h >= 12 ? "PM" : "AM"}: ${cnt} calls`}
+                    title={`${h % 12 || 12}${h >= 12 ? "PM" : "AM"}: ${cnt} ${t("intelligence.callsSuffix", lang)}`}
                   />
                 );
               })}
@@ -586,19 +590,19 @@ export default function IntelligencePage() {
                 className="text-[9px]"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                12AM
+                {t("intelligence.heatmapMidnight", lang)}
               </span>
               <span
                 className="text-[9px]"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                12PM
+                {t("intelligence.heatmapNoon", lang)}
               </span>
               <span
                 className="text-[9px]"
                 style={{ color: "var(--db-text-muted)" }}
               >
-                11PM
+                {t("intelligence.heatmapLateNight", lang)}
               </span>
             </div>
           </div>

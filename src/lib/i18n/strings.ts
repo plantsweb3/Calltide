@@ -889,9 +889,72 @@ const strings: Record<string, Record<Lang, string>> = {
   "followUps.sortBy.created": { en: "Created", es: "Creado" },
   "followUps.overdue": { en: "Overdue", es: "Vencido" },
   "followUps.thisWeek": { en: "This Week", es: "Esta semana" },
+  "followUps.dueToday": { en: "Due Today", es: "Vence hoy" },
   "followUps.markDone": { en: "Mark Done", es: "Marcar hecho" },
   "followUps.skip": { en: "Skip", es: "Omitir" },
   "followUps.callBack": { en: "Call Back", es: "Devolver llamada" },
+  "followUps.start": { en: "Start", es: "Iniciar" },
+  "followUps.today": { en: "Today", es: "Hoy" },
+  "followUps.pendingCount": {
+    en: "{n} pending",
+    es: "{n} pendientes",
+  },
+  "followUps.urgentCount": {
+    en: "({n} urgent)",
+    es: "({n} urgentes)",
+  },
+  "followUps.allCaughtUp": { en: "All caught up", es: "Todo al dia" },
+  "followUps.showPrefix": { en: "Show:", es: "Mostrar:" },
+  "followUps.sortPrefix": { en: "Sort:", es: "Ordenar:" },
+  "followUps.ascending": { en: "Ascending", es: "Ascendente" },
+  "followUps.descending": { en: "Descending", es: "Descendente" },
+  "followUps.col.priority": { en: "Priority", es: "Prioridad" },
+  "followUps.col.followUp": { en: "Follow-up", es: "Seguimiento" },
+  "followUps.col.customer": { en: "Customer", es: "Cliente" },
+  "followUps.col.due": { en: "Due", es: "Vence" },
+  "followUps.col.status": { en: "Status", es: "Estado" },
+  "followUps.emptyPending": {
+    en: "No pending follow-ups",
+    es: "No hay seguimientos pendientes",
+  },
+  "followUps.emptyGeneric": {
+    en: "No follow-ups found",
+    es: "No se encontraron seguimientos",
+  },
+  "followUps.emptyDescription": {
+    en: "Follow-ups are automatically created when Maria takes a message during a call. You can also create them manually.",
+    es: "Los seguimientos se crean automaticamente cuando Maria toma un mensaje durante una llamada. Tambien puedes crearlos manualmente.",
+  },
+  "followUps.editTitle": { en: "Edit Follow-up", es: "Editar seguimiento" },
+  "followUps.customerLabel": { en: "Customer:", es: "Cliente:" },
+  "followUps.form.title": { en: "Title", es: "Titulo" },
+  "followUps.form.titleRequired": {
+    en: "Title is required.",
+    es: "El titulo es obligatorio.",
+  },
+  "followUps.form.description": { en: "Description", es: "Descripcion" },
+  "followUps.form.dueDate": { en: "Due Date", es: "Fecha limite" },
+  "followUps.form.priority": { en: "Priority", es: "Prioridad" },
+  "followUps.form.assignedTo": { en: "Assigned To", es: "Asignado a" },
+  "followUps.form.assignedPlaceholder": {
+    en: "Technician name...",
+    es: "Nombre del tecnico...",
+  },
+  "followUps.form.status": { en: "Status", es: "Estado" },
+  "followUps.priority.low": { en: "Low", es: "Baja" },
+  "followUps.priority.normal": { en: "Normal", es: "Normal" },
+  "followUps.priority.high": { en: "High", es: "Alta" },
+  "followUps.priority.urgent": { en: "Urgent", es: "Urgente" },
+  "followUps.status.pending": { en: "Pending", es: "Pendiente" },
+  "followUps.status.inProgress": { en: "In Progress", es: "En progreso" },
+  "followUps.status.completed": { en: "Completed", es: "Completado" },
+  "followUps.status.dismissed": { en: "Dismissed", es: "Descartado" },
+  "followUps.saving": { en: "Saving...", es: "Guardando..." },
+  "followUps.updateFailed": {
+    en: "Failed to update follow-up",
+    es: "No se pudo actualizar el seguimiento",
+  },
+  "followUps.updated": { en: "Follow-up updated", es: "Seguimiento actualizado" },
 
   // ── Team page ────────────────────────────────────────────
   "team.title": { en: "Team", es: "Equipo" },
@@ -951,6 +1014,59 @@ const strings: Record<string, Record<Lang, string>> = {
   "jobCards.serviceType": { en: "Service Type", es: "Tipo de servicio" },
   "jobCards.confidence": { en: "Confidence", es: "Confianza" },
   "jobCards.sourceCall": { en: "Source Call", es: "Llamada de origen" },
+  "jobCards.searchPlaceholder": { en: "Search jobs...", es: "Buscar trabajos..." },
+  "jobCards.responseRate": { en: "Response rate:", es: "Tasa de respuesta:" },
+  "jobCards.avgResponse": { en: "Avg response:", es: "Respuesta promedio:" },
+  "jobCards.status.all": { en: "All", es: "Todos" },
+  "jobCards.status.pending": { en: "Pending", es: "Pendiente" },
+  "jobCards.status.confirmed": { en: "Confirmed", es: "Confirmado" },
+  "jobCards.status.adjusted": { en: "Adjusted", es: "Ajustado" },
+  "jobCards.status.siteVisit": { en: "Site Visit", es: "Visita en sitio" },
+  "jobCards.status.expired": { en: "Expired", es: "Expirado" },
+  "jobCards.status.awaitingAdj": { en: "Awaiting Adj.", es: "Esperando ajuste" },
+  "jobCards.unknownCaller": { en: "Unknown caller", es: "Llamante desconocido" },
+  "jobCards.serviceRequested": { en: "Service requested", es: "Servicio solicitado" },
+  "jobCards.noEstimate": { en: "No estimate", es: "Sin cotizacion" },
+  "jobCards.noMatch": { en: "no match", es: "sin coincidencia" },
+  "jobCards.scope": { en: "Scope", es: "Alcance" },
+  "jobCards.estimateMode": { en: "Estimate Mode", es: "Modo de cotizacion" },
+  "jobCards.unit": { en: "Unit", es: "Unidad" },
+  "jobCards.description": { en: "Description", es: "Descripcion" },
+  "jobCards.photos": { en: "Photos", es: "Fotos" },
+  "jobCards.loadingPhotos": { en: "Loading photos...", es: "Cargando fotos..." },
+  "jobCards.received": { en: "Received:", es: "Recibido:" },
+  "jobCards.photoAlt": { en: "Job site photo", es: "Foto del sitio de trabajo" },
+  "jobCards.calcBreakdown": {
+    en: "Calculation Breakdown",
+    es: "Desglose del calculo",
+  },
+  "jobCards.noBreakdown": {
+    en: "No breakdown available",
+    es: "Sin desglose disponible",
+  },
+  "jobCards.ownerResponse": { en: "Owner Response", es: "Respuesta del propietario" },
+  "jobCards.estimateConfirmed": { en: "Estimate confirmed", es: "Cotizacion confirmada" },
+  "jobCards.adjustedTo": { en: "Adjusted to", es: "Ajustado a" },
+  "jobCards.siteVisitRequested": {
+    en: "Site visit requested",
+    es: "Visita en sitio solicitada",
+  },
+  "jobCards.customerNotified": { en: "Customer Notified", es: "Cliente notificado" },
+  "jobCards.responseTimeline": { en: "Response Timeline", es: "Historial de respuestas" },
+  "jobCards.directionOwner": { en: "Owner", es: "Propietario" },
+  "jobCards.directionSystem": { en: "System", es: "Sistema" },
+  "jobCards.emptyTitle": { en: "No job cards yet", es: "Aun no hay ordenes de trabajo" },
+  "jobCards.emptyDescription": {
+    en: "Job cards are created automatically when {name} completes an intake during a call.",
+    es: "Las ordenes de trabajo se crean automaticamente cuando {name} completa un registro durante una llamada.",
+  },
+  "jobCards.loadError": {
+    en: "Failed to load job cards. Please try again.",
+    es: "No se pudieron cargar las ordenes de trabajo. Intenta de nuevo.",
+  },
+  "jobCards.previous": { en: "Previous", es: "Anterior" },
+  "jobCards.next": { en: "Next", es: "Siguiente" },
+  "jobCards.pageOf": { en: "Page {page} of {total}", es: "Pagina {page} de {total}" },
 
   // ── Cancel page ──────────────────────────────────────────
   "cancel.title": { en: "Cancel Subscription", es: "Cancelar suscripcion" },
@@ -2417,6 +2533,426 @@ const strings: Record<string, Record<Lang, string>> = {
   "calls.voicemail": { en: "Voicemail", es: "Correo de Voz" },
   "calls.noMatching": { en: "No calls matching your filters", es: "No hay llamadas que coincidan con tus filtros" },
   "calls.jobIntake": { en: "Job Intake", es: "Recepcion de Trabajo" },
+
+  // ── Payment banner i18n ─────────────────────────────────────
+  "billing.trialEndsToday": {
+    en: "Your free trial ends today.",
+    es: "Tu prueba gratuita termina hoy.",
+  },
+  "billing.trialEndsTomorrow": {
+    en: "Your free trial ends tomorrow.",
+    es: "Tu prueba gratuita termina manana.",
+  },
+  "billing.trialEndsInDays": {
+    en: "Your free trial ends in {days} days.",
+    es: "Tu prueba gratuita termina en {days} dias.",
+  },
+  "billing.viewBilling": { en: "View billing", es: "Ver facturacion" },
+  "billing.paymentOverdueDesc": {
+    en: "Your payment is overdue. Please update your payment method to keep your service running.",
+    es: "Tu pago esta vencido. Actualiza tu metodo de pago para mantener tu servicio activo.",
+  },
+  "billing.paymentFailedDesc": {
+    en: "Your payment has failed. Update your payment method to avoid service interruption.",
+    es: "Tu pago ha fallado. Actualiza tu metodo de pago para evitar la interrupcion del servicio.",
+  },
+  "billing.updatePayment": { en: "Update Payment", es: "Actualizar pago" },
+
+  // ── Estimates CSV headers ───────────────────────────────────
+  "csv.customer": { en: "Customer", es: "Cliente" },
+  "csv.service": { en: "Service", es: "Servicio" },
+  "csv.amount": { en: "Amount", es: "Monto" },
+  "csv.status": { en: "Status", es: "Estado" },
+  "csv.created": { en: "Created", es: "Creada" },
+  "csv.notes": { en: "Notes", es: "Notas" },
+  "csv.invoiceNumber": { en: "Invoice #", es: "Factura #" },
+  "csv.dueDate": { en: "Due Date", es: "Fecha de vencimiento" },
+  "csv.paidAt": { en: "Paid At", es: "Pagado el" },
+
+  // ── Invoices expanded row / misc ────────────────────────────
+  "invoices.tax": { en: "Tax ({rate}%)", es: "Impuesto ({rate}%)" },
+  "invoices.invoicePlural": {
+    en: "{count} invoice",
+    es: "{count} factura",
+  },
+  "invoices.invoicePluralMultiple": {
+    en: "{count} invoices",
+    es: "{count} facturas",
+  },
+  "invoices.fromDate": { en: "From date", es: "Desde" },
+  "invoices.toDate": { en: "To date", es: "Hasta" },
+  "invoices.clearDateFilter": { en: "Clear date filter", es: "Limpiar filtro de fecha" },
+
+  // ── Customers page — tier labels ──────────────────────────
+  "customers.tierHot": { en: "Hot", es: "Caliente" },
+  "customers.tierWarm": { en: "Warm", es: "Tibio" },
+  "customers.tierCold": { en: "Cold", es: "Frio" },
+  "customers.tierDormant": { en: "Dormant", es: "Inactivo" },
+  "customers.tierNew": { en: "New", es: "Nuevo" },
+  "customers.tierLoyal": { en: "Loyal", es: "Leal" },
+  "customers.tierVip": { en: "VIP", es: "VIP" },
+  "customers.tierAtRisk": { en: "At Risk", es: "En riesgo" },
+
+  // ── Customers page — misc labels ──────────────────────────
+  "customers.unknown": { en: "Unknown", es: "Desconocido" },
+  "customers.repeat": { en: "Repeat", es: "Recurrente" },
+  "customers.tags": { en: "Tags", es: "Etiquetas" },
+  "customers.sortPrefix": { en: "Sort: {label}", es: "Orden: {label}" },
+  "customers.ascending": { en: "Ascending", es: "Ascendente" },
+  "customers.descending": { en: "Descending", es: "Descendente" },
+  "customers.noMatchSearch": {
+    en: "No customers match your search",
+    es: "Ningun cliente coincide con tu busqueda",
+  },
+  "customers.noCustomersYet": { en: "No customers yet", es: "Aun no hay clientes" },
+  "customers.failedToLoad": {
+    en: "Failed to load customers. Please try again.",
+    es: "No se pudieron cargar los clientes. Intentalo de nuevo.",
+  },
+  "customers.namePhoneRequired": {
+    en: "Name and phone are required.",
+    es: "El nombre y telefono son obligatorios.",
+  },
+  "customers.failedToCreate": {
+    en: "Failed to create customer",
+    es: "No se pudo crear el cliente",
+  },
+
+  // ── Customers page — merge modal ──────────────────────────
+  "customers.mergeDescription": {
+    en: "Choose which customer record to keep as primary. Select which field values to preserve.",
+    es: "Elige cual registro de cliente mantener como principal. Selecciona que valores conservar.",
+  },
+  "customers.fieldName": { en: "Name", es: "Nombre" },
+  "customers.fieldPhone": { en: "Phone", es: "Telefono" },
+  "customers.fieldEmail": { en: "Email", es: "Correo" },
+  "customers.fieldAddress": { en: "Address", es: "Direccion" },
+  "customers.fieldHeader": { en: "Field", es: "Campo" },
+  "customers.customerA": { en: "Customer A", es: "Cliente A" },
+  "customers.customerB": { en: "Customer B", es: "Cliente B" },
+  "customers.primary": { en: "Primary", es: "Principal" },
+  "customers.calls": { en: "calls", es: "llamadas" },
+  "customers.appts": { en: "appts", es: "citas" },
+  "customers.failedToMerge": {
+    en: "Failed to merge customers",
+    es: "No se pudieron combinar los clientes",
+  },
+
+  // ── Customers page — CSV export headers ───────────────────
+  "customers.csvName": { en: "Name", es: "Nombre" },
+  "customers.csvPhone": { en: "Phone", es: "Telefono" },
+  "customers.csvEmail": { en: "Email", es: "Correo" },
+  "customers.csvCalls": { en: "Calls", es: "Llamadas" },
+  "customers.csvAppointments": { en: "Appointments", es: "Citas" },
+  "customers.csvLastCall": { en: "Last Call", es: "Ultima llamada" },
+  "customers.csvLeadScore": { en: "Lead Score", es: "Puntaje" },
+  "customers.csvTier": { en: "Tier", es: "Nivel" },
+  "customers.csvTags": { en: "Tags", es: "Etiquetas" },
+
+  // ── Partners page — trade labels ──────────────────────────
+  "partners.tradeHvac": { en: "HVAC", es: "HVAC" },
+  "partners.tradePlumbing": { en: "Plumbing", es: "Plomeria" },
+  "partners.tradeElectrical": { en: "Electrical", es: "Electricidad" },
+  "partners.tradeRoofing": { en: "Roofing", es: "Techos" },
+  "partners.tradeGeneralContractor": { en: "General Contracting", es: "Contratista general" },
+  "partners.tradeRestoration": { en: "Restoration", es: "Restauracion" },
+  "partners.tradeLandscaping": { en: "Landscaping", es: "Jardineria" },
+  "partners.tradePestControl": { en: "Pest Control", es: "Control de plagas" },
+  "partners.tradeGarageDoor": { en: "Garage Door", es: "Puerta de garaje" },
+  "partners.tradePainting": { en: "Painting", es: "Pintura" },
+  "partners.tradeFlooring": { en: "Flooring", es: "Pisos" },
+  "partners.tradeConcrete": { en: "Concrete", es: "Concreto" },
+  "partners.tradeFencing": { en: "Fencing", es: "Cercas" },
+  "partners.tradeWindows": { en: "Windows & Doors", es: "Ventanas y puertas" },
+  "partners.tradeInsulation": { en: "Insulation", es: "Aislamiento" },
+  "partners.tradeOther": { en: "Other", es: "Otro" },
+
+  // ── Partners page — outcome labels ────────────────────────
+  "partners.outcomePending": { en: "Pending", es: "Pendiente" },
+  "partners.outcomeConnected": { en: "Connected", es: "Conectado" },
+  "partners.outcomeNoResponse": { en: "No Response", es: "Sin respuesta" },
+  "partners.outcomeDeclined": { en: "Declined", es: "Rechazado" },
+
+  // ── Partners page — misc labels ───────────────────────────
+  "partners.unknown": { en: "Unknown", es: "Desconocido" },
+  "partners.english": { en: "English", es: "Ingles" },
+  "partners.spanish": { en: "Spanish", es: "Espanol" },
+
+  // ── Reporting page i18n ──────────────────────────────────
+  "reporting.description": {
+    en: "Call analytics and business insights",
+    es: "Analisis de llamadas e informacion del negocio",
+  },
+  "reporting.failedToLoad": {
+    en: "Failed to load reporting data. Please try again.",
+    es: "No se pudieron cargar los reportes. Intenta de nuevo.",
+  },
+  "reporting.failedToLoadToast": {
+    en: "Failed to load reporting data",
+    es: "No se pudieron cargar los reportes",
+  },
+  "reporting.unableToLoad": {
+    en: "Unable to load reporting data.",
+    es: "No se pudieron cargar los datos de reportes.",
+  },
+  "reporting.totalCalls": { en: "Total Calls", es: "Total de llamadas" },
+  "reporting.busiestHour": { en: "Busiest Hour", es: "Hora mas activa" },
+  "reporting.busiestDay": { en: "Busiest Day", es: "Dia mas activo" },
+  "reporting.recoveryRate": { en: "Recovery Rate", es: "Tasa de recuperacion" },
+  "reporting.callsByDay": {
+    en: "Calls by Day of Week",
+    es: "Llamadas por dia de la semana",
+  },
+  "reporting.dailyCallVolume": {
+    en: "Daily Call Volume",
+    es: "Volumen diario de llamadas",
+  },
+  "reporting.answered": { en: "Answered", es: "Respondidas" },
+  "reporting.missed": { en: "Missed", es: "Perdidas" },
+  "reporting.callDuration": { en: "Call Duration", es: "Duracion de llamadas" },
+  "reporting.languageBreakdown": {
+    en: "Language Breakdown",
+    es: "Desglose por idioma",
+  },
+  "reporting.english": { en: "English", es: "Ingles" },
+  "reporting.spanish": { en: "Spanish", es: "Espanol" },
+  "reporting.calls": { en: "calls", es: "llamadas" },
+  "reporting.missedCallRecovery": {
+    en: "Missed Call Recovery",
+    es: "Recuperacion de llamadas perdidas",
+  },
+  "reporting.smsSent": { en: "SMS Sent", es: "SMS enviados" },
+  "reporting.recovered": { en: "Recovered", es: "Recuperadas" },
+  "reporting.noAppointmentsYet": {
+    en: "No appointments yet",
+    es: "Aun no hay citas",
+  },
+  "reporting.noEstimatesYet": {
+    en: "No estimates yet",
+    es: "Aun no hay cotizaciones",
+  },
+  "reporting.decided": { en: "decided", es: "decididas" },
+  "reporting.total": { en: "Total", es: "Total" },
+  "reporting.new": { en: "New", es: "Nuevos" },
+  "reporting.repeat": { en: "Repeat", es: "Recurrentes" },
+  "reporting.outboundCalls": {
+    en: "Outbound Calls",
+    es: "Llamadas salientes",
+  },
+  "reporting.totalOutbound": {
+    en: "Total Outbound (30 days)",
+    es: "Total salientes (30 dias)",
+  },
+  "reporting.answerRate": { en: "Answer Rate", es: "Tasa de respuesta" },
+  "reporting.outboundByType": {
+    en: "Outbound by Type",
+    es: "Salientes por tipo",
+  },
+  "reporting.reminders": { en: "Reminders", es: "Recordatorios" },
+  "reporting.estimateFollowUps": {
+    en: "Estimate Follow-ups",
+    es: "Seguimiento de cotizaciones",
+  },
+  "reporting.seasonal": { en: "Seasonal", es: "De temporada" },
+  "reporting.csvHour": { en: "Hour", es: "Hora" },
+  "reporting.csvCalls": { en: "Calls", es: "Llamadas" },
+  "reporting.pipelineNew": { en: "New", es: "Nuevo" },
+  "reporting.pipelineSent": { en: "Sent", es: "Enviado" },
+  "reporting.pipelineFollowUp": { en: "Follow Up", es: "Seguimiento" },
+  "reporting.pipelineWon": { en: "Won", es: "Ganado" },
+  "reporting.pipelineLost": { en: "Lost", es: "Perdido" },
+
+  // ── Intelligence page i18n ───────────────────────────────
+  "intelligence.failedToLoad": {
+    en: "Failed to load intelligence data",
+    es: "No se pudieron cargar los datos de inteligencia",
+  },
+  "intelligence.excellent": { en: "Excellent", es: "Excelente" },
+  "intelligence.good": { en: "Good", es: "Buena" },
+  "intelligence.needsAttention": {
+    en: "Needs attention",
+    es: "Necesita atencion",
+  },
+  "intelligence.learningBanner": {
+    en: "has been learning for",
+    es: "lleva aprendiendo",
+  },
+  "intelligence.learningBannerDay": { en: "day", es: "dia" },
+  "intelligence.learningBannerDays": { en: "days", es: "dias" },
+  "intelligence.learningBannerSuffix": {
+    en: "— handling calls, building customer profiles, and mastering your FAQs.",
+    es: "— atendiendo llamadas, creando perfiles de clientes y dominando tus preguntas frecuentes.",
+  },
+  "intelligence.categoryFaq": { en: "FAQs", es: "Preguntas frecuentes" },
+  "intelligence.categoryOffLimits": {
+    en: "Off Limits",
+    es: "Temas prohibidos",
+  },
+  "intelligence.categoryPhrase": {
+    en: "Custom Phrases",
+    es: "Frases personalizadas",
+  },
+  "intelligence.categoryEmergency": {
+    en: "Emergency Keywords",
+    es: "Palabras de emergencia",
+  },
+  "intelligence.gapPending": { en: "pending", es: "pendiente" },
+  "intelligence.gapAnswered": { en: "answered", es: "respondido" },
+  "intelligence.gapDismissed": { en: "dismissed", es: "descartado" },
+  "intelligence.noGapsYet": {
+    en: "No knowledge gaps detected yet.",
+    es: "Aun no se detectan vacios de conocimiento.",
+  },
+  "intelligence.qaGreeting": { en: "Greeting", es: "Saludo" },
+  "intelligence.qaLanguageMatch": {
+    en: "Language Match",
+    es: "Coincidencia de idioma",
+  },
+  "intelligence.qaNeedCapture": {
+    en: "Need Capture",
+    es: "Captura de necesidad",
+  },
+  "intelligence.qaActionTaken": {
+    en: "Action Taken",
+    es: "Accion tomada",
+  },
+  "intelligence.qaAccuracy": { en: "Accuracy", es: "Precision" },
+  "intelligence.qaSentiment": { en: "Sentiment", es: "Sentimiento" },
+  "intelligence.qaWillAppear": {
+    en: "QA scores will appear after calls are analyzed.",
+    es: "Los puntajes de calidad apareceran una vez que se analicen las llamadas.",
+  },
+  "intelligence.callsSuffix": { en: "calls", es: "llamadas" },
+  "intelligence.heatmapMidnight": { en: "12AM", es: "12AM" },
+  "intelligence.heatmapNoon": { en: "12PM", es: "12PM" },
+  "intelligence.heatmapLateNight": { en: "11PM", es: "11PM" },
+
+  // ── SMS page CSV headers ─────────────────────────────────────
+  "sms.csvDate": { en: "Date", es: "Fecha" },
+  "sms.csvDirection": { en: "Direction", es: "Direccion" },
+  "sms.csvFrom": { en: "From", es: "De" },
+  "sms.csvTo": { en: "To", es: "Para" },
+  "sms.csvMessage": { en: "Message", es: "Mensaje" },
+  "sms.csvStatus": { en: "Status", es: "Estado" },
+
+  // ── Dispatch page extras ─────────────────────────────────────
+  "dispatch.jobCount": {
+    en: "{count} job today",
+    es: "{count} trabajo hoy",
+  },
+  "dispatch.jobCountPlural": {
+    en: "{count} jobs today",
+    es: "{count} trabajos hoy",
+  },
+  "dispatch.jobCountOnDate": {
+    en: "{count} job on {date}",
+    es: "{count} trabajo el {date}",
+  },
+  "dispatch.jobCountOnDatePlural": {
+    en: "{count} jobs on {date}",
+    es: "{count} trabajos el {date}",
+  },
+  "dispatch.serviceAtTime": {
+    en: "{service} at {time}",
+    es: "{service} a las {time}",
+  },
+  "dispatch.jobsCountLabel": {
+    en: "{count} jobs",
+    es: "{count} trabajos",
+  },
+  "dispatch.reassign": { en: "Reassign", es: "Reasignar" },
+  "dispatch.unassign": { en: "Unassign", es: "Desasignar" },
+
+  // ── Appointments page extras ─────────────────────────────────
+  "appointments.failedToLoad": {
+    en: "Failed to load appointments. Please try again.",
+    es: "No se pudieron cargar las citas. Intenta de nuevo.",
+  },
+  "appointments.appointmentStatus": {
+    en: "Appointment {status}",
+    es: "Cita {status}",
+  },
+  "appointments.failedToUpdate": {
+    en: "Failed to update appointment status",
+    es: "No se pudo actualizar el estado de la cita",
+  },
+  "appointments.bulkUpdated": {
+    en: "{count} appointment {status}",
+    es: "{count} cita {status}",
+  },
+  "appointments.bulkUpdatedPlural": {
+    en: "{count} appointments {status}",
+    es: "{count} citas {status}",
+  },
+  "appointments.failedBulkUpdate": {
+    en: "Failed to update appointments",
+    es: "No se pudieron actualizar las citas",
+  },
+  "appointments.csvDate": { en: "Date", es: "Fecha" },
+  "appointments.csvTime": { en: "Time", es: "Hora" },
+  "appointments.csvService": { en: "Service", es: "Servicio" },
+  "appointments.csvCustomer": { en: "Customer", es: "Cliente" },
+  "appointments.csvStatus": { en: "Status", es: "Estado" },
+  "appointments.csvNotes": { en: "Notes", es: "Notas" },
+  "appointments.calendarView": { en: "Calendar view", es: "Vista de calendario" },
+  "appointments.listView": { en: "List view", es: "Vista de lista" },
+  "appointments.emptyDescription": {
+    en: "When your AI receptionist books appointments, they'll appear here.",
+    es: "Cuando tu recepcionista AI agende citas, apareceran aqui.",
+  },
+  "appointments.customizeScheduling": {
+    en: "Customize Scheduling",
+    es: "Personalizar agenda",
+  },
+  "appointments.nSelected": {
+    en: "{count} selected",
+    es: "{count} seleccionados",
+  },
+  "appointments.clearSelection": { en: "Clear selection", es: "Limpiar seleccion" },
+  "appointments.confirmActionTitle": {
+    en: "{action} Appointment?",
+    es: "{action} cita?",
+  },
+  "appointments.cancelDescription": {
+    en: "This will cancel the appointment. The customer will be notified via SMS.",
+    es: "Esto cancelara la cita. El cliente sera notificado por SMS.",
+  },
+  "appointments.noShowDescription": {
+    en: "This will mark the appointment as a no-show.",
+    es: "Esto marcara la cita como no presentada.",
+  },
+  "appointments.bulkConfirmTitle": {
+    en: "{action} {count} Appointment?",
+    es: "{action} {count} cita?",
+  },
+  "appointments.bulkConfirmTitlePlural": {
+    en: "{action} {count} Appointments?",
+    es: "{action} {count} citas?",
+  },
+  "appointments.bulkCancelDescription": {
+    en: "This will cancel {count} appointment. Customers will be notified.",
+    es: "Esto cancelara {count} cita. Los clientes seran notificados.",
+  },
+  "appointments.bulkCancelDescriptionPlural": {
+    en: "This will cancel {count} appointments. Customers will be notified.",
+    es: "Esto cancelara {count} citas. Los clientes seran notificados.",
+  },
+  "appointments.bulkNoShowDescription": {
+    en: "This will mark {count} appointment as no-show.",
+    es: "Esto marcara {count} cita como no presentada.",
+  },
+  "appointments.bulkNoShowDescriptionPlural": {
+    en: "This will mark {count} appointments as no-show.",
+    es: "Esto marcara {count} citas como no presentadas.",
+  },
+  "appointments.bulkCompleteDescription": {
+    en: "This will mark {count} appointment as completed.",
+    es: "Esto marcara {count} cita como completada.",
+  },
+  "appointments.bulkCompleteDescriptionPlural": {
+    en: "This will mark {count} appointments as completed.",
+    es: "Esto marcara {count} citas como completadas.",
+  },
 };
 
 /**

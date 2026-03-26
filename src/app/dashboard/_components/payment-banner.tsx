@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 export default function PaymentBanner() {
+  const [lang] = useLang();
   const [status, setStatus] = useState<string | null>(null);
   const [trialEndsAt, setTrialEndsAt] = useState<string | null>(null);
 
@@ -44,17 +47,17 @@ export default function PaymentBanner() {
         </svg>
         <p className="flex-1 text-sm" style={{ color: "var(--db-accent)" }}>
           {daysLeft === 0
-            ? "Your free trial ends today."
+            ? t("billing.trialEndsToday", lang)
             : daysLeft === 1
-              ? "Your free trial ends tomorrow."
-              : `Your free trial ends in ${daysLeft} days.`}
+              ? t("billing.trialEndsTomorrow", lang)
+              : t("billing.trialEndsInDays", lang, { days: daysLeft })}
         </p>
         <a
           href="/dashboard/billing"
           className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium"
           style={{ background: "var(--db-accent-bg)", color: "var(--db-accent)", border: "1px solid var(--db-accent)" }}
         >
-          View billing
+          {t("billing.viewBilling", lang)}
         </a>
       </div>
     );
@@ -89,15 +92,15 @@ export default function PaymentBanner() {
       </svg>
       <p className="flex-1 text-sm" style={{ color: isGrace ? "var(--db-warning)" : "var(--db-danger)" }}>
         {isGrace
-          ? "Your payment is overdue. Please update your payment method to keep your service running."
-          : "Your payment has failed. Update your payment method to avoid service interruption."}
+          ? t("billing.paymentOverdueDesc", lang)
+          : t("billing.paymentFailedDesc", lang)}
       </p>
       <a
         href="/dashboard/billing"
         className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-white"
         style={{ background: isGrace ? "var(--db-warning-alt)" : "var(--db-danger)" }}
       >
-        Update Payment
+        {t("billing.updatePayment", lang)}
       </a>
     </div>
   );

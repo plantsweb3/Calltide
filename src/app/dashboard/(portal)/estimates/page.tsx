@@ -138,8 +138,8 @@ export default function EstimatesPage() {
   }
 
   function formatDate(d: string | null) {
-    if (!d) return "—";
-    return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    if (!d) return "\u2014";
+    return new Date(d).toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { month: "short", day: "numeric" });
   }
 
   function formatCurrency(n: number | null) {
@@ -171,12 +171,12 @@ export default function EstimatesPage() {
             <ExportCsvButton
               data={estimates}
               columns={[
-                { header: "Customer", accessor: (r) => r.customerName || r.customerPhone },
-                { header: "Service", accessor: (r) => r.service },
-                { header: "Amount", accessor: (r) => r.amount },
-                { header: "Status", accessor: (r) => r.status },
-                { header: "Created", accessor: (r) => r.createdAt },
-                { header: "Notes", accessor: (r) => r.notes },
+                { header: t("csv.customer", lang), accessor: (r) => r.customerName || r.customerPhone },
+                { header: t("csv.service", lang), accessor: (r) => r.service },
+                { header: t("csv.amount", lang), accessor: (r) => r.amount },
+                { header: t("csv.status", lang), accessor: (r) => r.status },
+                { header: t("csv.created", lang), accessor: (r) => r.createdAt },
+                { header: t("csv.notes", lang), accessor: (r) => r.notes },
               ]}
               filename="estimates"
             />
