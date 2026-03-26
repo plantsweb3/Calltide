@@ -99,9 +99,9 @@ const SCENARIOS_ES: Scenario[] = [
 function ScenarioCard({ scenario }: { scenario: Scenario }) {
   return (
     <SpotlightCard className="rounded-xl overflow-hidden">
-      <div className="p-6 sm:p-8" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-        <h3 className="text-lg font-bold text-white">{scenario.title}</h3>
-        <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+      <div className="p-6 sm:p-8" style={{ background: "#ffffff", border: "1px solid #e5e7eb" }}>
+        <h3 className="text-lg font-bold text-charcoal">{scenario.title}</h3>
+        <p className="mt-2 text-sm text-slate-500 leading-relaxed">
           {scenario.description}
         </p>
 
@@ -116,12 +116,12 @@ function ScenarioCard({ scenario }: { scenario: Scenario }) {
                 className="w-0.5 shrink-0 rounded-full self-stretch"
                 style={{
                   background:
-                    line.speaker === "maria" ? "#C59A27" : "rgba(255,255,255,0.15)",
+                    line.speaker === "maria" ? "#C59A27" : "#d1d5db",
                 }}
               />
               <div>
                 <span className="text-[10px] font-semibold uppercase tracking-wider" style={{
-                  color: line.speaker === "maria" ? "#C59A27" : "rgba(255,255,255,0.35)",
+                  color: line.speaker === "maria" ? "#C59A27" : "#9ca3af",
                 }}>
                   {line.speaker === "maria" ? "Maria" : "Caller"}
                 </span>
@@ -129,7 +129,7 @@ function ScenarioCard({ scenario }: { scenario: Scenario }) {
                   className="mt-0.5"
                   style={{
                     color:
-                      line.speaker === "maria" ? "#e2d5b8" : "rgba(255,255,255,0.5)",
+                      line.speaker === "maria" ? "#4a3d1f" : "#6b7280",
                   }}
                 >
                   {line.text}
