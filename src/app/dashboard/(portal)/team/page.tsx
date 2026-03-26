@@ -293,6 +293,7 @@ export default function TeamPage() {
           <span
             className="h-3 w-3 rounded-full flex-shrink-0"
             style={{ background: row.color || "#3B82F6" }}
+            aria-hidden="true"
           />
           <div>
             <p className="font-medium" style={{ color: "var(--db-text)" }}>{row.name}</p>

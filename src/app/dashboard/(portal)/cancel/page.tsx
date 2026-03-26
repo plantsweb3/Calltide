@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { CaptaSpinnerInline } from "@/components/capta-spinner";
+import Button from "@/components/ui/button";
 import { useLang } from "@/app/dashboard/_hooks/use-lang";
 import { t } from "@/lib/i18n/strings";
 
@@ -76,7 +77,7 @@ export default function CancelPage() {
       <div>
         <h1
           className="text-2xl font-semibold"
-          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+          style={{ color: "var(--db-text)" }}
         >
           {t("cancel.title", lang)}
         </h1>
@@ -106,7 +107,7 @@ export default function CancelPage() {
               }}
               className="rounded-lg px-4 py-3 text-left text-sm font-medium transition-all"
               style={{
-                background: reason === r.value ? "rgba(212,168,67,0.1)" : "var(--db-bg)",
+                background: reason === r.value ? "var(--db-accent-bg)" : "var(--db-bg)",
                 border: `2px solid ${reason === r.value ? "var(--db-accent)" : "var(--db-border)"}`,
                 color: reason === r.value ? "var(--db-accent)" : "var(--db-text)",
               }}
@@ -135,15 +136,11 @@ export default function CancelPage() {
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoverRating(star)}
               onMouseLeave={() => setHoverRating(0)}
-              className="text-3xl transition-transform hover:scale-110"
+              className="text-3xl transition-transform hover:scale-110 p-1 bg-transparent border-0 cursor-pointer"
               style={{
-                color: star <= displayRating ? "#D4A843" : "var(--db-border)",
-                cursor: "pointer",
-                background: "none",
-                border: "none",
-                padding: "4px",
+                color: star <= displayRating ? "var(--db-accent)" : "var(--db-border)",
               }}
-              aria-label={`${star} star${star > 1 ? "s" : ""}`}
+              aria-label={t(star > 1 ? "cancel.starRatingPlural" : "cancel.starRating", lang, { count: star })}
             >
               &#9733;
             </button>
@@ -187,8 +184,8 @@ export default function CancelPage() {
         <div
           className="rounded-xl p-5"
           style={{
-            background: "rgba(212,168,67,0.06)",
-            border: "2px solid rgba(212,168,67,0.25)",
+            background: "var(--db-accent-bg)",
+            border: "2px solid var(--db-accent)",
           }}
         >
           <h3
@@ -200,16 +197,9 @@ export default function CancelPage() {
           <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
             {t("cancel.recoveryOffer", lang)}
           </p>
-          <button
+          <Button
             onClick={() => handleCancel(true)}
             disabled={submitting}
-            className="rounded-lg px-5 py-2.5 text-sm font-semibold transition-all"
-            style={{
-              background: "var(--db-accent)",
-              color: "#fff",
-              cursor: submitting ? "not-allowed" : "pointer",
-              opacity: submitting ? 0.6 : 1,
-            }}
           >
             {submitting ? (
               <span className="flex items-center gap-2">
@@ -219,28 +209,26 @@ export default function CancelPage() {
             ) : (
               t("cancel.acceptOffer", lang)
             )}
-          </button>
+          </Button>
         </div>
       )}
 
       {/* Action Buttons */}
       <div className="flex flex-col gap-3 sm:flex-row-reverse">
         {/* Keep Account — primary */}
-        <button
+        <Button
           onClick={() => router.push("/dashboard/billing")}
-          className="rounded-lg px-6 py-3 text-sm font-semibold transition-all"
-          style={{
-            background: "var(--db-accent)",
-            color: "#fff",
-            flex: 1,
-          }}
+          size="lg"
+          style={{ flex: 1 }}
         >
           {t("cancel.keepSubscription", lang)}
-        </button>
+        </Button>
 
         {/* Cancel — danger, requires confirmation */}
         {!confirmCancel ? (
-          <button
+          <Button
+            variant="danger"
+            size="lg"
             onClick={() => {
               if (!reason) {
                 toast.error(t("toast.selectReasonFirst", lang));
@@ -248,28 +236,17 @@ export default function CancelPage() {
               }
               setConfirmCancel(true);
             }}
-            className="rounded-lg px-6 py-3 text-sm font-medium transition-all"
-            style={{
-              background: "var(--db-danger-bg)",
-              color: "var(--db-danger)",
-              border: "1px solid var(--db-danger)",
-              flex: 1,
-            }}
+            style={{ flex: 1 }}
           >
             {t("cancel.cancelMySubscription", lang)}
-          </button>
+          </Button>
         ) : (
-          <button
+          <Button
+            variant="danger"
+            size="lg"
             onClick={() => handleCancel(false)}
             disabled={submitting}
-            className="rounded-lg px-6 py-3 text-sm font-semibold transition-all"
-            style={{
-              background: "#dc2626",
-              color: "#fff",
-              flex: 1,
-              cursor: submitting ? "not-allowed" : "pointer",
-              opacity: submitting ? 0.6 : 1,
-            }}
+            style={{ flex: 1 }}
           >
             {submitting ? (
               <span className="flex items-center gap-2">
@@ -279,7 +256,7 @@ export default function CancelPage() {
             ) : (
               t("cancel.confirmCancel", lang)
             )}
-          </button>
+          </Button>
         )}
       </div>
 

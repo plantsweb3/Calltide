@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
+import Button from "@/components/ui/button";
 import { useLang } from "@/app/dashboard/_hooks/use-lang";
 import { t } from "@/lib/i18n/strings";
 
@@ -137,7 +138,14 @@ export default function AddLocationPage() {
       </div>
 
       {/* Progress bar */}
-      <div className="flex gap-1">
+      <div
+        className="flex gap-1"
+        role="progressbar"
+        aria-valuenow={step}
+        aria-valuemin={1}
+        aria-valuemax={5}
+        aria-label={t("location.stepOf", lang, { step })}
+      >
         {[1, 2, 3, 4, 5].map((s) => (
           <div
             key={s}
@@ -211,13 +219,9 @@ export default function AddLocationPage() {
                 placeholder={t("location.addServicePlaceholder", lang)}
                 className="db-input flex-1"
               />
-              <button
-                onClick={addService}
-                className="rounded-lg px-4 py-2 text-sm font-medium text-white"
-                style={{ background: "var(--db-accent)" }}
-              >
+              <Button onClick={addService} size="sm">
                 {t("action.add", lang)}
-              </button>
+              </Button>
             </div>
             <div className="flex flex-wrap gap-2">
               {services.map((s) => (
@@ -320,16 +324,15 @@ export default function AddLocationPage() {
 
       {/* Navigation */}
       <div className="flex justify-between">
-        <button
+        <Button
+          variant="secondary"
           onClick={() => step > 1 ? setStep(step - 1) : router.back()}
-          className="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-          style={{ background: "var(--db-hover)", color: "var(--db-text)" }}
         >
           {step === 1 ? t("action.cancel", lang) : t("action.back", lang)}
-        </button>
+        </Button>
 
         {step < 5 ? (
-          <button
+          <Button
             onClick={() => {
               if (step === 1 && !locationName.trim()) {
                 toast.error(t("toast.locationNameRequired", lang));
@@ -337,20 +340,16 @@ export default function AddLocationPage() {
               }
               setStep(step + 1);
             }}
-            className="rounded-lg px-6 py-2 text-sm font-medium text-white"
-            style={{ background: "var(--db-accent)" }}
           >
             {t("location.continue", lang)}
-          </button>
+          </Button>
         ) : (
-          <button
+          <Button
             onClick={submit}
             disabled={loading}
-            className="rounded-lg px-6 py-2 text-sm font-medium text-white disabled:opacity-50"
-            style={{ background: "var(--db-accent)" }}
           >
             {loading ? t("location.creating", lang) : t("location.createLocation", lang)}
-          </button>
+          </Button>
         )}
       </div>
     </div>

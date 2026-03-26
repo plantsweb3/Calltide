@@ -786,7 +786,7 @@ function OnboardingPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center" style={{ background: "#fff" }}>
+      <div className="flex min-h-screen items-center justify-center" style={{ background: "var(--db-bg, #fff)" }}>
         <div className="flex flex-col items-center gap-3">
           <CaptaSpinner size={32} />
         </div>
@@ -795,7 +795,7 @@ function OnboardingPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col" style={{ background: "#FBFBFC" }}>
+    <div className="flex min-h-screen flex-col" style={{ background: "var(--db-bg, #FBFBFC)" }}>
       {/* Top Bar */}
       <header className="sticky top-0 z-30 border-b border-gray-200 bg-white px-4 py-3 sm:px-6">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
@@ -821,7 +821,7 @@ function OnboardingPage() {
           <div className="flex gap-1">
             {Array.from({ length: TOTAL_STEPS }, (_, i) => (
               <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300"
-                style={{ background: i < step ? "#C59A27" : "#E5E7EB" }} />
+                style={{ background: i < step ? "var(--db-accent, #C59A27)" : "var(--db-border, #E5E7EB)" }} />
             ))}
           </div>
         </div>
@@ -943,7 +943,7 @@ function OnboardingPage() {
               {(["Maria", "Sofia", "Isabella"] as const).map((name, i) => (
                 <button key={name} onClick={() => { setReceptionistName(name); setUseCustomName(false); }}
                   className="relative flex flex-col items-center rounded-xl border-2 p-4 text-center transition-all hover:shadow-md"
-                  style={{ borderColor: !useCustomName && receptionistName === name ? "var(--db-accent)" : "#E5E7EB", background: !useCustomName && receptionistName === name ? "var(--db-accent-bg)" : "#fff" }}>
+                  style={{ borderColor: !useCustomName && receptionistName === name ? "var(--db-accent)" : "var(--db-border, #E5E7EB)", background: !useCustomName && receptionistName === name ? "var(--db-accent-bg)" : "var(--db-card, #fff)" }}>
                   <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 text-lg font-bold text-amber-600">{name[0]}</div>
                   <p className="text-sm font-semibold text-gray-900">{name}</p>
                   {i === 0 && <span className="mt-1 text-xs font-medium uppercase tracking-wider text-amber-500">{t.nameRecommended}</span>}
@@ -951,7 +951,7 @@ function OnboardingPage() {
               ))}
               <button onClick={() => { setUseCustomName(true); if (["Maria", "Sofia", "Isabella"].includes(receptionistName)) setReceptionistName(""); }}
                 className="flex flex-col items-center rounded-xl border-2 border-dashed p-4 text-center transition-all hover:shadow-md"
-                style={{ borderColor: useCustomName ? "var(--db-accent)" : "#D1D5DB", background: useCustomName ? "var(--db-accent-bg)" : "#fff" }}>
+                style={{ borderColor: useCustomName ? "var(--db-accent)" : "var(--db-border, #D1D5DB)", background: useCustomName ? "var(--db-accent-bg)" : "var(--db-card, #fff)" }}>
                 <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-lg text-gray-400">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 </div>
@@ -1002,7 +1002,7 @@ function OnboardingPage() {
               ] as const).map((p) => (
                 <button key={p.key} onClick={() => setPersonalityPreset(p.key)}
                   className="flex flex-col items-center rounded-xl border-2 p-5 text-center transition-all hover:shadow-md"
-                  style={{ borderColor: personalityPreset === p.key ? p.color : "#E5E7EB", background: personalityPreset === p.key ? `${p.color}08` : "#fff" }}>
+                  style={{ borderColor: personalityPreset === p.key ? p.color : "var(--db-border, #E5E7EB)", background: personalityPreset === p.key ? `${p.color}08` : "var(--db-card, #fff)" }}>
                   <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full" style={{ background: `${p.color}15` }}>
                     {p.icon === "briefcase" && <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={p.color} strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>}
                     {p.icon === "smile" && <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={p.color} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" /></svg>}
@@ -1188,8 +1188,8 @@ function OnboardingPage() {
                     className="rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors"
                     style={
                       digestPref === opt.value
-                        ? { background: "var(--db-warning-bg)", borderColor: "var(--db-warning)", color: "#92400e" }
-                        : { background: "#fff", borderColor: "#e5e7eb", color: "#6b7280" }
+                        ? { background: "var(--db-warning-bg)", borderColor: "var(--db-warning)", color: "var(--db-warning, #92400e)" }
+                        : { background: "var(--db-card, #fff)", borderColor: "var(--db-border, #e5e7eb)", color: "var(--db-text-muted, #6b7280)" }
                     }
                   >
                     {opt.label}
@@ -1580,7 +1580,7 @@ function OnboardingPage() {
               {t.celebrationSub}
             </p>
 
-            <div className="celebration-card mb-8 w-full max-w-sm overflow-hidden rounded-2xl shadow-xl" style={{ border: "2px solid #D4A843" }}>
+            <div className="celebration-card mb-8 w-full max-w-sm overflow-hidden rounded-2xl shadow-xl" style={{ border: "2px solid var(--db-accent, #D4A843)" }}>
               <div style={{ background: "linear-gradient(135deg, #1B2A4A, #243656)", padding: "32px 24px", textAlign: "center" }}>
                 <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full" style={{ background: "linear-gradient(135deg, #D4A843, #F0D78C)" }}>
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1B2A4A" strokeWidth="2" strokeLinecap="round">
@@ -1589,23 +1589,23 @@ function OnboardingPage() {
                   </svg>
                 </div>
                 <p className="text-2xl font-bold text-white">{rName}</p>
-                <p className="mt-1 text-sm capitalize" style={{ color: "#D4A843" }}>{personalityPreset} {lang === "es" ? "personalidad" : "personality"}</p>
+                <p className="mt-1 text-sm capitalize" style={{ color: "var(--db-accent, #D4A843)" }}>{personalityPreset} {lang === "es" ? "personalidad" : "personality"}</p>
                 {twilioNumber && <p className="mt-3 text-sm font-mono text-gray-300">{formatPhone(twilioNumber)}</p>}
                 <div className="mt-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold text-green-400" style={{ background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)" }}>
                   <div className="h-2.5 w-2.5 rounded-full bg-green-400" style={{ boxShadow: "0 0 8px rgba(16,185,129,0.6)", animation: "celebrationPulse 2s ease-in-out infinite" }} />
                   {lang === "es" ? "EN LINEA" : "LIVE"}
                 </div>
               </div>
-              <div style={{ background: "#f8f9fa", padding: "16px 24px" }}>
+              <div style={{ background: "var(--db-bg, #f8f9fa)", padding: "16px 24px" }}>
                 <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
                   <span className="flex items-center gap-1">
-                    <span style={{ color: "#10b981" }}>&#10003;</span> {lang === "es" ? "24/7" : "24/7"}
+                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "24/7" : "24/7"}
                   </span>
                   <span className="flex items-center gap-1">
-                    <span style={{ color: "#10b981" }}>&#10003;</span> {lang === "es" ? "Bilingue" : "Bilingual"}
+                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "Bilingue" : "Bilingual"}
                   </span>
                   <span className="flex items-center gap-1">
-                    <span style={{ color: "#10b981" }}>&#10003;</span> {lang === "es" ? "Agendamiento" : "Booking"}
+                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "Agendamiento" : "Booking"}
                   </span>
                 </div>
               </div>
@@ -1614,7 +1614,7 @@ function OnboardingPage() {
             <div className="celebration-actions flex flex-col gap-3 sm:flex-row">
               <button onClick={() => router.push("/dashboard")}
                 className="rounded-lg px-8 py-3 text-sm font-bold text-white transition-all hover:scale-[1.02]"
-                style={{ background: "linear-gradient(135deg, #C59A27, #D4A82E)", boxShadow: "0 4px 14px rgba(212,168,67,0.4)" }}>
+                style={{ background: "linear-gradient(135deg, var(--db-accent, #C59A27), #D4A82E)", boxShadow: "0 4px 14px rgba(212,168,67,0.4)" }}>
                 {t.goToDashboard}
               </button>
               <button onClick={() => router.push("/dashboard/settings")}

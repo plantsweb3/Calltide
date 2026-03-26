@@ -62,8 +62,8 @@ function EventIcon({ type, urgent, recovered }: { type: string; urgent?: boolean
   }
   if (type === "call_completed") {
     return (
-      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "rgba(96,165,250,0.15)" }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--db-info-bg)" }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--db-info)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72" />
         </svg>
       </div>
@@ -81,7 +81,7 @@ function EventIcon({ type, urgent, recovered }: { type: string; urgent?: boolean
   if (type === "appointment_booked") {
     return (
       <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--db-accent-bg)" }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--db-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
           <line x1="16" y1="2" x2="16" y2="6" />
           <line x1="8" y1="2" x2="8" y2="6" />
@@ -264,8 +264,8 @@ export default function ActivityFeed({
                         <span
                           className="rounded px-1.5 py-0.5 text-xs font-medium uppercase"
                           style={{
-                            background: evt.language === "es" ? "var(--db-accent-bg)" : "rgba(96,165,250,0.1)",
-                            color: evt.language === "es" ? "#C59A27" : "#60a5fa",
+                            background: evt.language === "es" ? "var(--db-accent-bg)" : "var(--db-info-bg)",
+                            color: evt.language === "es" ? "var(--db-accent)" : "var(--db-info)",
                           }}
                         >
                           {evt.language}

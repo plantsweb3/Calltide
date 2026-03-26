@@ -454,7 +454,7 @@ export default function SettingsPage() {
         <div>
           <h1
             className="text-2xl font-semibold"
-            style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+            style={{ color: "var(--db-text)" }}
           >
             {t("settings.title", lang)}
           </h1>
@@ -2011,7 +2011,7 @@ export default function SettingsPage() {
                     {range.jobTypeLabel}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs px-2 py-0.5 rounded" style={{ background: "#dbeafe", color: "#1d4ed8" }}>
+                    <span className="text-xs px-2 py-0.5 rounded" style={{ background: "var(--db-info-bg)", color: "var(--db-info)" }}>
                       {t("settings.advancedBadge", lang)}
                     </span>
                     <button
@@ -2430,11 +2430,11 @@ const CALL_TYPE_I18N_KEYS: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, string> = {
   scheduled: "#3b82f6",
-  initiated: "var(--db-warning-alt)",
+  initiated: "#f59e0b",
   completed: "#22c55e",
-  failed: "var(--db-danger)",
-  retry: "var(--db-warning-alt)",
-  consent_blocked: "var(--db-danger)",
+  failed: "#ef4444",
+  retry: "#f59e0b",
+  consent_blocked: "#ef4444",
 };
 
 const MONTH_LABELS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -2735,13 +2735,13 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                   <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
                     {t("settings.outbound.total", lang)} {stats.total}
                   </span>
-                  <span className="text-xs" style={{ color: "#22c55e" }}>
+                  <span className="text-xs" style={{ color: "var(--db-success)" }}>
                     {t("settings.outbound.answered", lang)} {stats.answered}
                   </span>
                   <span className="text-xs" style={{ color: "var(--db-warning-alt)" }}>
                     {t("settings.outbound.noAnswer", lang)} {stats.noAnswer}
                   </span>
-                  <span className="text-xs" style={{ color: "#3b82f6" }}>
+                  <span className="text-xs" style={{ color: "var(--db-info)" }}>
                     {t("settings.outbound.scheduled", lang)} {stats.scheduled}
                   </span>
                 </div>
@@ -3114,9 +3114,9 @@ function GoogleCalendarSection({ lang }: { lang: Lang }) {
               </div>
               <span
                 className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
-                style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}
+                style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
               >
-                <span className="h-1.5 w-1.5 rounded-full" style={{ background: "#22c55e" }} />
+                <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--db-success)" }} />
                 {t("settings.active", lang)}
               </span>
             </div>

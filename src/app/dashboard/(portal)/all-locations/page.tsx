@@ -95,9 +95,13 @@ export default function AllLocationsPage() {
                   <span
                     className="h-2 w-2 rounded-full shrink-0"
                     style={{ background: loc.active ? "var(--db-success)" : "var(--db-text-muted)" }}
+                    aria-hidden="true"
                   />
                   <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
                     {loc.locationName}
+                  </span>
+                  <span className="sr-only">
+                    ({loc.active ? t("team.active", lang) : t("team.inactive", lang)})
                   </span>
                 </div>
                 <div className="flex items-center gap-4 text-xs" style={{ color: "var(--db-text-muted)" }}>

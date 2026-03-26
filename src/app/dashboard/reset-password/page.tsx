@@ -133,7 +133,7 @@ function ResetPasswordForm() {
       <div>
         <h1
           className="text-2xl font-semibold"
-          style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}
+          style={{ color: "var(--db-text)" }}
         >
           {t("auth.setNewPassword", lang)}
         </h1>

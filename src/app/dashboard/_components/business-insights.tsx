@@ -133,7 +133,15 @@ export default function BusinessInsights({
             </div>
           </div>
           {/* Progress bar */}
-          <div className="mt-3 rounded-full h-2" style={{ background: "var(--db-border)" }}>
+          <div
+            className="mt-3 rounded-full h-2"
+            style={{ background: "var(--db-border)" }}
+            role="progressbar"
+            aria-valuenow={bilingualStats.percentage}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={t("insights.bilingualPercentage", lang, { percentage: bilingualStats.percentage })}
+          >
             <div
               className="h-2 rounded-full transition-all duration-1000"
               style={{

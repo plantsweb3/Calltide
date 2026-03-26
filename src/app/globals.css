@@ -26,6 +26,14 @@
   --font-body: var(--font-inter);
 }
 
+/* ── Transition Timing Tokens ── */
+:root {
+  --duration-fast: 150ms;    /* buttons, toggles, small interactions */
+  --duration-normal: 200ms;  /* modals, panels, medium transitions */
+  --duration-slow: 300ms;    /* cards, page transitions, large movements */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);  /* Apple-style deceleration */
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -115,7 +123,7 @@ select:focus-visible,
 .faq-answer {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.3s ease;
+  transition: grid-template-rows var(--duration-slow) var(--ease-out);
 }
 .faq-answer.open {
   grid-template-rows: 1fr;
@@ -134,10 +142,10 @@ select:focus-visible,
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .exit-overlay {
-  animation: fade-in 0.25s ease;
+  animation: fade-in var(--duration-normal) var(--ease-out);
 }
 .exit-card {
-  animation: slide-up 0.35s ease 0.05s both;
+  animation: slide-up var(--duration-slow) var(--ease-out) 0.05s both;
 }
 
 /* ── Gold CTA button — gradient materiality (Part 5) ── */
@@ -145,7 +153,7 @@ select:focus-visible,
   background: linear-gradient(180deg, #D6A846 0%, #C0963E 100%);
   border: 1px solid #B08535;
   color: #fff;
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) var(--ease-out);
 }
 .cta-gold:hover {
   background: linear-gradient(180deg, #C0963E 0%, #A07F31 100%);
@@ -153,7 +161,7 @@ select:focus-visible,
   box-shadow: 0 4px 16px rgba(200, 170, 110, 0.3);
 }
 .cta-gold:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
   box-shadow: 0 2px 8px rgba(200, 170, 110, 0.2);
 }
 
@@ -197,7 +205,7 @@ select:focus-visible,
 
 /* Consistent card hover (Part 11) */
 .card-hover {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow) var(--ease-out);
 }
 .card-hover:hover {
   transform: translateY(-4px);
@@ -253,7 +261,7 @@ select:focus-visible,
   border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow) var(--ease-out), border-color var(--duration-slow) var(--ease-out);
 }
 .glass-card:hover {
   border-color: rgba(212, 145, 10, 0.3);
@@ -309,7 +317,7 @@ select:focus-visible,
   backdrop-filter: blur(12px);
   border: 1px solid rgba(197, 154, 39, 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow) var(--ease-out), border-color var(--duration-slow) var(--ease-out);
 }
 .glass-card-light:hover {
   border-color: rgba(197, 154, 39, 0.3);
@@ -364,7 +372,7 @@ select:focus-visible,
 .faq-item {
   border-left: 3px solid transparent;
   padding-left: 0;
-  transition: all 0.3s ease;
+  transition: all var(--duration-slow) var(--ease-out);
 }
 .faq-item:hover {
   border-left-color: #C59A27;
@@ -378,7 +386,7 @@ select:focus-visible,
 .reveal {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
 }
 .reveal.visible {
   opacity: 1;
@@ -610,12 +618,12 @@ select:focus-visible,
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .modal-backdrop {
-  animation: modal-backdrop-in 0.2s ease-out;
+  animation: modal-backdrop-in var(--duration-normal) var(--ease-out);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
 .modal-content {
-  animation: modal-content-in 0.25s ease-out;
+  animation: modal-content-in var(--duration-normal) var(--ease-out);
 }
 
 /* Dashboard button variants */
@@ -650,7 +658,7 @@ select:focus-visible,
   border: 1px solid var(--db-border);
   border-radius: 0.5rem;
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }
 .db-input::placeholder { color: var(--db-text-muted); }
 .db-input:focus {
@@ -674,7 +682,7 @@ select:focus-visible,
   border: 1px solid var(--db-border);
   border-radius: 0.5rem;
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.625rem center;
@@ -703,7 +711,7 @@ select:focus-visible,
   font-weight: 500;
   color: var(--db-text-muted);
   border-bottom: 2px solid transparent;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -726,16 +734,16 @@ select:focus-visible,
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  animation: modal-backdrop-in 0.2s ease-out;
+  animation: modal-backdrop-in var(--duration-normal) var(--ease-out);
 }
 .db-modal-backdrop > .db-card {
-  animation: modal-content-in 0.25s ease-out;
+  animation: modal-content-in var(--duration-normal) var(--ease-out);
 }
 
 /* Dashboard table row / interactive element hover */
 .db-table-row,
 .db-hover-bg {
-  transition: background-color 0.1s ease;
+  transition: background-color var(--duration-fast) var(--ease-out);
 }
 .db-table-row:hover,
 .db-hover-bg:hover {
@@ -748,7 +756,7 @@ select:focus-visible,
   border: 1px solid var(--db-border);
   box-shadow: var(--db-card-shadow);
   border-radius: 0.75rem;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition: box-shadow var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
 }
 a.db-card:hover,
 button.db-card:hover,
@@ -952,7 +960,7 @@ button.db-card:hover,
   color: #C59A27;
   text-decoration: underline;
   text-underline-offset: 2px;
-  transition: opacity 0.15s;
+  transition: opacity var(--duration-fast);
 }
 .legal-prose a:hover { opacity: 0.75; }
 .legal-prose strong { color: #1A1D24; font-weight: 600; }
@@ -992,7 +1000,7 @@ button.db-card:hover,
 
 /* ── Pricing Card Hover Glow ── */
 .pricing-card {
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow) var(--ease-out);
 }
 .pricing-card:hover {
   border-color: rgba(212, 168, 67, 0.25);
@@ -1019,7 +1027,7 @@ button.db-card:hover,
   border: 3px solid #0f1729;
   box-shadow: 0 0 12px rgba(212,168,67,0.4);
   cursor: pointer;
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  transition: box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 .roi-slider::-webkit-slider-thumb:hover {
   box-shadow: 0 0 20px rgba(212,168,67,0.6);
@@ -1048,7 +1056,7 @@ button.db-card:hover,
   background: #d4a843;
 }
 .roi-card {
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow) var(--ease-out);
 }
 .roi-card:hover {
   border-color: rgba(212,168,67,0.2);

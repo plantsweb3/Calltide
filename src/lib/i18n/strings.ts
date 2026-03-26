@@ -2208,6 +2208,14 @@ const strings: Record<string, Record<Lang, string>> = {
     en: "We're glad you had a positive experience!",
     es: "Nos alegra que hayas tenido una buena experiencia!",
   },
+  "cancel.starRating": {
+    en: "{count} star",
+    es: "{count} estrella",
+  },
+  "cancel.starRatingPlural": {
+    en: "{count} stars",
+    es: "{count} estrellas",
+  },
   "cancel.anythingElse": {
     en: "Anything else you'd like to share?",
     es: "Algo mas que quieras compartir?",

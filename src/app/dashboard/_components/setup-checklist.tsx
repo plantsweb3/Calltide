@@ -95,6 +95,11 @@ export default function SetupChecklist({
       <div
         className="h-1.5 rounded-full mb-4"
         style={{ background: "var(--db-border)" }}
+        role="progressbar"
+        aria-valuenow={progress}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={t("checklist.progress", lang, { completed: completedCount, total: items.length })}
       >
         <div
           className="h-full rounded-full transition-all duration-500"
