@@ -153,11 +153,11 @@ export default function EsHomepage() {
             <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-tight text-charcoal sm:text-[44px] max-w-3xl mx-auto">{t.problem.h2}</h2>
           </div>
           <div className="snap-scroll-mobile reveal mt-16 grid gap-8 sm:grid-cols-2">
-            <div className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-10 text-center">
+            <div className="card-shadow card-hover rounded-2xl border border-cream-border bg-white p-10 text-center">
               <p className="gold-gradient-text text-[48px] font-extrabold">62%</p>
               <p className="mt-3 text-base leading-[1.7] text-charcoal-muted">{t.problem.stat1}</p>
             </div>
-            <div className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-10 text-center">
+            <div className="card-shadow card-hover rounded-2xl border border-cream-border bg-white p-10 text-center">
               <p className="gold-gradient-text text-[48px] font-extrabold">80%</p>
               <p className="mt-3 text-base leading-[1.7] text-charcoal-muted">
                 El 80% de las personas no dejan <span className="italic font-semibold text-amber">mensaje de voz</span> — llaman a tu competencia
@@ -244,7 +244,7 @@ export default function EsHomepage() {
             {t.social.stats.map((stat, i) => (
               <motion.div
                 key={stat.label}
-                className={`card-shadow card-hover rounded-xl border border-cream-border bg-white text-center ${i === 2 ? "p-8 sm:col-span-1" : "p-10"}`}
+                className={`card-shadow card-hover rounded-2xl border border-cream-border bg-white text-center ${i === 2 ? "p-8 sm:col-span-1" : "p-10"}`}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
@@ -260,7 +260,7 @@ export default function EsHomepage() {
           </div>
           <div className="reveal mt-12 grid gap-8 sm:grid-cols-2">
             {t.social.highlights.map((item, i) => (
-              <div key={i} className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-10">
+              <div key={i} className="card-shadow card-hover rounded-2xl border border-cream-border bg-white p-10">
                 <h3 className="text-lg font-extrabold tracking-tight text-charcoal">{item.title}</h3>
                 <p className="mt-3 text-base leading-[1.7] text-charcoal-muted">{item.text}</p>
                 <p className="mt-4 text-sm font-medium text-amber">{item.sub}</p>
@@ -287,7 +287,7 @@ export default function EsHomepage() {
             </button>
           </div>
           <div className="reveal mt-8 mx-auto max-w-lg">
-            <div className="pricing-glow ambient-edge relative rounded-xl border-2 border-[#C59A27] bg-[#1A1D0F] p-10 text-center sm:p-14">
+            <div className="pricing-glow ambient-edge relative rounded-2xl border border-[#C59A27]/30 bg-[#1A1D0F] p-10 text-center sm:p-14">
               <p className="mt-2 text-[56px] font-extrabold tracking-tight text-[#E8E9EB]">{planChoice === "annual" ? "$397" : "$497"}</p>
               <p className="text-sm text-[#A0A3A8]">{planChoice === "annual" ? "/mes — facturado anualmente a $4,764/año" : t.pricing.period}</p>
               {planChoice === "annual" && <p className="mt-2 text-sm font-semibold text-green-400">Ahorra $1,200/año</p>}
@@ -338,7 +338,7 @@ export default function EsHomepage() {
               <motion.a
                 key={card.slug}
                 href={`/es/help/${card.slug}`}
-                className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-8 block group"
+                className="card-shadow card-hover rounded-2xl border border-cream-border bg-white p-8 block group"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}

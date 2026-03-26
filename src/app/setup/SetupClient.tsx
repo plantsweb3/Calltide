@@ -1426,7 +1426,7 @@ function SetupClient() {
   if (initError) {
     return (
       <div className={s.page} style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
-        <p className={s.error} style={{ fontSize: 16 }}>{initError}</p>
+        <p className={s.error} role="alert" aria-live="assertive" style={{ fontSize: 16 }}>{initError}</p>
         <button className={s.primaryBtn} onClick={() => window.location.reload()}>
           {lang === "en" ? "Try Again" : "Intentar de Nuevo"}
         </button>
@@ -2115,14 +2115,19 @@ function SetupClient() {
             </div>
 
             {/* CTA */}
-            {errors._form && <div className={s.error} style={{ marginBottom: 12, textAlign: "center" }}>{errors._form}</div>}
+            {errors._form && <div className={s.error} role="alert" aria-live="assertive" style={{ marginBottom: 12, textAlign: "center" }}>{errors._form}</div>}
             <button
               onClick={handleCheckout}
               disabled={checkoutLoading}
               className={s.primaryBtn}
               style={{ width: "100%", fontSize: 18, padding: "16px 32px" }}
             >
-              {checkoutLoading ? t.processing : `${t.hireCta} ${receptionistName} →`}
+              {checkoutLoading ? (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "center" }}>
+                  <svg style={{ animation: "spin 1s linear infinite", height: 20, width: 20 }} viewBox="0 0 24 24" fill="none"><circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  {t.processing}
+                </span>
+              ) : `${t.hireCta} ${receptionistName} →`}
             </button>
           </div>
         )}
@@ -2139,7 +2144,12 @@ function SetupClient() {
               className={s.primaryBtn}
               style={{ flex: 1 }}
             >
-              {saving ? t.saving : t.next}
+              {saving ? (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                  <svg style={{ animation: "spin 1s linear infinite", height: 16, width: 16 }} viewBox="0 0 24 24" fill="none"><circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  {t.saving}
+                </span>
+              ) : t.next}
             </button>
           </div>
         )}
@@ -2151,7 +2161,7 @@ function SetupClient() {
         )}
 
         {errors._form && step <= 4 && (
-          <div className={s.error} style={{ marginTop: 8, textAlign: "center" }}>
+          <div className={s.error} role="alert" aria-live="assertive" style={{ marginTop: 8, textAlign: "center" }}>
             {errors._form}
             {loginUrl && (
               <>

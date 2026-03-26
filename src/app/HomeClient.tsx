@@ -155,7 +155,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
             {t.outcomeBar.items.map((item, i) => (
               <motion.div
                 key={i}
-                className="rounded-xl border border-slate-200 bg-white px-6 py-8 text-center shadow-sm"
+                className="rounded-2xl border border-slate-200 bg-white px-6 py-8 text-center shadow-sm"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
@@ -182,7 +182,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
 
           <div className="mt-16 grid gap-8 md:grid-cols-2">
             {/* Left — Answering Services */}
-            <div className="rounded-xl p-8" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            <div className="rounded-2xl p-8" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
               <h3 className="text-lg font-bold text-slate-400 mb-6">{t.differentiator.leftTitle}</h3>
               <ul className="space-y-4">
                 {t.differentiator.leftItems.map((item, i) => (
@@ -195,7 +195,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
             </div>
 
             {/* Right — Capta */}
-            <div className="rounded-xl p-8" style={{ background: "rgba(212,168,67,0.04)", border: "1px solid rgba(212,168,67,0.15)" }}>
+            <div className="rounded-2xl p-8" style={{ background: "rgba(212,168,67,0.04)", border: "1px solid rgba(212,168,67,0.15)" }}>
               <h3 className="text-lg font-bold text-white mb-6">{t.differentiator.rightTitle}</h3>
               <ul className="space-y-4">
                 {t.differentiator.rightItems.map((item, i) => (
@@ -222,7 +222,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
 
           {/* Bottom stat */}
           <div className="reveal mt-12 text-center">
-            <p className="inline-block rounded-xl px-8 py-4 text-base font-semibold text-amber" style={{ background: "rgba(212,168,67,0.08)", border: "1px solid rgba(212,168,67,0.2)" }}>
+            <p className="inline-block rounded-2xl px-8 py-4 text-base font-semibold text-amber" style={{ background: "rgba(212,168,67,0.08)", border: "1px solid rgba(212,168,67,0.2)" }}>
               {t.differentiator.bottomStat}
             </p>
           </div>
@@ -455,7 +455,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
             {t.softwareReplace.items.map((item, i) => (
               <motion.div
                 key={i}
-                className="flex items-center justify-between rounded-xl px-6 py-5"
+                className="flex items-center justify-between rounded-2xl px-6 py-5"
                 style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -468,13 +468,13 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
             ))}
 
             {/* Total (struck through) */}
-            <div className="flex items-center justify-between rounded-xl px-6 py-5 mt-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+            <div className="flex items-center justify-between rounded-2xl px-6 py-5 mt-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
               <span className="text-[15px] text-slate-500">{lang === "en" ? "Total" : "Total"}</span>
               <span className="text-lg font-bold text-slate-500 line-through">{t.softwareReplace.total}</span>
             </div>
 
             {/* Capta price */}
-            <div className="rounded-xl px-6 py-6 text-center" style={{ background: "rgba(212,168,67,0.08)", border: "1px solid rgba(212,168,67,0.2)" }}>
+            <div className="rounded-2xl px-6 py-6 text-center" style={{ background: "rgba(212,168,67,0.08)", border: "1px solid rgba(212,168,67,0.2)" }}>
               <p className="text-xl font-extrabold text-amber">{t.softwareReplace.captaPrice}</p>
             </div>
 
@@ -530,7 +530,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
           </div>
 
           <div className="reveal mt-8 mx-auto max-w-lg">
-            <div className="pricing-glow ambient-edge relative rounded-xl border-2 border-[#C59A27] bg-[#1A1D0F] p-10 text-center sm:p-14">
+            <div className="pricing-glow ambient-edge relative rounded-2xl border border-[#C59A27]/30 bg-[#1A1D0F] p-10 text-center sm:p-14">
               <p className="mt-2 text-[56px] font-extrabold tracking-tight text-[#E8E9EB]">
                 {planChoice === "annual" ? "$397" : "$497"}
               </p>
@@ -608,7 +608,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {latestPosts.map((post) => (
                 <a key={post.slug} href={`/blog/${post.slug}`} className="group">
-                  <div className="card-shadow card-hover rounded-xl border border-cream-border bg-white p-6">
+                  <div className="card-shadow card-hover rounded-2xl border border-cream-border bg-white p-6">
                     <div className="flex items-center gap-2">
                       {post.category && (
                         <span className="rounded-full bg-amber/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber">

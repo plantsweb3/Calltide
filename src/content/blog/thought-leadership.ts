@@ -61,7 +61,7 @@ Long-term (2030 and beyond), the AI receptionist becomes the operating system of
 
 The plumber in Pflugerville is not an anomaly. He is a preview.
 
-**[Get Capta  ->](https://captahq.com?utm_source=blog&utm_medium=pillar&utm_campaign=future-phone)** | Call (830) 521-7133 to hear it live.`,
+**[Start Free Trial →](https://captahq.com?utm_source=blog&utm_medium=pillar&utm_campaign=future-phone)** | Call (830) 521-7133 to hear it live.`,
   },
   { title: "El Futuro del Contestador Telefónico para Negocios de Servicios", slug: "futuro-contestador-telefonico-negocios-servicios", language: "es", category: "pillar",
     metaTitle: "El Futuro del Contestador Telefónico para Servicios | Capta",

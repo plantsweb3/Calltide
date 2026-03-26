@@ -198,19 +198,15 @@ export default function HelpWidget() {
                     <div className="flex gap-1 ml-auto">
                       <button
                         onClick={() => sendFeedback(viewing.id, true)}
-                        className="rounded px-2 py-1 text-xs transition-colors"
+                        className="db-hover-bg rounded px-2 py-1 text-xs transition-colors"
                         style={{ color: "var(--db-text-muted)" }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-border)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                       >
                         Yes
                       </button>
                       <button
                         onClick={() => sendFeedback(viewing.id, false)}
-                        className="rounded px-2 py-1 text-xs transition-colors"
+                        className="db-hover-bg rounded px-2 py-1 text-xs transition-colors"
                         style={{ color: "var(--db-text-muted)" }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-border)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                       >
                         No
                       </button>
@@ -259,10 +255,8 @@ export default function HelpWidget() {
                       <button
                         key={a.id}
                         onClick={() => viewArticle(a)}
-                        className="block w-full rounded-lg px-3 py-2.5 text-left transition-colors"
+                        className="db-hover-bg block w-full rounded-lg px-3 py-2.5 text-left transition-colors"
                         style={{ color: "var(--db-text)" }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                       >
                         <p className="text-sm font-medium">{a.title}</p>
                         {a.excerpt && (
@@ -289,10 +283,8 @@ export default function HelpWidget() {
                             <button
                               key={a.id}
                               onClick={() => viewArticle(a)}
-                              className="block w-full rounded-lg px-3 py-2.5 text-left transition-colors"
+                              className="db-hover-bg block w-full rounded-lg px-3 py-2.5 text-left transition-colors"
                               style={{ color: "var(--db-text)" }}
-                              onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-                              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                             >
                               <p className="text-sm font-medium">{a.title}</p>
                               {a.excerpt && (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useScrollReveal } from "@/lib/marketing/hooks";
 import type { Lang } from "@/lib/marketing/translations";
 
@@ -218,7 +218,7 @@ function StatCard({
 }) {
   return (
     <div
-      className="rounded-xl px-5 py-6 text-center"
+      className="rounded-2xl px-5 py-6 text-center transition-all duration-200 hover:scale-[1.02]"
       style={{
         background: highlight
           ? "rgba(212,168,67,0.08)"
@@ -315,8 +315,21 @@ export default function ROICalculatorPage() {
     }
   }, [coverage, s]);
 
+  const toggleLang = useCallback((l: Lang) => {
+    setLang(l);
+    if (typeof window !== "undefined") localStorage.setItem("capta-lang", l);
+  }, []);
+
   return (
     <>
+      {/* Language toggle */}
+      <div className="flex justify-center pt-6" style={{ background: "#0f1729" }}>
+        <div className="inline-flex rounded-full overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.15)" }}>
+          <button onClick={() => toggleLang("en")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "en" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>English</button>
+          <button onClick={() => toggleLang("es")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "es" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>Espa&ntilde;ol</button>
+        </div>
+      </div>
+
       {/* Hero */}
       <section
         className="relative px-6 sm:px-8 pt-24 pb-8 sm:pt-32 sm:pb-12"
@@ -605,7 +618,7 @@ export default function ROICalculatorPage() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="rounded-xl px-6 py-6 text-center"
+                className="rounded-2xl px-6 py-6 text-center transition-all duration-200 hover:scale-[1.02]"
                 style={{
                   background: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.08)",

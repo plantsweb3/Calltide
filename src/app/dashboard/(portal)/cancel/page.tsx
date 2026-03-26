@@ -175,12 +175,7 @@ export default function CancelPage() {
           placeholder={t("cancel.feedbackPlaceholder", lang)}
           rows={4}
           maxLength={2000}
-          className="w-full rounded-lg px-3 py-2 text-sm resize-none"
-          style={{
-            background: "var(--db-bg)",
-            border: "1px solid var(--db-border)",
-            color: "var(--db-text)",
-          }}
+          className="db-input resize-none"
         />
         <p className="mt-1 text-right text-xs" style={{ color: "var(--db-text-muted)" }}>
           {feedback.length}/2000

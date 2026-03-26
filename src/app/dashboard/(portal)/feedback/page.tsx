@@ -169,26 +169,24 @@ export default function ClientFeedbackPage() {
           )}
 
           {showForm && (
-            <form onSubmit={handleSubmit} className="db-card space-y-4 rounded-lg p-5">
+            <form onSubmit={handleSubmit} className="db-card space-y-4 rounded-xl p-5">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("feedback.type", lang)}</label>
+                  <label className="db-label">{t("feedback.type", lang)}</label>
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                    className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                    style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                    className="db-select"
                   >
                     {TYPE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{t(o.key, lang)}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("feedback.category", lang)}</label>
+                  <label className="db-label">{t("feedback.category", lang)}</label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                    style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                    className="db-select"
                   >
                     {CATEGORY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{t(o.key, lang)}</option>)}
                   </select>
@@ -196,7 +194,7 @@ export default function ClientFeedbackPage() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("feedback.titleLabel", lang)}</label>
+                <label className="db-label">{t("feedback.titleLabel", lang)}</label>
                 <input
                   type="text"
                   value={title}
@@ -205,14 +203,13 @@ export default function ClientFeedbackPage() {
                   required
                   minLength={3}
                   maxLength={200}
-                  className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                  style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                  className="db-input"
                 />
                 <p className="mt-1 text-xs text-right" style={{ color: "var(--db-text-muted)" }}>{title.length}/200</p>
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("feedback.descriptionLabel", lang)}</label>
+                <label className="db-label">{t("feedback.descriptionLabel", lang)}</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -221,8 +218,7 @@ export default function ClientFeedbackPage() {
                   minLength={10}
                   maxLength={2000}
                   rows={4}
-                  className="w-full resize-none rounded-lg px-3 py-2 text-sm outline-none"
-                  style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                  className="db-input resize-none"
                 />
                 <p className="mt-1 text-xs text-right" style={{ color: "var(--db-text-muted)" }}>{description.length}/2000</p>
               </div>
@@ -255,7 +251,7 @@ export default function ClientFeedbackPage() {
               items.map((item) => (
                 <div
                   key={item.id}
-                  className="db-card rounded-lg p-4"
+                  className="db-card rounded-xl p-4"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
@@ -430,8 +426,7 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
                       value={editText}
                       onChange={(e) => setEditText(e.target.value)}
                       rows={3}
-                      className="w-full resize-none rounded-lg px-3 py-2 text-sm outline-none"
-                      style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                      className="db-input resize-none"
                     />
                     <div className="flex gap-2">
                       <Button size="sm" onClick={() => saveEdit(review.id)}>

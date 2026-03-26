@@ -56,7 +56,7 @@ That's what Capta does. Our AI receptionist answers every call to your plumbing 
 
 Most plumbers who use Capta capture 10-20 additional jobs per month. Do the math on that.
 
-**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
+**[Start Free Trial →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -138,7 +138,7 @@ No es software de traducción. Cuando un cliente llama y dice "se me reventó un
 
 La mayoría de los plomeros que usan Capta capturan 10-20 trabajos adicionales por mes. Haz la cuenta.
 
-**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
+**[Prueba Gratis →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 
@@ -893,7 +893,7 @@ For pest control companies, your receptionist:
 
 Capta costs $497/month. Your first captured call pays for the month.
 
-**[Get Capta →](https://captahq.com)** or call (830) 521-7133.
+**[Start Free Trial →](https://captahq.com)** or call (830) 521-7133.
 
 ## FAQs
 
@@ -986,7 +986,7 @@ Capta cuesta $497/mes. Tu primera llamada capturada paga el mes completo. Y con 
 
 Piénsalo de otra manera: si pierdes 12 llamadas al día durante 4 meses de temporada alta, y el 40% se hubiera convertido en un servicio de $300, eso es $172,800 en ingresos perdidos. Capta cuesta $1,988 por esos mismos 4 meses. La decisión se toma sola.
 
-**[Obtén Capta →](https://captahq.com)** o llama al (830) 521-7133.
+**[Prueba Gratis →](https://captahq.com)** o llama al (830) 521-7133.
 
 ## Preguntas Frecuentes
 

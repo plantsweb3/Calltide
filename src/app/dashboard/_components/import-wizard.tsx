@@ -289,10 +289,8 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
           <div className="flex items-center gap-2 mb-6">
             <button
               onClick={goBack}
-              className="rounded-lg p-1.5 transition-colors"
+              className="db-hover-bg rounded-lg p-1.5 transition-colors"
               style={{ color: "var(--db-text-muted)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 12H5" /><polyline points="12 19 5 12 12 5" />
@@ -395,10 +393,8 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
           <div className="flex items-center gap-2 mb-6">
             <button
               onClick={goBack}
-              className="rounded-lg p-1.5 transition-colors"
+              className="db-hover-bg rounded-lg p-1.5 transition-colors"
               style={{ color: "var(--db-text-muted)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 12H5" /><polyline points="12 19 5 12 12 5" />

@@ -240,12 +240,10 @@ export default function ActivityFeed({
                 <Link
                   key={evt.id}
                   href={getRoute(evt.type)}
-                  className={`flex gap-3 py-3 cursor-pointer transition-colors duration-150 rounded-lg px-2 -mx-2 no-underline${evt.isRecent ? " feed-pulse" : ""}`}
+                  className={`db-hover-bg flex gap-3 py-3 cursor-pointer transition-colors duration-150 rounded-lg px-2 -mx-2 no-underline${evt.isRecent ? " feed-pulse" : ""}`}
                   style={{
                     borderTop: ci > 0 && i === 0 ? "1px solid var(--db-border-light)" : i > 0 ? "1px solid var(--db-border-light)" : "none",
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
                   <div className="flex flex-col items-center">
                     <EventIcon type={evt.type} urgent={evt.urgent} recovered={evt.recovered} />

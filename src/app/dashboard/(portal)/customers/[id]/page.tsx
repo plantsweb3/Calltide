@@ -614,7 +614,7 @@ export default function CustomerDetailPage() {
             const value = isEditing ? (editValues[field] ?? "") : (customer[field] || "");
             return (
               <div key={field}>
-                <label className="block text-xs font-medium uppercase mb-1" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label uppercase">
                   {field}
                 </label>
                 {field === "notes" ? (
@@ -627,10 +627,9 @@ export default function CustomerDetailPage() {
                     onBlur={() => {
                       if (editingField === field) saveField(field, editValues[field] || "");
                     }}
-                    className="w-full rounded-lg border px-3 py-2 text-sm"
+                    className="db-input"
                     rows={2}
                     placeholder={`Add ${field}...`}
-                    style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
                   />
                 ) : (
                   <input
@@ -643,16 +642,15 @@ export default function CustomerDetailPage() {
                     onBlur={() => {
                       if (editingField === field) saveField(field, editValues[field] || "");
                     }}
-                    className="w-full rounded-lg border px-3 py-2 text-sm"
+                    className="db-input"
                     placeholder={`Add ${field}...`}
-                    style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
                   />
                 )}
               </div>
             );
           })}
           <div>
-            <label className="block text-xs font-medium uppercase mb-1" style={{ color: "var(--db-text-muted)" }}>
+            <label className="db-label uppercase">
               Tags
             </label>
             <TagEditor tags={customer.tags || []} onChange={saveTags} />

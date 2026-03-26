@@ -213,10 +213,8 @@ export default function CampaignsPage() {
               {campaigns.map((c) => (
                 <tr
                   key={c.id}
-                  className="transition-colors"
+                  className="db-hover-bg transition-colors"
                   style={{ borderBottom: "1px solid var(--db-border-light)" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
                   <td className="px-4 py-3" style={{ color: "var(--db-text)" }}>{c.name}</td>
                   <td className="px-4 py-3 text-xs" style={{ color: "var(--db-text-muted)" }}>{c.type}</td>

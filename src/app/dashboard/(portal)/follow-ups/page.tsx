@@ -290,12 +290,8 @@ export default function FollowUpsPage() {
           <select
             value={dueDateFilter}
             onChange={(e) => setDueDateFilter(e.target.value)}
-            className="rounded-lg border px-3 py-1.5 text-xs font-medium"
-            style={{
-              background: "var(--db-surface)",
-              borderColor: "var(--db-border)",
-              color: "var(--db-text)",
-            }}
+            className="db-select text-xs font-medium"
+            style={{ width: "auto", padding: "0.375rem 2rem 0.375rem 0.75rem" }}
           >
             {DUE_DATE_FILTERS.map((f) => (
               <option key={f.value} value={f.value}>
@@ -308,12 +304,8 @@ export default function FollowUpsPage() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="rounded-lg border px-3 py-1.5 text-xs font-medium"
-            style={{
-              background: "var(--db-surface)",
-              borderColor: "var(--db-border)",
-              color: "var(--db-text)",
-            }}
+            className="db-select text-xs font-medium"
+            style={{ width: "auto", padding: "0.375rem 2rem 0.375rem 0.75rem" }}
           >
             {SORT_OPTIONS.map((s) => (
               <option key={s.value} value={s.value}>
@@ -427,8 +419,7 @@ function EditFollowUpModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop"
-      style={{ background: "rgba(0,0,0,0.5)" }}
+      className="db-modal-backdrop"
       onClick={onClose}
       onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
     >
@@ -458,52 +449,49 @@ function EditFollowUpModal({
         )}
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+            <label className="db-label">
               Title *
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2 text-sm"
-              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              className="db-input"
               autoFocus
             />
           </div>
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+            <label className="db-label">
               Description
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="w-full rounded-lg border px-3 py-2 text-sm"
-              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              className="db-input"
+              style={{ resize: "vertical" }}
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+              <label className="db-label">
                 Due Date
               </label>
               <input
                 type="datetime-local"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full rounded-lg border px-3 py-2 text-sm"
-                style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+                className="db-input"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+              <label className="db-label">
                 Priority
               </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full rounded-lg border px-3 py-2 text-sm"
-                style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+                className="db-select"
               >
                 <option value="low">Low</option>
                 <option value="normal">Normal</option>
@@ -514,7 +502,7 @@ function EditFollowUpModal({
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+              <label className="db-label">
                 Assigned To
               </label>
               <input
@@ -522,19 +510,17 @@ function EditFollowUpModal({
                 value={assignedTo}
                 onChange={(e) => setAssignedTo(e.target.value)}
                 placeholder="Technician name..."
-                className="w-full rounded-lg border px-3 py-2 text-sm"
-                style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+                className="db-input"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+              <label className="db-label">
                 Status
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full rounded-lg border px-3 py-2 text-sm"
-                style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+                className="db-select"
               >
                 <option value="pending">Pending</option>
                 <option value="in_progress">In Progress</option>

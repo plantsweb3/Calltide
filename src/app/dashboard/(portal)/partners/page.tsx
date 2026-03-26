@@ -256,23 +256,21 @@ export default function PartnersPage() {
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.businessName", lang)} *</label>
+                  <label className="db-label">{t("partners.businessName", lang)} *</label>
                   <input
                     type="text"
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     placeholder="Rodriguez Plumbing"
-                    className="w-full rounded-lg px-3 py-2 text-sm"
-                    style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                    className="db-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.trade", lang)} *</label>
+                  <label className="db-label">{t("partners.trade", lang)} *</label>
                   <select
                     value={formTrade}
                     onChange={(e) => setFormTrade(e.target.value)}
-                    className="w-full rounded-lg px-3 py-2 text-sm"
-                    style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                    className="db-select"
                   >
                     {TRADE_OPTIONS.map((t) => (
                       <option key={t} value={t}>{TRADE_LABELS[t] || t}</option>
@@ -280,45 +278,41 @@ export default function PartnersPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.phone", lang)} *</label>
+                  <label className="db-label">{t("partners.phone", lang)} *</label>
                   <input
                     type="tel"
                     value={formPhone}
                     onChange={(e) => setFormPhone(e.target.value)}
                     placeholder="(210) 555-1234"
-                    className="w-full rounded-lg px-3 py-2 text-sm"
-                    style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                    className="db-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.contactName", lang)}</label>
+                  <label className="db-label">{t("partners.contactName", lang)}</label>
                   <input
                     type="text"
                     value={formContact}
                     onChange={(e) => setFormContact(e.target.value)}
                     placeholder="Carlos Rodriguez"
-                    className="w-full rounded-lg px-3 py-2 text-sm"
-                    style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                    className="db-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.email", lang)}</label>
+                  <label className="db-label">{t("partners.email", lang)}</label>
                   <input
                     type="email"
                     value={formEmail}
                     onChange={(e) => setFormEmail(e.target.value)}
                     placeholder="carlos@example.com"
-                    className="w-full rounded-lg px-3 py-2 text-sm"
-                    style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                    className="db-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.relationship", lang)}</label>
+                  <label className="db-label">{t("partners.relationship", lang)}</label>
                   <select
                     value={formRelationship}
                     onChange={(e) => setFormRelationship(e.target.value)}
-                    className="w-full rounded-lg px-3 py-2 text-sm"
-                    style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                    className="db-select"
                   >
                     <option value="preferred">{t("partners.preferred", lang)}</option>
                     <option value="trusted">{t("partners.trusted", lang)}</option>
@@ -326,12 +320,11 @@ export default function PartnersPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.language", lang)}</label>
+                  <label className="db-label">{t("partners.language", lang)}</label>
                   <select
                     value={formLanguage}
                     onChange={(e) => setFormLanguage(e.target.value)}
-                    className="w-full rounded-lg px-3 py-2 text-sm"
-                    style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                    className="db-select"
                   >
                     <option value="en">English</option>
                     <option value="es">Spanish</option>
@@ -340,14 +333,14 @@ export default function PartnersPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("partners.notes", lang)}</label>
+                <label className="db-label">{t("partners.notes", lang)}</label>
                 <textarea
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
                   placeholder="Fast response times, specializes in commercial..."
                   rows={2}
-                  className="w-full rounded-lg px-3 py-2 text-sm"
-                  style={{ background: "var(--db-surface)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                  className="db-input"
+                  style={{ resize: "vertical" }}
                 />
               </div>
 
@@ -469,7 +462,7 @@ export default function PartnersPage() {
                   {referrals.map((r) => {
                     const outcomeStyle = OUTCOME_STYLES[r.outcome] ?? OUTCOME_STYLES.pending;
                     return (
-                      <tr key={r.id} style={{ borderTop: "1px solid var(--db-border)" }}>
+                      <tr key={r.id} className="db-table-row" style={{ borderTop: "1px solid var(--db-border)" }}>
                         <td className="px-4 py-3 tabular-nums whitespace-nowrap" style={{ color: "var(--db-text-secondary)" }}>
                           {new Date(r.createdAt).toLocaleDateString()}
                         </td>

@@ -164,7 +164,7 @@ Capta offers a 14-day free trial. Try it on your real calls for a full month. If
 
 ---
 
-Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 14-day free trial—She answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
+Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 14-day free trial—She answers every call, books appointments, and speaks your customers' language. [Start Free Trial →](https://captahq.com)
 `,
   },
 
@@ -455,7 +455,7 @@ The setup takes 5 minutes. I did it from my truck before a 7 AM job. She was ans
 
 ---
 
-Ready to make the switch? Capta offers a 14-day free trial. She answers every call, books appointments, speaks English and Spanish, and never charges you extra for a busy month. [Get Capta →](https://captahq.com)
+Ready to make the switch? Capta offers a 14-day free trial. She answers every call, books appointments, speaks English and Spanish, and never charges you extra for a busy month. [Start Free Trial →](https://captahq.com)
 `,
   },
 
@@ -741,7 +741,7 @@ The right choice depends entirely on your business. This isn't about which produ
 
 ---
 
-If Capta is the right fit, the 14-day free trial means there's no risk in trying it. Setup takes 5 minutes. She starts answering calls immediately — in English and Spanish. [Get Capta →](https://captahq.com)
+If Capta is the right fit, the 14-day free trial means there's no risk in trying it. Setup takes 5 minutes. She starts answering calls immediately — in English and Spanish. [Start Free Trial →](https://captahq.com)
 `,
   },
 
@@ -1040,7 +1040,7 @@ Capta books appointments and manages call data in its own dashboard. You can man
 
 ---
 
-Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 14-day free trial—She answers every call, books appointments, and speaks your customers' language. [Get Capta →](https://captahq.com)
+Ready to see what a contractor-built AI receptionist can do for your business? Start with Capta's 14-day free trial—She answers every call, books appointments, and speaks your customers' language. [Start Free Trial →](https://captahq.com)
 `,
   },
 

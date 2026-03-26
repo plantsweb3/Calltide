@@ -321,7 +321,7 @@ Capta gives you an AI receptionist who speaks English and Spanish, answers 24/7,
 
 No more missed calls. No more voicemail tag. No more customers calling your competitor instead.
 
-14-day free trial. [Get Capta →](https://captahq.com).
+14-day free trial. [Start Free Trial →](https://captahq.com).
 
 Or call us at (830) 521-7133 to see how it works on your business.`,
   },
@@ -450,7 +450,7 @@ If it's not right for you, get a full refund within 30 days. No questions asked.
 
 For more on how AI receptionists work for home service businesses, check out our [complete guide to AI receptionists](/blog/complete-guide-ai-receptionists-home-services). And if you're in the plumbing or HVAC space, our [guide for San Antonio plumbers](/blog/best-ai-receptionist-plumbers-san-antonio) has contractor-specific examples.
 
-### Get Capta
+### Start Your Free Trial
 
 Stop choosing between missed calls and hiring costs. Get started at [captahq.com](https://captahq.com), or call us at (830) 521-7133 to talk to our team.
 
@@ -562,7 +562,7 @@ For San Antonio specifically, the choice is clear. You need 24/7 answering, bili
 
 Stop losing calls. Stop managing overflow yourself. Let Capta handle your phones while you run your plumbing business.
 
-**[Get Capta](https://captahq.com)** — $497/month for unlimited calls, 24/7 Spanish+English service, and appointment booking. No setup fees. Questions? Call us at (830) 521-7133 or visit captahq.com today.`,
+**[Start Free Trial](https://captahq.com)** — $497/month for unlimited calls, 24/7 Spanish+English service, and appointment booking. No setup fees. Questions? Call us at (830) 521-7133 or visit captahq.com today.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -682,7 +682,7 @@ You can also read what we learned from calling 200 plumbers across Texas: ["We C
 
 Ready to stop losing calls to language barriers?
 
-**[Get Capta today.](https://captahq.com)** Set up bilingual answering in minutes. Your first week is risk-free. Start capturing the calls you've been missing.
+**[Start Free Trial today.](https://captahq.com)** Set up bilingual answering in minutes. Your first week is risk-free. Start capturing the calls you've been missing.
 
 **Phone:** (830) 521-7133
 **Website:** captahq.com`,
@@ -931,7 +931,7 @@ Prueba Capta gratis por 14 días. Mira cuántas llamadas recibiste (de verdad, c
 - Web: [captahq.com](https://captahq.com)
 - Teléfono: [(830) 521-7133](tel:+18305217133)
 
-**¿Listo para recuperar esas llamadas perdidas?** [Obtén Capta →](https://captahq.com)`,
+**¿Listo para recuperar esas llamadas perdidas?** [Prueba Gratis →](https://captahq.com)`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1054,7 +1054,7 @@ Los números hablan por sí solos. Capta te ahorra dinero, te da mejor servicio,
 - Web: [captahq.com](https://captahq.com)
 - Teléfono: [(830) 521-7133](tel:+18305217133)
 
-**¿Listo para ahorrar dinero?** [Obtén Capta →](https://captahq.com)`,
+**¿Listo para ahorrar dinero?** [Prueba Gratis →](https://captahq.com)`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1176,7 +1176,7 @@ Si no funciona en 30 días, te devolvemos tu dinero. Sin preguntas.
 - Web: [captahq.com](https://captahq.com)
 - Teléfono: [(830) 521-7133](tel:+18305217133)
 
-**San Antonio merece mejor. Obtén Capta.** [Obtén Capta →](https://captahq.com)`,
+**San Antonio merece mejor. Comienza tu prueba gratis.** [Prueba Gratis →](https://captahq.com)`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1355,7 +1355,7 @@ Si no funciona para ti, te devuelven tu dinero. Sin preguntas.
 - Web: [captahq.com](https://captahq.com)
 - Teléfono: [(830) 521-7133](tel:+18305217133)
 
-**Deja de perder clientes hispanohablantes.** [Obtén Capta →](https://captahq.com)`,
+**Deja de perder clientes hispanohablantes.** [Prueba Gratis →](https://captahq.com)`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1571,7 +1571,7 @@ Voicemail doesn't cut it. A traditional answering service is slow and expensive 
 
 She answers your phone like a real receptionist, works 24/7, speaks Spanish and English, integrates with your tools, and costs one-fifth what you'd pay for a human doing the same job.
 
-**Ready to stop missing calls?** [Get Capta and try Capta free for 14 days.](https://captahq.com)
+**Ready to stop missing calls?** [Start your free trial today.](https://captahq.com)
 
 Or call us: (830) 521-7133. Yeah, She will answer.
 
@@ -1709,7 +1709,7 @@ She speaks English and Spanish, works off-hours without burning you out, and cos
 
 Your phone is your first salesman. If it's going unanswered, you're paying that salesman a salary you can't afford to lose.
 
-Ready to capture the calls you're missing? **Get Capta**: https://captahq.com or call (830) 521-7133.
+Ready to capture the calls you're missing? **Start your free trial**: https://captahq.com or call (830) 521-7133.
 
 Your next customer is probably calling right now. Make sure someone answers.`,
   },
@@ -1874,7 +1874,7 @@ At $497 a month, she pays for herself in the first month if you're a roofer. She
 
 The only question is: how long can you afford not to answer the phone?
 
-## Get Capta on Your Side
+## Start Your Free Trial
 
 Ready to calculate your real missed call cost? [Call us](tel:+18305217133) at **(830) 521-7133** or [**get started at captahq.com**](https://captahq.com).
 
@@ -2038,9 +2038,9 @@ Capta changes that. She answers after hours. She triages emergencies. She texts 
 
 Your competitors are already getting some of those after-hours calls. The question is: Will it be you or them?
 
-**Get Capta today.** Start capturing every call—even when you're asleep.
+**Start your free trial today.** Start capturing every call—even when you're asleep.
 
-[Get Capta](https://captahq.com)
+[Start Free Trial](https://captahq.com)
 Call us: (830) 521-7133
 
 She answers. She quotes. She follows up. You do the work.`,
@@ -2267,7 +2267,7 @@ Your customers get better service. Your business gets smarter dispatch. Your pro
 
 Every night at 9 PM, the phone stops ringing in your office. But the phone calls keep coming. Homeowners searching for help. Google charging you per click. Revenue walking out the door.
 
-Capta changes that. [Get Capta set up today](https://captahq.com) and start capturing the after-hours revenue you've been sleeping through. It takes 10 minutes to get running.
+Capta changes that. [Start your free trial today](https://captahq.com) and start capturing the after-hours revenue you've been sleeping through. It takes 10 minutes to get running.
 
 **Or call us direct:** (830) 521-7133
 
@@ -2279,7 +2279,7 @@ Learn more about the math behind this in our post on [ROI: The Math on Never Mis
 
 Your business runs on relationships. Your revenue comes from showing up when customers need you. Capta makes sure you show up—even when you're asleep.
 
-**[Get Capta](https://captahq.com)** — The AI receptionist for crews who don't want to miss the next job.
+**[Start Free Trial](https://captahq.com)** — The AI receptionist for crews who don't want to miss the next job.
 
 **Questions?** Call **(830) 521-7133** or visit **captahq.com**.`,
   },
@@ -2446,7 +2446,7 @@ Prueba tu recepcionista hoy. Puedes verla en acción en unos 5 minutos.
 
 ---
 
-## Obtén Capta
+## Comienza Tu Prueba Gratis
 
 No pagues $600-$1,500 al mes por algo que no funciona bien. Capta atiende 24/7, habla español e inglés, y envía presupuestos automáticamente.
 
@@ -2602,11 +2602,11 @@ Esa es la diferencia que ella hace.
 
 ---
 
-## Obtén Capta Hoy
+## Comienza Tu Prueba Gratis
 
 No pierdas más clientes a la competencia. Ella te contesta cada llamada, toma presupuestos, agenda citas — todo en español, 24/7.
 
-**[Obtén Capta](https://captahq.com/es)** — $397/mes anual. Sin sorpresas. Sin contratos.
+**[Prueba Gratis](https://captahq.com/es)** — $397/mes anual. Sin sorpresas. Sin contratos.
 
 O llama directo: **(830) 521-7133**
 
@@ -2736,7 +2736,7 @@ La diferencia es lo que Ella te genera cada año. Solo capturando llamadas que Y
 
 No es "pensar en ello." No es "a ver si funciona." Es calcular tu número, aceptar la realidad de cuánto dinero estás perdiendo, y hacer algo al respecto.
 
-**Obtén Capta hoy.** Ella está lista para contestar tu teléfono mañana.
+**Comienza tu prueba gratis hoy.** Ella está lista para contestar tu teléfono mañana.
 
 Llámanos: **(830) 521-7133**
 
@@ -2910,7 +2910,7 @@ Si diriges una empresa HVAC en Texas — o en cualquier lugar donde hace calor y
 
 No es una promesa. Es matemática.
 
-**Obtén Capta hoy:** https://captahq.com
+**Comienza tu prueba gratis:** https://captahq.com
 
 **O llama directamente:** (830) 521-7133
 
@@ -3070,7 +3070,7 @@ Llama ahora. En español. Pregunta por una cotización. Habla con tu recepcionis
 
 Capta es $497/mes. Una inversión que se paga sola con dos o tres clientes nuevos al mes.
 
-**Obtén Capta.** Contesta en español. Crece tu negocio.
+**Comienza tu prueba gratis.** Contesta en español. Crece tu negocio.
 
 [captahq.com](https://captahq.com)`,
   },
@@ -3187,11 +3187,11 @@ Es IA hecha para contratistas. No es tecnología por tecnología. Es tecnología
 
 El próximo cliente que llame a las 9:30 PM mientras estés en la cama no será dinero perdido. Será un SMS esperándote.
 
-Obtén Capta. Actívalo en 20 minutos. Mañana por la noche, Ella está lista.
+Comienza tu prueba gratis. Actívalo en 20 minutos. Mañana por la noche, Ella está lista.
 
 No estás agregando complejidad a tu negocio. Solo estás dejando de perder dinero.
 
-**[Obtén Capta](https://captahq.com)**
+**[Prueba Gratis](https://captahq.com)**
 **O llama: (830) 521-7133**
 
 Tu primer mes es para probar. Tu segundo mes paga por todo el primer año. Tu tercer mes es crecimiento puro.

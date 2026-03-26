@@ -258,16 +258,13 @@ export default function CallsPage() {
         title={t("calls.title", lang)}
         actions={
           <div className="flex items-center gap-2">
-            <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
+            <div className="flex gap-1">
               {(["inbound", "outbound"] as const).map((tabKey) => (
                 <button
                   key={tabKey}
                   onClick={() => setTab(tabKey)}
-                  className="px-3 py-1.5 text-xs font-medium transition-colors"
-                  style={{
-                    background: tab === tabKey ? "var(--db-accent)" : "var(--db-card)",
-                    color: tab === tabKey ? "#fff" : "var(--db-text-secondary)",
-                  }}
+                  className="db-tab"
+                  data-active={tab === tabKey}
                 >
                   {tabKey === "inbound" ? t("calls.inbound", lang) : t("calls.outbound", lang)}
                 </button>
@@ -288,14 +285,7 @@ export default function CallsPage() {
                       setPage(1);
                     }, 300);
                   }}
-                  className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-200 w-full sm:w-64"
-                  style={{
-                    background: "var(--db-card)",
-                    border: "1px solid var(--db-border)",
-                    color: "var(--db-text)",
-                  }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+                  className="db-input w-full sm:w-64"
                 />
                 <ExportCsvButton
                   data={calls}
@@ -400,12 +390,8 @@ export default function CallsPage() {
             <button
               key={preset.label}
               onClick={() => { setFilterDateFrom(from); setFilterDateTo(today); setPage(1); }}
-              className="rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors"
-              style={{
-                background: active ? "var(--db-accent)" : "var(--db-card)",
-                color: active ? "#fff" : "var(--db-text-muted)",
-                border: "1px solid var(--db-border)",
-              }}
+              className="db-tab"
+              data-active={active}
             >
               {preset.label}
             </button>
@@ -419,12 +405,7 @@ export default function CallsPage() {
             type="date"
             value={filterDateFrom}
             onChange={(e) => { setFilterDateFrom(e.target.value); setPage(1); }}
-            className="rounded-lg px-2 py-1.5 text-xs outline-none"
-            style={{
-              background: "var(--db-card)",
-              border: "1px solid var(--db-border)",
-              color: "var(--db-text)",
-            }}
+            className="db-input px-2 py-1.5 text-xs"
           />
         </div>
         <div className="flex items-center gap-1.5">
@@ -435,23 +416,13 @@ export default function CallsPage() {
             type="date"
             value={filterDateTo}
             onChange={(e) => { setFilterDateTo(e.target.value); setPage(1); }}
-            className="rounded-lg px-2 py-1.5 text-xs outline-none"
-            style={{
-              background: "var(--db-card)",
-              border: "1px solid var(--db-border)",
-              color: "var(--db-text)",
-            }}
+            className="db-input px-2 py-1.5 text-xs"
           />
         </div>
         <select
           value={filterStatus}
           onChange={(e) => { setFilterStatus(e.target.value); setPage(1); }}
-          className="rounded-lg px-2 py-1.5 text-xs outline-none"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            color: "var(--db-text)",
-          }}
+          className="db-select text-xs"
         >
           <option value="">{t("calls.allStatuses", lang)}</option>
           <option value="completed">{t("status.completed", lang)}</option>
@@ -462,12 +433,7 @@ export default function CallsPage() {
         <select
           value={filterOutcome}
           onChange={(e) => { setFilterOutcome(e.target.value); setPage(1); }}
-          className="rounded-lg px-2 py-1.5 text-xs outline-none"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            color: "var(--db-text)",
-          }}
+          className="db-select text-xs"
         >
           <option value="">All Outcomes</option>
           <option value="appointment_booked">Booked Appointment</option>
@@ -479,12 +445,7 @@ export default function CallsPage() {
         <select
           value={filterLanguage}
           onChange={(e) => { setFilterLanguage(e.target.value); setPage(1); }}
-          className="rounded-lg px-2 py-1.5 text-xs outline-none"
-          style={{
-            background: "var(--db-card)",
-            border: "1px solid var(--db-border)",
-            color: "var(--db-text)",
-          }}
+          className="db-select text-xs"
         >
           <option value="">{t("calls.language", lang)}</option>
           <option value="en">{t("misc.english", lang)}</option>
@@ -500,7 +461,7 @@ export default function CallsPage() {
               setFilterDateTo("");
               setPage(1);
             }}
-            className="rounded-lg px-2 py-1.5 text-xs font-medium transition-colors"
+            className="rounded-xl px-2 py-1.5 text-xs font-medium transition-colors"
             style={{ color: "var(--db-accent)" }}
           >
             {t("action.filter", lang)}
@@ -700,7 +661,7 @@ export default function CallsPage() {
                   )}
                   {intake.answersJson && Object.keys(intake.answersJson).length > 0 && (
                     <div
-                      className="rounded-lg p-3 space-y-1.5"
+                      className="rounded-xl p-3 space-y-1.5"
                       style={{ background: "var(--db-hover)" }}
                     >
                       {Object.entries(intake.answersJson).map(([key, val]) => (

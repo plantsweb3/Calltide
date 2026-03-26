@@ -386,7 +386,7 @@ export default function BillingPage() {
       {/* Switch to Annual Confirmation */}
       {showSwitchConfirm && (
         <div
-          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="db-modal-backdrop"
           onClick={() => setShowSwitchConfirm(false)}
         >
           <div

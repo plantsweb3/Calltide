@@ -44,7 +44,7 @@ const T = {
     downloadEN: "Download Playbook (English)",
     downloadES: "Descargar en Espa\u00f1ol",
     readyCtaLabel: "Ready to stop losing calls?",
-    readyCta: "Get Capta",
+    readyCta: "Start Free Trial",
     insideLabel: "What's Inside",
     insideH: "7 Chapters. Zero Fluff.",
     insideSub: "Every chapter is a standalone strategy you can implement this week. Real numbers, real frameworks, real contractor examples.",
@@ -100,7 +100,7 @@ const T = {
     downloadEN: "Download Playbook (English)",
     downloadES: "Descargar en Espa\u00f1ol",
     readyCtaLabel: "\u00bfListo para dejar de perder llamadas?",
-    readyCta: "Obt\u00e9n Capta",
+    readyCta: "Prueba Gratis",
     insideLabel: "Que Incluye",
     insideH: "7 Capitulos. Cero Relleno.",
     insideSub: "Cada capitulo es una estrategia independiente que puedes implementar esta semana. Numeros reales, frameworks reales, ejemplos reales.",
@@ -312,7 +312,7 @@ export function PlaybookLanding() {
 
           <div className="mt-12 space-y-4">
             {s.chapters.map((ch) => (
-              <div key={ch.num} className="flex gap-5 rounded-xl border border-cream-border bg-white p-5 sm:p-6">
+              <div key={ch.num} className="flex gap-5 rounded-2xl border border-cream-border bg-white p-5 sm:p-6 transition-all duration-200 hover:shadow-md hover:scale-[1.01]">
                 <span className="shrink-0 text-[28px] font-extrabold text-amber/30">{ch.num}</span>
                 <div>
                   <h3 className="text-base font-bold text-charcoal">{ch.title}</h3>
@@ -332,7 +332,7 @@ export function PlaybookLanding() {
           </h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-2">
             {s.forYouItems.map((item) => (
-              <div key={item} className="flex items-start gap-3 rounded-lg bg-white p-4 border border-cream-border">
+              <div key={item} className="flex items-start gap-3 rounded-xl bg-white p-4 border border-cream-border transition-all duration-200 hover:shadow-sm">
                 <span className="mt-0.5 text-amber shrink-0">&#10003;</span>
                 <p className="text-sm text-charcoal">{item}</p>
               </div>

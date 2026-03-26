@@ -252,7 +252,7 @@ export default function AppointmentsPage() {
               filename="appointments"
             />
             {filter === "upcoming" && (
-              <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
+              <div className="flex rounded-xl overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
                 <button
                   onClick={() => setView("calendar")}
                   className="px-3 py-2 transition-colors"
@@ -281,24 +281,18 @@ export default function AppointmentsPage() {
                 </button>
               </div>
             )}
-            <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--db-border)" }}>
+            <div className="flex">
               <button
                 onClick={() => { setFilter("upcoming"); setView("calendar"); setSelectedIds(new Set()); }}
-                className="px-4 py-2 text-sm font-medium transition-colors"
-                style={{
-                  background: filter === "upcoming" ? "var(--db-accent)" : "var(--db-card)",
-                  color: filter === "upcoming" ? "#fff" : "var(--db-text-muted)",
-                }}
+                className="db-tab"
+                data-active={filter === "upcoming"}
               >
                 {t("appointments.upcoming", lang)}
               </button>
               <button
                 onClick={() => { setFilter("past"); setView("list"); setSelectedIds(new Set()); }}
-                className="px-4 py-2 text-sm font-medium transition-colors"
-                style={{
-                  background: filter === "past" ? "var(--db-accent)" : "var(--db-card)",
-                  color: filter === "past" ? "#fff" : "var(--db-text-muted)",
-                }}
+                className="db-tab"
+                data-active={filter === "past"}
               >
                 {t("appointments.past", lang)}
               </button>
@@ -354,7 +348,7 @@ export default function AppointmentsPage() {
           style={{
             background: "var(--db-card)",
             border: "1px solid var(--db-border)",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
           }}
         >
           <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
@@ -390,7 +384,7 @@ export default function AppointmentsPage() {
           </Button>
           <button
             onClick={() => setSelectedIds(new Set())}
-            className="p-1 rounded-lg transition-colors ml-1"
+            className="p-1 rounded-xl transition-colors ml-1"
             style={{ color: "var(--db-text-muted)" }}
             title="Clear selection"
           >
@@ -404,7 +398,7 @@ export default function AppointmentsPage() {
       {/* Appointment Detail Modal */}
       {selected && !confirmAction && !bulkConfirmAction && (
         <div
-          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="db-modal-backdrop"
           onClick={() => setSelected(null)}
         >
           <div
@@ -427,7 +421,7 @@ export default function AppointmentsPage() {
               </div>
               <button
                 onClick={() => setSelected(null)}
-                className="p-1 rounded-lg transition-colors"
+                className="p-1 rounded-xl transition-colors"
                 style={{ color: "var(--db-text-muted)" }}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -452,7 +446,7 @@ export default function AppointmentsPage() {
               {selected.notes && (
                 <div>
                   <span className="text-xs font-medium uppercase tracking-wider block mb-1" style={{ color: "var(--db-text-muted)" }}>{t("appointments.notes", lang)}</span>
-                  <p className="text-sm rounded-lg p-3" style={{ background: "var(--db-hover)", color: "var(--db-text-secondary)" }}>
+                  <p className="text-sm rounded-xl p-3" style={{ background: "var(--db-hover)", color: "var(--db-text-secondary)" }}>
                     {selected.notes}
                   </p>
                 </div>

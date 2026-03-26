@@ -98,10 +98,8 @@ export default function NotificationsPage() {
         </div>
         <button
           onClick={acknowledgeAll}
-          className="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+          className="db-hover-bg rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
           style={{ background: "var(--db-hover)", color: "var(--db-text-muted)" }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-border)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
         >
           Acknowledge All
         </button>

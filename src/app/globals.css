@@ -45,8 +45,9 @@ body {
 
 /* Focus states */
 a:focus-visible,
-button:focus-visible {
-  outline: 2px solid #C59A27;
+button:focus-visible,
+[role="tab"]:focus-visible {
+  outline: 2px solid var(--db-accent, #C59A27);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -637,6 +638,109 @@ select:focus-visible,
 .db-btn[data-variant="secondary"]:hover:not(:disabled) { background: var(--db-border); }
 .db-btn[data-variant="ghost"]:hover:not(:disabled) { background: var(--db-hover); color: var(--db-text); }
 .db-btn[data-variant="danger"]:hover:not(:disabled) { background: var(--db-danger); color: #fff; }
+
+/* Dashboard form inputs — Apple-level consistency */
+.db-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--db-text);
+  background: var(--db-surface);
+  border: 1px solid var(--db-border);
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.db-input::placeholder { color: var(--db-text-muted); }
+.db-input:focus {
+  border-color: var(--db-accent);
+  box-shadow: 0 0 0 3px var(--db-accent-bg);
+}
+.db-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Dashboard select */
+.db-select {
+  appearance: none;
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--db-text);
+  background: var(--db-surface);
+  border: 1px solid var(--db-border);
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.625rem center;
+}
+.db-select:focus {
+  border-color: var(--db-accent);
+  box-shadow: 0 0 0 3px var(--db-accent-bg);
+}
+
+/* Dashboard label */
+.db-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--db-text-secondary);
+  margin-bottom: 0.375rem;
+}
+
+/* Dashboard tabs — unified tab bar */
+.db-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--db-text-muted);
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.db-tab:hover { color: var(--db-text); }
+.db-tab[data-active="true"] {
+  color: var(--db-accent);
+  border-bottom-color: var(--db-accent);
+  font-weight: 600;
+}
+
+/* Dashboard modal backdrop */
+.db-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: modal-backdrop-in 0.2s ease-out;
+}
+.db-modal-backdrop > .db-card {
+  animation: modal-content-in 0.25s ease-out;
+}
+
+/* Dashboard table row / interactive element hover */
+.db-table-row,
+.db-hover-bg {
+  transition: background-color 0.1s ease;
+}
+.db-table-row:hover,
+.db-hover-bg:hover {
+  background: var(--db-hover);
+}
 
 /* Dashboard card with hover elevation */
 .db-card {

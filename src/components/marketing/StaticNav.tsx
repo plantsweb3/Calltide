@@ -15,8 +15,8 @@ interface StaticNavProps {
  */
 export function StaticNav({ lang, langHref }: StaticNavProps) {
   const labels = lang === "en"
-    ? { platform: "Platform", pricing: "Pricing", about: "About", help: "Help", login: "Log In", cta: "Get Capta" }
-    : { platform: "Plataforma", pricing: "Precios", about: "Nosotros", help: "Ayuda", login: "Iniciar Sesión", cta: "Obtén Capta" };
+    ? { platform: "Platform", pricing: "Pricing", about: "About", help: "Help", login: "Log In", cta: "Start Free Trial" }
+    : { platform: "Plataforma", pricing: "Precios", about: "Nosotros", help: "Ayuda", login: "Iniciar Sesión", cta: "Prueba Gratis" };
 
   return (
     <nav className="sticky top-0 z-40 border-b border-cream-border bg-cream">

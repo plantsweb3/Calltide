@@ -556,20 +556,16 @@ export default function MarketingPage() {
           {row.status === "draft" && (
             <button
               onClick={(e) => { e.stopPropagation(); approveContent(row.id); }}
-              className="rounded px-2 py-1 text-xs font-medium transition-colors"
+              className="db-hover-bg rounded px-2 py-1 text-xs font-medium transition-colors"
               style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(74,222,128,0.2)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(74,222,128,0.1)"; }}
             >
               Approve
             </button>
           )}
           <button
             onClick={(e) => { e.stopPropagation(); deleteContent(row.id); }}
-            className="rounded px-2 py-1 text-xs font-medium transition-colors"
+            className="db-hover-bg rounded px-2 py-1 text-xs font-medium transition-colors"
             style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(248,113,113,0.2)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(248,113,113,0.1)"; }}
           >
             Delete
           </button>

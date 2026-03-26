@@ -19,7 +19,7 @@ const BUSINESS_TYPES = [
 
 const content = {
   en: {
-    nav: { audit: "Free Audit", blog: "Blog", login: "Client Login", cta: "Get Capta" },
+    nav: { audit: "Free Audit", blog: "Blog", login: "Client Login", cta: "Start Free Trial" },
     hero: "Is Your Business Missing Calls?",
     heroSub: "We'll call your business right now and show you exactly what your customers experience. Free. No strings attached.",
     form: {
@@ -49,7 +49,7 @@ const content = {
     },
   },
   es: {
-    nav: { audit: "Auditoría Gratis", blog: "Blog", login: "Acceso Clientes", cta: "Obtén Capta" },
+    nav: { audit: "Auditoría Gratis", blog: "Blog", login: "Acceso Clientes", cta: "Prueba Gratis" },
     hero: "¿Su Negocio Está Perdiendo Llamadas?",
     heroSub: "Llamaremos a su negocio ahora mismo y le mostraremos exactamente lo que experimentan sus clientes. Gratis. Sin compromiso.",
     form: {

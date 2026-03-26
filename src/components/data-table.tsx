@@ -155,7 +155,7 @@ export default function DataTable<T extends { id: string }>({
             {data.map((row) => (
               <Fragment key={row.id}>
                 <tr
-                  className={`transition-colors duration-100 ${isClickable ? "cursor-pointer" : ""}`}
+                  className={`db-table-row transition-colors duration-100 ${isClickable ? "cursor-pointer" : ""}`}
                   style={{
                     borderBottom: "1px solid var(--db-border-light)",
                     background:

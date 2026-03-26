@@ -324,10 +324,8 @@ export default function AppointmentCalendar({
         <button
           onClick={() => setWeekOffset((o) => Math.max(-MAX_WEEK_OFFSET, o - 1))}
           disabled={weekOffset <= -MAX_WEEK_OFFSET}
-          className="rounded-lg px-3 py-1.5 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
+          className="db-hover-bg rounded-lg px-3 py-1.5 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
           style={{ color: "var(--db-text-secondary)", border: "1px solid var(--db-border)" }}
-          onMouseEnter={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.background = "var(--db-hover)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           Previous
@@ -349,10 +347,8 @@ export default function AppointmentCalendar({
         <button
           onClick={() => setWeekOffset((o) => Math.min(MAX_WEEK_OFFSET, o + 1))}
           disabled={weekOffset >= MAX_WEEK_OFFSET}
-          className="rounded-lg px-3 py-1.5 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
+          className="db-hover-bg rounded-lg px-3 py-1.5 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
           style={{ color: "var(--db-text-secondary)", border: "1px solid var(--db-border)" }}
-          onMouseEnter={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.background = "var(--db-hover)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
         >
           Next
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>

@@ -189,12 +189,7 @@ export default function JobCardsPage() {
               placeholder="Search jobs..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-200 w-full sm:w-52"
-              style={{
-                background: "var(--db-card)",
-                border: "1px solid var(--db-border)",
-                color: "var(--db-text)",
-              }}
+              className="db-input w-full sm:w-52"
             />
             {stats != null && (
               <div className="hidden sm:flex items-center gap-4 text-sm" style={{ color: "var(--db-text-muted)" }}>
@@ -230,7 +225,7 @@ export default function JobCardsPage() {
       </div>
 
       {error && (
-        <div role="alert" aria-live="assertive" className="p-4 mb-4 rounded-lg text-sm" style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}>
+        <div role="alert" aria-live="assertive" className="p-4 mb-4 rounded-xl text-sm" style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}>
           {error}
         </div>
       )}
@@ -290,7 +285,7 @@ export default function JobCardsPage() {
                   </div>
 
                   {/* Estimate range */}
-                  <div className="text-right shrink-0">
+                  <div className="text-right tabular-nums shrink-0">
                     {card.estimateMin != null && card.estimateMax != null ? (
                       <div className="font-semibold" style={{ color: "var(--db-text)" }}>
                         {formatCurrency(card.ownerAdjustedMin || card.estimateMin)}&ndash;{formatCurrency(card.ownerAdjustedMax || card.estimateMax)}

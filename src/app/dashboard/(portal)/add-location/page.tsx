@@ -155,7 +155,7 @@ export default function AddLocationPage() {
         {step === 1 && (
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium" style={{ color: "var(--db-text)" }}>
+              <label className="db-label">
                 {t("location.locationName", lang)}
               </label>
               <input
@@ -163,19 +163,17 @@ export default function AddLocationPage() {
                 value={locationName}
                 onChange={(e) => setLocationName(e.target.value)}
                 placeholder={t("location.locationNamePlaceholder", lang)}
-                className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
+                className="db-input"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium" style={{ color: "var(--db-text)" }}>
+              <label className="db-label">
                 {t("location.industry", lang)}
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
+                className="db-select"
               >
                 <option value="">{t("location.selectIndustry", lang)}</option>
                 {INDUSTRIES.map((t) => (
@@ -184,7 +182,7 @@ export default function AddLocationPage() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium" style={{ color: "var(--db-text)" }}>
+              <label className="db-label">
                 {t("location.serviceArea", lang)}
               </label>
               <input
@@ -192,8 +190,7 @@ export default function AddLocationPage() {
                 value={serviceArea}
                 onChange={(e) => setServiceArea(e.target.value)}
                 placeholder={t("location.serviceAreaPlaceholder", lang)}
-                className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
+                className="db-input"
               />
             </div>
           </div>
@@ -212,8 +209,7 @@ export default function AddLocationPage() {
                 onChange={(e) => setServiceInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addService())}
                 placeholder={t("location.addServicePlaceholder", lang)}
-                className="flex-1 rounded-lg px-3 py-2 text-sm outline-none"
-                style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
+                className="db-input flex-1"
               />
               <button
                 onClick={addService}
@@ -254,16 +250,14 @@ export default function AddLocationPage() {
                   type="time"
                   value={hours[day]?.open === "closed" ? "" : hours[day]?.open ?? ""}
                   onChange={(e) => updateHour(day, "open", e.target.value || "closed")}
-                  className="rounded-lg px-2 py-1.5 text-xs outline-none"
-                  style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
+                  className="db-input px-2 py-1.5 text-xs"
                 />
                 <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>to</span>
                 <input
                   type="time"
                   value={hours[day]?.close === "closed" ? "" : hours[day]?.close ?? ""}
                   onChange={(e) => updateHour(day, "close", e.target.value || "closed")}
-                  className="rounded-lg px-2 py-1.5 text-xs outline-none"
-                  style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
+                  className="db-input px-2 py-1.5 text-xs"
                 />
                 <button
                   onClick={() => setHours((prev) => ({ ...prev, [day]: { open: "closed", close: "closed" } }))}
@@ -288,8 +282,7 @@ export default function AddLocationPage() {
               onChange={(e) => setGreeting(e.target.value)}
               placeholder={`e.g., Thank you for calling Joe's Plumbing San Antonio! This is ${receptionistName}, how can I help you today?`}
               rows={4}
-              className="w-full rounded-lg px-3 py-2 text-sm outline-none resize-none"
-              style={{ border: "1px solid var(--db-border)", background: "var(--db-surface)", color: "var(--db-text)" }}
+              className="db-input resize-none"
             />
           </div>
         )}

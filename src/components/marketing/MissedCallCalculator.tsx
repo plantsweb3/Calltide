@@ -115,7 +115,7 @@ export function MissedCallCalculator({ lang }: Props) {
     thanks: "Check your inbox",
     thanksSub: "The Blue Collar Growth Playbook is on the way.",
     orGetStarted: "Ready to stop losing calls?",
-    cta: "Get Capta",
+    cta: "Start Free Trial",
   };
 
   return (

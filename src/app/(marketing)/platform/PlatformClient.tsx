@@ -122,7 +122,7 @@ const T = {
     ctaH2: "Everything included. One plan. $497/month.",
     ctaSub: "No tiers, no upsells. Everything on this page is included.",
     ctaPricing: "See Pricing",
-    ctaGet: "Get Capta",
+    ctaGet: "Start Free Trial",
     ctaCall: "Or call us:",
     screenshot: "Platform screenshot",
     categories: [
@@ -210,7 +210,7 @@ const T = {
     ctaH2: "Todo incluido. Un plan. $497/mes.",
     ctaSub: "Sin niveles, sin ventas adicionales. Todo en esta página está incluido.",
     ctaPricing: "Ver Precios",
-    ctaGet: "Obtén Capta",
+    ctaGet: "Prueba Gratis",
     ctaCall: "O llámanos:",
     screenshot: "Captura de la plataforma",
     categories: [
@@ -308,6 +308,14 @@ export default function PlatformClient() {
 
   return (
     <>
+      {/* Language toggle */}
+      <div className="flex justify-center pt-6" style={{ background: "#0f1729" }}>
+        <div className="inline-flex rounded-full overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.15)" }}>
+          <button onClick={() => toggleLang("en")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "en" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>English</button>
+          <button onClick={() => toggleLang("es")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "es" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>Espa&ntilde;ol</button>
+        </div>
+      </div>
+
       {/* Hero */}
       <section className="relative px-6 sm:px-8 pt-24 pb-12 sm:pt-32 sm:pb-16" style={{ background: "#0f1729" }}>
         <div className="relative z-10 mx-auto max-w-3xl text-center">
@@ -354,7 +362,7 @@ export default function PlatformClient() {
               return (
                 <div
                   key={`${activeTab}-${i}`}
-                  className="rounded-xl p-8"
+                  className="rounded-2xl p-8 transition-all duration-200 hover:scale-[1.02]"
                   style={{
                     background: "rgba(255,255,255,0.04)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -394,7 +402,7 @@ export default function PlatformClient() {
             {t.trades.map((ex) => (
               <div
                 key={ex.trade}
-                className="rounded-2xl p-8"
+                className="rounded-2xl p-8 transition-all duration-200 hover:scale-[1.02]"
                 style={{
                   background: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.08)",

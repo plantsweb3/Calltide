@@ -27,8 +27,8 @@ const content = {
     missionP: "Every home service business deserves a professional front office. Not just the ones who can afford a receptionist, a CRM, an estimating tool, and a follow-up system. Capta gives every contractor an AI front office that answers calls, generates estimates, recovers missed calls, follows up on quotes, re-engages past customers, and grows their business on autopilot.",
     ctaH: "Ready to stop missing calls?",
     ctaSub: "Get your AI receptionist up and running in 5 minutes.",
-    ctaButton: "Get Capta",
-    ctaBook: "Get Capta",
+    ctaButton: "Start Free Trial",
+    ctaBook: "Start Free Trial",
   },
   es: {
     badge: "Acerca de Capta",
@@ -52,8 +52,8 @@ const content = {
     missionP: "Cada negocio de servicio del hogar merece una oficina profesional. No solo los que pueden pagar una recepcionista, un CRM, una herramienta de presupuestos y un sistema de seguimiento. Capta le da a cada contratista una oficina IA que contesta llamadas, genera presupuestos, recupera llamadas perdidas, da seguimiento a cotizaciones, reactiva clientes anteriores y hace crecer su negocio en piloto autom\u00E1tico.",
     ctaH: "¿Listo para dejar de perder llamadas?",
     ctaSub: "Pon tu recepcionista IA a funcionar en 5 minutos.",
-    ctaButton: "Obtén Capta",
-    ctaBook: "Obtén Capta",
+    ctaButton: "Prueba Gratis",
+    ctaBook: "Prueba Gratis",
   },
 };
 
@@ -120,7 +120,7 @@ export default function AboutPage() {
             {c.stats.map((s) => (
               <div
                 key={s.label}
-                className="rounded-2xl p-6 text-center"
+                className="rounded-2xl p-6 text-center transition-all duration-200 hover:scale-[1.02]"
                 style={{
                   background: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.08)",

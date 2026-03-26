@@ -177,12 +177,10 @@ export default function DSARPage() {
                 <button
                   key={r.id}
                   onClick={() => fetchDetail(r.id)}
-                  className="w-full flex items-center gap-4 px-5 py-4 text-left transition-colors"
+                  className="db-hover-bg w-full flex items-center gap-4 px-5 py-4 text-left transition-colors"
                   style={{
                     background: selectedId === r.id ? "var(--db-hover)" : "transparent",
                   }}
-                  onMouseEnter={(e) => { if (selectedId !== r.id) e.currentTarget.style.background = "var(--db-hover)"; }}
-                  onMouseLeave={(e) => { if (selectedId !== r.id) e.currentTarget.style.background = "transparent"; }}
                 >
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate" style={{ color: "var(--db-text)" }}>

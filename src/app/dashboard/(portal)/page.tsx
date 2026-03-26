@@ -713,14 +713,10 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
           <Link
             key={card.key}
             href={card.href}
-            className="rounded-xl p-4 transition-all duration-200"
+            className="db-card rounded-xl p-4 db-table-row"
             style={{
-              background: "var(--db-card)",
-              border: "1px solid var(--db-border)",
               borderLeft: `3px solid ${card.priority === "urgent" ? "var(--db-danger)" : "var(--db-warning)"}`,
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--db-card)"; }}
           >
             <div className="flex items-center gap-3">
               <div

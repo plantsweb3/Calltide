@@ -166,12 +166,7 @@ export default function EstimatesPage() {
               placeholder={t("estimates.searchPlaceholder", lang)}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="rounded-lg px-4 py-2 text-sm outline-none transition-all duration-200 w-full sm:w-52"
-              style={{
-                background: "var(--db-card)",
-                border: "1px solid var(--db-border)",
-                color: "var(--db-text)",
-              }}
+              className="db-input w-full sm:w-52"
             />
             <ExportCsvButton
               data={estimates}
@@ -339,8 +334,7 @@ export default function EstimatesPage() {
       {/* Follow-Up Confirmation */}
       {confirmFollowUpId && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop"
-          style={{ background: "rgba(0,0,0,0.5)" }}
+          className="db-modal-backdrop"
           onClick={() => setConfirmFollowUpId(null)}
           onKeyDown={(e) => { if (e.key === "Escape") setConfirmFollowUpId(null); }}
         >
@@ -365,8 +359,7 @@ export default function EstimatesPage() {
       {/* Won Modal */}
       {showWonModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop"
-          style={{ background: "rgba(0,0,0,0.5)" }}
+          className="db-modal-backdrop"
           onClick={() => setShowWonModal(null)}
           onKeyDown={(e) => { if (e.key === "Escape") setShowWonModal(null); }}
         >
@@ -379,14 +372,13 @@ export default function EstimatesPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="won-dialog-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>{t("estimates.markAsWon", lang)}</h3>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("estimates.finalAmount", lang)}</label>
+            <label className="db-label">{t("estimates.finalAmount", lang)}</label>
             <input
               type="number"
               min="0"
               value={wonAmount}
               onChange={(e) => setWonAmount(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2 text-sm mb-4"
-              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              className="db-input mb-4"
               autoFocus
             />
             <div className="flex gap-2">
@@ -409,8 +401,7 @@ export default function EstimatesPage() {
       {/* Lost Modal */}
       {showLostModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop"
-          style={{ background: "rgba(0,0,0,0.5)" }}
+          className="db-modal-backdrop"
           onClick={() => setShowLostModal(null)}
           onKeyDown={(e) => { if (e.key === "Escape") setShowLostModal(null); }}
         >
@@ -423,12 +414,11 @@ export default function EstimatesPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="lost-dialog-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>{t("estimates.markAsLost", lang)}</h3>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("estimates.reason", lang)}</label>
+            <label className="db-label">{t("estimates.reason", lang)}</label>
             <select
               value={lostReason}
               onChange={(e) => setLostReason(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2 text-sm mb-4"
-              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              className="db-select mb-4"
               autoFocus
             >
               {LOST_REASONS.map((r) => (

@@ -133,10 +133,8 @@ export default function LocationSwitcher() {
             <Link
               href="/dashboard/all-locations"
               onClick={() => setOpen(false)}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors"
+              className="db-hover-bg flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors"
               style={{ color: "var(--db-text-secondary)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
             >
               <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="7" height="7" />
@@ -155,17 +153,11 @@ export default function LocationSwitcher() {
                 key={loc.id}
                 onClick={() => switchTo(loc.id)}
                 disabled={switching || isActive}
-                className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors"
+                className="db-hover-bg flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors"
                 style={{
                   color: isActive ? "var(--db-accent)" : "var(--db-text-secondary)",
                   background: isActive ? "var(--db-hover)" : "transparent",
                   fontWeight: isActive ? 600 : 400,
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) e.currentTarget.style.background = "var(--db-hover)";
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) e.currentTarget.style.background = "transparent";
                 }}
               >
                 <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ background: loc.active ? "var(--db-success)" : "var(--db-text-muted)" }} />
@@ -184,14 +176,8 @@ export default function LocationSwitcher() {
           <Link
             href="/dashboard/add-location"
             onClick={() => setOpen(false)}
-            className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors"
+            className="db-hover-bg flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors"
             style={{ color: "var(--db-accent)" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--db-hover)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-            }}
           >
             <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round">
               <line x1="12" y1="5" x2="12" y2="19" />

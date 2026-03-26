@@ -236,10 +236,8 @@ export default function DispatchPage() {
       >
         <button
           onClick={() => navigateDate(-1)}
-          className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+          className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium db-hover-bg"
           style={{ color: "var(--db-text-muted)" }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
@@ -264,10 +262,8 @@ export default function DispatchPage() {
 
         <button
           onClick={() => navigateDate(1)}
-          className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+          className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium db-hover-bg"
           style={{ color: "var(--db-text-muted)" }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
         >
           {t("dispatch.next", lang)}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -558,10 +554,8 @@ export default function DispatchPage() {
                   key={tech.id}
                   onClick={() => handleAssign(assignAppt.id, tech.id)}
                   disabled={assignLoading}
-                  className="flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-left transition-colors"
+                  className="flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-left db-hover-bg"
                   style={{ border: "1px solid var(--db-border)" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-hover)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
                   <span
                     className="h-2.5 w-2.5 rounded-full flex-shrink-0"
@@ -795,7 +789,7 @@ function AppointmentCard({
   const [lang] = useLang();
   return (
     <div
-      className="rounded-lg p-3 transition-all"
+      className="rounded-lg p-3 transition-all db-hover-bg"
       style={{
         background: "var(--db-surface, var(--db-bg))",
         borderLeft: `3px solid ${borderColor}`,
@@ -807,8 +801,6 @@ function AppointmentCard({
       <div
         className="cursor-pointer"
         onClick={onClick}
-        onMouseEnter={(e) => { e.currentTarget.parentElement!.style.background = "var(--db-hover)"; }}
-        onMouseLeave={(e) => { e.currentTarget.parentElement!.style.background = "var(--db-surface, var(--db-bg))"; }}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick?.(); } }}
@@ -918,9 +910,7 @@ function AppointmentCard({
                 <button
                   key={tech.id}
                   onClick={() => onReassign(tech.id)}
-                  className="flex items-center gap-2 w-full rounded px-2 py-1.5 text-left text-xs transition-colors"
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--db-surface, var(--db-bg))"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                  className="flex items-center gap-2 w-full rounded px-2 py-1.5 text-left text-xs db-hover-bg"
                 >
                   <span className="h-2.5 w-2.5 rounded-full flex-shrink-0" style={{ background: color }} />
                   <span className="font-medium" style={{ color: "var(--db-text)" }}>{tech.name}</span>

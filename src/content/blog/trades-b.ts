@@ -121,7 +121,7 @@ Storm season is the only time in your business when six figures of revenue can a
 
 She answers every call from the first ring of the first storm to the last callback of the season. For $497 a month, you stop gambling with the most valuable calls your business will ever receive.
 
-**[Get Capta -->](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=roofers)**`,
+**[Start Free Trial →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=roofers)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -219,7 +219,7 @@ La temporada de tormentas es el unico momento en tu negocio donde seis cifras de
 
 Ella contesta cada llamada desde el primer timbrazo de la primera tormenta hasta la ultima devolucion de la temporada. Por $497 al mes, dejas de apostar con las llamadas mas valiosas que tu negocio va a recibir en todo el ano.
 
-**[Obtener Capta -->](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=techadores)**`,
+**[Prueba Gratis →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=techadores)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -339,7 +339,7 @@ Your AI receptionist makes sure that never happens again. She answers every call
 
 For a painting business, the AI receptionist is not about answering phones. It is about managing the pipeline that turns phone calls into revenue. She does both.
 
-**[Get Capta -->](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=painters)**`,
+**[Start Free Trial →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=painters)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -439,7 +439,7 @@ Ella se asegura de que eso no vuelva a pasar. Contesta cada llamada, agenda cada
 
 Para un negocio de pintura, la recepcionista AI no se trata de contestar telefonos. Se trata de administrar el pipeline que convierte llamadas en ingresos. Ella hace las dos cosas.
 
-**[Obtener Capta -->](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=pintores)**`,
+**[Prueba Gratis →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=pintores)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -543,7 +543,7 @@ She does not replace you. She gives you the operational backbone that lets you d
 
 For $497 a month, your phone stops being a liability and starts being a system.
 
-**[Get Capta -->](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=general-contractors)**`,
+**[Start Free Trial →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=general-contractors)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -642,7 +642,7 @@ Ella no te reemplaza. Te da la columna vertebral operacional que te permite hace
 
 Por $497 al mes, tu telefono deja de ser un problema y se convierte en un sistema.
 
-**[Obtener Capta -->](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=contratistas-generales)**`,
+**[Prueba Gratis →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=contratistas-generales)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -787,7 +787,7 @@ She does not care if it is January or June. She answers every call, books every 
 
 For $497 a month, you get phone capacity that scales with your biology-driven, weather-dependent, wildly unpredictable business. That is what flat-rate AI coverage was built for.
 
-**[Get Capta -->](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=pest-control)**`,
+**[Start Free Trial →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=pest-control)**`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -902,7 +902,7 @@ A Ella no le importa si es enero o junio. Contesta cada llamada, agenda cada cit
 
 Por $497 al mes, obtienes capacidad telefonica que escala con tu negocio impulsado por biologia, dependiente del clima y salvajemente impredecible. Para eso fue construida la cobertura AI de tarifa plana.
 
-**[Obtener Capta -->](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=control-plagas)**`,
+**[Prueba Gratis →](https://captahq.com/setup?utm_source=blog&utm_medium=article&utm_campaign=control-plagas)**`,
   },
 ];
 

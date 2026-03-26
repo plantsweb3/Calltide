@@ -146,7 +146,7 @@ export default function ReportingPage() {
                     }}
                   />
                 </div>
-                <span className="w-6 text-right text-xs font-semibold flex-shrink-0" style={{ color: "var(--db-text)" }}>
+                <span className="w-6 text-right text-xs font-semibold tabular-nums flex-shrink-0" style={{ color: "var(--db-text)" }}>
                   {h.total}
                 </span>
               </div>
@@ -171,7 +171,7 @@ export default function ReportingPage() {
                       }}
                     />
                   </div>
-                  <span className="w-8 text-right text-xs font-semibold" style={{ color: "var(--db-text)" }}>{d.total}</span>
+                  <span className="w-8 text-right text-xs font-semibold tabular-nums" style={{ color: "var(--db-text)" }}>{d.total}</span>
                 </div>
               );
             })}
@@ -261,7 +261,7 @@ export default function ReportingPage() {
                     }}
                   />
                 </div>
-                <span className="w-8 text-right text-xs font-medium" style={{ color: "var(--db-text)" }}>{b.total}</span>
+                <span className="w-8 text-right text-xs font-medium tabular-nums" style={{ color: "var(--db-text)" }}>{b.total}</span>
               </div>
             ))}
           </div>
@@ -302,7 +302,7 @@ export default function ReportingPage() {
         <Card title="Missed Call Recovery">
           <div className="space-y-4 py-2">
             <div className="text-center">
-              <p className="text-3xl font-bold" style={{ color: "var(--db-accent)" }}>{data.recoveryStats.rate}%</p>
+              <p className="text-3xl font-bold tabular-nums" style={{ color: "var(--db-accent)" }}>{data.recoveryStats.rate}%</p>
               <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>Recovery Rate</p>
             </div>
             <div className="grid grid-cols-3 gap-2">
@@ -336,7 +336,7 @@ export default function ReportingPage() {
                       />
                     </div>
                   </div>
-                  <span className="w-6 text-right text-xs font-semibold flex-shrink-0" style={{ color: "var(--db-text)" }}>{s.total}</span>
+                  <span className="w-6 text-right text-xs font-semibold tabular-nums flex-shrink-0" style={{ color: "var(--db-text)" }}>{s.total}</span>
                 </div>
               ))}
             </div>
@@ -351,7 +351,7 @@ export default function ReportingPage() {
             <div className="space-y-3">
               {data.closeRate != null && (
                 <div className="rounded-lg p-3 mb-2 text-center" style={{ background: "var(--db-hover)" }}>
-                  <p className="text-2xl font-bold" style={{ color: data.closeRate >= 50 ? "var(--db-success)" : "var(--db-text)" }}>{data.closeRate}%</p>
+                  <p className="text-2xl font-bold tabular-nums" style={{ color: data.closeRate >= 50 ? "var(--db-success)" : "var(--db-text)" }}>{data.closeRate}%</p>
                   <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
                     Close Rate ({data.estimatePipeline.find(e => e.status === "won")?.total ?? 0}/{(data.estimatePipeline.find(e => e.status === "won")?.total ?? 0) + (data.estimatePipeline.find(e => e.status === "lost")?.total ?? 0)} decided)
                   </p>
@@ -361,8 +361,8 @@ export default function ReportingPage() {
                 <div key={e.status} className="flex items-center gap-3">
                   <span className="h-3 w-3 rounded-full flex-shrink-0" style={{ background: pipelineColors[e.status] ?? "var(--db-border)" }} />
                   <span className="flex-1 text-sm" style={{ color: "var(--db-text)" }}>{pipelineLabels[e.status] ?? e.status}</span>
-                  <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{e.total}</span>
-                  <span className="text-xs font-semibold" style={{ color: "var(--db-text)" }}>${e.value.toLocaleString()}</span>
+                  <span className="text-xs font-medium tabular-nums" style={{ color: "var(--db-text-muted)" }}>{e.total}</span>
+                  <span className="text-xs font-semibold text-right tabular-nums" style={{ color: "var(--db-text)" }}>${e.value.toLocaleString()}</span>
                 </div>
               ))}
             </div>
@@ -392,7 +392,7 @@ export default function ReportingPage() {
                 )}
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>{data.callerStats.total}</span>
+                <span className="text-2xl font-bold tabular-nums" style={{ color: "var(--db-text)" }}>{data.callerStats.total}</span>
                 <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>Total</span>
               </div>
             </div>
@@ -416,7 +416,7 @@ export default function ReportingPage() {
           <Card title="Outbound Calls">
             <div className="space-y-4 py-2">
               <div className="text-center">
-                <p className="text-3xl font-bold" style={{ color: "var(--db-accent)" }}>{data.outboundSummary.total}</p>
+                <p className="text-3xl font-bold tabular-nums" style={{ color: "var(--db-accent)" }}>{data.outboundSummary.total}</p>
                 <p className="mt-1 text-xs" style={{ color: "var(--db-text-muted)" }}>Total Outbound (30 days)</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -438,10 +438,10 @@ export default function ReportingPage() {
                     <span className="flex-1 text-sm" style={{ color: "var(--db-text)" }}>
                       {typeLabels[t.callType] ?? t.callType.replace(/_/g, " ")}
                     </span>
-                    <span className="text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>
+                    <span className="text-xs font-medium tabular-nums" style={{ color: "var(--db-text-muted)" }}>
                       {t.answered}/{t.total}
                     </span>
-                    <span className="text-xs font-semibold" style={{ color: t.total > 0 ? "var(--db-success)" : "var(--db-text)" }}>
+                    <span className="text-xs font-semibold tabular-nums" style={{ color: t.total > 0 ? "var(--db-success)" : "var(--db-text)" }}>
                       {t.total > 0 ? Math.round((t.answered / t.total) * 100) : 0}%
                     </span>
                   </div>
@@ -467,7 +467,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 function StatMini({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-lg p-2.5 text-center" style={{ background: "var(--db-hover)" }}>
-      <p className="text-lg font-bold" style={{ color: "var(--db-text)" }}>{value}</p>
+      <p className="text-lg font-bold tabular-nums" style={{ color: "var(--db-text)" }}>{value}</p>
       <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{label}</p>
     </div>
   );

@@ -166,7 +166,7 @@ Capta is built for home service businesses: plumbing, HVAC, electrical, landscap
 
 Stop choosing between budget and capability. She answers every call, books every appointment, and speaks your customers' language — English and Spanish.
 
-**[Get Capta](https://captahq.com)** today with a 14-day free trial. Setup takes 5 minutes, and your receptionist starts answering your calls immediately. Your customers are calling right now. Make sure someone picks up.`,
+**[Start Free Trial](https://captahq.com)** today with a 14-day free trial. Setup takes 5 minutes, and your receptionist starts answering your calls immediately. Your customers are calling right now. Make sure someone picks up.`,
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -560,7 +560,7 @@ But if you're reading this article, you're probably not that business. You're pr
 
 ---
 
-Done with the math? If Capta is the right fit, the 14-day free trial means you can verify the calculator with your real numbers. Setup takes 5 minutes. your receptionist starts answering immediately — in English and Spanish. [Get Capta →](https://captahq.com)
+Done with the math? If Capta is the right fit, the 14-day free trial means you can verify the calculator with your real numbers. Setup takes 5 minutes. your receptionist starts answering immediately — in English and Spanish. [Start Free Trial →](https://captahq.com)
 `,
   },
 
@@ -1030,7 +1030,7 @@ The scenarios above aren't hypothetical. They play out in contractor businesses 
 
 She answers every call on the first ring — in English and Spanish. She books appointments, sends SMS confirmations, and detects emergencies automatically. No hold times. No callbacks. No jobs lost to slow response.
 
-**[Get Capta](https://captahq.com)** with a 14-day free trial. Setup takes 5 minutes, and She handles your next call. Your customers are calling right now — make sure someone picks up.`,
+**[Start Free Trial](https://captahq.com)** with a 14-day free trial. Setup takes 5 minutes, and She handles your next call. Your customers are calling right now — make sure someone picks up.`,
   },
 
   /* ════════════════════════════════════════════════════════════════

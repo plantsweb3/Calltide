@@ -282,12 +282,7 @@ export default function CustomersPage() {
           placeholder={t("customers.search", lang)}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="w-full max-w-md rounded-lg border px-4 py-2 text-sm"
-          style={{
-            background: "var(--db-surface)",
-            borderColor: "var(--db-border)",
-            color: "var(--db-text)",
-          }}
+          className="db-input max-w-md"
         />
 
         <select
@@ -344,7 +339,7 @@ export default function CustomersPage() {
       {loading && customers.length === 0 && !error ? (
         <TableSkeleton rows={6} />
       ) : customers.length === 0 ? (
-        <div className="db-card py-16 text-center">
+        <div className="db-card rounded-xl py-16 text-center">
           <svg className="mx-auto mb-4" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)" }}>
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
@@ -442,8 +437,7 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop"
-      style={{ background: "rgba(0,0,0,0.5)" }}
+      className="db-modal-backdrop"
       onClick={onClose}
       onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
     >
@@ -452,7 +446,7 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
         aria-modal="true"
         aria-labelledby="add-customer-title"
         className="modal-content w-full max-w-md rounded-xl p-6"
-        style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
+        style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "var(--db-card-shadow)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="add-customer-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>
@@ -460,37 +454,34 @@ function AddCustomerModal({ onClose, onCreated }: { onClose: () => void; onCreat
         </h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("customers.nameLabel", lang)}</label>
+            <label className="db-label">{t("customers.nameLabel", lang)}</label>
             <input
               type="text"
               placeholder="John Smith"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2 text-sm"
-              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              className="db-input"
               autoFocus
             />
           </div>
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("customers.phoneLabel", lang)}</label>
+            <label className="db-label">{t("customers.phoneLabel", lang)}</label>
             <input
               type="tel"
               placeholder="(512) 555-1234"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2 text-sm"
-              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              className="db-input"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>{t("customers.emailOptional", lang)}</label>
+            <label className="db-label">{t("customers.emailOptional", lang)}</label>
             <input
               type="email"
               placeholder="john@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2 text-sm"
-              style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
+              className="db-input"
             />
           </div>
           {error && <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>}
@@ -605,8 +596,7 @@ function MergeCustomerModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop"
-      style={{ background: "rgba(0,0,0,0.5)" }}
+      className="db-modal-backdrop"
       onClick={onClose}
       onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
     >
@@ -618,7 +608,7 @@ function MergeCustomerModal({
         style={{
           background: "var(--db-surface)",
           border: "1px solid var(--db-border)",
-          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+          boxShadow: "var(--db-card-shadow)",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -637,7 +627,7 @@ function MergeCustomerModal({
                 key={cust.id}
                 type="button"
                 onClick={() => setPrimaryId(cust.id)}
-                className="rounded-lg border p-3 text-left transition-all"
+                className="rounded-xl border p-3 text-left transition-all"
                 style={{
                   borderColor: primaryId === cust.id ? "var(--db-accent)" : "var(--db-border)",
                   background: primaryId === cust.id ? "rgba(212,168,67,0.06)" : "var(--db-bg)",
@@ -667,7 +657,7 @@ function MergeCustomerModal({
           </div>
 
           {/* Field-by-field selection */}
-          <div className="rounded-lg border overflow-hidden mb-5" style={{ borderColor: "var(--db-border)" }}>
+          <div className="rounded-xl border overflow-hidden mb-5" style={{ borderColor: "var(--db-border)" }}>
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ borderBottom: "1px solid var(--db-border)", background: "var(--db-hover)" }}>

@@ -124,14 +124,12 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
         key={item.href}
         href={item.href}
         onClick={onClose}
-        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
+        className="db-hover-bg flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
         style={{
           background: isActive ? "var(--db-hover)" : "transparent",
           color: isActive ? "var(--db-text)" : "var(--db-text-muted)",
           fontWeight: isActive ? 500 : 400,
         }}
-        onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "var(--db-hover)"; }}
-        onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
       >
         <span style={{ color: isActive ? "var(--db-accent)" : "var(--db-text-muted)" }}>
           {item.icon}
@@ -212,10 +210,8 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
           {footerItems.map(renderLink)}
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
+            className="db-hover-bg flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
             style={{ color: "#f87171" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(248,113,113,0.1)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
           >
             <svg {...ip}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
             Logout

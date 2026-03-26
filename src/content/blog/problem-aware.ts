@@ -722,7 +722,7 @@ Here are the 4 main approaches, compared honestly.
 | Want maximum coverage at flat cost | AI receptionist ($497/mo) |
 | High call volume, seasonal surges | AI receptionist (flat pricing critical) |
 
-**[Get Capta →](https://captahq.com)** — 14-day free trial.
+**[Start Free Trial →](https://captahq.com)** — 14-day free trial.
 
 ## FAQs
 
@@ -779,7 +779,7 @@ Sabes que necesitas contestar más llamadas. También sabes que no puedes (o no 
 | Quieres toque humano, bajo volumen | Contestadora ($200-$500/mes) |
 | Máxima cobertura a precio fijo | Recepcionista AI ($497/mes) |
 
-**[Obtén Capta →](https://captahq.com)** — garantía de 30 días.
+**[Prueba Gratis →](https://captahq.com)** — garantía de 30 días.
 
 ## Preguntas Frecuentes
 

@@ -546,12 +546,8 @@ export default function SettingsPage() {
           <button
             key={tabKey}
             onClick={() => switchTab(tabKey)}
-            className="whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all"
-            style={{
-              background: activeTab === tabKey ? "var(--db-accent)" : "transparent",
-              color: activeTab === tabKey ? "#fff" : "var(--db-text-muted)",
-              cursor: "pointer",
-            }}
+            className="db-tab"
+            data-active={activeTab === tabKey}
           >
             {t(`settings.tab.${tabKey}`, lang)}
           </button>
@@ -573,7 +569,7 @@ export default function SettingsPage() {
             required
           />
           <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+            <label className="db-label">
               {t("settings.industry", lang)}
             </label>
             <div
@@ -597,7 +593,7 @@ export default function SettingsPage() {
             placeholder={t("settings.placeholder.serviceArea", lang)}
           />
           <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+            <label className="db-label">
               {t("settings.aiPhoneNumber", lang)}
             </label>
             <div
@@ -613,7 +609,7 @@ export default function SettingsPage() {
             </div>
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+            <label className="db-label">
               {t("settings.businessDescription", lang)}
             </label>
             <textarea
@@ -623,12 +619,8 @@ export default function SettingsPage() {
               rows={3}
               maxLength={1000}
               placeholder={t("settings.descriptionPlaceholder", lang)}
-              className="w-full rounded-lg px-3 py-2 text-sm resize-none"
-              style={{
-                background: "var(--db-bg)",
-                border: `1px solid ${getFieldError("additionalInfo") ? "var(--db-danger)" : "var(--db-border)"}`,
-                color: "var(--db-text)",
-              }}
+              className="db-input w-full resize-none"
+              style={getFieldError("additionalInfo") ? { borderColor: "var(--db-danger)" } : undefined}
             />
             <div className="flex justify-between mt-1">
               {getFieldError("additionalInfo") && (
@@ -660,7 +652,7 @@ export default function SettingsPage() {
             placeholder="Maria"
           />
           <div>
-            <label className="block text-xs font-medium mb-2" style={{ color: "var(--db-text-muted)" }}>
+            <label className="db-label">
               {t("settings.personality", lang)}
             </label>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
@@ -731,12 +723,7 @@ export default function SettingsPage() {
           rows={4}
           maxLength={1000}
           placeholder={t("settings.specialInstructionsPlaceholder", lang)}
-          className="w-full rounded-lg px-3 py-2 text-sm resize-none"
-          style={{
-            background: "var(--db-bg)",
-            border: `1px solid var(--db-border)`,
-            color: "var(--db-text)",
-          }}
+          className="db-input w-full resize-none"
         />
         <div className="flex justify-end mt-1">
           <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
@@ -810,7 +797,7 @@ export default function SettingsPage() {
           </div>
           {data.enableWeeklyDigest && (
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+              <label className="db-label">
                 {t("settings.deliveryMethod", lang)}
               </label>
               <div className="flex gap-2">
@@ -860,7 +847,7 @@ export default function SettingsPage() {
           {data.enableDailySummary && (
             <>
               <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label">
                   {t("settings.howReceiveDaily", lang)}
                 </label>
                 <div className="flex gap-2">
@@ -886,14 +873,14 @@ export default function SettingsPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label">
                   {t("settings.deliveryTime", lang)}
                 </label>
                 <select
                   value={data.digestTime}
                   onChange={(e) => setData({ ...data, digestTime: e.target.value })}
-                  className="rounded-lg px-3 py-2 text-sm"
-                  style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                  className="db-select"
+                  style={{ width: "auto" }}
                 >
                   {["17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"].map((t) => (
                     <option key={t} value={t}>{formatTime12(t)}</option>
@@ -1019,23 +1006,21 @@ export default function SettingsPage() {
           </p>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>{t("settings.quietHoursStart", lang)}</label>
+              <label className="db-label">{t("settings.quietHoursStart", lang)}</label>
               <select
                 value={data.ownerQuietHoursStart}
                 onChange={(e) => setField("ownerQuietHoursStart", e.target.value)}
-                className="w-full rounded-lg px-3 py-2 text-sm"
-                style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                className="db-select"
               >
                 {TIME_OPTIONS.map((t) => <option key={t} value={t}>{formatTime12(t)}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>{t("settings.quietHoursEnd", lang)}</label>
+              <label className="db-label">{t("settings.quietHoursEnd", lang)}</label>
               <select
                 value={data.ownerQuietHoursEnd}
                 onChange={(e) => setField("ownerQuietHoursEnd", e.target.value)}
-                className="w-full rounded-lg px-3 py-2 text-sm"
-                style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                className="db-select"
               >
                 {TIME_OPTIONS.map((t) => <option key={t} value={t}>{formatTime12(t)}</option>)}
               </select>
@@ -1088,7 +1073,7 @@ export default function SettingsPage() {
           </div>
           {data.enableReviewRequests && (
             <div>
-              <label className="block text-sm font-medium mb-1" style={{ color: "var(--db-text)" }}>
+              <label className="db-label">
                 {t("settings.googleReviewUrl", lang)}
               </label>
               <input
@@ -1096,12 +1081,7 @@ export default function SettingsPage() {
                 value={data.googleReviewUrl || ""}
                 onChange={(e) => setData({ ...data, googleReviewUrl: e.target.value })}
                 placeholder="https://g.page/r/your-business/review"
-                className="w-full rounded-lg px-3 py-2 text-sm"
-                style={{
-                  background: "var(--db-surface)",
-                  border: "1px solid var(--db-border)",
-                  color: "var(--db-text)",
-                }}
+                className="db-input"
               />
               <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
                 {t("settings.googleReviewUrlHint", lang)}
@@ -1162,8 +1142,8 @@ export default function SettingsPage() {
                       <select
                         value={hours?.open || "08:00"}
                         onChange={(e) => updateHours(day, "open", e.target.value)}
-                        className="rounded-lg px-2 py-1.5 text-sm"
-                        style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                        className="db-select text-sm"
+                        style={{ width: "auto", padding: "0.375rem 2rem 0.375rem 0.5rem" }}
                       >
                         {TIME_OPTIONS.map((t) => (
                           <option key={t} value={t}>{formatTime12(t)}</option>
@@ -1173,8 +1153,8 @@ export default function SettingsPage() {
                       <select
                         value={hours?.close || "17:00"}
                         onChange={(e) => updateHours(day, "close", e.target.value)}
-                        className="rounded-lg px-2 py-1.5 text-sm"
-                        style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                        className="db-select text-sm"
+                        style={{ width: "auto", padding: "0.375rem 2rem 0.375rem 0.5rem" }}
                       >
                         {TIME_OPTIONS.map((t) => (
                           <option key={t} value={t}>{formatTime12(t)}</option>
@@ -1239,8 +1219,8 @@ export default function SettingsPage() {
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addService(); } }}
               placeholder={t("settings.addServicePlaceholder", lang)}
               maxLength={50}
-              className="flex-1 rounded-lg px-3 py-2 text-sm"
-              style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+              className="db-input flex-1"
+              style={{ width: "auto" }}
             />
             <button
               onClick={addService}
@@ -1314,7 +1294,7 @@ export default function SettingsPage() {
                   {pricing.map((p) => (
                     <div
                       key={p.id}
-                      className="flex flex-wrap items-center gap-2 rounded-lg p-3"
+                      className="db-table-row flex flex-wrap items-center gap-2 rounded-lg p-3"
                       style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)" }}
                     >
                       {editingPriceId === p.id ? (
@@ -1323,8 +1303,7 @@ export default function SettingsPage() {
                             type="text"
                             value={editingPriceData.serviceName}
                             onChange={(e) => setEditingPriceData((d) => ({ ...d, serviceName: e.target.value }))}
-                            className="flex-1 min-w-[120px] rounded px-2 py-1 text-sm"
-                            style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                            className="db-input flex-1 min-w-[120px] rounded px-2 py-1 text-sm"
                           />
                           <div className="flex items-center gap-1">
                             <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
@@ -1332,8 +1311,7 @@ export default function SettingsPage() {
                               type="number"
                               value={editingPriceData.priceMin}
                               onChange={(e) => setEditingPriceData((d) => ({ ...d, priceMin: e.target.value }))}
-                              className="w-20 rounded px-2 py-1 text-sm"
-                              style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                              className="db-input w-20 rounded px-2 py-1 text-sm"
                               placeholder="Min"
                             />
                             <span style={{ color: "var(--db-text-muted)" }}>—</span>
@@ -1342,16 +1320,14 @@ export default function SettingsPage() {
                               type="number"
                               value={editingPriceData.priceMax}
                               onChange={(e) => setEditingPriceData((d) => ({ ...d, priceMax: e.target.value }))}
-                              className="w-20 rounded px-2 py-1 text-sm"
-                              style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                              className="db-input w-20 rounded px-2 py-1 text-sm"
                               placeholder="Max"
                             />
                           </div>
                           <select
                             value={editingPriceData.unit}
                             onChange={(e) => setEditingPriceData((d) => ({ ...d, unit: e.target.value }))}
-                            className="rounded px-2 py-1 text-xs"
-                            style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                            className="db-select rounded px-2 py-1 text-xs"
                           >
                             <option value="per_job">{t("settings.perJob", lang)}</option>
                             <option value="per_hour">{t("settings.perHour", lang)}</option>
@@ -1451,8 +1427,7 @@ export default function SettingsPage() {
                     value={newPriceRow.serviceName}
                     onChange={(e) => setNewPriceRow({ ...newPriceRow, serviceName: e.target.value })}
                     placeholder={t("settings.placeholder.serviceName", lang)}
-                    className="flex-1 min-w-[120px] rounded px-2 py-1 text-sm"
-                    style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                    className="db-input flex-1 min-w-[120px] rounded px-2 py-1 text-sm"
                   />
                   <div className="flex items-center gap-1">
                     <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
@@ -1461,8 +1436,7 @@ export default function SettingsPage() {
                       value={newPriceRow.priceMin}
                       onChange={(e) => setNewPriceRow({ ...newPriceRow, priceMin: e.target.value })}
                       placeholder="Min"
-                      className="w-20 rounded px-2 py-1 text-sm"
-                      style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                      className="db-input w-20 rounded px-2 py-1 text-sm"
                     />
                     <span style={{ color: "var(--db-text-muted)" }}>—</span>
                     <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
@@ -1471,15 +1445,13 @@ export default function SettingsPage() {
                       value={newPriceRow.priceMax}
                       onChange={(e) => setNewPriceRow({ ...newPriceRow, priceMax: e.target.value })}
                       placeholder="Max"
-                      className="w-20 rounded px-2 py-1 text-sm"
-                      style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                      className="db-input w-20 rounded px-2 py-1 text-sm"
                     />
                   </div>
                   <select
                     value={newPriceRow.unit}
                     onChange={(e) => setNewPriceRow({ ...newPriceRow, unit: e.target.value })}
-                    className="rounded px-2 py-1 text-xs"
-                    style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                    className="db-select rounded px-2 py-1 text-xs"
                   >
                     <option value="per_job">{t("settings.perJob", lang)}</option>
                     <option value="per_hour">{t("settings.perHour", lang)}</option>
@@ -1568,7 +1540,7 @@ export default function SettingsPage() {
       <Card title={t("settings.greetingTitle", lang, { name: rName })}>
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+            <label className="db-label">
               {t("settings.englishGreeting", lang)}
             </label>
             <textarea
@@ -1578,12 +1550,8 @@ export default function SettingsPage() {
               rows={3}
               maxLength={500}
               placeholder={defaultGreeting}
-              className="w-full rounded-lg px-3 py-2 text-sm resize-none"
-              style={{
-                background: "var(--db-bg)",
-                border: `1px solid ${getFieldError("greeting") ? "var(--db-danger)" : "var(--db-border)"}`,
-                color: "var(--db-text)",
-              }}
+              className="db-input w-full resize-none"
+              style={getFieldError("greeting") ? { borderColor: "var(--db-danger)" } : undefined}
             />
             <div className="flex justify-between mt-1">
               {getFieldError("greeting") && (
@@ -1595,7 +1563,7 @@ export default function SettingsPage() {
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+            <label className="db-label">
               {t("settings.spanishGreeting", lang)}
             </label>
             <textarea
@@ -1605,12 +1573,8 @@ export default function SettingsPage() {
               rows={3}
               maxLength={500}
               placeholder={`Gracias por llamar a ${data.name}, habla ${rName}. ¿En qué le puedo ayudar?`}
-              className="w-full rounded-lg px-3 py-2 text-sm resize-none"
-              style={{
-                background: "var(--db-bg)",
-                border: `1px solid ${getFieldError("greetingEs") ? "var(--db-danger)" : "var(--db-border)"}`,
-                color: "var(--db-text)",
-              }}
+              className="db-input w-full resize-none"
+              style={getFieldError("greetingEs") ? { borderColor: "var(--db-danger)" } : undefined}
             />
             <div className="flex justify-between mt-1">
               {getFieldError("greetingEs") && (
@@ -1771,8 +1735,7 @@ export default function SettingsPage() {
                           value={newResponse.triggerText}
                           onChange={(e) => setNewResponse({ ...newResponse, triggerText: e.target.value })}
                           placeholder={cat.key === "faq" ? t("settings.placeholder.faqTrigger", lang) : cat.key === "off_limits" ? t("settings.placeholder.offLimitsTrigger", lang) : cat.key === "phrase" ? t("settings.placeholder.phraseTrigger", lang) : t("settings.placeholder.emergencyTrigger", lang)}
-                          className="w-full rounded-lg px-3 py-1.5 text-sm"
-                          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                          className="db-input w-full"
                           maxLength={200}
                         />
                         {cat.hasResponse && (
@@ -1781,8 +1744,7 @@ export default function SettingsPage() {
                             value={newResponse.responseText}
                             onChange={(e) => setNewResponse({ ...newResponse, responseText: e.target.value })}
                             placeholder={cat.key === "faq" ? t("settings.placeholder.faqResponse", lang) : t("settings.placeholder.offLimitsResponse", lang)}
-                            className="w-full rounded-lg px-3 py-1.5 text-sm"
-                            style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                            className="db-input w-full"
                             maxLength={500}
                           />
                         )}
@@ -1899,7 +1861,7 @@ export default function SettingsPage() {
               {estimateRanges.filter((r) => r.mode === "quick").map((range) => (
                 <div
                   key={range.id}
-                  className="flex items-center gap-3 rounded-lg border p-3"
+                  className="db-table-row flex items-center gap-3 rounded-lg border p-3"
                   style={{ borderColor: "var(--db-border)" }}
                 >
                   <span className="flex-1 text-sm font-medium" style={{ color: "var(--db-text)" }}>
@@ -1946,8 +1908,7 @@ export default function SettingsPage() {
                     placeholder={t("settings.placeholder.jobType", lang)}
                     value={newEstimateRow.jobTypeLabel}
                     onChange={(e) => setNewEstimateRow({ ...newEstimateRow, jobTypeLabel: e.target.value })}
-                    className="flex-1 rounded border px-2 py-1 text-sm"
-                    style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                    className="db-input flex-1 rounded px-2 py-1 text-sm"
                   />
                   <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>$</span>
                   <input
@@ -1955,8 +1916,7 @@ export default function SettingsPage() {
                     placeholder="Min"
                     value={newEstimateRow.minPrice}
                     onChange={(e) => setNewEstimateRow({ ...newEstimateRow, minPrice: e.target.value })}
-                    className="w-20 rounded border px-2 py-1 text-sm"
-                    style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                    className="db-input w-20 rounded px-2 py-1 text-sm"
                   />
                   <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>–</span>
                   <input
@@ -1964,14 +1924,12 @@ export default function SettingsPage() {
                     placeholder="Max"
                     value={newEstimateRow.maxPrice}
                     onChange={(e) => setNewEstimateRow({ ...newEstimateRow, maxPrice: e.target.value })}
-                    className="w-20 rounded border px-2 py-1 text-sm"
-                    style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                    className="db-input w-20 rounded px-2 py-1 text-sm"
                   />
                   <select
                     value={newEstimateRow.unit}
                     onChange={(e) => setNewEstimateRow({ ...newEstimateRow, unit: e.target.value })}
-                    className="rounded border px-2 py-1 text-sm"
-                    style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                    className="db-select rounded px-2 py-1 text-sm"
                   >
                     <option value="per_job">{t("settings.perJob", lang)}</option>
                     <option value="per_hour">{t("settings.perHour", lang)}</option>
@@ -2092,27 +2050,24 @@ export default function SettingsPage() {
                   placeholder={t("settings.placeholder.formulaJobType", lang)}
                   value={advancedFormula.jobTypeLabel}
                   onChange={(e) => setAdvancedFormula({ ...advancedFormula, jobTypeLabel: e.target.value })}
-                  className="w-full rounded border px-3 py-2 text-sm"
-                  style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                  className="db-input w-full"
                 />
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.baseRate", lang)}</label>
+                    <label className="db-label text-xs">{t("settings.baseRate", lang)}</label>
                     <input
                       type="number"
                       value={advancedFormula.baseRate}
                       onChange={(e) => setAdvancedFormula({ ...advancedFormula, baseRate: e.target.value })}
-                      className="w-full rounded border px-2 py-1 text-sm"
-                      style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                      className="db-input w-full rounded px-2 py-1 text-sm"
                     />
                   </div>
                   <div>
-                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.per", lang)}</label>
+                    <label className="db-label text-xs">{t("settings.per", lang)}</label>
                     <select
                       value={advancedFormula.baseUnit}
                       onChange={(e) => setAdvancedFormula({ ...advancedFormula, baseUnit: e.target.value })}
-                      className="w-full rounded border px-2 py-1 text-sm"
-                      style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                      className="db-select w-full rounded px-2 py-1 text-sm"
                     >
                       <option value="unit">unit</option>
                       <option value="room">room</option>
@@ -2121,21 +2076,20 @@ export default function SettingsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.variableKey", lang)}</label>
+                    <label className="db-label text-xs">{t("settings.variableKey", lang)}</label>
                     <input
                       type="text"
                       placeholder="e.g. unit_count"
                       value={advancedFormula.baseUnitVariable}
                       onChange={(e) => setAdvancedFormula({ ...advancedFormula, baseUnitVariable: e.target.value })}
-                      className="w-full rounded border px-2 py-1 text-sm"
-                      style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                      className="db-input w-full rounded px-2 py-1 text-sm"
                     />
                   </div>
                 </div>
 
                 {/* Additional rates */}
                 <div>
-                  <label className="text-xs font-medium" style={{ color: "var(--db-text)" }}>{t("settings.additionalRates", lang)}</label>
+                  <label className="db-label">{t("settings.additionalRates", lang)}</label>
                   {advancedFormula.additionalRates.map((rate, i) => (
                     <div key={i} className="flex gap-2 mt-1">
                       <input type="number" placeholder="Rate" value={rate.rate}
@@ -2144,8 +2098,7 @@ export default function SettingsPage() {
                           updated[i] = { ...rate, rate: e.target.value };
                           setAdvancedFormula({ ...advancedFormula, additionalRates: updated });
                         }}
-                        className="w-20 rounded border px-2 py-1 text-sm"
-                        style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                        className="db-input w-20 rounded px-2 py-1 text-sm"
                       />
                       <input type="text" placeholder="per sqft" value={rate.unit}
                         onChange={(e) => {
@@ -2153,8 +2106,7 @@ export default function SettingsPage() {
                           updated[i] = { ...rate, unit: e.target.value };
                           setAdvancedFormula({ ...advancedFormula, additionalRates: updated });
                         }}
-                        className="w-24 rounded border px-2 py-1 text-sm"
-                        style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                        className="db-input w-24 rounded px-2 py-1 text-sm"
                       />
                       <input type="text" placeholder="variable key" value={rate.variable}
                         onChange={(e) => {
@@ -2162,8 +2114,7 @@ export default function SettingsPage() {
                           updated[i] = { ...rate, variable: e.target.value };
                           setAdvancedFormula({ ...advancedFormula, additionalRates: updated });
                         }}
-                        className="w-28 rounded border px-2 py-1 text-sm"
-                        style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                        className="db-input w-28 rounded px-2 py-1 text-sm"
                       />
                       <input type="text" placeholder="Label" value={rate.label}
                         onChange={(e) => {
@@ -2171,8 +2122,7 @@ export default function SettingsPage() {
                           updated[i] = { ...rate, label: e.target.value };
                           setAdvancedFormula({ ...advancedFormula, additionalRates: updated });
                         }}
-                        className="flex-1 rounded border px-2 py-1 text-sm"
-                        style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                        className="db-input flex-1 rounded px-2 py-1 text-sm"
                       />
                       <button
                         onClick={() => {
@@ -2195,23 +2145,21 @@ export default function SettingsPage() {
                 {/* Margin range */}
                 <div className="flex gap-4">
                   <div>
-                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.marginLow", lang)}</label>
+                    <label className="db-label text-xs">{t("settings.marginLow", lang)}</label>
                     <input
                       type="number"
                       value={advancedFormula.marginLow}
                       onChange={(e) => setAdvancedFormula({ ...advancedFormula, marginLow: e.target.value })}
-                      className="w-20 rounded border px-2 py-1 text-sm"
-                      style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                      className="db-input w-20 rounded px-2 py-1 text-sm"
                     />
                   </div>
                   <div>
-                    <label className="text-xs" style={{ color: "var(--db-text-muted)" }}>{t("settings.marginHigh", lang)}</label>
+                    <label className="db-label text-xs">{t("settings.marginHigh", lang)}</label>
                     <input
                       type="number"
                       value={advancedFormula.marginHigh}
                       onChange={(e) => setAdvancedFormula({ ...advancedFormula, marginHigh: e.target.value })}
-                      className="w-20 rounded border px-2 py-1 text-sm"
-                      style={{ background: "var(--db-bg)", color: "var(--db-text)", borderColor: "var(--db-border)" }}
+                      className="db-input w-20 rounded px-2 py-1 text-sm"
                     />
                   </div>
                 </div>
@@ -2336,8 +2284,7 @@ export default function SettingsPage() {
       {/* Delete Pricing Confirmation */}
       {confirmDeletePriceId && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: "rgba(0,0,0,0.6)" }}
+          className="db-modal-backdrop"
           onClick={() => setConfirmDeletePriceId(null)}
           onKeyDown={(e) => { if (e.key === "Escape") setConfirmDeletePriceId(null); }}
           role="dialog"
@@ -2426,7 +2373,7 @@ function InputField({
 }) {
   return (
     <div>
-      <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+      <label className="db-label">
         {label}
         {required && <span style={{ color: "var(--db-danger)" }}> *</span>}
       </label>
@@ -2436,12 +2383,8 @@ function InputField({
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
         placeholder={placeholder}
-        className="w-full rounded-lg px-3 py-2 text-sm"
-        style={{
-          background: "var(--db-bg)",
-          border: `1px solid ${error ? "var(--db-danger)" : "var(--db-border)"}`,
-          color: "var(--db-text)",
-        }}
+        className="db-input"
+        style={error ? { borderColor: "var(--db-danger)" } : undefined}
       />
       {error && <p className="mt-1 text-xs" style={{ color: "var(--db-danger)" }}>{error}</p>}
     </div>
@@ -2632,14 +2575,13 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
             {/* Calling hours */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label">
                   {t("settings.callWindowStart", lang)}
                 </label>
                 <select
                   value={settings.outboundCallingHoursStart}
                   onChange={(e) => updateSetting("outboundCallingHoursStart", e.target.value)}
-                  className="w-full rounded-lg px-3 py-2 text-sm"
-                  style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                  className="db-select"
                 >
                   {Array.from({ length: 13 }, (_, i) => i + 7).map((h) => (
                     <option key={h} value={`${h.toString().padStart(2, "0")}:00`}>
@@ -2649,14 +2591,13 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label">
                   {t("settings.callWindowEnd", lang)}
                 </label>
                 <select
                   value={settings.outboundCallingHoursEnd}
                   onChange={(e) => updateSetting("outboundCallingHoursEnd", e.target.value)}
-                  className="w-full rounded-lg px-3 py-2 text-sm"
-                  style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                  className="db-select"
                 >
                   {Array.from({ length: 13 }, (_, i) => i + 12).map((h) => (
                     <option key={h} value={`${h.toString().padStart(2, "0")}:00`}>
@@ -2669,7 +2610,7 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
 
             {/* Max calls per day */}
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+              <label className="db-label">
                 {t("settings.maxCallsPerDay", lang)}
               </label>
               <input
@@ -2678,8 +2619,8 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                 max={100}
                 value={settings.outboundMaxCallsPerDay}
                 onChange={(e) => updateSetting("outboundMaxCallsPerDay", parseInt(e.target.value) || 20)}
-                className="w-24 rounded-lg px-3 py-2 text-sm"
-                style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                className="db-input"
+                style={{ width: "6rem" }}
               />
             </div>
 
@@ -2699,7 +2640,7 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                     {seasonal.map((svc) => (
                       <div
                         key={svc.id}
-                        className="flex items-center justify-between rounded-lg p-3"
+                        className="db-table-row flex items-center justify-between rounded-lg p-3"
                         style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)" }}
                       >
                         <div>
@@ -2732,15 +2673,13 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                         value={newService.serviceName}
                         onChange={(e) => setNewService((p) => ({ ...p, serviceName: e.target.value }))}
                         placeholder={t("settings.placeholder.seasonalServiceName", lang)}
-                        className="w-full rounded px-2 py-1.5 text-sm"
-                        style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                        className="db-input"
                       />
                       <div className="grid grid-cols-3 gap-2">
                         <select
                           value={newService.reminderIntervalMonths}
                           onChange={(e) => setNewService((p) => ({ ...p, reminderIntervalMonths: e.target.value }))}
-                          className="rounded px-2 py-1.5 text-xs"
-                          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                          className="db-select text-xs"
                         >
                           {[3, 6, 12, 18, 24].map((m) => (
                             <option key={m} value={m}>{t("settings.outbound.everyNMonths", lang, { n: m })}</option>
@@ -2749,8 +2688,7 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                         <select
                           value={newService.seasonStart}
                           onChange={(e) => setNewService((p) => ({ ...p, seasonStart: e.target.value }))}
-                          className="rounded px-2 py-1.5 text-xs"
-                          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                          className="db-select text-xs"
                         >
                           <option value="">{t("settings.outbound.seasonStart", lang)}</option>
                           {MONTH_LABELS.slice(1).map((m, i) => (
@@ -2760,8 +2698,7 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                         <select
                           value={newService.seasonEnd}
                           onChange={(e) => setNewService((p) => ({ ...p, seasonEnd: e.target.value }))}
-                          className="rounded px-2 py-1.5 text-xs"
-                          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                          className="db-select text-xs"
                         >
                           <option value="">{t("settings.outbound.seasonEnd", lang)}</option>
                           {MONTH_LABELS.slice(1).map((m, i) => (
@@ -2773,8 +2710,7 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                         value={newService.reminderMessage}
                         onChange={(e) => setNewService((p) => ({ ...p, reminderMessage: e.target.value }))}
                         placeholder={t("settings.placeholder.customMessage", lang)}
-                        className="w-full rounded px-2 py-1.5 text-sm"
-                        style={{ background: "var(--db-card)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
+                        className="db-input"
                       />
                       <button
                         onClick={addSeasonalService}
@@ -2815,7 +2751,7 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
                   {calls.slice(0, 5).map((c) => (
                     <div
                       key={c.id}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2"
+                      className="db-table-row flex items-center gap-3 rounded-lg px-3 py-2"
                       style={{ background: "var(--db-bg)", border: "1px solid var(--db-border)" }}
                     >
                       <span
@@ -2968,25 +2904,20 @@ function SecuritySection({ lang }: { lang: Lang }) {
 
             {hasPassword && (
               <div>
-                <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label">
                   {t("settings.currentPassword", lang)}
                 </label>
                 <input
                   type={showPassword ? "text" : "password"}
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full rounded-lg px-3 py-2 text-sm"
-                  style={{
-                    background: "var(--db-bg)",
-                    border: "1px solid var(--db-border)",
-                    color: "var(--db-text)",
-                  }}
+                  className="db-input"
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+              <label className="db-label">
                 {t("settings.newPassword", lang)}
               </label>
               <div className="relative">
@@ -2994,12 +2925,8 @@ function SecuritySection({ lang }: { lang: Lang }) {
                   type={showPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full rounded-lg px-3 py-2 pr-9 text-sm"
-                  style={{
-                    background: "var(--db-bg)",
-                    border: "1px solid var(--db-border)",
-                    color: "var(--db-text)",
-                  }}
+                  className="db-input"
+                  style={{ paddingRight: "2.25rem" }}
                   placeholder={t("settings.validation.min8chars", lang)}
                 />
                 <button
@@ -3035,19 +2962,15 @@ function SecuritySection({ lang }: { lang: Lang }) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+              <label className="db-label">
                 {t("settings.confirmNewPassword", lang)}
               </label>
               <input
                 type={showPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full rounded-lg px-3 py-2 text-sm"
-                style={{
-                  background: "var(--db-bg)",
-                  border: `1px solid ${confirmPassword && !passwordsMatch ? "var(--db-danger)" : "var(--db-border)"}`,
-                  color: "var(--db-text)",
-                }}
+                className="db-input"
+                style={confirmPassword && !passwordsMatch ? { borderColor: "var(--db-danger)" } : undefined}
               />
               {confirmPassword && !passwordsMatch && (
                 <p className="mt-0.5 text-xs" style={{ color: "var(--db-danger)" }}>{t("settings.passwordsDontMatch", lang)}</p>

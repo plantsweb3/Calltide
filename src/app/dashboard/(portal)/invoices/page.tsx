@@ -410,9 +410,11 @@ export default function InvoicesPage() {
       key: "amount",
       label: t("invoices.amount", lang),
       render: (row) => (
-        <span className="text-sm font-semibold font-mono" style={{ color: "var(--db-text)" }}>
-          {formatCurrency(row.amount)}
-        </span>
+        <div className="text-right">
+          <span className="text-sm font-semibold font-mono tabular-nums" style={{ color: "var(--db-text)" }}>
+            {formatCurrency(row.amount)}
+          </span>
+        </div>
       ),
     },
     {
@@ -517,12 +519,6 @@ export default function InvoicesPage() {
 
   /* ─── Render ─── */
 
-  const inputStyle = {
-    background: "var(--db-hover)",
-    border: "1px solid var(--db-border)",
-    color: "var(--db-text)",
-  };
-
   return (
     <div>
       <PageHeader
@@ -582,8 +578,8 @@ export default function InvoicesPage() {
 
       {/* Tab Filters */}
       <div
-        className="flex items-center gap-1 mb-4 p-1 rounded-xl overflow-x-auto"
-        style={{ background: "var(--db-hover)" }}
+        className="flex items-center gap-1 mb-4 overflow-x-auto"
+        style={{ borderBottom: "1px solid var(--db-border)" }}
       >
         {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
@@ -592,12 +588,8 @@ export default function InvoicesPage() {
             <button
               key={tab.key}
               onClick={() => { setActiveTab(tab.key); setPage(1); }}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all whitespace-nowrap"
-              style={{
-                background: isActive ? "var(--db-card)" : "transparent",
-                color: isActive ? "var(--db-text)" : "var(--db-text-muted)",
-                boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-              }}
+              className="db-tab"
+              data-active={isActive}
             >
               {tab.label}
               {badge && (
@@ -622,12 +614,7 @@ export default function InvoicesPage() {
               type="date"
               value={dateFrom}
               onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
-              className="rounded-lg px-2 py-1.5 text-xs outline-none"
-              style={{
-                background: "var(--db-card)",
-                border: "1px solid var(--db-border)",
-                color: "var(--db-text)",
-              }}
+              className="db-input !w-auto !px-2 !py-1.5 !text-xs"
               title="From date"
             />
             <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>-</span>
@@ -635,12 +622,7 @@ export default function InvoicesPage() {
               type="date"
               value={dateTo}
               onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
-              className="rounded-lg px-2 py-1.5 text-xs outline-none"
-              style={{
-                background: "var(--db-card)",
-                border: "1px solid var(--db-border)",
-                color: "var(--db-text)",
-              }}
+              className="db-input !w-auto !px-2 !py-1.5 !text-xs"
               title="To date"
             />
             {(dateFrom || dateTo) && (
@@ -659,12 +641,7 @@ export default function InvoicesPage() {
             placeholder={t("invoices.searchPlaceholder", lang)}
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            className="rounded-lg px-3 py-1.5 text-sm outline-none transition-all w-44"
-            style={{
-              background: "var(--db-card)",
-              border: "1px solid var(--db-border)",
-              color: "var(--db-text)",
-            }}
+            className="db-input !w-44"
           />
         </div>
       </div>
@@ -759,7 +736,7 @@ export default function InvoicesPage() {
       {/* ─── Create Invoice Modal ─── */}
       {showCreate && (
         <div
-          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="db-modal-backdrop"
           onClick={() => resetCreateForm()}
         >
           <div
@@ -777,14 +754,13 @@ export default function InvoicesPage() {
               {/* Customer selection */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                  <label className="db-label">
                     {t("invoices.customer", lang)}
                   </label>
                   <select
                     value={formCustomerId}
                     onChange={(e) => setFormCustomerId(e.target.value)}
-                    className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                    style={inputStyle}
+                    className="db-select"
                   >
                     <option value="">{t("invoices.noCustomerSelected", lang)}</option>
                     {customers.map((c) => (
@@ -795,22 +771,21 @@ export default function InvoicesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                  <label className="db-label">
                     {t("invoices.dueDate", lang)}
                   </label>
                   <input
                     type="date"
                     value={formDueDate}
                     onChange={(e) => setFormDueDate(e.target.value)}
-                    className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                    style={inputStyle}
+                    className="db-input"
                   />
                 </div>
               </div>
 
               {/* Line Items */}
               <div>
-                <label className="block text-xs font-medium mb-2" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label">
                   {t("invoices.lineItems", lang)}
                 </label>
                 <LineItemsEditor
@@ -823,7 +798,7 @@ export default function InvoicesPage() {
 
               {/* Notes */}
               <div>
-                <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label">
                   {t("invoices.notes", lang)}
                 </label>
                 <textarea
@@ -831,8 +806,7 @@ export default function InvoicesPage() {
                   onChange={(e) => setFormNotes(e.target.value)}
                   placeholder={t("invoices.notesPlaceholder", lang)}
                   rows={2}
-                  className="w-full resize-none rounded-lg px-3 py-2 text-sm outline-none"
-                  style={inputStyle}
+                  className="db-input resize-none"
                 />
               </div>
 
@@ -853,7 +827,7 @@ export default function InvoicesPage() {
       {/* ─── Edit Invoice Modal ─── */}
       {showEdit && (
         <div
-          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="db-modal-backdrop"
           onClick={() => setShowEdit(null)}
         >
           <div
@@ -873,14 +847,13 @@ export default function InvoicesPage() {
             <form onSubmit={handleEditSave} className="space-y-5">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                  <label className="db-label">
                     {t("invoices.customer", lang)}
                   </label>
                   <select
                     value={editCustomerId}
                     onChange={(e) => setEditCustomerId(e.target.value)}
-                    className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                    style={inputStyle}
+                    className="db-select"
                   >
                     <option value="">{t("invoices.noCustomerSelected", lang)}</option>
                     {customers.map((c) => (
@@ -891,21 +864,20 @@ export default function InvoicesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                  <label className="db-label">
                     {t("invoices.dueDate", lang)}
                   </label>
                   <input
                     type="date"
                     value={editDueDate}
                     onChange={(e) => setEditDueDate(e.target.value)}
-                    className="w-full rounded-lg px-3 py-2 text-sm outline-none"
-                    style={inputStyle}
+                    className="db-input"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium mb-2" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label">
                   {t("invoices.lineItems", lang)}
                 </label>
                 <LineItemsEditor
@@ -917,7 +889,7 @@ export default function InvoicesPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label">
                   {t("invoices.notes", lang)}
                 </label>
                 <textarea
@@ -925,8 +897,7 @@ export default function InvoicesPage() {
                   onChange={(e) => setEditNotes(e.target.value)}
                   placeholder={t("invoices.notesPlaceholder", lang)}
                   rows={2}
-                  className="w-full resize-none rounded-lg px-3 py-2 text-sm outline-none"
-                  style={inputStyle}
+                  className="db-input resize-none"
                 />
               </div>
 
@@ -946,7 +917,7 @@ export default function InvoicesPage() {
       {/* ─── Mark Paid Modal ─── */}
       {markPaidId && (
         <div
-          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="db-modal-backdrop"
           onClick={() => setMarkPaidId(null)}
         >
           <div
@@ -960,14 +931,13 @@ export default function InvoicesPage() {
             <h3 id="mark-paid-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>
               {t("invoices.markPaid", lang)}
             </h3>
-            <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
+            <label className="db-label">
               {t("invoices.paymentMethod", lang)}
             </label>
             <select
               value={markPaidMethod}
               onChange={(e) => setMarkPaidMethod(e.target.value)}
-              className="w-full rounded-lg px-3 py-2 text-sm mb-4 outline-none"
-              style={inputStyle}
+              className="db-select mb-4"
               autoFocus
             >
               {PAYMENT_METHODS.map((m) => (

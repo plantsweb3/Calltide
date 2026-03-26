@@ -175,8 +175,7 @@ function LoginForm() {
             <div>
               <label
                 htmlFor="email"
-                className="mb-1.5 block text-sm font-medium"
-                style={{ color: "var(--db-text-secondary)" }}
+                className="db-label text-sm"
               >
                 {t("auth.email", lang)}
               </label>
@@ -185,12 +184,7 @@ function LoginForm() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg px-4 py-2.5 text-sm outline-none transition-colors"
-                style={{
-                  background: "var(--db-surface)",
-                  border: "1px solid var(--db-border)",
-                  color: "var(--db-text)",
-                }}
+                className="db-input py-2.5"
                 placeholder="you@business.com"
                 autoFocus
                 required
@@ -200,8 +194,7 @@ function LoginForm() {
             <div>
               <label
                 htmlFor="password"
-                className="mb-1.5 block text-sm font-medium"
-                style={{ color: "var(--db-text-secondary)" }}
+                className="db-label text-sm"
               >
                 {t("auth.password", lang)}
               </label>
@@ -211,12 +204,7 @@ function LoginForm() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-lg px-4 py-2.5 pr-10 text-sm outline-none transition-colors"
-                  style={{
-                    background: "var(--db-surface)",
-                    border: "1px solid var(--db-border)",
-                    color: "var(--db-text)",
-                  }}
+                  className="db-input py-2.5 pr-10"
                   placeholder={t("auth.enterPassword", lang)}
                   required
                 />
@@ -267,16 +255,15 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading || !email || !password}
-              className="w-full rounded-lg px-4 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              style={{ background: "var(--db-accent)" }}
-              onMouseEnter={(e) => {
-                if (!loading && email && password) e.currentTarget.style.background = "var(--db-accent-hover)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "var(--db-accent)";
-              }}
+              className="db-btn w-full rounded-lg px-4 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none transition-colors"
+              data-variant="primary"
             >
-              {loading ? t("auth.signingIn", lang) : t("auth.signIn", lang)}
+              {loading ? (
+                <span className="inline-flex items-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  {t("auth.signingIn", lang)}
+                </span>
+              ) : t("auth.signIn", lang)}
             </button>
           </form>
 
@@ -292,18 +279,8 @@ function LoginForm() {
             type="button"
             onClick={handleMagicLink}
             disabled={magicLoading}
-            className="w-full rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{
-              background: "transparent",
-              border: "1px solid var(--db-border)",
-              color: "var(--db-text)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--db-hover)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-            }}
+            className="db-btn w-full rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
+            data-variant="secondary"
           >
             {magicLoading ? t("auth.sending", lang) : t("auth.sendMagicLink", lang)}
           </button>

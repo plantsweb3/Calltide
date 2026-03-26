@@ -521,14 +521,14 @@ export default function TeamPage() {
       {/* Add/Edit Modal */}
       {modalOpen && (
         <div
-          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="db-modal-backdrop"
           onClick={() => !formLoading && setModalOpen(false)}
         >
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="tech-form-title"
-            className="modal-content db-card w-full max-w-lg rounded-xl p-6"
+            className="db-card w-full max-w-lg rounded-xl p-6"
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => { if (e.key === "Escape" && !formLoading) setModalOpen(false); }}
           >
@@ -551,7 +551,7 @@ export default function TeamPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Name */}
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label uppercase tracking-wider">
                   {t("misc.name", lang)} *
                 </label>
                 <input
@@ -561,21 +561,14 @@ export default function TeamPage() {
                   placeholder="John Smith"
                   required
                   maxLength={200}
-                  className="w-full rounded-lg px-3 py-2 text-sm outline-none transition-colors"
-                  style={{
-                    background: "var(--db-surface, var(--db-bg))",
-                    border: "1px solid var(--db-border)",
-                    color: "var(--db-text)",
-                  }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+                  className="db-input"
                 />
               </div>
 
               {/* Phone + Email */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                  <label className="db-label uppercase tracking-wider">
                     {t("misc.phone", lang)}
                   </label>
                   <input
@@ -584,18 +577,11 @@ export default function TeamPage() {
                     onChange={(e) => setFormPhone(e.target.value)}
                     placeholder="(555) 123-4567"
                     maxLength={30}
-                    className="w-full rounded-lg px-3 py-2 text-sm outline-none transition-colors"
-                    style={{
-                      background: "var(--db-surface, var(--db-bg))",
-                      border: "1px solid var(--db-border)",
-                      color: "var(--db-text)",
-                    }}
-                    onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-                    onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+                    className="db-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                  <label className="db-label uppercase tracking-wider">
                     {t("misc.email", lang)}
                   </label>
                   <input
@@ -604,21 +590,14 @@ export default function TeamPage() {
                     onChange={(e) => setFormEmail(e.target.value)}
                     placeholder="john@example.com"
                     maxLength={254}
-                    className="w-full rounded-lg px-3 py-2 text-sm outline-none transition-colors"
-                    style={{
-                      background: "var(--db-surface, var(--db-bg))",
-                      border: "1px solid var(--db-border)",
-                      color: "var(--db-text)",
-                    }}
-                    onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-                    onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+                    className="db-input"
                   />
                 </div>
               </div>
 
               {/* Skills */}
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label uppercase tracking-wider">
                   {t("team.skills", lang)}
                 </label>
                 <div className="flex gap-2">
@@ -631,14 +610,8 @@ export default function TeamPage() {
                     }}
                     placeholder={t("team.skillPlaceholder", lang)}
                     maxLength={100}
-                    className="flex-1 rounded-lg px-3 py-2 text-sm outline-none transition-colors"
-                    style={{
-                      background: "var(--db-surface, var(--db-bg))",
-                      border: "1px solid var(--db-border)",
-                      color: "var(--db-text)",
-                    }}
-                    onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-                    onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+                    className="db-input flex-1"
+                    style={{ width: "auto" }}
                   />
                   <Button type="button" variant="secondary" size="sm" onClick={addSkill}>
                     {t("action.add", lang)}
@@ -671,7 +644,7 @@ export default function TeamPage() {
 
               {/* Color Picker */}
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label uppercase tracking-wider">
                   {t("team.color", lang)}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -709,14 +682,14 @@ export default function TeamPage() {
       {/* Unavailability Modal */}
       {unavailTarget && (
         <div
-          className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="db-modal-backdrop"
           onClick={() => !unavailLoading && setUnavailTarget(null)}
         >
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="unavail-dialog-title"
-            className="modal-content db-card w-full max-w-md rounded-xl p-6"
+            className="db-card w-full max-w-md rounded-xl p-6"
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => { if (e.key === "Escape" && !unavailLoading) setUnavailTarget(null); }}
           >
@@ -738,7 +711,7 @@ export default function TeamPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label uppercase tracking-wider">
                   {t("team.reason", lang)}
                 </label>
                 <input
@@ -747,33 +720,19 @@ export default function TeamPage() {
                   onChange={(e) => setUnavailReason(e.target.value)}
                   placeholder={t("team.reasonPlaceholder", lang)}
                   maxLength={200}
-                  className="w-full rounded-lg px-3 py-2 text-sm outline-none transition-colors"
-                  style={{
-                    background: "var(--db-surface, var(--db-bg))",
-                    border: "1px solid var(--db-border)",
-                    color: "var(--db-text)",
-                  }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+                  className="db-input"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--db-text-muted)" }}>
+                <label className="db-label uppercase tracking-wider">
                   {t("team.until", lang)}
                 </label>
                 <input
                   type="date"
                   value={unavailUntil}
                   onChange={(e) => setUnavailUntil(e.target.value)}
-                  className="w-full rounded-lg px-3 py-2 text-sm outline-none transition-colors"
-                  style={{
-                    background: "var(--db-surface, var(--db-bg))",
-                    border: "1px solid var(--db-border)",
-                    color: "var(--db-text)",
-                  }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = "var(--db-accent)"; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = "var(--db-border)"; }}
+                  className="db-input"
                 />
               </div>
 

@@ -129,8 +129,7 @@ export default function ReferralsPage() {
                   type="text"
                   readOnly
                   value={data.shareLink ?? ""}
-                  className="flex-1 rounded-lg px-4 py-2.5 text-sm font-mono"
-                  style={{ background: "var(--db-hover)", color: "var(--db-text)", border: "1px solid var(--db-border)" }}
+                  className="db-input flex-1 font-mono"
                 />
                 <Button
                   variant="secondary"
@@ -160,7 +159,7 @@ export default function ReferralsPage() {
             key={stat.label}
             className="db-card rounded-xl p-4 text-center"
           >
-            <p className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>
+            <p className="text-2xl font-bold tabular-nums" style={{ color: "var(--db-text)" }}>
               {stat.value}
             </p>
             <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
@@ -185,20 +184,20 @@ export default function ReferralsPage() {
                 <tr style={{ background: "var(--db-hover)" }}>
                   <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.date", lang)}</th>
                   <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.status", lang)}</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.credit", lang)}</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.credit", lang)}</th>
                 </tr>
               </thead>
               <tbody>
                 {data.referrals.map((ref) => {
                   return (
-                    <tr key={ref.id} style={{ borderTop: "1px solid var(--db-border)" }}>
+                    <tr key={ref.id} className="db-table-row" style={{ borderTop: "1px solid var(--db-border)" }}>
                       <td className="px-4 py-3 tabular-nums" style={{ color: "var(--db-text-secondary)" }}>
                         {new Date(ref.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-3">
                         <StatusBadge label={ref.status} variant={statusToVariant(ref.status)} dot />
                       </td>
-                      <td className="px-4 py-3" style={{ color: "var(--db-text-secondary)" }}>
+                      <td className="px-4 py-3 text-right tabular-nums" style={{ color: "var(--db-text-secondary)" }}>
                         {ref.creditApplied ? (
                           <span style={{ color: "var(--db-success)" }}>{t("referrals.applied", lang, { amount: `$${ref.creditAmount}` })}</span>
                         ) : ref.status === "activated" ? (

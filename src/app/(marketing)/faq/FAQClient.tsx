@@ -345,7 +345,7 @@ export default function FAQClient() {
                 {cat.title}
               </h2>
               <div
-                className="rounded-2xl overflow-hidden px-6"
+                className="rounded-2xl overflow-hidden px-6 transition-all duration-200"
                 style={{
                   background: "rgba(255,255,255,0.03)",
                   border: "1px solid rgba(255,255,255,0.06)",

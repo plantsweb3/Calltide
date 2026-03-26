@@ -838,24 +838,24 @@ function OnboardingPage() {
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label={t.bizName} error={errors.bizName} required>
-                  <input type="text" value={bizName} onChange={(e) => setBizName(e.target.value)} className="input-field" placeholder="Garcia Plumbing & HVAC" />
+                  <input type="text" value={bizName} onChange={(e) => setBizName(e.target.value)} className="db-input" placeholder="Garcia Plumbing & HVAC" />
                 </Field>
                 <Field label={t.industry} error={errors.industry} required>
-                  <select value={industry} onChange={(e) => handleIndustryChange(e.target.value)} className="input-field">
+                  <select value={industry} onChange={(e) => handleIndustryChange(e.target.value)} className="db-select">
                     <option value="">{t.industryPlaceholder}</option>
                     {INDUSTRIES.map((ind) => (<option key={ind.value} value={ind.value}>{ind.label}</option>))}
                   </select>
                 </Field>
               </div>
               <Field label={t.bizAddress} hint={t.bizAddressHint}>
-                <input type="text" value={bizAddress} onChange={(e) => setBizAddress(e.target.value)} className="input-field" placeholder="San Antonio, TX" />
+                <input type="text" value={bizAddress} onChange={(e) => setBizAddress(e.target.value)} className="db-input" placeholder="San Antonio, TX" />
               </Field>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label={t.ownerNameLabel} error={errors.ownerName} required>
-                  <input type="text" value={ownerName} onChange={(e) => setOwnerName(e.target.value)} className="input-field" placeholder="Mike Garcia" />
+                  <input type="text" value={ownerName} onChange={(e) => setOwnerName(e.target.value)} className="db-input" placeholder="Mike Garcia" />
                 </Field>
                 <Field label={t.ownerPhoneLabel} error={errors.ownerPhone} hint={t.ownerPhoneHint} required>
-                  <input type="tel" value={ownerPhone} onChange={(e) => setOwnerPhone(e.target.value)} className="input-field" placeholder="(210) 555-0123" />
+                  <input type="tel" value={ownerPhone} onChange={(e) => setOwnerPhone(e.target.value)} className="db-input" placeholder="(210) 555-0123" />
                 </Field>
               </div>
 
@@ -875,9 +875,9 @@ function OnboardingPage() {
                 <div className="flex gap-2">
                   <input type="text" value={newService} onChange={(e) => setNewService(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter" && newService.trim() && services.length < 20) { setServices([...services, newService.trim()]); setNewService(""); } }}
-                    className="input-field flex-1" placeholder={t.addServicePlaceholder} maxLength={50} />
+                    className="db-input flex-1" placeholder={t.addServicePlaceholder} maxLength={50} />
                   <button onClick={() => { if (newService.trim() && services.length < 20) { setServices([...services, newService.trim()]); setNewService(""); } }}
-                    disabled={!newService.trim()} className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-40">{t.addService}</button>
+                    disabled={!newService.trim()} className="db-btn rounded-lg px-4 py-2 text-sm font-medium text-white disabled:opacity-40 disabled:cursor-not-allowed" data-variant="primary">{t.addService}</button>
                 </div>
                 {industry && SERVICE_TEMPLATES[industry] && (
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -961,7 +961,7 @@ function OnboardingPage() {
             {useCustomName && (
               <div className="mt-3">
                 <input type="text" value={receptionistName} onChange={(e) => { const val = e.target.value.replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑüÜ\s]/g, ""); if (val.length <= 20) setReceptionistName(val); }}
-                  className="input-field" placeholder={t.namePlaceholder} maxLength={20} autoFocus />
+                  className="db-input" placeholder={t.namePlaceholder} maxLength={20} autoFocus />
               </div>
             )}
 
@@ -1046,7 +1046,7 @@ function OnboardingPage() {
                     <div key={faq.key} className="rounded-lg border border-gray-100 bg-white p-3">
                       <p className="mb-1.5 text-sm font-medium text-gray-700">&ldquo;{faq.q}&rdquo;</p>
                       <textarea value={faqAnswers[faq.key] || ""} onChange={(e) => setFaqAnswers((prev) => ({ ...prev, [faq.key]: e.target.value }))}
-                        className="input-field min-h-[50px] resize-y" placeholder={faq.prefill || ""} maxLength={500} rows={2} />
+                        className="db-input min-h-[50px] resize-y" placeholder={faq.prefill || ""} maxLength={500} rows={2} />
                     </div>
                   ))}
                 </div>
@@ -1073,7 +1073,7 @@ function OnboardingPage() {
                 <p className="mb-1 text-sm font-semibold text-gray-800">{t.phrasesLabel}</p>
                 <p className="mb-3 text-xs text-gray-400">{t.phrasesSub}</p>
                 <textarea value={preferredPhrases} onChange={(e) => setPreferredPhrases(e.target.value)}
-                  className="input-field min-h-[80px] resize-y" placeholder={t.phrasesPlaceholder} maxLength={1000} rows={3} />
+                  className="db-input min-h-[80px] resize-y" placeholder={t.phrasesPlaceholder} maxLength={1000} rows={3} />
               </div>
 
               {/* Optional: Set Up Pricing */}
@@ -1107,7 +1107,7 @@ function OnboardingPage() {
                             updated[i] = { ...row, label: e.target.value };
                             setOnboardingPricing(updated);
                           }}
-                          className="input-field flex-1"
+                          className="db-input flex-1"
                         />
                         <span className="text-xs text-gray-400">$</span>
                         <input
@@ -1119,7 +1119,7 @@ function OnboardingPage() {
                             updated[i] = { ...row, min: e.target.value };
                             setOnboardingPricing(updated);
                           }}
-                          className="input-field w-20"
+                          className="db-input w-20"
                         />
                         <span className="text-xs text-gray-400">–</span>
                         <input
@@ -1131,7 +1131,7 @@ function OnboardingPage() {
                             updated[i] = { ...row, max: e.target.value };
                             setOnboardingPricing(updated);
                           }}
-                          className="input-field w-20"
+                          className="db-input w-20"
                         />
                         <select
                           value={row.unit}
@@ -1140,7 +1140,7 @@ function OnboardingPage() {
                             updated[i] = { ...row, unit: e.target.value };
                             setOnboardingPricing(updated);
                           }}
-                          className="input-field w-24 text-xs"
+                          className="db-select w-24 text-xs"
                         >
                           <option value="per_job">per job</option>
                           <option value="per_hour">per hour</option>
@@ -1354,9 +1354,14 @@ function OnboardingPage() {
 
             {/* CTA */}
             <button onClick={handleCheckout} disabled={checkoutLoading}
-              className="w-full max-w-sm rounded-lg px-8 py-3.5 text-base font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-60"
-              style={{ background: "linear-gradient(135deg, #C59A27, #D4A82E)" }}>
-              {checkoutLoading ? (t.saving) : `${t.hireCta} ${rName} →`}
+              className="db-btn w-full max-w-sm rounded-lg px-8 py-3.5 text-base font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed"
+              data-variant="primary">
+              {checkoutLoading ? (
+                <span className="inline-flex items-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  {t.saving}
+                </span>
+              ) : `${t.hireCta} ${rName} →`}
             </button>
 
             {errors.checkout && <ErrorBanner message={errors.checkout} />}
@@ -1480,14 +1485,19 @@ function OnboardingPage() {
             {errors.activate && <ErrorBanner message={errors.activate} />}
 
             <div className="mt-8 flex items-center justify-between">
-              <button onClick={goBack} className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50">{t.back}</button>
+              <button onClick={goBack} className="db-btn rounded-lg px-5 py-2.5 text-sm font-medium transition-colors" data-variant="secondary">{t.back}</button>
               <button
                 onClick={handleActivate}
                 disabled={activating}
-                className="rounded-lg px-6 py-2.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #C59A27, #D4A82E)" }}
+                className="db-btn rounded-lg px-6 py-2.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                data-variant="primary"
               >
-                {activating ? t.activating : t.activateCta}
+                {activating ? (
+                  <span className="inline-flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                    {t.activating}
+                  </span>
+                ) : t.activateCta}
               </button>
             </div>
           </div>
@@ -1622,14 +1632,7 @@ function OnboardingPage() {
         )}
       </main>
 
-      <style jsx global>{`
-        .input-field {
-          width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #E5E7EB; border-radius: 0.5rem;
-          font-size: 0.875rem; color: #111827; background: white; transition: border-color 0.15s; outline: none;
-        }
-        .input-field:focus { border-color: var(--db-accent); box-shadow: 0 0 0 3px var(--db-accent-bg); }
-        .input-field::placeholder { color: #9CA3AF; }
-      `}</style>
+      {/* Form inputs use db-input / db-select from globals.css */}
     </div>
   );
 }
@@ -1639,16 +1642,16 @@ function OnboardingPage() {
 function Field({ label, hint, error, required, children }: { label: string; hint?: string; error?: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1 block text-sm font-medium text-gray-700">{label}{required && <span className="ml-0.5 text-red-400">*</span>}</label>
+      <label className="db-label mb-1">{label}{required && <span className="ml-0.5" style={{ color: "var(--db-danger)" }}>*</span>}</label>
       {children}
-      {hint && !error && <p className="mt-0.5 text-xs text-gray-400">{hint}</p>}
-      {error && <p className="mt-0.5 text-xs text-red-500">{error}</p>}
+      {hint && !error && <p className="mt-0.5 text-xs" style={{ color: "var(--db-text-muted)" }}>{hint}</p>}
+      {error && <p className="mt-0.5 text-xs" style={{ color: "var(--db-danger)" }}>{error}</p>}
     </div>
   );
 }
 
 function ErrorBanner({ message }: { message: string }) {
-  return <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{message}</div>;
+  return <div role="alert" aria-live="assertive" className="mt-4 rounded-lg px-4 py-3 text-sm" style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}>{message}</div>;
 }
 
 function StepNav({ onBack, onNext, saving, t, showBack = true, nextDisabled = false, nextLabel, showSkip = false, onSkip, skipLabel, skipNudge }: {
@@ -1659,12 +1662,17 @@ function StepNav({ onBack, onNext, saving, t, showBack = true, nextDisabled = fa
     <div className="mt-8 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         {showBack ? (
-          <button onClick={onBack} className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50">{t.back}</button>
+          <button onClick={onBack} className="db-btn rounded-lg px-5 py-2.5 text-sm font-medium transition-colors" data-variant="secondary">{t.back}</button>
         ) : <div />}
         <button onClick={onNext} disabled={saving || nextDisabled}
-          className="rounded-lg px-6 py-2.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg, #C59A27, #D4A82E)" }}>
-          {saving ? t.saving : nextLabel || t.next}
+          className="db-btn rounded-lg px-6 py-2.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+          data-variant="primary">
+          {saving ? (
+            <span className="inline-flex items-center gap-2">
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+              {t.saving}
+            </span>
+          ) : nextLabel || t.next}
         </button>
       </div>
       {showSkip && onSkip && (

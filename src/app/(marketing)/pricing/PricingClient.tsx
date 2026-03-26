@@ -399,7 +399,7 @@ export default function PricingClient() {
             {t.softwareCosts.map((item) => (
               <div
                 key={item.name}
-                className="rounded-xl px-5 py-4 text-center"
+                className="rounded-2xl px-5 py-4 text-center transition-all duration-200 hover:scale-[1.02]"
                 style={{
                   background: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.08)",
@@ -410,7 +410,7 @@ export default function PricingClient() {
               </div>
             ))}
             <div
-              className="rounded-xl px-5 py-4 text-center sm:col-span-2 lg:col-span-3"
+              className="rounded-2xl px-5 py-4 text-center sm:col-span-2 lg:col-span-3"
               style={{
                 background: "rgba(212,168,67,0.08)",
                 border: "1px solid rgba(212,168,67,0.2)",
