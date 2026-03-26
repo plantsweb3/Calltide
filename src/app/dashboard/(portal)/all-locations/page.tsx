@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface LocationStat {
   id: string;
@@ -25,8 +27,9 @@ interface AllLocationsData {
 }
 
 export default function AllLocationsPage() {
+  const [lang] = useLang();
   const [data, setData] = useState<AllLocationsData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetch("/api/dashboard/overview/all-locations")
@@ -35,18 +38,18 @@ export default function AllLocationsPage() {
         return r.json();
       })
       .then(setData)
-      .catch(() => setError("Multi-location overview not available"));
+      .catch(() => setError(true));
   }, []);
 
   if (error) {
     return (
       <div className="rounded-xl p-4" style={{ background: "var(--db-danger-bg)", border: "1px solid var(--db-danger)" }}>
-        <p className="text-sm" style={{ color: "var(--db-danger)" }}>{error}</p>
+        <p className="text-sm" style={{ color: "var(--db-danger)" }}>{t("allLocations.loadError", lang)}</p>
       </div>
     );
   }
 
-  if (!data) return <LoadingSpinner message="Loading all locations..." />;
+  if (!data) return <LoadingSpinner message={t("allLocations.loading", lang)} />;
 
   const { totals, locations } = data;
 
@@ -54,21 +57,21 @@ export default function AllLocationsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold" style={{ color: "var(--db-text)" }}>
-          All Locations
+          {t("allLocations.title", lang)}
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-          Aggregate stats across {locations.length} locations (last 30 days)
+          {t("allLocations.subtitle", lang, { count: locations.length })}
         </p>
       </div>
 
       {/* Totals */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        <StatCard label="Total Calls" value={totals.calls} />
-        <StatCard label="Completed" value={totals.completedCalls} accent />
-        <StatCard label="Missed" value={totals.missedCalls} />
-        <StatCard label="Appointments" value={totals.appointments} />
-        <StatCard label="Confirmed" value={totals.confirmedAppointments} accent />
-        <StatCard label="Customers" value={totals.customers} />
+        <StatCard label={t("allLocations.totalCalls", lang)} value={totals.calls} />
+        <StatCard label={t("allLocations.completed", lang)} value={totals.completedCalls} accent />
+        <StatCard label={t("allLocations.missed", lang)} value={totals.missedCalls} />
+        <StatCard label={t("allLocations.appointments", lang)} value={totals.appointments} />
+        <StatCard label={t("allLocations.confirmed", lang)} value={totals.confirmedAppointments} accent />
+        <StatCard label={t("allLocations.customers", lang)} value={totals.customers} />
       </div>
 
       {/* Per-location breakdown */}
@@ -77,7 +80,7 @@ export default function AllLocationsPage() {
         style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
       >
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-          Per Location
+          {t("allLocations.perLocation", lang)}
         </h3>
         <div className="space-y-2">
           {locations.map((loc) => {
@@ -98,8 +101,8 @@ export default function AllLocationsPage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-4 text-xs" style={{ color: "var(--db-text-muted)" }}>
-                  <span>{loc.calls} calls</span>
-                  <span>{loc.completedCalls} completed</span>
+                  <span>{loc.calls} {t("allLocations.calls", lang)}</span>
+                  <span>{loc.completedCalls} {t("allLocations.completedLabel", lang)}</span>
                   <span
                     className="font-medium"
                     style={{ color: rate >= 50 ? "var(--db-success)" : "var(--db-danger)" }}

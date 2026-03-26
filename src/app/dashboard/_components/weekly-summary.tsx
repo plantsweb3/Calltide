@@ -1,5 +1,7 @@
 "use client";
 
+import { t, type Lang } from "@/lib/i18n/strings";
+
 interface WeeklySummaryData {
   totalCalls: number;
   appointmentsBooked: number;
@@ -18,7 +20,7 @@ function formatDuration(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export default function WeeklySummary({ data }: { data: WeeklySummaryData }) {
+export default function WeeklySummary({ data, lang = "en" }: { data: WeeklySummaryData; lang?: Lang }) {
   return (
     <div
       className="rounded-xl p-5 transition-colors duration-300"
@@ -32,40 +34,40 @@ export default function WeeklySummary({ data }: { data: WeeklySummaryData }) {
         className="mb-4 text-sm font-semibold uppercase tracking-wider"
         style={{ color: "var(--db-text-muted)" }}
       >
-        This Week&apos;s Report
+        {t("weeklySummary.title", lang)}
       </h3>
 
       <div className="space-y-3">
         <SummaryRow
-          label="Calls handled"
+          label={t("weeklySummary.callsHandled", lang)}
           value={String(data.totalCalls)}
-          sub={`${data.languageBreakdown.en} EN / ${data.languageBreakdown.es} ES`}
+          sub={t("weeklySummary.languageBreakdown", lang, { en: data.languageBreakdown.en, es: data.languageBreakdown.es })}
         />
         <SummaryRow
-          label="Appointments booked"
+          label={t("weeklySummary.appointmentsBooked", lang)}
           value={String(data.appointmentsBooked)}
-          sub={`~$${data.estimatedRevenue.toLocaleString()} estimated`}
+          sub={t("weeklySummary.estimatedRevenue", lang, { amount: data.estimatedRevenue.toLocaleString() })}
           highlight
         />
         <SummaryRow
-          label="Missed calls recovered"
+          label={t("weeklySummary.missedCallsRecovered", lang)}
           value={String(data.missedCallsRecovered)}
-          sub="Would have gone to voicemail"
+          sub={t("weeklySummary.wouldHaveGoneToVoicemail", lang)}
           positive
         />
         <SummaryRow
-          label="Avg. call duration"
+          label={t("weeklySummary.avgCallDuration", lang)}
           value={formatDuration(data.avgCallDuration)}
-          sub="Callers are highly engaged"
+          sub={t("weeklySummary.callersHighlyEngaged", lang)}
         />
 
         <div
           className="mt-2 pt-3 space-y-2"
           style={{ borderTop: "1px solid var(--db-border-light)" }}
         >
-          <DetailRow icon="clock" text={`Busiest hour: ${data.busiestHour}`} />
-          <DetailRow icon="star" text={`Top service: ${data.topService.name} (${data.topService.percentage}%)`} />
-          <DetailRow icon="trending" text={`Trending: ${data.trendingService}`} />
+          <DetailRow icon="clock" text={t("weeklySummary.busiestHour", lang, { hour: data.busiestHour })} />
+          <DetailRow icon="star" text={t("weeklySummary.topService", lang, { name: data.topService.name, percentage: data.topService.percentage })} />
+          <DetailRow icon="trending" text={t("weeklySummary.trending", lang, { service: data.trendingService })} />
         </div>
       </div>
     </div>

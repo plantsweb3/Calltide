@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import EmptyState from "@/components/empty-state";
+import { t, type Lang } from "@/lib/i18n/strings";
 
 interface FeedEvent {
   id: string;
@@ -151,10 +152,12 @@ export default function ActivityFeed({
   events,
   newestEventText,
   receptionistName,
+  lang = "en",
 }: {
   events: FeedEvent[];
   newestEventText?: string | null;
   receptionistName?: string;
+  lang?: Lang;
 }) {
   const [expandedChains, setExpandedChains] = useState<Set<string>>(new Set());
 
@@ -172,7 +175,7 @@ export default function ActivityFeed({
           className="mb-4 text-sm font-semibold uppercase tracking-wider"
           style={{ color: "var(--db-text-muted)" }}
         >
-          Recent Activity
+          {t("activityFeed.recentActivity", lang)}
         </h3>
         <EmptyState
           icon={
@@ -180,8 +183,8 @@ export default function ActivityFeed({
               <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
             </svg>
           }
-          title="No recent activity"
-          description="Activity will appear here as your receptionist handles calls and books appointments."
+          title={t("activityFeed.noRecentActivity", lang)}
+          description={t("activityFeed.emptyDescription", lang)}
         />
       </div>
     );
@@ -215,7 +218,7 @@ export default function ActivityFeed({
             <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "var(--db-accent)" }} />
           </span>
           <span className="text-sm font-semibold" style={{ color: "var(--db-accent)" }}>
-            {receptionistName || "Maria"} just: {newestEventText}
+            {t("activityFeed.justDid", lang, { name: receptionistName || "Maria", text: newestEventText })}
           </span>
         </div>
       ) : (
@@ -223,7 +226,7 @@ export default function ActivityFeed({
           className="mb-4 text-sm font-semibold uppercase tracking-wider"
           style={{ color: "var(--db-text-muted)" }}
         >
-          Recent Activity
+          {t("activityFeed.recentActivity", lang)}
         </h3>
       )}
 
@@ -273,7 +276,7 @@ export default function ActivityFeed({
                           className="rounded px-1.5 py-0.5 text-xs font-bold uppercase"
                           style={{ background: "var(--db-success-bg)", color: "var(--db-success)" }}
                         >
-                          Recovered
+                          {t("activityFeed.recovered", lang)}
                         </span>
                       )}
                       {evt.value && (
@@ -312,8 +315,8 @@ export default function ActivityFeed({
                   style={{ color: "var(--db-accent)" }}
                 >
                   {isExpanded
-                    ? "Show less"
-                    : `+${chain.events.length - 1} more event${chain.events.length - 1 > 1 ? "s" : ""}`}
+                    ? t("activityFeed.showLess", lang)
+                    : t(chain.events.length - 1 > 1 ? "activityFeed.moreEvents" : "activityFeed.moreEvent", lang, { count: chain.events.length - 1 })}
                 </button>
               )}
             </div>

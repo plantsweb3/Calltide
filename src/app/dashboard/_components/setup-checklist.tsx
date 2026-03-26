@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface SetupChecklistProps {
   businessHours: Record<string, { open?: string; close?: string; closed?: boolean }> | null;
@@ -26,6 +28,7 @@ export default function SetupChecklist({
   createdAt,
 }: SetupChecklistProps) {
   const [dismissed, setDismissed] = useState(setupChecklistDismissed);
+  const [lang] = useLang();
 
   // Only show for businesses < 30 days old and not dismissed
   const ageInDays = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24);
@@ -36,12 +39,12 @@ export default function SetupChecklist({
     : false;
 
   const items: CheckItem[] = [
-    { label: "Account created", done: true },
-    { label: "Set business hours", done: hasBusinessHours, link: "/dashboard/settings#general" },
-    { label: "Customize greeting", done: !!greeting, link: "/dashboard/settings#receptionist" },
-    { label: "Add service pricing", done: hasPricing, link: "/dashboard/settings#pricing" },
-    { label: "Make your first call", done: totalCalls > 0 },
-    { label: "Set up call forwarding", done: false, link: "/dashboard/settings#general" },
+    { label: t("checklist.accountCreated", lang), done: true },
+    { label: t("checklist.setBusinessHours", lang), done: hasBusinessHours, link: "/dashboard/settings#general" },
+    { label: t("checklist.customizeGreeting", lang), done: !!greeting, link: "/dashboard/settings#receptionist" },
+    { label: t("checklist.addServicePricing", lang), done: hasPricing, link: "/dashboard/settings#pricing" },
+    { label: t("checklist.makeFirstCall", lang), done: totalCalls > 0 },
+    { label: t("checklist.setupCallForwarding", lang), done: false, link: "/dashboard/settings#general" },
   ];
 
   const completedCount = items.filter((i) => i.done).length;
@@ -68,10 +71,10 @@ export default function SetupChecklist({
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
-            Setup Checklist
+            {t("checklist.title", lang)}
           </h3>
           <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
-            {completedCount} of {items.length} complete
+            {t("checklist.progress", lang, { completed: completedCount, total: items.length })}
           </p>
         </div>
         <button
@@ -84,7 +87,7 @@ export default function SetupChecklist({
             cursor: "pointer",
           }}
         >
-          I&apos;m all set
+          {t("checklist.dismiss", lang)}
         </button>
       </div>
 

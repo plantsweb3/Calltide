@@ -1982,6 +1982,25 @@ const strings: Record<string, Record<Lang, string>> = {
   },
   "billing.confirmSwitch": { en: "Confirm Switch", es: "Confirmar cambio" },
   "billing.retry": { en: "Retry", es: "Reintentar" },
+  "billing.freeTrial": { en: "Free Trial", es: "Prueba Gratuita" },
+  "billing.trialEndsIn": {
+    en: "Your free trial ends in {days} day{plural} ({date}). Your card will be charged when the trial ends.",
+    es: "Tu prueba gratuita termina en {days} dia{plural} ({date}). Tu tarjeta sera cobrada cuando termine la prueba.",
+  },
+  "billing.trialEndsInOneDay": {
+    en: "Your free trial ends in 1 day ({date}). Your card will be charged when the trial ends.",
+    es: "Tu prueba gratuita termina en 1 dia ({date}). Tu tarjeta sera cobrada cuando termine la prueba.",
+  },
+  "billing.additionalLocationsDetail": {
+    en: "Additional locations ({count} \u00d7 {price}/mo)",
+    es: "Ubicaciones adicionales ({count} \u00d7 {price}/mes)",
+  },
+  "billing.perMo": { en: "/mo", es: "/mes" },
+  "billing.perYr": { en: "/yr", es: "/ano" },
+  "billing.annualComparison": {
+    en: "$497/mo → $397/mo | $5,964/yr → $4,764/yr",
+    es: "$497/mes → $397/mes | $5,964/ano → $4,764/ano",
+  },
 
   // ── Trial ───────────────────────────────────────────────────
   "trial.startFree": {
@@ -2953,6 +2972,283 @@ const strings: Record<string, Record<Lang, string>> = {
     en: "This will mark {count} appointments as completed.",
     es: "Esto marcara {count} citas como completadas.",
   },
+
+  // ── Activity feed ──────────────────────────────────────────
+  "activityFeed.recentActivity": {
+    en: "Recent Activity",
+    es: "Actividad reciente",
+  },
+  "activityFeed.noRecentActivity": {
+    en: "No recent activity",
+    es: "Sin actividad reciente",
+  },
+  "activityFeed.emptyDescription": {
+    en: "Activity will appear here as your receptionist handles calls and books appointments.",
+    es: "La actividad aparecera aqui cuando tu recepcionista atienda llamadas y agende citas.",
+  },
+  "activityFeed.justDid": {
+    en: "{name} just: {text}",
+    es: "{name} acaba de: {text}",
+  },
+  "activityFeed.recovered": {
+    en: "Recovered",
+    es: "Recuperada",
+  },
+  "activityFeed.showLess": {
+    en: "Show less",
+    es: "Ver menos",
+  },
+  "activityFeed.moreEvent": {
+    en: "+{count} more event",
+    es: "+{count} evento mas",
+  },
+  "activityFeed.moreEvents": {
+    en: "+{count} more events",
+    es: "+{count} eventos mas",
+  },
+
+  // ── Weekly summary ─────────────────────────────────────────
+  "weeklySummary.title": {
+    en: "This Week's Report",
+    es: "Informe de esta semana",
+  },
+  "weeklySummary.callsHandled": {
+    en: "Calls handled",
+    es: "Llamadas atendidas",
+  },
+  "weeklySummary.languageBreakdown": {
+    en: "{en} EN / {es} ES",
+    es: "{en} EN / {es} ES",
+  },
+  "weeklySummary.appointmentsBooked": {
+    en: "Appointments booked",
+    es: "Citas agendadas",
+  },
+  "weeklySummary.estimatedRevenue": {
+    en: "~${amount} estimated",
+    es: "~${amount} estimado",
+  },
+  "weeklySummary.missedCallsRecovered": {
+    en: "Missed calls recovered",
+    es: "Llamadas perdidas recuperadas",
+  },
+  "weeklySummary.wouldHaveGoneToVoicemail": {
+    en: "Would have gone to voicemail",
+    es: "Habrian ido al buzon de voz",
+  },
+  "weeklySummary.avgCallDuration": {
+    en: "Avg. call duration",
+    es: "Duracion promedio de llamada",
+  },
+  "weeklySummary.callersHighlyEngaged": {
+    en: "Callers are highly engaged",
+    es: "Los clientes estan muy interesados",
+  },
+  "weeklySummary.busiestHour": {
+    en: "Busiest hour: {hour}",
+    es: "Hora mas activa: {hour}",
+  },
+  "weeklySummary.topService": {
+    en: "Top service: {name} ({percentage}%)",
+    es: "Servicio principal: {name} ({percentage}%)",
+  },
+  "weeklySummary.trending": {
+    en: "Trending: {service}",
+    es: "Tendencia: {service}",
+  },
+
+  // ── All Locations ─────────────────────────────────────────
+  "allLocations.title": { en: "All Locations", es: "Todas las ubicaciones" },
+  "allLocations.subtitle": {
+    en: "Aggregate stats across {count} locations (last 30 days)",
+    es: "Estadisticas agregadas de {count} ubicaciones (ultimos 30 dias)",
+  },
+  "allLocations.loadError": {
+    en: "Multi-location overview not available",
+    es: "Resumen multi-ubicacion no disponible",
+  },
+  "allLocations.loading": {
+    en: "Loading all locations...",
+    es: "Cargando todas las ubicaciones...",
+  },
+  "allLocations.totalCalls": { en: "Total Calls", es: "Total de llamadas" },
+  "allLocations.completed": { en: "Completed", es: "Completadas" },
+  "allLocations.missed": { en: "Missed", es: "Perdidas" },
+  "allLocations.appointments": { en: "Appointments", es: "Citas" },
+  "allLocations.confirmed": { en: "Confirmed", es: "Confirmadas" },
+  "allLocations.customers": { en: "Customers", es: "Clientes" },
+  "allLocations.perLocation": { en: "Per Location", es: "Por ubicacion" },
+  "allLocations.calls": { en: "calls", es: "llamadas" },
+  "allLocations.completedLabel": { en: "completed", es: "completadas" },
+
+  // ── Import ────────────────────────────────────────────────
+  "import.title": { en: "Import Data", es: "Importar datos" },
+  "import.subtitle": {
+    en: "Bring your data from Jobber, ServiceTitan, Housecall Pro, or any other system.",
+    es: "Trae tus datos desde Jobber, ServiceTitan, Housecall Pro o cualquier otro sistema.",
+  },
+  "import.stepChooseType": { en: "Choose Type", es: "Elige tipo" },
+  "import.stepUploadFile": { en: "Upload File", es: "Subir archivo" },
+  "import.stepPreview": { en: "Preview", es: "Vista previa" },
+  "import.stepResults": { en: "Results", es: "Resultados" },
+  "import.whatToImport": {
+    en: "What would you like to import?",
+    es: "Que te gustaria importar?",
+  },
+  "import.selectType": {
+    en: "Select the type of data you want to bring in from your previous system.",
+    es: "Selecciona el tipo de datos que quieres traer de tu sistema anterior.",
+  },
+  "import.customers": { en: "Customers", es: "Clientes" },
+  "import.customersDesc": {
+    en: "Import your customer list with names, phones, emails, and addresses.",
+    es: "Importa tu lista de clientes con nombres, telefonos, correos y direcciones.",
+  },
+  "import.appointments": { en: "Appointments", es: "Citas" },
+  "import.appointmentsDesc": {
+    en: "Import scheduled appointments with dates, times, and services.",
+    es: "Importa citas programadas con fechas, horarios y servicios.",
+  },
+  "import.estimates": { en: "Estimates", es: "Cotizaciones" },
+  "import.estimatesDesc": {
+    en: "Import estimates and quotes with amounts and service details.",
+    es: "Importa cotizaciones con montos y detalles de servicios.",
+  },
+  "import.uploadCsv": {
+    en: "Upload {type} CSV",
+    es: "Subir CSV de {type}",
+  },
+  "import.needTemplate": { en: "Need a template?", es: "Necesitas una plantilla?" },
+  "import.templateDesc": {
+    en: "Download our CSV template with example data and expected columns.",
+    es: "Descarga nuestra plantilla CSV con datos de ejemplo y columnas esperadas.",
+  },
+  "import.downloadTemplate": { en: "Download Template", es: "Descargar plantilla" },
+  "import.dropOrBrowse": {
+    en: "Drop your CSV file here or click to browse",
+    es: "Arrastra tu archivo CSV aqui o haz clic para buscar",
+  },
+  "import.maxFileSize": { en: "Maximum file size: 5MB", es: "Tamano maximo: 5MB" },
+  "import.tipsTitle": { en: "Tips for a smooth import:", es: "Consejos para una importacion exitosa:" },
+  "import.tipExport": {
+    en: "Export your data as CSV from your current system (Jobber, ServiceTitan, Housecall Pro, etc.)",
+    es: "Exporta tus datos como CSV desde tu sistema actual (Jobber, ServiceTitan, Housecall Pro, etc.)",
+  },
+  "import.tipColumnsMatched": {
+    en: "Column names are matched automatically — no need to rename headers",
+    es: "Los nombres de columnas se emparejan automaticamente — no necesitas renombrar encabezados",
+  },
+  "import.tipPhoneLink": {
+    en: "Phone numbers are used to link customers across imports",
+    es: "Los numeros de telefono se usan para vincular clientes entre importaciones",
+  },
+  "import.tipDateFormats": {
+    en: "Dates can be in MM/DD/YYYY, YYYY-MM-DD, or M/D/YY format",
+    es: "Las fechas pueden estar en formato MM/DD/AAAA, AAAA-MM-DD o M/D/AA",
+  },
+  "import.tipEstimatesCustomersFirst": {
+    en: "Import your customers first, then estimates — they are linked by phone number",
+    es: "Importa tus clientes primero, luego las cotizaciones — se vinculan por numero de telefono",
+  },
+  "import.previewImport": { en: "Preview Import", es: "Vista previa de importacion" },
+  "import.rowsFound": {
+    en: "{count} row found",
+    es: "{count} fila encontrada",
+  },
+  "import.rowsFoundPlural": {
+    en: "{count} rows found",
+    es: "{count} filas encontradas",
+  },
+  "import.showingFirst": {
+    en: "Showing first {count} rows. Duplicate phone numbers will be automatically skipped.",
+    es: "Mostrando las primeras {count} filas. Los numeros duplicados se omitiran automaticamente.",
+  },
+  "import.chooseDifferentFile": { en: "Choose Different File", es: "Elegir otro archivo" },
+  "import.importing": { en: "Importing...", es: "Importando..." },
+  "import.importRows": {
+    en: "Import {count} Row",
+    es: "Importar {count} fila",
+  },
+  "import.importRowsPlural": {
+    en: "Import {count} Rows",
+    es: "Importar {count} filas",
+  },
+  "import.complete": { en: "Import Complete", es: "Importacion completada" },
+  "import.successfullyImported": { en: "Successfully imported", es: "Importados exitosamente" },
+  "import.skippedDuplicates": { en: "Skipped (duplicates)", es: "Omitidos (duplicados)" },
+  "import.errors": { en: "Errors", es: "Errores" },
+  "import.rowsHadErrors": {
+    en: "{count} row had errors",
+    es: "{count} fila tuvo errores",
+  },
+  "import.rowsHadErrorsPlural": {
+    en: "{count} rows had errors",
+    es: "{count} filas tuvieron errores",
+  },
+  "import.row": { en: "Row {n}", es: "Fila {n}" },
+  "import.importMoreData": { en: "Import More Data", es: "Importar mas datos" },
+  "import.view": { en: "View {type}", es: "Ver {type}" },
+  "import.errorCsvOnly": { en: "Please upload a CSV file", es: "Por favor sube un archivo CSV" },
+  "import.errorTooLarge": { en: "File too large. Maximum 5MB.", es: "Archivo muy grande. Maximo 5MB." },
+  "import.errorEmpty": { en: "CSV file appears to be empty", es: "El archivo CSV parece estar vacio" },
+  "import.errorRateLimit": {
+    en: "Too many imports. Please wait and try again later.",
+    es: "Demasiadas importaciones. Espera e intenta de nuevo mas tarde.",
+  },
+  "import.errorFailed": { en: "Import failed. Please try again.", es: "Importacion fallida. Intenta de nuevo." },
+  "import.successToast": {
+    en: "Successfully imported {count} {type}",
+    es: "Se importaron {count} {type} exitosamente",
+  },
+
+  // ── Business Insights ───────────────────────────────────────
+  "insights.title": { en: "AI Insights", es: "Datos de IA" },
+  "insights.spanishLeadsThisMonth": {
+    en: "Spanish-speaking leads this month",
+    es: "Clientes hispanohablantes este mes",
+  },
+  "insights.bilingualPercentage": {
+    en: "{percentage}% of calls handled in Spanish — without bilingual AI, these leads would be lost",
+    es: "{percentage}% de las llamadas atendidas en espanol — sin IA bilingue, estos clientes se perderian",
+  },
+  "insights.busiestTime": {
+    en: "Your busiest time is {hour}. Consider staffing accordingly.",
+    es: "Tu hora mas activa es {hour}. Considera ajustar tu personal.",
+  },
+  "insights.spanishCallers": {
+    en: "{percentage}% of your callers speak Spanish. Your bilingual AI is capturing revenue competitors miss.",
+    es: "{percentage}% de tus llamadas son en espanol. Tu IA bilingue esta capturando ingresos que tu competencia pierde.",
+  },
+  "insights.missedRecovered": {
+    en: "{count} missed calls were recovered into appointments worth ~${amount}.",
+    es: "{count} llamadas perdidas se recuperaron en citas por un valor de ~${amount}.",
+  },
+  "insights.topService": {
+    en: "\"{service}\" is your most requested service at {percentage}% of bookings.",
+    es: "\"{service}\" es tu servicio mas solicitado con {percentage}% de las reservas.",
+  },
+  "insights.avgDuration": {
+    en: "Average call duration is {minutes}m {seconds}s — your AI handles calls efficiently.",
+    es: "La duracion promedio de llamadas es {minutes}m {seconds}s — tu IA atiende llamadas eficientemente.",
+  },
+  "insights.readyAndLearning": {
+    en: "Your AI receptionist is ready and learning. Insights will appear as more calls come in.",
+    es: "Tu recepcionista de IA esta lista y aprendiendo. Los datos apareceran conforme recibas mas llamadas.",
+  },
+
+  // ── Setup Checklist (overview card) ─────────────────────────
+  "checklist.title": { en: "Setup Checklist", es: "Lista de configuracion" },
+  "checklist.progress": {
+    en: "{completed} of {total} complete",
+    es: "{completed} de {total} completados",
+  },
+  "checklist.dismiss": { en: "I'm all set", es: "Ya estoy listo" },
+  "checklist.accountCreated": { en: "Account created", es: "Cuenta creada" },
+  "checklist.setBusinessHours": { en: "Set business hours", es: "Configurar horario de negocio" },
+  "checklist.customizeGreeting": { en: "Customize greeting", es: "Personalizar saludo" },
+  "checklist.addServicePricing": { en: "Add service pricing", es: "Agregar precios de servicios" },
+  "checklist.makeFirstCall": { en: "Make your first call", es: "Haz tu primera llamada" },
+  "checklist.setupCallForwarding": { en: "Set up call forwarding", es: "Configurar desvio de llamadas" },
 };
 
 /**

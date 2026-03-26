@@ -98,7 +98,7 @@ export default function BillingPage() {
         body: JSON.stringify({ plan: "annual" }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Failed to switch plan");
+      if (!res.ok) throw new Error(json.error || t("toast.failedToSwitchPlan", lang));
       toast.success(t("toast.switchedToAnnual", lang));
       // Refresh billing data
       const refreshRes = await fetch("/api/dashboard/billing");
@@ -163,13 +163,19 @@ export default function BillingPage() {
               <polyline points="12 6 12 12 16 14" />
             </svg>
             <h3 className="text-sm font-semibold" style={{ color: "var(--db-accent)" }}>
-              {lang === "es" ? "Prueba Gratuita" : "Free Trial"}
+              {t("billing.freeTrial", lang)}
             </h3>
           </div>
           <p className="text-sm" style={{ color: "var(--db-text)" }}>
-            {lang === "es"
-              ? `Tu prueba gratuita termina en ${trialDaysLeft} día${trialDaysLeft !== 1 ? "s" : ""} (${new Date(data.trialEndsAt).toLocaleDateString(lang === "es" ? "es" : "en", { month: "long", day: "numeric" })}). Tu tarjeta será cobrada cuando termine la prueba.`
-              : `Your free trial ends in ${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} (${new Date(data.trialEndsAt).toLocaleDateString("en", { month: "long", day: "numeric" })}). Your card will be charged when the trial ends.`}
+            {trialDaysLeft === 1
+              ? t("billing.trialEndsInOneDay", lang, {
+                  date: new Date(data.trialEndsAt).toLocaleDateString(lang === "es" ? "es" : "en", { month: "long", day: "numeric" }),
+                })
+              : t("billing.trialEndsIn", lang, {
+                  days: trialDaysLeft,
+                  plural: "s",
+                  date: new Date(data.trialEndsAt).toLocaleDateString(lang === "es" ? "es" : "en", { month: "long", day: "numeric" }),
+                })}
           </p>
         </div>
       )}
@@ -199,11 +205,9 @@ export default function BillingPage() {
               <p className="mt-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
                 {t("billing.switchDesc", lang)}
               </p>
-              <div className="mt-3 flex items-center gap-4 text-xs" style={{ color: "var(--db-text-muted)" }}>
-                <span>$497/mo &rarr; $397/mo</span>
-                <span>|</span>
-                <span>$5,964/yr &rarr; $4,764/yr</span>
-              </div>
+              <p className="mt-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                {t("billing.annualComparison", lang)}
+              </p>
             </div>
             <Button
               size="lg"
@@ -258,20 +262,23 @@ export default function BillingPage() {
           <div className="space-y-2">
             <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
               <span className="text-sm" style={{ color: "var(--db-text)" }}>{t("billing.basePlan", lang)}</span>
-              <span className="text-sm font-medium font-mono" style={{ color: "var(--db-text)" }}>{fmt(data.price)}/mo</span>
+              <span className="text-sm font-medium font-mono" style={{ color: "var(--db-text)" }}>{fmt(data.price)}{t("billing.perMo", lang)}</span>
             </div>
             <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "var(--db-hover)" }}>
               <span className="text-sm" style={{ color: "var(--db-text)" }}>
-                Additional locations ({(data.locationCount ?? 1) - 1} &times; {fmt(data.additionalLocationPrice ?? 0)}/mo)
+                {t("billing.additionalLocationsDetail", lang, {
+                  count: (data.locationCount ?? 1) - 1,
+                  price: fmt(data.additionalLocationPrice ?? 0),
+                })}
               </span>
               <span className="text-sm font-medium font-mono" style={{ color: "var(--db-text)" }}>
-                {fmt(((data.locationCount ?? 1) - 1) * (data.additionalLocationPrice ?? 0))}/mo
+                {fmt(((data.locationCount ?? 1) - 1) * (data.additionalLocationPrice ?? 0))}{t("billing.perMo", lang)}
               </span>
             </div>
             <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ borderTop: "1px solid var(--db-border)" }}>
               <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>{t("billing.total", lang)}</span>
               <span className="text-sm font-bold font-mono" style={{ color: "var(--db-accent)" }}>
-                {fmt(data.totalMonthly ?? data.price)}/mo
+                {fmt(data.totalMonthly ?? data.price)}{t("billing.perMo", lang)}
               </span>
             </div>
           </div>
@@ -327,7 +334,7 @@ export default function BillingPage() {
             {t("billing.nextBillingDate", lang)}
           </h3>
           <p className="text-lg font-medium" style={{ color: "var(--db-text)" }}>
-            {new Date(data.nextBillingAt).toLocaleDateString("en", {
+            {new Date(data.nextBillingAt).toLocaleDateString(lang === "es" ? "es" : "en", {
               weekday: "long",
               month: "long",
               day: "numeric",
@@ -355,7 +362,7 @@ export default function BillingPage() {
               >
                 <div>
                   <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                    {new Date(inv.date).toLocaleDateString("en", {
+                    {new Date(inv.date).toLocaleDateString(lang === "es" ? "es" : "en", {
                       month: "long",
                       day: "numeric",
                       year: "numeric",

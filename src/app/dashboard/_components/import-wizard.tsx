@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { CaptaSpinnerInline } from "@/components/capta-spinner";
+import { t, type Lang } from "@/lib/i18n/strings";
 
 type ImportType = "customers" | "appointments" | "estimates";
 type WizardStep = "choose" | "upload" | "preview" | "results";
@@ -25,43 +26,37 @@ interface PreviewData {
   totalRows: number;
 }
 
-const IMPORT_TYPES: {
-  key: ImportType;
-  label: string;
-  description: string;
-  icon: React.ReactNode;
-}[] = [
-  {
-    key: "customers",
-    label: "Customers",
-    description: "Import your customer list with names, phones, emails, and addresses.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    ),
-  },
-  {
-    key: "appointments",
-    label: "Appointments",
-    description: "Import scheduled appointments with dates, times, and services.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-      </svg>
-    ),
-  },
-  {
-    key: "estimates",
-    label: "Estimates",
-    description: "Import estimates and quotes with amounts and service details.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
-      </svg>
-    ),
-  },
-];
+const IMPORT_TYPE_ICONS: Record<ImportType, React.ReactNode> = {
+  customers: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  ),
+  appointments: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  ),
+  estimates: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+    </svg>
+  ),
+};
+
+const IMPORT_TYPE_KEYS: ImportType[] = ["customers", "appointments", "estimates"];
+
+function getImportTypeLabel(key: ImportType, lang: Lang): string {
+  return t(`import.${key}`, lang);
+}
+
+function getImportTypeDesc(key: ImportType, lang: Lang): string {
+  return t(`import.${key}Desc`, lang);
+}
+
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
 function parseCsvPreview(text: string): PreviewData {
   // Quote-aware line splitting (matches backend splitCsvLines)
@@ -112,7 +107,7 @@ function parseCsvPreview(text: string): PreviewData {
   return { headers, rows, totalRows: lines.length - 1 };
 }
 
-export default function ImportWizard({ initialType }: { initialType?: ImportType }) {
+export default function ImportWizard({ initialType, lang }: { initialType?: ImportType; lang: Lang }) {
   const router = useRouter();
   const [step, setStep] = useState<WizardStep>(initialType ? "upload" : "choose");
   const [importType, setImportType] = useState<ImportType | null>(initialType || null);
@@ -125,23 +120,23 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
 
   const handleFileSelect = useCallback(async (selectedFile: File) => {
     if (!selectedFile.name.endsWith(".csv")) {
-      toast.error("Please upload a CSV file");
+      toast.error(t("import.errorCsvOnly", lang));
       return;
     }
     if (selectedFile.size > 5 * 1024 * 1024) {
-      toast.error("File too large. Maximum 5MB.");
+      toast.error(t("import.errorTooLarge", lang));
       return;
     }
     setFile(selectedFile);
     const text = await selectedFile.text();
     const previewData = parseCsvPreview(text);
     if (previewData.headers.length === 0) {
-      toast.error("CSV file appears to be empty");
+      toast.error(t("import.errorEmpty", lang));
       return;
     }
     setPreview(previewData);
     setStep("preview");
-  }, []);
+  }, [lang]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -164,7 +159,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
       });
 
       if (res.status === 429) {
-        toast.error("Too many imports. Please wait and try again later.");
+        toast.error(t("import.errorRateLimit", lang));
         setUploading(false);
         return;
       }
@@ -172,7 +167,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.error || "Import failed");
+        toast.error(data.error || t("import.errorFailed", lang));
         setUploading(false);
         return;
       }
@@ -180,10 +175,10 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
       setResults(data);
       setStep("results");
       if (data.imported > 0) {
-        toast.success(`Successfully imported ${data.imported} ${importType}`);
+        toast.success(t("import.successToast", lang, { count: data.imported, type: getImportTypeLabel(importType, lang).toLowerCase() }));
       }
     } catch {
-      toast.error("Import failed. Please try again.");
+      toast.error(t("import.errorFailed", lang));
     } finally {
       setUploading(false);
     }
@@ -202,12 +197,18 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
     else if (step === "preview") { setStep("upload"); setFile(null); setPreview(null); }
   };
 
+  const stepLabels = [
+    t("import.stepChooseType", lang),
+    t("import.stepUploadFile", lang),
+    t("import.stepPreview", lang),
+    t("import.stepResults", lang),
+  ];
+
   return (
     <div>
       {/* Step indicator */}
       <div className="flex items-center gap-2 mb-8">
         {(["choose", "upload", "preview", "results"] as WizardStep[]).map((s, idx) => {
-          const labels = ["Choose Type", "Upload File", "Preview", "Results"];
           const stepOrder = ["choose", "upload", "preview", "results"];
           const currentIdx = stepOrder.indexOf(step);
           const isActive = idx <= currentIdx;
@@ -233,7 +234,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
                   className="text-sm hidden sm:inline"
                   style={{ color: isActive ? "var(--db-text)" : "var(--db-text-muted)" }}
                 >
-                  {labels[idx]}
+                  {stepLabels[idx]}
                 </span>
               </div>
             </div>
@@ -245,16 +246,16 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
       {step === "choose" && (
         <div>
           <h2 className="text-lg font-semibold mb-1" style={{ color: "var(--db-text)" }}>
-            What would you like to import?
+            {t("import.whatToImport", lang)}
           </h2>
           <p className="text-sm mb-6" style={{ color: "var(--db-text-muted)" }}>
-            Select the type of data you want to bring in from your previous system.
+            {t("import.selectType", lang)}
           </p>
           <div className="grid gap-4 sm:grid-cols-3">
-            {IMPORT_TYPES.map((type) => (
+            {IMPORT_TYPE_KEYS.map((key) => (
               <button
-                key={type.key}
-                onClick={() => { setImportType(type.key); setStep("upload"); }}
+                key={key}
+                onClick={() => { setImportType(key); setStep("upload"); }}
                 className="flex flex-col items-start gap-3 rounded-xl p-5 text-left transition-all"
                 style={{
                   background: "var(--db-surface)",
@@ -267,14 +268,14 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
                   className="rounded-lg p-2.5"
                   style={{ background: "var(--db-hover)", color: "var(--db-accent)" }}
                 >
-                  {type.icon}
+                  {IMPORT_TYPE_ICONS[key]}
                 </div>
                 <div>
                   <div className="font-medium text-sm" style={{ color: "var(--db-text)" }}>
-                    {type.label}
+                    {getImportTypeLabel(key, lang)}
                   </div>
                   <div className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
-                    {type.description}
+                    {getImportTypeDesc(key, lang)}
                   </div>
                 </div>
               </button>
@@ -297,7 +298,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
               </svg>
             </button>
             <h2 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
-              Upload {importType.charAt(0).toUpperCase() + importType.slice(1)} CSV
+              {t("import.uploadCsv", lang, { type: capitalize(getImportTypeLabel(importType, lang)) })}
             </h2>
           </div>
 
@@ -308,10 +309,10 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
           >
             <div>
               <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-                Need a template?
+                {t("import.needTemplate", lang)}
               </p>
               <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
-                Download our CSV template with example data and expected columns.
+                {t("import.templateDesc", lang)}
               </p>
             </div>
             <a
@@ -324,7 +325,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
                 color: "var(--db-text)",
               }}
             >
-              Download Template
+              {t("import.downloadTemplate", lang)}
             </a>
           </div>
 
@@ -360,27 +361,27 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
               <line x1="12" y1="3" x2="12" y2="15" />
             </svg>
             <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
-              Drop your CSV file here or click to browse
+              {t("import.dropOrBrowse", lang)}
             </p>
             <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
-              Maximum file size: 5MB
+              {t("import.maxFileSize", lang)}
             </p>
           </div>
 
           {/* Tips */}
           <div className="mt-6 rounded-xl p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
             <p className="text-xs font-medium mb-2" style={{ color: "var(--db-text)" }}>
-              Tips for a smooth import:
+              {t("import.tipsTitle", lang)}
             </p>
             <ul className="space-y-1 text-xs" style={{ color: "var(--db-text-muted)" }}>
-              <li>Export your data as CSV from your current system (Jobber, ServiceTitan, Housecall Pro, etc.)</li>
-              <li>Column names are matched automatically — no need to rename headers</li>
-              <li>Phone numbers are used to link customers across imports</li>
+              <li>{t("import.tipExport", lang)}</li>
+              <li>{t("import.tipColumnsMatched", lang)}</li>
+              <li>{t("import.tipPhoneLink", lang)}</li>
               {importType === "appointments" && (
-                <li>Dates can be in MM/DD/YYYY, YYYY-MM-DD, or M/D/YY format</li>
+                <li>{t("import.tipDateFormats", lang)}</li>
               )}
               {importType === "estimates" && (
-                <li>Import your customers first, then estimates — they are linked by phone number</li>
+                <li>{t("import.tipEstimatesCustomersFirst", lang)}</li>
               )}
             </ul>
           </div>
@@ -401,7 +402,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
               </svg>
             </button>
             <h2 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
-              Preview Import
+              {t("import.previewImport", lang)}
             </h2>
           </div>
 
@@ -410,10 +411,12 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
               <p className="text-sm" style={{ color: "var(--db-text)" }}>
                 <span className="font-medium">{file?.name}</span>
                 {" — "}
-                {preview.totalRows} row{preview.totalRows !== 1 ? "s" : ""} found
+                {preview.totalRows !== 1
+                  ? t("import.rowsFoundPlural", lang, { count: preview.totalRows })
+                  : t("import.rowsFound", lang, { count: preview.totalRows })}
               </p>
               <p className="text-xs mt-0.5" style={{ color: "var(--db-text-muted)" }}>
-                Showing first {Math.min(10, preview.rows.length)} rows. Duplicate phone numbers will be automatically skipped.
+                {t("import.showingFirst", lang, { count: Math.min(10, preview.rows.length) })}
               </p>
             </div>
           </div>
@@ -454,7 +457,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
               className="rounded-lg px-4 py-2 text-sm"
               style={{ background: "var(--db-hover)", color: "var(--db-text)" }}
             >
-              Choose Different File
+              {t("import.chooseDifferentFile", lang)}
             </button>
             <button
               onClick={handleUpload}
@@ -465,10 +468,12 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
               {uploading ? (
                 <span className="flex items-center gap-2">
                   <CaptaSpinnerInline size={16} />
-                  Importing...
+                  {t("import.importing", lang)}
                 </span>
               ) : (
-                `Import ${preview.totalRows} Row${preview.totalRows !== 1 ? "s" : ""}`
+                preview.totalRows !== 1
+                  ? t("import.importRowsPlural", lang, { count: preview.totalRows })
+                  : t("import.importRows", lang, { count: preview.totalRows })
               )}
             </button>
           </div>
@@ -479,7 +484,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
       {step === "results" && results && importType && (
         <div>
           <h2 className="text-lg font-semibold mb-6" style={{ color: "var(--db-text)" }}>
-            Import Complete
+            {t("import.complete", lang)}
           </h2>
 
           <div className="grid gap-4 sm:grid-cols-3 mb-6">
@@ -488,7 +493,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
                 {results.imported}
               </div>
               <div className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
-                Successfully imported
+                {t("import.successfullyImported", lang)}
               </div>
             </div>
             <div className="rounded-xl p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
@@ -496,7 +501,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
                 {results.skipped}
               </div>
               <div className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
-                Skipped (duplicates)
+                {t("import.skippedDuplicates", lang)}
               </div>
             </div>
             <div className="rounded-xl p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
@@ -504,7 +509,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
                 {results.errors.length}
               </div>
               <div className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
-                Errors
+                {t("import.errors", lang)}
               </div>
             </div>
           </div>
@@ -514,7 +519,9 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
             <div className="mb-6 rounded-xl overflow-hidden" style={{ border: "1px solid var(--db-danger)" }}>
               <div className="px-4 py-3" style={{ background: "var(--db-danger-bg)" }}>
                 <p className="text-sm font-medium" style={{ color: "var(--db-danger)" }}>
-                  {results.errors.length} row{results.errors.length !== 1 ? "s" : ""} had errors
+                  {results.errors.length !== 1
+                    ? t("import.rowsHadErrorsPlural", lang, { count: results.errors.length })
+                    : t("import.rowsHadErrors", lang, { count: results.errors.length })}
                 </p>
               </div>
               <div className="max-h-48 overflow-auto" style={{ background: "var(--db-surface)" }}>
@@ -525,7 +532,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
                     style={{ borderTop: i > 0 ? "1px solid var(--db-border)" : undefined }}
                   >
                     <span className="font-medium shrink-0" style={{ color: "var(--db-text-muted)" }}>
-                      Row {err.row}
+                      {t("import.row", lang, { n: err.row })}
                     </span>
                     <span style={{ color: "var(--db-text)" }}>{err.reason}</span>
                   </div>
@@ -541,7 +548,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
               className="rounded-lg px-4 py-2 text-sm"
               style={{ background: "var(--db-hover)", color: "var(--db-text)" }}
             >
-              Import More Data
+              {t("import.importMoreData", lang)}
             </button>
             <button
               onClick={() => {
@@ -555,7 +562,7 @@ export default function ImportWizard({ initialType }: { initialType?: ImportType
               className="rounded-lg px-4 py-2 text-sm font-medium text-white"
               style={{ background: "var(--db-accent)" }}
             >
-              View {importType.charAt(0).toUpperCase() + importType.slice(1)}
+              {t("import.view", lang, { type: capitalize(getImportTypeLabel(importType, lang)) })}
             </button>
           </div>
         </div>

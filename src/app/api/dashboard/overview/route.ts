@@ -7,9 +7,11 @@ import { reportError } from "@/lib/error-reporting";
 import { getMrrForPlan } from "@/lib/stripe-prices";
 import type { PlanType } from "@/lib/stripe-prices";
 import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
+import { t, type Lang } from "@/lib/i18n/strings";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");
+  const lang = (req.nextUrl.searchParams.get("lang") === "es" ? "es" : "en") as Lang;
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -600,35 +602,35 @@ export async function GET(req: NextRequest) {
 
   if (busiestHourNum != null) {
     insights.push({
-      text: `Your busiest time is ${busiestHour}. Consider staffing accordingly.`,
+      text: t("insights.busiestTime", lang, { hour: busiestHour }),
       icon: "clock",
     });
   }
 
   if (bilingualStats.percentage >= 15) {
     insights.push({
-      text: `${bilingualStats.percentage}% of your callers speak Spanish. Your bilingual AI is capturing revenue competitors miss.`,
+      text: t("insights.spanishCallers", lang, { percentage: bilingualStats.percentage }),
       icon: "globe",
     });
   }
 
   if (missedCallsRecoveredCount > 0) {
     insights.push({
-      text: `${missedCallsRecoveredCount} missed calls were recovered into appointments worth ~$${revenueSaved.toLocaleString()}.`,
+      text: t("insights.missedRecovered", lang, { count: missedCallsRecoveredCount, amount: revenueSaved.toLocaleString() }),
       icon: "recovery",
     });
   }
 
   if (topServiceName !== "N/A") {
     insights.push({
-      text: `"${topServiceName}" is your most requested service at ${topServicePct}% of bookings.`,
+      text: t("insights.topService", lang, { service: topServiceName, percentage: topServicePct }),
       icon: "trending",
     });
   }
 
   if (avgCallDuration > 0) {
     insights.push({
-      text: `Average call duration is ${Math.round(avgCallDuration / 60)}m ${avgCallDuration % 60}s — your AI handles calls efficiently.`,
+      text: t("insights.avgDuration", lang, { minutes: Math.round(avgCallDuration / 60), seconds: avgCallDuration % 60 }),
       icon: "speed",
     });
   }
@@ -636,7 +638,7 @@ export async function GET(req: NextRequest) {
   // Ensure at least one insight
   if (insights.length === 0) {
     insights.push({
-      text: "Your AI receptionist is ready and learning. Insights will appear as more calls come in.",
+      text: t("insights.readyAndLearning", lang),
       icon: "sparkle",
     });
   }

@@ -1,6 +1,8 @@
 "use client";
 
 import { IconGlobe } from "@/components/icons";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface Insight {
   text: string;
@@ -71,6 +73,8 @@ export default function BusinessInsights({
   insights: Insight[];
   bilingualStats?: BilingualStats;
 }) {
+  const [lang] = useLang();
+
   return (
     <div className="space-y-4">
       {/* Insights Card */}
@@ -86,7 +90,7 @@ export default function BusinessInsights({
           className="mb-4 text-sm font-semibold uppercase tracking-wider"
           style={{ color: "var(--db-text-muted)" }}
         >
-          AI Insights
+          {t("insights.title", lang)}
         </h3>
         <div className="space-y-3">
           {insights.map((insight, i) => (
@@ -124,7 +128,7 @@ export default function BusinessInsights({
                 {bilingualStats.spanishCalls}
               </p>
               <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-                Spanish-speaking leads this month
+                {t("insights.spanishLeadsThisMonth", lang)}
               </p>
             </div>
           </div>
@@ -139,7 +143,7 @@ export default function BusinessInsights({
             />
           </div>
           <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
-            {bilingualStats.percentage}% of calls handled in Spanish — without bilingual AI, these leads would be lost
+            {t("insights.bilingualPercentage", lang, { percentage: bilingualStats.percentage })}
           </p>
         </div>
       )}

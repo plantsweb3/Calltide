@@ -4,8 +4,11 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import ImportWizard from "@/app/dashboard/_components/import-wizard";
 import CaptaSpinner from "@/components/capta-spinner";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 function ImportContent() {
+  const [lang] = useLang();
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as "customers" | "appointments" | "estimates" | null;
   const validTypes = ["customers", "appointments", "estimates"];
@@ -15,13 +18,13 @@ function ImportContent() {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold" style={{ fontFamily: "var(--font-body), system-ui, sans-serif", color: "var(--db-text)" }}>
-          Import Data
+          {t("import.title", lang)}
         </h1>
         <p className="text-sm mt-1" style={{ color: "var(--db-text-muted)" }}>
-          Bring your data from Jobber, ServiceTitan, Housecall Pro, or any other system.
+          {t("import.subtitle", lang)}
         </p>
       </div>
-      <ImportWizard initialType={initialType} />
+      <ImportWizard initialType={initialType} lang={lang} />
     </div>
   );
 }

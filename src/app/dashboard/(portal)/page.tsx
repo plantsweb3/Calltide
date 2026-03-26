@@ -146,7 +146,7 @@ export default function OverviewPage() {
 
   const loadOverview = useCallback(() => {
     setError(null);
-    fetch("/api/dashboard/overview")
+    fetch(`/api/dashboard/overview?lang=${lang}`)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setData)
       .catch(() => setError("Failed to load dashboard data"));
@@ -154,7 +154,7 @@ export default function OverviewPage() {
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d: ActionItems) => setActionItems(d))
       .catch(() => {});
-  }, []);
+  }, [lang]);
 
   useEffect(() => {
     loadOverview();
@@ -491,12 +491,12 @@ export default function OverviewPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           {data.activityFeed && (
             <div className="lg:col-span-3">
-              <ActivityFeed events={data.activityFeed} newestEventText={data.newestEventText} receptionistName={receptionistName} />
+              <ActivityFeed events={data.activityFeed} newestEventText={data.newestEventText} receptionistName={receptionistName} lang={lang} />
             </div>
           )}
           {data.weeklySummary && (
             <div className="lg:col-span-2">
-              <WeeklySummary data={data.weeklySummary} />
+              <WeeklySummary data={data.weeklySummary} lang={lang} />
             </div>
           )}
         </div>
