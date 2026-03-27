@@ -3,7 +3,7 @@ import { blogPosts, testimonials } from "@/db/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 import LandingPage from "./HomeClient";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const posts = await db

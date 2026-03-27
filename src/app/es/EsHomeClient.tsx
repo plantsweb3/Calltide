@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, MotionConfig } from "framer-motion";
 import dynamic from "next/dynamic";
 
 import { T, PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
@@ -10,7 +10,10 @@ import { FEATURE_ICONS, STEP_ICONS } from "@/components/marketing/icons";
 import { SpotlightCard } from "@/components/marketing/SpotlightCard";
 import { Counter } from "@/components/marketing/Counter";
 import { ROICalculator } from "@/components/marketing/ROICalculator";
+import RevenueCycle from "@/components/marketing/RevenueCycle";
+import CallShowcase from "@/components/marketing/CallShowcase";
 import { FAQ } from "@/components/marketing/FAQ";
+import { MissedCallCalculator } from "@/components/marketing/MissedCallCalculator";
 import { MobileCTA } from "@/components/marketing/MobileCTA";
 import { Footer } from "@/components/marketing/Footer";
 import Link from "next/link";
@@ -40,11 +43,11 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
           <Link href="/" className="rounded-full border px-3 py-1.5 text-xs font-semibold text-charcoal-muted transition hover:border-amber hover:text-amber" style={{ borderColor: "rgba(0,0,0,0.1)" }}>
             EN
           </Link>
-          <a href="/dashboard/login" className="hidden text-sm font-medium text-charcoal-muted transition hover:text-charcoal sm:inline-block">Iniciar Sesión</a>
+          <a href="/dashboard/login" className="hidden text-sm font-medium text-charcoal-muted transition hover:text-charcoal sm:inline-block">Iniciar Sesi&oacute;n</a>
           <a href="/setup" className="cta-shimmer hidden items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-light sm:inline-flex">
             Prueba Gratis
           </a>
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="flex h-10 w-10 items-center justify-center rounded-lg text-charcoal md:hidden" aria-label="Menú">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="flex h-10 w-10 items-center justify-center rounded-lg text-charcoal md:hidden" aria-label="Men&uacute;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               {mobileMenuOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <><path d="M4 6h16" /><path d="M4 12h16" /><path d="M4 18h16" /></>}
             </svg>
@@ -60,7 +63,7 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
             <a href="/es/blog" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Blog</a>
             <a href="/es/help" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Ayuda</a>
             <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted">{PHONE}</a>
-            <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">Iniciar Sesión</a>
+            <a href="/dashboard/login" className="text-sm font-medium text-charcoal-muted">Iniciar Sesi&oacute;n</a>
             <a href="/setup" onClick={() => setMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white">Prueba Gratis</a>
           </div>
         </div>
@@ -78,6 +81,7 @@ export default function EsHomepage() {
   const t = T[lang];
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="relative overflow-x-hidden">
       <script
         type="application/ld+json"
@@ -89,7 +93,7 @@ export default function EsHomepage() {
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             offers: { "@type": "Offer", price: "497", priceCurrency: "USD", priceValidUntil: "2027-12-31" },
-            description: "Recepcionista IA para negocios de servicios del hogar. Contesta cada llamada en inglés y español, 24/7. Agenda citas.",
+            description: "Recepcionista IA para negocios de servicios del hogar. Contesta cada llamada en ingl\u00E9s y espa\u00F1ol, 24/7. Agenda citas.",
             inLanguage: "es",
           }),
         }}
@@ -120,10 +124,10 @@ export default function EsHomepage() {
                     <a href="/setup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
                       {t.hero.cta} &rarr;
                     </a>
-                    <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras</p>
+                    <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d&iacute;as &middot; Cancela cuando quieras</p>
                   </div>
                   <a href={PHONE_TEL} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
-                    O ll\u00E1mala: {PHONE} &rarr;
+                    O ll&aacute;mala: {PHONE} &rarr;
                   </a>
                 </div>
 
@@ -181,7 +185,7 @@ export default function EsHomepage() {
               <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
                 Prueba Gratis &rarr;
               </a>
-              <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras</p>
+              <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d&iacute;as &middot; Cancela cuando quieras</p>
             </div>
           </div>
         </div>
@@ -210,6 +214,12 @@ export default function EsHomepage() {
           </div>
         </div>
       </section>
+
+      {/* ── 4b. REVENUE CYCLE ── */}
+      <RevenueCycle lang={lang} />
+
+      {/* ── 4c. CALL SHOWCASE ── */}
+      <CallShowcase lang={lang} />
 
       {/* ── 5. FEATURES GRID ── */}
       <section id="features" className="relative bg-[#1B2A4A] px-6 sm:px-8 py-24 sm:py-32 dark-section grain-overlay">
@@ -276,6 +286,127 @@ export default function EsHomepage() {
         </div>
       </section>
 
+      {/* ── 7b. MARIA OFFICE MANAGER ── */}
+      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
+        <div className="mx-auto max-w-5xl">
+          <div className="reveal text-center mb-16">
+            <p className="section-label text-charcoal-light">{t.officeManager.label}</p>
+            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-tight text-charcoal sm:text-[44px] max-w-3xl mx-auto">
+              {t.officeManager.h2}
+            </h2>
+            <p className="mt-4 text-base text-charcoal-muted">{t.officeManager.sub}</p>
+          </div>
+
+          <div className="grid gap-12 md:grid-cols-2 items-start">
+            {/* Phone mockup with chat bubbles */}
+            <div className="reveal">
+              <div className="mx-auto max-w-sm rounded-[2rem] p-1" style={{ background: "linear-gradient(145deg, #e8e8e8, #f5f5f5)", boxShadow: "0 20px 60px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04)" }}>
+                <div className="rounded-[1.75rem] bg-white overflow-hidden">
+                  {/* Phone header */}
+                  <div className="bg-[#f8f8f8] px-6 py-4 flex items-center gap-3 border-b border-gray-100">
+                    <div className="h-9 w-9 rounded-full bg-amber/15 flex items-center justify-center">
+                      <span className="text-sm font-bold text-amber">M</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-charcoal">Tu Recepcionista</p>
+                      <p className="text-[11px] text-charcoal-muted">Gerente de Oficina IA</p>
+                    </div>
+                  </div>
+                  {/* Chat messages */}
+                  <div className="px-4 py-5 space-y-3" style={{ minHeight: "320px" }}>
+                    {t.officeManager.conversation.map((msg, i) => (
+                      <motion.div
+                        key={i}
+                        className={`flex ${msg.from === "you" ? "justify-end" : "justify-start"}`}
+                        initial={{ opacity: 0, y: 12 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-30px" }}
+                        transition={{ delay: i * 0.12, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      >
+                        <div
+                          className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed ${
+                            msg.from === "you"
+                              ? "bg-[#007AFF] text-white rounded-br-sm"
+                              : "bg-[#E9E9EB] text-charcoal rounded-bl-sm"
+                          }`}
+                        >
+                          {msg.text}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature bullets */}
+            <div className="reveal space-y-5">
+              {t.officeManager.bullets.map((bullet, i) => (
+                <motion.div
+                  key={i}
+                  className="flex items-start gap-3"
+                  initial={{ opacity: 0, x: 16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-30px" }}
+                  transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <span className="mt-1 text-amber shrink-0">&#10003;</span>
+                  <span className="text-base leading-relaxed text-charcoal">{bullet}</span>
+                </motion.div>
+              ))}
+
+              <div className="pt-4">
+                <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+                  {t.hero.cta} &rarr;
+                </a>
+                <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d&iacute;as &middot; Cancela cuando quieras</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7c. SOFTWARE REPLACEMENT ── */}
+      <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#111a2e" }}>
+        <div className="mx-auto max-w-3xl">
+          <div className="reveal text-center">
+            <p className="section-label text-slate-400">{t.softwareReplace.label}</p>
+            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">
+              {t.softwareReplace.h2}
+            </h2>
+          </div>
+
+          <div className="reveal mt-14 space-y-3">
+            {t.softwareReplace.items.map((item, i) => (
+              <motion.div
+                key={i}
+                className="dark-surface flex items-center justify-between rounded-2xl px-6 py-5"
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <span className="text-[15px] text-slate-300">{item.name}</span>
+                <span className="text-[15px] font-semibold text-slate-400">{item.cost}</span>
+              </motion.div>
+            ))}
+
+            {/* Total (struck through) */}
+            <div className="flex items-center justify-between rounded-2xl px-6 py-5 mt-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+              <span className="text-[15px] text-slate-500">Total</span>
+              <span className="text-lg font-bold text-slate-500 line-through">{t.softwareReplace.total}</span>
+            </div>
+
+            {/* Capta price */}
+            <div className="rounded-2xl px-6 py-6 text-center" style={{ background: "rgba(212,168,67,0.08)", border: "1px solid rgba(212,168,67,0.2)" }}>
+              <p className="text-xl font-extrabold text-amber">{t.softwareReplace.captaPrice}</p>
+            </div>
+
+            <p className="text-center text-sm text-slate-500 mt-4">{t.softwareReplace.footer}</p>
+          </div>
+        </div>
+      </section>
+
       {/* ── 8. PRICING ── */}
       <section id="pricing" className="bg-[#111317] px-6 sm:px-8 py-24 sm:py-32 dark-section">
         <div className="mx-auto max-w-3xl">
@@ -295,8 +426,8 @@ export default function EsHomepage() {
           <div className="reveal mt-8 mx-auto max-w-lg">
             <div className="pricing-glow ambient-edge relative rounded-2xl border border-[#C59A27]/30 bg-[#1A1D0F] p-10 text-center sm:p-14">
               <p className="mt-2 text-[56px] font-extrabold tracking-tight text-[#E8E9EB]">{planChoice === "annual" ? "$397" : "$497"}</p>
-              <p className="text-sm text-[#A0A3A8]">{planChoice === "annual" ? "/mes — facturado anualmente a $4,764/año" : t.pricing.period}</p>
-              {planChoice === "annual" && <p className="mt-2 text-sm font-semibold text-green-400">Ahorra $1,200/año</p>}
+              <p className="text-sm text-[#A0A3A8]">{planChoice === "annual" ? "/mes \u2014 facturado anualmente a $4,764/a\u00F1o" : t.pricing.period}</p>
+              {planChoice === "annual" && <p className="mt-2 text-sm font-semibold text-green-400">Ahorra $1,200/a\u00F1o</p>}
               <p className="mt-4 text-base text-[#A0A3A8]">{t.pricing.sub}</p>
               <ul className="mt-8 space-y-4 text-left text-sm text-[#E8E9EB]">
                 {t.pricing.features.map((f, i) => (
@@ -305,7 +436,7 @@ export default function EsHomepage() {
               </ul>
               <p className="mt-8 text-sm italic text-[#A0A3A8]">{t.pricing.comparison}</p>
               <a href="/setup" className="cta-gold cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg px-8 py-4 text-lg font-semibold text-white">{t.pricing.cta} &rarr;</a>
-              <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras</p>
+              <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d&iacute;as &middot; Cancela cuando quieras</p>
               <p className="mt-4 text-xs text-[#A0A3A8]">{t.pricing.guarantee}</p>
 
               <div className="mt-6 flex flex-col items-center gap-2">
@@ -354,7 +485,7 @@ export default function EsHomepage() {
                 <span className="inline-block rounded-full bg-amber/10 px-3 py-1 text-xs font-semibold text-amber">{card.tag}</span>
                 <h3 className="mt-4 text-lg font-bold leading-snug tracking-tight text-charcoal group-hover:text-amber transition">{card.title}</h3>
                 <span className="mt-4 inline-flex items-center text-sm font-medium text-amber">
-                  Leer artículo &rarr;
+                  Leer art&iacute;culo &rarr;
                 </span>
               </motion.a>
             ))}
@@ -370,6 +501,9 @@ export default function EsHomepage() {
         </div>
       </section>
 
+      {/* ── MISSED CALL CALCULATOR ── */}
+      <MissedCallCalculator lang={lang} />
+
       {/* ── 10. FINAL CTA ── */}
       <section className="relative px-6 sm:px-8 py-24 sm:py-32 overflow-hidden dark-section grain-overlay">
         <img src="/images/grit-texture.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-center" loading="lazy" />
@@ -380,10 +514,10 @@ export default function EsHomepage() {
           <a href="/setup" className="cta-gold cta-shimmer mt-10 inline-flex items-center justify-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
             {t.hero.cta} &rarr;
           </a>
-          <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras</p>
+          <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d&iacute;as &middot; Cancela cuando quieras</p>
           <p className="mt-6 text-sm text-slate-400">{t.cta.sub}</p>
           <p className="mt-4 text-sm text-slate-500">
-            O llámanos: <a href={PHONE_TEL} className="font-semibold text-amber hover:underline">{PHONE}</a>
+            O ll&aacute;manos: <a href={PHONE_TEL} className="font-semibold text-amber hover:underline">{PHONE}</a>
           </p>
         </div>
       </section>
@@ -391,5 +525,6 @@ export default function EsHomepage() {
       <Footer lang={lang} />
       <div className="h-16 md:hidden" />
     </div>
+    </MotionConfig>
   );
 }
