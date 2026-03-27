@@ -286,20 +286,36 @@ function LoginForm() {
         </>
       )}
 
-      <div className="flex items-center justify-between pt-2" style={{ borderTop: "1px solid var(--db-border)" }}>
+      {/* Trial banner */}
+      <div
+        className="rounded-lg p-4 text-center"
+        style={{
+          background: "linear-gradient(135deg, rgba(212,168,67,0.08), rgba(212,168,67,0.15))",
+          border: "1px solid rgba(212,168,67,0.25)",
+        }}
+      >
+        <p className="text-sm font-medium mb-1.5" style={{ color: "var(--db-text)" }}>
+          {t("auth.noAccount", lang)}
+        </p>
+        <Link
+          href="/setup"
+          className="inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-all hover:scale-[1.02]"
+          style={{
+            background: "var(--db-accent)",
+            boxShadow: "0 2px 8px rgba(212,168,67,0.3)",
+          }}
+        >
+          {t("auth.startTrialCta", lang)} →
+        </Link>
+      </div>
+
+      <div className="text-center pt-1">
         <Link
           href="/help"
           className="inline-block text-xs transition-colors"
           style={{ color: "var(--db-text-muted)" }}
         >
           {t("auth.needHelp", lang)} {t("auth.visitHelpCenter", lang)}
-        </Link>
-        <Link
-          href="/setup"
-          className="text-xs font-medium transition-colors"
-          style={{ color: "var(--db-accent)" }}
-        >
-          {t("auth.getStarted", lang)}
         </Link>
       </div>
     </div>

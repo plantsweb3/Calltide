@@ -65,8 +65,8 @@ const T = {
     bizNamePlaceholder: "e.g. Smith Plumbing",
     tradeType: "Trade / Industry",
     tradePlaceholder: "Select your trade",
-    city: "City",
-    cityPlaceholder: "e.g. San Antonio",
+    city: "City, State",
+    cityPlaceholder: "e.g. San Antonio, TX",
     state: "State",
     statePlaceholder: "e.g. TX",
     servicesTitle: "Services You Offer",
@@ -184,8 +184,8 @@ const T = {
     bizNamePlaceholder: "ej. Plomería Smith",
     tradeType: "Tipo de Negocio",
     tradePlaceholder: "Selecciona tu tipo",
-    city: "Ciudad",
-    cityPlaceholder: "ej. San Antonio",
+    city: "Ciudad, Estado",
+    cityPlaceholder: "ej. San Antonio, TX",
     state: "Estado",
     statePlaceholder: "ej. TX",
     servicesTitle: "Servicios que Ofreces",
@@ -902,8 +902,9 @@ function SetupClient() {
     async function init() {
       const sessionId = searchParams.get("session_id");
       if (sessionId) {
-        // Post-payment return — show celebration
+        // Post-payment return — show celebration immediately
         setShowCelebration(true);
+        setLoading(false);
         const token = searchParams.get("token");
         if (token) {
           try {
@@ -917,9 +918,9 @@ function SetupClient() {
           }
         }
         // Authenticate — poll with retry since Stripe webhook may not have fired yet
-        setLoading(false);
-        const MAX_ATTEMPTS = 10;
-        const RETRY_DELAY = 3000; // 3s between attempts
+        // Runs in background while celebration content is already visible
+        const MAX_ATTEMPTS = 20;
+        const RETRY_DELAY = 1500; // 1.5s between attempts (same ~30s total window)
         for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
           if (abortController.signal.aborted) return;
           setPollAttempt(attempt + 1);
@@ -1018,7 +1019,12 @@ function SetupClient() {
     if (sess.language === "es") setLang("es");
     if (sess.businessName) setBizName(sess.businessName);
     if (sess.businessType) setBizType(sess.businessType);
-    if (sess.city) setCity(sess.city);
+    if (sess.city && sess.state) {
+      setCity(`${sess.city}, ${sess.state}`);
+      setState(sess.state);
+    } else if (sess.city) {
+      setCity(sess.city);
+    }
     if (sess.state) setState(sess.state);
     if (sess.services && sess.services.length > 0) {
       setServices(sess.services);
@@ -1151,10 +1157,16 @@ function SetupClient() {
         if (!bizName.trim()) { setFieldError("bizName", t.required); hasError = true; }
         if (!bizType) { setFieldError("bizType", t.required); hasError = true; }
         if (!city.trim()) { setFieldError("city", t.required); hasError = true; }
-        if (!state.trim()) { setFieldError("state", t.required); hasError = true; }
-        if (services.length === 0) { setFieldError("services", t.required); hasError = true; }
         if (hasError) return;
-        const ok = await saveStep(1, { businessName: bizName.trim(), businessType: bizType, city: city.trim(), state: state.trim(), services, timezone });
+        // Parse "City, ST" format — extract state if present
+        const cityVal = city.trim();
+        const cityMatch = cityVal.match(/^(.+?),\s*([A-Z]{2})\s*$/);
+        const parsedCity = cityMatch ? cityMatch[1].trim() : cityVal;
+        const parsedState = cityMatch ? cityMatch[2] : state.trim();
+        const stepData: Record<string, unknown> = { businessName: bizName.trim(), businessType: bizType, city: parsedCity, timezone };
+        if (parsedState) stepData.state = parsedState;
+        if (services.length > 0) stepData.services = services;
+        const ok = await saveStep(1, stepData);
         if (!ok) return;
         showToastAndAdvance({ title: replaceVars(t.toast1, { biz: bizName.trim() }) }, 2);
       } else if (step === 2) {
@@ -1178,8 +1190,10 @@ function SetupClient() {
         const personalityLabel = personalityPreset === "professional" ? t.professional.toLowerCase() : personalityPreset === "warm" ? t.warm.toLowerCase() : t.friendly.toLowerCase();
         showToastAndAdvance({ title: replaceVars(t.toast4, { name: receptionistName, personality: personalityLabel }) }, 4);
       } else if (step === 4) {
-        // FAQ/Off-limits → server step 5
-        const ok = await saveStep(5, { faqAnswers, offLimits });
+        // FAQ/Off-limits + Services → server step 5
+        const step5Data: Record<string, unknown> = { faqAnswers, offLimits };
+        if (services.length > 0) step5Data.services = services;
+        const ok = await saveStep(5, step5Data);
         if (!ok) return;
         const answerCount = Object.values(faqAnswers).filter((v) => v.trim()).length;
         showToastAndAdvance({ title: replaceVars(t.toast5, { name: receptionistName, count: String(answerCount || 3), biz: bizName }) }, 5);
@@ -1291,7 +1305,7 @@ function SetupClient() {
                 <p style={{ color: "#D4A843", fontSize: 14 }}>
                   {t.authenticating}
                 </p>
-                {pollAttempt >= 5 && (
+                {pollAttempt >= 3 && (
                   <div style={{ marginTop: 12 }}>
                     <p style={{ color: "#94a3b8", fontSize: 13, marginBottom: 8 }}>
                       {lang === "en"
@@ -1437,7 +1451,7 @@ function SetupClient() {
       <div className={s.container}>
         <div className={s.stepLabel}>{t.step} {step} {t.of} {VISUAL_STEPS}</div>
 
-        {/* ── STEP 1: Business Info ── */}
+        {/* ── STEP 1: Business Info (3 fields) ── */}
         {step === 1 && (
           <div className={s.stepContent} key="step1">
             <h1 className={s.title}>{t.step1Title}</h1>
@@ -1471,96 +1485,23 @@ function SetupClient() {
               {errors.bizType && <span className={s.error}>{errors.bizType}</span>}
             </div>
 
-            <div style={{ display: "flex", gap: 12 }}>
-              <div className={s.field} style={{ flex: 2 }}>
-                <label className={s.label} htmlFor="city">{t.city}</label>
-                <input
-                  id="city"
-                  className={`${s.input} ${errors.city ? s.inputError : ""}`}
-                  placeholder={t.cityPlaceholder}
-                  value={city}
-                  onChange={(e) => { setCity(e.target.value); clearFieldError("city"); }}
-                />
-                {errors.city && <span className={s.error}>{errors.city}</span>}
-              </div>
-              <div className={s.field} style={{ flex: 1 }}>
-                <label className={s.label} htmlFor="state">{t.state}</label>
-                <select
-                  id="state"
-                  className={`${s.select} ${errors.state ? s.inputError : ""}`}
-                  value={state}
-                  onChange={(e) => { setState(e.target.value); clearFieldError("state"); }}
-                >
-                  <option value="">{t.statePlaceholder}</option>
-                  {["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","PR","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"].map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-                {errors.state && <span className={s.error}>{errors.state}</span>}
-              </div>
-            </div>
-
             <div className={s.field}>
-              <label className={s.label} htmlFor="timezone">{lang === "es" ? "Zona Horaria" : "Time Zone"}</label>
-              <select
-                id="timezone"
-                className={s.select}
-                value={timezone}
-                onChange={(e) => setTimezone(e.target.value)}
-              >
-                <option value="America/New_York">{lang === "es" ? "Este (Nueva York)" : "Eastern (New York)"}</option>
-                <option value="America/Chicago">{lang === "es" ? "Central (Chicago)" : "Central (Chicago)"}</option>
-                <option value="America/Denver">{lang === "es" ? "Montana (Denver)" : "Mountain (Denver)"}</option>
-                <option value="America/Los_Angeles">{lang === "es" ? "Pacifico (Los Angeles)" : "Pacific (Los Angeles)"}</option>
-                <option value="America/Phoenix">{lang === "es" ? "Arizona (sin horario de verano)" : "Arizona (no DST)"}</option>
-                <option value="Pacific/Honolulu">{lang === "es" ? "Hawaii" : "Hawaii"}</option>
-              </select>
-            </div>
-
-            {/* Services — always show so "Other" users can add services */}
-            <div className={s.field}>
-              <label className={s.label}>{t.servicesTitle}</label>
-              {services.length > 0 && (
-                <div className={s.chipContainer}>
-                  {services.map((svc, i) => (
-                    <span key={i} className={s.chip}>
-                      {svc}
-                      <button className={s.chipRemove} onClick={() => setServices(services.filter((_, j) => j !== i))} aria-label={`Remove ${svc}`}>×</button>
-                    </span>
-                  ))}
-                </div>
-              )}
-              <div style={{ display: "flex", gap: 8, marginTop: services.length > 0 ? 8 : 0 }} data-service-input>
-                <input
-                  className={s.input}
-                  style={{ flex: 1 }}
-                  placeholder={t.addServicePlaceholder}
-                  value={newService}
-                  onChange={(e) => setNewService(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && newService.trim()) {
-                      e.preventDefault();
-                      const trimmed = newService.trim();
-                      if (!services.some((s) => s.toLowerCase() === trimmed.toLowerCase())) {
-                        setServices([...services, trimmed]);
-                      }
-                      setNewService("");
-                    }
-                  }}
-                />
-                <button
-                  className={s.secondaryBtn}
-                  onClick={() => {
-                    const trimmed = newService.trim();
-                    if (trimmed && !services.some((s) => s.toLowerCase() === trimmed.toLowerCase())) {
-                      setServices([...services, trimmed]);
-                    }
-                    setNewService("");
-                  }}
-                >
-                  {t.addService}
-                </button>
-              </div>
+              <label className={s.label} htmlFor="city">{t.city}</label>
+              <input
+                id="city"
+                className={`${s.input} ${errors.city ? s.inputError : ""}`}
+                placeholder={t.cityPlaceholder}
+                value={city}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setCity(val);
+                  clearFieldError("city");
+                  // Auto-extract state from "City, ST" format
+                  const match = val.match(/,\s*([A-Z]{2})\s*$/);
+                  if (match) setState(match[1]);
+                }}
+              />
+              {errors.city && <span className={s.error}>{errors.city}</span>}
             </div>
 
             {/* Phone reassurance */}
@@ -1787,6 +1728,53 @@ function SetupClient() {
                 />
               </div>
             ))}
+
+            {/* Services — moved from step 1 for better context */}
+            <div style={{ marginTop: 24 }}>
+              <label className={s.label}>{t.servicesTitle}</label>
+              {services.length > 0 && (
+                <div className={s.chipContainer} style={{ marginBottom: 8 }}>
+                  {services.map((svc, i) => (
+                    <span key={i} className={s.chip}>
+                      {svc}
+                      <button className={s.chipRemove} onClick={() => setServices(services.filter((_, j) => j !== i))} aria-label={`Remove ${svc}`}>×</button>
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div style={{ display: "flex", gap: 8 }} data-service-input>
+                <input
+                  id="newService"
+                  className={s.input}
+                  style={{ flex: 1 }}
+                  placeholder={t.addServicePlaceholder}
+                  value={newService}
+                  onChange={(e) => setNewService(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && newService.trim()) {
+                      e.preventDefault();
+                      const trimmed = newService.trim();
+                      if (!services.some((sv) => sv.toLowerCase() === trimmed.toLowerCase())) {
+                        setServices([...services, trimmed]);
+                      }
+                      setNewService("");
+                    }
+                  }}
+                />
+                <button
+                  className={s.secondaryBtn}
+                  onClick={() => {
+                    const trimmed = newService.trim();
+                    if (trimmed && !services.some((sv) => sv.toLowerCase() === trimmed.toLowerCase())) {
+                      setServices([...services, trimmed]);
+                    }
+                    setNewService("");
+                  }}
+                >
+                  {t.addService}
+                </button>
+              </div>
+            </div>
 
             <div style={{ marginTop: 24 }}>
               <label className={s.label}>{t.offLimitsTitle}</label>

@@ -384,7 +384,11 @@ export default function PlatformClient() {
             style={{ background: "rgba(212,168,67,0.06)", border: "1px solid rgba(212,168,67,0.15)" }}
           >
             <p className="text-base font-semibold text-white">{activeCategory.label}</p>
-            <p className="mt-2 text-sm text-slate-400">{activeCategory.features.length} features included in your $497/mo plan</p>
+            <p className="mt-2 text-sm text-slate-400">
+              {lang === "en"
+                ? `${activeCategory.features.length} features included in your $497/mo plan`
+                : `${activeCategory.features.length} funciones incluidas en tu plan de $497/mes`}
+            </p>
           </div>
         </div>
       </section>

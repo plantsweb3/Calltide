@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { followUps, appointments, invoices, estimates } from "@/db/schema";
+import { followUps, appointments, invoices, estimates, calls } from "@/db/schema";
 import { eq, and, count, sql, isNull, or } from "drizzle-orm";
 import { rateLimit, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-reporting";
@@ -25,7 +25,9 @@ export async function GET(req: NextRequest) {
   try {
     const today = new Date().toISOString().slice(0, 10);
 
-    const [overdueResult, unassignedResult, followUpResult, expiredEstimatesResult] = await Promise.all([
+    const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+
+    const [overdueResult, unassignedResult, followUpResult, expiredEstimatesResult, messagesResult] = await Promise.all([
       // Overdue invoices
       db
         .select({ count: count() })
@@ -72,6 +74,17 @@ export async function GET(req: NextRequest) {
             eq(estimates.status, "expired"),
           ),
         ),
+      // Messages awaiting callback (message_taken in last 48h)
+      db
+        .select({ count: count() })
+        .from(calls)
+        .where(
+          and(
+            eq(calls.businessId, businessId),
+            eq(calls.outcome, "message_taken"),
+            sql`${calls.createdAt} >= ${fortyEightHoursAgo}`,
+          ),
+        ),
     ]);
 
     return NextResponse.json({
@@ -79,6 +92,7 @@ export async function GET(req: NextRequest) {
       unassignedToday: unassignedResult[0]?.count ?? 0,
       urgentFollowUps: followUpResult[0]?.count ?? 0,
       expiredEstimates: expiredEstimatesResult[0]?.count ?? 0,
+      messagesAwaitingCallback: messagesResult[0]?.count ?? 0,
     });
   } catch (err) {
     reportError("Failed to fetch action items", err, { businessId });

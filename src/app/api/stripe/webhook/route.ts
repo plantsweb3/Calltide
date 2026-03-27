@@ -55,10 +55,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  // Reject stale events (>1 hour old) to prevent replay attacks
-  // Generous window so Stripe retries after outages aren't dropped — idempotency table prevents duplicates
+  // Reject stale events (>24 hours old) to prevent replay attacks
+  // Wide window so Stripe retries after outages aren't dropped — idempotency table prevents duplicates
   const eventAge = Math.floor(Date.now() / 1000) - event.created;
-  if (eventAge > 3600) {
+  if (eventAge > 86400) {
     return NextResponse.json({ error: "Event too old" }, { status: 400 });
   }
 
@@ -282,51 +282,56 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return;
   }
 
-  // Create account + business record from checkout
-  const accountId = crypto.randomUUID();
-  await db.insert(accounts).values({
-    id: accountId,
-    ownerName: "",
-    ownerEmail: email,
-    ownerPhone: "",
-    stripeCustomerId: customerId,
-    stripeSubscriptionId: subscriptionId || undefined,
-    stripeSubscriptionStatus: subStatus,
-    planType: plan,
-    locationCount: 1,
-  });
-
+  // Create account + business record from checkout — wrapped in transaction
+  // to prevent partial state (e.g., account created but business insert fails)
   const genericSlug = await generateBookingSlug("My Business").catch(() => undefined);
+  const accountId = crypto.randomUUID();
 
-  await db.insert(businesses).values({
-    name: "My Business", // Placeholder — updated during onboarding
-    type: "general",
-    ownerName: "",
-    ownerPhone: "",
-    ownerEmail: email,
-    twilioNumber: "", // Assigned during onboarding
-    services: [],
-    businessHours: {
-      Mon: { open: "08:00", close: "17:00" },
-      Tue: { open: "08:00", close: "17:00" },
-      Wed: { open: "08:00", close: "17:00" },
-      Thu: { open: "08:00", close: "17:00" },
-      Fri: { open: "08:00", close: "17:00" },
-    },
-    stripeCustomerId: customerId,
-    stripeSubscriptionId: subscriptionId || undefined,
-    stripeSubscriptionStatus: subStatus,
-    paymentStatus: "active",
-    planType: plan,
-    mrr,
-    trialEndsAt,
-    annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
-    active: false, // Activated after onboarding
-    accountId,
-    locationName: "Main",
-    isPrimaryLocation: true,
-    locationOrder: 0,
-    bookingSlug: genericSlug,
+  const newBizResult = await db.transaction(async (tx) => {
+    await tx.insert(accounts).values({
+      id: accountId,
+      ownerName: "",
+      ownerEmail: email,
+      ownerPhone: "",
+      stripeCustomerId: customerId,
+      stripeSubscriptionId: subscriptionId || undefined,
+      stripeSubscriptionStatus: subStatus,
+      planType: plan,
+      locationCount: 1,
+    });
+
+    const [created] = await tx.insert(businesses).values({
+      name: "My Business", // Placeholder — updated during onboarding
+      type: "general",
+      ownerName: "",
+      ownerPhone: "",
+      ownerEmail: email,
+      twilioNumber: "", // Assigned during onboarding
+      services: [],
+      businessHours: {
+        Mon: { open: "08:00", close: "17:00" },
+        Tue: { open: "08:00", close: "17:00" },
+        Wed: { open: "08:00", close: "17:00" },
+        Thu: { open: "08:00", close: "17:00" },
+        Fri: { open: "08:00", close: "17:00" },
+      },
+      stripeCustomerId: customerId,
+      stripeSubscriptionId: subscriptionId || undefined,
+      stripeSubscriptionStatus: subStatus,
+      paymentStatus: "active",
+      planType: plan,
+      mrr,
+      trialEndsAt,
+      annualConvertedAt: plan === "annual" ? new Date().toISOString() : undefined,
+      active: false, // Activated after onboarding
+      accountId,
+      locationName: "Main",
+      isPrimaryLocation: true,
+      locationOrder: 0,
+      bookingSlug: genericSlug,
+    }).returning({ id: businesses.id });
+
+    return created;
   });
 
   await logActivity({
@@ -345,27 +350,15 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   });
 
   // Record consent (TOS, privacy policy, DPA) — by completing checkout the user agreed
-  const [bizForConsent] = await db
-    .select({ id: businesses.id })
-    .from(businesses)
-    .where(eq(businesses.ownerEmail, email))
-    .limit(1);
-  if (bizForConsent) {
-    recordConsentForCheckout(bizForConsent.id).catch((err) =>
-      reportError("Failed to record consent at checkout", err, { extra: { businessId: bizForConsent.id } })
+  if (newBizResult) {
+    recordConsentForCheckout(newBizResult.id).catch((err) =>
+      reportError("Failed to record consent at checkout", err, { extra: { businessId: newBizResult.id } })
     );
-  }
 
-  // Auto-provision a Twilio phone number for this business
-  const [newBiz] = await db
-    .select({ id: businesses.id })
-    .from(businesses)
-    .where(eq(businesses.ownerEmail, email))
-    .limit(1);
-  if (newBiz) {
-    provisionTwilioNumber(newBiz.id).catch(async (err) => {
-      reportError("Failed to auto-provision Twilio number", err, { extra: { businessId: newBiz.id } });
-      await enqueueJob("twilio_provision", { businessId: newBiz.id }).catch(() => {});
+    // Auto-provision a Twilio phone number for this business
+    provisionTwilioNumber(newBizResult.id).catch(async (err) => {
+      reportError("Failed to auto-provision Twilio number", err, { extra: { businessId: newBizResult.id } });
+      await enqueueJob("twilio_provision", { businessId: newBizResult.id }).catch(() => {});
     });
   }
 }

@@ -377,14 +377,16 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
               {l.idleCta}
             </button>
 
-            <div className="flex items-center justify-center gap-4">
-              <a
-                href={phoneTel}
-                className="text-sm font-medium text-slate-400 transition hover:text-white"
-              >
-                {l.idleCallCta} &rarr;
-              </a>
-            </div>
+            {phoneTel && (
+              <div className="flex items-center justify-center gap-4">
+                <a
+                  href={phoneTel}
+                  className="text-sm font-medium text-slate-400 transition hover:text-white"
+                >
+                  {l.idleCallCta} &rarr;
+                </a>
+              </div>
+            )}
 
             <p className="text-center text-xs text-slate-500">{l.micNote}</p>
             <p className="text-center text-xs font-medium text-amber-400/70">{l.trySpanish}</p>
@@ -435,7 +437,7 @@ export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?:
           </div>
           <span className="tabular-nums text-sm text-slate-500">
             {l.elapsed} {formatTime(elapsed)}
-            {elapsed >= 270 && <span className="ml-2 text-amber-400">(ending soon)</span>}
+            {elapsed >= 270 && <span className="ml-2 text-amber-400">{lang === "en" ? "(ending soon)" : "(terminando pronto)"}</span>}
           </span>
         </div>
 

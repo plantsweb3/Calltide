@@ -46,6 +46,11 @@ interface ElevenLabsPostCallEvent {
  * Handles call completion processing.
  */
 export async function POST(req: NextRequest) {
+  const contentLength = parseInt(req.headers.get("content-length") || "0", 10);
+  if (contentLength > 1_000_000) {
+    return Response.json({ error: "Payload too large" }, { status: 413 });
+  }
+
   const ip = getClientIp(req);
   const rl = await rateLimit(`elevenlabs-webhook:${ip}`, RATE_LIMITS.webhook);
   if (!rl.success) return rateLimitResponse(rl);
@@ -91,7 +96,7 @@ export async function POST(req: NextRequest) {
   // ── Handle call initiation failures ──
   if (event.type === "call_initiation_failure") {
     reportError("ElevenLabs call initiation failure", new Error(event.error || "Unknown"), {
-      extra: { conversationId: event.conversation_id, phone: event.phone_number },
+      extra: { conversationId: event.conversation_id, phoneLast4: event.phone_number?.slice(-4) },
     });
     return Response.json({ ok: true });
   }
@@ -213,7 +218,7 @@ export async function POST(req: NextRequest) {
     });
     // Fallback: send basic notification so owner knows about the call
     sendBasicCallNotification(call.id, call.callerPhone, durationSeconds).catch(() => {});
-    await enqueueJob("call_summary", { callId: call.id, conversationId }).catch(() => {});
+    await enqueueJob("call_summary", { callId: call.id, chatId: conversationId }).catch(() => {});
   });
 
   // Remove from active calls (fire-and-forget)

@@ -21,6 +21,7 @@ interface ActionItems {
   unassignedToday: number;
   urgentFollowUps: number;
   expiredEstimates: number;
+  messagesAwaitingCallback: number;
 }
 
 interface Overview {
@@ -438,42 +439,23 @@ export default function OverviewPage() {
         </div>
       ) : null}
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-grid [&>*:last-child:nth-child(odd)]:sm:col-span-2 [&>*:last-child:nth-child(odd)]:lg:col-span-1" data-tour="overview-metrics">
-        <HealthScoreCard score={data.healthScore ?? 50} />
-        {hasRevenue && (
-          <MetricCard
-            label={t("metric.revenueCaptured", lang)}
-            value={data.revenueThisMonth!}
-            prefix="$"
-            change={
-              data.revenueChange != null && data.revenueChange !== 0
-                ? `${data.revenueChange > 0 ? "+" : ""}${data.revenueChange}% ${t("misc.lastMonth", lang)}`
-                : undefined
-            }
-            changeType={data.revenueChange != null && data.revenueChange > 0 ? "positive" : data.revenueChange != null && data.revenueChange < 0 ? "negative" : "neutral"}
-          />
-        )}
-        <MariaSavedCard
-          total={data.mariaSavedYou ?? data.revenueSaved ?? 0}
-          breakdown={data.mariaSavedBreakdown}
-          missedCallsRecoveredCount={data.missedCallsRecoveredCount ?? 0}
-          receptionistName={receptionistName}
+      {/* Primary Metric Cards — daily operations first */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-grid" data-tour="overview-metrics">
+        <MetricCard
+          label={t("overview.callsToday", lang)}
+          value={data.callsToday}
+          changeType="neutral"
         />
-        {data.costPerLead != null && data.costPerLead > 0 && (
-          <MetricCard
-            label={t("metric.costPerLead", lang)}
-            value={data.costPerLead}
-            prefix="$"
-            decimals={2}
-            changeType="positive"
-          />
-        )}
         <MetricCard
           label={t("metric.appointmentsBooked", lang)}
           value={data.appointmentsThisWeek}
           change={t("metric.thisWeek", lang)}
           changeType="neutral"
+        />
+        <MetricCard
+          label={t("metric.missedSaved", lang)}
+          value={data.missedCallsSaved}
+          changeType={data.missedCallsSaved > 0 ? "positive" : "neutral"}
         />
         <MetricCard
           label={t("metric.afterHoursCalls", lang)}
@@ -482,6 +464,42 @@ export default function OverviewPage() {
           changeType={data.afterHoursThisWeek ? "positive" : "neutral"}
         />
       </div>
+
+      {/* Revenue & ROI Metrics — secondary */}
+      {(hasRevenue || (data.mariaSavedYou ?? data.revenueSaved ?? 0) > 0) && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-grid [&>*:last-child:nth-child(odd)]:sm:col-span-2 [&>*:last-child:nth-child(odd)]:lg:col-span-1">
+          {hasRevenue && (
+            <MetricCard
+              label={t("metric.revenueCaptured", lang)}
+              value={data.revenueThisMonth!}
+              prefix="$"
+              change={
+                data.revenueChange != null && data.revenueChange !== 0
+                  ? `${data.revenueChange > 0 ? "+" : ""}${data.revenueChange}% ${t("misc.lastMonth", lang)}`
+                  : undefined
+              }
+              changeType={data.revenueChange != null && data.revenueChange > 0 ? "positive" : data.revenueChange != null && data.revenueChange < 0 ? "negative" : "neutral"}
+            />
+          )}
+          <MariaSavedCard
+            total={data.mariaSavedYou ?? data.revenueSaved ?? 0}
+            breakdown={data.mariaSavedBreakdown}
+            missedCallsRecoveredCount={data.missedCallsRecoveredCount ?? 0}
+            receptionistName={receptionistName}
+            lang={lang}
+          />
+          {data.costPerLead != null && data.costPerLead > 0 && (
+            <MetricCard
+              label={t("metric.costPerLead", lang)}
+              value={data.costPerLead}
+              prefix="$"
+              decimals={2}
+              changeType="positive"
+            />
+          )}
+          <HealthScoreCard score={data.healthScore ?? 50} />
+        </div>
+      )}
 
       {/* Action Required */}
       <ActionRequiredSection items={actionItems} />
@@ -699,6 +717,21 @@ function ActionRequiredSection({ items }: { items: ActionItems | null }) {
     });
   }
 
+  if (items.messagesAwaitingCallback > 0) {
+    cards.push({
+      key: "messages",
+      count: items.messagesAwaitingCallback,
+      label: t("dashboard.messagesAwaiting", lang),
+      href: "/dashboard/calls?outcome=message_taken",
+      priority: "urgent",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+      ),
+    });
+  }
+
   if (cards.length === 0) return null;
 
   return (
@@ -799,13 +832,16 @@ function MariaSavedCard({
   breakdown,
   missedCallsRecoveredCount,
   receptionistName,
+  lang: langProp,
 }: {
   total: number;
   breakdown?: Overview["mariaSavedBreakdown"];
   missedCallsRecoveredCount: number;
   receptionistName: string;
+  lang?: "en" | "es";
 }) {
-  const [lang] = useLang();
+  const [langHook] = useLang();
+  const lang = langProp ?? langHook;
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -851,7 +887,7 @@ function MariaSavedCard({
       ) : (
         missedCallsRecoveredCount > 0 && (
           <p className="mt-1 text-xs" style={{ color: "var(--db-success)" }}>
-            {missedCallsRecoveredCount} call{missedCallsRecoveredCount === 1 ? "" : "s"} saved
+            {t("dashboard.callsSaved", lang, { count: missedCallsRecoveredCount })}
           </p>
         )
       )}
@@ -868,6 +904,7 @@ function FirstCallBanner({
   onDismiss: () => void;
   receptionistName: string;
 }) {
+  const [lang] = useLang();
   const durationMin = celebration.duration ? Math.round(celebration.duration / 60) : null;
 
   return (
@@ -882,7 +919,7 @@ function FirstCallBanner({
         onClick={onDismiss}
         className="absolute right-3 top-3 text-sm"
         style={{ color: "var(--db-text-muted)" }}
-        aria-label="Dismiss"
+        aria-label={t("action.close", lang)}
       >
         &times;
       </button>
@@ -898,13 +935,14 @@ function FirstCallBanner({
             className="text-lg font-bold"
             style={{ color: "var(--db-success)" }}
           >
-            {receptionistName} handled the first call!
+            {t("dashboard.firstCallTitle", lang, { name: receptionistName })}
           </h3>
           <p className="mt-1 text-sm" style={{ color: "var(--db-text-secondary)" }}>
-            {receptionistName} just handled the first call
-            {celebration.callerName ? ` from ${celebration.callerName}` : ""}
-            {durationMin ? ` (${durationMin} min)` : ""}.
-            This is just the beginning — every call from here is revenue you&apos;re no longer missing.
+            {t("dashboard.firstCallDesc", lang, {
+              name: receptionistName,
+              caller: celebration.callerName ? (lang === "es" ? ` de ${celebration.callerName}` : ` from ${celebration.callerName}`) : "",
+              duration: durationMin ? ` (${durationMin} min)` : "",
+            })}
           </p>
         </div>
       </div>

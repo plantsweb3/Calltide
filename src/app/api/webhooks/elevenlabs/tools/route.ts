@@ -39,6 +39,11 @@ function buildIdempotencyKey(conversationId: string, toolName: string, params: R
  * Dispatches to existing tool handlers — zero changes to business logic.
  */
 export async function POST(req: NextRequest) {
+  const contentLength = parseInt(req.headers.get("content-length") || "0", 10);
+  if (contentLength > 1_000_000) {
+    return Response.json({ error: "Payload too large" }, { status: 413 });
+  }
+
   const ip = getClientIp(req);
   const rl = await rateLimit(`elevenlabs-tools:${ip}`, RATE_LIMITS.webhook);
   if (!rl.success) return rateLimitResponse(rl);

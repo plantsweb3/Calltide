@@ -55,7 +55,7 @@ export function StaticFooter({ lang }: StaticFooterProps) {
               <li><a href="mailto:hello@captahq.com" className="text-white/40 transition hover:text-white/60">{labels.contact}</a></li>
               <li><Link href="/dashboard/login" className="text-white/40 transition hover:text-white/60">{labels.clientLogin}</Link></li>
               <li><Link href={lang === "en" ? "/blog" : "/es/blog"} className="text-white/40 transition hover:text-white/60">Blog</Link></li>
-              <li><Link href={lang === "en" ? "/help" : "/es/help"} className="text-white/40 transition hover:text-white/60">Help</Link></li>
+              <li><Link href={lang === "en" ? "/help" : "/es/help"} className="text-white/40 transition hover:text-white/60">{lang === "en" ? "Help" : "Ayuda"}</Link></li>
             </ul>
           </div>
           <div>

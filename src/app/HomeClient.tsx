@@ -117,11 +117,14 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
                 <p className="mt-6 max-w-xl text-xl font-medium leading-[1.7] text-slate-300">{t.hero.sub}</p>
 
                 <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <a href="/setup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-                    {t.hero.cta} &rarr;
-                  </a>
+                  <div>
+                    <a href="/setup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+                      {t.hero.cta} &rarr;
+                    </a>
+                    <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
+                  </div>
                   <a href={PHONE_TEL} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
-                    {lang === "en" ? "Or call us" : "O llámanos"}: {PHONE} &rarr;
+                    {lang === "en" ? "Or call us" : "O ll\u00E1manos"}: {PHONE} &rarr;
                   </a>
                 </div>
 
@@ -236,9 +239,12 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
           <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{t.hero.demoSub}</h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">{t.hero.demoDetail}</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-              {lang === "en" ? "Start Free Trial" : "Prueba Gratis"} &rarr;
-            </a>
+            <div className="text-center">
+              <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+                {lang === "en" ? "Start Free Trial" : "Prueba Gratis"} &rarr;
+              </a>
+              <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -358,6 +364,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
             >
               {lang === "en" ? "Join the Founding Wave" : "\u00DAnete a la Ola Fundadora"} &rarr;
             </a>
+            <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
           </div>
         </div>
       </section>
@@ -435,6 +442,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
                 <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
                   {t.hero.cta} &rarr;
                 </a>
+                <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
               </div>
             </div>
           </div>
@@ -559,6 +567,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
               <a href="/setup" className="cta-gold cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg px-8 py-4 text-lg font-semibold text-white">
                 {t.pricing.cta} &rarr;
               </a>
+              <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
 
               <p className="mt-4 text-xs text-[#A0A3A8]">{t.pricing.guarantee}</p>
 
@@ -653,6 +662,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
           <a href="/setup" className="cta-gold cta-shimmer mt-10 inline-flex items-center justify-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
             {t.hero.cta} &rarr;
           </a>
+          <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
 
           <p className="mt-6 text-sm text-slate-400">{t.cta.sub}</p>
           <p className="mt-4 text-sm text-slate-500">

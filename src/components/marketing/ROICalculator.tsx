@@ -330,11 +330,12 @@ export function ROICalculator({ lang = "en" }: { lang?: "en" | "es" }) {
         {/* CTA */}
         <div className="mt-8 text-center">
           <a
-            href="/pricing"
+            href="/setup"
             className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white"
           >
             {t.cta} &rarr;
           </a>
+          <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
         </div>
       </div>
 

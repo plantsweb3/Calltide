@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { appointments } from "@/db/schema";
-import { eq, and, ne } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import type { BusinessContext } from "@/types";
 
 interface TimeSlot {
@@ -67,7 +67,7 @@ export async function checkAvailability(
       and(
         eq(appointments.businessId, biz.id),
         eq(appointments.date, date),
-        ne(appointments.status, "cancelled")
+        inArray(appointments.status, ["confirmed", "pending"])
       )
     );
 

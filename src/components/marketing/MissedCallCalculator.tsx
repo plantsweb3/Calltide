@@ -3,16 +3,16 @@
 import { useState } from "react";
 
 const TRADES = [
-  { value: "plumbing", label: "Plumbing", avgJob: 275, missedRate: 28 },
-  { value: "hvac", label: "HVAC", avgJob: 350, missedRate: 27 },
-  { value: "electrical", label: "Electrical", avgJob: 325, missedRate: 23 },
-  { value: "roofing", label: "Roofing", avgJob: 8500, missedRate: 32 },
-  { value: "general_contractor", label: "General Contracting", avgJob: 5000, missedRate: 35 },
-  { value: "restoration", label: "Restoration", avgJob: 3500, missedRate: 22 },
-  { value: "landscaping", label: "Landscaping", avgJob: 1200, missedRate: 30 },
-  { value: "pest_control", label: "Pest Control", avgJob: 250, missedRate: 25 },
-  { value: "garage_door", label: "Garage Door", avgJob: 350, missedRate: 30 },
-  { value: "other", label: "Other Home Service", avgJob: 400, missedRate: 27 },
+  { value: "plumbing", label: "Plumbing", labelEs: "Plomer\u00EDa", avgJob: 275, missedRate: 28 },
+  { value: "hvac", label: "HVAC", labelEs: "HVAC", avgJob: 350, missedRate: 27 },
+  { value: "electrical", label: "Electrical", labelEs: "Electricidad", avgJob: 325, missedRate: 23 },
+  { value: "roofing", label: "Roofing", labelEs: "Techos", avgJob: 8500, missedRate: 32 },
+  { value: "general_contractor", label: "General Contracting", labelEs: "Contratista General", avgJob: 5000, missedRate: 35 },
+  { value: "restoration", label: "Restoration", labelEs: "Restauraci\u00F3n", avgJob: 3500, missedRate: 22 },
+  { value: "landscaping", label: "Landscaping", labelEs: "Jardiner\u00EDa", avgJob: 1200, missedRate: 30 },
+  { value: "pest_control", label: "Pest Control", labelEs: "Control de Plagas", avgJob: 250, missedRate: 25 },
+  { value: "garage_door", label: "Garage Door", labelEs: "Puertas de Garaje", avgJob: 350, missedRate: 30 },
+  { value: "other", label: "Other Home Service", labelEs: "Otro Servicio del Hogar", avgJob: 400, missedRate: 27 },
 ] as const;
 
 interface Props {
@@ -146,7 +146,7 @@ export function MissedCallCalculator({ lang }: Props) {
               >
                 <option value="">{t.tradePlaceholder}</option>
                 {TRADES.map((tr) => (
-                  <option key={tr.value} value={tr.value}>{tr.label}</option>
+                  <option key={tr.value} value={tr.value}>{lang === "es" ? tr.labelEs : tr.label}</option>
                 ))}
               </select>
             </div>

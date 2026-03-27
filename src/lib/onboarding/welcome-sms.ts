@@ -7,6 +7,7 @@ import { reportError } from "@/lib/error-reporting";
 /**
  * Send a welcome SMS to the business owner immediately after account creation.
  * Sent FROM the business's Capta number so the owner saves it in contacts.
+ * Bilingual: sends Spanish if biz.defaultLanguage === "es".
  *
  * Polls for Twilio number readiness since provisioning is async.
  */
@@ -53,6 +54,7 @@ export async function sendWelcomeSms(
       ownerEmail: businesses.ownerEmail,
       receptionistName: businesses.receptionistName,
       twilioNumber: businesses.twilioNumber,
+      defaultLanguage: businesses.defaultLanguage,
     })
     .from(businesses)
     .where(eq(businesses.id, businessId))
@@ -60,21 +62,33 @@ export async function sendWelcomeSms(
 
   if (!biz || !biz.ownerPhone) return;
 
-  const firstName = biz.ownerName?.split(" ")[0] || "there";
+  const firstName = biz.ownerName?.split(" ")[0] || (biz.defaultLanguage === "es" ? "amigo" : "there");
   const receptionistName = biz.receptionistName || "Maria";
   const formattedNumber = formatPhoneForDisplay(twilioNumber);
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+  const isEs = biz.defaultLanguage === "es";
 
-  const message =
-    `Hi ${firstName}! I'm ${receptionistName}, your new AI receptionist from Capta.\n\n` +
-    `Your Capta number: ${formattedNumber}\n\n` +
-    `To start answering your calls, set up call forwarding:\n` +
-    `AT&T: Dial *21*${twilioNumber}#\n` +
-    `Verizon: Dial *72 ${twilioNumber}\n` +
-    `T-Mobile: Dial **21*${twilioNumber}#\n\n` +
-    `Dashboard: ${appUrl}/dashboard\n` +
-    `Email: ${biz.ownerEmail}\n\n` +
-    `Text me anytime — I'm here 24/7!`;
+  const message = isEs
+    ? `Hola ${firstName}! Soy ${receptionistName}, tu nueva recepcionista de IA de Capta.\n\n` +
+      `Tu numero de Capta: ${formattedNumber}\n\n` +
+      `Dashboard: ${appUrl}/dashboard\n` +
+      `Email: ${biz.ownerEmail}\n` +
+      `Password: ${password}\n\n` +
+      `Para empezar a contestar tus llamadas, configura el desvio:\n` +
+      `AT&T: Marca *21*${twilioNumber}#\n` +
+      `Verizon: Marca *72 ${twilioNumber}\n` +
+      `T-Mobile: Marca **21*${twilioNumber}#\n\n` +
+      `Escribeme cuando quieras — estoy aqui 24/7!`
+    : `Hi ${firstName}! I'm ${receptionistName}, your new AI receptionist from Capta.\n\n` +
+      `Your Capta number: ${formattedNumber}\n\n` +
+      `Dashboard: ${appUrl}/dashboard\n` +
+      `Email: ${biz.ownerEmail}\n` +
+      `Password: ${password}\n\n` +
+      `To start answering your calls, set up call forwarding:\n` +
+      `AT&T: Dial *21*${twilioNumber}#\n` +
+      `Verizon: Dial *72 ${twilioNumber}\n` +
+      `T-Mobile: Dial **21*${twilioNumber}#\n\n` +
+      `Text me anytime — I'm here 24/7!`;
 
   await sendSMS({
     to: biz.ownerPhone,

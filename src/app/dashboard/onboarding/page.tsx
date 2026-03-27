@@ -426,6 +426,11 @@ function OnboardingPage() {
   const [activating, setActivating] = useState(false);
   const [testForwardingStatus, setTestForwardingStatus] = useState<"idle" | "calling" | "success" | "error">("idle");
 
+  // Track whether pre-filled steps are in edit mode (false = confirmed/summary view)
+  const [editingStep1, setEditingStep1] = useState(true);
+  const [editingStep2, setEditingStep2] = useState(true);
+  const [editingStep3, setEditingStep3] = useState(true);
+
   const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const t = T[lang];
 
@@ -474,6 +479,10 @@ function OnboardingPage() {
           if (biz.stripeSubscriptionStatus === "active" || biz.stripeSubscriptionStatus === "trialing") {
             setPaymentDone(true);
           }
+          // If key fields are already set from setup, show confirmed view instead of empty forms
+          if (biz.name && biz.type) setEditingStep1(false);
+          if (biz.receptionistName) setEditingStep2(false);
+          if (biz.personalityPreset) setEditingStep3(false);
         }
       } catch {
         // Continue with defaults
@@ -835,6 +844,37 @@ function OnboardingPage() {
           <div>
             <h1 className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">{t.step1Title}</h1>
             <p className="mb-6 text-sm text-gray-500">{t.step1Sub}</p>
+
+            {/* Confirmed summary view — data already filled from setup */}
+            {!editingStep1 && bizName && industry && (
+              <div className="mb-6 rounded-xl border-2 border-green-200 bg-green-50 p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
+                    <span className="text-sm font-semibold text-green-700">
+                      {lang === "es" ? "Confirmado del registro" : "Confirmed from setup"}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setEditingStep1(true)}
+                    className="rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                  >
+                    {lang === "es" ? "Cambiar" : "Change"}
+                  </button>
+                </div>
+                <div className="space-y-1.5 text-sm text-gray-700">
+                  <p><span className="font-medium text-gray-500">{t.bizName}:</span> {bizName}</p>
+                  <p><span className="font-medium text-gray-500">{t.industry}:</span> {INDUSTRIES.find((i) => i.value === industry)?.label || industry}</p>
+                  {bizAddress && <p><span className="font-medium text-gray-500">{t.bizAddress}:</span> {bizAddress}</p>}
+                  {ownerName && <p><span className="font-medium text-gray-500">{t.ownerNameLabel}:</span> {ownerName}</p>}
+                  {ownerPhone && <p><span className="font-medium text-gray-500">{t.ownerPhoneLabel}:</span> {formatPhone(ownerPhone)}</p>}
+                  {services.length > 0 && <p><span className="font-medium text-gray-500">{t.servicesTitle}:</span> {services.slice(0, 5).join(", ")}{services.length > 5 ? ` +${services.length - 5}` : ""}</p>}
+                </div>
+              </div>
+            )}
+
+            {/* Full edit form — shown when no pre-filled data or user clicks "Change" */}
+            {(editingStep1 || !bizName || !industry) && (
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label={t.bizName} error={errors.bizName} required>
@@ -928,6 +968,7 @@ function OnboardingPage() {
                 </div>
               </div>
             </div>
+            )}
             {errors.save && <ErrorBanner message={errors.save} />}
             <StepNav onBack={goBack} onNext={goNext} saving={saving} t={t} showBack={false} />
           </div>
@@ -939,6 +980,29 @@ function OnboardingPage() {
             <h1 className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">{t.step2Title}</h1>
             <p className="mb-6 text-sm text-gray-500">{t.step2Sub}</p>
 
+            {/* Confirmed summary — receptionist name already set from setup */}
+            {!editingStep2 && receptionistName && (
+              <div className="mb-6 rounded-xl border-2 border-green-200 bg-green-50 p-5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-200 text-sm font-bold text-amber-700">{receptionistName[0]}</div>
+                      <span className="text-sm font-semibold text-gray-700">{receptionistName}</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setEditingStep2(true)}
+                    className="rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                  >
+                    {lang === "es" ? "Cambiar" : "Change"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {(editingStep2 || !receptionistName) && (
+            <>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {(["Maria", "Sofia", "Isabella"] as const).map((name, i) => (
                 <button key={name} onClick={() => { setReceptionistName(name); setUseCustomName(false); }}
@@ -963,6 +1027,8 @@ function OnboardingPage() {
                 <input type="text" value={receptionistName} onChange={(e) => { const val = e.target.value.replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑüÜ\s]/g, ""); if (val.length <= 20) setReceptionistName(val); }}
                   className="db-input" placeholder={t.namePlaceholder} maxLength={20} autoFocus />
               </div>
+            )}
+            </>
             )}
 
             {/* Preview bubble */}
@@ -991,6 +1057,27 @@ function OnboardingPage() {
             <h1 className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">{t.step3Title}</h1>
             <p className="mb-6 text-sm text-gray-500">{t.step3Sub}</p>
 
+            {/* Confirmed summary — personality already set from setup */}
+            {!editingStep3 && personalityPreset && (
+              <div className="mb-6 rounded-xl border-2 border-green-200 bg-green-50 p-5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
+                    <span className="text-sm font-semibold text-green-700">
+                      {lang === "es" ? "Estilo:" : "Style:"} <span className="capitalize">{personalityPreset === "professional" ? t.professional : personalityPreset === "warm" ? t.warm : t.friendly}</span>
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setEditingStep3(true)}
+                    className="rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                  >
+                    {lang === "es" ? "Cambiar" : "Change"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {(editingStep3 || !personalityPreset) && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {([
                 { key: "professional", icon: "briefcase", label: t.professional, desc: t.professionalDesc, color: "#3B82F6",
@@ -1019,6 +1106,7 @@ function OnboardingPage() {
                 </button>
               ))}
             </div>
+            )}
 
             {errors.save && <ErrorBanner message={errors.save} />}
             <StepNav onBack={goBack} onNext={goNext} saving={saving} t={t} />
@@ -1422,7 +1510,7 @@ function OnboardingPage() {
                     onClick={() => { navigator.clipboard.writeText(twilioNumber); }}
                     className="mt-2 inline-flex items-center gap-1 rounded-md bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 hover:bg-amber-200 transition-colors"
                   >
-                    Copy Number
+                    {lang === "es" ? "Copiar Numero" : "Copy Number"}
                   </button>
                 </div>
 

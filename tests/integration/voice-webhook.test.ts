@@ -24,7 +24,7 @@ vi.mock("@/db", () => {
     db: {
       select: vi.fn(() => {
         selectCallCount++;
-        // 1st call: business lookup, 2nd call: concurrent call count, 3rd call: duplicate check
+        // 1st: business lookup, 2nd: duplicate call check, 3rd: concurrent call count
         if (selectCallCount === 1) {
           return createChain([{
             id: activeBusiness.id,
@@ -37,7 +37,10 @@ vi.mock("@/db", () => {
           }]);
         }
         if (selectCallCount === 2) {
-          return createChain([{ count: 0 }]);
+          return createChain([]); // no duplicate call
+        }
+        if (selectCallCount === 3) {
+          return createChain([{ count: 0 }]); // concurrent call count
         }
         return createChain([]);
       }),

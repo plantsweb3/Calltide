@@ -9,8 +9,8 @@ export const T = {
     nav: { login: "Log In", cta: "Start Free Trial", help: "Help" },
     hero: {
       badge: "AI Front Office for Home Services",
-      h1: "Your AI Front Office. Not Just a Receptionist.",
-      sub: "Your AI receptionist answers calls, generates estimates, recovers missed leads, follows up on quotes, re-engages past customers, and manages your office via text — in English and Spanish, 24/7.",
+      h1: "Stop Losing Jobs to Voicemail",
+      sub: "AI receptionist answers your calls in English and Spanish while you're on the job. Books appointments, sends estimates, follows up \u2014 all for one flat rate.",
       cta: "Start Free Trial",
       audioLabel: "Hear her in action",
       audioSub: "\"Hi, I need to schedule a plumber...\"",
@@ -23,10 +23,10 @@ export const T = {
     },
     outcomeBar: {
       items: [
-        { value: "0", label: "Missed calls" },
-        { value: "$0", label: "Extra software needed" },
+        { value: "100%", label: "Every Call Answered" },
+        { value: "$2,500", label: "In Tools — Replaced" },
         { value: "<60s", label: "Missed call recovery" },
-        { value: "55+", label: "Features included" },
+        { value: "24/7", label: "Coverage" },
       ],
     },
     differentiator: {
@@ -233,8 +233,8 @@ export const T = {
     nav: { login: "Iniciar Sesi\u00F3n", cta: "Prueba Gratis", help: "Ayuda" },
     hero: {
       badge: "Oficina IA para Servicios del Hogar",
-      h1: "Tu Oficina IA. No Solo una Recepcionista.",
-      sub: "Tu recepcionista IA contesta llamadas, genera presupuestos, recupera leads perdidos, da seguimiento a cotizaciones, reactiva clientes anteriores y maneja tu oficina por texto \u2014 en ingl\u00E9s y espa\u00F1ol, 24/7.",
+      h1: "Deja de Perder Trabajos por el Buz\u00F3n de Voz",
+      sub: "Recepcionista IA contesta tus llamadas en ingl\u00E9s y espa\u00F1ol mientras trabajas. Agenda citas, env\u00EDa presupuestos, da seguimiento \u2014 todo por una tarifa fija.",
       cta: "Prueba Gratis",
       audioLabel: "Esc\u00FAchala en acci\u00F3n",
       audioSub: "\"Hola, necesito programar un plomero...\"",
@@ -247,10 +247,10 @@ export const T = {
     },
     outcomeBar: {
       items: [
-        { value: "0", label: "Llamadas perdidas" },
-        { value: "$0", label: "Software adicional necesario" },
+        { value: "100%", label: "Todas las Llamadas Contestadas" },
+        { value: "$2,500", label: "En Herramientas \u2014 Reemplazadas" },
         { value: "<60s", label: "Recuperaci\u00F3n de llamadas" },
-        { value: "55+", label: "Funciones incluidas" },
+        { value: "24/7", label: "Cobertura" },
       ],
     },
     differentiator: {

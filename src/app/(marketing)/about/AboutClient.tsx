@@ -156,19 +156,20 @@ export default function AboutPage() {
           <p className="mt-4 text-slate-400">{c.ctaSub}</p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href="/pricing"
+              href="/setup"
               className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white"
             >
               {c.ctaButton} &rarr;
             </a>
             <a
-              href="/setup"
+              href="/pricing"
               className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-lg font-semibold text-slate-300 hover:text-white transition-colors"
               style={{ border: "1px solid rgba(255,255,255,0.15)" }}
             >
-              {c.ctaBook} &rarr;
+              {lang === "en" ? "See Pricing" : "Ver Precios"} &rarr;
             </a>
           </div>
+          <p className="mt-3 text-xs text-slate-400 text-center">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
           <p className="mt-6 text-sm text-slate-500">
             {lang === "en" ? "Or call us:" : "O llámanos:"}{" "}
             <a href={PHONE_TEL} className="font-semibold hover:underline" style={{ color: "#d4a843" }}>{PHONE}</a>

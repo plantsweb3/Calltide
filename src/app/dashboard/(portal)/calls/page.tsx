@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import DataTable, { type Column } from "@/components/data-table";
 import CallTranscript from "@/app/dashboard/_components/call-transcript";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
@@ -82,6 +83,7 @@ const callTypeKeys: Record<string, string> = {
 export default function CallsPage() {
   const [lang] = useLang();
   const receptionistName = useReceptionistName();
+  const searchParams = useSearchParams();
   const [tab, setTab] = useState<"inbound" | "outbound">("inbound");
   const [calls, setCalls] = useState<Call[]>([]);
   const [page, setPage] = useState(1);
@@ -96,9 +98,9 @@ export default function CallsPage() {
   const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [intakeCache, setIntakeCache] = useState<Record<string, IntakeData[]>>({});
 
-  // Filter state
+  // Filter state — initialize outcome from URL param if present
   const [filterStatus, setFilterStatus] = useState("");
-  const [filterOutcome, setFilterOutcome] = useState("");
+  const [filterOutcome, setFilterOutcome] = useState(() => searchParams.get("outcome") || "");
   const [filterLanguage, setFilterLanguage] = useState("");
   const [filterDateFrom, setFilterDateFrom] = useState("");
   const [filterDateTo, setFilterDateTo] = useState("");
@@ -229,26 +231,38 @@ export default function CallsPage() {
       },
     },
     {
-      key: "sentiment",
-      label: t("calls.sentiment", lang),
-      render: (row) => {
-        if (!row.sentiment) return <span style={{ color: "var(--db-text-muted)" }}>---</span>;
-        const sentimentVariant: Record<string, "success" | "neutral" | "danger"> = {
-          positive: "success",
-          neutral: "neutral",
-          negative: "danger",
-        };
-        return (
-          <StatusBadge label={row.sentiment} variant={sentimentVariant[row.sentiment] ?? "neutral"} />
-        );
-      },
-    },
-    {
       key: "status",
       label: t("calls.outcome", lang),
       render: (row) => (
         <StatusBadge label={row.status} variant={statusToVariant(row.status)} />
       ),
+    },
+    {
+      key: "callBack",
+      label: "",
+      render: (row) => {
+        if (!row.callerPhone) return null;
+        const isMessage = row.outcome === "message_taken";
+        return (
+          <span onClick={(e) => e.stopPropagation()} className="inline-flex">
+            <a
+              href={`tel:${row.callerPhone}`}
+              className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors hover:opacity-80"
+              style={{
+                background: isMessage ? "var(--db-warning-bg)" : "var(--db-hover)",
+                color: isMessage ? "var(--db-warning)" : "var(--db-accent)",
+                border: isMessage ? "1px solid var(--db-warning)" : "none",
+              }}
+              title={t("calls.callBack", lang)}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              {isMessage ? t("calls.callBack", lang) : ""}
+            </a>
+          </span>
+        );
+      },
     },
   ];
 
@@ -464,7 +478,7 @@ export default function CallsPage() {
             className="rounded-xl px-2 py-1.5 text-xs font-medium transition-colors"
             style={{ color: "var(--db-accent)" }}
           >
-            {t("action.filter", lang)}
+            {t("action.clearFilters", lang)}
           </button>
         )}
       </div>

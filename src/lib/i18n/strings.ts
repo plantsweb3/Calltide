@@ -596,6 +596,10 @@ const strings: Record<string, Record<Lang, string>> = {
   },
   "auth.noAccount": { en: "Don't have an account?", es: "No tienes cuenta?" },
   "auth.getStarted": { en: "Get started", es: "Comenzar" },
+  "auth.startTrialCta": {
+    en: "Start your 14-day free trial",
+    es: "Comienza tu prueba gratuita de 14 dias",
+  },
   "auth.error.invalid": {
     en: "Invalid email or password",
     es: "Correo o contrasena invalidos",
@@ -3242,6 +3246,34 @@ const strings: Record<string, Record<Lang, string>> = {
   "insights.readyAndLearning": {
     en: "Your AI receptionist is ready and learning. Insights will appear as more calls come in.",
     es: "Tu recepcionista de IA esta lista y aprendiendo. Los datos apareceran conforme recibas mas llamadas.",
+  },
+
+  // ── Dashboard UX — nav, action items, banners ─────────────────
+  "calls.callBack": { en: "Call Back", es: "Devolver llamada" },
+  "action.clearFilters": { en: "Clear Filters", es: "Limpiar filtros" },
+  "dashboard.messagesAwaiting": {
+    en: "Message(s) awaiting callback",
+    es: "Mensaje(s) esperando respuesta",
+  },
+  "dashboard.firstCallTitle": {
+    en: "{name} handled the first call!",
+    es: "{name} atendio la primera llamada!",
+  },
+  "dashboard.firstCallDesc": {
+    en: "{name} just handled the first call{caller}{duration}. This is just the beginning -- every call from here is revenue you're no longer missing.",
+    es: "{name} acaba de atender la primera llamada{caller}{duration}. Esto es solo el comienzo -- cada llamada a partir de aqui es ingreso que ya no pierdes.",
+  },
+  "dashboard.callsSaved": {
+    en: "{count} call(s) saved",
+    es: "{count} llamada(s) recuperada(s)",
+  },
+  "billing.trialValue": {
+    en: "Day {day} of 14 -- {name} has handled {calls} calls and booked {appointments} appointments",
+    es: "Dia {day} de 14 -- {name} ha atendido {calls} llamadas y agendado {appointments} citas",
+  },
+  "billing.trialUrgent": {
+    en: "{days} days left -- {name} handled {calls} calls this week",
+    es: "{days} dias restantes -- {name} atendio {calls} llamadas esta semana",
   },
 
   // ── Setup Checklist (overview card) ─────────────────────────

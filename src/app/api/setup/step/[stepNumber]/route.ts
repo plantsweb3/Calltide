@@ -15,8 +15,8 @@ const stepSchemas: Record<number, z.ZodSchema> = {
     businessName: z.string().min(1).max(200),
     businessType: z.string().min(1).max(100),
     city: z.string().min(1).max(100),
-    state: z.string().min(1).max(50),
-    services: z.array(z.string().max(200)).min(1, "Add at least one service").max(30),
+    state: z.string().max(50).optional(),
+    services: z.array(z.string().max(200)).max(30).optional(),
     timezone: z.string().max(50).optional(),
   }),
   2: z.object({
@@ -34,6 +34,7 @@ const stepSchemas: Record<number, z.ZodSchema> = {
   5: z.object({
     faqAnswers: z.record(z.string(), z.string().max(500)).optional(),
     offLimits: z.record(z.string(), z.boolean()).optional(),
+    services: z.array(z.string().max(200)).max(30).optional(),
   }),
   6: z.object({
     selectedPlan: z.enum(["monthly", "annual"]),
@@ -139,6 +140,7 @@ export async function PUT(
     } else if (step === 5) {
       if (data.faqAnswers) updates.faqAnswers = data.faqAnswers;
       if (data.offLimits) updates.offLimits = data.offLimits;
+      if (data.services) updates.services = data.services;
     } else if (step === 6) {
       updates.selectedPlan = data.selectedPlan;
     }
