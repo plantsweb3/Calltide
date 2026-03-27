@@ -40,17 +40,22 @@ export async function POST(req: NextRequest) {
 
   const message = buildQualifyMessage(prospect);
 
-  const result = await runAgent({
-    agentName: "qualify",
-    systemPrompt: AGENT_PROMPTS.qualify,
-    userMessage: message,
-    tools: QUALIFY_TOOLS,
-    targetId: prospectId,
-    targetType: "prospect",
-    inputSummary: `Qualify prospect: ${prospect.businessName}`,
-  });
+  try {
+    const result = await runAgent({
+      agentName: "qualify",
+      systemPrompt: AGENT_PROMPTS.qualify,
+      userMessage: message,
+      tools: QUALIFY_TOOLS,
+      targetId: prospectId,
+      targetType: "prospect",
+      inputSummary: `Qualify prospect: ${prospect.businessName}`,
+    });
 
-  return NextResponse.json(result);
+    return NextResponse.json(result);
+  } catch (error) {
+    reportError("[qualify] Agent failed for prospect", error, { prospectId });
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+  }
 }
 
 /**

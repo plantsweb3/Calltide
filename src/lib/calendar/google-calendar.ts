@@ -86,6 +86,7 @@ export async function createCalendarEvent({
   time,
   duration = 60,
   attendeeEmail,
+  timezone = "America/Chicago",
 }: {
   businessId: string;
   summary: string;
@@ -94,6 +95,7 @@ export async function createCalendarEvent({
   time: string;
   duration?: number;
   attendeeEmail?: string;
+  timezone?: string;
 }): Promise<string | null> {
   const auth = await getAuthenticatedCalendar(businessId);
   if (!auth) return null;
@@ -108,8 +110,8 @@ export async function createCalendarEvent({
     const requestBody: any = {
       summary,
       description,
-      start: { dateTime: startDateTime, timeZone: "America/Chicago" },
-      end: { dateTime: endDateTime, timeZone: "America/Chicago" },
+      start: { dateTime: startDateTime, timeZone: timezone },
+      end: { dateTime: endDateTime, timeZone: timezone },
     };
 
     if (attendeeEmail) {
@@ -137,12 +139,13 @@ export async function createCalendarEvent({
 export async function updateCalendarEvent(
   businessId: string,
   eventId: string,
-  updates: { summary?: string; description?: string; date?: string; time?: string; duration?: number },
+  updates: { summary?: string; description?: string; date?: string; time?: string; duration?: number; timezone?: string },
 ): Promise<boolean> {
   const auth = await getAuthenticatedCalendar(businessId);
   if (!auth) return false;
 
   try {
+    const tz = updates.timezone || "America/Chicago";
     const requestBody: Record<string, unknown> = {};
     if (updates.summary) requestBody.summary = updates.summary;
     if (updates.description) requestBody.description = updates.description;
@@ -151,8 +154,8 @@ export async function updateCalendarEvent(
       const startDateTime = `${updates.date}T${updates.time}:00`;
       const endDate = new Date(startDateTime);
       endDate.setMinutes(endDate.getMinutes() + (updates.duration || 60));
-      requestBody.start = { dateTime: startDateTime, timeZone: "America/Chicago" };
-      requestBody.end = { dateTime: endDate.toISOString().slice(0, 19), timeZone: "America/Chicago" };
+      requestBody.start = { dateTime: startDateTime, timeZone: tz };
+      requestBody.end = { dateTime: endDate.toISOString().slice(0, 19), timeZone: tz };
     }
 
     await auth.calendar.events.patch({

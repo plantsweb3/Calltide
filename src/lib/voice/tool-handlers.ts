@@ -342,6 +342,7 @@ async function handleBookAppointment(
       description: `Booked via ${biz.receptionistName || "Maria"}. Call ID: ${ctx.callId || "N/A"}`,
       date,
       time,
+      timezone: biz.timezone,
     }).then((eventId) => {
       if (eventId && appointment) {
         storeEventId(appointment.id, eventId).catch((err) =>
@@ -699,7 +700,6 @@ async function handleTransferToHuman(
   if (ctx.callId) {
     await db.update(calls).set({
       transferRequested: true,
-      ...(isEmergency ? { status: "emergency" } : {}),
       updatedAt: new Date().toISOString(),
     }).where(eq(calls.id, ctx.callId));
 
@@ -1346,6 +1346,7 @@ async function handleRescheduleAppointment(
       updateCalendarEvent(ctx.businessId, appt.googleCalendarEventId!, {
         date: newDate,
         time: newTime,
+        timezone: biz.timezone,
       }).catch((err) =>
         reportError("Failed to update Google Calendar event on reschedule", err),
       );

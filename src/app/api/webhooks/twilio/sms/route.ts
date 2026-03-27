@@ -228,6 +228,7 @@ export async function POST(req: NextRequest) {
           date: appointments.date,
           time: appointments.time,
           reminderSent: appointments.reminderSent,
+          notes: appointments.notes,
         })
         .from(appointments)
         .where(
@@ -246,8 +247,8 @@ export async function POST(req: NextRequest) {
         await db
           .update(appointments)
           .set({
-            notes: (upcomingAppt as { notes?: string | null }).notes
-              ? `${(upcomingAppt as { notes?: string | null }).notes} | Confirmed via SMS`
+            notes: upcomingAppt.notes
+              ? `${upcomingAppt.notes} | Confirmed via SMS`
               : "Confirmed via SMS",
             updatedAt: new Date().toISOString(),
           })
@@ -515,7 +516,7 @@ async function notifyOwnerOfSms(businessId: string, businessName: string, ownerE
   <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin:16px 0;">
     <p style="color:#1e293b;margin:0;white-space:pre-wrap;">${preview}</p>
   </div>
-  <a href="${env.NEXT_PUBLIC_APP_URL}/dashboard/messages" style="display:inline-block;background:#C59A27;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:500;">View in Dashboard</a>
+  <a href="${env.NEXT_PUBLIC_APP_URL}/dashboard/sms" style="display:inline-block;background:#C59A27;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:500;">View in Dashboard</a>
 </div>`,
   });
 }

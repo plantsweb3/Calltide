@@ -34,8 +34,12 @@ export async function POST(req: NextRequest) {
   }
 
   // Validate Twilio signature
+  // Use the full request URL (including query params like ?queue_retry=1) because
+  // Twilio signs against the complete URL it was told to request.
   const signature = req.headers.get("x-twilio-signature") || "";
-  const url = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/twilio/voice`;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+  const requestPath = req.nextUrl.pathname + req.nextUrl.search;
+  const url = `${appUrl}${requestPath}`;
 
   const valid = twilio.validateRequest(authToken, signature, url, params);
   if (!valid) {
@@ -86,9 +90,9 @@ export async function POST(req: NextRequest) {
 
   // Spam detection: block callers who call >3 times in 5 minutes
   // Skip spam check for queue retry redirects (Twilio signature covers the full URL, so this can't be spoofed)
-  const isQueueRetry = params.queue_retry === "1";
+  const isQueueRetry = req.nextUrl.searchParams.get("queue_retry") === "1";
   const normalizedCaller = normalizePhone(callerNumber);
-  if (!isQueueRetry && normalizedCaller && !normalizePhone(biz.ownerPhone).includes(normalizedCaller)) {
+  if (!isQueueRetry && normalizedCaller && normalizePhone(biz.ownerPhone) !== normalizedCaller) {
     const spamCheck = await rateLimit(`spam:${biz.id}:${normalizedCaller}`, {
       limit: 3,
       windowSeconds: 300,
@@ -209,16 +213,16 @@ export async function POST(req: NextRequest) {
       ),
     );
   if (activeCallCount && activeCallCount.count > 3) {
-    // Over limit — update just-inserted record to "queued" and return hold TwiML
-    await db.update(calls).set({ status: "queued" }).where(eq(calls.id, callRecord.id));
+    // Over limit — keep status as "in_progress" (the queue retry will re-check concurrency).
+    // We don't change the status to avoid writing an invalid value not in the schema enum.
 
     const receptionistName = biz.receptionistName || "Maria";
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+    const queueAppUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
     const queueTwiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say language="en-US" voice="Polly.Joanna">Thank you for calling ${escapeXml(biz.name)}. This is ${escapeXml(receptionistName)}. All of our lines are currently busy. Please hold and I'll be with you shortly.</Say>
   <Pause length="20"/>
-  <Redirect method="POST">${escapeXml(appUrl)}/api/webhooks/twilio/voice?queue_retry=1</Redirect>
+  <Redirect method="POST">${escapeXml(queueAppUrl)}/api/webhooks/twilio/voice?queue_retry=1</Redirect>
 </Response>`;
     return new Response(queueTwiml, {
       status: 200,

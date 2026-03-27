@@ -528,7 +528,7 @@ export const revenueMetrics = sqliteTable("revenue_metrics", {
 
 export const churnRiskScores = sqliteTable("churn_risk_scores", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  customerId: text("customer_id").notNull().references(() => customers.id),
+  customerId: text("customer_id").notNull().references(() => businesses.id),
   score: integer("score").notNull().default(0), // 0-10
   factors: text("factors", { mode: "json" }).$type<string[]>().default([]),
   calculatedAt: text("calculated_at").notNull().default(sql`(datetime('now'))`),
