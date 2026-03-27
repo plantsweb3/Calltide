@@ -148,32 +148,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Concurrent call queuing: if business has >3 active calls, queue the caller
-  const [activeCallCount] = await db
-    .select({ count: count() })
-    .from(calls)
-    .where(
-      and(
-        eq(calls.businessId, biz.id),
-        eq(calls.status, "in_progress"),
-      ),
-    );
-  if (activeCallCount && activeCallCount.count >= 3) {
-    const receptionistName = biz.receptionistName || "Maria";
-    // Return TwiML that plays hold music then retries after 30 seconds
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
-    const queueTwiml = `<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Say language="en-US" voice="Polly.Joanna">Thank you for calling ${escapeXml(biz.name)}. This is ${escapeXml(receptionistName)}. All of our lines are currently busy. Please hold and I'll be with you shortly.</Say>
-  <Pause length="20"/>
-  <Redirect method="POST">${escapeXml(appUrl)}/api/webhooks/twilio/voice?queue_retry=1</Redirect>
-</Response>`;
-    return new Response(queueTwiml, {
-      status: 200,
-      headers: { "Content-Type": "text/xml" },
-    });
-  }
-
   // Get ElevenLabs agent ID
   const agentId = biz.elevenlabsAgentId;
   const elevenlabsApiKey = process.env.ELEVENLABS_API_KEY;
@@ -198,6 +172,60 @@ export async function POST(req: NextRequest) {
     leadId = lead.id;
   }
 
+  // Guard against duplicate call records on Twilio retry
+  const [existingCall] = await db
+    .select({ id: calls.id })
+    .from(calls)
+    .where(eq(calls.twilioCallSid, callSid))
+    .limit(1);
+
+  let callRecord: { id: string };
+  if (existingCall) {
+    callRecord = existingCall;
+  } else {
+    // Insert call record FIRST so concurrent count is accurate (prevents race condition
+    // where two simultaneous calls both see count=2 and both proceed)
+    const [created] = await db.insert(calls).values({
+      businessId: biz.id,
+      leadId: leadId || null,
+      direction: "inbound",
+      callerPhone: callerNumber,
+      calledPhone: calledNumber,
+      status: "in_progress",
+      twilioCallSid: callSid,
+      elevenlabsConversationId: undefined,
+    }).returning({ id: calls.id });
+    callRecord = created;
+  }
+
+  // Concurrent call queuing: count AFTER inserting this call to prevent race condition
+  const [activeCallCount] = await db
+    .select({ count: count() })
+    .from(calls)
+    .where(
+      and(
+        eq(calls.businessId, biz.id),
+        eq(calls.status, "in_progress"),
+      ),
+    );
+  if (activeCallCount && activeCallCount.count > 3) {
+    // Over limit — update just-inserted record to "queued" and return hold TwiML
+    await db.update(calls).set({ status: "queued" }).where(eq(calls.id, callRecord.id));
+
+    const receptionistName = biz.receptionistName || "Maria";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+    const queueTwiml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say language="en-US" voice="Polly.Joanna">Thank you for calling ${escapeXml(biz.name)}. This is ${escapeXml(receptionistName)}. All of our lines are currently busy. Please hold and I'll be with you shortly.</Say>
+  <Pause length="20"/>
+  <Redirect method="POST">${escapeXml(appUrl)}/api/webhooks/twilio/voice?queue_retry=1</Redirect>
+</Response>`;
+    return new Response(queueTwiml, {
+      status: 200,
+      headers: { "Content-Type": "text/xml" },
+    });
+  }
+
   // Build repeat caller context for personalized greeting
   let callerContext: string | null = null;
   if (callerNumber) {
@@ -214,7 +242,6 @@ export async function POST(req: NextRequest) {
   }
 
   // Get signed URL for this agent's conversation
-  let conversationId: string | undefined;
   let streamUrl: string;
 
   try {
@@ -223,10 +250,6 @@ export async function POST(req: NextRequest) {
       agent_id: agentId,
     });
     streamUrl = signedUrlResponse.signed_url;
-
-    // Extract conversation ID from signed URL if available
-    // The signed URL connects via WebSocket; conversation ID comes from the session
-    conversationId = undefined; // Will be set via post-call webhook
   } catch (err) {
     reportError("Failed to get ElevenLabs signed URL", err, {
       extra: { businessId: biz.id, agentId },
@@ -237,31 +260,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Guard against duplicate call records on Twilio retry
-  const [existingCall] = await db
-    .select({ id: calls.id })
-    .from(calls)
-    .where(eq(calls.twilioCallSid, callSid))
-    .limit(1);
-
-  let callRecord: { id: string };
-  if (existingCall) {
-    callRecord = existingCall;
-  } else {
-    // Create call record
-    const [created] = await db.insert(calls).values({
-      businessId: biz.id,
-      leadId: leadId || null,
-      direction: "inbound",
-      callerPhone: callerNumber,
-      calledPhone: calledNumber,
-      status: "in_progress",
-      twilioCallSid: callSid,
-      elevenlabsConversationId: conversationId,
-    }).returning({ id: calls.id });
-    callRecord = created;
-  }
-
   // Track active call for live monitoring (fire-and-forget)
   trackCallStart({
     businessId: biz.id,
@@ -270,15 +268,12 @@ export async function POST(req: NextRequest) {
     sessionId: callSid,
   }).catch((err) => reportError("Active call tracking failed", err, { businessId: biz.id }));
 
-  // Connect to ElevenLabs via WebSocket stream
-  // ElevenLabs Twilio integration uses: wss://api.elevenlabs.io/v1/convai/twilio/inbound
-  const elevenLabsWsUrl = `wss://api.elevenlabs.io/v1/convai/twilio/inbound?agent_id=${agentId}`;
-
+  // Connect to ElevenLabs via WebSocket stream using the signed URL
+  // The signed URL already authenticates the session — no API key needed as a parameter
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Connect>
-    <Stream url="${escapeXml(elevenLabsWsUrl)}">
-      <Parameter name="xi-api-key" value="${escapeXml(elevenlabsApiKey)}" />
+    <Stream url="${escapeXml(streamUrl)}">
       <Parameter name="caller_phone" value="${escapeXml(callerNumber)}" />
       <Parameter name="called_phone" value="${escapeXml(calledNumber)}" />
       <Parameter name="business_id" value="${escapeXml(biz.id)}" />

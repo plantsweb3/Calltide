@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { appointments, calls, leads, customers, technicians, smsOptOuts, callbacks } from "@/db/schema";
-import { eq, and, ne, gte, isNull } from "drizzle-orm";
+import { eq, and, ne, gte, isNull, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { checkAvailability, bookSlot } from "@/lib/calendar/availability";
 import { getBusinessById } from "@/lib/ai/context-builder";
@@ -44,7 +44,7 @@ const checkAvailabilitySchema = z.object({
 });
 
 const bookAppointmentSchema = z.object({
-  date: z.string().min(1, "date is required"),
+  date: z.string().min(1, "date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "date must be YYYY-MM-DD format"),
   time: z.string().min(1, "time is required"),
   service: z.string().min(1, "service is required"),
   caller_name: z.string().optional(),
@@ -421,9 +421,14 @@ async function handleTakeMessage(
 
   // Detect emergency via explicit tag or keyword scan
   const EMERGENCY_KEYWORDS = [
+    // English
     "emergency", "urgent", "gas leak", "flooding", "flood",
     "no heat", "no hot water", "pipe burst", "water leak",
     "fire", "carbon monoxide", "sewage backup", "no power", "electrical fire",
+    // Spanish
+    "emergencia", "urgente", "fuga de gas", "inundación", "inundado",
+    "sin calefacción", "sin agua caliente", "tubería rota", "fuga de agua",
+    "fuego", "incendio", "monóxido de carbono", "aguas negras", "sin electricidad",
   ];
   const messageLower = message.toLowerCase();
   const isEmergency = message.startsWith("[EMERGENCY]") ||
@@ -1005,23 +1010,16 @@ async function handleLookupAppointments(
 
   const phone = normalizePhone(rawPhone);
 
-  // Find the customer by phone (try both normalized and raw)
-  const [customer] = await db
-    .select({ id: customers.id })
-    .from(customers)
-    .where(and(eq(customers.businessId, ctx.businessId), eq(customers.phone, phone)))
-    .limit(1);
-
-  // Also look up lead by phone (try normalized)
+  // Query leads directly by phone number (avoids fetching all leads and filtering in memory)
   const matchingLeads = await db
-    .select({ id: leads.id, phone: leads.phone })
+    .select({ id: leads.id })
     .from(leads)
-    .where(and(eq(leads.businessId, ctx.businessId)))
-    .limit(100);
+    .where(and(eq(leads.businessId, ctx.businessId), eq(leads.phone, phone)))
+    .limit(10);
 
-  const lead = matchingLeads.find((l) => l.phone && normalizePhone(l.phone) === phone);
+  const leadIds = matchingLeads.map((l) => l.id);
 
-  if (!customer && !lead) {
+  if (leadIds.length === 0) {
     return {
       success: true,
       data: {
@@ -1033,7 +1031,7 @@ async function handleLookupAppointments(
     };
   }
 
-  // Find upcoming confirmed appointments for this caller
+  // Find upcoming confirmed appointments for this caller's leads
   const biz = await getBusinessById(ctx.businessId);
   const today = new Date().toLocaleDateString("en-CA", { timeZone: biz?.timezone || "America/Chicago" });
   const upcomingAppointments = await db
@@ -1048,7 +1046,7 @@ async function handleLookupAppointments(
     .where(
       and(
         eq(appointments.businessId, ctx.businessId),
-        lead ? eq(appointments.leadId, lead.id) : undefined,
+        inArray(appointments.leadId, leadIds),
         eq(appointments.status, "confirmed"),
         gte(appointments.date, today),
       ),

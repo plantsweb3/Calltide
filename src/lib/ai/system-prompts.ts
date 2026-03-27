@@ -77,8 +77,8 @@ function buildEnglishPrompt(biz: BusinessContext, pricingContext?: string | null
   const safeOwnerName = sanitizePromptInput(biz.ownerName, 200);
   const safeType = sanitizePromptInput(biz.type, 100);
 
-  const baseGreeting = sanitizePromptInput(biz.greeting || `Thank you for calling ${safeName}, this is ${name}. How can I help you today?`, 500);
-  const greeting = `This call may be recorded for quality purposes. You are speaking with ${name}, an AI assistant for ${safeName}. ${baseGreeting}`;
+  const baseGreeting = sanitizePromptInput(biz.greeting || `How can I help you today?`, 500);
+  const greeting = `Thank you for calling ${safeName}! This is ${name}. Just so you know, this call may be recorded. ${baseGreeting}`;
   const serviceAreaLine = biz.serviceArea ? `- Service Area: ${sanitizePromptInput(biz.serviceArea, 200)}` : "";
   const additionalInfoBlock = biz.additionalInfo ? wrapUserContent("Business context from owner", sanitizePromptInput(biz.additionalInfo)) : "";
   const personalityBlock = biz.personalityNotes ? wrapUserContent("Style notes from owner", sanitizePromptInput(biz.personalityNotes)) : "";
@@ -205,6 +205,7 @@ When you detect an emergency:
 - If the caller speaks Spanish, switch to Spanish seamlessly — do not comment on the switch.
 - If the caller switches languages mid-call, follow their lead.
 - Never mix languages in a single response.
+- If the caller speaks a language other than English or Spanish, politely say: "I speak English and Spanish. Let me take your number and have someone call you back." Then use take_message with their phone number.
 
 ## Response Style
 - ONE complete response per turn. Never split into multiple messages.
@@ -257,8 +258,8 @@ function buildSpanishPrompt(biz: BusinessContext, pricingContext?: string | null
   const safeOwnerName = sanitizePromptInput(biz.ownerName, 200);
   const safeType = sanitizePromptInput(biz.type, 100);
 
-  const baseGreeting = sanitizePromptInput(biz.greetingEs || `Gracias por llamar a ${safeName}, habla ${name}. ¿En qué le puedo ayudar hoy?`, 500);
-  const greeting = `Esta llamada puede ser grabada para fines de calidad. Está hablando con ${name}, asistente de IA de ${safeName}. ${baseGreeting}`;
+  const baseGreeting = sanitizePromptInput(biz.greetingEs || `¿En qué le puedo ayudar hoy?`, 500);
+  const greeting = `¡Gracias por llamar a ${safeName}! Habla ${name}. Le informo que esta llamada puede ser grabada. ${baseGreeting}`;
   const serviceAreaLine = biz.serviceArea ? `- Área de Servicio: ${sanitizePromptInput(biz.serviceArea, 200)}` : "";
   const additionalInfoBlock = biz.additionalInfo ? wrapUserContent("Contexto del negocio del dueño", sanitizePromptInput(biz.additionalInfo)) : "";
   const personalityBlock = biz.personalityNotes ? wrapUserContent("Notas de estilo del dueño", sanitizePromptInput(biz.personalityNotes)) : "";
@@ -385,6 +386,7 @@ Cuando detectes una emergencia:
 - Si el llamante habla inglés, cambia a inglés naturalmente — no comentes sobre el cambio.
 - Si el llamante cambia de idioma durante la llamada, síguelo.
 - Nunca mezcles idiomas en una misma respuesta.
+- Si el llamante habla un idioma que no sea inglés ni español, di amablemente: "Hablo inglés y español. Permítame tomar su número para que alguien le devuelva la llamada." Luego usa take_message con su número de teléfono.
 
 ## Estilo de Respuesta
 - UNA respuesta completa por turno. Nunca dividas en múltiples mensajes.

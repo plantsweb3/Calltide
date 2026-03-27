@@ -1,4 +1,8 @@
 import { buildSystemPrompt } from "@/lib/ai/system-prompts";
+import { buildPricingContext } from "@/lib/ai/pricing-context";
+import { buildIntakeContext } from "@/lib/ai/context-builder";
+import { getCustomResponsesForPrompt } from "@/lib/receptionist/custom-responses";
+import { buildPartnerContext } from "@/lib/referrals/partners";
 import { PERSONALITY_PRESETS, type PersonalityPreset } from "@/lib/receptionist/personalities";
 import type { BusinessContext } from "@/types";
 
@@ -136,15 +140,38 @@ function buildToolDefinitions(appUrl: string, webhookSecret: string) {
 /**
  * Builds the ElevenLabs agent configuration from a business record.
  * Returns the body for create/update agent API calls.
+ *
+ * Fetches all context (pricing, custom responses, intake, estimate, partners)
+ * so the system prompt has full business knowledge.
  */
-export function buildAgentConfig({ biz, voiceId }: BuildAgentConfigParams) {
+export async function buildAgentConfig({ biz, voiceId }: BuildAgentConfigParams) {
   const presetKey = (biz.personalityPreset || "friendly") as PersonalityPreset;
   const preset = PERSONALITY_PRESETS[presetKey] || PERSONALITY_PRESETS.friendly;
   const receptionistName = biz.receptionistName || "Maria";
   const resolvedVoiceId = voiceId || VOICE_MAP[presetKey] || VOICE_MAP.friendly;
 
-  // Build system prompt using existing prompt builder
-  const systemPrompt = buildSystemPrompt(biz, "en");
+  // Fetch all context in parallel for the system prompt
+  const [pricingContext, customResponsesBlock, intakeContext, partnerContext] = await Promise.all([
+    biz.hasPricingEnabled ? buildPricingContext(biz.id) : Promise.resolve(null),
+    getCustomResponsesForPrompt(biz.id),
+    buildIntakeContext(biz.id, biz.type, "en"),
+    buildPartnerContext(biz.id, "en"),
+  ]);
+
+  // Estimate context is a simple flag — if the business has estimate mode enabled,
+  // the system prompt includes guidance on sharing price ranges from submit_intake
+  const estimateContext = biz.estimateMode ? biz.estimateMode : null;
+
+  // Build system prompt with full context for both languages
+  const systemPromptEn = buildSystemPrompt(biz, "en", pricingContext, customResponsesBlock, null, intakeContext, estimateContext, partnerContext);
+
+  // Fetch ES-specific intake and partner context
+  const [intakeContextEs, partnerContextEs] = await Promise.all([
+    buildIntakeContext(biz.id, biz.type, "es"),
+    buildPartnerContext(biz.id, "es"),
+  ]);
+
+  const systemPromptEs = buildSystemPrompt(biz, "es", pricingContext, customResponsesBlock, null, intakeContextEs, estimateContext, partnerContextEs);
 
   // Build greetings
   const greetingEn = preset.greetingTemplate.en(receptionistName, biz.name);
@@ -171,10 +198,10 @@ export function buildAgentConfig({ biz, voiceId }: BuildAgentConfigParams) {
       },
       agent: {
         prompt: {
-          prompt: systemPrompt,
+          prompt: systemPromptEn,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           llm: "claude-sonnet-4" as any,
-          temperature: 0,
+          temperature: 0.7,
           tools,
         },
         first_message: greetingEn,
@@ -191,7 +218,7 @@ export function buildAgentConfig({ biz, voiceId }: BuildAgentConfigParams) {
           overrides: {
             agent: {
               prompt: {
-                prompt: buildSystemPrompt(biz, "es"),
+                prompt: systemPromptEs,
               },
               first_message: greetingEs,
               language: "es",

@@ -37,7 +37,7 @@ export async function syncAgent(businessId: string): Promise<string | null> {
     const client = getElevenLabsClient();
 
     // Tools are embedded inline in the agent config
-    const config = buildAgentConfig({
+    const config = await buildAgentConfig({
       biz,
       voiceId: record?.elevenlabsVoiceId,
     });
