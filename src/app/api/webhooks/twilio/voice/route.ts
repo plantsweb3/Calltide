@@ -38,7 +38,8 @@ export async function POST(req: NextRequest) {
   // Twilio signs against the complete URL it was told to request.
   const signature = req.headers.get("x-twilio-signature") || "";
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
-  const requestPath = req.nextUrl.pathname + req.nextUrl.search;
+  const parsedUrl = new URL(req.url);
+  const requestPath = parsedUrl.pathname + parsedUrl.search;
   const url = `${appUrl}${requestPath}`;
 
   const valid = twilio.validateRequest(authToken, signature, url, params);
@@ -90,7 +91,7 @@ export async function POST(req: NextRequest) {
 
   // Spam detection: block callers who call >3 times in 5 minutes
   // Skip spam check for queue retry redirects (Twilio signature covers the full URL, so this can't be spoofed)
-  const isQueueRetry = req.nextUrl.searchParams.get("queue_retry") === "1";
+  const isQueueRetry = parsedUrl.searchParams.get("queue_retry") === "1";
   const normalizedCaller = normalizePhone(callerNumber);
   if (!isQueueRetry && normalizedCaller && normalizePhone(biz.ownerPhone) !== normalizedCaller) {
     const spamCheck = await rateLimit(`spam:${biz.id}:${normalizedCaller}`, {

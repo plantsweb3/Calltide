@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    reportError("[qualify] Agent failed for prospect", error, { prospectId });
+    reportError("[qualify] Agent failed for prospect", error, { extra: { prospectId } });
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }
