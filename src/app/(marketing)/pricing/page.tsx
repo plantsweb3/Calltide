@@ -4,7 +4,7 @@ import PricingClient from "./PricingClient";
 export const metadata: Metadata = {
   title: "Pricing | Capta",
   description:
-    "One plan. Everything included. $497/month for your AI front office. Unlimited calls, AI estimates, missed call recovery, follow-up automation, CRM, and 55+ features. 14-day free trial.",
+    "One plan. Everything included. $497/month for your AI front office. Unlimited calls, AI estimates, missed call recovery, follow-up automation, CRM, and 30+ features. 14-day free trial.",
   openGraph: {
     title: "Pricing | Capta",
     description:
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pricing | Capta",
     description:
-      "One plan. Everything included. $497/month — your AI front office with 55+ features.",
+      "One plan. Everything included. $497/month — your AI front office with 30+ features.",
   },
   alternates: {
     canonical: "/pricing",

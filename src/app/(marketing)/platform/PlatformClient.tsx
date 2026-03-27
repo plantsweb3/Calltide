@@ -109,7 +109,7 @@ const iconMapPin = (p: IconProps) => (
 const T = {
   en: {
     heroLabel: "Platform",
-    heroH1: "55+ Features. One AI. One Subscription.",
+    heroH1: "30+ Features. One AI. One Subscription.",
     heroSub: "Every feature you need to answer calls, generate estimates, recover missed calls, and grow your business.",
     tradeLabel: "See It In Action",
     tradeH2: "How She Handles Real Calls",
@@ -197,7 +197,7 @@ const T = {
   },
   es: {
     heroLabel: "Plataforma",
-    heroH1: "55+ Funciones. Una IA. Una Suscripci\u00F3n.",
+    heroH1: "30+ Funciones. Una IA. Una Suscripci\u00F3n.",
     heroSub: "Todo lo que necesitas para contestar llamadas, generar presupuestos, recuperar llamadas perdidas y hacer crecer tu negocio.",
     tradeLabel: "Míralo en Acción",
     tradeH2: "Cómo Maneja Llamadas Reales",

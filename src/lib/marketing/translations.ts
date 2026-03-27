@@ -51,7 +51,7 @@ export const T = {
         "Run 6 AI agents: QA scoring, churn prevention, lead qualification",
         "Unlimited calls \u2014 one flat price, no per-minute billing",
       ],
-      bottomStat: "Answering services give you 2 features. Capta gives you 55+.",
+      bottomStat: "Answering services give you 2 features. Capta gives you 30+.",
     },
     officeManager: {
       label: "YOUR AI OFFICE MANAGER",
@@ -132,7 +132,7 @@ export const T = {
         { title: "Automated Follow-Ups & Customer Recall", desc: "Cold estimates get automatic follow-ups. Past customers get re-engaged for seasonal work. Capta turns one-time callers into repeat revenue." },
         { title: "Partner Referral Network", desc: "Caller needs a trade you don\u2019t do? She refers them to your partner \u2014 and you get referrals back." },
       ],
-      allFeatures: "See all 55+ features",
+      allFeatures: "See all 30+ features",
     },
     social: {
       label: "Built for Service Businesses",
@@ -275,7 +275,7 @@ export const T = {
         "Ejecutar 6 agentes IA: puntuaci\u00F3n QA, prevenci\u00F3n de abandono, calificaci\u00F3n de leads",
         "Llamadas ilimitadas \u2014 un precio fijo, sin cobro por minuto",
       ],
-      bottomStat: "Los servicios telef\u00F3nicos te dan 2 funciones. Capta te da 55+.",
+      bottomStat: "Los servicios telef\u00F3nicos te dan 2 funciones. Capta te da 30+.",
     },
     officeManager: {
       label: "TU GERENTE DE OFICINA IA",
@@ -356,7 +356,7 @@ export const T = {
         { title: "Seguimientos Autom\u00E1ticos y Reactivaci\u00F3n", desc: "Los presupuestos fr\u00EDos reciben seguimiento autom\u00E1tico. Los clientes anteriores son reactivados para trabajo estacional. Capta convierte llamantes \u00FAnicos en ingresos recurrentes." },
         { title: "Red de Referidos entre Oficios", desc: "\u00BFEl llamante necesita un oficio que no haces? Lo refiere a tu socio \u2014 y t\u00FA recibes referidos de vuelta." },
       ],
-      allFeatures: "Ver las 55+ funciones",
+      allFeatures: "Ver las 30+ funciones",
     },
     social: {
       label: "Hecho para Negocios de Servicio",
