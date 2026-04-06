@@ -220,7 +220,7 @@ export default function SmsPage() {
           }
           title={t("sms.noMessages", lang)}
           description={t("sms.smsDescription", lang, { name: receptionistName })}
-          action={{ label: t("sms.viewSettings", lang), href: "/dashboard/settings#notifications" }}
+          action={{ label: t("sms.viewSettings", lang), href: "/dashboard/settings#general" }}
         />
       )}
 

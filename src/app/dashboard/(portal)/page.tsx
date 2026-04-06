@@ -333,25 +333,37 @@ export default function OverviewPage() {
         </div>
       )}
 
-      {/* First Call Celebration */}
-      {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} receptionistName={receptionistName} />}
-
-      {/* Setup Checklist (for newer businesses) */}
-      {data.createdAt && !hasRevenue && (
-        <SetupChecklist
-          businessHours={data.businessHours || null}
-          greeting={data.greeting || null}
-          hasPricing={data.hasPricing || false}
-          totalCalls={data.totalCalls}
-          setupChecklistDismissed={data.setupChecklistDismissed || false}
-          createdAt={data.createdAt}
+      {/* Big Numbers Row — Calls Today gets emphasis */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 stagger-grid" data-tour="overview-metrics">
+        <div className="db-card p-5 flex flex-col items-center justify-center">
+          <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+            {t("overview.callsToday", lang)}
+          </p>
+          <p className="text-4xl font-bold mt-1" style={{ color: "var(--db-accent)" }}>
+            <AnimatedCounter value={data.callsToday} />
+          </p>
+        </div>
+        <MetricCard
+          label={t("metric.appointmentsBooked", lang)}
+          value={data.appointmentsThisWeek}
+          change={t("metric.thisWeek", lang)}
+          changeType="neutral"
         />
-      )}
+        <MetricCard
+          label={t("metric.missedSaved", lang)}
+          value={data.missedCallsSaved}
+          changeType={data.missedCallsSaved > 0 ? "positive" : "neutral"}
+        />
+        <MetricCard
+          label={t("metric.afterHoursCalls", lang)}
+          value={data.afterHoursThisWeek ?? 0}
+          change={t("metric.thisWeek", lang)}
+          changeType={data.afterHoursThisWeek ? "positive" : "neutral"}
+        />
+      </div>
 
-      {/* Dashboard Tour */}
-      {data.tourCompleted === false && !tourDismissed && (
-        <DashboardTour onComplete={() => setTourDismissed(true)} />
-      )}
+      {/* Action Required — what needs your attention RIGHT NOW */}
+      <ActionRequiredSection items={actionItems} />
 
       {/* Revenue Hero Banner — shown when there are calls with revenue */}
       {hasRevenue ? (
@@ -439,31 +451,20 @@ export default function OverviewPage() {
         </div>
       ) : null}
 
-      {/* Primary Metric Cards — daily operations first */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-grid" data-tour="overview-metrics">
-        <MetricCard
-          label={t("overview.callsToday", lang)}
-          value={data.callsToday}
-          changeType="neutral"
+      {/* First Call Celebration */}
+      {showCelebration && <FirstCallBanner celebration={data.firstCallCelebration!} onDismiss={() => setDismissed(true)} receptionistName={receptionistName} />}
+
+      {/* Setup Checklist (for newer businesses) */}
+      {data.createdAt && !hasRevenue && (
+        <SetupChecklist
+          businessHours={data.businessHours || null}
+          greeting={data.greeting || null}
+          hasPricing={data.hasPricing || false}
+          totalCalls={data.totalCalls}
+          setupChecklistDismissed={data.setupChecklistDismissed || false}
+          createdAt={data.createdAt}
         />
-        <MetricCard
-          label={t("metric.appointmentsBooked", lang)}
-          value={data.appointmentsThisWeek}
-          change={t("metric.thisWeek", lang)}
-          changeType="neutral"
-        />
-        <MetricCard
-          label={t("metric.missedSaved", lang)}
-          value={data.missedCallsSaved}
-          changeType={data.missedCallsSaved > 0 ? "positive" : "neutral"}
-        />
-        <MetricCard
-          label={t("metric.afterHoursCalls", lang)}
-          value={data.afterHoursThisWeek ?? 0}
-          change={t("metric.thisWeek", lang)}
-          changeType={data.afterHoursThisWeek ? "positive" : "neutral"}
-        />
-      </div>
+      )}
 
       {/* Revenue & ROI Metrics — secondary */}
       {(hasRevenue || (data.mariaSavedYou ?? data.revenueSaved ?? 0) > 0) && (
@@ -500,9 +501,6 @@ export default function OverviewPage() {
           <HealthScoreCard score={data.healthScore ?? 50} />
         </div>
       )}
-
-      {/* Action Required */}
-      <ActionRequiredSection items={actionItems} />
 
       {/* Activity Feed + Weekly Summary */}
       {(data.activityFeed || data.weeklySummary) && (
@@ -640,6 +638,11 @@ export default function OverviewPage() {
           </div>
         </div>
       </div>
+
+      {/* Dashboard Tour — always at bottom */}
+      {data.tourCompleted === false && !tourDismissed && (
+        <DashboardTour onComplete={() => setTourDismissed(true)} />
+      )}
     </div>
   );
 }

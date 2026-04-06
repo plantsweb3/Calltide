@@ -194,6 +194,7 @@ const strings: Record<string, Record<Lang, string>> = {
   "action.confirm": { en: "Confirm", es: "Confirmar" },
   "action.close": { en: "Close", es: "Cerrar" },
   "action.back": { en: "Back", es: "Volver" },
+  "action.prev": { en: "Prev", es: "Anterior" },
   "action.next": { en: "Next", es: "Siguiente" },
   "action.viewAll": { en: "View all", es: "Ver todo" },
   "action.download": { en: "Download", es: "Descargar" },
@@ -327,6 +328,12 @@ const strings: Record<string, Record<Lang, string>> = {
   "nav.feedback": { en: "Feedback", es: "Comentarios" },
   "nav.intelligence": { en: "Intelligence", es: "Inteligencia" },
   "nav.locations": { en: "Locations", es: "Ubicaciones" },
+  "nav.schedule": { en: "Schedule", es: "Agenda" },
+  "nav.money": { en: "Money", es: "Dinero" },
+  "nav.messages": { en: "Messages", es: "Mensajes" },
+  "nav.toDo": { en: "To-Do", es: "Pendientes" },
+  "nav.myTeam": { en: "My Team", es: "Mi Equipo" },
+  "nav.reports": { en: "Reports", es: "Reportes" },
 
   // ── Intelligence page ────────────────────────────────────
   "intelligence.title": { en: "{name}'s Brain", es: "El cerebro de {name}" },
@@ -775,6 +782,7 @@ const strings: Record<string, Record<Lang, string>> = {
   "calls.datePresets.today": { en: "Today", es: "Hoy" },
   "calls.datePresets.7d": { en: "Last 7 days", es: "Ultimos 7 dias" },
   "calls.datePresets.30d": { en: "Last 30 days", es: "Ultimos 30 dias" },
+  "calls.filters": { en: "Filters", es: "Filtros" },
 
   // ── Appointments page extras ─────────────────────────────
   "appointments.title": { en: "Appointments", es: "Citas" },

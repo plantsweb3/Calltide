@@ -104,6 +104,7 @@ export default function CallsPage() {
   const [filterLanguage, setFilterLanguage] = useState("");
   const [filterDateFrom, setFilterDateFrom] = useState("");
   const [filterDateTo, setFilterDateTo] = useState("");
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const fetchCalls = useCallback(async () => {
     setLoading(true);
@@ -385,102 +386,127 @@ export default function CallsPage() {
       {tab === "inbound" && (<>
 
       {/* Filter Bar */}
-      <div
-        className="flex flex-wrap items-center gap-2 mb-4 p-3 rounded-xl"
-        style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
-      >
-        {/* Date presets */}
-        {[
-          { label: t("calls.datePresets.today", lang), days: 0 },
-          { label: t("calls.datePresets.7d", lang), days: 6 },
-          { label: t("calls.datePresets.30d", lang), days: 29 },
-        ].map((preset) => {
-          const today = new Date().toISOString().split("T")[0];
-          const from = preset.days === 0
-            ? today
-            : new Date(Date.now() - preset.days * 86400000).toISOString().split("T")[0];
-          const active = filterDateFrom === from && filterDateTo === today;
-          return (
-            <button
-              key={preset.label}
-              onClick={() => { setFilterDateFrom(from); setFilterDateTo(today); setPage(1); }}
-              className="db-tab"
-              data-active={active}
-            >
-              {preset.label}
-            </button>
-          );
-        })}
-        <div className="flex items-center gap-1.5">
-          <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-            {t("sms.from", lang)}
-          </label>
-          <input
-            type="date"
-            value={filterDateFrom}
-            onChange={(e) => { setFilterDateFrom(e.target.value); setPage(1); }}
-            className="db-input px-2 py-1.5 text-xs"
-          />
-        </div>
-        <div className="flex items-center gap-1.5">
-          <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
-            {t("sms.to", lang)}
-          </label>
-          <input
-            type="date"
-            value={filterDateTo}
-            onChange={(e) => { setFilterDateTo(e.target.value); setPage(1); }}
-            className="db-input px-2 py-1.5 text-xs"
-          />
-        </div>
-        <select
-          value={filterStatus}
-          onChange={(e) => { setFilterStatus(e.target.value); setPage(1); }}
-          className="db-select text-xs"
+      <div className="mb-4">
+        {/* Mobile filter toggle */}
+        <button
+          onClick={() => setFiltersOpen((o) => !o)}
+          className="md:hidden flex items-center gap-2 mb-2 px-3 py-2 rounded-xl text-sm font-medium w-full"
+          style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", color: "var(--db-text)" }}
         >
-          <option value="">{t("calls.allStatuses", lang)}</option>
-          <option value="completed">{t("status.completed", lang)}</option>
-          <option value="missed">{t("status.missed", lang)}</option>
-          <option value="voicemail">{t("calls.voicemail", lang)}</option>
-          <option value="in_progress">{t("status.inProgress", lang)}</option>
-        </select>
-        <select
-          value={filterOutcome}
-          onChange={(e) => { setFilterOutcome(e.target.value); setPage(1); }}
-          className="db-select text-xs"
-        >
-          <option value="">{t("calls.allOutcomes", lang)}</option>
-          <option value="appointment_booked">{t("calls.bookedAppointment", lang)}</option>
-          <option value="estimate_requested">{t("calls.estimateRequested", lang)}</option>
-          <option value="message_taken">{t("calls.messageTaken", lang)}</option>
-          <option value="transfer">{t("calls.transferred", lang)}</option>
-          <option value="no_action">{t("calls.noAction", lang)}</option>
-        </select>
-        <select
-          value={filterLanguage}
-          onChange={(e) => { setFilterLanguage(e.target.value); setPage(1); }}
-          className="db-select text-xs"
-        >
-          <option value="">{t("calls.language", lang)}</option>
-          <option value="en">{t("misc.english", lang)}</option>
-          <option value="es">{t("misc.spanish", lang)}</option>
-        </select>
-        {(filterStatus || filterOutcome || filterLanguage || filterDateFrom || filterDateTo) && (
-          <button
-            onClick={() => {
-              setFilterStatus("");
-              setFilterOutcome("");
-              setFilterLanguage("");
-              setFilterDateFrom("");
-              setFilterDateTo("");
-              setPage(1);
-            }}
-            className="rounded-xl px-2 py-1.5 text-xs font-medium transition-colors"
-            style={{ color: "var(--db-accent)" }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+          </svg>
+          {t("calls.filters", lang)}
+          {(filterStatus || filterOutcome || filterLanguage || filterDateFrom || filterDateTo) && (
+            <span className="rounded-full px-1.5 py-0.5 text-xs font-bold" style={{ background: "var(--db-accent)", color: "white" }}>
+              {[filterStatus, filterOutcome, filterLanguage, filterDateFrom, filterDateTo].filter(Boolean).length}
+            </span>
+          )}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto" style={{ transform: filtersOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        {/* Filter controls — hidden on mobile unless toggled */}
+        <div className={`${filtersOpen ? "block" : "hidden"} md:block`}>
+          <div
+            className="flex flex-wrap items-center gap-2 p-3 rounded-xl"
+            style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
           >
-            {t("action.clearFilters", lang)}
-          </button>
-        )}
+            {/* Date presets */}
+            {[
+              { label: t("calls.datePresets.today", lang), days: 0 },
+              { label: t("calls.datePresets.7d", lang), days: 6 },
+              { label: t("calls.datePresets.30d", lang), days: 29 },
+            ].map((preset) => {
+              const today = new Date().toISOString().split("T")[0];
+              const from = preset.days === 0
+                ? today
+                : new Date(Date.now() - preset.days * 86400000).toISOString().split("T")[0];
+              const active = filterDateFrom === from && filterDateTo === today;
+              return (
+                <button
+                  key={preset.label}
+                  onClick={() => { setFilterDateFrom(from); setFilterDateTo(today); setPage(1); }}
+                  className="db-tab"
+                  data-active={active}
+                >
+                  {preset.label}
+                </button>
+              );
+            })}
+            <div className="flex items-center gap-1.5">
+              <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+                {t("sms.from", lang)}
+              </label>
+              <input
+                type="date"
+                value={filterDateFrom}
+                onChange={(e) => { setFilterDateFrom(e.target.value); setPage(1); }}
+                className="db-input px-2 py-1.5 text-xs"
+              />
+            </div>
+            <div className="flex items-center gap-1.5">
+              <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--db-text-muted)" }}>
+                {t("sms.to", lang)}
+              </label>
+              <input
+                type="date"
+                value={filterDateTo}
+                onChange={(e) => { setFilterDateTo(e.target.value); setPage(1); }}
+                className="db-input px-2 py-1.5 text-xs"
+              />
+            </div>
+            <select
+              value={filterStatus}
+              onChange={(e) => { setFilterStatus(e.target.value); setPage(1); }}
+              className="db-select text-xs"
+            >
+              <option value="">{t("calls.allStatuses", lang)}</option>
+              <option value="completed">{t("status.completed", lang)}</option>
+              <option value="missed">{t("status.missed", lang)}</option>
+              <option value="voicemail">{t("calls.voicemail", lang)}</option>
+              <option value="in_progress">{t("status.inProgress", lang)}</option>
+            </select>
+            <select
+              value={filterOutcome}
+              onChange={(e) => { setFilterOutcome(e.target.value); setPage(1); }}
+              className="db-select text-xs"
+            >
+              <option value="">{t("calls.allOutcomes", lang)}</option>
+              <option value="appointment_booked">{t("calls.bookedAppointment", lang)}</option>
+              <option value="estimate_requested">{t("calls.estimateRequested", lang)}</option>
+              <option value="message_taken">{t("calls.messageTaken", lang)}</option>
+              <option value="transfer">{t("calls.transferred", lang)}</option>
+              <option value="no_action">{t("calls.noAction", lang)}</option>
+            </select>
+            <select
+              value={filterLanguage}
+              onChange={(e) => { setFilterLanguage(e.target.value); setPage(1); }}
+              className="db-select text-xs"
+            >
+              <option value="">{t("calls.language", lang)}</option>
+              <option value="en">{t("misc.english", lang)}</option>
+              <option value="es">{t("misc.spanish", lang)}</option>
+            </select>
+            {(filterStatus || filterOutcome || filterLanguage || filterDateFrom || filterDateTo) && (
+              <button
+                onClick={() => {
+                  setFilterStatus("");
+                  setFilterOutcome("");
+                  setFilterLanguage("");
+                  setFilterDateFrom("");
+                  setFilterDateTo("");
+                  setPage(1);
+                }}
+                className="rounded-xl px-2 py-1.5 text-xs font-medium transition-colors"
+                style={{ color: "var(--db-accent)" }}
+              >
+                {t("action.clearFilters", lang)}
+              </button>
+            )}
+          </div>
+        </div>
       </div>
 
       {error && (
@@ -517,7 +543,79 @@ export default function CallsPage() {
         </div>
       )}
 
-      {calls.length > 0 && (
+      {calls.length > 0 && (<>
+        {/* Mobile card view */}
+        <div className="space-y-3 md:hidden">
+          {calls.map((call) => (
+            <button
+              key={call.id}
+              onClick={() => setSelectedCall(call)}
+              className="w-full text-left rounded-xl p-4 transition-colors"
+              style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
+                  {call.leadName || formatPhone(call.callerPhone)}
+                </span>
+                <span className="text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
+                  {formatDuration(call.duration)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <StatusBadge label={call.status} variant={statusToVariant(call.status)} />
+                {call.outcome && (
+                  <StatusBadge label={call.outcome.replace(/_/g, " ")} variant={statusToVariant(call.outcome)} />
+                )}
+                {call.language === "es" && (
+                  <span
+                    className="text-xs px-1.5 py-0.5 rounded-full"
+                    style={{ background: "var(--db-warning-bg)", color: "var(--db-warning)" }}
+                  >
+                    ES
+                  </span>
+                )}
+              </div>
+              {call.summary && (
+                <p className="mt-2 text-xs line-clamp-2" style={{ color: "var(--db-text-muted)" }}>
+                  {call.summary}
+                </p>
+              )}
+              <p className="mt-2 text-xs" style={{ color: "var(--db-text-muted)" }}>
+                {formatDate(call.createdAt)}
+              </p>
+            </button>
+          ))}
+          {/* Mobile pagination */}
+          {totalPages > 1 && (
+            <div
+              className="flex items-center justify-between rounded-xl px-4 py-3"
+              style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+              >
+                {t("action.prev", lang)}
+              </Button>
+              <span className="text-xs tabular-nums" style={{ color: "var(--db-text-muted)" }}>
+                {page} / {totalPages}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={page >= totalPages}
+                onClick={() => setPage(page + 1)}
+              >
+                {t("action.next", lang)}
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop table view */}
+        <div className="hidden md:block">
         <DataTable
           columns={columns}
           data={calls}
@@ -719,7 +817,8 @@ export default function CallsPage() {
             </div>
           ); }}
         />
-      )}
+        </div>
+      </>)}
 
       {/* Transcript Panel */}
       {selectedCall && (

@@ -45,6 +45,7 @@
     { "path": "/api/cron/recording-cleanup", "schedule": "0 8 * * *" },
     { "path": "/api/cron/recurring-appointments", "schedule": "0 6 * * *" },
     { "path": "/api/cron/usage-drop-alert", "schedule": "0 10 * * 1" },
-    { "path": "/api/cron/win-back", "schedule": "0 10 * * *" }
+    { "path": "/api/cron/win-back", "schedule": "0 10 * * *" },
+    { "path": "/api/cron/morning-briefing", "schedule": "0 12 * * *" }
   ]
 }

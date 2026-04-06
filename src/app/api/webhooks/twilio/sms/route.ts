@@ -18,6 +18,7 @@ import { getResend } from "@/lib/email/client";
 const OPT_OUT_KEYWORDS = ["stop", "unsubscribe", "quit", "end", "optout", "opt out"];
 const CANCEL_KEYWORDS = ["cancel", "cancelar"];
 const OPT_IN_KEYWORDS = ["start", "unstop", "subscribe", "opt in", "optin"];
+const HELP_KEYWORDS = ["help", "ayuda", "menu", "menú", "commands", "comandos", "?"];
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -142,6 +143,49 @@ export async function POST(req: NextRequest) {
 
     console.log(`SMS opt-in recorded for lead ${lead.id}`);
     return twimlResponse("You have been re-subscribed to SMS messages. Reply STOP to unsubscribe.");
+  }
+
+  // Handle owner HELP command — show what Maria can do
+  if (isOwner && HELP_KEYWORDS.some((kw) => normalizedBody === kw)) {
+    const receptionistName = biz.receptionistName || "Maria";
+    const lang = biz.defaultLanguage === "es" ? "es" : "en";
+
+    const helpMsg = lang === "es"
+      ? `${receptionistName} puede ayudarte con:\n\n` +
+        `📋 "¿Qué hay en mi agenda hoy?"\n` +
+        `📞 "¿Quién llamó hoy?"\n` +
+        `📝 "Agenda una cita para [cliente]"\n` +
+        `💰 "Manda una factura a [cliente]"\n` +
+        `👥 "Busca al cliente [nombre]"\n` +
+        `🌤️ "¿Cómo está el clima?"\n` +
+        `⭐ "¿Quiénes son mis mejores clientes?"\n` +
+        `📊 "Dame el resumen de la mañana"\n` +
+        `🔧 "Agrega un técnico [nombre]"\n` +
+        `📌 "Guarda una nota: [texto]"\n\n` +
+        `Solo escríbeme como si fuera tu asistente.`
+      : `${receptionistName} can help you with:\n\n` +
+        `📋 "What's on my schedule today?"\n` +
+        `📞 "Who called today?"\n` +
+        `📝 "Book an appointment for [customer]"\n` +
+        `💰 "Send an invoice to [customer]"\n` +
+        `👥 "Look up customer [name]"\n` +
+        `🌤️ "What's the weather like?"\n` +
+        `⭐ "Who are my best customers?"\n` +
+        `📊 "Give me the morning briefing"\n` +
+        `🔧 "Add a technician [name]"\n` +
+        `📌 "Save a note: [text]"\n\n` +
+        `Just text me like I'm your office manager.`;
+
+    // Send directly via SMS (not TwiML) so we get full message length
+    await sendSMS({
+      to: from,
+      from: biz.twilioNumber,
+      body: helpMsg,
+      businessId: biz.id,
+      templateType: "owner_notify",
+    });
+
+    return twimlResponse("");
   }
 
   // Handle appointment CANCEL/CANCELAR replies from customers

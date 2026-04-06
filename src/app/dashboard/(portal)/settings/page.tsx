@@ -55,10 +55,10 @@ interface SettingsData {
   setupChecklistDismissed: boolean;
 }
 
-type SettingsTab = "general" | "receptionist" | "responses" | "notifications" | "pricing" | "automations" | "integrations" | "export";
+type SettingsTab = "general" | "receptionist" | "pricing" | "integrations";
 
 const SETTINGS_TAB_KEYS: SettingsTab[] = [
-  "general", "receptionist", "responses", "notifications", "pricing", "automations", "integrations", "export",
+  "general", "receptionist", "pricing", "integrations",
 ];
 
 interface CustomResponse {
@@ -771,11 +771,6 @@ export default function SettingsPage() {
       {/* ── Section: Security ── */}
       <SecuritySection lang={lang} />
 
-      </>}
-
-      {/* ═══ NOTIFICATIONS TAB ═══ */}
-      {activeTab === "notifications" && <>
-
       {/* ── Section: Weekly Digest ── */}
       <Card title={t("settings.weeklyDigest", lang)}>
         <div className="space-y-4">
@@ -1041,8 +1036,8 @@ export default function SettingsPage() {
 
       </>}
 
-      {/* ═══ AUTOMATIONS TAB ═══ */}
-      {activeTab === "automations" && <>
+      {/* ═══ INTEGRATIONS TAB (Automations) ═══ */}
+      {activeTab === "integrations" && <>
 
       {/* ── Section: Google Review Requests ── */}
       <Card title={t("settings.googleReviewRequests", lang)}>
@@ -1241,8 +1236,8 @@ export default function SettingsPage() {
 
       </>}
 
-      {/* ═══ AUTOMATIONS TAB (Service Pricing) ═══ */}
-      {activeTab === "automations" && <>
+      {/* ═══ INTEGRATIONS TAB (Service Pricing) ═══ */}
+      {activeTab === "integrations" && <>
 
       {/* ── Section: Service Pricing ── */}
       <Card title={t("settings.servicePricing", lang)}>
@@ -1665,11 +1660,6 @@ export default function SettingsPage() {
           {t("settings.emergencyNote", lang, { name: rName })}
         </p>
       </Card>
-
-      </>}
-
-      {/* ═══ CUSTOM RESPONSES TAB ═══ */}
-      {activeTab === "responses" && <>
 
       {/* ── Section: Train Your Receptionist ── */}
       <Card title={t("settings.trainReceptionist", lang, { name: rName })}>
@@ -2247,24 +2237,16 @@ export default function SettingsPage() {
 
       </>}
 
-      {/* ═══ AUTOMATIONS TAB (Outbound Calling) ═══ */}
-      {activeTab === "automations" && <>
+      {/* ═══ INTEGRATIONS TAB (Outbound + Google Calendar + Webhooks + Export) ═══ */}
+      {activeTab === "integrations" && <>
 
       {/* ── Section: Outbound Calling ── */}
       <OutboundSettingsSection lang={lang} />
-
-      </>}
-
-      {/* ═══ INTEGRATIONS TAB ═══ */}
-      {activeTab === "integrations" && <>
-
       <GoogleCalendarSection lang={lang} />
       <WebhookManager />
+      <DataExportSection lang={lang} />
 
       </>}
-
-      {/* ═══ DATA EXPORT TAB ═══ */}
-      {activeTab === "export" && <DataExportSection lang={lang} />}
 
       {/* Sticky Save Bar (mobile) */}
       {isDirty && (
