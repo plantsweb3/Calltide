@@ -42,6 +42,7 @@ const STRINGS = {
     orCallUs: "Or call us:",
     guaranteeTitle: "14-Day Free Trial",
     guaranteeSub: "Try Capta free for 14 days. No charge until day 15. If it doesn\u2019t pay for itself, cancel anytime.",
+    guaranteePunch: "What an automation consultant builds for $10,000, Capta does for $497/month.",
     trustSecure: "Secure",
     trustCompliant: "Compliant",
     trust247: "24/7",
@@ -88,6 +89,7 @@ const STRINGS = {
       { name: "Estimating tool", cost: "$50\u2013$200/mo" },
       { name: "Follow-up automation", cost: "$100\u2013$300/mo" },
       { name: "Review management", cost: "$50\u2013$100/mo" },
+      { name: "Automation consultant", cost: "$3K\u2013$10K setup" },
     ],
     faqs: [
       { q: "Is there a contract?", a: "No. Month-to-month. Cancel anytime. Annual plan available at $4,764/year (save $1,200)." },
@@ -131,6 +133,7 @@ const STRINGS = {
     orCallUs: "O ll\u00E1manos:",
     guaranteeTitle: "Prueba Gratuita de 14 D\u00EDas",
     guaranteeSub: "Prueba Capta gratis por 14 d\u00EDas. Sin cargo hasta el d\u00EDa 15. Si no se paga solo, cancela cuando quieras.",
+    guaranteePunch: "Lo que un consultor de automatizaci\u00F3n construye por $10,000, Capta lo hace por $497/mes.",
     trustSecure: "Seguro",
     trustCompliant: "Cumplimiento",
     trust247: "24/7",
@@ -177,6 +180,7 @@ const STRINGS = {
       { name: "Herramienta de cotizaci\u00F3n", cost: "$50\u2013$200/mes" },
       { name: "Automatizaci\u00F3n de seguimiento", cost: "$100\u2013$300/mes" },
       { name: "Gesti\u00F3n de rese\u00F1as", cost: "$50\u2013$100/mes" },
+      { name: "Consultor de automatizaci\u00F3n", cost: "$3K\u2013$10K inicial" },
     ],
     faqs: [
       { q: "\u00BFHay contrato?", a: "No. Mes a mes. Cancela cuando quieras. Plan anual disponible a $4,764/a\u00F1o (ahorra $1,200)." },
@@ -456,6 +460,7 @@ export default function PricingClient() {
                   { name: "Smith.ai", price: lang === "en" ? "$97\u2013$1,170/mo" : "$97\u2013$1,170/mes", h24: true, bilingual: false, books: false, estimates: false, crm: false },
                   { name: "Ruby", price: lang === "en" ? "$245\u2013$1,500/mo" : "$245\u2013$1,500/mes", h24: true, bilingual: false, books: false, estimates: false, crm: false },
                   { name: lang === "en" ? "Answering Service" : "Servicio de Contestaci\u00F3n", price: lang === "en" ? "$200\u2013$800/mo" : "$200\u2013$800/mes", h24: true, bilingual: false, books: false, estimates: false, crm: false },
+                  { name: lang === "en" ? "Automation Consultant" : "Consultor de Automatizaci\u00F3n", price: lang === "en" ? "$3K\u2013$10K + $500\u2013$2K/mo" : "$3K\u2013$10K + $500\u2013$2K/mes", h24: false, bilingual: false, books: false, estimates: false, crm: false },
                 ].map((row) => (
                   <tr
                     key={row.name}
@@ -510,6 +515,9 @@ export default function PricingClient() {
           </h2>
           <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-slate-400">
             {t.guaranteeSub}
+          </p>
+          <p className="mx-auto mt-4 max-w-lg text-base font-semibold" style={{ color: "#d4a843" }}>
+            {t.guaranteePunch}
           </p>
 
           {/* Trust icons */}

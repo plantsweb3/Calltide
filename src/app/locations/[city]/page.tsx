@@ -234,8 +234,8 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   if (!city) return { title: "Not Found — Capta" };
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
-  const title = `AI Receptionist for Contractors in ${city.name}, ${city.stateAbbr} — Capta`;
-  const description = `${city.hispanicPct} Hispanic population. ${city.contractors} contractors competing. Capta answers every call 24/7 in English and Spanish. Built for ${city.name} service businesses.`;
+  const title = `AI Receptionist & Office Automation for Contractors in ${city.name}, ${city.stateAbbr} — Capta`;
+  const description = `${city.hispanicPct} Hispanic population. ${city.contractors} contractors competing. Capta answers every call 24/7, books appointments, sends SMS follow-ups, and automates your office — in English and Spanish. Built for ${city.name} service businesses.`;
 
   return {
     title,
@@ -270,8 +270,8 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Service",
-            name: `Capta AI Receptionist — ${city.name}, ${city.stateAbbr}`,
-            description: `AI receptionist for home service contractors in ${city.name}, ${city.stateAbbr}. Answers calls 24/7 in English and Spanish.`,
+            name: `Capta AI Receptionist & Office Automation — ${city.name}, ${city.stateAbbr}`,
+            description: `AI receptionist and office automation for home service contractors in ${city.name}, ${city.stateAbbr}. Answers calls, books appointments, sends SMS follow-ups, and automates your office 24/7 in English and Spanish.`,
             url: `${appUrl}/locations/${citySlug}`,
             provider: {
               "@type": "Organization",
@@ -289,7 +289,7 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
               name: city.name,
               containedInPlace: { "@type": "State", name: city.state },
             },
-            serviceType: "AI Receptionist",
+            serviceType: "AI Receptionist & Office Automation",
             availableLanguage: ["English", "Spanish"],
             offers: {
               "@type": "Offer",
@@ -320,11 +320,11 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <p className="text-[13px] font-bold uppercase tracking-[0.15em] text-amber">{city.name}, {city.stateAbbr}</p>
           <h1 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[48px]">
-            AI Receptionist for Contractors in {city.name}
+            Your AI Office Manager in {city.name}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-300">
             {city.population} people. {city.contractors} contractors. {city.hispanicPct} Hispanic population.
-            If you&apos;re not answering every call in English and Spanish, you&apos;re losing jobs.
+            If you&apos;re not answering every call, booking appointments, and following up automatically — in English and Spanish — you&apos;re losing jobs.
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link href={`/setup?utm_source=locations&utm_medium=landing&utm_campaign=${citySlug}`} className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
@@ -365,7 +365,7 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
       <section className="bg-[#F5F5F7] px-6 sm:px-8 py-16 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-center text-[28px] font-extrabold tracking-tight text-charcoal sm:text-[36px]">
-            Why {city.name} Contractors Need Capta
+            Why {city.name} Contractors Need AI-Powered Automation
           </h2>
           <div className="mt-12 space-y-4">
             {city.highlights.map((point, i) => (
@@ -389,7 +389,46 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
           <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
             {city.climate}. Weather-driven emergencies don&apos;t call during business hours.
             Capta answers every call — at 2 AM, on weekends, during holidays — in both English and Spanish.
+            Then she books the appointment, sends the customer an SMS confirmation, and dispatches your on-call tech — all before you wake up.
           </p>
+        </div>
+      </section>
+
+      {/* Automation Capabilities */}
+      <section className="bg-[#F5F5F7] px-6 sm:px-8 py-16 sm:py-20">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="text-center text-[28px] font-extrabold tracking-tight text-charcoal sm:text-[36px]">
+            More Than a Receptionist — Your AI Office Manager
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-base text-charcoal-muted">
+            Answering the phone is just the start. Capta automates the busywork that eats your day so you can focus on jobs.
+          </p>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-xl border border-cream-border bg-white p-6">
+              <p className="text-sm font-bold uppercase tracking-wide text-amber">Calls</p>
+              <p className="mt-2 text-[15px] leading-relaxed text-charcoal">Answers every call 24/7 in English and Spanish. Books appointments, takes messages, detects emergencies.</p>
+            </div>
+            <div className="rounded-xl border border-cream-border bg-white p-6">
+              <p className="text-sm font-bold uppercase tracking-wide text-amber">SMS Automation</p>
+              <p className="mt-2 text-[15px] leading-relaxed text-charcoal">Sends appointment confirmations, follow-up reminders, and review requests automatically via text — bilingual.</p>
+            </div>
+            <div className="rounded-xl border border-cream-border bg-white p-6">
+              <p className="text-sm font-bold uppercase tracking-wide text-amber">Smart Scheduling</p>
+              <p className="mt-2 text-[15px] leading-relaxed text-charcoal">Books, reschedules, and cancels appointments from phone calls and SMS replies. No more phone tag.</p>
+            </div>
+            <div className="rounded-xl border border-cream-border bg-white p-6">
+              <p className="text-sm font-bold uppercase tracking-wide text-amber">Emergency Dispatch</p>
+              <p className="mt-2 text-[15px] leading-relaxed text-charcoal">Detects urgent calls and immediately texts your on-call technician with the job details.</p>
+            </div>
+            <div className="rounded-xl border border-cream-border bg-white p-6">
+              <p className="text-sm font-bold uppercase tracking-wide text-amber">Lead Scoring</p>
+              <p className="mt-2 text-[15px] leading-relaxed text-charcoal">Automatically scores and ranks every lead so you know which callbacks to prioritize.</p>
+            </div>
+            <div className="rounded-xl border border-cream-border bg-white p-6">
+              <p className="text-sm font-bold uppercase tracking-wide text-amber">CRM &amp; Reporting</p>
+              <p className="mt-2 text-[15px] leading-relaxed text-charcoal">Every call, customer, and appointment logged automatically. Revenue attribution shows what Capta earns you.</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -397,10 +436,10 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
       <section className="bg-navy px-6 sm:px-8 py-16 sm:py-24">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-[28px] font-extrabold tracking-tight text-white sm:text-[36px]">
-            {city.name} Contractors: Stop Losing Jobs to Voicemail
+            {city.name} Contractors: Automate Your Office, Win More Jobs
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-slate-300">
-            Free for 14 days, then $497/month. Unlimited calls. Bilingual English &amp; Spanish.
+            Free for 14 days, then $497/month. Unlimited calls, SMS automation, scheduling, and CRM — bilingual English &amp; Spanish.
           </p>
           <Link href={`/setup?utm_source=locations&utm_medium=landing&utm_campaign=${citySlug}`} className="cta-gold cta-shimmer mt-8 inline-flex items-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
             Start Free Trial &rarr;

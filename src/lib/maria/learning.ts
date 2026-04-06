@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { knowledgeGaps, businesses, receptionistCustomResponses } from "@/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, gte } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { reportError } from "@/lib/error-reporting";
 
@@ -11,7 +11,8 @@ interface KnowledgeGap {
 
 /**
  * Process knowledge gaps extracted from a call summary.
- * Stores them in the DB and notifies the owner via SMS during week 1.
+ * Stores them in the DB and notifies the owner via SMS (max 1 gap per day).
+ * Remaining gaps stay in "pending" status for the next day.
  */
 export async function processKnowledgeGaps(
   businessId: string,
@@ -26,7 +27,6 @@ export async function processKnowledgeGaps(
       twilioNumber: businesses.twilioNumber,
       receptionistName: businesses.receptionistName,
       ownerName: businesses.ownerName,
-      createdAt: businesses.createdAt,
     })
     .from(businesses)
     .where(eq(businesses.id, businessId))
@@ -34,10 +34,25 @@ export async function processKnowledgeGaps(
 
   if (!biz) return;
 
-  const daysSinceSignup = Math.floor(
-    (Date.now() - new Date(biz.createdAt).getTime()) / (1000 * 60 * 60 * 24),
-  );
   const receptionistName = biz.receptionistName || "Maria";
+
+  // Check how many gap SMS were already sent today for this business
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayStartISO = todayStart.toISOString();
+
+  const gapsAskedToday = await db
+    .select({ id: knowledgeGaps.id })
+    .from(knowledgeGaps)
+    .where(
+      and(
+        eq(knowledgeGaps.businessId, businessId),
+        eq(knowledgeGaps.status, "asked"),
+        gte(knowledgeGaps.askedAt, todayStartISO),
+      ),
+    );
+
+  let alreadySentToday = gapsAskedToday.length > 0;
 
   for (const gap of gaps) {
     // Store the gap
@@ -54,9 +69,9 @@ export async function processKnowledgeGaps(
 
     if (!inserted) continue;
 
-    // During first 7 days: immediate SMS notification for each gap
-    // After that: gaps are batched into daily summaries
-    if (daysSinceSignup <= 7 && biz.ownerPhone && biz.twilioNumber) {
+    // Rate-limited: max 1 gap SMS per day per business.
+    // If we already sent one today, remaining gaps stay "pending" for tomorrow.
+    if (!alreadySentToday && biz.ownerPhone && biz.twilioNumber) {
       const message =
         `Hey! A customer just asked: "${gap.question}" and I wasn't sure how to answer. ` +
         `What should I say next time? Just text me back and I'll remember it! — ${receptionistName}`;
@@ -74,6 +89,8 @@ export async function processKnowledgeGaps(
           .update(knowledgeGaps)
           .set({ status: "asked", askedAt: new Date().toISOString() })
           .where(eq(knowledgeGaps.id, inserted.id));
+
+        alreadySentToday = true;
       } catch (err) {
         reportError("[learning] Failed to send gap SMS", err, {
           extra: { businessId, gapId: inserted.id },
@@ -170,7 +187,8 @@ export async function handleLearningResponse(
 }
 
 /**
- * Get pending knowledge gaps for daily summary batching (used after week 1).
+ * Get pending knowledge gaps that haven't been asked yet.
+ * Used by cron jobs to send the next batched gap question.
  */
 export async function getPendingGapsForSummary(
   businessId: string,

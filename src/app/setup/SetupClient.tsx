@@ -59,8 +59,8 @@ interface TradeData {
 
 const T = {
   en: {
-    step1Title: "Let's build your receptionist",
-    step1Sub: "She'll know your trade, your services, and your market.",
+    step1Title: "Let's build your AI front office",
+    step1Sub: "She'll answer calls, run 48 automations, and manage your business via SMS.",
     bizName: "Business Name",
     bizNamePlaceholder: "e.g. Smith Plumbing",
     tradeType: "Trade / Industry",
@@ -73,7 +73,7 @@ const T = {
     addService: "Add",
     addServicePlaceholder: "Add a custom service...",
     step2Title: "How should we reach you?",
-    step2Sub: "She'll text you the moment a job is booked.",
+    step2Sub: "She'll text you updates and you can manage everything by texting her back — 24 AI tools at your fingertips.",
     ownerName: "Your Name",
     ownerNamePlaceholder: "e.g. John Smith",
     email: "Email",
@@ -117,8 +117,8 @@ const T = {
     roiBreakeven: "Pays for herself after {count} answered calls",
     comparisonAnchor: "A bilingual receptionist costs $3,000\u2013$4,000/month",
     questions: "Questions?",
-    step6Sub: "is ready to answer phones for",
-    trialNote: "Free for 14 days, then $497/mo.",
+    step6Sub: "is ready to run your front office for",
+    trialNote: "AI receptionist + 24 SMS tools + 48 automations. Free for 14 days, then $497/mo.",
     cancelAnytime: "Cancel anytime",
     guarantee: "14-day free trial",
     monthlyLabel: "Monthly",
@@ -141,10 +141,10 @@ const T = {
     toast4: "{name} will handle calls in a {personality} tone — in English and Spanish",
     toast5: "{name} can now answer {count} questions about {biz}",
     celebrationTitle: "{name} is hired!",
-    celebrationSub: "Your AI receptionist is ready to start answering calls.",
+    celebrationSub: "Your AI front office is live — answering calls, running automations, and ready for your texts.",
     recommended: "Most popular",
     whatsNext: "What's next",
-    whatsNextDesc: "Connect your phone line so {name} can start answering calls. Takes 2 minutes.",
+    whatsNextDesc: "Connect your phone line so {name} can start answering calls and running your front office. Takes 2 minutes.",
     connectPhone: "Start Answering Calls",
     businessLabel: "Business",
     receptionistLabel: "Receptionist",
@@ -178,8 +178,8 @@ const T = {
     tryMariaRetry: "Try Again",
   },
   es: {
-    step1Title: "Construyamos tu recepcionista",
-    step1Sub: "Ella conocerá tu industria, tus servicios y tu mercado.",
+    step1Title: "Construyamos tu oficina IA",
+    step1Sub: "Ella contestará llamadas, ejecutará 48 automatizaciones y gestionará tu negocio por SMS.",
     bizName: "Nombre del Negocio",
     bizNamePlaceholder: "ej. Plomería Smith",
     tradeType: "Tipo de Negocio",
@@ -192,7 +192,7 @@ const T = {
     addService: "Agregar",
     addServicePlaceholder: "Agregar servicio...",
     step2Title: "¿Cómo te contactamos?",
-    step2Sub: "Te enviará un mensaje en cuanto agende un trabajo.",
+    step2Sub: "Te enviará actualizaciones y podrás gestionar todo respondiéndole por texto — 24 herramientas IA a tu alcance.",
     ownerName: "Tu Nombre",
     ownerNamePlaceholder: "ej. Juan Pérez",
     email: "Correo Electrónico",
@@ -236,8 +236,8 @@ const T = {
     roiBreakeven: "Se paga sola después de {count} llamadas contestadas",
     comparisonAnchor: "Una recepcionista bilingüe cuesta $3,000\u2013$4,000/mes",
     questions: "¿Preguntas?",
-    step6Sub: "está lista para contestar llamadas de",
-    trialNote: "Gratis por 14 días, luego $497/mes.",
+    step6Sub: "está lista para manejar la oficina de",
+    trialNote: "Recepcionista IA + 24 herramientas SMS + 48 automatizaciones. Gratis por 14 días, luego $497/mes.",
     cancelAnytime: "Cancela cuando quieras",
     guarantee: "Prueba gratuita de 14 días",
     monthlyLabel: "Mensual",
@@ -260,10 +260,10 @@ const T = {
     toast4: "{name} atenderá llamadas con tono {personality} — en inglés y español",
     toast5: "{name} ahora puede responder {count} preguntas sobre {biz}",
     celebrationTitle: "¡{name} está contratada!",
-    celebrationSub: "Tu recepcionista de IA está lista para contestar llamadas.",
+    celebrationSub: "Tu oficina IA está activa — contestando llamadas, ejecutando automatizaciones y lista para tus mensajes.",
     recommended: "Más popular",
     whatsNext: "¿Qué sigue?",
-    whatsNextDesc: "Conecta tu línea telefónica para que {name} empiece a contestar. Toma 2 minutos.",
+    whatsNextDesc: "Conecta tu línea telefónica para que {name} empiece a contestar y manejar tu oficina. Toma 2 minutos.",
     connectPhone: "Empezar a Contestar Llamadas",
     businessLabel: "Negocio",
     receptionistLabel: "Recepcionista",
@@ -1266,8 +1266,8 @@ function SetupClient() {
           </h1>
           <p className={s.subtitle}>
             {lang === "en"
-              ? `Welcome! ${receptionistName} is ready to answer your calls 24/7 in English and Spanish.`
-              : `¡Bienvenido! ${receptionistName} está lista para contestar tus llamadas 24/7 en inglés y español.`}
+              ? `Welcome! ${receptionistName} is ready to answer calls, run 48 automations, and take your commands via SMS — 24/7, bilingual.`
+              : `¡Bienvenido! ${receptionistName} está lista para contestar llamadas, ejecutar 48 automatizaciones y recibir tus órdenes por SMS — 24/7, bilingüe.`}
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", margin: "12px 0 8px" }}>
             <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
@@ -1277,7 +1277,10 @@ function SetupClient() {
               ✓ {t.bilingualLabel}
             </span>
             <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
-              ✓ {lang === "es" ? "Disponible fuera de horario" : "After-hours coverage"}
+              ✓ {lang === "es" ? "48 automatizaciones" : "48 automations"}
+            </span>
+            <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
+              ✓ {lang === "es" ? "24 herramientas SMS" : "24 SMS tools"}
             </span>
           </div>
 

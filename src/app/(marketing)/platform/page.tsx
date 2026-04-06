@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import PlatformClient from "./PlatformClient";
 
 export const metadata: Metadata = {
-  title: "Platform | Capta — The Complete AI Front Office",
+  title: "Platform | Capta — 30+ Automations, One AI, One Text",
   description:
-    "30+ features that answer calls, generate estimates, recover missed calls, and grow your business. Bilingual answering, CRM, scheduling, follow-ups, and more — all in one platform.",
+    "30+ automations that answer calls, generate estimates, recover missed calls, and grow your business — all triggered by voice and SMS. Bilingual AI receptionist, CRM, scheduling, follow-ups, and more.",
   openGraph: {
-    title: "Platform | Capta — The Complete AI Front Office",
+    title: "Platform | Capta — 30+ Automations, One AI, One Text",
     description:
-      "30+ features: bilingual answering, AI estimates, missed call recovery, follow-up automation, CRM, scheduling — everything in one AI front office platform.",
+      "30+ automations: bilingual answering, AI estimates, missed call recovery, follow-up SMS, CRM, scheduling — everything runs automatically in one AI front office.",
     url: "https://captahq.com/platform",
     siteName: "Capta",
     type: "website",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Platform | Capta",
-    description: "The complete AI front office platform for home service businesses.",
+    description: "30+ automations that run your front office — calls, estimates, follow-ups, SMS. All automatic, all bilingual.",
   },
   alternates: {
     canonical: "/platform",
@@ -36,7 +36,7 @@ export default function Page() {
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             description:
-              "AI front office for home service businesses. Answers calls, generates estimates, recovers missed calls, manages follow-ups, and grows your business — in English and Spanish, 24/7.",
+              "30+ automations for home service businesses. Answers calls, generates estimates, recovers missed calls, manages follow-ups via SMS, and grows your business — in English and Spanish, 24/7.",
             offers: {
               "@type": "Offer",
               price: "497",

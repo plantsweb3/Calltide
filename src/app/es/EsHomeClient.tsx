@@ -174,6 +174,83 @@ export default function EsHomepage() {
         </div>
       </section>
 
+      {/* ── 2b. SMS AUTOMATION SHOWCASE ── */}
+      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
+        <div className="mx-auto max-w-5xl">
+          <div className="reveal text-center mb-16">
+            <p className="section-label text-charcoal-light">{t.officeManager.label}</p>
+            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-tight text-charcoal sm:text-[44px] max-w-3xl mx-auto">
+              {t.officeManager.h2}
+            </h2>
+            <p className="mt-4 text-base text-charcoal-muted">{t.officeManager.sub}</p>
+          </div>
+
+          <div className="grid gap-12 md:grid-cols-2 items-start">
+            {/* Phone mockup with chat bubbles */}
+            <div className="reveal">
+              <div className="mx-auto max-w-sm rounded-[2rem] p-1" style={{ background: "linear-gradient(145deg, #e8e8e8, #f5f5f5)", boxShadow: "0 20px 60px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04)" }}>
+                <div className="rounded-[1.75rem] bg-white overflow-hidden">
+                  <div className="bg-[#f8f8f8] px-6 py-4 flex items-center gap-3 border-b border-gray-100">
+                    <div className="h-9 w-9 rounded-full bg-amber/15 flex items-center justify-center">
+                      <span className="text-sm font-bold text-amber">M</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-charcoal">Maria</p>
+                      <p className="text-[11px] text-charcoal-muted">Gerente IA &middot; 24 herramientas</p>
+                    </div>
+                  </div>
+                  <div className="px-4 py-5 space-y-3" style={{ minHeight: "320px" }}>
+                    {t.officeManager.conversation.map((msg, i) => (
+                      <motion.div
+                        key={i}
+                        className={`flex ${msg.from === "you" ? "justify-end" : "justify-start"}`}
+                        initial={{ opacity: 0, y: 12 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-30px" }}
+                        transition={{ delay: i * 0.12, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      >
+                        <div
+                          className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed ${
+                            msg.from === "you"
+                              ? "bg-[#007AFF] text-white rounded-br-sm"
+                              : "bg-[#E9E9EB] text-charcoal rounded-bl-sm"
+                          }`}
+                        >
+                          {msg.text}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="reveal space-y-5">
+              {t.officeManager.bullets.map((bullet, i) => (
+                <motion.div
+                  key={i}
+                  className="flex items-start gap-3"
+                  initial={{ opacity: 0, x: 16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-30px" }}
+                  transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <span className="mt-1 text-amber shrink-0">&#10003;</span>
+                  <span className="text-base leading-relaxed text-charcoal">{bullet}</span>
+                </motion.div>
+              ))}
+
+              <div className="pt-4">
+                <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
+                  {t.hero.cta} &rarr;
+                </a>
+                <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d&iacute;as &middot; Cancela cuando quieras</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── 3. DEMO CTA BANNER ── */}
       <section className="bg-navy px-6 sm:px-8 py-16 sm:py-20 dark-section">
         <div className="mx-auto max-w-3xl text-center">
@@ -282,86 +359,6 @@ export default function EsHomepage() {
                 <p className="mt-4 text-sm font-medium text-amber">{item.sub}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 7b. MARIA OFFICE MANAGER ── */}
-      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
-        <div className="mx-auto max-w-5xl">
-          <div className="reveal text-center mb-16">
-            <p className="section-label text-charcoal-light">{t.officeManager.label}</p>
-            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-tight text-charcoal sm:text-[44px] max-w-3xl mx-auto">
-              {t.officeManager.h2}
-            </h2>
-            <p className="mt-4 text-base text-charcoal-muted">{t.officeManager.sub}</p>
-          </div>
-
-          <div className="grid gap-12 md:grid-cols-2 items-start">
-            {/* Phone mockup with chat bubbles */}
-            <div className="reveal">
-              <div className="mx-auto max-w-sm rounded-[2rem] p-1" style={{ background: "linear-gradient(145deg, #e8e8e8, #f5f5f5)", boxShadow: "0 20px 60px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04)" }}>
-                <div className="rounded-[1.75rem] bg-white overflow-hidden">
-                  {/* Phone header */}
-                  <div className="bg-[#f8f8f8] px-6 py-4 flex items-center gap-3 border-b border-gray-100">
-                    <div className="h-9 w-9 rounded-full bg-amber/15 flex items-center justify-center">
-                      <span className="text-sm font-bold text-amber">M</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-charcoal">Tu Recepcionista</p>
-                      <p className="text-[11px] text-charcoal-muted">Gerente de Oficina IA</p>
-                    </div>
-                  </div>
-                  {/* Chat messages */}
-                  <div className="px-4 py-5 space-y-3" style={{ minHeight: "320px" }}>
-                    {t.officeManager.conversation.map((msg, i) => (
-                      <motion.div
-                        key={i}
-                        className={`flex ${msg.from === "you" ? "justify-end" : "justify-start"}`}
-                        initial={{ opacity: 0, y: 12 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-30px" }}
-                        transition={{ delay: i * 0.12, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                      >
-                        <div
-                          className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed ${
-                            msg.from === "you"
-                              ? "bg-[#007AFF] text-white rounded-br-sm"
-                              : "bg-[#E9E9EB] text-charcoal rounded-bl-sm"
-                          }`}
-                        >
-                          {msg.text}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature bullets */}
-            <div className="reveal space-y-5">
-              {t.officeManager.bullets.map((bullet, i) => (
-                <motion.div
-                  key={i}
-                  className="flex items-start gap-3"
-                  initial={{ opacity: 0, x: 16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-30px" }}
-                  transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <span className="mt-1 text-amber shrink-0">&#10003;</span>
-                  <span className="text-base leading-relaxed text-charcoal">{bullet}</span>
-                </motion.div>
-              ))}
-
-              <div className="pt-4">
-                <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-                  {t.hero.cta} &rarr;
-                </a>
-                <p className="mt-2 text-xs text-slate-400">Sin cargo por 14 d&iacute;as &middot; Cancela cuando quieras</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>

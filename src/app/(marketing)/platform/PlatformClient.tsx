@@ -109,8 +109,8 @@ const iconMapPin = (p: IconProps) => (
 const T = {
   en: {
     heroLabel: "Platform",
-    heroH1: "30+ Features. One AI. One Subscription.",
-    heroSub: "Every feature you need to answer calls, generate estimates, recover missed calls, and grow your business.",
+    heroH1: "30+ Automations. One AI. One Text Message.",
+    heroSub: "Every automation runs on its own — answering calls, generating estimates, recovering missed calls, and growing your business. You just text Maria.",
     tradeLabel: "See It In Action",
     tradeH2: "How She Handles Real Calls",
     trades: [
@@ -127,14 +127,14 @@ const T = {
     screenshot: "Platform screenshot",
     categories: [
       {
-        id: "revenue", label: "Revenue Recovery", icon: iconPhoneMissed,
+        id: "revenue", label: "Revenue Automations", icon: iconPhoneMissed,
         features: [
-          { icon: iconPhoneMissed, title: "Missed Call Recovery SMS", desc: "When a caller hangs up, she auto-texts them within 60 seconds to bring them back. Recovers jobs that would otherwise go to competitors." },
-          { icon: icons.fileText, title: "AI Job Intake", desc: "She asks the right questions \u2014 problem type, property address, urgency, photos \u2014 and creates a complete job card automatically." },
-          { icon: iconCalculator, title: "AI Estimate Generation", desc: "Based on job details and your pricing rules, she generates a price range on the call and texts it to the customer for review." },
-          { icon: iconCamera, title: "Job Cards with Photo Intake", desc: "Callers text photos of the job site. Images attach to the job card alongside all details, giving you full context before arriving." },
-          { icon: iconSmartphone, title: "Owner Response Loop", desc: "You get a text with the job summary and estimate. Approve, adjust, or decline with one tap \u2014 the customer is notified instantly." },
-          { icon: iconRefreshCw, title: "Estimate Follow-Up Automation", desc: "Cold estimates get automatic follow-ups on a schedule you set. She re-engages leads that haven't responded." },
+          { icon: iconPhoneMissed, title: "Missed Call Recovery SMS", desc: "When a caller hangs up, she auto-texts them within 60 seconds to bring them back. Runs automatically — no manual follow-up needed." },
+          { icon: icons.fileText, title: "AI Job Intake", desc: "She asks the right questions — problem type, property address, urgency, photos — and creates a complete job card automatically. Zero data entry." },
+          { icon: iconCalculator, title: "AI Estimate Generation", desc: "Based on job details and your pricing rules, she generates a price range on the call and texts it to the customer for review. Automatic." },
+          { icon: iconCamera, title: "Job Cards with Photo Intake", desc: "Callers text photos of the job site. Images attach to the job card alongside all details automatically, giving you full context before arriving." },
+          { icon: iconSmartphone, title: "Owner SMS Response Loop", desc: "You get a text with the job summary and estimate. Approve, adjust, or decline with one tap — the customer is notified via SMS instantly." },
+          { icon: iconRefreshCw, title: "Estimate Follow-Up Automation", desc: "Cold estimates get automatic SMS follow-ups on a schedule you set. She re-engages leads that haven't responded — hands-free." },
         ],
       },
       {
@@ -148,40 +148,40 @@ const T = {
         ],
       },
       {
-        id: "calls", label: "Calls & Voice", icon: icons.phone,
+        id: "calls", label: "Voice AI", icon: icons.phone,
         features: [
-          { icon: icons.phone, title: "24/7 Bilingual Answering", desc: "Every call answered in English or Spanish. Auto-detects the caller's language \u2014 no phone menus, no press-1-for-English." },
+          { icon: icons.phone, title: "24/7 Bilingual Answering", desc: "Every call answered in English or Spanish automatically. Auto-detects the caller's language — no phone menus, no press-1-for-English." },
           { icon: icons.userCheck, title: "Returning Caller Recognition", desc: "Recognizes repeat callers automatically. Greets them by context and picks up where the last conversation left off." },
-          { icon: icons.alert, title: "Emergency Detection + Live Transfer", desc: "Detects emergency keywords like 'gas leak' or 'flooding' and immediately transfers the call to your emergency number." },
-          { icon: icons.moon, title: "After-Hours Intelligent Routing", desc: "Different behavior for business hours vs. nights and weekends. Takes messages, books next-day appointments, or transfers urgencies." },
+          { icon: icons.alert, title: "Emergency Detection + Live Transfer", desc: "Automatically detects emergency keywords like 'gas leak' or 'flooding' and immediately transfers the call to your emergency number." },
+          { icon: icons.moon, title: "After-Hours Intelligent Routing", desc: "Automatically adjusts behavior for business hours vs. nights and weekends. Takes messages, books next-day appointments, or transfers urgencies." },
           { icon: icons.smile, title: "Custom Greetings & Personality", desc: "Name her, pick a personality (friendly, professional, warm), set preferred phrases, and define off-limits topics." },
-          { icon: icons.fileText, title: "Recordings + Transcripts", desc: "Full audio recording and AI-generated transcript for every call. Searchable, filterable, and exportable from your dashboard." },
+          { icon: icons.fileText, title: "Recordings + Transcripts", desc: "Full audio recording and AI-generated transcript for every call. Created automatically, searchable and exportable from your dashboard." },
         ],
       },
       {
-        id: "scheduling", label: "Scheduling", icon: icons.calendar,
+        id: "scheduling", label: "Scheduling Automations", icon: icons.calendar,
         features: [
           { icon: icons.calendar, title: "Appointment Management", desc: "She books, reschedules, and cancels appointments through natural conversation. Your schedule stays organized without any manual entry." },
-          { icon: icons.mic, title: "Voice Booking", desc: "Callers book appointments naturally through conversation \u2014 no app downloads, no online forms, no hold music." },
-          { icon: icons.message, title: "SMS Confirmations", desc: "Instant text confirmation sent to the caller with appointment details, your business info, and the service address." },
-          { icon: icons.bell, title: "Appointment Reminders", desc: "Automated outbound reminders reduce no-shows. Sent via SMS at configurable intervals before the appointment." },
+          { icon: icons.mic, title: "Voice Booking", desc: "Callers book appointments naturally through conversation — no app downloads, no online forms, no hold music." },
+          { icon: icons.message, title: "SMS Confirmations", desc: "Automatic text confirmation sent to the caller with appointment details, your business info, and the service address. No manual texting." },
+          { icon: icons.bell, title: "Appointment Reminders", desc: "Automated SMS reminders reduce no-shows. Sent at configurable intervals before each appointment — completely hands-free." },
         ],
       },
       {
-        id: "tools", label: "Business Tools", icon: icons.kanban,
+        id: "tools", label: "Smart Tools", icon: icons.kanban,
         features: [
-          { icon: icons.users, title: "Auto-Populated CRM", desc: "Every caller becomes a customer record automatically. Phone, name, call history, appointments, and notes \u2014 all in one place." },
-          { icon: icons.kanban, title: "Estimate Pipeline", desc: "Track every estimate from request to signed. See status, follow-up history, and close rates across all your jobs." },
-          { icon: icons.brain, title: "AI-Powered Call Summaries", desc: "Claude AI reads the transcript and generates a concise summary with action items. Know what happened without listening to the call." },
+          { icon: icons.users, title: "Auto-Populated CRM", desc: "Every caller becomes a customer record automatically. Phone, name, call history, appointments, and notes — all populated without data entry." },
+          { icon: icons.kanban, title: "Estimate Pipeline", desc: "Track every estimate from request to signed. Status, follow-up history, and close rates — updated automatically as Maria works." },
+          { icon: icons.brain, title: "AI-Powered Call Summaries", desc: "AI reads the transcript and generates a concise summary with action items automatically. Know what happened without listening to the call." },
           { icon: iconUpload, title: "CSV Import", desc: "Import your existing customer database from any CRM or spreadsheet. Capta maps the fields and gives your receptionist full context from day one." },
         ],
       },
       {
-        id: "ops", label: "Operations", icon: icons.layout,
+        id: "ops", label: "Operations & Reporting", icon: icons.layout,
         features: [
-          { icon: icons.layout, title: "Dashboard + Analytics", desc: "Real-time metrics: calls answered, appointments booked, revenue recovered, response times, and trends over time." },
+          { icon: icons.layout, title: "Dashboard + Analytics", desc: "Real-time metrics updated automatically: calls answered, appointments booked, revenue recovered, response times, and trends over time." },
           { icon: icons.gift, title: "Referral Program ($497 Credit)", desc: "Refer another business and earn a full month free ($497 credit). They get 50% off their first month." },
-          { icon: iconMapPin, title: "Multi-Location Support", desc: "Manage multiple business locations from one account. Each location gets its own number, settings, and reporting." },
+          { icon: iconMapPin, title: "Multi-Location Support", desc: "Manage multiple business locations from one account. Each location gets its own number, settings, and automated reporting." },
           { icon: icons.activity, title: "Status Page + Incident Engine", desc: "Public status page shows real-time service health. Automatic incident detection, escalation, and postmortem generation." },
         ],
       },
@@ -197,8 +197,8 @@ const T = {
   },
   es: {
     heroLabel: "Plataforma",
-    heroH1: "30+ Funciones. Una IA. Una Suscripci\u00F3n.",
-    heroSub: "Todo lo que necesitas para contestar llamadas, generar presupuestos, recuperar llamadas perdidas y hacer crecer tu negocio.",
+    heroH1: "30+ Automatizaciones. Una IA. Un Mensaje de Texto.",
+    heroSub: "Cada automatización corre sola — contestando llamadas, generando presupuestos, recuperando llamadas perdidas y haciendo crecer tu negocio. Solo envíale un texto a Maria.",
     tradeLabel: "Míralo en Acción",
     tradeH2: "Cómo Maneja Llamadas Reales",
     trades: [
@@ -215,14 +215,14 @@ const T = {
     screenshot: "Captura de la plataforma",
     categories: [
       {
-        id: "revenue", label: "Recuperación de Ingresos", icon: iconPhoneMissed,
+        id: "revenue", label: "Automatizaciones de Ingresos", icon: iconPhoneMissed,
         features: [
-          { icon: iconPhoneMissed, title: "SMS de Llamadas Perdidas", desc: "Cuando un llamante cuelga, le envía un texto en 60 segundos para traerlo de vuelta. Recupera trabajos que de otra forma irían a la competencia." },
-          { icon: icons.fileText, title: "Intake de Trabajo IA", desc: "Hace las preguntas correctas \u2014 tipo de problema, dirección, urgencia, fotos \u2014 y crea una tarjeta de trabajo completa automáticamente." },
-          { icon: iconCalculator, title: "Generación de Presupuestos IA", desc: "Basándose en los detalles del trabajo y tus reglas de precios, genera un rango de precio en la llamada y se lo envía al cliente." },
-          { icon: iconCamera, title: "Tarjetas de Trabajo con Fotos", desc: "Los llamantes envían fotos del sitio por texto. Las imágenes se adjuntan a la tarjeta de trabajo con todos los detalles, dándote contexto completo." },
-          { icon: iconSmartphone, title: "Respuesta del Dueño", desc: "Recibes un texto con el resumen del trabajo y presupuesto. Aprueba, ajusta o rechaza con un toque \u2014 el cliente es notificado al instante." },
-          { icon: iconRefreshCw, title: "Seguimiento de Presupuestos", desc: "Los presupuestos fríos reciben seguimiento automático en el horario que configures. Vuelve a contactar leads que no respondieron." },
+          { icon: iconPhoneMissed, title: "SMS de Llamadas Perdidas", desc: "Cuando un llamante cuelga, le envía un texto en 60 segundos automáticamente para traerlo de vuelta. Sin seguimiento manual." },
+          { icon: icons.fileText, title: "Intake de Trabajo IA", desc: "Hace las preguntas correctas — tipo de problema, dirección, urgencia, fotos — y crea una tarjeta de trabajo completa automáticamente. Cero entrada de datos." },
+          { icon: iconCalculator, title: "Generación de Presupuestos IA", desc: "Basándose en los detalles del trabajo y tus reglas de precios, genera un rango de precio en la llamada y se lo envía al cliente automáticamente." },
+          { icon: iconCamera, title: "Tarjetas de Trabajo con Fotos", desc: "Los llamantes envían fotos del sitio por texto. Las imágenes se adjuntan a la tarjeta de trabajo automáticamente con todos los detalles." },
+          { icon: iconSmartphone, title: "Respuesta del Dueño por SMS", desc: "Recibes un texto con el resumen del trabajo y presupuesto. Aprueba, ajusta o rechaza con un toque — el cliente es notificado por SMS al instante." },
+          { icon: iconRefreshCw, title: "Seguimiento Automático de Presupuestos", desc: "Los presupuestos fríos reciben seguimiento automático por SMS en el horario que configures. Sin intervención manual." },
         ],
       },
       {
@@ -236,40 +236,40 @@ const T = {
         ],
       },
       {
-        id: "calls", label: "Llamadas y Voz", icon: icons.phone,
+        id: "calls", label: "Voz IA", icon: icons.phone,
         features: [
-          { icon: icons.phone, title: "Respuesta Bilingüe 24/7", desc: "Cada llamada contestada en inglés o español. Detecta el idioma automáticamente \u2014 sin menús telefónicos, sin presionar 1 para inglés." },
+          { icon: icons.phone, title: "Respuesta Bilingüe 24/7", desc: "Cada llamada contestada automáticamente en inglés o español. Detecta el idioma al instante — sin menús telefónicos, sin presionar 1 para inglés." },
           { icon: icons.userCheck, title: "Reconocimiento de Llamantes", desc: "Reconoce llamantes repetidos automáticamente. Los saluda por contexto y continúa donde quedó la última conversación." },
-          { icon: icons.alert, title: "Detección de Emergencias", desc: "Detecta palabras clave de emergencia como 'fuga de gas' o 'inundación' y transfiere la llamada inmediatamente a tu número de emergencia." },
-          { icon: icons.moon, title: "Ruteo Inteligente Fuera de Horario", desc: "Comportamiento diferente para horario laboral vs. noches y fines de semana. Toma mensajes, agenda citas para el día siguiente, o transfiere urgencias." },
+          { icon: icons.alert, title: "Detección de Emergencias", desc: "Detecta automáticamente palabras clave de emergencia como 'fuga de gas' o 'inundación' y transfiere la llamada inmediatamente." },
+          { icon: icons.moon, title: "Ruteo Inteligente Fuera de Horario", desc: "Ajusta el comportamiento automáticamente para horario laboral vs. noches y fines de semana. Toma mensajes, agenda citas, o transfiere urgencias." },
           { icon: icons.smile, title: "Saludos y Personalidad", desc: "Ponle nombre, elige su personalidad (amigable, profesional, cálida), configura frases preferidas y temas prohibidos." },
-          { icon: icons.fileText, title: "Grabaciones + Transcripciones", desc: "Grabación completa y transcripción generada por IA para cada llamada. Buscable, filtrable y exportable desde tu panel." },
+          { icon: icons.fileText, title: "Grabaciones + Transcripciones", desc: "Grabación completa y transcripción generada por IA automáticamente para cada llamada. Buscable y exportable desde tu panel." },
         ],
       },
       {
-        id: "scheduling", label: "Agenda", icon: icons.calendar,
+        id: "scheduling", label: "Automatizaciones de Agenda", icon: icons.calendar,
         features: [
           { icon: icons.calendar, title: "Gestión de Citas", desc: "Agenda, reprograma y cancela citas a través de conversación natural. Tu agenda se mantiene organizada sin entrada manual." },
-          { icon: icons.mic, title: "Reserva por Voz", desc: "Los llamantes agendan citas naturalmente por conversación \u2014 sin descargar apps, sin formularios, sin música de espera." },
-          { icon: icons.message, title: "Confirmaciones por SMS", desc: "Confirmación por texto instantánea enviada al llamante con detalles de la cita, info de tu negocio y la dirección del servicio." },
-          { icon: icons.bell, title: "Recordatorios de Citas", desc: "Recordatorios automáticos reducen las ausencias. Enviados por SMS en intervalos configurables antes de la cita." },
+          { icon: icons.mic, title: "Reserva por Voz", desc: "Los llamantes agendan citas naturalmente por conversación — sin descargar apps, sin formularios, sin música de espera." },
+          { icon: icons.message, title: "Confirmaciones por SMS", desc: "Confirmación automática por texto enviada al llamante con detalles de la cita, info de tu negocio y la dirección. Sin textos manuales." },
+          { icon: icons.bell, title: "Recordatorios de Citas", desc: "Recordatorios automáticos por SMS reducen las ausencias. Enviados en intervalos configurables — completamente sin intervención." },
         ],
       },
       {
-        id: "tools", label: "Herramientas", icon: icons.kanban,
+        id: "tools", label: "Herramientas Inteligentes", icon: icons.kanban,
         features: [
-          { icon: icons.users, title: "CRM Automático", desc: "Cada llamante se convierte en un registro de cliente automáticamente. Teléfono, nombre, historial, citas y notas \u2014 todo en un solo lugar." },
-          { icon: icons.kanban, title: "Pipeline de Presupuestos", desc: "Rastrea cada presupuesto desde la solicitud hasta la firma. Ve estado, historial de seguimiento y tasas de cierre en todos tus trabajos." },
-          { icon: icons.brain, title: "Resúmenes de Llamadas IA", desc: "La IA lee la transcripción y genera un resumen conciso con acciones a tomar. Sabe qué pasó sin escuchar la llamada." },
+          { icon: icons.users, title: "CRM Automático", desc: "Cada llamante se convierte en un registro de cliente automáticamente. Teléfono, nombre, historial, citas y notas — todo poblado sin entrada de datos." },
+          { icon: icons.kanban, title: "Pipeline de Presupuestos", desc: "Rastrea cada presupuesto desde la solicitud hasta la firma. Estado e historial de seguimiento — actualizado automáticamente mientras Maria trabaja." },
+          { icon: icons.brain, title: "Resúmenes de Llamadas IA", desc: "La IA lee la transcripción y genera un resumen conciso con acciones automáticamente. Sabe qué pasó sin escuchar la llamada." },
           { icon: iconUpload, title: "Importación CSV", desc: "Importa tu base de datos de clientes existente desde cualquier CRM o hoja de cálculo. Capta mapea los campos y le da a tu recepcionista contexto completo." },
         ],
       },
       {
-        id: "ops", label: "Operaciones", icon: icons.layout,
+        id: "ops", label: "Operaciones y Reportes", icon: icons.layout,
         features: [
-          { icon: icons.layout, title: "Panel + Analíticas", desc: "Métricas en tiempo real: llamadas contestadas, citas agendadas, ingresos recuperados, tiempos de respuesta y tendencias." },
+          { icon: icons.layout, title: "Panel + Analíticas", desc: "Métricas actualizadas automáticamente en tiempo real: llamadas contestadas, citas agendadas, ingresos recuperados y tendencias." },
           { icon: icons.gift, title: "Programa de Referidos ($497)", desc: "Refiere otro negocio y gana un mes gratis ($497 de crédito). Ellos reciben 50% de descuento en su primer mes." },
-          { icon: iconMapPin, title: "Soporte Multi-Ubicación", desc: "Administra múltiples ubicaciones desde una cuenta. Cada ubicación tiene su propio número, configuración y reportes." },
+          { icon: iconMapPin, title: "Soporte Multi-Ubicación", desc: "Administra múltiples ubicaciones desde una cuenta. Cada ubicación tiene su propio número, configuración y reportes automáticos." },
           { icon: icons.activity, title: "Página de Estado", desc: "Página pública de estado muestra la salud del servicio en tiempo real. Detección automática de incidentes y escalación." },
         ],
       },
@@ -386,8 +386,28 @@ export default function PlatformClient() {
             <p className="text-base font-semibold text-white">{activeCategory.label}</p>
             <p className="mt-2 text-sm text-slate-400">
               {lang === "en"
-                ? `${activeCategory.features.length} features included in your $497/mo plan`
-                : `${activeCategory.features.length} funciones incluidas en tu plan de $497/mes`}
+                ? `${activeCategory.features.length} automations included in your $497/mo plan`
+                : `${activeCategory.features.length} automatizaciones incluidas en tu plan de $497/mes`}
+            </p>
+          </div>
+
+          {/* SMS tools callout */}
+          <div
+            className="mt-10 rounded-2xl px-8 py-10 text-center"
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+          >
+            <div className="flex justify-center mb-4">
+              {iconSmartphone({ size: 32, className: "text-[#d4a843]" })}
+            </div>
+            <p className="text-lg font-extrabold tracking-tight text-white">
+              {lang === "en"
+                ? "All of this \u2014 accessible from your texts."
+                : "Todo esto \u2014 accesible desde tus mensajes de texto."}
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-400 max-w-lg mx-auto">
+              {lang === "en"
+                ? "Maria has 24 tools you can trigger by SMS. Approve estimates, check your schedule, dispatch a technician, pull up a customer\u2019s history \u2014 all from a single text conversation. No app to open, no dashboard to log into."
+                : "Maria tiene 24 herramientas que puedes activar por SMS. Aprueba presupuestos, revisa tu agenda, despacha un t\u00E9cnico, consulta el historial de un cliente \u2014 todo desde una conversaci\u00F3n por texto. Sin abrir apps, sin iniciar sesi\u00F3n."}
             </p>
           </div>
         </div>

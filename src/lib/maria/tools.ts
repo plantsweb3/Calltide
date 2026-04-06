@@ -4,7 +4,7 @@ import {
   jobCards, smsMessages, businessContextNotes,
   businesses, technicians, invoices,
 } from "@/db/schema";
-import { eq, and, desc, gte, sql, count, ne, or, like } from "drizzle-orm";
+import { eq, and, desc, gte, sql, count, ne, or, like, sum } from "drizzle-orm";
 import { z } from "zod";
 import { getWeather } from "./weather";
 import { searchHelp } from "./help-kb";
@@ -810,7 +810,7 @@ async function getBusinessStats(businessId: string, biz: BusinessContext, period
   const p = period || "week";
   const start = periodStart(p, biz.timezone);
 
-  const [callCount, appointmentCount, estimateCount, customerCount] = await Promise.all([
+  const [callCount, appointmentCount, estimateCount, customerCount, invoiceTotal, jobCardAvg] = await Promise.all([
     db.select({ cnt: count() }).from(calls)
       .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, start))),
     db.select({ cnt: count() }).from(appointments)
@@ -819,18 +819,48 @@ async function getBusinessStats(businessId: string, biz: BusinessContext, period
       .where(and(eq(jobCards.businessId, businessId), gte(jobCards.createdAt, start))),
     db.select({ cnt: count() }).from(customers)
       .where(and(eq(customers.businessId, businessId), gte(customers.createdAt, start))),
+    // Sum of actual invoice amounts for the period (excluding cancelled)
+    db.select({ total: sum(invoices.amount) }).from(invoices)
+      .where(and(eq(invoices.businessId, businessId), gte(invoices.createdAt, start), ne(invoices.status, "cancelled"))),
+    // Average of estimate midpoints from job cards for fallback
+    db.select({
+      avg: sql<number>`avg((${jobCards.estimateMin} + ${jobCards.estimateMax}) / 2.0)`,
+      cnt: count(),
+    }).from(jobCards)
+      .where(and(
+        eq(jobCards.businessId, businessId),
+        sql`${jobCards.estimateMin} IS NOT NULL`,
+        sql`${jobCards.estimateMax} IS NOT NULL`,
+      )),
   ]);
 
-  const avgJobValue = 250; // default estimate per job
+  const apptCount = appointmentCount[0]?.cnt ?? 0;
+
+  // Revenue calculation: prefer invoices > job card estimates > $250 fallback
+  let estimatedRevenue: number;
+  let revenueSource: string;
+  const invoiceSum = invoiceTotal[0]?.total ? Number(invoiceTotal[0].total) : 0;
+
+  if (invoiceSum > 0) {
+    estimatedRevenue = Math.round(invoiceSum);
+    revenueSource = "invoices";
+  } else if (jobCardAvg[0]?.cnt && jobCardAvg[0].cnt > 0 && jobCardAvg[0].avg) {
+    estimatedRevenue = Math.round(apptCount * Number(jobCardAvg[0].avg));
+    revenueSource = "job card estimates";
+  } else {
+    estimatedRevenue = apptCount * 250;
+    revenueSource = "default (est.)";
+  }
 
   return JSON.stringify({
     period: p,
     since: start,
     calls: callCount[0]?.cnt ?? 0,
-    appointments: appointmentCount[0]?.cnt ?? 0,
+    appointments: apptCount,
     jobCards: estimateCount[0]?.cnt ?? 0,
     newCustomers: customerCount[0]?.cnt ?? 0,
-    estimatedRevenue: (appointmentCount[0]?.cnt ?? 0) * avgJobValue,
+    estimatedRevenue,
+    revenueSource,
   });
 }
 

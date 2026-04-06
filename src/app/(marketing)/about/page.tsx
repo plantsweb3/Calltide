@@ -4,11 +4,11 @@ import AboutPage from "./AboutClient";
 export const metadata: Metadata = {
   title: "About — Capta | Built in San Antonio for Service Businesses",
   description:
-    "Capta was built because too many great service businesses lose jobs when nobody answers the phone. AI front office — answers calls, generates estimates, recovers missed calls, 24/7.",
+    "Capta was built because too many great service businesses lose jobs to missed calls and manual busywork. AI that answers every call AND automates your entire front office — 24 SMS tools, 48 automations, zero busywork.",
   openGraph: {
     title: "About — Capta | Built in San Antonio. Built for You.",
     description:
-      "Every service business deserves a professional front office. Built in San Antonio for home service businesses everywhere.",
+      "AI that answers calls AND automates your entire front office. 24 SMS tools, 48 automations. Built in San Antonio for home service businesses everywhere.",
     url: "https://captahq.com/about",
     siteName: "Capta",
     type: "website",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "About — Capta",
-    description: "Built in Texas. AI front office for home service businesses.",
+    description: "Built in Texas. AI that answers calls and automates your entire front office via SMS.",
   },
   alternates: {
     canonical: "/about",
@@ -34,7 +34,7 @@ export default function Page() {
             "@type": "Organization",
             name: "Capta LLC",
             url: "https://captahq.com",
-            description: "AI front office for home service businesses. Answers calls, generates estimates, recovers missed calls, and manages follow-ups — bilingual, 24/7.",
+            description: "AI front office for home service businesses. Answers calls AND automates your entire office — dispatching, invoicing, follow-ups — all via SMS. Bilingual, 24/7.",
             email: "hello@captahq.com",
             telephone: "+18305217133",
             areaServed: "US",
@@ -50,7 +50,7 @@ export default function Page() {
             "@type": "LocalBusiness",
             name: "Capta",
             description:
-              "AI front office platform for home service businesses — answers calls, generates estimates, recovers missed calls, and grows your business.",
+              "AI front office platform for home service businesses — answers calls AND automates your entire office via SMS. Dispatching, invoicing, follow-ups — 24 tools, 48 automations.",
             url: "https://captahq.com",
             telephone: "+1-830-521-7133",
             email: "hello@captahq.com",

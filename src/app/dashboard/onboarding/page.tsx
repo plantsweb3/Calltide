@@ -114,7 +114,7 @@ const T = {
     // Step 6 - Paywall
     step6Title: "Activate",
     step6TitleSuffix: "on Your Line",
-    step6Sub: "is ready to answer phones for",
+    step6Sub: "is ready to run your front office for",
     missedCallsStat: "miss an average of 3 calls per week",
     lostRevenue: "in lost revenue per month",
     roiReturn: "return",
@@ -150,7 +150,7 @@ const T = {
     conditionalTip: "Tip: Ask for 'conditional forwarding' — forwards only when busy or unanswered.",
     forwardingDone: "I've set up call forwarding",
     testVerify: "Call your business number now to verify she answers",
-    activateCta: "Activate My Receptionist",
+    activateCta: "Activate My AI Front Office",
     activating: "Activating...",
     testSetup: "Test Your Setup",
     testSetupDesc: "We'll call your Capta number to verify everything is working.",
@@ -158,7 +158,7 @@ const T = {
     testSuccess: "Test call placed! Check your phone.",
     testError: "Could not place test call. Try again.",
     isLive: "is LIVE!",
-    celebrationSub: "Your AI receptionist is now answering calls.",
+    celebrationSub: "Your AI front office is live — answering calls, running 48 automations, and ready for your texts.",
     goToDashboard: "Go to Dashboard",
     trainHer: "Train Her",
     viewCalls: "View Call History",
@@ -241,7 +241,7 @@ const T = {
     skipNudge: "Recomendamos entrevistarla antes — ¡toma solo 2 minutos!",
     step6Title: "Activa a",
     step6TitleSuffix: "en Tu Línea",
-    step6Sub: "está lista para contestar llamadas de",
+    step6Sub: "está lista para manejar la oficina de",
     missedCallsStat: "pierden un promedio de 3 llamadas por semana",
     lostRevenue: "en ingresos perdidos por mes",
     roiReturn: "de retorno",
@@ -275,7 +275,7 @@ const T = {
     conditionalTip: "Tip: Pide 'desvío condicional' — solo desvía cuando estés ocupado.",
     forwardingDone: "Ya configuré el desvío de llamadas",
     testVerify: "Llama a tu número de negocio para verificar que ella contesta",
-    activateCta: "Activar Mi Recepcionista",
+    activateCta: "Activar Mi Oficina IA",
     activating: "Activando...",
     testSetup: "Probar Tu Configuración",
     testSetupDesc: "Llamaremos a tu número de Capta para verificar que todo funciona.",
@@ -283,7 +283,7 @@ const T = {
     testSuccess: "¡Llamada de prueba realizada! Revisa tu teléfono.",
     testError: "No se pudo realizar la llamada de prueba. Intenta de nuevo.",
     isLive: "¡está EN LÍNEA!",
-    celebrationSub: "Tu recepcionista de IA ahora está contestando llamadas.",
+    celebrationSub: "Tu oficina IA está activa — contestando llamadas, ejecutando 48 automatizaciones y lista para tus mensajes.",
     goToDashboard: "Ir al Panel",
     trainHer: "Entrénala",
     viewCalls: "Ver Llamadas",
@@ -1687,13 +1687,13 @@ function OnboardingPage() {
               <div style={{ background: "var(--db-bg, #f8f9fa)", padding: "16px 24px" }}>
                 <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
                   <span className="flex items-center gap-1">
-                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "24/7" : "24/7"}
+                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "24/7 Bilingüe" : "24/7 Bilingual"}
                   </span>
                   <span className="flex items-center gap-1">
-                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "Bilingue" : "Bilingual"}
+                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "48 Automatizaciones" : "48 Automations"}
                   </span>
                   <span className="flex items-center gap-1">
-                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "Agendamiento" : "Booking"}
+                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "24 Herramientas SMS" : "24 SMS Tools"}
                   </span>
                 </div>
               </div>

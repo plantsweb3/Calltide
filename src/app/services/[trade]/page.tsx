@@ -125,7 +125,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
               name: "Capta",
               url: appUrl,
             },
-            serviceType: "AI Receptionist",
+            serviceType: "AI Receptionist & Office Automation",
             areaServed: { "@type": "Country", name: "US" },
             offers: {
               "@type": "Offer",
@@ -160,7 +160,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
             {meta.h1}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-300">
-            {profile.missedCallRate * 100}% of {profile.label.toLowerCase()} calls go unanswered. Each missed call costs an average of ${profile.avgJobValue.toLocaleString()}. Capta answers every one — 24/7, in English and Spanish.
+            {profile.missedCallRate * 100}% of {profile.label.toLowerCase()} calls go unanswered. Each missed call costs an average of ${profile.avgJobValue.toLocaleString()}. Capta answers every one, books the appointment, sends an SMS confirmation, and follows up — 24/7, in English and Spanish.
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link href={`/setup?utm_source=services&utm_medium=landing&utm_campaign=${tradeSlug}`} className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
@@ -177,7 +177,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
       <section className="px-6 sm:px-8 py-16 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-center text-[28px] font-extrabold tracking-tight text-charcoal sm:text-[36px]">
-            Why {profile.label} Businesses Need an AI Receptionist
+            Why {profile.label} Businesses Need an AI Office Manager
           </h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-2">
             {profile.painPoints.map((point, i) => (
@@ -230,7 +230,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
               Maria Knows {profile.label}
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-center text-base text-charcoal-muted">
-              Your AI receptionist is trained on {profile.label.toLowerCase()} terminology, services, and pricing. She speaks your customers&apos; language — literally.
+              Your AI office manager is trained on {profile.label.toLowerCase()} terminology, services, and pricing. She answers calls, books appointments, sends SMS follow-ups, and speaks your customers&apos; language — literally.
             </p>
             <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {profile.commonServices.map((service, i) => (
@@ -266,15 +266,71 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
         </section>
       )}
 
-      {/* Seasonal Context */}
+      {/* Automation Beyond the Phone */}
       <section className="px-6 sm:px-8 py-16 sm:py-20">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="text-center text-[28px] font-extrabold tracking-tight text-charcoal sm:text-[32px]">
+            Not Just Answering Calls — Automating Your Office
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-base text-charcoal-muted">
+            An answering service picks up the phone. An automation consultant charges $5K to set up Zapier. Capta does both — out of the box, for $497/mo.
+          </p>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            <div className="flex items-start gap-3 rounded-xl border border-cream-border bg-white p-5">
+              <span className="mt-0.5 text-amber shrink-0 text-lg">&#10003;</span>
+              <div>
+                <p className="text-sm font-semibold text-charcoal">SMS Appointment Confirmations</p>
+                <p className="mt-1 text-sm text-charcoal-muted">Automatic bilingual text after every booking — no manual follow-up needed</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-xl border border-cream-border bg-white p-5">
+              <span className="mt-0.5 text-amber shrink-0 text-lg">&#10003;</span>
+              <div>
+                <p className="text-sm font-semibold text-charcoal">Review Requests via SMS</p>
+                <p className="mt-1 text-sm text-charcoal-muted">Auto-sends review solicitations after completed jobs to build your reputation</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-xl border border-cream-border bg-white p-5">
+              <span className="mt-0.5 text-amber shrink-0 text-lg">&#10003;</span>
+              <div>
+                <p className="text-sm font-semibold text-charcoal">Emergency Technician Dispatch</p>
+                <p className="mt-1 text-sm text-charcoal-muted">Detects urgent calls and immediately texts your on-call tech with job details</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-xl border border-cream-border bg-white p-5">
+              <span className="mt-0.5 text-amber shrink-0 text-lg">&#10003;</span>
+              <div>
+                <p className="text-sm font-semibold text-charcoal">Automatic Lead Scoring</p>
+                <p className="mt-1 text-sm text-charcoal-muted">Every caller is scored and ranked so you prioritize the highest-value callbacks</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-xl border border-cream-border bg-white p-5">
+              <span className="mt-0.5 text-amber shrink-0 text-lg">&#10003;</span>
+              <div>
+                <p className="text-sm font-semibold text-charcoal">SMS Cancel &amp; Reschedule</p>
+                <p className="mt-1 text-sm text-charcoal-muted">Customers text CANCEL or RESCHEDULE to manage their own appointments</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-xl border border-cream-border bg-white p-5">
+              <span className="mt-0.5 text-amber shrink-0 text-lg">&#10003;</span>
+              <div>
+                <p className="text-sm font-semibold text-charcoal">Revenue Attribution &amp; Reporting</p>
+                <p className="mt-1 text-sm text-charcoal-muted">See exactly how much revenue Capta generates — cost per lead, ROI, and job breakdown</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Seasonal Context */}
+      <section className="bg-[#F5F5F7] px-6 sm:px-8 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-[24px] font-extrabold tracking-tight text-charcoal sm:text-[28px]">
-            Peak Season Coverage
+            Peak Season Automation
           </h2>
           <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
             {profile.seasonalPeak}. During peak season, call volume spikes {profile.tier === 1 ? "2-3x" : "2x"} — that&apos;s when you need Capta most.
-            She handles unlimited concurrent calls without breaking a sweat.
+            She handles unlimited concurrent calls, auto-books appointments, sends confirmation texts, dispatches your crew, and scores every lead — without breaking a sweat.
           </p>
         </div>
       </section>
@@ -283,10 +339,10 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
       <section className="bg-navy px-6 sm:px-8 py-16 sm:py-24">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-[28px] font-extrabold tracking-tight text-white sm:text-[36px]">
-            Stop Losing {profile.label} Jobs to Voicemail
+            Automate Your {profile.label} Office — Win More Jobs
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-slate-300">
-            Free for 14 days, then $497/month. Unlimited calls. Bilingual.
+            Free for 14 days, then $497/month. Unlimited calls, SMS automation, scheduling, lead scoring, and CRM — bilingual.
           </p>
           <Link href={`/setup?utm_source=services&utm_medium=landing&utm_campaign=${tradeSlug}`} className="cta-gold cta-shimmer mt-8 inline-flex items-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
             Start Free Trial &rarr;
