@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Capta is an AI-powered bilingual (EN/ES) receptionist platform for home service businesses. It handles inbound calls via ElevenLabs Conversational AI, books appointments, takes messages, handles emergencies, and provides a full client + admin portal.
+Capta is an SMS-powered business automation platform for home service businesses. Owners text Maria (AI office manager) to dispatch techs, send invoices, check schedules, and manage their business — while she answers every call 24/7 in English and Spanish via ElevenLabs Conversational AI. Full client + admin portal included.
 
 ## Tech Stack
 
@@ -36,7 +36,7 @@ src/
 ├── db/
 │   ├── schema.ts       # Drizzle schema (107 tables)
 │   ├── index.ts        # DB connection
-│   └── migrations/     # SQL migrations (0000-0077)
+│   └── migrations/     # SQL migrations (0000-0079)
 ├── lib/
 │   ├── ai/             # System prompts, context builder, call summary
 │   ├── elevenlabs/     # Client, agent config, agent sync

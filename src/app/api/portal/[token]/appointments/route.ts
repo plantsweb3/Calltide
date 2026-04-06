@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { validatePortalToken } from "@/lib/portal/auth";
 import { db } from "@/db";
 import { appointments, leads } from "@/db/schema";
-import { eq, and, gte, lt, asc, desc } from "drizzle-orm";
+import { eq, and, gte, lt, asc, desc, inArray } from "drizzle-orm";
 import { rateLimit, RATE_LIMITS, rateLimitResponse, getClientIp } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-reporting";
 
@@ -51,46 +51,36 @@ export async function GET(
       return NextResponse.json({ appointments: [] });
     }
 
-    // Fetch appointments for all matching leads
+    // Fetch appointments for all matching leads (single query)
     const dateCondition =
       filter === "past"
         ? lt(appointments.date, today)
         : gte(appointments.date, today);
 
-    const allAppointments = [];
-    for (const leadId of leadIds) {
-      const rows = await db
-        .select({
-          id: appointments.id,
-          service: appointments.service,
-          date: appointments.date,
-          time: appointments.time,
-          duration: appointments.duration,
-          status: appointments.status,
-          notes: appointments.notes,
-          createdAt: appointments.createdAt,
-        })
-        .from(appointments)
-        .where(
-          and(
-            eq(appointments.businessId, business.id),
-            eq(appointments.leadId, leadId),
-            dateCondition
-          )
+    const allAppointments = await db
+      .select({
+        id: appointments.id,
+        service: appointments.service,
+        date: appointments.date,
+        time: appointments.time,
+        duration: appointments.duration,
+        status: appointments.status,
+        notes: appointments.notes,
+        createdAt: appointments.createdAt,
+      })
+      .from(appointments)
+      .where(
+        and(
+          eq(appointments.businessId, business.id),
+          inArray(appointments.leadId, leadIds),
+          dateCondition
         )
-        .orderBy(
-          filter === "past"
-            ? desc(appointments.date)
-            : asc(appointments.date)
-        );
-      allAppointments.push(...rows);
-    }
-
-    // Sort combined results
-    allAppointments.sort((a, b) => {
-      const cmp = a.date.localeCompare(b.date);
-      return filter === "past" ? -cmp : cmp;
-    });
+      )
+      .orderBy(
+        filter === "past"
+          ? desc(appointments.date)
+          : asc(appointments.date)
+      );
 
     return NextResponse.json({ appointments: allAppointments });
   } catch (err) {

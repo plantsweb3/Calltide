@@ -10,7 +10,7 @@ import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/ra
 // ── Idempotency cache ──
 // Prevents ElevenLabs retries from causing double bookings, double SMS, etc.
 const idempotencyCache = new Map<string, { result: unknown; timestamp: number }>();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour — prevents double-bookings from late retries
 const MAX_CACHE_SIZE = 1000;
 
 function cleanupIdempotencyCache() {
@@ -57,7 +57,15 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Webhook auth not configured" }, { status: 500 });
   }
 
-  if (!apiKey || apiKey.length !== webhookSecret.length || !timingSafeEqual(Buffer.from(apiKey), Buffer.from(webhookSecret))) {
+  if (!apiKey) {
+    reportWarning("Invalid ElevenLabs tool webhook auth — missing API key");
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Use fixed-length buffers for timing-safe comparison (prevents length oracle)
+  const apiKeyHash = createHash("sha256").update(apiKey).digest();
+  const secretHash = createHash("sha256").update(webhookSecret).digest();
+  if (!timingSafeEqual(apiKeyHash, secretHash)) {
     reportWarning("Invalid ElevenLabs tool webhook auth");
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -93,12 +101,25 @@ export async function POST(req: NextRequest) {
     return Response.json(cached.result);
   }
 
+  // Extract business_id from parameters (injected as dynamic variable by ElevenLabs agent config)
+  const businessIdParam = parameters?.business_id as string | undefined;
+
   // Look up the call record by conversationId
   let [call] = await db
     .select()
     .from(calls)
     .where(eq(calls.elevenlabsConversationId, conversationId))
     .limit(1);
+
+  // Validate business ownership if both call and businessId are available
+  if (call && businessIdParam && call.businessId !== businessIdParam) {
+    reportWarning("ElevenLabs tool webhook: businessId mismatch", {
+      conversationId,
+      callBusinessId: call.businessId,
+      paramBusinessId: businessIdParam,
+    });
+    return Response.json({ error: "Business mismatch" }, { status: 403 });
+  }
 
   // If not found by conversationId, try matching by call_id from stream parameters
   if (!call) {
@@ -107,7 +128,11 @@ export async function POST(req: NextRequest) {
       const [byCallId] = await db
         .select()
         .from(calls)
-        .where(eq(calls.id, callId))
+        .where(
+          businessIdParam
+            ? and(eq(calls.id, callId), eq(calls.businessId, businessIdParam))
+            : eq(calls.id, callId)
+        )
         .limit(1);
       if (byCallId) {
         // Link this conversationId to the call for the post-call webhook to find
@@ -120,9 +145,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!call) {
-    // Extract business_id from parameters (injected as dynamic variable)
-    const businessId = parameters?.business_id as string | undefined;
-    if (!businessId) {
+    if (!businessIdParam) {
       reportWarning("ElevenLabs tool call: no call record and no business_id", {
         conversationId,
         toolName,
@@ -133,7 +156,7 @@ export async function POST(req: NextRequest) {
     // Call record may not exist yet if the conversation just started
     // Dispatch with minimal context
     const result = await dispatchToolCall(toolName, parameters, {
-      businessId,
+      businessId: businessIdParam,
       language: "en",
     });
 

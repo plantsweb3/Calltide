@@ -96,19 +96,22 @@ async function requireAdminAuth(req: NextRequest, isApi: boolean): Promise<NextR
       : NextResponse.redirect(new URL("/admin/login", req.url));
   }
 
-  // Check admin token expiration (if present — backwards compatible with old tokens)
+  // Check admin token expiration — reject tokens without exp or with expired exp
   try {
     const lastDot = cookie.lastIndexOf(".");
     if (lastDot !== -1) {
       const data = JSON.parse(atob(cookie.slice(0, lastDot)));
-      if (data.exp && data.exp < Date.now()) {
+      if (!data.exp || data.exp < Date.now()) {
         return isApi
           ? NextResponse.json({ error: "Session expired" }, { status: 401 })
           : NextResponse.redirect(new URL("/admin/login", req.url));
       }
     }
   } catch {
-    // Non-fatal: if payload parsing fails, token is still HMAC-verified
+    // Payload parsing failed — reject as expired (force re-login)
+    return isApi
+      ? NextResponse.json({ error: "Session expired" }, { status: 401 })
+      : NextResponse.redirect(new URL("/admin/login", req.url));
   }
 
   return null;
