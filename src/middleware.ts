@@ -176,7 +176,8 @@ function isProtectedInternalRoute(pathname: string): boolean {
     pathname.startsWith("/api/audit/call/") ||
     pathname.startsWith("/api/marketing/") ||
     pathname.startsWith("/api/content-queue") ||
-    pathname.startsWith("/api/notifications")
+    pathname.startsWith("/api/notifications") ||
+    pathname === "/api/capacity/status"
   );
 }
 
@@ -337,5 +338,6 @@ export const config = {
     "/api/voice/token",
     "/api/outbound/call",
     "/api/compliance/sms-optout",
+    "/api/capacity/status",
   ],
 };

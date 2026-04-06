@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { TableSkeleton } from "@/components/skeleton";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
@@ -69,6 +69,20 @@ export default function EstimatesPage() {
   const [search, setSearch] = useState("");
   const [convertingId, setConvertingId] = useState<string | null>(null);
 
+  // Create estimate modal state
+  const [showCreate, setShowCreate] = useState(false);
+  const [createCustomerId, setCreateCustomerId] = useState("");
+  const [createService, setCreateService] = useState("");
+  const [createDescription, setCreateDescription] = useState("");
+  const [createAmount, setCreateAmount] = useState("");
+  const [createNotes, setCreateNotes] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [customerSearch, setCustomerSearch] = useState("");
+  const [customerResults, setCustomerResults] = useState<Array<{ id: string; name: string | null; phone: string }>>([]);
+  const [selectedCustomerLabel, setSelectedCustomerLabel] = useState("");
+  const [loadingCustomers, setLoadingCustomers] = useState(false);
+  const customerSearchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
   const fetchEstimates = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -89,6 +103,72 @@ export default function EstimatesPage() {
   }, [statusFilter]);
 
   useEffect(() => { fetchEstimates(); }, [fetchEstimates]);
+
+  function searchCustomers(query: string) {
+    setCustomerSearch(query);
+    clearTimeout(customerSearchTimer.current);
+    if (!query.trim()) {
+      setCustomerResults([]);
+      return;
+    }
+    customerSearchTimer.current = setTimeout(async () => {
+      setLoadingCustomers(true);
+      try {
+        const params = new URLSearchParams({ search: query, page: "1" });
+        const res = await fetch(`/api/dashboard/customers?${params}`);
+        if (!res.ok) throw new Error("Failed");
+        const data = await res.json();
+        setCustomerResults(data.customers?.slice(0, 10) || []);
+      } catch {
+        setCustomerResults([]);
+      } finally {
+        setLoadingCustomers(false);
+      }
+    }, 300);
+  }
+
+  function resetCreateForm() {
+    setCreateCustomerId("");
+    setCreateService("");
+    setCreateDescription("");
+    setCreateAmount("");
+    setCreateNotes("");
+    setCustomerSearch("");
+    setCustomerResults([]);
+    setSelectedCustomerLabel("");
+  }
+
+  async function handleCreateEstimate() {
+    if (!createCustomerId || !createService.trim()) return;
+    setCreating(true);
+    try {
+      const body: Record<string, unknown> = {
+        customerId: createCustomerId,
+        service: createService.trim(),
+      };
+      if (createDescription.trim()) body.description = createDescription.trim();
+      if (createAmount) body.amount = parseFloat(createAmount);
+      if (createNotes.trim()) body.notes = createNotes.trim();
+
+      const res = await fetch("/api/dashboard/estimates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to create estimate");
+      }
+      toast.success(t("toast.estimateCreated", lang));
+      setShowCreate(false);
+      resetCreateForm();
+      fetchEstimates();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : t("toast.failedToCreateEstimate", lang));
+    } finally {
+      setCreating(false);
+    }
+  }
 
   async function updateEstimate(id: string, updates: Record<string, unknown>) {
     try {
@@ -161,6 +241,9 @@ export default function EstimatesPage() {
         title={t("estimates.title", lang)}
         actions={
           <div className="flex items-center gap-2">
+            <Button onClick={() => setShowCreate(true)}>
+              {t("estimates.newEstimate", lang)}
+            </Button>
             <input
               type="text"
               placeholder={t("estimates.searchPlaceholder", lang)}
@@ -436,6 +519,157 @@ export default function EstimatesPage() {
                 }}
               >
                 {t("estimates.confirmLost", lang)}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Estimate Modal */}
+      {showCreate && (
+        <div
+          className="db-modal-backdrop"
+          onClick={() => { setShowCreate(false); resetCreateForm(); }}
+          onKeyDown={(e) => { if (e.key === "Escape") { setShowCreate(false); resetCreateForm(); } }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="create-estimate-title"
+            className="modal-content w-full max-w-md rounded-xl p-6"
+            style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="create-estimate-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>
+              {t("estimates.createEstimate", lang)}
+            </h3>
+
+            {/* Customer selector */}
+            <label className="db-label">{t("estimates.customer", lang)}</label>
+            {createCustomerId ? (
+              <div className="flex items-center gap-2 mb-3">
+                <span
+                  className="flex-1 rounded-lg px-3 py-2 text-sm font-medium"
+                  style={{ background: "var(--db-hover)", color: "var(--db-text)" }}
+                >
+                  {selectedCustomerLabel}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { setCreateCustomerId(""); setSelectedCustomerLabel(""); setCustomerSearch(""); }}
+                >
+                  {t("action.remove", lang)}
+                </Button>
+              </div>
+            ) : (
+              <div className="relative mb-3">
+                <input
+                  type="text"
+                  value={customerSearch}
+                  onChange={(e) => searchCustomers(e.target.value)}
+                  placeholder={t("estimates.searchCustomers", lang)}
+                  className="db-input w-full"
+                  autoFocus
+                />
+                {(customerResults.length > 0 || loadingCustomers) && customerSearch.trim() && (
+                  <div
+                    className="absolute left-0 right-0 top-full mt-1 rounded-lg overflow-hidden z-10 max-h-48 overflow-y-auto"
+                    style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
+                  >
+                    {loadingCustomers ? (
+                      <p className="px-3 py-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
+                        {t("action.loading", lang)}
+                      </p>
+                    ) : customerResults.length === 0 ? (
+                      <p className="px-3 py-2 text-sm" style={{ color: "var(--db-text-muted)" }}>
+                        {t("estimates.noCustomersFound", lang)}
+                      </p>
+                    ) : (
+                      customerResults.map((c) => (
+                        <button
+                          key={c.id}
+                          className="w-full px-3 py-2 text-left text-sm transition-colors hover:opacity-80"
+                          style={{ color: "var(--db-text)" }}
+                          onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "var(--db-hover)"; }}
+                          onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "transparent"; }}
+                          onClick={() => {
+                            const label = c.name ? `${c.name} (${c.phone})` : c.phone;
+                            setCreateCustomerId(c.id);
+                            setSelectedCustomerLabel(label);
+                            setCustomerSearch("");
+                            setCustomerResults([]);
+                          }}
+                        >
+                          {c.name ? (
+                            <>
+                              <span className="font-medium">{c.name}</span>
+                              <span className="ml-2" style={{ color: "var(--db-text-muted)" }}>{c.phone}</span>
+                            </>
+                          ) : (
+                            <span>{c.phone}</span>
+                          )}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Service */}
+            <label className="db-label">{t("estimates.serviceLabel", lang)}</label>
+            <input
+              type="text"
+              value={createService}
+              onChange={(e) => setCreateService(e.target.value.slice(0, 100))}
+              placeholder={t("estimates.servicePlaceholder", lang)}
+              className="db-input mb-3"
+            />
+
+            {/* Amount */}
+            <label className="db-label">{t("estimates.amountLabel", lang)}</label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={createAmount}
+              onChange={(e) => setCreateAmount(e.target.value)}
+              className="db-input mb-3"
+            />
+
+            {/* Description */}
+            <label className="db-label">{t("estimates.descriptionLabel", lang)}</label>
+            <textarea
+              value={createDescription}
+              onChange={(e) => setCreateDescription(e.target.value.slice(0, 500))}
+              placeholder={t("estimates.descriptionPlaceholder", lang)}
+              rows={2}
+              className="db-input mb-3"
+              style={{ resize: "vertical" }}
+            />
+
+            {/* Notes */}
+            <label className="db-label">{t("estimates.notesLabel", lang)}</label>
+            <textarea
+              value={createNotes}
+              onChange={(e) => setCreateNotes(e.target.value.slice(0, 500))}
+              placeholder={t("estimates.notesPlaceholder", lang)}
+              rows={2}
+              className="db-input mb-4"
+              style={{ resize: "vertical" }}
+            />
+
+            <div className="flex gap-2">
+              <Button variant="secondary" className="flex-1" onClick={() => { setShowCreate(false); resetCreateForm(); }}>
+                {t("action.cancel", lang)}
+              </Button>
+              <Button
+                className="flex-1"
+                disabled={!createCustomerId || !createService.trim() || creating}
+                onClick={handleCreateEstimate}
+              >
+                {creating ? t("estimates.creating", lang) : t("estimates.createEstimate", lang)}
               </Button>
             </div>
           </div>

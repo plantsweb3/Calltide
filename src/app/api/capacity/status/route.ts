@@ -13,9 +13,7 @@ import { projectBreachDate, estimatePeakConcurrent, estimateMonthlyCost } from "
 import { reportError } from "@/lib/error-reporting";
 
 export async function GET(req: NextRequest) {
-  if (!req.cookies.has("capta_admin")) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // Auth is handled by middleware (HMAC-verified admin cookie)
   try {
     // Current concurrent calls
     const concurrent = await getConcurrentCallCount();

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import { toast } from "sonner";
 import DataTable, { type Column } from "@/components/data-table";
 import { TableSkeleton } from "@/components/skeleton";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
@@ -35,6 +36,10 @@ export default function SmsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [showCompose, setShowCompose] = useState(false);
+  const [composePhone, setComposePhone] = useState("");
+  const [composeMessage, setComposeMessage] = useState("");
+  const [sending, setSending] = useState(false);
 
   const fetchMessages = useCallback(async () => {
     setLoading(true);
@@ -62,6 +67,37 @@ export default function SmsPage() {
   useEffect(() => {
     fetchMessages();
   }, [fetchMessages]);
+
+  async function handleSendSms() {
+    if (!composePhone.trim() || !composeMessage.trim()) return;
+    setSending(true);
+    try {
+      const res = await fetch("/api/dashboard/sms/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerPhone: composePhone.trim(),
+          message: composeMessage.trim(),
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to send");
+      }
+      toast.success(t("toast.smsSent", lang));
+      setShowCompose(false);
+      setComposePhone("");
+      setComposeMessage("");
+      fetchMessages();
+    } catch (err) {
+      const msg = err instanceof Error && err.message.includes("opted out")
+        ? t("sms.optedOut", lang)
+        : t("toast.failedToSendSms", lang);
+      toast.error(msg);
+    } finally {
+      setSending(false);
+    }
+  }
 
   function formatDate(iso: string): string {
     return new Date(iso).toLocaleString(undefined, {
@@ -129,6 +165,9 @@ export default function SmsPage() {
         title={t("sms.title", lang)}
         actions={
           <>
+            <Button onClick={() => setShowCompose(true)}>
+              {t("sms.newMessage", lang)}
+            </Button>
             <input
               type="text"
               placeholder={t("sms.search", lang)}
@@ -236,6 +275,64 @@ export default function SmsPage() {
             </div>
           )}
         />
+      )}
+
+      {/* Compose SMS Modal */}
+      {showCompose && (
+        <div
+          className="db-modal-backdrop"
+          onClick={() => setShowCompose(false)}
+          onKeyDown={(e) => { if (e.key === "Escape") setShowCompose(false); }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="compose-sms-title"
+            className="modal-content w-full max-w-md rounded-xl p-6"
+            style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="compose-sms-title" className="text-lg font-semibold mb-4" style={{ color: "var(--db-text)" }}>
+              {t("sms.composeSms", lang)}
+            </h3>
+
+            <label className="db-label">{t("sms.phoneNumber", lang)}</label>
+            <input
+              type="tel"
+              value={composePhone}
+              onChange={(e) => setComposePhone(e.target.value)}
+              placeholder={t("sms.phonePlaceholder", lang)}
+              className="db-input mb-3"
+              autoFocus
+            />
+
+            <label className="db-label">{t("sms.message", lang)}</label>
+            <textarea
+              value={composeMessage}
+              onChange={(e) => setComposeMessage(e.target.value.slice(0, 1600))}
+              placeholder={t("sms.messagePlaceholder", lang)}
+              rows={4}
+              className="db-input mb-1"
+              style={{ resize: "vertical" }}
+            />
+            <p className="text-xs mb-4 text-right" style={{ color: "var(--db-text-muted)" }}>
+              {t("sms.charCount", lang, { count: composeMessage.length })}
+            </p>
+
+            <div className="flex gap-2">
+              <Button variant="secondary" className="flex-1" onClick={() => setShowCompose(false)}>
+                {t("action.cancel", lang)}
+              </Button>
+              <Button
+                className="flex-1"
+                disabled={!composePhone.trim() || !composeMessage.trim() || sending}
+                onClick={handleSendSms}
+              >
+                {sending ? t("sms.sending", lang) : t("sms.send", lang)}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

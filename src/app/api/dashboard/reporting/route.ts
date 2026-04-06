@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { calls, appointments, customers, estimates, outboundCalls, callQaScores } from "@/db/schema";
-import { eq, and, sql, gte, count, desc } from "drizzle-orm";
+import { eq, and, sql, gte, lte, count, desc } from "drizzle-orm";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
@@ -21,36 +21,53 @@ export async function GET(req: NextRequest) {
 
   try {
     const now = new Date();
+
+    // ── Read optional from/to date range params ──
+    const { searchParams } = new URL(req.url);
+    const fromParam = searchParams.get("from");
+    const toParam = searchParams.get("to");
+
+    // Validate YYYY-MM-DD format and that it parses to a real date
+    const isValidDate = (s: string) => /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(new Date(s + "T00:00:00Z").getTime());
+
+    const hasCustomRange = fromParam && toParam && isValidDate(fromParam) && isValidDate(toParam);
+
+    // Primary range: use custom from/to if provided, otherwise default 30 days
     const thirtyDaysAgo = new Date(now);
     thirtyDaysAgo.setDate(now.getDate() - 30);
-    const thirtyDaysStr = thirtyDaysAgo.toISOString().slice(0, 10);
+    const rangeFrom = hasCustomRange ? fromParam : thirtyDaysAgo.toISOString().slice(0, 10);
+    // Add one day to 'to' so that the entire end date is included in gte/lte comparisons
+    const rangeTo = hasCustomRange ? toParam + "T23:59:59" : null;
+
+    // Extended range for daily volume + estimate pipeline: custom range or 90-day default
     const ninetyDaysAgo = new Date(now);
     ninetyDaysAgo.setDate(now.getDate() - 90);
-    const ninetyDaysStr = ninetyDaysAgo.toISOString().slice(0, 10);
+    const extendedFrom = hasCustomRange ? fromParam : ninetyDaysAgo.toISOString().slice(0, 10);
+    const extendedTo = rangeTo;
 
-    // ── Calls by hour of day (last 30 days) ──
+    // ── Calls by hour of day ──
     const callsByHour = await db
       .select({
         hour: sql<number>`cast(strftime('%H', ${calls.createdAt}) as integer)`.as("hour"),
         total: count(),
       })
       .from(calls)
-      .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, thirtyDaysStr)))
+      .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, rangeFrom), ...(rangeTo ? [lte(calls.createdAt, rangeTo)] : [])))
       .groupBy(sql`strftime('%H', ${calls.createdAt})`)
       .orderBy(sql`hour`);
 
-    // ── Calls by day of week (last 30 days) ──
+    // ── Calls by day of week ──
     const callsByDay = await db
       .select({
         day: sql<number>`cast(strftime('%w', ${calls.createdAt}) as integer)`.as("day"),
         total: count(),
       })
       .from(calls)
-      .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, thirtyDaysStr)))
+      .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, rangeFrom), ...(rangeTo ? [lte(calls.createdAt, rangeTo)] : [])))
       .groupBy(sql`strftime('%w', ${calls.createdAt})`)
       .orderBy(sql`day`);
 
-    // ── Daily call volume (last 90 days) ──
+    // ── Daily call volume ──
     const dailyVolume = await db
       .select({
         date: sql<string>`date(${calls.createdAt})`.as("date"),
@@ -59,11 +76,11 @@ export async function GET(req: NextRequest) {
         answered: sql<number>`sum(case when ${calls.status} = 'completed' then 1 else 0 end)`,
       })
       .from(calls)
-      .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, ninetyDaysStr)))
+      .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, extendedFrom), ...(extendedTo ? [lte(calls.createdAt, extendedTo)] : [])))
       .groupBy(sql`date(${calls.createdAt})`)
       .orderBy(sql`date(${calls.createdAt})`);
 
-    // ── Call duration distribution (last 30 days) ──
+    // ── Call duration distribution ──
     const durationBuckets = await db
       .select({
         bucket: sql<string>`case
@@ -78,22 +95,23 @@ export async function GET(req: NextRequest) {
       .from(calls)
       .where(and(
         eq(calls.businessId, businessId),
-        gte(calls.createdAt, thirtyDaysStr),
+        gte(calls.createdAt, rangeFrom),
+        ...(rangeTo ? [lte(calls.createdAt, rangeTo)] : []),
         sql`${calls.duration} IS NOT NULL`,
       ))
       .groupBy(sql`bucket`);
 
-    // ── Language breakdown (last 30 days) ──
+    // ── Language breakdown ──
     const languageBreakdown = await db
       .select({
         language: calls.language,
         total: count(),
       })
       .from(calls)
-      .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, thirtyDaysStr)))
+      .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, rangeFrom), ...(rangeTo ? [lte(calls.createdAt, rangeTo)] : [])))
       .groupBy(calls.language);
 
-    // ── Missed call recovery rate (last 30 days) ──
+    // ── Missed call recovery rate ──
     const [recoveryStats] = await db
       .select({
         totalMissed: sql<number>`sum(case when ${calls.status} = 'missed' then 1 else 0 end)`,
@@ -101,9 +119,9 @@ export async function GET(req: NextRequest) {
         smsSent: sql<number>`sum(case when ${calls.status} = 'missed' and ${calls.recoveryStatus} IS NOT NULL then 1 else 0 end)`,
       })
       .from(calls)
-      .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, thirtyDaysStr)));
+      .where(and(eq(calls.businessId, businessId), gte(calls.createdAt, rangeFrom), ...(rangeTo ? [lte(calls.createdAt, rangeTo)] : [])));
 
-    // ── Top services booked (last 30 days) ──
+    // ── Top services booked ──
     const topServices = await db
       .select({
         service: appointments.service,
@@ -112,14 +130,15 @@ export async function GET(req: NextRequest) {
       .from(appointments)
       .where(and(
         eq(appointments.businessId, businessId),
-        gte(appointments.createdAt, thirtyDaysStr),
+        gte(appointments.createdAt, rangeFrom),
+        ...(rangeTo ? [lte(appointments.createdAt, rangeTo)] : []),
         sql`${appointments.service} IS NOT NULL`,
       ))
       .groupBy(appointments.service)
       .orderBy(desc(count()))
       .limit(8);
 
-    // ── Estimate pipeline (last 30 days) ──
+    // ── Estimate pipeline ──
     const estimatePipeline = await db
       .select({
         status: estimates.status,
@@ -127,7 +146,7 @@ export async function GET(req: NextRequest) {
         value: sql<number>`coalesce(sum(${estimates.amount}), 0)`,
       })
       .from(estimates)
-      .where(and(eq(estimates.businessId, businessId), gte(estimates.createdAt, ninetyDaysStr)))
+      .where(and(eq(estimates.businessId, businessId), gte(estimates.createdAt, extendedFrom), ...(extendedTo ? [lte(estimates.createdAt, extendedTo)] : [])))
       .groupBy(estimates.status);
 
     // ── Estimate close rate ──
@@ -137,7 +156,7 @@ export async function GET(req: NextRequest) {
       ? Math.round((wonCount / (wonCount + lostCount)) * 100)
       : null;
 
-    // ── Outbound call summary (last 30 days) ──
+    // ── Outbound call summary ──
     const outboundByType = await db
       .select({
         callType: outboundCalls.callType,
@@ -145,7 +164,7 @@ export async function GET(req: NextRequest) {
         answered: sql<number>`sum(case when ${outboundCalls.status} = 'completed' then 1 else 0 end)`,
       })
       .from(outboundCalls)
-      .where(and(eq(outboundCalls.businessId, businessId), gte(outboundCalls.createdAt, thirtyDaysStr)))
+      .where(and(eq(outboundCalls.businessId, businessId), gte(outboundCalls.createdAt, rangeFrom), ...(rangeTo ? [lte(outboundCalls.createdAt, rangeTo)] : [])))
       .groupBy(outboundCalls.callType);
 
     const outboundTotal = outboundByType.reduce((s, o) => s + o.total, 0);
@@ -157,16 +176,16 @@ export async function GET(req: NextRequest) {
       byType: outboundByType,
     };
 
-    // ── New vs repeat callers (last 30 days) ──
+    // ── New vs repeat callers ──
     const [callerStats] = await db
       .select({
         total: count(),
         repeat: sql<number>`sum(case when ${customers.isRepeat} = 1 then 1 else 0 end)`,
       })
       .from(customers)
-      .where(and(eq(customers.businessId, businessId), gte(customers.lastCallAt, thirtyDaysStr)));
+      .where(and(eq(customers.businessId, businessId), gte(customers.lastCallAt, rangeFrom), ...(rangeTo ? [lte(customers.lastCallAt, rangeTo)] : [])));
 
-    // ── AI coaching insights (QA scores last 30 days) ──
+    // ── AI coaching insights (QA scores) ──
     const qaScores = await db
       .select({
         score: callQaScores.score,
@@ -175,7 +194,7 @@ export async function GET(req: NextRequest) {
         fixRecommendation: callQaScores.fixRecommendation,
       })
       .from(callQaScores)
-      .where(and(eq(callQaScores.businessId, businessId), gte(callQaScores.createdAt, thirtyDaysStr)));
+      .where(and(eq(callQaScores.businessId, businessId), gte(callQaScores.createdAt, rangeFrom), ...(rangeTo ? [lte(callQaScores.createdAt, rangeTo)] : [])));
 
     const avgQaScore = qaScores.length > 0
       ? Math.round(qaScores.reduce((s, q) => s + q.score, 0) / qaScores.length)

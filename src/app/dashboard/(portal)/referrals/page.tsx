@@ -8,6 +8,7 @@ import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import PageHeader from "@/components/page-header";
 import { useLang } from "@/app/dashboard/_hooks/use-lang";
 import { t } from "@/lib/i18n/strings";
+import EmptyState from "@/components/empty-state";
 
 interface ReferralData {
   referralCode: string | null;
@@ -95,10 +96,10 @@ export default function ReferralsPage() {
         description={t("referrals.description", lang)}
       />
 
-      {/* Referral Code + Link */}
-      <div className="db-card rounded-xl p-6 space-y-4">
-        {data.referralCode ? (
-          <>
+      {data.referralCode ? (
+        <>
+          {/* Referral Code + Link */}
+          <div className="db-card rounded-xl p-6 space-y-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--db-text-muted)" }}>
                 {t("referrals.yourCode", lang)}
@@ -140,79 +141,88 @@ export default function ReferralsPage() {
                 </Button>
               </div>
             </div>
-          </>
-        ) : (
-          <p style={{ color: "var(--db-text-muted)" }}>
-            {t("referrals.noCodeYet", lang)}
-          </p>
-        )}
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 stagger-grid">
-        {[
-          { label: t("referrals.earned", lang), value: data.stats.totalReferred },
-          { label: t("status.active", lang), value: data.stats.active },
-          { label: t("referrals.reward", lang), value: `$${data.stats.creditsEarned}` },
-        ].map((stat) => (
-          <div
-            key={stat.label}
-            className="db-card rounded-xl p-4 text-center"
-          >
-            <p className="text-2xl font-bold tabular-nums" style={{ color: "var(--db-text)" }}>
-              {stat.value}
-            </p>
-            <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
-              {stat.label}
-            </p>
           </div>
-        ))}
-      </div>
 
-      {/* Referral List */}
-      {data.referrals.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-base font-medium" style={{ color: "var(--db-text)" }}>
-            {t("referrals.yourReferrals", lang)}
-          </h2>
-          <div
-            className="rounded-xl overflow-hidden overflow-x-auto"
-            style={{ border: "1px solid var(--db-border)" }}
-          >
-            <table className="w-full text-sm">
-              <thead>
-                <tr style={{ background: "var(--db-hover)" }}>
-                  <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.date", lang)}</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.status", lang)}</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.credit", lang)}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.referrals.map((ref) => {
-                  return (
-                    <tr key={ref.id} className="db-table-row" style={{ borderTop: "1px solid var(--db-border)" }}>
-                      <td className="px-4 py-3 tabular-nums" style={{ color: "var(--db-text-secondary)" }}>
-                        {new Date(ref.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-3">
-                        <StatusBadge label={ref.status} variant={statusToVariant(ref.status)} dot />
-                      </td>
-                      <td className="px-4 py-3 text-right tabular-nums" style={{ color: "var(--db-text-secondary)" }}>
-                        {ref.creditApplied ? (
-                          <span style={{ color: "var(--db-success)" }}>{t("referrals.applied", lang, { amount: `$${ref.creditAmount}` })}</span>
-                        ) : ref.status === "activated" ? (
-                          <span style={{ color: "var(--db-warning)" }}>{t("referrals.pending", lang, { amount: `$${ref.creditAmount}` })}</span>
-                        ) : (
-                          "—"
-                        )}
-                      </td>
+          {/* Stats */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 stagger-grid">
+            {[
+              { label: t("referrals.earned", lang), value: data.stats.totalReferred },
+              { label: t("status.active", lang), value: data.stats.active },
+              { label: t("referrals.reward", lang), value: `$${data.stats.creditsEarned}` },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="db-card rounded-xl p-4 text-center"
+              >
+                <p className="text-2xl font-bold tabular-nums" style={{ color: "var(--db-text)" }}>
+                  {stat.value}
+                </p>
+                <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Referral List */}
+          {data.referrals.length > 0 && (
+            <div className="space-y-3">
+              <h2 className="text-base font-medium" style={{ color: "var(--db-text)" }}>
+                {t("referrals.yourReferrals", lang)}
+              </h2>
+              <div
+                className="rounded-xl overflow-hidden overflow-x-auto"
+                style={{ border: "1px solid var(--db-border)" }}
+              >
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr style={{ background: "var(--db-hover)" }}>
+                      <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.date", lang)}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.status", lang)}</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium" style={{ color: "var(--db-text-muted)" }}>{t("referrals.credit", lang)}</th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  </thead>
+                  <tbody>
+                    {data.referrals.map((ref) => {
+                      return (
+                        <tr key={ref.id} className="db-table-row" style={{ borderTop: "1px solid var(--db-border)" }}>
+                          <td className="px-4 py-3 tabular-nums" style={{ color: "var(--db-text-secondary)" }}>
+                            {new Date(ref.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="px-4 py-3">
+                            <StatusBadge label={ref.status} variant={statusToVariant(ref.status)} dot />
+                          </td>
+                          <td className="px-4 py-3 text-right tabular-nums" style={{ color: "var(--db-text-secondary)" }}>
+                            {ref.creditApplied ? (
+                              <span style={{ color: "var(--db-success)" }}>{t("referrals.applied", lang, { amount: `$${ref.creditAmount}` })}</span>
+                            ) : ref.status === "activated" ? (
+                              <span style={{ color: "var(--db-warning)" }}>{t("referrals.pending", lang, { amount: `$${ref.creditAmount}` })}</span>
+                            ) : (
+                              "\u2014"
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <EmptyState
+          icon={
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          }
+          title={t("referrals.noCodeYet", lang)}
+          description={t("referrals.codeBeingSetUp", lang)}
+        />
       )}
     </div>
   );

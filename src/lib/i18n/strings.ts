@@ -3289,6 +3289,48 @@ const strings: Record<string, Record<Lang, string>> = {
   "checklist.addServicePricing": { en: "Add service pricing", es: "Agregar precios de servicios" },
   "checklist.makeFirstCall": { en: "Make your first call", es: "Haz tu primera llamada" },
   "checklist.setupCallForwarding": { en: "Set up call forwarding", es: "Configurar desvio de llamadas" },
+
+  // ── SMS compose ─────────────────────────────────────────────
+  "sms.newMessage": { en: "New Message", es: "Nuevo mensaje" },
+  "sms.composeSms": { en: "Compose SMS", es: "Redactar SMS" },
+  "sms.phoneNumber": { en: "Phone Number", es: "Numero de telefono" },
+  "sms.phonePlaceholder": { en: "+1 (555) 123-4567", es: "+1 (555) 123-4567" },
+  "sms.message": { en: "Message", es: "Mensaje" },
+  "sms.messagePlaceholder": {
+    en: "Type your message...",
+    es: "Escribe tu mensaje...",
+  },
+  "sms.charCount": { en: "{count}/1600", es: "{count}/1600" },
+  "sms.sending": { en: "Sending...", es: "Enviando..." },
+  "sms.send": { en: "Send SMS", es: "Enviar SMS" },
+  "toast.smsSent": { en: "SMS sent successfully", es: "SMS enviado exitosamente" },
+  "toast.failedToSendSms": { en: "Failed to send SMS", es: "No se pudo enviar el SMS" },
+  "sms.optedOut": { en: "This customer has opted out of SMS", es: "Este cliente se dio de baja de SMS" },
+
+  // ── Referrals empty state ───────────────────────────────────
+  "referrals.codeBeingSetUp": {
+    en: "Your referral link is being set up. Contact support if you need it sooner.",
+    es: "Tu enlace de referido esta siendo configurado. Contacta a soporte si lo necesitas antes.",
+  },
+
+  // ── Estimates create ────────────────────────────────────────
+  "estimates.createEstimate": { en: "Create Estimate", es: "Crear cotizacion" },
+  "estimates.selectCustomer": { en: "Select a customer", es: "Selecciona un cliente" },
+  "estimates.searchCustomers": { en: "Search customers...", es: "Buscar clientes..." },
+  "estimates.noCustomersFound": { en: "No customers found", es: "No se encontraron clientes" },
+  "estimates.serviceLabel": { en: "Service", es: "Servicio" },
+  "estimates.servicePlaceholder": { en: "e.g. AC Repair, Plumbing", es: "ej. Reparacion de AC, Plomeria" },
+  "estimates.descriptionLabel": { en: "Description", es: "Descripcion" },
+  "estimates.descriptionPlaceholder": {
+    en: "Describe the work needed...",
+    es: "Describe el trabajo necesario...",
+  },
+  "estimates.amountLabel": { en: "Amount ($)", es: "Monto ($)" },
+  "estimates.notesLabel": { en: "Notes", es: "Notas" },
+  "estimates.notesPlaceholder": { en: "Internal notes...", es: "Notas internas..." },
+  "estimates.creating": { en: "Creating...", es: "Creando..." },
+  "toast.estimateCreated": { en: "Estimate created", es: "Cotizacion creada" },
+  "toast.failedToCreateEstimate": { en: "Failed to create estimate", es: "No se pudo crear la cotizacion" },
 };
 
 /**

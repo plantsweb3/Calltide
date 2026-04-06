@@ -37,6 +37,14 @@
     { "path": "/api/cron/call-cleanup", "schedule": "*/15 * * * *" },
     { "path": "/api/cron/lead-scoring", "schedule": "0 3 * * *" },
     { "path": "/api/cron/data-deletion", "schedule": "0 2 * * *" },
-    { "path": "/api/cron/outreach-sequence", "schedule": "0 15 * * *" }
+    { "path": "/api/cron/outreach-sequence", "schedule": "0 15 * * *" },
+    { "path": "/api/cron/callbacks", "schedule": "*/5 * * * *" },
+    { "path": "/api/cron/customer-scoring", "schedule": "0 9 * * *" },
+    { "path": "/api/cron/job-card-expiry", "schedule": "0 * * * *" },
+    { "path": "/api/cron/payment-reminder", "schedule": "0 10 * * *" },
+    { "path": "/api/cron/recording-cleanup", "schedule": "0 8 * * *" },
+    { "path": "/api/cron/recurring-appointments", "schedule": "0 6 * * *" },
+    { "path": "/api/cron/usage-drop-alert", "schedule": "0 10 * * 1" },
+    { "path": "/api/cron/win-back", "schedule": "0 10 * * *" }
   ]
 }
