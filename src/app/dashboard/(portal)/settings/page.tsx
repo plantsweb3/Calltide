@@ -286,10 +286,25 @@ export default function SettingsPage() {
 
   const isDirty = data ? JSON.stringify(data) !== initialData : false;
 
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
+
   const setField = useCallback(<K extends keyof SettingsData>(key: K, value: SettingsData[K]) => {
     setData((prev) => prev ? { ...prev, [key]: value } : prev);
     setSuccessMsg(null);
-  }, []);
+    if (typeof value === "string") {
+      const err = validateField(key, value, lang);
+      if (!err) {
+        setFieldErrors((prev) => prev.filter((e) => e.field !== key));
+      }
+    }
+  }, [lang]);
 
   const handleBlur = useCallback((field: string, value: string) => {
     const err = validateField(field, value, lang);
@@ -463,26 +478,33 @@ export default function SettingsPage() {
             {t("settings.subtitle", lang, { name: rName })}
           </p>
         </div>
-        <button
-          onClick={handleSave}
-          disabled={!isDirty || saving}
-          className="rounded-lg px-5 py-2.5 text-sm font-medium transition-all"
-          style={{
-            background: isDirty ? "var(--db-accent)" : "var(--db-hover)",
-            color: isDirty ? "#fff" : "var(--db-text-muted)",
-            cursor: isDirty && !saving ? "pointer" : "not-allowed",
-            opacity: isDirty ? 1 : 0.6,
-          }}
-        >
-          {saving ? (
-            <span className="flex items-center gap-2">
-              <CaptaSpinnerInline size={16} />
-              {t("settings.saving", lang)}
+        <div className="flex items-center gap-3">
+          {isDirty && (
+            <span style={{ color: "var(--db-warning)", fontSize: 13 }}>
+              {lang === "es" ? "Cambios sin guardar" : "Unsaved changes"}
             </span>
-          ) : (
-            t("settings.save", lang)
           )}
-        </button>
+          <button
+            onClick={handleSave}
+            disabled={!isDirty || saving}
+            className="rounded-lg px-5 py-2.5 text-sm font-medium transition-all"
+            style={{
+              background: isDirty ? "var(--db-accent)" : "var(--db-hover)",
+              color: isDirty ? "#fff" : "var(--db-text-muted)",
+              cursor: isDirty && !saving ? "pointer" : "not-allowed",
+              opacity: isDirty ? 1 : 0.6,
+            }}
+          >
+            {saving ? (
+              <span className="flex items-center gap-2">
+                <CaptaSpinnerInline size={16} />
+                {t("settings.saving", lang)}
+              </span>
+            ) : (
+              t("settings.save", lang)
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Success Banner */}

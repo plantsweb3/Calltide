@@ -181,6 +181,16 @@ export default function RootLayout({
               background: "var(--db-card, #1e293b)",
               border: "1px solid var(--db-border, #334155)",
               color: "var(--db-text, #f1f5f9)",
+              fontFamily: "var(--font-inter), Inter, sans-serif",
+              fontSize: "13px",
+              borderRadius: "var(--radius-lg, 12px)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08)",
+            },
+            classNames: {
+              success: "toast-success",
+              error: "toast-error",
+              warning: "toast-warning",
+              info: "toast-info",
             },
           }}
         />

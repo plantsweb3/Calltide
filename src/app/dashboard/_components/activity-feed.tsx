@@ -71,8 +71,8 @@ function EventIcon({ type, urgent, recovered }: { type: string; urgent?: boolean
   }
   if (type === "sms_sent" || type === "sms_received") {
     return (
-      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "rgba(139,92,246,0.15)" }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--db-info-bg)" }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--db-info)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
         </svg>
       </div>

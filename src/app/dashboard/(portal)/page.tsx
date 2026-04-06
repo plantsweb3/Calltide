@@ -7,7 +7,7 @@ import AnimatedCounter from "@/app/dashboard/_components/animated-counter";
 import ActivityFeed from "@/app/dashboard/_components/activity-feed";
 import WeeklySummary from "@/app/dashboard/_components/weekly-summary";
 import BusinessInsights from "@/app/dashboard/_components/business-insights";
-import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
+import Skeleton, { MetricCardSkeleton } from "@/components/skeleton";
 import SetupChecklist from "@/app/dashboard/_components/setup-checklist";
 import DashboardTour from "@/components/dashboard-tour";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
@@ -180,7 +180,29 @@ export default function OverviewPage() {
   }
 
   if (!data) {
-    return <LoadingSpinner />;
+    return (
+      <div className="space-y-6" role="status" aria-label="Loading dashboard">
+        <div>
+          <Skeleton className="h-8 w-64 mb-2" />
+          <Skeleton className="h-4 w-48" />
+        </div>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+        </div>
+        <Skeleton className="h-48 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+          <div className="lg:col-span-3">
+            <Skeleton className="h-64 w-full rounded-xl" />
+          </div>
+          <div className="lg:col-span-2">
+            <Skeleton className="h-64 w-full rounded-xl" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const hasRevenue = data.revenueThisMonth != null && data.revenueThisMonth > 0;
