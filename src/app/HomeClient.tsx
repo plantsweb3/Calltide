@@ -108,7 +108,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
               <div className="hero-glass">
                 <a href="/status" className="group inline-flex items-center gap-2 mb-6">
                   <span className="status-dot" />
-                  <span className="text-xs font-medium tracking-wide text-slate-400 transition group-hover:text-white">{lang === "en" ? "48 automations running right now" : "48 automatizaciones ejecut\u00E1ndose ahora"}</span>
+                  <span className="text-xs font-medium tracking-wide text-slate-400 transition group-hover:text-white">{lang === "en" ? "Answering calls and running your office right now" : "Contestando llamadas y manejando tu oficina ahora"}</span>
                 </a>
                 <p className="section-label text-amber">{t.hero.badge}</p>
                 <h1 className="mt-6 text-[clamp(28px,5.5vw,64px)] font-black leading-[1.05] tracking-tight text-white">
@@ -195,7 +195,7 @@ export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPo
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-charcoal">Maria</p>
-                      <p className="text-[11px] text-charcoal-muted">{lang === "en" ? "AI Office Manager \u00B7 24 tools" : "Gerente IA \u00B7 24 herramientas"}</p>
+                      <p className="text-[11px] text-charcoal-muted">{lang === "en" ? "AI Office Manager" : "Gerente de Oficina IA"}</p>
                     </div>
                   </div>
                   {/* Chat messages */}

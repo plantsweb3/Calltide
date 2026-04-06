@@ -4,11 +4,11 @@ import AboutPage from "./AboutClient";
 export const metadata: Metadata = {
   title: "About — Capta | Built in San Antonio for Service Businesses",
   description:
-    "Capta was built because too many great service businesses lose jobs to missed calls and manual busywork. AI that answers every call AND automates your entire front office — 24 SMS tools, 48 automations, zero busywork.",
+    "Capta was built because too many great service businesses lose jobs to missed calls and manual busywork. AI that answers every call AND automates your entire front office — dispatching, invoicing, follow-ups — all from your text messages.",
   openGraph: {
     title: "About — Capta | Built in San Antonio. Built for You.",
     description:
-      "AI that answers calls AND automates your entire front office. 24 SMS tools, 48 automations. Built in San Antonio for home service businesses everywhere.",
+      "AI that answers calls AND automates your entire front office. Dispatching, invoicing, follow-ups — all from your texts. Built in San Antonio for home service businesses everywhere.",
     url: "https://captahq.com/about",
     siteName: "Capta",
     type: "website",
@@ -50,7 +50,7 @@ export default function Page() {
             "@type": "LocalBusiness",
             name: "Capta",
             description:
-              "AI front office platform for home service businesses — answers calls AND automates your entire office via SMS. Dispatching, invoicing, follow-ups — 24 tools, 48 automations.",
+              "AI front office platform for home service businesses — answers calls AND automates your entire office via SMS. Dispatching, invoicing, follow-ups — from your texts.",
             url: "https://captahq.com",
             telephone: "+1-830-521-7133",
             email: "hello@captahq.com",

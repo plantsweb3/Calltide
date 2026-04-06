@@ -60,7 +60,7 @@ interface TradeData {
 const T = {
   en: {
     step1Title: "Let's build your AI front office",
-    step1Sub: "She'll answer calls, run 48 automations, and manage your business via SMS.",
+    step1Sub: "She'll answer calls, handle follow-ups, reviews, and scheduling automatically.",
     bizName: "Business Name",
     bizNamePlaceholder: "e.g. Smith Plumbing",
     tradeType: "Trade / Industry",
@@ -73,7 +73,7 @@ const T = {
     addService: "Add",
     addServicePlaceholder: "Add a custom service...",
     step2Title: "How should we reach you?",
-    step2Sub: "She'll text you updates and you can manage everything by texting her back — 24 AI tools at your fingertips.",
+    step2Sub: "She'll text you updates and you can manage everything by texting her back — dispatch, invoice, schedule, and more.",
     ownerName: "Your Name",
     ownerNamePlaceholder: "e.g. John Smith",
     email: "Email",
@@ -118,7 +118,7 @@ const T = {
     comparisonAnchor: "A bilingual receptionist costs $3,000\u2013$4,000/month",
     questions: "Questions?",
     step6Sub: "is ready to run your front office for",
-    trialNote: "AI receptionist + 24 SMS tools + 48 automations. Free for 14 days, then $497/mo.",
+    trialNote: "Calls answered. Follow-ups sent. Leads scored. All automatically. Free for 14 days, then $497/mo.",
     cancelAnytime: "Cancel anytime",
     guarantee: "14-day free trial",
     monthlyLabel: "Monthly",
@@ -179,7 +179,7 @@ const T = {
   },
   es: {
     step1Title: "Construyamos tu oficina IA",
-    step1Sub: "Ella contestará llamadas, ejecutará 48 automatizaciones y gestionará tu negocio por SMS.",
+    step1Sub: "Ella contestará llamadas, gestionará seguimientos, reseñas y agendamiento automáticamente.",
     bizName: "Nombre del Negocio",
     bizNamePlaceholder: "ej. Plomería Smith",
     tradeType: "Tipo de Negocio",
@@ -192,7 +192,7 @@ const T = {
     addService: "Agregar",
     addServicePlaceholder: "Agregar servicio...",
     step2Title: "¿Cómo te contactamos?",
-    step2Sub: "Te enviará actualizaciones y podrás gestionar todo respondiéndole por texto — 24 herramientas IA a tu alcance.",
+    step2Sub: "Te enviará actualizaciones y podrás gestionar todo respondiéndole por texto — despacho, facturación, agenda y más.",
     ownerName: "Tu Nombre",
     ownerNamePlaceholder: "ej. Juan Pérez",
     email: "Correo Electrónico",
@@ -237,7 +237,7 @@ const T = {
     comparisonAnchor: "Una recepcionista bilingüe cuesta $3,000\u2013$4,000/mes",
     questions: "¿Preguntas?",
     step6Sub: "está lista para manejar la oficina de",
-    trialNote: "Recepcionista IA + 24 herramientas SMS + 48 automatizaciones. Gratis por 14 días, luego $497/mes.",
+    trialNote: "Llamadas contestadas. Seguimientos enviados. Prospectos calificados. Todo automático. Gratis por 14 días, luego $497/mes.",
     cancelAnytime: "Cancela cuando quieras",
     guarantee: "Prueba gratuita de 14 días",
     monthlyLabel: "Mensual",
@@ -1266,8 +1266,8 @@ function SetupClient() {
           </h1>
           <p className={s.subtitle}>
             {lang === "en"
-              ? `Welcome! ${receptionistName} is ready to answer calls, run 48 automations, and take your commands via SMS — 24/7, bilingual.`
-              : `¡Bienvenido! ${receptionistName} está lista para contestar llamadas, ejecutar 48 automatizaciones y recibir tus órdenes por SMS — 24/7, bilingüe.`}
+              ? `Welcome! ${receptionistName} is ready to answer calls, handle follow-ups, dispatch, and invoicing — all by text. 24/7, bilingual.`
+              : `¡Bienvenido! ${receptionistName} está lista para contestar llamadas, gestionar seguimientos, despacho y facturación — todo por texto. 24/7, bilingüe.`}
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", margin: "12px 0 8px" }}>
             <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
@@ -1277,10 +1277,10 @@ function SetupClient() {
               ✓ {t.bilingualLabel}
             </span>
             <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
-              ✓ {lang === "es" ? "48 automatizaciones" : "48 automations"}
+              ✓ {lang === "es" ? "Funciona Solo" : "Runs Automatically"}
             </span>
             <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
-              ✓ {lang === "es" ? "24 herramientas SMS" : "24 SMS tools"}
+              ✓ {lang === "es" ? "Gestiona por Texto" : "Manage by Text"}
             </span>
           </div>
 

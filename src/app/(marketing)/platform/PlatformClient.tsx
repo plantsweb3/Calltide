@@ -406,8 +406,8 @@ export default function PlatformClient() {
             </p>
             <p className="mt-3 text-sm leading-relaxed text-slate-400 max-w-lg mx-auto">
               {lang === "en"
-                ? "Maria has 24 tools you can trigger by SMS. Approve estimates, check your schedule, dispatch a technician, pull up a customer\u2019s history \u2014 all from a single text conversation. No app to open, no dashboard to log into."
-                : "Maria tiene 24 herramientas que puedes activar por SMS. Aprueba presupuestos, revisa tu agenda, despacha un t\u00E9cnico, consulta el historial de un cliente \u2014 todo desde una conversaci\u00F3n por texto. Sin abrir apps, sin iniciar sesi\u00F3n."}
+                ? "Text Maria to dispatch your crew, send invoices, check your schedule, pull up a customer\u2019s history \u2014 all from one conversation. No app to open, no dashboard to log into."
+                : "Escr\u00EDbele a Maria para despachar a tu equipo, enviar facturas, revisar tu agenda, consultar el historial de un cliente \u2014 todo desde una conversaci\u00F3n. Sin abrir apps, sin iniciar sesi\u00F3n."}
             </p>
           </div>
         </div>

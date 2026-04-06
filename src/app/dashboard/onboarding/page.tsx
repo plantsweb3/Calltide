@@ -158,7 +158,7 @@ const T = {
     testSuccess: "Test call placed! Check your phone.",
     testError: "Could not place test call. Try again.",
     isLive: "is LIVE!",
-    celebrationSub: "Your AI front office is live — answering calls, running 48 automations, and ready for your texts.",
+    celebrationSub: "Your AI front office is live — answering calls, running follow-ups, reviews, and lead scoring automatically.",
     goToDashboard: "Go to Dashboard",
     trainHer: "Train Her",
     viewCalls: "View Call History",
@@ -283,7 +283,7 @@ const T = {
     testSuccess: "¡Llamada de prueba realizada! Revisa tu teléfono.",
     testError: "No se pudo realizar la llamada de prueba. Intenta de nuevo.",
     isLive: "¡está EN LÍNEA!",
-    celebrationSub: "Tu oficina IA está activa — contestando llamadas, ejecutando 48 automatizaciones y lista para tus mensajes.",
+    celebrationSub: "Tu oficina IA está activa — contestando llamadas, enviando seguimientos, reseñas y calificando prospectos automáticamente.",
     goToDashboard: "Ir al Panel",
     trainHer: "Entrénala",
     viewCalls: "Ver Llamadas",
@@ -1690,10 +1690,10 @@ function OnboardingPage() {
                     <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "24/7 Bilingüe" : "24/7 Bilingual"}
                   </span>
                   <span className="flex items-center gap-1">
-                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "48 Automatizaciones" : "48 Automations"}
+                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "Funciona Solo" : "Runs Automatically"}
                   </span>
                   <span className="flex items-center gap-1">
-                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "24 Herramientas SMS" : "24 SMS Tools"}
+                    <span style={{ color: "var(--db-success, #10b981)" }}>&#10003;</span> {lang === "es" ? "Gestiona por Texto" : "Manage by Text"}
                   </span>
                 </div>
               </div>

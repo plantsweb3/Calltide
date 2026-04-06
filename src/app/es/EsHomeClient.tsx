@@ -196,7 +196,7 @@ export default function EsHomepage() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-charcoal">Maria</p>
-                      <p className="text-[11px] text-charcoal-muted">Gerente IA &middot; 24 herramientas</p>
+                      <p className="text-[11px] text-charcoal-muted">Gerente de Oficina IA</p>
                     </div>
                   </div>
                   <div className="px-4 py-5 space-y-3" style={{ minHeight: "320px" }}>
