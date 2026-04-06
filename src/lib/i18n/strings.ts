@@ -388,6 +388,10 @@ const strings: Record<string, Record<Lang, string>> = {
     en: "No calls yet",
     es: "Aun no hay llamadas",
   },
+  "calls.outboundEmptyDesc": {
+    en: "Enable outbound calling in Settings to let {name} make appointment reminders, estimate follow-ups, and seasonal reminder calls.",
+    es: "Activa las llamadas salientes en Configuracion para que {name} haga recordatorios de citas, seguimientos de presupuestos y llamadas de recordatorio estacional.",
+  },
 
   // ── Appointments ───────────────────────────────────────────
   "appointments.upcoming": { en: "Upcoming", es: "Proximas" },
@@ -3641,6 +3645,15 @@ const strings: Record<string, Record<Lang, string>> = {
   "smsTemplates.cat.follow_up": { en: "Follow-up", es: "Seguimiento" },
   "smsTemplates.cat.marketing": { en: "Marketing", es: "Marketing" },
   "smsTemplates.cat.custom": { en: "Custom", es: "Personalizada" },
+
+  // ── Contextual page links ─────────────────────────────────
+  "followUps.viewCallbacks": { en: "View Callbacks", es: "Ver devoluciones de llamada" },
+  "feedback.reportIssue": { en: "Report an Issue", es: "Reportar un problema" },
+  "appointments.recurringAppointments": { en: "Recurring Appointments", es: "Citas recurrentes" },
+  "overview.viewMariasBrain": { en: "View {name}'s Brain", es: "Ver el cerebro de {name}" },
+  "dispatch.viewJobCards": { en: "View Job Cards", es: "Ver tarjetas de trabajo" },
+  "referrals.partnerNetwork": { en: "Partner Network", es: "Red de socios" },
+  "sms.viewTemplates": { en: "SMS Templates", es: "Plantillas de SMS" },
 };
 
 /**

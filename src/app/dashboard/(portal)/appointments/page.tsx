@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 import DataTable, { type Column } from "@/components/data-table";
 import AppointmentCalendar from "@/app/dashboard/_components/appointment-calendar";
 import { TableSkeleton } from "@/components/skeleton";
@@ -243,6 +244,9 @@ export default function AppointmentsPage() {
         title={t("appointments.title", lang)}
         actions={
           <div className="flex items-center gap-3">
+            <Link href="/dashboard/recurring" className="text-sm font-medium" style={{ color: "var(--db-accent)" }}>
+              {t("appointments.recurringAppointments", lang)} &rarr;
+            </Link>
             {filter === "past" && (
               <DateRangePicker value={dateRange} onChange={setDateRange} />
             )}

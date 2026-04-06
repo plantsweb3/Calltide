@@ -8,6 +8,7 @@ import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import PageHeader from "@/components/page-header";
 import EmptyState from "@/components/empty-state";
 import { TableSkeleton } from "@/components/skeleton";
+import Link from "next/link";
 import PhoneLink from "@/components/phone-link";
 import { useLang } from "@/app/dashboard/_hooks/use-lang";
 import { t } from "@/lib/i18n/strings";
@@ -254,14 +255,19 @@ export default function FollowUpsPage() {
             : t("followUps.allCaughtUp", lang)
         }
         actions={
-          overdueCount > 0 ? (
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
-              style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
-            >
-              {overdueCount} {t("followUps.overdue", lang)}
-            </span>
-          ) : undefined
+          <div className="flex items-center gap-3">
+            <Link href="/dashboard/callbacks" className="text-sm font-medium" style={{ color: "var(--db-accent)" }}>
+              {t("followUps.viewCallbacks", lang)} &rarr;
+            </Link>
+            {overdueCount > 0 && (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
+                style={{ background: "var(--db-danger-bg)", color: "var(--db-danger)" }}
+              >
+                {overdueCount} {t("followUps.overdue", lang)}
+              </span>
+            )}
+          </div>
         }
       />
 

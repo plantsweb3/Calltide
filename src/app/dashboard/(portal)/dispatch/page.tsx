@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 import PageHeader from "@/components/page-header";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
 import Button from "@/components/ui/button";
@@ -220,7 +221,10 @@ export default function DispatchPage() {
             : t(totalJobs !== 1 ? "dispatch.jobCountOnDatePlural" : "dispatch.jobCountOnDate", lang, { count: totalJobs, date: formatDateLabel(date, lang === "es" ? "es-MX" : "en-US") })
         }
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <Link href="/dashboard/job-cards" className="text-sm font-medium" style={{ color: "var(--db-accent)" }}>
+              {t("dispatch.viewJobCards", lang)} &rarr;
+            </Link>
             <Button
               variant="secondary"
               size="sm"
@@ -517,7 +521,7 @@ export default function DispatchPage() {
                         {tech.unavailableReason && (
                           <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
                             {tech.unavailableReason}
-                            {tech.unavailableUntil && ` - ${t("dispatch.untilLabel", lang, { date: new Date(tech.unavailableUntil + "T12:00:00").toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { month: "short", day: "numeric" }) })}`}
+                            {tech.unavailableUntil && ` - ${t("dispatch.untilDate", lang, { date: new Date(tech.unavailableUntil + "T12:00:00").toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { month: "short", day: "numeric" }) })}`}
                           </p>
                         )}
                       </div>

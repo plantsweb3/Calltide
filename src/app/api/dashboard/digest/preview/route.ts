@@ -6,8 +6,7 @@ import { aggregateDailyDigest } from "@/lib/digest/aggregator";
 import { formatDigestSMS, formatDigestEmail } from "@/lib/digest/formatter";
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
-
-const DEMO_BUSINESS_ID = "demo-business-id";
+import { DEMO_BUSINESS_ID } from "../../demo-data";
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get("x-business-id");

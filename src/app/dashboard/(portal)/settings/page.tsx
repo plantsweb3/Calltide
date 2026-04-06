@@ -348,6 +348,7 @@ export default function SettingsPage() {
         personalityNotes: data.personalityNotes || "",
         receptionistName: data.receptionistName || "Maria",
         personalityPreset: data.personalityPreset || "friendly",
+        voiceId: data.voiceId || "sarah",
         enableWeeklyDigest: data.enableWeeklyDigest,
         digestDeliveryMethod: data.digestDeliveryMethod,
         enableDailySummary: data.enableDailySummary,

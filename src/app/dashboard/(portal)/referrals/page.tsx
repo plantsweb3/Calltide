@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import Button from "@/components/ui/button";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
@@ -94,6 +95,11 @@ export default function ReferralsPage() {
       <PageHeader
         title={t("referrals.title", lang)}
         description={t("referrals.description", lang)}
+        actions={
+          <Link href="/dashboard/partners" className="text-sm font-medium" style={{ color: "var(--db-accent)" }}>
+            {t("referrals.partnerNetwork", lang)} &rarr;
+          </Link>
+        }
       />
 
       {data.referralCode ? (

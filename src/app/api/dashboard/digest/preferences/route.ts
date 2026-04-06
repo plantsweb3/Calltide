@@ -5,8 +5,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
-
-const DEMO_BUSINESS_ID = "demo-business-id";
+import { DEMO_BUSINESS_ID } from "../../demo-data";
 
 const updateSchema = z.object({
   digestPreference: z.enum(["sms", "email", "both", "none"]).optional(),

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 import DataTable, { type Column } from "@/components/data-table";
 import { TableSkeleton } from "@/components/skeleton";
 import { useReceptionistName } from "@/app/dashboard/_hooks/use-receptionist-name";
@@ -165,6 +166,9 @@ export default function SmsPage() {
         title={t("sms.title", lang)}
         actions={
           <>
+            <Link href="/dashboard/sms-templates" className="text-sm font-medium" style={{ color: "var(--db-accent)" }}>
+              {t("sms.viewTemplates", lang)} &rarr;
+            </Link>
             <Button onClick={() => setShowCompose(true)}>
               {t("sms.newMessage", lang)}
             </Button>

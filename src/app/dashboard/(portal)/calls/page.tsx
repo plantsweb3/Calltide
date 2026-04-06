@@ -333,8 +333,8 @@ export default function CallsPage() {
                 </svg>
               }
               title={t("calls.noCalls", lang)}
-              description={`Enable outbound calling in Settings to let ${receptionistName} make appointment reminders, estimate follow-ups, and seasonal reminder calls.`}
-              action={{ label: t("action.settings", lang), href: "/dashboard/settings#outbound" }}
+              description={t("calls.outboundEmptyDesc", lang, { name: receptionistName })}
+              action={{ label: t("action.settings", lang), href: "/dashboard/settings#integrations" }}
             />
           ) : (
             <DataTable

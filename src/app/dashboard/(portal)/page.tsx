@@ -325,7 +325,14 @@ export default function OverviewPage() {
                   <span className="ml-auto tabular-nums">
                     {mins}:{secs.toString().padStart(2, "0")}
                   </span>
-                  {call.language === "es" && <span>🇲🇽</span>}
+                  {call.language === "es" && (
+                    <span
+                      className="text-xs px-1.5 py-0.5 rounded-full font-medium"
+                      style={{ background: "var(--db-warning-bg)", color: "var(--db-warning)" }}
+                    >
+                      ES
+                    </span>
+                  )}
                 </div>
               );
             })}
@@ -609,12 +616,17 @@ export default function OverviewPage() {
         </div>
         <div className="lg:col-span-2">
           <div className="db-card p-5">
-            <h3
-              className="mb-4 text-sm font-semibold uppercase tracking-wider"
-              style={{ color: "var(--db-text-muted)" }}
-            >
-              {t("time.allTime", lang)}
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3
+                className="text-sm font-semibold uppercase tracking-wider"
+                style={{ color: "var(--db-text-muted)" }}
+              >
+                {t("time.allTime", lang)}
+              </h3>
+              <Link href="/dashboard/intelligence" className="text-sm font-medium" style={{ color: "var(--db-accent)" }}>
+                {t("overview.viewMariasBrain", lang, { name: receptionistName })} &rarr;
+              </Link>
+            </div>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{t("overview.totalCalls", lang)}</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import CaptaSpinner from "@/components/capta-spinner";
 import Button from "@/components/ui/button";
 import StatusBadge from "@/components/ui/status-badge";
@@ -131,14 +132,19 @@ export default function ClientFeedbackPage() {
         title={t("feedback.title", lang)}
         description={t("feedback.description", lang)}
         actions={
-          tab === "feedback" ? (
-            <Button
-              variant={showForm ? "secondary" : "primary"}
-              onClick={() => setShowForm(!showForm)}
-            >
-              {showForm ? t("action.cancel", lang) : t("feedback.newFeedback", lang)}
-            </Button>
-          ) : undefined
+          <div className="flex items-center gap-3">
+            <Link href="/dashboard/complaints" className="text-sm font-medium" style={{ color: "var(--db-accent)" }}>
+              {t("feedback.reportIssue", lang)} &rarr;
+            </Link>
+            {tab === "feedback" && (
+              <Button
+                variant={showForm ? "secondary" : "primary"}
+                onClick={() => setShowForm(!showForm)}
+              >
+                {showForm ? t("action.cancel", lang) : t("feedback.newFeedback", lang)}
+              </Button>
+            )}
+          </div>
         }
       />
 

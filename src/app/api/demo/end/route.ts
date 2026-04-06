@@ -4,6 +4,7 @@ import { demoSessions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { TRADE_PROFILES, calculateROI, type TradeType } from "@/lib/receptionist/trade-profiles";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 const endSchema = z.object({
   sessionId: z.string().min(1),
@@ -127,6 +128,10 @@ function estimatePhaseReached(
 }
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit(`demo-end:${ip}`, RATE_LIMITS.standard);
+  if (!rl.success) return rateLimitResponse(rl);
+
   let body: z.infer<typeof endSchema>;
   try {
     body = endSchema.parse(await req.json());

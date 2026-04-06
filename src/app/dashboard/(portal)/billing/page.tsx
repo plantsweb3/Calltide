@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 import LoadingSpinner from "@/app/dashboard/_components/loading-spinner";
 import Button from "@/components/ui/button";
 import StatusBadge, { statusToVariant } from "@/components/ui/status-badge";
@@ -389,6 +390,17 @@ export default function BillingPage() {
           </Button>
         </div>
       )}
+
+      {/* Cancel Subscription */}
+      <div className="flex justify-center pt-4">
+        <Link
+          href="/dashboard/cancel"
+          className="text-sm"
+          style={{ color: "var(--db-text-muted)" }}
+        >
+          {t("billing.cancelSubscription", lang)}
+        </Link>
+      </div>
 
       {/* Switch to Annual Confirmation */}
       {showSwitchConfirm && (
