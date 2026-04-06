@@ -118,7 +118,7 @@ export default function SmsTemplatesPage() {
     setError(null);
     try {
       const res = await fetch("/api/dashboard/sms-templates");
-      if (!res.ok) throw new Error("Failed to load");
+      if (!res.ok) throw new Error(t("error.failedToLoad", lang));
       const data = await res.json();
       setTemplates(data.templates ?? []);
     } catch {
@@ -176,7 +176,7 @@ export default function SmsTemplatesPage() {
         });
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || "Failed to update");
+          throw new Error(data.error || t("error.failedToUpdate", lang));
         }
         toast.success(t("smsTemplates.updated", lang));
       } else {
@@ -194,7 +194,7 @@ export default function SmsTemplatesPage() {
         });
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || "Failed to create");
+          throw new Error(data.error || t("error.failedToCreate", lang));
         }
         toast.success(t("smsTemplates.created", lang));
       }
@@ -216,7 +216,7 @@ export default function SmsTemplatesPage() {
       const res = await fetch(`/api/dashboard/sms-templates/${deleteTarget.id}`, {
         method: "DELETE",
       });
-      if (!res.ok) throw new Error("Failed to delete");
+      if (!res.ok) throw new Error(t("error.failedToDelete", lang));
       toast.success(t("smsTemplates.deleted", lang));
       setDeleteTarget(null);
       fetchTemplates();

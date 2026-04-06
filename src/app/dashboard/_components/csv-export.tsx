@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback } from "react";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface CsvColumn<T> {
   header: string;
@@ -27,6 +29,7 @@ export default function ExportCsvButton<T>({
   columns,
   filename,
 }: ExportCsvButtonProps<T>) {
+  const [lang] = useLang();
   const handleExport = useCallback(() => {
     if (data.length === 0) return;
 
@@ -60,14 +63,14 @@ export default function ExportCsvButton<T>({
         cursor: isEmpty ? "not-allowed" : "pointer",
         opacity: isEmpty ? 0.5 : 1,
       }}
-      title={isEmpty ? "No data to export" : "Export as CSV"}
+      title={isEmpty ? t("misc.noDataToExport", lang) : t("misc.exportAsCsv", lang)}
     >
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
         <polyline points="7 10 12 15 17 10" />
         <line x1="12" y1="15" x2="12" y2="3" />
       </svg>
-      Export CSV
+      {t("action.exportCsv", lang)}
     </button>
   );
 }

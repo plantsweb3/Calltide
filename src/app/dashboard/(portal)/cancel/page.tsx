@@ -49,7 +49,7 @@ export default function CancelPage() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => null);
-        throw new Error(err?.error || "Cancellation failed");
+        throw new Error(err?.error || t("error.cancellationFailed", lang));
       }
 
       await res.json();
@@ -62,7 +62,7 @@ export default function CancelPage() {
 
       router.push("/dashboard/billing");
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Something went wrong";
+      const msg = e instanceof Error ? e.message : t("error.somethingWentWrong", lang);
       toast.error(msg);
     } finally {
       setSubmitting(false);

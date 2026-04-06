@@ -98,7 +98,7 @@ export default function DispatchPage() {
     setError(null);
     try {
       const res = await fetch(`/api/dashboard/dispatch?date=${date}`);
-      if (!res.ok) throw new Error("Failed to load dispatch data");
+      if (!res.ok) throw new Error(t("error.failedToLoad", lang));
       const data = await res.json();
       setTechnicians(data.technicians);
       setUnassigned(data.unassigned);
@@ -131,7 +131,7 @@ export default function DispatchPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ technicianId }),
       });
-      if (!res.ok) throw new Error("Failed to assign");
+      if (!res.ok) throw new Error(t("error.failedToAssign", lang));
       toast.success(technicianId ? t("toast.technicianAssigned", lang) : t("toast.technicianUnassigned", lang));
       setAssignAppt(null);
       setReassignApptId(null);
@@ -150,7 +150,7 @@ export default function DispatchPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ technicianId }),
       });
-      if (!res.ok) throw new Error("Failed to assign");
+      if (!res.ok) throw new Error(t("error.failedToAssign", lang));
       toast.success(t("toast.technicianAssigned", lang));
       fetchDispatch();
     } catch {
@@ -168,7 +168,7 @@ export default function DispatchPage() {
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to send");
+        throw new Error(data.error || t("error.failedToSend", lang));
       }
       const data = await res.json();
       toast.success(t("toast.scheduleSent", lang, { count: String(data.jobCount) }));

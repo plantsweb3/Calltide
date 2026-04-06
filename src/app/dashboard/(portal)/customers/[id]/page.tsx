@@ -43,12 +43,12 @@ interface TimelineItem {
 
 const TIMELINE_CONFIG: Record<
   TimelineItem["type"],
-  { label: string; borderColor: string; iconColor: string }
+  { labelKey: string; borderColor: string; iconColor: string }
 > = {
-  call: { label: "Call", borderColor: "#3b82f6", iconColor: "#3b82f6" },
-  appointment: { label: "Appointment", borderColor: "var(--db-success)", iconColor: "var(--db-success)" },
-  estimate: { label: "Estimate", borderColor: "#f97316", iconColor: "#f97316" },
-  sms: { label: "SMS", borderColor: "#8b5cf6", iconColor: "#8b5cf6" },
+  call: { labelKey: "customerDetail.call", borderColor: "#3b82f6", iconColor: "#3b82f6" },
+  appointment: { labelKey: "customerDetail.appointment", borderColor: "var(--db-success)", iconColor: "var(--db-success)" },
+  estimate: { labelKey: "customerDetail.estimate", borderColor: "#f97316", iconColor: "#f97316" },
+  sms: { labelKey: "customerDetail.sms", borderColor: "#8b5cf6", iconColor: "#8b5cf6" },
 };
 
 // ── Icons ──
@@ -110,16 +110,18 @@ const ICON_MAP: Record<TimelineItem["type"], () => React.ReactNode> = {
 
 // ── Helpers ──
 
-function formatDate(d: string | null): string {
+function formatDate(d: string | null, lang: "en" | "es" = "en"): string {
   if (!d) return "\u2014";
-  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  const locale = lang === "es" ? "es-MX" : "en-US";
+  return new Date(d).toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" });
 }
 
-function formatDateTime(d: string): string {
+function formatDateTime(d: string, lang: "en" | "es" = "en"): string {
+  const locale = lang === "es" ? "es-MX" : "en-US";
   const date = new Date(d);
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) +
-    " at " +
-    date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  return date.toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" }) +
+    ` ${t("customerDetail.at", lang)} ` +
+    date.toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" });
 }
 
 function formatDuration(seconds: number | null | undefined): string {
@@ -129,20 +131,21 @@ function formatDuration(seconds: number | null | undefined): string {
   return `${m}m ${s}s`;
 }
 
-function formatCurrency(amount: number | null | undefined): string {
-  if (amount == null) return "TBD";
+function formatCurrency(amount: number | null | undefined, lang: "en" | "es" = "en"): string {
+  if (amount == null) return t("customerDetail.tbd", lang);
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(amount);
 }
 
-function tierLabel(tier: string): string {
-  const map: Record<string, string> = {
-    new: "New",
-    loyal: "Loyal",
-    vip: "VIP",
-    dormant: "Dormant",
-    "at-risk": "At Risk",
+function tierLabel(tier: string, lang: "en" | "es" = "en"): string {
+  const keyMap: Record<string, string> = {
+    new: "customerDetail.tierNew",
+    loyal: "customerDetail.tierLoyal",
+    vip: "customerDetail.tierVip",
+    dormant: "customerDetail.tierDormant",
+    "at-risk": "customerDetail.tierAtRisk",
   };
-  return map[tier] || tier;
+  const key = keyMap[tier];
+  return key ? t(key, lang) : tier;
 }
 
 function tierColor(tier: string): { bg: string; fg: string } {
@@ -190,7 +193,7 @@ function StatusBadge({ status, type }: { status: string; type: TimelineItem["typ
 
 // ── Timeline item renderers ──
 
-function CallTimelineItem({ item }: { item: TimelineItem }) {
+function CallTimelineItem({ item, lang }: { item: TimelineItem; lang: "en" | "es" }) {
   const d = item.data;
   const status = String(d.status || "");
   const outcome = d.outcome ? String(d.outcome) : null;
@@ -208,7 +211,7 @@ function CallTimelineItem({ item }: { item: TimelineItem }) {
           </span>
         )}
         <span className="text-xs ml-auto" style={{ color: "var(--db-text-muted)" }}>
-          {formatDateTime(item.date)}
+          {formatDateTime(item.date, lang)}
         </span>
       </div>
       {summary && (
@@ -218,14 +221,14 @@ function CallTimelineItem({ item }: { item: TimelineItem }) {
       )}
       <div className="mt-1 flex gap-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
         {duration && <span>{formatDuration(duration)}</span>}
-        {language && <span>{language === "es" ? "Spanish" : "English"}</span>}
+        {language && <span>{language === "es" ? t("misc.spanish", lang) : t("misc.english", lang)}</span>}
         {sentiment && <span>{sentiment}</span>}
       </div>
     </div>
   );
 }
 
-function AppointmentTimelineItem({ item }: { item: TimelineItem }) {
+function AppointmentTimelineItem({ item, lang }: { item: TimelineItem; lang: "en" | "es" }) {
   const d = item.data;
   const service = String(d.service || "");
   const status = String(d.status || "");
@@ -242,7 +245,7 @@ function AppointmentTimelineItem({ item }: { item: TimelineItem }) {
           <StatusBadge status={status} type="appointment" />
         </div>
         <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-          {date} at {time}
+          {date} {t("customerDetail.at", lang)} {time}
         </span>
       </div>
       {notes && (
@@ -254,7 +257,7 @@ function AppointmentTimelineItem({ item }: { item: TimelineItem }) {
   );
 }
 
-function EstimateTimelineItem({ item }: { item: TimelineItem }) {
+function EstimateTimelineItem({ item, lang }: { item: TimelineItem; lang: "en" | "es" }) {
   const d = item.data;
   const service = String(d.service || "");
   const status = String(d.status || "");
@@ -270,7 +273,7 @@ function EstimateTimelineItem({ item }: { item: TimelineItem }) {
           <StatusBadge status={status} type="estimate" />
         </div>
         <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
-          {formatCurrency(amount)}
+          {formatCurrency(amount, lang)}
         </span>
       </div>
       {description && (
@@ -279,13 +282,13 @@ function EstimateTimelineItem({ item }: { item: TimelineItem }) {
         </p>
       )}
       <span className="text-xs mt-1 block" style={{ color: "var(--db-text-muted)" }}>
-        {formatDateTime(item.date)}
+        {formatDateTime(item.date, lang)}
       </span>
     </div>
   );
 }
 
-function SmsTimelineItem({ item }: { item: TimelineItem }) {
+function SmsTimelineItem({ item, lang }: { item: TimelineItem; lang: "en" | "es" }) {
   const d = item.data;
   const direction = String(d.direction || "outbound");
   const body = String(d.body || "");
@@ -296,10 +299,10 @@ function SmsTimelineItem({ item }: { item: TimelineItem }) {
           className="text-xs font-medium uppercase"
           style={{ color: direction === "outbound" ? "var(--db-accent)" : "var(--db-text-muted)" }}
         >
-          {direction === "outbound" ? "Sent" : "Received"}
+          {direction === "outbound" ? t("customerDetail.sent", lang) : t("customerDetail.received", lang)}
         </span>
         <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>
-          {formatDateTime(item.date)}
+          {formatDateTime(item.date, lang)}
         </span>
       </div>
       <p className="mt-1 text-sm" style={{ color: "var(--db-text)" }}>
@@ -309,7 +312,7 @@ function SmsTimelineItem({ item }: { item: TimelineItem }) {
   );
 }
 
-const ITEM_RENDERERS: Record<TimelineItem["type"], React.ComponentType<{ item: TimelineItem }>> = {
+const ITEM_RENDERERS: Record<TimelineItem["type"], React.ComponentType<{ item: TimelineItem; lang: "en" | "es" }>> = {
   call: CallTimelineItem,
   appointment: AppointmentTimelineItem,
   estimate: EstimateTimelineItem,
@@ -352,13 +355,13 @@ export default function CustomerDetailPage() {
           router.push("/dashboard/customers");
           return;
         }
-        throw new Error("Failed to load customer");
+        throw new Error(t("error.failedToLoad", lang));
       }
       const data = await res.json();
       setCustomer(data.customer);
       setTimeline(data.timeline || []);
     } catch {
-      setError("Failed to load customer details. Please try again.");
+      setError(t("customerDetail.failedToLoadDetails", lang));
     } finally {
       setLoading(false);
     }
@@ -376,7 +379,7 @@ export default function CustomerDetailPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [field]: value }),
       });
-      if (!res.ok) throw new Error("Save failed");
+      if (!res.ok) throw new Error(t("error.failedToSave", lang));
       setCustomer((prev) => prev ? { ...prev, [field]: value || null } : prev);
       toast.success(t("settings.saved", lang));
     } catch {
@@ -393,7 +396,7 @@ export default function CustomerDetailPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tags: newTags }),
       });
-      if (!res.ok) throw new Error("Save failed");
+      if (!res.ok) throw new Error(t("error.failedToSave", lang));
       setCustomer((prev) => prev ? { ...prev, tags: newTags } : prev);
       toast.success(t("settings.saved", lang));
     } catch {
@@ -405,7 +408,7 @@ export default function CustomerDetailPage() {
     setDeleting(true);
     try {
       const res = await fetch(`/api/dashboard/customers/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Delete failed");
+      if (!res.ok) throw new Error(t("error.failedToDelete", lang));
       toast.success(t("action.delete", lang));
       router.push("/dashboard/customers");
     } catch {
@@ -422,13 +425,13 @@ export default function CustomerDetailPage() {
       });
       if (!res.ok) {
         const data = await res.json();
-        toast.error(data.error || "Failed to convert estimate");
+        toast.error(data.error || t("error.failedToConvert", lang));
         return;
       }
       toast.success(t("toast.estimateConvertedToInvoice", lang));
       fetchCustomer();
     } catch {
-      toast.error("Failed to convert estimate");
+      toast.error(t("error.failedToConvert", lang));
     } finally {
       setConvertingEstimate(null);
     }
@@ -505,7 +508,7 @@ export default function CustomerDetailPage() {
           <div>
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>
-                {customer.name || "Unknown Customer"}
+                {customer.name || t("customerDetail.unknownCustomer", lang)}
               </h1>
               {customer.language === "es" && (
                 <span
@@ -520,7 +523,7 @@ export default function CustomerDetailPage() {
                   className="rounded px-2 py-0.5 text-xs font-medium text-white"
                   style={{ background: "var(--db-accent)" }}
                 >
-                  REPEAT
+                  {t("customerDetail.repeat", lang)}
                 </span>
               )}
               {customer.tier && (
@@ -528,7 +531,7 @@ export default function CustomerDetailPage() {
                   className="rounded px-2 py-0.5 text-xs font-medium"
                   style={{ background: tc.bg, color: tc.fg }}
                 >
-                  {tierLabel(customer.tier)}
+                  {tierLabel(customer.tier, lang)}
                 </span>
               )}
               {customer.leadScore != null && (
@@ -558,18 +561,18 @@ export default function CustomerDetailPage() {
                   href={`tel:${customer.phone}`}
                   className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium transition-colors"
                   style={{ background: "rgba(59,130,246,0.1)", color: "#3b82f6" }}
-                  title="Call customer"
+                  title={t("customerDetail.callCustomer", lang)}
                 >
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
                   </svg>
-                  Call
+                  {t("customerDetail.call", lang)}
                 </a>
                 <button
                   onClick={() => setShowSmsModal(true)}
                   className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium transition-colors"
                   style={{ background: "rgba(139,92,246,0.1)", color: "#8b5cf6" }}
-                  title="Send SMS"
+                  title={t("customerDetail.sendSms", lang)}
                 >
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -597,8 +600,8 @@ export default function CustomerDetailPage() {
             { label: t("customers.totalCalls", lang), value: String(customer.totalCalls) },
             { label: t("metric.appointments", lang), value: String(customer.totalAppointments) },
             { label: t("nav.estimates", lang), value: String(customer.totalEstimates) },
-            { label: t("metric.revenueCaptured", lang), value: formatCurrency(customer.lifetimeValue || 0) },
-            { label: t("customers.lastCall", lang), value: formatDate(customer.firstCallAt) },
+            { label: t("metric.revenueCaptured", lang), value: formatCurrency(customer.lifetimeValue || 0, lang) },
+            { label: t("customers.lastCall", lang), value: formatDate(customer.firstCallAt, lang) },
           ].map((stat) => (
             <div key={stat.label}>
               <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>{stat.label}</p>
@@ -612,10 +615,18 @@ export default function CustomerDetailPage() {
           {(["name", "phone", "email", "address", "notes"] as const).map((field) => {
             const isEditing = editingField === field;
             const value = isEditing ? (editValues[field] ?? "") : (customer[field] || "");
+            const fieldLabelKey: Record<string, string> = {
+              name: "misc.name",
+              phone: "misc.phone",
+              email: "misc.email",
+              address: "misc.address",
+              notes: "customerDetail.notes",
+            };
+            const fieldLabel = t(fieldLabelKey[field], lang);
             return (
               <div key={field}>
                 <label className="db-label uppercase">
-                  {field}
+                  {fieldLabel}
                 </label>
                 {field === "notes" ? (
                   <textarea
@@ -629,7 +640,7 @@ export default function CustomerDetailPage() {
                     }}
                     className="db-input"
                     rows={2}
-                    placeholder={`Add ${field}...`}
+                    placeholder={t("customerDetail.addField", lang, { field: fieldLabel })}
                   />
                 ) : (
                   <input
@@ -643,7 +654,7 @@ export default function CustomerDetailPage() {
                       if (editingField === field) saveField(field, editValues[field] || "");
                     }}
                     className="db-input"
-                    placeholder={`Add ${field}...`}
+                    placeholder={t("customerDetail.addField", lang, { field: fieldLabel })}
                   />
                 )}
               </div>
@@ -651,7 +662,7 @@ export default function CustomerDetailPage() {
           })}
           <div>
             <label className="db-label uppercase">
-              Tags
+              {t("misc.tags", lang)}
             </label>
             <TagEditor tags={customer.tags || []} onChange={saveTags} />
           </div>
@@ -674,7 +685,7 @@ export default function CustomerDetailPage() {
                 color: filter === f ? "#fff" : "var(--db-text-muted)",
               }}
             >
-              {f === "all" ? "All" : TIMELINE_CONFIG[f].label}
+              {f === "all" ? t("customerDetail.all", lang) : t(TIMELINE_CONFIG[f].labelKey, lang)}
               {" "}({counts[f]})
             </button>
           ))}
@@ -690,8 +701,8 @@ export default function CustomerDetailPage() {
           <div className="py-12 text-center">
             <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
               {filter === "all"
-                ? "No activity recorded for this customer yet."
-                : `No ${TIMELINE_CONFIG[filter as TimelineItem["type"]].label.toLowerCase()} activity found.`}
+                ? t("customerDetail.noActivity", lang)
+                : t("customerDetail.noFilteredActivity", lang, { type: t(TIMELINE_CONFIG[filter as TimelineItem["type"]].labelKey, lang).toLowerCase() })}
             </p>
           </div>
         ) : (
@@ -728,7 +739,7 @@ export default function CustomerDetailPage() {
                   </div>
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <Renderer item={item} />
+                    <Renderer item={item} lang={lang} />
                     {/* Action CTAs - appear on hover */}
                     {isHovered && (
                       <div className="mt-2 flex items-center gap-1.5">
@@ -747,7 +758,7 @@ export default function CustomerDetailPage() {
                             }}
                           >
                             <PlusIcon />
-                            Create Follow-up
+                            {t("customerDetail.createFollowUp", lang)}
                           </button>
                         )}
                         {/* Appointment events: Create Invoice */}
@@ -765,7 +776,7 @@ export default function CustomerDetailPage() {
                             }}
                           >
                             <PlusIcon />
-                            Create Invoice
+                            {t("customerDetail.createInvoice", lang)}
                           </button>
                         )}
                         {/* Estimate events: Convert to Invoice */}
@@ -786,7 +797,7 @@ export default function CustomerDetailPage() {
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                               <polyline points="20 6 9 17 4 12" />
                             </svg>
-                            {convertingEstimate === item.id ? "Converting..." : "Convert to Invoice"}
+                            {convertingEstimate === item.id ? t("customerDetail.converting", lang) : t("customerDetail.convertToInvoice", lang)}
                           </button>
                         )}
                       </div>
@@ -819,7 +830,7 @@ export default function CustomerDetailPage() {
           onClose={() => setShowFollowUpForm(null)}
           onCreated={() => {
             setShowFollowUpForm(null);
-            toast.success("Follow-up created");
+            toast.success(t("customerDetail.followUpCreated", lang));
           }}
         />
       )}
@@ -858,9 +869,9 @@ function CreateFollowUpModal({
 }) {
   const [lang] = useLang();
   const summary = callItem.data.summary ? String(callItem.data.summary) : "";
-  const [title, setTitle] = useState(`Follow up: ${customerName || "Customer"}`);
+  const [title, setTitle] = useState(t("customerDetail.followUp", lang, { name: customerName || t("misc.customer", lang) }));
   const [description, setDescription] = useState(
-    summary ? `From call: ${summary.slice(0, 200)}` : ""
+    summary ? t("customerDetail.fromCall", lang, { summary: summary.slice(0, 200) }) : ""
   );
   const [dueDate, setDueDate] = useState(() => {
     const d = new Date();
@@ -874,7 +885,7 @@ function CreateFollowUpModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!title.trim()) {
-      setError("Title is required.");
+      setError(t("customerDetail.titleRequired", lang));
       return;
     }
     setSaving(true);
@@ -894,12 +905,12 @@ function CreateFollowUpModal({
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to create follow-up");
+        setError(data.error || t("error.failedToCreate", lang));
         return;
       }
       onCreated();
     } catch {
-      setError("Failed to create follow-up");
+      setError(t("error.failedToCreate", lang));
     } finally {
       setSaving(false);
     }
@@ -934,7 +945,7 @@ function CreateFollowUpModal({
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-              Title *
+              {t("customerDetail.title", lang)} *
             </label>
             <input
               type="text"
@@ -947,7 +958,7 @@ function CreateFollowUpModal({
           </div>
           <div>
             <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-              Description
+              {t("customerDetail.description", lang)}
             </label>
             <textarea
               value={description}
@@ -960,7 +971,7 @@ function CreateFollowUpModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                Due Date
+                {t("customerDetail.dueDate", lang)}
               </label>
               <input
                 type="datetime-local"
@@ -972,7 +983,7 @@ function CreateFollowUpModal({
             </div>
             <div>
               <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-                Priority
+                {t("customerDetail.priority", lang)}
               </label>
               <select
                 value={priority}
@@ -980,10 +991,10 @@ function CreateFollowUpModal({
                 className="w-full rounded-lg border px-3 py-2 text-sm"
                 style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
               >
-                <option value="low">Low</option>
-                <option value="normal">Normal</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent</option>
+                <option value="low">{t("customerDetail.priorityLow", lang)}</option>
+                <option value="normal">{t("customerDetail.priorityNormal", lang)}</option>
+                <option value="high">{t("customerDetail.priorityHigh", lang)}</option>
+                <option value="urgent">{t("customerDetail.priorityUrgent", lang)}</option>
               </select>
             </div>
           </div>
@@ -1025,7 +1036,7 @@ function SendSmsModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!message.trim()) {
-      setError("Message is required.");
+      setError(t("customerDetail.messageRequired", lang));
       return;
     }
     setSending(true);
@@ -1042,13 +1053,13 @@ function SendSmsModal({
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to send SMS");
+        setError(data.error || t("error.failedToSend", lang));
         return;
       }
       toast.success(t("status.sent", lang));
       onSent();
     } catch {
-      setError("Failed to send SMS");
+      setError(t("error.failedToSend", lang));
     } finally {
       setSending(false);
     }
@@ -1081,19 +1092,19 @@ function SendSmsModal({
           {t("customerDetail.sendSms", lang)}
         </h2>
         <p className="text-xs mb-4" style={{ color: "var(--db-text-muted)" }}>
-          To: {customerName || "Customer"} ({customerPhone})
+          {t("misc.to", lang)}: {customerName || t("misc.customer", lang)} ({customerPhone})
         </p>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="block text-xs font-medium mb-1" style={{ color: "var(--db-text-muted)" }}>
-              Message *
+              {t("customerDetail.message", lang)} *
             </label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
               maxLength={1600}
-              placeholder="Type your message..."
+              placeholder={t("customerDetail.typeYourMessage", lang)}
               className="w-full rounded-lg border px-3 py-2 text-sm"
               style={{ background: "var(--db-bg)", borderColor: "var(--db-border)", color: "var(--db-text)" }}
               autoFocus

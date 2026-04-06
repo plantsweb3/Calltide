@@ -15,7 +15,7 @@ vi.mock("@/db", () => {
     chain.limit = vi.fn().mockResolvedValue(returnValue);
     chain.returning = vi.fn().mockResolvedValue(returnValue);
     // Make chain thenable so `await db.select().from().where()` works without .limit()
-    chain.then = (resolve: (v: unknown) => void) => resolve(returnValue);
+    (chain as Record<string, unknown>).then = (resolve: (v: unknown) => void) => resolve(returnValue);
     return chain;
   };
 
@@ -322,7 +322,7 @@ describe("Voice Webhook — XML Safety", () => {
 describe("Voice Webhook — Rate Limiting", () => {
   it("returns rate limit response when limit exceeded", async () => {
     const { rateLimit, rateLimitResponse } = await import("@/lib/rate-limit");
-    vi.mocked(rateLimit).mockResolvedValue({ success: false, remaining: 0, reset: Date.now() + 60000 });
+    vi.mocked(rateLimit).mockResolvedValue({ success: false, limit: 100, remaining: 0, resetAt: Date.now() + 60000 });
     vi.mocked(rateLimitResponse).mockReturnValue(
       new Response(JSON.stringify({ error: "Rate limited" }), { status: 429 }),
     );

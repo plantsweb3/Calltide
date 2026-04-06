@@ -465,12 +465,8 @@ const strings: Record<string, Record<Lang, string>> = {
   },
   "settings.tab.general": { en: "General", es: "General" },
   "settings.tab.receptionist": { en: "Receptionist", es: "Recepcionista" },
-  "settings.tab.responses": { en: "Responses", es: "Respuestas" },
-  "settings.tab.notifications": { en: "Notifications", es: "Notificaciones" },
   "settings.tab.pricing": { en: "Pricing", es: "Precios" },
-  "settings.tab.automations": { en: "Automations", es: "Automatizaciones" },
   "settings.tab.integrations": { en: "Integrations", es: "Integraciones" },
-  "settings.tab.export": { en: "Data Export", es: "Exportar datos" },
   "settings.export.title": { en: "Data Export", es: "Exportar datos" },
   "settings.export.description": {
     en: "Download your data as CSV files",
@@ -550,12 +546,36 @@ const strings: Record<string, Record<Lang, string>> = {
 
   // ── Errors / empty states ──────────────────────────────────
   "error.failedToLoad": {
-    en: "Failed to load dashboard data",
-    es: "No se pudieron cargar los datos",
+    en: "Failed to load data. Please try again.",
+    es: "No se pudieron cargar los datos. Inténtalo de nuevo.",
+  },
+  "error.failedToSave": {
+    en: "Failed to save changes.",
+    es: "No se pudieron guardar los cambios.",
+  },
+  "error.failedToCreate": {
+    en: "Failed to create. Please try again.",
+    es: "No se pudo crear. Inténtalo de nuevo.",
+  },
+  "error.failedToUpdate": {
+    en: "Failed to update. Please try again.",
+    es: "No se pudo actualizar. Inténtalo de nuevo.",
+  },
+  "error.failedToDelete": {
+    en: "Failed to delete. Please try again.",
+    es: "No se pudo eliminar. Inténtalo de nuevo.",
+  },
+  "error.failedToSend": {
+    en: "Failed to send. Please try again.",
+    es: "No se pudo enviar. Inténtalo de nuevo.",
+  },
+  "error.failedToAssign": {
+    en: "Failed to assign. Please try again.",
+    es: "No se pudo asignar. Inténtalo de nuevo.",
   },
   "error.somethingWentWrong": {
-    en: "Something went wrong",
-    es: "Algo salio mal",
+    en: "Something went wrong. Please try again.",
+    es: "Algo salió mal. Inténtalo de nuevo.",
   },
   "error.tryAgain": {
     en: "Please try again",
@@ -572,6 +592,138 @@ const strings: Record<string, Record<Lang, string>> = {
   "error.notFound": {
     en: "Page not found",
     es: "Pagina no encontrada",
+  },
+
+  "error.cancellationFailed": {
+    en: "Cancellation failed. Please try again.",
+    es: "La cancelacion fallo. Intentalo de nuevo.",
+  },
+  "error.failedToAccept": {
+    en: "Failed to accept. Please try again.",
+    es: "No se pudo aceptar. Intentalo de nuevo.",
+  },
+  "error.networkError": {
+    en: "Network error. Please try again.",
+    es: "Error de red. Intentalo de nuevo.",
+  },
+  "error.failedToConvert": {
+    en: "Failed to convert. Please try again.",
+    es: "No se pudo convertir. Intentalo de nuevo.",
+  },
+  "misc.noDataToExport": {
+    en: "No data to export",
+    es: "No hay datos para exportar",
+  },
+  "misc.exportAsCsv": { en: "Export as CSV", es: "Exportar como CSV" },
+  "misc.loading": { en: "Loading...", es: "Cargando..." },
+  "misc.to": { en: "To", es: "Para" },
+  "misc.customer": { en: "Customer", es: "Cliente" },
+  "misc.tags": { en: "Tags", es: "Etiquetas" },
+
+  // ── Legal reacceptance ─────────────────────────────────────
+  "legal.updatedTerms": { en: "Updated Terms", es: "Terminos actualizados" },
+  "legal.updatedTermsDescription": {
+    en: "We've updated the following legal documents. Please review and accept to continue using your dashboard.",
+    es: "Hemos actualizado los siguientes documentos legales. Revisalos y acepta para seguir usando tu panel.",
+  },
+  "legal.readFullDocument": {
+    en: "Read full document",
+    es: "Leer documento completo",
+  },
+  "legal.accepting": { en: "Accepting...", es: "Aceptando..." },
+  "legal.acceptUpdatedTerms": {
+    en: "I Accept the Updated Terms",
+    es: "Acepto los terminos actualizados",
+  },
+
+  // ── Customer detail extras ────────────────────────────────
+  "customerDetail.unknownCustomer": {
+    en: "Unknown Customer",
+    es: "Cliente desconocido",
+  },
+  "customerDetail.repeat": { en: "REPEAT", es: "RECURRENTE" },
+  "customerDetail.tierNew": { en: "New", es: "Nuevo" },
+  "customerDetail.tierLoyal": { en: "Loyal", es: "Leal" },
+  "customerDetail.tierVip": { en: "VIP", es: "VIP" },
+  "customerDetail.tierDormant": { en: "Dormant", es: "Inactivo" },
+  "customerDetail.tierAtRisk": { en: "At Risk", es: "En riesgo" },
+  "customerDetail.call": { en: "Call", es: "Llamada" },
+  "customerDetail.appointment": { en: "Appointment", es: "Cita" },
+  "customerDetail.estimate": { en: "Estimate", es: "Cotizacion" },
+  "customerDetail.sms": { en: "SMS", es: "SMS" },
+  "customerDetail.all": { en: "All", es: "Todo" },
+  "customerDetail.sent": { en: "Sent", es: "Enviado" },
+  "customerDetail.received": { en: "Received", es: "Recibido" },
+  "customerDetail.callCustomer": {
+    en: "Call customer",
+    es: "Llamar al cliente",
+  },
+  "customerDetail.noActivity": {
+    en: "No activity recorded for this customer yet.",
+    es: "Aun no hay actividad registrada para este cliente.",
+  },
+  "customerDetail.noFilteredActivity": {
+    en: "No {type} activity found.",
+    es: "No se encontro actividad de {type}.",
+  },
+  "customerDetail.createFollowUp": {
+    en: "Create Follow-up",
+    es: "Crear seguimiento",
+  },
+  "customerDetail.createInvoice": {
+    en: "Create Invoice",
+    es: "Crear factura",
+  },
+  "customerDetail.convertToInvoice": {
+    en: "Convert to Invoice",
+    es: "Convertir a factura",
+  },
+  "customerDetail.converting": {
+    en: "Converting...",
+    es: "Convirtiendo...",
+  },
+  "customerDetail.followUpCreated": {
+    en: "Follow-up created",
+    es: "Seguimiento creado",
+  },
+  "customerDetail.titleRequired": {
+    en: "Title is required.",
+    es: "El titulo es obligatorio.",
+  },
+  "customerDetail.messageRequired": {
+    en: "Message is required.",
+    es: "El mensaje es obligatorio.",
+  },
+  "customerDetail.title": { en: "Title", es: "Titulo" },
+  "customerDetail.description": { en: "Description", es: "Descripcion" },
+  "customerDetail.dueDate": { en: "Due Date", es: "Fecha limite" },
+  "customerDetail.priority": { en: "Priority", es: "Prioridad" },
+  "customerDetail.priorityLow": { en: "Low", es: "Baja" },
+  "customerDetail.priorityNormal": { en: "Normal", es: "Normal" },
+  "customerDetail.priorityHigh": { en: "High", es: "Alta" },
+  "customerDetail.priorityUrgent": { en: "Urgent", es: "Urgente" },
+  "customerDetail.message": { en: "Message", es: "Mensaje" },
+  "customerDetail.typeYourMessage": {
+    en: "Type your message...",
+    es: "Escribe tu mensaje...",
+  },
+  "customerDetail.addField": {
+    en: "Add {field}...",
+    es: "Agregar {field}...",
+  },
+  "customerDetail.at": { en: "at", es: "a las" },
+  "customerDetail.tbd": { en: "TBD", es: "Por definir" },
+  "customerDetail.followUp": {
+    en: "Follow up: {name}",
+    es: "Seguimiento: {name}",
+  },
+  "customerDetail.fromCall": {
+    en: "From call: {summary}",
+    es: "De la llamada: {summary}",
+  },
+  "customerDetail.failedToLoadDetails": {
+    en: "Failed to load customer details. Please try again.",
+    es: "No se pudieron cargar los detalles del cliente. Intentalo de nuevo.",
   },
 
   // ── Auth ──────────────────────────────────────────────────

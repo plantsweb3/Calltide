@@ -48,7 +48,7 @@ export default function ReportingPage() {
     const params = new URLSearchParams({ from: dateRange.from, to: dateRange.to });
     fetch(`/api/dashboard/reporting?${params}`)
       .then((r) => {
-        if (!r.ok) throw new Error("Failed to load");
+        if (!r.ok) throw new Error("load failed");
         return r.json();
       })
       .then(setData)

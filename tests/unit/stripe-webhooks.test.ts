@@ -137,7 +137,7 @@ describe("Stripe Webhook — Idempotency", () => {
     db.insert.mockReturnValue(insertChain);
 
     // The webhook handler checks: if (!inserted) return { duplicate: true }
-    const inserted = [];
+    const inserted: { id: string }[] = [];
     expect(inserted.length).toBe(0);
     // If no insert returned, it's a duplicate
     const isDuplicate = !inserted[0];

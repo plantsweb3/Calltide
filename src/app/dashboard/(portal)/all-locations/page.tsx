@@ -34,7 +34,7 @@ export default function AllLocationsPage() {
   useEffect(() => {
     fetch("/api/dashboard/overview/all-locations")
       .then((r) => {
-        if (!r.ok) throw new Error("Failed to load");
+        if (!r.ok) throw new Error("load failed");
         return r.json();
       })
       .then(setData)

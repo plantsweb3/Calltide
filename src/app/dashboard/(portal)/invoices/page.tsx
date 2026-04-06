@@ -174,7 +174,7 @@ export default function InvoicesPage() {
       params.set("page", page.toString());
 
       const res = await fetch(`/api/dashboard/invoices?${params}`);
-      if (!res.ok) throw new Error("Failed to load");
+      if (!res.ok) throw new Error("load failed");
       const data = await res.json();
       setInvoices(data.invoices || []);
       setStats(data.stats || stats);
@@ -242,7 +242,7 @@ export default function InvoicesPage() {
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to create invoice");
+        throw new Error(data.error || t("toast.failedToCreateInvoice", lang));
       }
       toast.success(t("toast.invoiceCreated", lang));
       resetCreateForm();
@@ -268,7 +268,7 @@ export default function InvoicesPage() {
     try {
       const res = await fetch(`/api/dashboard/invoices/${invoiceId}/send`, { method: "POST" });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to send");
+      if (!res.ok) throw new Error(data.error || t("toast.failedToSendInvoice", lang));
       toast.success(t("toast.invoiceSent", lang));
       fetchInvoices();
     } catch (err) {
@@ -288,7 +288,7 @@ export default function InvoicesPage() {
         body: JSON.stringify({ paymentMethod: markPaidMethod }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to mark as paid");
+      if (!res.ok) throw new Error(data.error || t("toast.failedToMarkPaid", lang));
       toast.success(t("toast.invoiceMarkedPaid", lang));
       setMarkPaidId(null);
       fetchInvoices();
@@ -305,7 +305,7 @@ export default function InvoicesPage() {
     try {
       const res = await fetch(`/api/dashboard/invoices/${cancelId}`, { method: "DELETE" });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to cancel");
+      if (!res.ok) throw new Error(data.error || t("toast.failedToCancelInvoice", lang));
       toast.success(t("toast.invoiceCancelled", lang));
       setCancelId(null);
       fetchInvoices();
@@ -356,7 +356,7 @@ export default function InvoicesPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to update");
+      if (!res.ok) throw new Error(data.error || t("toast.failedToUpdateInvoice", lang));
       toast.success(t("toast.invoiceUpdated", lang));
       setShowEdit(null);
       fetchInvoices();

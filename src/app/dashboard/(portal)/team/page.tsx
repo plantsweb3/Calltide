@@ -89,7 +89,7 @@ export default function TeamPage() {
     setError(null);
     try {
       const res = await fetch("/api/dashboard/technicians");
-      if (!res.ok) throw new Error("Failed to load");
+      if (!res.ok) throw new Error(t("error.failedToLoad", lang));
       const data = await res.json();
       setTechnicians(data.technicians);
     } catch {
@@ -149,7 +149,7 @@ export default function TeamPage() {
         });
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(data.error || "Failed to update");
+          throw new Error(data.error || t("error.failedToUpdate", lang));
         }
         toast.success(t("toast.teamMemberUpdated", lang));
       } else {
@@ -167,7 +167,7 @@ export default function TeamPage() {
         });
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(data.error || "Failed to create");
+          throw new Error(data.error || t("error.failedToCreate", lang));
         }
         toast.success(t("toast.teamMemberAdded", lang));
       }
@@ -187,7 +187,7 @@ export default function TeamPage() {
       const res = await fetch(`/api/dashboard/technicians/${deleteTarget.id}`, {
         method: "DELETE",
       });
-      if (!res.ok) throw new Error("Failed to remove");
+      if (!res.ok) throw new Error(t("error.failedToDelete", lang));
       toast.success(t("toast.nameRemoved", lang, { name: deleteTarget.name }));
       setDeleteTarget(null);
       fetchTechnicians();
@@ -205,7 +205,7 @@ export default function TeamPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isOnCall: !tech.isOnCall }),
       });
-      if (!res.ok) throw new Error("Failed to update");
+      if (!res.ok) throw new Error(t("error.failedToUpdate", lang));
       toast.success(!tech.isOnCall ? t("toast.nowOnCall", lang, { name: tech.name }) : t("toast.noLongerOnCall", lang, { name: tech.name }));
       fetchTechnicians();
     } catch {
@@ -234,7 +234,7 @@ export default function TeamPage() {
           unavailableUntil: unavailUntil || null,
         }),
       });
-      if (!res.ok) throw new Error("Failed to update");
+      if (!res.ok) throw new Error(t("error.failedToUpdate", lang));
       toast.success(t("toast.markedUnavailable", lang, { name: unavailTarget.name }));
       setUnavailTarget(null);
       fetchTechnicians();
@@ -256,7 +256,7 @@ export default function TeamPage() {
           unavailableUntil: null,
         }),
       });
-      if (!res.ok) throw new Error("Failed to update");
+      if (!res.ok) throw new Error(t("error.failedToUpdate", lang));
       toast.success(t("toast.nowAvailable", lang, { name: tech.name }));
       fetchTechnicians();
     } catch {

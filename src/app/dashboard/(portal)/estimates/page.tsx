@@ -90,7 +90,7 @@ export default function EstimatesPage() {
       const params = new URLSearchParams();
       if (statusFilter) params.set("status", statusFilter);
       const res = await fetch(`/api/dashboard/estimates?${params}`);
-      if (!res.ok) throw new Error("Failed to load estimates");
+      if (!res.ok) throw new Error("load failed");
       const data = await res.json();
       setEstimates(data.estimates || []);
       setPipeline(data.pipeline || {});
@@ -157,7 +157,7 @@ export default function EstimatesPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Failed to create estimate");
+        throw new Error(data.error || t("toast.failedToCreateEstimate", lang));
       }
       toast.success(t("toast.estimateCreated", lang));
       setShowCreate(false);

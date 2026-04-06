@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLang } from "@/app/dashboard/_hooks/use-lang";
+import { t } from "@/lib/i18n/strings";
 
 interface PendingDoc {
   documentType: string;
@@ -10,6 +12,7 @@ interface PendingDoc {
 }
 
 export default function LegalReacceptanceModal() {
+  const [lang] = useLang();
   const [pendingDocs, setPendingDocs] = useState<PendingDoc[]>([]);
   const [accepting, setAccepting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,12 +50,12 @@ export default function LegalReacceptanceModal() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setError(data.error || "Failed to accept. Please try again.");
+        setError(data.error || t("error.failedToAccept", lang));
         return;
       }
       setPendingDocs([]);
     } catch {
-      setError("Network error. Please try again.");
+      setError(t("error.networkError", lang));
     } finally {
       setAccepting(false);
     }
@@ -72,12 +75,12 @@ export default function LegalReacceptanceModal() {
             />
           </svg>
           <h2 className="text-lg font-semibold" style={{ color: "var(--db-text)" }}>
-            Updated Terms
+            {t("legal.updatedTerms", lang)}
           </h2>
         </div>
 
         <p className="mb-4 text-sm" style={{ color: "var(--db-text-secondary)" }}>
-          We&apos;ve updated the following legal documents. Please review and accept to continue using your dashboard.
+          {t("legal.updatedTermsDescription", lang)}
         </p>
 
         <div className="mb-4 space-y-3">
@@ -107,7 +110,7 @@ export default function LegalReacceptanceModal() {
                 className="mt-1 inline-block text-xs font-medium hover:underline"
                 style={{ color: "var(--db-accent)" }}
               >
-                Read full document
+                {t("legal.readFullDocument", lang)}
               </a>
             </div>
           ))}
@@ -123,7 +126,7 @@ export default function LegalReacceptanceModal() {
           className="w-full rounded-lg py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
           style={{ background: "var(--db-accent)" }}
         >
-          {accepting ? "Accepting..." : "I Accept the Updated Terms"}
+          {accepting ? t("legal.accepting", lang) : t("legal.acceptUpdatedTerms", lang)}
         </button>
       </div>
     </div>

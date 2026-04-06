@@ -36,7 +36,7 @@ export default function ReferralsPage() {
     setError(null);
     fetch("/api/dashboard/referrals")
       .then((r) => {
-        if (!r.ok) throw new Error("Failed to load");
+        if (!r.ok) throw new Error("load failed");
         return r.json();
       })
       .then(setData)

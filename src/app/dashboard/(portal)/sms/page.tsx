@@ -53,7 +53,7 @@ export default function SmsPage() {
       if (search) params.set("search", search);
 
       const res = await fetch(`/api/dashboard/sms?${params}`);
-      if (!res.ok) throw new Error("Failed to load messages");
+      if (!res.ok) throw new Error(t("error.failedToLoad", lang));
       const data = await res.json();
       setMessages(data.messages);
       setTotal(data.total);
@@ -83,7 +83,7 @@ export default function SmsPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Failed to send");
+        throw new Error(data.error || t("error.failedToSend", lang));
       }
       toast.success(t("toast.smsSent", lang));
       setShowCompose(false);

@@ -96,7 +96,7 @@ export default function RecurringPage() {
       const res = await fetch(
         `/api/dashboard/recurring?page=${page}&active=${activeOnly}`,
       );
-      if (!res.ok) throw new Error("Failed to load");
+      if (!res.ok) throw new Error(t("error.failedToLoad", lang));
       const data = await res.json();
       setRules(data.rules);
       setTotal(data.total);
@@ -122,7 +122,7 @@ export default function RecurringPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: !rule.isActive }),
       });
-      if (!res.ok) throw new Error("Failed to update");
+      if (!res.ok) throw new Error(t("error.failedToUpdate", lang));
       toast.success(t("recurring.updated", lang));
       setRules((prev) =>
         prev.map((r) =>
@@ -145,7 +145,7 @@ export default function RecurringPage() {
       const res = await fetch(`/api/dashboard/recurring/${rule.id}`, {
         method: "DELETE",
       });
-      if (!res.ok) throw new Error("Failed to delete");
+      if (!res.ok) throw new Error(t("error.failedToDelete", lang));
       toast.success(t("recurring.deleted", lang));
       setRules((prev) => prev.filter((r) => r.id !== rule.id));
       setTotal((prev) => prev - 1);
@@ -470,7 +470,7 @@ function CreateRuleModal({
         const res = await fetch(
           `/api/dashboard/customers?search=${encodeURIComponent(customerSearch)}&page=1`,
         );
-        if (!res.ok) throw new Error("Search failed");
+        if (!res.ok) throw new Error(t("error.failedToLoad", lang));
         const data = await res.json();
         setCustomerResults(
           (data.customers || []).map(
@@ -528,7 +528,7 @@ function CreateRuleModal({
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Failed to create");
+        throw new Error(data.error || t("error.failedToCreate", lang));
       }
       toast.success(t("recurring.created", lang));
       onCreated();

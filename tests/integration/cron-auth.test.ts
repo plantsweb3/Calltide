@@ -104,8 +104,8 @@ describe("Cron Auth — Bearer Token Format", () => {
   });
 
   it("is case-sensitive on the token", () => {
-    const secret = "MySecret";
-    expect(`Bearer ${secret}` !== `Bearer mysecret`).toBe(true);
+    const secret: string = "MySecret";
+    expect(`Bearer ${secret}`).not.toBe(`Bearer mysecret`);
   });
 
   it("does not accept Basic auth", () => {

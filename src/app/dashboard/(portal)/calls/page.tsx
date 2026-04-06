@@ -122,13 +122,13 @@ export default function CallsPage() {
       if (filterDateTo) params.set("dateTo", filterDateTo);
 
       const res = await fetch(`/api/dashboard/calls?${params}`);
-      if (!res.ok) throw new Error("Failed to load calls");
+      if (!res.ok) throw new Error("load failed");
       const data = await res.json();
       setCalls(data.calls);
       setTotal(data.total);
       setTotalPages(data.totalPages);
     } catch {
-      setError("Failed to load call history. Please try again.");
+      setError(t("error.failedToLoad", lang));
     } finally {
       setLoading(false);
     }
