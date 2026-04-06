@@ -1,6 +1,6 @@
 import { db } from "@/db";
-import { dunningState, businesses, calls } from "@/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { dunningState, businesses } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 import Twilio from "twilio";
 import { env } from "@/lib/env";
 import { getStripe } from "@/lib/stripe/client";
@@ -391,80 +391,6 @@ async function sendDunningEmail(
     });
   } catch (e) {
     reportError(`[dunning] Failed to send ${stage} email`, e);
-  }
-}
-
-// ── Trial Ending Email ──
-
-export async function sendTrialEndingEmail(
-  business: { id?: string; ownerEmail: string | null; ownerName: string; name: string; defaultLanguage: string; receptionistName?: string | null },
-) {
-  if (!business.ownerEmail) return;
-  const lang = business.defaultLanguage === "es" ? "es" : "en";
-  const portalUrl = `${env.NEXT_PUBLIC_APP_URL}/dashboard/billing`;
-  const aiName = business.receptionistName || "Maria";
-
-  // Get call count during trial period
-  let callCount = 0;
-  if (business.id) {
-    try {
-      const [result] = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(calls)
-        .where(eq(calls.businessId, business.id));
-      callCount = result?.count ?? 0;
-    } catch {
-      // Non-fatal — proceed without call count
-    }
-  }
-
-  const callLine = callCount > 0
-    ? lang === "es"
-      ? `<strong>${aiName} ha respondido ${callCount} llamada${callCount === 1 ? "" : "s"}</strong> para tu negocio.`
-      : `<strong>${aiName} has answered ${callCount} call${callCount === 1 ? "" : "s"}</strong> for your business.`
-    : "";
-
-  const t = lang === "es"
-    ? {
-        subject: `Bienvenido a Capta — ${business.name}`,
-        heading: "Tu suscripción de Capta está activa",
-        body: `Hola ${business.ownerName || ""},<br><br>${callLine ? callLine + "<br><br>" : ""}Tu suscripción de Capta para <strong>${business.name}</strong> está activa. Asegúrate de tener un método de pago registrado para que tu recepcionista IA siga respondiendo llamadas sin interrupción.<br><br>Si ya lo configuraste, ¡no tienes que hacer nada! Tu servicio continuará automáticamente.`,
-        cta: "Revisar Facturación",
-        footer: "¿Preguntas? Responde a este correo — estamos aquí para ayudar.",
-      }
-    : {
-        subject: `Welcome to Capta — ${business.name}`,
-        heading: "Your Capta subscription is active",
-        body: `Hey ${business.ownerName || "there"},<br><br>${callLine ? callLine + "<br><br>" : ""}Your Capta subscription for <strong>${business.name}</strong> is active. Make sure you have a payment method on file to keep your AI receptionist answering calls without interruption.<br><br>If you've already set one up, you're all good — your service will continue automatically.`,
-        cta: "Review Billing",
-        footer: "Questions? Reply to this email — we're here to help.",
-      };
-
-  const html = `
-<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;background:#ffffff;">
-  <div style="margin-bottom:24px;">
-    <span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span>
-  </div>
-  <h2 style="color:#1A1D24;margin-bottom:8px;">${t.heading}</h2>
-  <p style="color:#475569;line-height:1.7;margin-bottom:24px;">${t.body}</p>
-  <a href="${portalUrl}" style="display:inline-block;background:#C59A27;color:#ffffff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
-    ${t.cta}
-  </a>
-  <p style="color:#94A3B8;font-size:13px;margin-top:32px;line-height:1.6;">${t.footer}</p>
-  <hr style="border:none;border-top:1px solid #E2E8F0;margin:32px 0 16px;" />
-  <p style="color:#94A3B8;font-size:11px;">Capta LLC &middot; San Antonio, TX</p>
-</div>`;
-
-  try {
-    const r = getResend();
-    await r.emails.send({
-      from: FROM_EMAIL,
-      to: business.ownerEmail,
-      subject: t.subject,
-      html,
-    });
-  } catch (e) {
-    reportError("[dunning] Failed to send trial-ending email", e);
   }
 }
 

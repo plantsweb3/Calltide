@@ -9,10 +9,13 @@ interface TrialEndingParams {
   receptionistName: string;
   daysLeft: number;
   lang: "en" | "es";
+  baseUrl?: string;
 }
 
-export async function sendTrialEndingEmail(params: TrialEndingParams) {
+/** Returns true if the email was sent successfully, false otherwise. */
+export async function sendTrialEndingEmail(params: TrialEndingParams): Promise<boolean> {
   const { to, businessName, receptionistName, daysLeft, lang } = params;
+  const billingUrl = `${params.baseUrl || process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com"}/dashboard/billing`;
 
   const subject =
     lang === "es"
@@ -33,7 +36,7 @@ export async function sendTrialEndingEmail(params: TrialEndingParams) {
       <p style="font-size: 15px; color: #555; line-height: 1.6;">
         Si deseas cancelar antes de que termine la prueba, puedes hacerlo desde tu panel de control.
       </p>
-      <a href="https://captahq.com/dashboard/billing" style="display: inline-block; margin-top: 20px; padding: 12px 28px; background: #D4A843; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px;">
+      <a href="${billingUrl}" style="display: inline-block; margin-top: 20px; padding: 12px 28px; background: #D4A843; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px;">
         Ver facturación
       </a>
       <p style="font-size: 12px; color: #999; margin-top: 32px;">Capta — La recepcionista IA para tu negocio</p>
@@ -50,7 +53,7 @@ export async function sendTrialEndingEmail(params: TrialEndingParams) {
       <p style="font-size: 15px; color: #555; line-height: 1.6;">
         If you'd like to cancel before the trial ends, you can do so from your dashboard.
       </p>
-      <a href="https://captahq.com/dashboard/billing" style="display: inline-block; margin-top: 20px; padding: 12px 28px; background: #D4A843; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px;">
+      <a href="${billingUrl}" style="display: inline-block; margin-top: 20px; padding: 12px 28px; background: #D4A843; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px;">
         View billing
       </a>
       <p style="font-size: 12px; color: #999; margin-top: 32px;">Capta — The AI receptionist for your business</p>
@@ -58,7 +61,9 @@ export async function sendTrialEndingEmail(params: TrialEndingParams) {
 
   try {
     await sendEmailWithRetry({ from: FROM, to, subject, html });
+    return true;
   } catch (err) {
     reportError("Failed to send trial-ending email", err, { extra: { to, businessName } });
+    return false;
   }
 }

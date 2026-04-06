@@ -181,7 +181,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       .set({
         stripeSubscriptionId: subscriptionId || undefined,
         stripeSubscriptionStatus: subStatus,
-        paymentStatus: subStatus === "trialing" ? "active" : "active",
+        paymentStatus: "active",
         active: true,
         planType: plan,
         mrr,
@@ -816,10 +816,11 @@ async function handleTrialWillEnd(sub: Stripe.Subscription) {
     ? Math.max(0, Math.ceil((sub.trial_end * 1000 - Date.now()) / 86400000))
     : 3;
 
-  // Send trial-ending email
+  // Send trial-ending email — only mark notified if email succeeds
+  let emailSent = false;
   if (business.ownerEmail) {
     const lang = (business.defaultLanguage === "es" ? "es" : "en") as "en" | "es";
-    await sendTrialEndingEmail({
+    emailSent = await sendTrialEndingEmail({
       to: business.ownerEmail,
       businessName: business.name,
       receptionistName: business.receptionistName || "Maria",
@@ -828,11 +829,12 @@ async function handleTrialWillEnd(sub: Stripe.Subscription) {
     });
   }
 
-  // Mark as notified
-  await db
-    .update(businesses)
-    .set({ trialEndingNotified: true, updatedAt: new Date().toISOString() })
-    .where(eq(businesses.id, business.id));
+  if (emailSent) {
+    await db
+      .update(businesses)
+      .set({ trialEndingNotified: true, updatedAt: new Date().toISOString() })
+      .where(eq(businesses.id, business.id));
+  }
 
   await createNotification({
     source: "financial",
