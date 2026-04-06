@@ -13,7 +13,7 @@ import {
   callQaScores,
 } from "@/db/schema";
 import { eq, and, sql, lt } from "drizzle-orm";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
 
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
         );
       unstuck = stuckResult.rowsAffected ?? 0;
       if (unstuck > 0) {
-        console.log(`[data-deletion] Reset ${unstuck} stuck processing request(s) back to verified`);
+        reportWarning("[data-deletion] Reset stuck processing requests back to verified", { unstuck });
       }
 
       // Find all verified requests ready for processing
@@ -197,7 +197,7 @@ export async function GET(req: NextRequest) {
           });
 
           processed++;
-          console.log(`[data-deletion] Completed request ${request.id}: ${JSON.stringify(deletedRecords)}`);
+          reportWarning("[data-deletion] Completed request", { requestId: request.id, deletedRecords });
         } catch (err) {
           errors++;
           reportError(`[data-deletion] Failed for request ${request.id}`, err);

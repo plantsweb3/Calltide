@@ -47,7 +47,7 @@ export async function syncAgent(businessId: string): Promise<string | null> {
     if (agentId) {
       // Update existing agent
       await client.conversationalAi.updateAgent(agentId, config);
-      console.log(`[elevenlabs] updated agent ${agentId} for business ${businessId}`);
+      reportWarning(`[elevenlabs] updated agent ${agentId} for business ${businessId}`);
     } else {
       // Create new agent
       const result = await client.conversationalAi.createAgent(config);
@@ -59,7 +59,7 @@ export async function syncAgent(businessId: string): Promise<string | null> {
         updatedAt: new Date().toISOString(),
       }).where(eq(businesses.id, businessId));
 
-      console.log(`[elevenlabs] created agent ${agentId} for business ${businessId}`);
+      reportWarning(`[elevenlabs] created agent ${agentId} for business ${businessId}`);
     }
 
     return agentId;
@@ -92,7 +92,7 @@ export async function deleteAgent(businessId: string): Promise<void> {
       updatedAt: new Date().toISOString(),
     }).where(eq(businesses.id, businessId));
 
-    console.log(`[elevenlabs] deleted agent for business ${businessId}`);
+    reportWarning(`[elevenlabs] deleted agent for business ${businessId}`);
   } catch (err) {
     reportError("Failed to delete ElevenLabs agent", err, { businessId });
   }

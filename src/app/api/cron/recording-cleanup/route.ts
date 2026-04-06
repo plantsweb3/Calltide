@@ -98,7 +98,7 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    console.log(`[recording-cleanup] deleted=${totalDeleted} errors=${totalErrors}`);
+    reportWarning("[recording-cleanup] completed", { deleted: totalDeleted, errors: totalErrors });
 
     return NextResponse.json({
       ok: true,

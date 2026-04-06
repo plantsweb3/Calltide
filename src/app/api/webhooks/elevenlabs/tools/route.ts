@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Missing tool_name or conversation_id" }, { status: 400 });
   }
 
-  console.log(`[elevenlabs/tools] tool call: ${toolName} conversation=${conversationId}`);
+  reportWarning("[elevenlabs/tools] tool call", { toolName, conversationId });
 
   // ── Idempotency check ──
   // Periodic cleanup of expired entries
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
   const idempotencyKey = buildIdempotencyKey(conversationId, toolName, parameters);
   const cached = idempotencyCache.get(idempotencyKey);
   if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
-    console.log(`[elevenlabs/tools] idempotent hit — returning cached result for ${toolName}`);
+    reportWarning("[elevenlabs/tools] idempotent hit — returning cached result", { toolName });
     return Response.json(cached.result);
   }
 

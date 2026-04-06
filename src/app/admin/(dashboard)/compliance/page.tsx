@@ -7,6 +7,58 @@ import StatusBadge from "../../_components/status-badge";
 
 type Tab = "consent" | "sms" | "documents" | "retention" | "subprocessors";
 
+interface ConsentRecord {
+  id: string;
+  businessId: string | null;
+  phoneNumber: string | null;
+  consentType: string;
+  documentVersion: string | null;
+  status: string;
+  consentedAt: string;
+  ipAddress: string | null;
+}
+
+interface SmsOptOut {
+  id: string;
+  phoneNumber: string;
+  optedOutMethod: string;
+  optedOutAt: string;
+  reoptedInAt: string | null;
+}
+
+interface LegalDocument {
+  id: string;
+  title: string;
+  version: string;
+  isCurrentVersion: boolean;
+  effectiveDate: string;
+  documentType: string;
+}
+
+interface RetentionLog {
+  id: string;
+  dataType: string;
+  recordsDeleted: number;
+  deletedAt: string;
+}
+
+interface DeletionRequest {
+  id: string;
+  requestedBy: string;
+  requestType: string;
+  status: string;
+  createdAt: string;
+}
+
+interface SubProcessor {
+  id: string;
+  name: string;
+  purpose: string;
+  location: string;
+  dpaStatus: string;
+  lastReviewedAt: string | null;
+}
+
 export default function CompliancePage() {
   const [tab, setTab] = useState<Tab>("consent");
 
@@ -54,7 +106,7 @@ export default function CompliancePage() {
 }
 
 function ConsentTab() {
-  const [data, setData] = useState<{ records: any[]; outdatedTosCount: number } | null>(null);
+  const [data, setData] = useState<{ records: ConsentRecord[]; outdatedTosCount: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/admin/compliance?tab=consent").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load consent data"));
@@ -62,7 +114,7 @@ function ConsentTab() {
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
-  const columns: Column<any>[] = [
+  const columns: Column<ConsentRecord>[] = [
     { key: "businessId", label: "Business", render: (r) => <span className="text-sm font-medium" style={{ color: "var(--db-text)" }}>{r.businessId ?? r.phoneNumber ?? "—"}</span> },
     { key: "consentType", label: "Type", render: (r) => <StatusBadge status={r.consentType} /> },
     { key: "documentVersion", label: "Version", render: (r) => <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{r.documentVersion ?? "—"}</span> },
@@ -86,7 +138,7 @@ function ConsentTab() {
 }
 
 function SmsTab() {
-  const [data, setData] = useState<{ optOuts: any[]; activeConsentCount: number; optOutCount: number } | null>(null);
+  const [data, setData] = useState<{ optOuts: SmsOptOut[]; activeConsentCount: number; optOutCount: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/admin/compliance?tab=sms").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load SMS compliance data"));
@@ -94,7 +146,7 @@ function SmsTab() {
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
-  const columns: Column<any>[] = [
+  const columns: Column<SmsOptOut>[] = [
     { key: "phoneNumber", label: "Phone", render: (r) => <span className="font-mono text-sm" style={{ color: "var(--db-text)" }}>{r.phoneNumber}</span> },
     { key: "optedOutMethod", label: "Method", render: (r) => <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{r.optedOutMethod}</span> },
     { key: "optedOutAt", label: "Opted Out", render: (r) => <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{new Date(r.optedOutAt).toLocaleDateString()}</span> },
@@ -113,7 +165,7 @@ function SmsTab() {
 }
 
 function DocumentsTab() {
-  const [data, setData] = useState<{ documents: any[]; totalActiveClients: number } | null>(null);
+  const [data, setData] = useState<{ documents: LegalDocument[]; totalActiveClients: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/admin/compliance?tab=documents").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load documents data"));
@@ -121,12 +173,12 @@ function DocumentsTab() {
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
-  const currentDocs = data.documents.filter((d: any) => d.isCurrentVersion);
+  const currentDocs = data.documents.filter((d: LegalDocument) => d.isCurrentVersion);
 
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-3">
-        {currentDocs.map((doc: any) => (
+        {currentDocs.map((doc: LegalDocument) => (
           <div key={doc.id} className="rounded-lg p-4" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
             <p className="font-medium" style={{ color: "var(--db-text)" }}>{doc.title}</p>
             <p className="text-xs mt-1" style={{ color: "var(--db-text-muted)" }}>
@@ -142,7 +194,7 @@ function DocumentsTab() {
 }
 
 function RetentionTab() {
-  const [data, setData] = useState<{ logs: any[]; deletionRequests: any[] } | null>(null);
+  const [data, setData] = useState<{ logs: RetentionLog[]; deletionRequests: DeletionRequest[] } | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/admin/compliance?tab=retention").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load retention data"));
@@ -203,7 +255,7 @@ function RetentionTab() {
 }
 
 function SubProcessorsTab() {
-  const [data, setData] = useState<{ processors: any[] } | null>(null);
+  const [data, setData] = useState<{ processors: SubProcessor[] } | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/admin/compliance?tab=subprocessors").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load sub-processors data"));
@@ -211,7 +263,7 @@ function SubProcessorsTab() {
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
-  const columns: Column<any>[] = [
+  const columns: Column<SubProcessor>[] = [
     { key: "name", label: "Name", render: (r) => <span className="font-medium" style={{ color: "var(--db-text)" }}>{r.name}</span> },
     { key: "purpose", label: "Purpose", render: (r) => <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{r.purpose}</span> },
     { key: "location", label: "Location", render: (r) => <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{r.location}</span> },

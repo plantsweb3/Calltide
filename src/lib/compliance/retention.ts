@@ -12,6 +12,7 @@ import {
   rateLimitEntries,
 } from "@/db/schema";
 import { eq, and, or, sql, lte, isNotNull, isNull } from "drizzle-orm";
+import { reportWarning } from "@/lib/error-reporting";
 
 const RETENTION_DAYS: Record<string, number> = {
   transcripts: 365, // 12 months
@@ -86,7 +87,7 @@ export async function runRetentionCleanup(): Promise<Record<string, number>> {
     .delete(systemHealthLogs)
     .where(lte(systemHealthLogs.checkedAt, healthCutoff));
   results.system_health_logs = 0;
-  console.log(`[retention] Deleted system_health_logs older than ${healthCutoff}`);
+  reportWarning(`[retention] Deleted system_health_logs older than ${healthCutoff}`);
 
   // 5. Delete agent activity logs older than 90 days
   const agentCutoff = new Date(now.getTime() - RETENTION_DAYS.agent_activity_log * 86400000).toISOString();
@@ -94,7 +95,7 @@ export async function runRetentionCleanup(): Promise<Record<string, number>> {
     .delete(agentActivityLog)
     .where(lte(agentActivityLog.createdAt, agentCutoff));
   results.agent_activity_log = 0;
-  console.log(`[retention] Deleted agent_activity_log older than ${agentCutoff}`);
+  reportWarning(`[retention] Deleted agent_activity_log older than ${agentCutoff}`);
 
   // 6. Delete completed/failed pending jobs older than 30 days
   const jobsCutoff = new Date(now.getTime() - RETENTION_DAYS.pending_jobs * 86400000).toISOString();
@@ -110,7 +111,7 @@ export async function runRetentionCleanup(): Promise<Record<string, number>> {
       ),
     );
   results.pending_jobs = 0;
-  console.log(`[retention] Deleted completed/failed pending_jobs older than ${jobsCutoff}`);
+  reportWarning(`[retention] Deleted completed/failed pending_jobs older than ${jobsCutoff}`);
 
   // 7. Delete stale rate limit entries older than 24 hours
   const rateLimitCutoff = new Date(now.getTime() - RETENTION_DAYS.rate_limit_entries * 86400000).toISOString();
@@ -118,7 +119,7 @@ export async function runRetentionCleanup(): Promise<Record<string, number>> {
     .delete(rateLimitEntries)
     .where(lte(rateLimitEntries.windowEnd, rateLimitCutoff));
   results.rate_limit_entries = 0;
-  console.log(`[retention] Deleted rate_limit_entries with windowEnd before ${rateLimitCutoff}`);
+  reportWarning(`[retention] Deleted rate_limit_entries with windowEnd before ${rateLimitCutoff}`);
 
   // Log results
   for (const [dataType, count] of Object.entries(results)) {

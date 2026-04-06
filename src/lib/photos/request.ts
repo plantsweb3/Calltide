@@ -3,6 +3,7 @@ import { businesses, calls, leads } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { canSendSms } from "@/lib/compliance/sms";
+import { reportWarning } from "@/lib/error-reporting";
 
 interface PhotoRequestParams {
   businessId: string;
@@ -36,7 +37,7 @@ export async function sendPhotoRequest(params: PhotoRequestParams): Promise<void
   try {
     const smsCheck = await canSendSms(callerPhone);
     if (!smsCheck.allowed) {
-      console.log(`Photo request SMS blocked by compliance: ${smsCheck.reason}`);
+      reportWarning(`Photo request SMS blocked by compliance: ${smsCheck.reason}`);
       return;
     }
   } catch {
@@ -72,7 +73,7 @@ export async function sendPhotoRequest(params: PhotoRequestParams): Promise<void
     templateType: "photo_request",
   });
 
-  console.log("Photo request SMS sent", { businessId, jobIntakeId, callerPhone: "***" });
+  reportWarning("Photo request SMS sent", { businessId, jobIntakeId, callerPhone: "***" });
 }
 
 /**

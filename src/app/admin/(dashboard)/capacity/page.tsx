@@ -21,6 +21,75 @@ import {
 
 type Tab = "status" | "utilization" | "growth" | "costs" | "playbook";
 
+interface CapacityAlert {
+  id: string;
+  severity: string;
+  message: string;
+  createdAt: string;
+}
+
+interface CapacitySnapshot {
+  date: string;
+  activeClients: number;
+  callsToday: number;
+  humeMinutesMtd: number;
+  anthropicSpendMtd: number;
+  tursoRowReadsMtd: number;
+  tursoRowWritesMtd: number;
+  twilioSuccessRate: number;
+}
+
+interface ProviderLimits {
+  elevenlabs?: { monthlyCharacters?: number; concurrentLimit?: number };
+  anthropic?: { monthlySpendLimit?: number };
+  turso?: { rowReadLimit?: number; rowWriteLimit?: number };
+}
+
+interface CostEstimate {
+  elevenlabs: number;
+  anthropic: number;
+  twilio: number;
+  turso: number;
+  vercel: number;
+  total: number;
+}
+
+interface PlaybookItem {
+  id: string;
+  tier: string;
+  clientRange: string;
+  action: string;
+  provider: string;
+  priority: string;
+  completed: boolean;
+  planRequired: string | null;
+  estimatedMonthlyCost: string | null;
+}
+
+interface BreachProjection {
+  id: string;
+  provider: string;
+  metric: string;
+  current: number;
+  limit: number;
+  breachDate: string | null;
+}
+
+interface CapacityData {
+  activeClients: number;
+  tier: string;
+  concurrent: number;
+  concurrentLimit: number;
+  estimatedPeak: number;
+  alerts: CapacityAlert[];
+  snapshot: CapacitySnapshot | null;
+  snapshots: CapacitySnapshot[];
+  providerLimits: ProviderLimits;
+  costEstimate: CostEstimate;
+  playbook: PlaybookItem[];
+  breachProjections: BreachProjection[];
+}
+
 function fmt(cents: number): string {
   return `$${(cents / 100).toLocaleString("en", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
@@ -29,7 +98,7 @@ const TIER_ORDER = ["seed", "growth", "scale", "enterprise", "hypergrowth"];
 
 export default function CapacityPage() {
   const [tab, setTab] = useState<Tab>("status");
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<CapacityData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -106,7 +175,7 @@ export default function CapacityPage() {
 
 // ── Tab 1: Real-Time Status ──
 
-function StatusTab({ data }: { data: any }) {
+function StatusTab({ data }: { data: CapacityData | null }) {
   if (!data) return null;
   const concurrentPct = data.concurrentLimit > 0 ? (data.concurrent / data.concurrentLimit) * 100 : 0;
   const concurrentColor = concurrentPct >= 85 ? "#ef4444" : concurrentPct >= 70 ? "#f59e0b" : "#4ade80";
@@ -115,7 +184,7 @@ function StatusTab({ data }: { data: any }) {
     { name: "ElevenLabs", status: getProviderStatus(data.snapshot?.humeMinutesMtd, data.providerLimits?.elevenlabs?.monthlyCharacters) },
     { name: "Anthropic", status: getProviderStatus(data.snapshot?.anthropicSpendMtd, data.providerLimits?.anthropic?.monthlySpendLimit) },
     { name: "Turso", status: getProviderStatus(data.snapshot?.tursoRowReadsMtd, data.providerLimits?.turso?.rowReadLimit) },
-    { name: "Twilio", status: data.snapshot?.twilioSuccessRate >= 99 ? "operational" : data.snapshot?.twilioSuccessRate >= 95 ? "degraded" : "down" },
+    { name: "Twilio", status: (data.snapshot?.twilioSuccessRate ?? 0) >= 99 ? "operational" : (data.snapshot?.twilioSuccessRate ?? 0) >= 95 ? "degraded" : "down" },
     { name: "Vercel", status: "operational" },
   ];
 
@@ -159,7 +228,7 @@ function StatusTab({ data }: { data: any }) {
         <div>
           <h3 className="text-sm font-medium mb-2" style={{ color: "var(--db-text)" }}>Active Alerts</h3>
           <div className="space-y-2">
-            {data.alerts.map((a: any) => (
+            {data.alerts.map((a: CapacityAlert) => (
               <div key={a.id} className="flex items-center gap-3 rounded-lg px-4 py-2" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
                 <StatusBadge status={a.severity} />
                 <span className="flex-1 text-sm" style={{ color: "var(--db-text)" }}>{a.message}</span>
@@ -175,7 +244,7 @@ function StatusTab({ data }: { data: any }) {
 
 // ── Tab 2: Provider Utilization ──
 
-function UtilizationTab({ data }: { data: any }) {
+function UtilizationTab({ data }: { data: CapacityData | null }) {
   if (!data) return null;
   const snapshot = data.snapshot;
   const limits = data.providerLimits;
@@ -231,16 +300,16 @@ function UtilizationTab({ data }: { data: any }) {
 
 // ── Tab 3: Growth Modeling ──
 
-function GrowthTab({ data }: { data: any }) {
+function GrowthTab({ data }: { data: CapacityData | null }) {
   if (!data) return null;
 
-  const clientChart = (data.snapshots ?? []).slice(-90).map((s: any) => ({
+  const clientChart = (data.snapshots ?? []).slice(-90).map((s: CapacitySnapshot) => ({
     date: s.date,
     clients: s.activeClients,
     calls: s.callsToday,
   }));
 
-  const breachColumns: Column<any>[] = [
+  const breachColumns: Column<BreachProjection>[] = [
     { key: "provider", label: "Provider", render: (r) => <span className="font-medium" style={{ color: "var(--db-text)" }}>{r.provider}</span> },
     { key: "metric", label: "Metric", render: (r) => <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{r.metric}</span> },
     { key: "current", label: "Current", render: (r) => <span className="text-sm font-mono" style={{ color: "var(--db-text)" }}>{r.current.toLocaleString()}</span> },
@@ -293,7 +362,7 @@ function GrowthTab({ data }: { data: any }) {
 
 // ── Tab 4: Cost Projections ──
 
-function CostsTab({ data }: { data: any }) {
+function CostsTab({ data }: { data: CapacityData | null }) {
   if (!data) return null;
   const cost = data.costEstimate ?? { elevenlabs: 0, anthropic: 0, twilio: 0, turso: 0, vercel: 0, total: 0 };
 
@@ -375,7 +444,7 @@ function CostsTab({ data }: { data: any }) {
 
 // ── Tab 5: Scaling Playbook ──
 
-function PlaybookTab({ data }: { data: any }) {
+function PlaybookTab({ data }: { data: CapacityData | null }) {
   if (!data) return null;
   const playbook = data.playbook ?? [];
   const currentTier = data.tier ?? "seed";
@@ -384,8 +453,8 @@ function PlaybookTab({ data }: { data: any }) {
   const tierGroups = TIER_ORDER.map((tier) => ({
     tier,
     label: tier.charAt(0).toUpperCase() + tier.slice(1),
-    range: playbook.find((p: any) => p.tier === tier)?.clientRange ?? "",
-    items: playbook.filter((p: any) => p.tier === tier),
+    range: playbook.find((p: PlaybookItem) => p.tier === tier)?.clientRange ?? "",
+    items: playbook.filter((p: PlaybookItem) => p.tier === tier),
     isCurrent: tier === currentTier,
     isPast: TIER_ORDER.indexOf(tier) < currentTierIndex,
   }));
@@ -419,7 +488,7 @@ function PlaybookTab({ data }: { data: any }) {
             {g.isCurrent && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(197,154,39,0.15)", color: "#C59A27" }}>Current</span>}
           </h3>
           <div className="space-y-2">
-            {g.items.map((item: any) => (
+            {g.items.map((item: PlaybookItem) => (
               <div
                 key={item.id}
                 className="flex items-start gap-3 rounded-lg px-4 py-3"

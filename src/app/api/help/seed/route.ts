@@ -3,6 +3,7 @@ import { timingSafeEqual } from "crypto";
 import { db } from "@/db";
 import { helpCategories, helpArticles } from "@/db/schema";
 import { count, eq, sql } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 function verifySeedAuth(req: NextRequest): boolean {
   const secret = process.env.CRON_SECRET;
@@ -2625,7 +2626,7 @@ async function seed(req: NextRequest) {
       slugs: values.map((v) => v.slug),
     });
   } catch (error) {
-    console.error("Help seed error:", error);
+    reportError("Help seed error", error);
     return NextResponse.json(
       { error: "Seed failed", detail: String(error) },
       { status: 500 },

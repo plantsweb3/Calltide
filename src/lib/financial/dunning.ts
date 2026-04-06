@@ -8,7 +8,7 @@ import { getResend } from "@/lib/email/client";
 import { canSendSms } from "@/lib/compliance/sms";
 import { createNotification } from "@/lib/notifications";
 import { canContactToday, logOutreach } from "@/lib/outreach";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { logActivity } from "@/lib/activity";
 
 const FROM_EMAIL = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
@@ -169,7 +169,7 @@ export async function processDunning() {
 
     // Skip if already contacted today by another system
     if (!(await canContactToday(state.businessId))) {
-      console.log(`[dunning] Skipping ${business.name} — already contacted today`);
+      reportWarning(`[dunning] Skipping ${business.name} — already contacted today`);
       results.processed++;
       continue;
     }

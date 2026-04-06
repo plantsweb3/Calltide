@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getTwilioClient } from "./client";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { createNotification } from "@/lib/notifications";
 
 /**
@@ -25,7 +25,7 @@ export async function provisionTwilioNumber(businessId: string): Promise<string 
     .limit(1);
 
   if (existing?.twilioNumber && existing.twilioNumber.startsWith("+")) {
-    console.log(`[provision] Business ${businessId.slice(0, 8)} already has ${existing.twilioNumber} — skipping`);
+    reportWarning(`[provision] Business ${businessId.slice(0, 8)} already has ${existing.twilioNumber} — skipping`);
     return existing.twilioNumber;
   }
 

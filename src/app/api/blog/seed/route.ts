@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { blogPosts } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { blogMarkdownToHtml } from "@/lib/blog-markdown";
+import { reportError } from "@/lib/error-reporting";
 
 /* ─── Content imports ─────────────────────────────────────────── */
 
@@ -102,7 +103,7 @@ export async function POST(req: NextRequest) {
 
         slugToId[post.slug] = inserted.id;
       } catch (err) {
-        console.error(`Failed to seed post: ${post.slug}`, err);
+        reportError(`Failed to seed post: ${post.slug}`, err);
         return NextResponse.json({ error: `Failed to seed: ${post.slug}`, detail: String(err) }, { status: 500 });
       }
     }
@@ -124,7 +125,7 @@ export async function POST(req: NextRequest) {
       slugs: Object.keys(slugToId),
     });
   } catch (err) {
-    console.error("Blog seed error:", err);
+    reportError("Blog seed error", err);
     return NextResponse.json({ error: "Seed failed", detail: String(err) }, { status: 500 });
   }
 }

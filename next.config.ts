@@ -37,6 +37,8 @@ export default withSentryConfig(nextConfig, {
   project: process.env.SENTRY_PROJECT || "",
   silent: !process.env.CI,
   tunnelRoute: "/monitoring",
-  disableLogger: true,
   authToken: process.env.SENTRY_AUTH_TOKEN || "",
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+  },
 });

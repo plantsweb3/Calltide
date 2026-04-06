@@ -21,6 +21,91 @@ import {
 
 type Tab = "revenue" | "payments" | "costs" | "forecast";
 
+interface RevenueSnapshot {
+  date: string;
+  mrr: number;
+  arr: number;
+  activeCount: number;
+}
+
+interface MrrMovement {
+  month: string;
+  newMrr: number;
+  churnedMrr: number;
+  recoveredMrr: number;
+}
+
+interface RevenueData {
+  mrr: number;
+  arr: number;
+  activeClients: number;
+  mrrGrowthPct: number;
+  snapshots: RevenueSnapshot[];
+  movements: MrrMovement[];
+}
+
+interface PastDueClient {
+  id: string;
+  name: string;
+  mrr: number;
+  paymentStatus: string;
+  firstFailedAt: string | null;
+  email1SentAt: string | null;
+  email2SentAt: string | null;
+  smsSentAt: string | null;
+  email3SentAt: string | null;
+  lastFailureCode: string | null;
+}
+
+interface PaymentEvent {
+  id: string;
+  businessName: string | null;
+  eventType: string;
+  amount: number | null;
+  createdAt: string;
+}
+
+interface PaymentsData {
+  pastDueClients: PastDueClient[];
+  mrrAtRisk: number;
+  recoveryRate: number;
+  avgDaysToRecover: number;
+  recentEvents: PaymentEvent[];
+}
+
+interface CostClient {
+  id: string;
+  businessName: string | null;
+  callMinutes: number;
+  callCount: number;
+  totalCost: number;
+  revenue: number;
+  marginPct: number;
+}
+
+interface CostsData {
+  totalMonthlyCost: number;
+  avgCostPerClient: number;
+  avgMarginPct: number;
+  month: string;
+  clients: CostClient[];
+}
+
+interface ForecastProjection {
+  day: number;
+  optimistic: number;
+  base: number;
+  pessimistic: number;
+}
+
+interface ForecastData {
+  currentMrr: number;
+  monthlyChurnRate: number;
+  avgMonthlySignups: number;
+  recoveryRate: number;
+  projections: ForecastProjection[];
+}
+
 function fmt(cents: number): string {
   return `$${(cents / 100).toLocaleString("en", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
@@ -72,7 +157,7 @@ export default function FinancialsPage() {
 // ── Revenue Tab ──
 
 function RevenueTab() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<RevenueData | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/admin/financials?tab=revenue").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load revenue data"));
@@ -80,12 +165,12 @@ function RevenueTab() {
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
-  const chartData = (data.snapshots ?? []).slice(-90).map((s: any) => ({
+  const chartData = (data.snapshots ?? []).slice(-90).map((s: RevenueSnapshot) => ({
     date: s.date,
     mrr: s.mrr / 100,
   }));
 
-  const movementData = (data.movements ?? []).map((m: any) => ({
+  const movementData = (data.movements ?? []).map((m: MrrMovement) => ({
     month: m.month,
     new: m.newMrr / 100,
     churned: -(m.churnedMrr / 100),
@@ -143,7 +228,7 @@ function RevenueTab() {
 // ── Payments Tab ──
 
 function PaymentsTab() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<PaymentsData | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/admin/financials?tab=payments").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load payments data"));
@@ -151,7 +236,7 @@ function PaymentsTab() {
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
-  const atRiskColumns: Column<any>[] = [
+  const atRiskColumns: Column<PastDueClient>[] = [
     { key: "name", label: "Business", render: (r) => <span className="font-medium" style={{ color: "var(--db-text)" }}>{r.name}</span> },
     { key: "mrr", label: "MRR", render: (r) => <span className="text-sm font-mono" style={{ color: "var(--db-text)" }}>{fmt(r.mrr ?? 49700)}</span> },
     { key: "paymentStatus", label: "Status", render: (r) => <StatusBadge status={r.paymentStatus} /> },
@@ -174,7 +259,7 @@ function PaymentsTab() {
     { key: "lastFailureCode", label: "Failure", render: (r) => <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{r.lastFailureCode ?? "—"}</span> },
   ];
 
-  const eventColumns: Column<any>[] = [
+  const eventColumns: Column<PaymentEvent>[] = [
     { key: "businessName", label: "Business", render: (r) => <span className="text-sm" style={{ color: "var(--db-text)" }}>{r.businessName ?? "—"}</span> },
     { key: "eventType", label: "Event", render: (r) => <StatusBadge status={r.eventType === "payment_succeeded" ? "succeeded" : r.eventType === "payment_failed" ? "failed" : r.eventType} /> },
     { key: "amount", label: "Amount", render: (r) => <span className="text-sm font-mono" style={{ color: "var(--db-text)" }}>{r.amount ? fmt(r.amount) : "—"}</span> },
@@ -208,7 +293,7 @@ function PaymentsTab() {
 // ── Costs Tab ──
 
 function CostsTab() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<CostsData | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/admin/financials?tab=costs").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load cost data"));
@@ -216,7 +301,7 @@ function CostsTab() {
   if (error) return <ErrorBanner message={error} />;
   if (!data) return <Loading />;
 
-  const columns: Column<any>[] = [
+  const columns: Column<CostClient>[] = [
     { key: "businessName", label: "Business", render: (r) => <span className="font-medium" style={{ color: "var(--db-text)" }}>{r.businessName ?? "—"}</span> },
     { key: "callMinutes", label: "Minutes", render: (r) => <span className="text-sm font-mono" style={{ color: "var(--db-text)" }}>{Math.round(r.callMinutes ?? 0)}</span> },
     { key: "callCount", label: "Calls", render: (r) => <span className="text-sm" style={{ color: "var(--db-text-secondary)" }}>{r.callCount}</span> },
@@ -254,7 +339,7 @@ function CostsTab() {
 // ── Forecast Tab ──
 
 function ForecastTab() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ForecastData | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/admin/financials?tab=forecast").then((r) => { if (!r.ok) throw new Error(); return r.json(); }).then(setData).catch(() => setError("Failed to load forecast data"));
@@ -264,8 +349,8 @@ function ForecastTab() {
 
   // Sample projections at 30-day intervals
   const projectionData = (data.projections ?? [])
-    .filter((_: any, i: number) => i % 5 === 0 || i === 90)
-    .map((p: any) => ({
+    .filter((_: ForecastProjection, i: number) => i % 5 === 0 || i === 90)
+    .map((p: ForecastProjection) => ({
       day: `Day ${p.day}`,
       optimistic: p.optimistic / 100,
       base: p.base / 100,

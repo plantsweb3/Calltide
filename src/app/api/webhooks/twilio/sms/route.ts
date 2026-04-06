@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     return twimlResponse("");
   }
 
-  console.log("Inbound SMS received:", { messageSid });
+  reportWarning("Inbound SMS received", { messageSid });
 
   // Look up which business owns the To number
   let [biz] = await db
@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
       updatedAt: new Date().toISOString(),
     }).where(eq(leads.id, lead.id));
 
-    console.log(`SMS opt-out recorded for lead ${lead.id}`);
+    reportWarning("SMS opt-out recorded", { leadId: lead.id });
     return twimlResponse("You have been unsubscribed and will no longer receive SMS messages from us. Reply START to re-subscribe.");
   }
 
@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
       updatedAt: new Date().toISOString(),
     }).where(eq(leads.id, lead.id));
 
-    console.log(`SMS opt-in recorded for lead ${lead.id}`);
+    reportWarning("SMS opt-in recorded", { leadId: lead.id });
     return twimlResponse("You have been re-subscribed to SMS messages. Reply STOP to unsubscribe.");
   }
 
@@ -389,7 +389,7 @@ export async function POST(req: NextRequest) {
   // Also check prospect opt-out/opt-in (outreach targets)
   const prospectResult = await handleProspectSmsKeyword(from, body);
   if (prospectResult.handled) {
-    console.log(`Prospect SMS ${prospectResult.action} processed`);
+    reportWarning("Prospect SMS processed", { action: prospectResult.action });
   }
 
   // Check if this is a learning response (owner replying to a knowledge gap question)

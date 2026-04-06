@@ -4,7 +4,7 @@ import { recurringRules, appointments, customers, leads } from "@/db/schema";
 import { eq, and, lte } from "drizzle-orm";
 import { verifyCronAuth } from "@/lib/cron-auth";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 
 /**
  * Calculate the next occurrence after a given date.
@@ -108,7 +108,7 @@ export async function GET(req: NextRequest) {
           .limit(1);
 
         if (!customer) {
-          console.log(`[recurring] Customer not found for rule ${rule.id}, skipping`);
+          reportWarning("[recurring] Customer not found for rule, skipping", { ruleId: rule.id });
           continue;
         }
 
@@ -218,7 +218,7 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    console.log(`[recurring] Processed ${rules.length} rules: ${created} appointments created, ${errors} errors`);
+    reportWarning("[recurring] Processed rules", { rulesCount: rules.length, created, errors });
 
     return NextResponse.json({
       ok: true,

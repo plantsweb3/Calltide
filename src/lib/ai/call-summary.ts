@@ -2,7 +2,7 @@ import { getAnthropic, HAIKU_MODEL } from "@/lib/ai/client";
 import { db } from "@/db";
 import { calls, customers, businesses } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { triggerQaIfNewClient } from "@/lib/agents/qa";
 import { sendOwnerCallAlert, sendMissedCallTextBack } from "@/lib/notifications/post-call";
 
@@ -172,13 +172,13 @@ export async function processCallSummary(
         }));
       } catch {
         // If ElevenLabs fetch also fails, return null
-        console.log("No transcript available for call", { callId, conversationId });
+        reportWarning("No transcript available for call", { callId, conversationId });
         return null;
       }
     }
 
     if (transcript.length === 0) {
-      console.log("No transcript found for call", { callId, conversationId });
+      reportWarning("No transcript found for call", { callId, conversationId });
       return null;
     }
 
@@ -192,7 +192,7 @@ export async function processCallSummary(
       updatedAt: new Date().toISOString(),
     }).where(eq(calls.id, callId));
 
-    console.log("Call summary generated:", { callId, sentiment, outcome, lines: transcript.length });
+    reportWarning("Call summary generated", { callId, sentiment, outcome, lines: transcript.length });
 
     // Fire webhook (fire-and-forget)
     const [callForWebhook] = await db.select({ businessId: calls.businessId, duration: calls.duration }).from(calls).where(eq(calls.id, callId)).limit(1);

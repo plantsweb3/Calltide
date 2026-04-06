@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { prospects } from "@/db/schema";
 import { logProspectScraped } from "@/lib/activity";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
+import { reportError } from "@/lib/error-reporting";
 
 const scrapeSchema = z.object({
   city: z.string().min(1).max(100),
@@ -85,7 +86,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Scrape failed";
-    console.error("[scrape/city] Error:", message);
+    reportError("[scrape/city] Error", error);
     return NextResponse.json(
       { error: message },
       { status: 500 },

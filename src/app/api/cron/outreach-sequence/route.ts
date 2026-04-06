@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { prospects } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { executeNextStep } from "@/lib/outreach/orchestrator";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { verifyCronAuth } from "@/lib/cron-auth";
 
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
           } else if (result.error === "Waiting for delay period") {
             waiting++;
           } else {
-            console.log(`[outreach-sequence] Skip ${prospect.businessName}: ${result.error}`);
+            reportWarning("[outreach-sequence] Skip prospect", { businessName: prospect.businessName, error: result.error });
           }
         } catch (err) {
           errors++;
@@ -63,9 +63,7 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      console.log(
-        `[outreach-sequence] Done: ${advanced} advanced, ${waiting} waiting, ${completed} completed, ${errors} errors`,
-      );
+      reportWarning("[outreach-sequence] Done", { advanced, waiting, completed, errors });
 
       return NextResponse.json({
         success: true,

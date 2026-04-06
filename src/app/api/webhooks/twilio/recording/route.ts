@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     return new Response("OK", { status: 200 });
   }
 
-  console.log(`[twilio/recording] voicemail ready: callSid=${callSid} duration=${recordingDuration}s`);
+  reportWarning("[twilio/recording] voicemail ready", { callSid, recordingDuration });
 
   try {
     // Try to find a call record for this voicemail by the Twilio CallSid

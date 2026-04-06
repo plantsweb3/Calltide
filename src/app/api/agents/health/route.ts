@@ -3,7 +3,7 @@ import { env } from "@/lib/env";
 import { db } from "@/db";
 import { systemHealthLogs } from "@/db/schema";
 import { createNotification } from "@/lib/notifications";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { sql } from "drizzle-orm";
 import { verifyCronAuth } from "@/lib/cron-auth";
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
   try {
     const { cleanupStaleCalls } = await import("@/lib/monitoring/active-calls");
     const staleCount = await cleanupStaleCalls();
-    if (staleCount > 0) console.log(`Cleaned up ${staleCount} stale active call(s)`);
+    if (staleCount > 0) reportWarning("Cleaned up stale active calls", { staleCount });
   } catch (err) {
     reportError("Stale call cleanup error (non-fatal)", err);
   }
@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
   try {
     const { expireHandoffs } = await import("@/lib/agents/handoffs");
     const expiredCount = await expireHandoffs();
-    if (expiredCount > 0) console.log(`Expired ${expiredCount} stale agent handoff(s)`);
+    if (expiredCount > 0) reportWarning("Expired stale agent handoffs", { expiredCount });
   } catch (err) {
     reportError("Handoff expiry error (non-fatal)", err);
   }

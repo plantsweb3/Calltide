@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  console.log(`[elevenlabs] webhook: ${event.type} conversationId=${event.conversation_id}`);
+  reportWarning("[elevenlabs] webhook received", { type: event.type, conversationId: event.conversation_id });
 
   // ── Handle call initiation failures ──
   if (event.type === "call_initiation_failure") {
@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
         .limit(1);
       if (audioCall) {
         await db.update(calls).set({ recordingUrl: event.audio_url }).where(eq(calls.id, audioCall.id));
-        console.log(`[elevenlabs] audio stored for call ${audioCall.id}`);
+        reportWarning("[elevenlabs] audio stored", { callId: audioCall.id });
       }
     }
     return Response.json({ ok: true });
@@ -226,7 +226,7 @@ export async function POST(req: NextRequest) {
     reportError("Active call cleanup failed", err),
   );
 
-  console.log(`[elevenlabs] call completed: conversationId=${conversationId} callId=${call.id}`);
+  reportWarning("[elevenlabs] call completed", { conversationId, callId: call.id });
 
   return Response.json({ ok: true });
 }

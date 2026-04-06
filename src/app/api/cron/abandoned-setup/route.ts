@@ -7,7 +7,7 @@ import {
   businesses,
 } from "@/db/schema";
 import { and, eq, isNull, isNotNull, sql, ne } from "drizzle-orm";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { logActivity } from "@/lib/activity";
 import { verifyCronAuth } from "@/lib/cron-auth";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
@@ -417,9 +417,7 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      console.log(
-        `[abandoned-setup] Complete: ${sent} emails sent, ${skipped} skipped, ${errors} errors`,
-      );
+      reportWarning("[abandoned-setup] Complete", { sent, skipped, errors });
 
       return NextResponse.json({
         success: true,

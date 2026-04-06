@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   const callSid = params.CallSid || "unknown";
   const callStatus = params.CallStatus || "unknown";
 
-  console.log(`[twilio/status] callSid=${callSid} status=${callStatus}`);
+  reportWarning("[twilio/status] call status update", { callSid, callStatus });
 
   return new Response("OK", { status: 200 });
 }

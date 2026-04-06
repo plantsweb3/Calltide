@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
   const callerNumber = params.From || params.Caller || "";
   const callSid = params.CallSid || "";
 
-  console.log(`[twilio/voice] inbound call: callSid=${callSid}`);
+  reportWarning("[twilio/voice] inbound call", { callSid });
 
   // Look up which business owns this number
   const [biz] = await db

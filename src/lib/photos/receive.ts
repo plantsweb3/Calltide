@@ -9,7 +9,7 @@ import {
 import { eq, and, gte, desc } from "drizzle-orm";
 import { normalizePhone } from "@/lib/compliance/sms";
 import { sendSMS } from "@/lib/twilio/sms";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { logActivity } from "@/lib/activity";
 
 const ALLOWED_IMAGE_TYPES = [
@@ -60,7 +60,7 @@ export async function processInboundPhotos(
     if (ALLOWED_IMAGE_TYPES.includes(contentType.toLowerCase())) {
       imageIndices.push(i);
     } else {
-      console.log("Skipping non-image attachment", {
+      reportWarning("Skipping non-image attachment", {
         contentType,
         businessId,
       });

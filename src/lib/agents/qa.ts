@@ -3,7 +3,7 @@ import { calls, businesses, callQaScores } from "@/db/schema";
 import { eq, and, gte, lt } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { logAgentActivity } from "./tools";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { createNotification } from "@/lib/notifications";
 import { getAnthropic, HAIKU_MODEL } from "@/lib/ai/client";
 
@@ -148,7 +148,7 @@ Default Language: ${businessRecord.defaultLanguage}`;
     try {
       qaResult = JSON.parse(text);
     } catch {
-      console.warn("QA agent returned non-JSON response", { callId: callRecord.id, text });
+      reportWarning("QA agent returned non-JSON response", { callId: callRecord.id, text });
       return;
     }
 
@@ -231,7 +231,7 @@ Default Language: ${businessRecord.defaultLanguage}`;
       });
     }
 
-    console.log("QA scored call:", {
+    reportWarning("QA scored call", {
       callId: callRecord.id,
       score: qaResult.score,
       isFirstWeek,

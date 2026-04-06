@@ -3,7 +3,7 @@ import { businessPartners, partnerReferrals, businesses, leads } from "@/db/sche
 import { eq, and, desc } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { canSendSms } from "@/lib/compliance/sms";
-import { reportError } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { TRADE_PROFILES } from "@/lib/receptionist/trade-profiles";
 
 // ── Types ──
@@ -164,7 +164,7 @@ export async function notifyPartner(params: NotifyPartnerParams): Promise<void> 
   try {
     const smsCheck = await canSendSms(partner.partnerPhone);
     if (!smsCheck.allowed) {
-      console.log(`Partner notification blocked by compliance: ${smsCheck.reason}`);
+      reportWarning(`Partner notification blocked by compliance: ${smsCheck.reason}`);
       return;
     }
   } catch {
@@ -211,7 +211,7 @@ export async function notifyPartner(params: NotifyPartnerParams): Promise<void> 
     );
   }
 
-  console.log("Partner notified", { referralId: referral.id, partnerId: partner.id });
+  reportWarning("Partner notified", { referralId: referral.id, partnerId: partner.id });
 }
 
 /**

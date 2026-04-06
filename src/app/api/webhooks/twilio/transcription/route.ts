@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     return new Response("OK", { status: 200 });
   }
 
-  console.log(`[twilio/transcription] voicemail transcribed: callSid=${callSid}`);
+  reportWarning("[twilio/transcription] voicemail transcribed", { callSid });
 
   try {
     // Find the call by Twilio CallSid and update voicemailTranscript
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       updatedAt: new Date().toISOString(),
     }).where(eq(calls.id, call.id));
 
-    console.log(`[twilio/transcription] transcript saved for call ${call.id}`);
+    reportWarning("[twilio/transcription] transcript saved", { callId: call.id });
   } catch (err) {
     reportError("Voicemail transcription handler failed", err, { extra: { callSid } });
   }

@@ -596,7 +596,7 @@ async function handleTakeMessage(
     }
   } catch (err) {
     // Non-critical — don't break the tool response
-    console.error("[follow-up] auto-create failed:", err);
+    reportError("[follow-up] auto-create failed", err);
   }
 
   // Detect complaints and auto-create ticket (fire-and-forget, non-critical)
@@ -627,7 +627,7 @@ async function handleTakeMessage(
         description: message,
       });
     } catch (err) {
-      console.error("[complaint] auto-create failed:", err);
+      reportError("[complaint] auto-create failed", err);
     }
   }
 
