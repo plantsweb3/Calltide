@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import MetricCard from "../../_components/metric-card";
 import DataTable, { type Column } from "../../_components/data-table";
 import StatusBadge from "../../_components/status-badge";
+import ConfirmDialog from "@/components/confirm-dialog";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -326,6 +327,8 @@ export default function MarketingPage() {
   const [showNewContent, setShowNewContent] = useState(false);
   const [contentFilter, setContentFilter] = useState<string>("");
   const [auditStatusFilter, setAuditStatusFilter] = useState<string>("");
+  const [confirmDeleteContentId, setConfirmDeleteContentId] = useState<string | null>(null);
+  const [deleteContentLoading, setDeleteContentLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchStats = useCallback(() => {
@@ -369,8 +372,14 @@ export default function MarketingPage() {
   }
 
   async function deleteContent(id: string) {
-    await fetch(`/api/content-queue/${id}`, { method: "DELETE" });
-    fetchContentQueue();
+    setDeleteContentLoading(true);
+    try {
+      await fetch(`/api/content-queue/${id}`, { method: "DELETE" });
+      fetchContentQueue();
+    } finally {
+      setDeleteContentLoading(false);
+      setConfirmDeleteContentId(null);
+    }
   }
 
   // ------------------------------------------------------------------
@@ -563,7 +572,7 @@ export default function MarketingPage() {
             </button>
           )}
           <button
-            onClick={(e) => { e.stopPropagation(); deleteContent(row.id); }}
+            onClick={(e) => { e.stopPropagation(); setConfirmDeleteContentId(row.id); }}
             className="db-hover-bg rounded px-2 py-1 text-xs font-medium transition-colors"
             style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
           >
@@ -759,6 +768,20 @@ export default function MarketingPage() {
           onComplete={fetchContentQueue}
         />
       )}
+
+      {/* Confirm Delete Content */}
+      <ConfirmDialog
+        open={!!confirmDeleteContentId}
+        title="Delete Content"
+        description="Are you sure you want to delete this content item? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="danger"
+        loading={deleteContentLoading}
+        onConfirm={() => {
+          if (confirmDeleteContentId) deleteContent(confirmDeleteContentId);
+        }}
+        onCancel={() => setConfirmDeleteContentId(null)}
+      />
     </div>
   );
 }

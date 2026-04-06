@@ -34,8 +34,9 @@ export async function POST(req: NextRequest) {
 
     switch (action) {
       case "recover": {
-        // Attempt to recover a checkout — check Stripe for payment
-        // This is a manual trigger for the same logic as the auth fallback
+        // Attempt to recover a checkout — triggers the same logic as
+        // /api/admin/recover-checkout which checks Stripe for payment,
+        // links subscriptions, or creates the full business record.
         if (!biz.stripeCustomerId) {
           return NextResponse.json({ error: "No Stripe customer ID" }, { status: 400 });
         }
@@ -48,7 +49,49 @@ export async function POST(req: NextRequest) {
           detail: `Stripe customer: ${biz.stripeCustomerId}`,
         });
 
-        return NextResponse.json({ success: true, message: "Recovery initiated. Check the logs." });
+        // Call the recover-checkout endpoint to perform the actual recovery
+        const recoverUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/admin/recover-checkout`;
+        const recoverRes = await fetch(recoverUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Cookie": req.headers.get("cookie") || "",
+          },
+          body: JSON.stringify({
+            stripeCustomerId: biz.stripeCustomerId,
+            businessName: biz.name || undefined,
+            businessType: biz.type || undefined,
+            ownerName: biz.ownerName || undefined,
+            ownerPhone: biz.ownerPhone || undefined,
+            ownerEmail: biz.ownerEmail || undefined,
+          }),
+        });
+
+        const recoverData = await recoverRes.json();
+
+        if (!recoverRes.ok) {
+          // If the business already exists (409), that's actually a success case —
+          // the Stripe subscription may have been linked.
+          if (recoverRes.status === 409) {
+            return NextResponse.json({
+              success: true,
+              message: `Business already exists (${recoverData.businessName || businessId}). Stripe IDs may have been linked.`,
+              detail: recoverData,
+            });
+          }
+          return NextResponse.json({
+            error: recoverData.error || "Recovery failed",
+            detail: recoverData.detail,
+          }, { status: recoverRes.status });
+        }
+
+        return NextResponse.json({
+          success: true,
+          message: recoverData.recovered
+            ? `Recovery complete: ${recoverData.action} — ${recoverData.businessName || businessId}`
+            : "Recovery initiated",
+          detail: recoverData,
+        });
       }
 
       case "resend-welcome": {

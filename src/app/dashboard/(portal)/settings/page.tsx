@@ -55,10 +55,10 @@ interface SettingsData {
   setupChecklistDismissed: boolean;
 }
 
-type SettingsTab = "general" | "receptionist" | "responses" | "notifications" | "pricing" | "automations" | "integrations";
+type SettingsTab = "general" | "receptionist" | "responses" | "notifications" | "pricing" | "automations" | "integrations" | "export";
 
 const SETTINGS_TAB_KEYS: SettingsTab[] = [
-  "general", "receptionist", "responses", "notifications", "pricing", "automations", "integrations",
+  "general", "receptionist", "responses", "notifications", "pricing", "automations", "integrations", "export",
 ];
 
 interface CustomResponse {
@@ -2263,6 +2263,9 @@ export default function SettingsPage() {
 
       </>}
 
+      {/* ═══ DATA EXPORT TAB ═══ */}
+      {activeTab === "export" && <DataExportSection lang={lang} />}
+
       {/* Sticky Save Bar (mobile) */}
       {isDirty && (
         <div
@@ -3008,6 +3011,139 @@ interface GCalStatus {
   connectedAt?: string;
   lastSyncAt?: string;
   syncEnabled?: boolean;
+}
+
+function DataExportSection({ lang }: { lang: Lang }) {
+  const [downloading, setDownloading] = useState<string | null>(null);
+
+  const handleExport = async (type: "calls" | "customers" | "appointments" | "invoices" | "all") => {
+    setDownloading(type);
+    try {
+      const res = await fetch(`/api/dashboard/data-export?type=${type}`);
+      if (res.status === 429) {
+        toast.error(t("settings.export.rateLimit", lang));
+        return;
+      }
+      if (!res.ok) {
+        toast.error(t("settings.export.downloadFailed", lang));
+        return;
+      }
+      const blob = await res.blob();
+      const disposition = res.headers.get("Content-Disposition") || "";
+      const filenameMatch = disposition.match(/filename="(.+)"/);
+      const filename = filenameMatch ? filenameMatch[1] : `capta-${type}-export.csv`;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error(t("settings.export.downloadFailed", lang));
+    } finally {
+      setDownloading(null);
+    }
+  };
+
+  const exportTypes: { key: "calls" | "customers" | "appointments" | "invoices"; labelKey: string; icon: React.ReactNode }[] = [
+    {
+      key: "calls",
+      labelKey: "settings.export.calls",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+      ),
+    },
+    {
+      key: "customers",
+      labelKey: "settings.export.customers",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      ),
+    },
+    {
+      key: "appointments",
+      labelKey: "settings.export.appointments",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      ),
+    },
+    {
+      key: "invoices",
+      labelKey: "settings.export.invoices",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+      ),
+    },
+  ];
+
+  return (
+    <Card title={t("settings.export.title", lang)}>
+      <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
+        {t("settings.export.description", lang)}
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {exportTypes.map((item) => (
+          <button
+            key={item.key}
+            onClick={() => handleExport(item.key)}
+            disabled={downloading !== null}
+            className="flex items-center gap-3 rounded-lg p-3 text-left transition-colors"
+            style={{
+              background: "var(--db-hover)",
+              border: "1px solid var(--db-border)",
+              opacity: downloading !== null && downloading !== item.key ? 0.5 : 1,
+            }}
+          >
+            <div
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg"
+              style={{ background: "rgba(212, 168, 67, 0.1)", color: "#D4A843" }}
+            >
+              {item.icon}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium" style={{ color: "var(--db-text)" }}>
+                {t(item.labelKey, lang)}
+              </p>
+              <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
+                {downloading === item.key ? t("settings.export.downloading", lang) : "CSV"}
+              </p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-text-muted)", flexShrink: 0 }}>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </button>
+        ))}
+      </div>
+      <div className="mt-4 pt-4" style={{ borderTop: "1px solid var(--db-border)" }}>
+        <button
+          onClick={() => handleExport("all")}
+          disabled={downloading !== null}
+          className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+          style={{
+            background: "var(--db-accent)",
+            color: "#fff",
+            opacity: downloading !== null ? 0.6 : 1,
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          {downloading === "all" ? t("settings.export.downloading", lang) : t("settings.export.all", lang)}
+        </button>
+      </div>
+    </Card>
+  );
 }
 
 function GoogleCalendarSection({ lang }: { lang: Lang }) {

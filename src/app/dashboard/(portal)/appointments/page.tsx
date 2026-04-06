@@ -70,6 +70,11 @@ export default function AppointmentsPage() {
   const [confirmAction, setConfirmAction] = useState<{ status: string; labelKey: string } | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
+  // Pagination
+  const PAGE_SIZE = 50;
+  const [page, setPage] = useState(0);
+  const [total, setTotal] = useState(0);
+
   // Bulk selection
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkConfirmAction, setBulkConfirmAction] = useState<{ status: string; labelKey: string } | null>(null);
@@ -87,17 +92,19 @@ export default function AppointmentsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/dashboard/appointments?filter=${filter}`);
+      const offset = page * PAGE_SIZE;
+      const res = await fetch(`/api/dashboard/appointments?filter=${filter}&limit=${PAGE_SIZE}&offset=${offset}`);
       if (!res.ok) throw new Error("Failed to load appointments");
       const data = await res.json();
       setAppointments(data.appointments);
+      setTotal(data.total ?? data.appointments.length);
       setSelectedIds(new Set());
     } catch {
       setError(t("appointments.failedToLoad", lang));
     } finally {
       setLoading(false);
     }
-  }, [filter]);
+  }, [filter, page]);
 
   useEffect(() => {
     fetchAppointments();
@@ -283,14 +290,14 @@ export default function AppointmentsPage() {
             )}
             <div className="flex">
               <button
-                onClick={() => { setFilter("upcoming"); setView("calendar"); setSelectedIds(new Set()); }}
+                onClick={() => { setFilter("upcoming"); setView("calendar"); setSelectedIds(new Set()); setPage(0); }}
                 className="db-tab"
                 data-active={filter === "upcoming"}
               >
                 {t("appointments.upcoming", lang)}
               </button>
               <button
-                onClick={() => { setFilter("past"); setView("list"); setSelectedIds(new Set()); }}
+                onClick={() => { setFilter("past"); setView("list"); setSelectedIds(new Set()); setPage(0); }}
                 className="db-tab"
                 data-active={filter === "past"}
               >
@@ -339,6 +346,40 @@ export default function AppointmentsPage() {
           selectedIds={selectedIds}
           onSelectionChange={setSelectedIds}
         />
+      )}
+
+      {/* Pagination Controls */}
+      {total > PAGE_SIZE && (
+        <div
+          className="flex items-center justify-between rounded-xl px-4 py-3 mt-4"
+          style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+        >
+          <p className="text-sm" style={{ color: "var(--db-text-muted)" }}>
+            {t("appointments.showingRange", lang, {
+              from: String(page * PAGE_SIZE + 1),
+              to: String(Math.min((page + 1) * PAGE_SIZE, total)),
+              total: String(total),
+            })}
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={page === 0 || loading}
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+            >
+              {t("appointments.previous", lang)}
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={(page + 1) * PAGE_SIZE >= total || loading}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              {t("appointments.next", lang)}
+            </Button>
+          </div>
+        </div>
       )}
 
       {/* Floating Bulk Action Bar */}

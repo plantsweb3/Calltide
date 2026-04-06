@@ -6,6 +6,7 @@ import StatusBadge from "../../_components/status-badge";
 import MetricCard from "../../_components/metric-card";
 import DataTable, { type Column } from "../../_components/data-table";
 import { TableSkeleton } from "@/components/skeleton";
+import ConfirmDialog from "@/components/confirm-dialog";
 
 // ── Types ──
 
@@ -309,6 +310,8 @@ function ActiveTab({ incidents, onRefresh }: { incidents: Incident[]; onRefresh:
 
 function HistoryTab({ incidents, onRefresh }: { incidents: Incident[]; onRefresh: () => void }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [confirmDeleteIncidentId, setConfirmDeleteIncidentId] = useState<string | null>(null);
+  const [deleteIncidentLoading, setDeleteIncidentLoading] = useState(false);
 
   const handlePublishPostmortem = async (id: string) => {
     try {
@@ -326,7 +329,7 @@ function HistoryTab({ incidents, onRefresh }: { incidents: Incident[]; onRefresh
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this incident permanently?")) return;
+    setDeleteIncidentLoading(true);
     try {
       const res = await fetch(`/api/admin/incidents/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete");
@@ -334,6 +337,9 @@ function HistoryTab({ incidents, onRefresh }: { incidents: Incident[]; onRefresh
       onRefresh();
     } catch {
       toast.error("Failed to delete incident");
+    } finally {
+      setDeleteIncidentLoading(false);
+      setConfirmDeleteIncidentId(null);
     }
   };
 
@@ -407,7 +413,7 @@ function HistoryTab({ incidents, onRefresh }: { incidents: Incident[]; onRefresh
             {expandedId === row.id ? "Collapse" : "Expand"}
           </button>
           <button
-            onClick={() => handleDelete(row.id)}
+            onClick={() => setConfirmDeleteIncidentId(row.id)}
             className="rounded px-2 py-1 text-xs"
             style={{ color: "#f87171" }}
           >
@@ -458,6 +464,18 @@ function HistoryTab({ incidents, onRefresh }: { incidents: Incident[]; onRefresh
           </div>
         );
       })()}
+      <ConfirmDialog
+        open={!!confirmDeleteIncidentId}
+        title="Delete Incident"
+        description="Are you sure you want to permanently delete this incident? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="danger"
+        loading={deleteIncidentLoading}
+        onConfirm={() => {
+          if (confirmDeleteIncidentId) handleDelete(confirmDeleteIncidentId);
+        }}
+        onCancel={() => setConfirmDeleteIncidentId(null)}
+      />
     </div>
   );
 }
@@ -615,7 +633,11 @@ function CreateTab({ onCreated }: { onCreated: () => void }) {
 // ── Subscribers Tab ──
 
 function SubscribersTab({ subscribers, onRefresh }: { subscribers: Subscriber[]; onRefresh: () => void }) {
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   const handleDelete = async (id: string) => {
+    setDeleteLoading(true);
     try {
       const res = await fetch(`/api/admin/incidents/subscribers?id=${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to remove subscriber");
@@ -623,6 +645,9 @@ function SubscribersTab({ subscribers, onRefresh }: { subscribers: Subscriber[];
       onRefresh();
     } catch {
       toast.error("Failed to remove subscriber");
+    } finally {
+      setDeleteLoading(false);
+      setConfirmDeleteId(null);
     }
   };
 
@@ -660,7 +685,7 @@ function SubscribersTab({ subscribers, onRefresh }: { subscribers: Subscriber[];
       label: "",
       render: (row) => (
         <button
-          onClick={() => handleDelete(row.id)}
+          onClick={() => setConfirmDeleteId(row.id)}
           className="rounded px-2 py-1 text-xs"
           style={{ color: "#f87171" }}
         >
@@ -678,7 +703,25 @@ function SubscribersTab({ subscribers, onRefresh }: { subscribers: Subscriber[];
     );
   }
 
-  return <DataTable columns={columns} data={subscribers} />;
+  const subscriberToDelete = confirmDeleteId ? subscribers.find((s) => s.id === confirmDeleteId) : null;
+
+  return (
+    <>
+      <DataTable columns={columns} data={subscribers} />
+      <ConfirmDialog
+        open={!!confirmDeleteId}
+        title="Remove Subscriber"
+        description={`Are you sure you want to remove ${subscriberToDelete?.email || "this subscriber"}? They will no longer receive incident notifications.`}
+        confirmLabel="Remove"
+        variant="danger"
+        loading={deleteLoading}
+        onConfirm={() => {
+          if (confirmDeleteId) handleDelete(confirmDeleteId);
+        }}
+        onCancel={() => setConfirmDeleteId(null)}
+      />
+    </>
+  );
 }
 
 // ── Metrics Tab ──

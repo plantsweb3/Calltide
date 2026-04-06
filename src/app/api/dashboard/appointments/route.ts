@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { appointments, leads } from "@/db/schema";
-import { eq, and, gte, lt, asc, desc } from "drizzle-orm";
+import { eq, and, gte, lt, asc, desc, sql } from "drizzle-orm";
 import { z } from "zod";
 import {
   DEMO_BUSINESS_ID,
@@ -21,11 +21,14 @@ export async function GET(req: NextRequest) {
   if (!rl.success) return rateLimitResponse(rl);
 
   const filter = req.nextUrl.searchParams.get("filter") || "upcoming";
+  const pageSize = Math.min(Math.max(parseInt(req.nextUrl.searchParams.get("limit") || "50", 10) || 50, 1), 200);
+  const offset = Math.max(parseInt(req.nextUrl.searchParams.get("offset") || "0", 10) || 0, 0);
 
   if (businessId === DEMO_BUSINESS_ID) {
-    const data =
+    const allData =
       filter === "past" ? DEMO_APPOINTMENTS_PAST : DEMO_APPOINTMENTS_UPCOMING;
-    return NextResponse.json({ appointments: data });
+    const paged = allData.slice(offset, offset + pageSize);
+    return NextResponse.json({ appointments: paged, total: allData.length });
   }
 
   try {
@@ -35,6 +38,14 @@ export async function GET(req: NextRequest) {
       filter === "past"
         ? lt(appointments.date, today)
         : gte(appointments.date, today);
+
+    const whereClause = and(eq(appointments.businessId, businessId), dateCondition);
+
+    // Get total count for pagination
+    const [{ totalCount }] = await db
+      .select({ totalCount: sql<number>`count(*)` })
+      .from(appointments)
+      .where(whereClause);
 
     const rows = await db
       .select({
@@ -51,11 +62,12 @@ export async function GET(req: NextRequest) {
       })
       .from(appointments)
       .leftJoin(leads, eq(appointments.leadId, leads.id))
-      .where(and(eq(appointments.businessId, businessId), dateCondition))
+      .where(whereClause)
       .orderBy(filter === "past" ? desc(appointments.date) : asc(appointments.date))
-      .limit(200);
+      .limit(pageSize)
+      .offset(offset);
 
-    return NextResponse.json({ appointments: rows });
+    return NextResponse.json({ appointments: rows, total: Number(totalCount) });
   } catch (err) {
     reportError("Failed to fetch appointments", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
