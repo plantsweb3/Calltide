@@ -192,7 +192,7 @@ export async function buildAgentConfig({ biz, voiceId }: BuildAgentConfigParams)
     conversation_config: {
       tts: {
         voice_id: resolvedVoiceId,
-        model_id: "eleven_flash_v2_5" as const,
+        model_id: "eleven_flash_v2" as const,
       },
       conversation: {
         max_duration_seconds: 600,
