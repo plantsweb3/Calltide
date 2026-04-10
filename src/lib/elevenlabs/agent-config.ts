@@ -11,11 +11,11 @@ import type { BusinessContext } from "@/types";
  * These are high-quality ElevenLabs voices selected for receptionist use.
  */
 export const VOICE_MAP: Record<string, string> = {
-  // Default personality voices
-  professional: "EXAVITQu4vr4xnSDxMaL", // Sarah — polished, confident
-  friendly: "jBpfAFnaylXS5xpurlZD",     // Lily — warm, approachable
-  warm: "onwK4e9ZLuTAKqWW03F9",          // Daniel — gentle, caring
-  clear: "pFZP5JQG7iQjIQuC4Bku",         // Rachel — clear, confident
+  // Default personality voices — IDs verified against ElevenLabs account
+  professional: "EXAVITQu4vr4xnSDxMaL", // Sarah — mature, reassuring, confident
+  friendly: "pFZP5JQG7iQjIQuC4Bku",     // Lily — velvety actress, warm
+  warm: "onwK4e9ZLuTAKqWW03F9",          // Daniel — steady broadcaster
+  clear: "Xb7hH8MSUJpSbSDYk0k2",         // Alice — clear, engaging educator
 };
 
 /**
@@ -23,9 +23,9 @@ export const VOICE_MAP: Record<string, string> = {
  */
 export const VOICE_OPTIONS = [
   { id: "EXAVITQu4vr4xnSDxMaL", name: "Sarah", description: "Professional & polished", gender: "female" },
-  { id: "jBpfAFnaylXS5xpurlZD", name: "Lily", description: "Friendly & approachable", gender: "female" },
+  { id: "pFZP5JQG7iQjIQuC4Bku", name: "Lily", description: "Friendly & approachable", gender: "female" },
   { id: "onwK4e9ZLuTAKqWW03F9", name: "Daniel", description: "Warm & caring", gender: "male" },
-  { id: "pFZP5JQG7iQjIQuC4Bku", name: "Rachel", description: "Clear & confident", gender: "female" },
+  { id: "Xb7hH8MSUJpSbSDYk0k2", name: "Alice", description: "Clear & confident", gender: "female" },
 ] as const;
 
 interface BuildAgentConfigParams {
