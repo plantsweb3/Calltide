@@ -40,7 +40,7 @@ src/
 ├── lib/
 │   ├── ai/             # System prompts, context builder, call summary
 │   ├── elevenlabs/     # Client, agent config, agent sync
-│   ├── voice/          # Tool handlers (9 customer-facing tools)
+│   ├── voice/          # Tool handlers (10 customer-facing tools)
 │   ├── receptionist/   # Personality presets, custom responses, trade profiles
 │   ├── rate-limit.ts   # Turso-backed rate limiter with in-memory L1 cache
 │   ├── error-reporting.ts  # Sentry integration
@@ -148,6 +148,6 @@ ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers.
 - **No PII in logs:** Never log phone numbers, emails, or customer data
 - **Anthropic API key:** May be invalid/placeholder — agents and AI features should gracefully degrade when unavailable
 - **ElevenLabs agent sync:** Each business gets its own ElevenLabs agent. `syncAgent()` in `src/lib/elevenlabs/sync-agent.ts` creates/updates agents when business settings change.
-- **Voice tools:** 9 customer-facing tools dispatched via webhook from ElevenLabs to `/api/webhooks/elevenlabs/tools`. Tool handlers in `src/lib/voice/tool-handlers.ts`.
+- **Voice tools:** 10 customer-facing tools dispatched via webhook from ElevenLabs to `/api/webhooks/elevenlabs/tools`. Tool handlers in `src/lib/voice/tool-handlers.ts`. Tools: check_availability, book_appointment, take_message, transfer_to_human, submit_intake, refer_partner, lookup_appointments, cancel_appointment, reschedule_appointment, schedule_callback.
 - **Post-call webhook:** ElevenLabs fires `post_call_transcription` to `/api/webhooks/elevenlabs`. Stores transcript, recording URL, cost, latency.
 - All 20 features ship at the $497/mo Core tier — no feature gating

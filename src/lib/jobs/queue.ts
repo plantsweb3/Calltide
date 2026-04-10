@@ -3,7 +3,7 @@ import { pendingJobs } from "@/db/schema";
 import { eq, and, lte, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 
-export type JobType = "twilio_provision" | "call_summary" | "consent_record" | "email_send" | "photo_request";
+export type JobType = "twilio_provision" | "agent_sync" | "call_summary" | "consent_record" | "email_send" | "photo_request" | "webhook_delivery";
 
 /**
  * Enqueue a job for async processing with retry support.

@@ -15,6 +15,7 @@ export const VOICE_MAP: Record<string, string> = {
   professional: "EXAVITQu4vr4xnSDxMaL", // Sarah — polished, confident
   friendly: "jBpfAFnaylXS5xpurlZD",     // Lily — warm, approachable
   warm: "onwK4e9ZLuTAKqWW03F9",          // Daniel — gentle, caring
+  clear: "pFZP5JQG7iQjIQuC4Bku",         // Rachel — clear, confident
 };
 
 /**
@@ -162,8 +163,11 @@ export async function buildAgentConfig({ biz, voiceId }: BuildAgentConfigParams)
   // the system prompt includes guidance on sharing price ranges from submit_intake
   const estimateContext = biz.estimateMode ? biz.estimateMode : null;
 
-  // Build system prompt with full context for both languages
-  const systemPromptEn = buildSystemPrompt(biz, "en", pricingContext, customResponsesBlock, null, intakeContext, estimateContext, partnerContext);
+  // Build system prompt with full context for both languages.
+  // Pass `{{caller_context}}` as a literal placeholder so ElevenLabs substitutes
+  // the per-call value provided via the Twilio Stream <Parameter> tag.
+  const callerContextPlaceholder = "{{caller_context}}";
+  const systemPromptEn = buildSystemPrompt(biz, "en", pricingContext, customResponsesBlock, callerContextPlaceholder, intakeContext, estimateContext, partnerContext);
 
   // Fetch ES-specific intake and partner context
   const [intakeContextEs, partnerContextEs] = await Promise.all([
@@ -171,7 +175,7 @@ export async function buildAgentConfig({ biz, voiceId }: BuildAgentConfigParams)
     buildPartnerContext(biz.id, "es"),
   ]);
 
-  const systemPromptEs = buildSystemPrompt(biz, "es", pricingContext, customResponsesBlock, null, intakeContextEs, estimateContext, partnerContextEs);
+  const systemPromptEs = buildSystemPrompt(biz, "es", pricingContext, customResponsesBlock, callerContextPlaceholder, intakeContextEs, estimateContext, partnerContextEs);
 
   // Build greetings
   const greetingEn = preset.greetingTemplate.en(receptionistName, biz.name);

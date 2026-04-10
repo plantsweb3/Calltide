@@ -38,8 +38,13 @@ export async function POST(req: NextRequest) {
   }
 
   // Validate Twilio signature
+  // Use the full request URL (including query params) because Twilio signs
+  // against the complete URL it was told to request.
   const signature = req.headers.get("x-twilio-signature") || "";
-  const url = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/twilio/sms`;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+  const parsedUrl = new URL(req.url);
+  const requestPath = parsedUrl.pathname + parsedUrl.search;
+  const url = `${appUrl}${requestPath}`;
 
   const valid = twilio.validateRequest(authToken, signature, url, params);
   if (!valid) {

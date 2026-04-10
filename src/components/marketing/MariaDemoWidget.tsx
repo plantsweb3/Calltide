@@ -116,11 +116,17 @@ function DemoPhoneFallback({ lang = "en", phoneTel = "" }: { lang?: Lang; phoneT
 }
 
 export default function MariaDemoWidget({ lang = "en", phoneTel = "" }: { lang?: Lang; phoneTel?: string }) {
-  // If no demo agent configured, show phone CTA fallback
+  // If no demo agent configured, show phone CTA fallback.
+  // This check happens BEFORE any hooks to avoid the rules-of-hooks violation
+  // that would occur if we short-circuited mid-component. Because the env var
+  // is resolved at build time, the render path is stable across a session.
   if (!process.env.NEXT_PUBLIC_ELEVENLABS_DEMO_AGENT_ID) {
     return <DemoPhoneFallback lang={lang} phoneTel={phoneTel} />;
   }
+  return <MariaDemoWidgetActive lang={lang} phoneTel={phoneTel} />;
+}
 
+function MariaDemoWidgetActive({ lang = "en", phoneTel = "" }: { lang?: Lang; phoneTel?: string }) {
   const [state, setState] = useState<DemoState>("idle");
   const [error, setError] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);

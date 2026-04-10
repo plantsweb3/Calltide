@@ -310,8 +310,9 @@ export async function createBusinessFromSetup(
   });
 
   // Create ElevenLabs voice agent
-  syncAgent(businessId).catch((err) => {
+  syncAgent(businessId).catch(async (err) => {
     reportError("Failed to create ElevenLabs agent (setup)", err, { extra: { businessId } });
+    await enqueueJob("agent_sync", { businessId }).catch(() => {});
   });
 
   return { businessId, isExisting: false };

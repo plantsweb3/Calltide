@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { processRetryQueue } from "@/lib/jobs/queue";
 import { provisionTwilioNumber } from "@/lib/twilio/provision";
 import { processCallSummary } from "@/lib/ai/call-summary";
+import { syncAgent } from "@/lib/elevenlabs/sync-agent";
 import { getResend } from "@/lib/email/client";
 import { reportError } from "@/lib/error-reporting";
 import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
@@ -25,6 +26,13 @@ export async function GET(req: NextRequest) {
           if (!businessId) throw new Error("Missing businessId");
           const number = await provisionTwilioNumber(businessId);
           if (!number) throw new Error("Provisioning returned null");
+        },
+
+        agent_sync: async (payload) => {
+          const businessId = payload.businessId as string;
+          if (!businessId) throw new Error("Missing businessId");
+          const agentId = await syncAgent(businessId);
+          if (!agentId) throw new Error("syncAgent returned null");
         },
 
         call_summary: async (payload) => {
