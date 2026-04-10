@@ -1,7 +1,7 @@
 import { sendEmailWithRetry } from "./client";
 import { reportError } from "@/lib/error-reporting";
 
-const FROM = "Capta <notifications@captahq.com>";
+const FROM = "Capta <notifications@contact.captahq.com>";
 
 interface TrialEndingParams {
   to: string;
