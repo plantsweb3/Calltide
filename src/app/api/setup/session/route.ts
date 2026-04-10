@@ -11,11 +11,12 @@ const COOKIE_NAME = "capta_setup";
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 days
 
 const sessionSchema = z.object({
-  utmSource: z.string().max(200).optional(),
-  utmMedium: z.string().max(200).optional(),
-  utmCampaign: z.string().max(500).optional(),
-  refCode: z.string().max(100).optional(),
-  language: z.enum(["en", "es"]).optional(),
+  utmSource: z.string().max(200).nullable().optional(),
+  utmMedium: z.string().max(200).nullable().optional(),
+  utmCampaign: z.string().max(500).nullable().optional(),
+  refCode: z.string().max(100).nullable().optional(),
+  language: z.enum(["en", "es"]).nullable().optional(),
+  timezone: z.string().max(100).nullable().optional(),
 });
 
 /**

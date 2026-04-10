@@ -986,18 +986,22 @@ function SetupClient() {
         if ((e as Error).name === "AbortError") return;
       }
 
-      // Create new session
+      // Create new session — omit UTM keys when absent instead of sending nulls
       try {
+        const sessionBody: Record<string, string> = { language: lang };
+        const utmSource = searchParams.get("utm_source");
+        const utmMedium = searchParams.get("utm_medium");
+        const utmCampaign = searchParams.get("utm_campaign");
+        const refCode = searchParams.get("ref");
+        if (utmSource) sessionBody.utmSource = utmSource;
+        if (utmMedium) sessionBody.utmMedium = utmMedium;
+        if (utmCampaign) sessionBody.utmCampaign = utmCampaign;
+        if (refCode) sessionBody.refCode = refCode;
+
         const createRes = await fetch("/api/setup/session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            utmSource: searchParams.get("utm_source"),
-            utmMedium: searchParams.get("utm_medium"),
-            utmCampaign: searchParams.get("utm_campaign"),
-            refCode: searchParams.get("ref"),
-            language: lang,
-          }),
+          body: JSON.stringify(sessionBody),
           signal: abortController.signal,
         });
         if (!createRes.ok) {
