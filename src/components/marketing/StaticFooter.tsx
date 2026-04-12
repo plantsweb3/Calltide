@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const PHONE = process.env.NEXT_PUBLIC_PHONE ?? "(830) 521-7133";
@@ -35,7 +36,7 @@ export function StaticFooter({ lang }: StaticFooterProps) {
       <div className="mx-auto max-w-5xl">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
-            <img src="/images/logo-inline-white.webp" alt="Capta" className="h-7 w-auto opacity-70" />
+            <Image src="/images/logo-inline-white.webp" alt="Capta" width={120} height={28} className="h-7 w-auto opacity-70" />
             <p className="mt-4 text-sm text-white/40">{labels.tagline}</p>
             <a href={PHONE_TEL} className="mt-3 inline-block text-sm font-semibold text-amber hover:underline">{PHONE}</a>
           </div>

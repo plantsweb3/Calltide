@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Image from "next/image";
 import { motion, MotionConfig } from "framer-motion";
 import dynamic from "next/dynamic";
 
@@ -30,11 +31,11 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
   return (
     <nav className={`sticky top-0 z-40 border-b transition-all duration-300 ${scrolled ? "nav-scrolled border-transparent" : "border-cream-border bg-cream"}`}>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 sm:px-8 py-4">
-        <a href="/es"><img src="/images/logo-inline-navy.webp" alt="Capta" className="h-7 w-auto sm:h-8" /></a>
+        <a href="/es"><Image src="/images/logo-inline-navy.webp" alt="Capta" width={120} height={32} priority className="h-7 w-auto sm:h-8" /></a>
         <div className="hidden items-center gap-8 md:flex">
-          <a href="/platform" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Plataforma</a>
-          <a href="/pricing" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Precios</a>
-          <a href="/about" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Nosotros</a>
+          <a href="/es#features" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Plataforma</a>
+          <a href="/es#pricing" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Precios</a>
+          <a href="/es#how-it-works" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">C&oacute;mo Funciona</a>
           <a href="/es/blog" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Blog</a>
           <a href="/es/help" className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">Ayuda</a>
           <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted transition hover:text-charcoal">{PHONE}</a>
@@ -57,9 +58,9 @@ function EsNav({ scrolled }: { scrolled: boolean }) {
       {mobileMenuOpen && (
         <div className="border-t border-cream-border bg-white px-6 py-4 md:hidden">
           <div className="flex flex-col gap-4">
-            <a href="/platform" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Plataforma</a>
-            <a href="/pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Precios</a>
-            <a href="/about" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Nosotros</a>
+            <a href="/es#features" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Plataforma</a>
+            <a href="/es#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Precios</a>
+            <a href="/es#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">C&oacute;mo Funciona</a>
             <a href="/es/blog" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Blog</a>
             <a href="/es/help" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-charcoal-muted">Ayuda</a>
             <a href={PHONE_TEL} className="text-sm font-medium text-charcoal-muted">{PHONE}</a>

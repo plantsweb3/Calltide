@@ -36,12 +36,12 @@ interface Customer {
 
 const LEAD_TIER_CONFIG: Record<string, { i18nKey: string; bg: string; fg: string }> = {
   hot: { i18nKey: "customers.tierHot", bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
-  warm: { i18nKey: "customers.tierWarm", bg: "rgba(245,158,11,0.12)", fg: "var(--db-warning-alt)" },
-  cold: { i18nKey: "customers.tierCold", bg: "rgba(59,130,246,0.12)", fg: "#3b82f6" },
-  dormant: { i18nKey: "customers.tierDormant", bg: "rgba(148,163,184,0.12)", fg: "var(--db-text-muted)" },
-  new: { i18nKey: "customers.tierNew", bg: "rgba(96,165,250,0.12)", fg: "#60a5fa" },
+  warm: { i18nKey: "customers.tierWarm", bg: "var(--db-warning-bg)", fg: "var(--db-warning-alt)" },
+  cold: { i18nKey: "customers.tierCold", bg: "var(--db-info-bg)", fg: "var(--db-info)" },
+  dormant: { i18nKey: "customers.tierDormant", bg: "var(--db-hover)", fg: "var(--db-text-muted)" },
+  new: { i18nKey: "customers.tierNew", bg: "var(--db-info-bg)", fg: "var(--db-info)" },
   loyal: { i18nKey: "customers.tierLoyal", bg: "var(--db-success-bg)", fg: "var(--db-success)" },
-  vip: { i18nKey: "customers.tierVip", bg: "rgba(250,204,21,0.12)", fg: "var(--db-warning)" },
+  vip: { i18nKey: "customers.tierVip", bg: "var(--db-accent-bg)", fg: "var(--db-accent)" },
   "at-risk": { i18nKey: "customers.tierAtRisk", bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
 };
 

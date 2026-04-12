@@ -313,8 +313,8 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
           r.id === reviewId ? { ...r, replyDraft: data.draft, replyStatus: "drafted" } : r
         ));
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // silent — non-critical UX action
     } finally {
       setDrafting(null);
     }
@@ -332,8 +332,8 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
           r.id === reviewId ? { ...r, replyStatus: "approved" } : r
         ));
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // silent — non-critical UX action
     }
   }
 
@@ -351,8 +351,8 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
         setEditing(null);
         setEditText("");
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // silent — non-critical UX action
     }
   }
 

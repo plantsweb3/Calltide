@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { T, PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
 
@@ -27,7 +28,7 @@ export function Nav({ lang, toggleLang, scrolled }: NavProps) {
   return (
     <nav className={`sticky top-0 z-40 border-b transition-all duration-300 ${scrolled ? "nav-scrolled border-transparent" : "border-cream-border bg-cream"}`}>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 sm:px-8 py-4">
-        <a href="/"><img src="/images/logo-inline-navy.webp" alt="Capta" className="h-7 w-auto sm:h-8" /></a>
+        <a href="/"><Image src="/images/logo-inline-navy.webp" alt="Capta" width={120} height={32} priority className="h-7 w-auto sm:h-8" /></a>
         <div className="hidden items-center gap-8 md:flex">
           <a href="/platform" className={navLinkClass("/platform")}>
             {t.footer.platform}

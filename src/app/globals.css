@@ -67,10 +67,14 @@ body {
   background: rgba(200, 170, 100, 0.3);
 }
 
-/* Focus states */
+/* Focus states — visible for keyboard nav across all interactive elements */
 a:focus-visible,
 button:focus-visible,
-[role="tab"]:focus-visible {
+[role="tab"]:focus-visible,
+[role="button"]:focus-visible,
+[role="link"]:focus-visible,
+[role="menuitem"]:focus-visible,
+summary:focus-visible {
   outline: 2px solid var(--db-accent, #C59A27);
   outline-offset: 2px;
   border-radius: 4px;
@@ -79,9 +83,19 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
-[role="switch"]:focus-visible {
+[role="switch"]:focus-visible,
+[role="checkbox"]:focus-visible,
+[role="radio"]:focus-visible,
+[contenteditable="true"]:focus-visible {
   outline: 2px solid var(--db-accent, #C59A27);
   outline-offset: 2px;
+}
+
+/* Tab-focusable elements (anything with tabindex >= 0) */
+[tabindex="0"]:focus-visible {
+  outline: 2px solid var(--db-accent, #C59A27);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* ── Grain texture overlay — hero and dark sections ── */

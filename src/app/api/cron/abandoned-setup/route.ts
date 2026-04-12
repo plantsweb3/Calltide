@@ -15,7 +15,7 @@ import { BRAND_COLOR, COMPANY_ADDRESS } from "@/lib/constants";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
 const FROM_EMAIL = "Ulysses at Capta <hello@contact.captahq.com>";
-const REPLY_TO = "calltide@proton.me";
+const REPLY_TO = process.env.OWNER_EMAIL || "hello@captahq.com";
 
 // ── Time Windows ──
 // Each window is a 2-hour range so that an hourly cron catches each session exactly once.

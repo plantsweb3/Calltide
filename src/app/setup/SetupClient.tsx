@@ -1465,7 +1465,7 @@ function SetupClient() {
             <p className={s.subtitle}>{t.step1Sub}</p>
 
             <div className={s.field}>
-              <label className={s.label} htmlFor="bizName">{t.bizName}</label>
+              <label className={s.label} htmlFor="bizName">{t.bizName}<span className={s.required} aria-hidden="true">*</span></label>
               <input
                 id="bizName"
                 className={`${s.input} ${errors.bizName ? s.inputError : ""}`}
@@ -1477,7 +1477,7 @@ function SetupClient() {
             </div>
 
             <div className={s.field}>
-              <label className={s.label} htmlFor="bizType">{t.tradeType}</label>
+              <label className={s.label} htmlFor="bizType">{t.tradeType}<span className={s.required} aria-hidden="true">*</span></label>
               <select
                 id="bizType"
                 className={`${s.select} ${errors.bizType ? s.inputError : ""}`}
@@ -1493,7 +1493,7 @@ function SetupClient() {
             </div>
 
             <div className={s.field}>
-              <label className={s.label} htmlFor="city">{t.city}</label>
+              <label className={s.label} htmlFor="city">{t.city}<span className={s.required} aria-hidden="true">*</span></label>
               <input
                 id="city"
                 className={`${s.input} ${errors.city ? s.inputError : ""}`}
@@ -1526,7 +1526,7 @@ function SetupClient() {
             <p className={s.subtitle}>{t.step2Sub}</p>
 
             <div className={s.field}>
-              <label className={s.label} htmlFor="ownerName">{t.ownerName}</label>
+              <label className={s.label} htmlFor="ownerName">{t.ownerName}<span className={s.required} aria-hidden="true">*</span></label>
               <input
                 id="ownerName"
                 className={`${s.input} ${errors.ownerName ? s.inputError : ""}`}
@@ -1538,7 +1538,7 @@ function SetupClient() {
             </div>
 
             <div className={s.field}>
-              <label className={s.label} htmlFor="ownerEmail">{t.email}</label>
+              <label className={s.label} htmlFor="ownerEmail">{t.email}<span className={s.required} aria-hidden="true">*</span></label>
               <input
                 id="ownerEmail"
                 type="email"
@@ -1551,7 +1551,7 @@ function SetupClient() {
             </div>
 
             <div className={s.field}>
-              <label className={s.label} htmlFor="ownerPhone">{t.phone}</label>
+              <label className={s.label} htmlFor="ownerPhone">{t.phone}<span className={s.required} aria-hidden="true">*</span></label>
               <input
                 id="ownerPhone"
                 type="tel"

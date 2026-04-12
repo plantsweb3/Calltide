@@ -142,6 +142,12 @@
   margin-bottom: 6px;
 }
 
+.required {
+  color: #f87171;
+  margin-left: 3px;
+  font-weight: 700;
+}
+
 .input {
   width: 100%;
   padding: 12px 14px;

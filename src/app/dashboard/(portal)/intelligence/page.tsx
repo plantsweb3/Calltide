@@ -47,15 +47,16 @@ interface IntelligenceData {
   bilingualPercent: number;
 }
 
-const TIER_COLORS: Record<string, string> = {
-  hot: "#ef4444",
-  warm: "#f59e0b",
-  cold: "#3b82f6",
-  dormant: "#94a3b8",
-  new: "#8b5cf6",
-  loyal: "#22c55e",
-  vip: "#d4a843",
-  "at-risk": "#f97316",
+// Tier colors map to themed CSS variables for proper light/dark mode.
+const TIER_STYLES: Record<string, { bg: string; fg: string }> = {
+  hot: { bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
+  warm: { bg: "var(--db-warning-bg)", fg: "var(--db-warning-alt)" },
+  cold: { bg: "var(--db-info-bg)", fg: "var(--db-info)" },
+  dormant: { bg: "var(--db-hover)", fg: "var(--db-text-muted)" },
+  new: { bg: "var(--db-info-bg)", fg: "var(--db-info)" },
+  loyal: { bg: "var(--db-success-bg)", fg: "var(--db-success)" },
+  vip: { bg: "var(--db-accent-bg)", fg: "var(--db-accent)" },
+  "at-risk": { bg: "var(--db-danger-bg)", fg: "var(--db-danger)" },
 };
 
 const CATEGORY_KEYS: Record<string, string> = {
@@ -65,12 +66,12 @@ const CATEGORY_KEYS: Record<string, string> = {
   emergency_keyword: "intelligence.categoryEmergency",
 };
 
-const GAP_STATUS_COLORS: Record<string, string> = {
-  pending: "#f59e0b",
-  answered: "#22c55e",
-  dismissed: "#94a3b8",
-  asked: "#3b82f6",
-  auto_created: "#8b5cf6",
+const GAP_STATUS_STYLES: Record<string, { bg: string; fg: string }> = {
+  pending: { bg: "var(--db-warning-bg)", fg: "var(--db-warning-alt)" },
+  answered: { bg: "var(--db-success-bg)", fg: "var(--db-success)" },
+  dismissed: { bg: "var(--db-hover)", fg: "var(--db-text-muted)" },
+  asked: { bg: "var(--db-info-bg)", fg: "var(--db-info)" },
+  auto_created: { bg: "var(--db-accent-bg)", fg: "var(--db-accent)" },
 };
 
 export default function IntelligencePage() {
@@ -252,13 +253,14 @@ export default function IntelligencePage() {
                     answered: t("intelligence.gapAnswered", lang),
                     dismissed: t("intelligence.gapDismissed", lang),
                   };
+                  const style = GAP_STATUS_STYLES[s];
                   return (
                     <span
                       key={s}
                       className="rounded-full px-2 py-0.5 text-xs font-semibold"
                       style={{
-                        background: `${GAP_STATUS_COLORS[s]}20`,
-                        color: GAP_STATUS_COLORS[s],
+                        background: style.bg,
+                        color: style.fg,
                       }}
                     >
                       {data.gapCounts[s] || 0} {gapLabels[s]}
@@ -277,7 +279,7 @@ export default function IntelligencePage() {
                     <span
                       className="mt-1.5 h-2 w-2 rounded-full shrink-0"
                       style={{
-                        background: GAP_STATUS_COLORS[gap.status] || "var(--db-text-muted)",
+                        background: GAP_STATUS_STYLES[gap.status]?.fg || "var(--db-text-muted)",
                       }}
                     />
                     <p
@@ -439,8 +441,8 @@ export default function IntelligencePage() {
                       <span
                         className="rounded-full px-2 py-0.5 text-xs font-semibold"
                         style={{
-                          background: `${TIER_COLORS[c.tier] || "var(--db-text-muted)"}15`,
-                          color: TIER_COLORS[c.tier] || "var(--db-text-muted)",
+                          background: TIER_STYLES[c.tier]?.bg || "var(--db-hover)",
+                          color: TIER_STYLES[c.tier]?.fg || "var(--db-text-muted)",
                         }}
                       >
                         {c.tier}
@@ -475,7 +477,7 @@ export default function IntelligencePage() {
                       className="transition-all duration-500"
                       style={{
                         width: `${(cnt / totalTierCount) * 100}%`,
-                        background: TIER_COLORS[tier] || "var(--db-text-muted)",
+                        background: TIER_STYLES[tier]?.fg || "var(--db-text-muted)",
                       }}
                       title={`${tier}: ${cnt}`}
                     />
@@ -494,7 +496,7 @@ export default function IntelligencePage() {
                         <span
                           className="inline-block h-2 w-2 rounded-full"
                           style={{
-                            background: TIER_COLORS[tier] || "var(--db-text-muted)",
+                            background: TIER_STYLES[tier]?.fg || "var(--db-text-muted)",
                           }}
                         />
                         {tier} ({cnt})

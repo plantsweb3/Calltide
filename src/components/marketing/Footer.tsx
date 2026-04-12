@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { T, PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
 
 export function Footer({ lang }: { lang: Lang }) {
@@ -12,7 +13,7 @@ export function Footer({ lang }: { lang: Lang }) {
       <div className="mx-auto max-w-5xl">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
-            <a href={home}><img src="/images/logo-inline-white.webp" alt="Capta" className="h-7 w-auto opacity-70" /></a>
+            <a href={home}><Image src="/images/logo-inline-white.webp" alt="Capta" width={120} height={28} className="h-7 w-auto opacity-70" /></a>
             <p className="mt-4 text-sm text-white/40">{t.footer.tagline}</p>
             <a href={PHONE_TEL} className="mt-3 inline-block text-sm font-semibold text-amber hover:underline">{PHONE}</a>
           </div>
