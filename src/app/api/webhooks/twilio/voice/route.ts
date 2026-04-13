@@ -6,7 +6,6 @@ import { eq, and, count } from "drizzle-orm";
 import { reportWarning, reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { normalizePhone } from "@/lib/compliance/sms";
-import { getElevenLabsClient } from "@/lib/elevenlabs/client";
 import { trackCallStart } from "@/lib/monitoring/active-calls";
 
 /**
@@ -246,25 +245,6 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Get signed URL for this agent's conversation
-  let streamUrl: string;
-
-  try {
-    const client = getElevenLabsClient();
-    const signedUrlResponse = await client.conversationalAi.getSignedUrl({
-      agent_id: agentId,
-    });
-    streamUrl = signedUrlResponse.signed_url;
-  } catch (err) {
-    reportError("Failed to get ElevenLabs signed URL", err, {
-      extra: { businessId: biz.id, agentId },
-    });
-    return twimlSay(
-      "Thank you for calling. We are unable to take your call right now. Please leave a message after the tone.",
-      true,
-    );
-  }
-
   // Track active call for live monitoring (fire-and-forget)
   trackCallStart({
     businessId: biz.id,
@@ -273,12 +253,16 @@ export async function POST(req: NextRequest) {
     sessionId: callSid,
   }).catch((err) => reportError("Active call tracking failed", err, { businessId: biz.id }));
 
-  // Connect to ElevenLabs via WebSocket stream using the signed URL
-  // The signed URL already authenticates the session — no API key needed as a parameter
+  // Connect to ElevenLabs via Twilio-native WebSocket endpoint.
+  // This endpoint translates between Twilio Media Stream protocol and
+  // ElevenLabs Convai protocol — agent_id passed as a Stream Parameter.
+  const ELEVENLABS_TWILIO_WS = "wss://api.elevenlabs.io/v1/convai/twilio/inbound";
+
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Connect>
-    <Stream url="${escapeXml(streamUrl)}">
+    <Stream url="${ELEVENLABS_TWILIO_WS}">
+      <Parameter name="agent_id" value="${escapeXml(agentId)}" />
       <Parameter name="caller_phone" value="${escapeXml(callerNumber)}" />
       <Parameter name="called_phone" value="${escapeXml(calledNumber)}" />
       <Parameter name="business_id" value="${escapeXml(biz.id)}" />
