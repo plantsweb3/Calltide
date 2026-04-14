@@ -11,10 +11,11 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://connect.facebook.net https://www.googletagmanager.com https://static.hotjar.com https://script.hotjar.com https://storage.googleapis.com",
+              "script-src 'self' 'unsafe-inline' blob: https://connect.facebook.net https://www.googletagmanager.com https://static.hotjar.com https://script.hotjar.com https://storage.googleapis.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",
+              "media-src 'self' blob: https:",
               "worker-src 'self' blob: https://storage.googleapis.com",
               "connect-src 'self' https://api.elevenlabs.io wss://api.elevenlabs.io https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io",
               "frame-ancestors 'none'",
