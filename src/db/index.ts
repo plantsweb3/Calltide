@@ -9,8 +9,12 @@ function getDb() {
   if (!database) {
     const url = process.env.TURSO_DATABASE_URL;
     if (!url) {
-      // During build/prerender without DB configured, use in-memory SQLite
-      client = createClient({ url: "file::memory:" });
+      if (process.env.NEXT_PHASE === "phase-production-build") {
+        // During build/prerender, use in-memory SQLite (no real DB needed)
+        client = createClient({ url: "file::memory:" });
+      } else {
+        throw new Error("TURSO_DATABASE_URL is required — set it in your environment variables");
+      }
     } else {
       client = createClient({
         url,

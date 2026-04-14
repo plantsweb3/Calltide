@@ -4,11 +4,11 @@ import { reportError } from "@/lib/error-reporting";
 import { verifyCronAuth } from "@/lib/cron-auth";
 
 /**
- * POST /api/compliance/retention
+ * GET /api/compliance/retention
  * Weekly cron — data retention cleanup
  * Schedule: 0 9 * * 0 (Sundays 9 AM UTC / 3 AM CT)
  */
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
   if (authError) return authError;
 

@@ -62,14 +62,13 @@ const EMAIL_TEMPLATES: EmailTemplate[] = [
   {
     emailNumber: 3,
     daysAfterCancel: 30,
-    subject: "Special offer: 50% off your first month back",
+    subject: "We'd love to have you back",
     html: (biz, reactivateUrl) => `
       <div style="font-family: Inter, system-ui, sans-serif; max-width: 560px; margin: 0 auto;">
-        <h2 style="color: #1B2A4A;">A special offer just for you</h2>
+        <h2 style="color: #1B2A4A;">We miss having ${biz.name} in the family</h2>
         <p>Hi ${biz.ownerName},</p>
-        <p>It's been a month, and we'd love to have ${biz.name} back in the Capta family.</p>
-        <p>To make it easy, we're offering you <strong>50% off your first month back</strong> — that's just $248.50 for a full month of 24/7 AI receptionist coverage.</p>
-        <p>Here's what you get:</p>
+        <p>It's been a month, and we'd love to have ${biz.name} back with Capta.</p>
+        <p>Here's what you'd get back right away:</p>
         <ul>
           <li>Every call answered instantly, day and night</li>
           <li>Appointments booked directly into your calendar</li>
@@ -77,9 +76,9 @@ const EMAIL_TEMPLATES: EmailTemplate[] = [
           <li>Daily briefings and weekly performance reports</li>
         </ul>
         <p style="margin-top: 24px;">
-          <a href="${reactivateUrl}" style="display: inline-block; background: #D4A843; color: #fff; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">Claim 50% Off &rarr;</a>
+          <a href="${reactivateUrl}" style="display: inline-block; background: #D4A843; color: #fff; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">Reactivate Your Account &rarr;</a>
         </p>
-        <p style="color: #666; font-size: 13px; margin-top: 24px;">This offer expires in 7 days. Reply to this email if you have any questions.</p>
+        <p style="color: #666; font-size: 13px; margin-top: 24px;">Want to discuss a custom deal? Just reply to this email.</p>
         <p>Best,<br/>The Capta Team</p>
       </div>
     `,

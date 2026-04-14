@@ -9,9 +9,9 @@ type Lang = "en" | "es";
 
 const DEMO_VOICES = [
   { id: "EXAVITQu4vr4xnSDxMaL", name: "Sarah", desc: { en: "Professional & polished", es: "Profesional y pulida" }, gender: "female" },
-  { id: "jBpfAFnaylXS5xpurlZD", name: "Lily", desc: { en: "Friendly & approachable", es: "Amigable y accesible" }, gender: "female" },
+  { id: "pFZP5JQG7iQjIQuC4Bku", name: "Lily", desc: { en: "Friendly & approachable", es: "Amigable y accesible" }, gender: "female" },
   { id: "onwK4e9ZLuTAKqWW03F9", name: "Daniel", desc: { en: "Warm & caring", es: "Cálido y atento" }, gender: "male" },
-  { id: "pFZP5JQG7iQjIQuC4Bku", name: "Rachel", desc: { en: "Clear & confident", es: "Clara y segura" }, gender: "female" },
+  { id: "Xb7hH8MSUJpSbSDYk0k2", name: "Alice", desc: { en: "Clear & confident", es: "Clara y segura" }, gender: "female" },
 ] as const;
 
 interface ConversionData {

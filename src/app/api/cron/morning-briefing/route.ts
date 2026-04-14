@@ -80,7 +80,7 @@ export async function GET(req: NextRequest) {
               .slice(0, 1500);
             await sendSMS({
               to: biz.ownerPhone,
-              from: biz.twilioNumber,
+              from: biz.twilioNumber || process.env.TWILIO_PHONE_NUMBER || "",
               body: replyBody,
               businessId: biz.id,
               templateType: "owner_notify",

@@ -161,7 +161,6 @@ export async function POST(
 <Response>
   <Connect>
     <Stream url="${escapeXml(elevenLabsWsUrl)}">
-      <Parameter name="xi-api-key" value="${escapeXml(elevenlabsApiKey)}" />
       <Parameter name="outbound_call_id" value="${escapeXml(outboundCallId)}" />
       <Parameter name="business_id" value="${escapeXml(call.businessId)}" />
       <Parameter name="call_type" value="${escapeXml(call.callType)}" />

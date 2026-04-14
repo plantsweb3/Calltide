@@ -104,11 +104,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Update business status
+    // Mark as canceling (not "canceled") — service continues until period end.
+    // Stripe webhook will set "canceled" when subscription actually expires.
     await db
       .update(businesses)
       .set({
-        paymentStatus: "canceled",
+        paymentStatus: "canceling",
         updatedAt: new Date().toISOString(),
       })
       .where(eq(businesses.id, businessId));

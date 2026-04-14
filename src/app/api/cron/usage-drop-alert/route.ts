@@ -122,7 +122,7 @@ export async function GET(req: NextRequest) {
 
           await sendSMS({
             to: biz.ownerPhone,
-            from: biz.twilioNumber,
+            from: biz.twilioNumber || process.env.TWILIO_PHONE_NUMBER || "",
             body: `Your call volume dropped ${dropPercent}% this week (${thisCount} calls vs ${lastCount} last week). This could mean your call forwarding needs attention. Check your setup: ${dashboardUrl}`,
             businessId: biz.id,
             templateType: "owner_notify",

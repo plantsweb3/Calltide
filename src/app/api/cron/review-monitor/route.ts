@@ -80,7 +80,7 @@ export async function GET(req: NextRequest) {
 
               await sendSMS({
                 to: biz.ownerPhone,
-                from: biz.twilioNumber,
+                from: biz.twilioNumber || process.env.TWILIO_PHONE_NUMBER || "",
                 body: `Review alert for ${biz.name}: ${stars} (${review.rating}/5)${authorLine}${textPreview}\n\nView and respond in your dashboard.\n\n— ${receptionistName}`,
                 businessId: biz.id,
                 templateType: "review_alert",

@@ -207,7 +207,7 @@ export async function GET(req: NextRequest) {
               const twilio = getTwilioClient();
               await twilio.messages.create({
                 to: biz.ownerPhone,
-                from: env.TWILIO_PHONE_NUMBER,
+                from: biz.twilioNumber || env.TWILIO_PHONE_NUMBER,
                 body: smsBody,
               });
               smsSentAt = new Date().toISOString();

@@ -195,7 +195,7 @@ export async function GET(req: NextRequest) {
 
           const result = await sendSMS({
             to: call.callerPhone,
-            from: biz.twilioNumber,
+            from: biz.twilioNumber || process.env.TWILIO_PHONE_NUMBER || "",
             body: smsBody,
             businessId: biz.id,
             leadId: call.leadId || undefined,

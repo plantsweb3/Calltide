@@ -92,7 +92,7 @@ export async function GET(req: NextRequest) {
 
               await sendSMS({
                 to: biz.ownerPhone,
-                from: biz.twilioNumber,
+                from: biz.twilioNumber || process.env.TWILIO_PHONE_NUMBER || "",
                 body: `Callback due now: ${customerDisplay} at ${cb.customerPhone}${reasonLine}. They requested a callback for this time.`,
                 businessId: biz.id,
                 templateType: "owner_notify",
