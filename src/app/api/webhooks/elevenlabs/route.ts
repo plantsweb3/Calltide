@@ -71,16 +71,51 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Missing signature" }, { status: 401 });
   }
 
-  const expectedSig = createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
+  // ElevenLabs sends signatures in "t=<unix_ts>,v0=<hex_hmac>" format.
+  // The signed payload is "<timestamp>.<raw_body>".
   try {
-    const sigBuf = Buffer.from(signature, "hex");
+    let sigHex: string;
+    let signedPayload: string;
+
+    if (signature.includes(",") && signature.includes("=")) {
+      // Parse structured format: t=TIMESTAMP,v0=SIGNATURE
+      const parts = Object.fromEntries(
+        signature.split(",").map((p) => {
+          const idx = p.indexOf("=");
+          return [p.slice(0, idx), p.slice(idx + 1)];
+        }),
+      );
+      const timestamp = parts["t"];
+      sigHex = parts["v0"] || parts["v1"] || "";
+      if (!timestamp || !sigHex) {
+        reportWarning("ElevenLabs webhook signature missing t or v0", { signature: signature.slice(0, 30) });
+        return Response.json({ error: "Invalid signature format" }, { status: 401 });
+      }
+      // Replay protection: reject signatures older than 5 minutes
+      const age = Math.abs(Date.now() / 1000 - Number(timestamp));
+      if (age > 300) {
+        reportWarning("ElevenLabs webhook signature timestamp expired", { age });
+        return Response.json({ error: "Signature expired" }, { status: 401 });
+      }
+      signedPayload = `${timestamp}.${rawBody}`;
+    } else {
+      // Fallback: plain hex signature, sign just the body
+      sigHex = signature;
+      signedPayload = rawBody;
+    }
+
+    const expectedSig = createHmac("sha256", webhookSecret).update(signedPayload).digest("hex");
+    const sigBuf = Buffer.from(sigHex, "hex");
     const expectedBuf = Buffer.from(expectedSig, "hex");
     if (sigBuf.length !== expectedBuf.length || !timingSafeEqual(sigBuf, expectedBuf)) {
-      reportWarning("Invalid ElevenLabs webhook signature");
+      reportWarning("Invalid ElevenLabs webhook signature", { format: signature.includes(",") ? "structured" : "plain" });
       return Response.json({ error: "Invalid signature" }, { status: 401 });
     }
-  } catch {
-    reportWarning("ElevenLabs webhook signature verification error");
+  } catch (err) {
+    reportWarning("ElevenLabs webhook signature verification error", {
+      signaturePrefix: signature.slice(0, 30),
+      error: err instanceof Error ? err.message : String(err),
+    });
     return Response.json({ error: "Invalid signature" }, { status: 401 });
   }
 

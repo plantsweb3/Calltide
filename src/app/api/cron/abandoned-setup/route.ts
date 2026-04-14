@@ -14,7 +14,7 @@ import { withCronMonitor } from "@/lib/monitoring/sentry-crons";
 import { BRAND_COLOR, COMPANY_ADDRESS } from "@/lib/constants";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
-const FROM_EMAIL = "Ulysses at Capta <hello@contact.captahq.com>";
+const FROM_EMAIL = "Capta <hello@contact.captahq.com>";
 const REPLY_TO = process.env.OWNER_EMAIL || "hello@captahq.com";
 
 // ── Time Windows ──

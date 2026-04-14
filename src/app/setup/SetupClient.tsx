@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useConversation } from "@elevenlabs/react";
 import { PHONE, PHONE_TEL } from "@/lib/marketing/translations";
 import dynamic from "next/dynamic";
 import s from "./setup.module.css";
@@ -723,6 +724,246 @@ function SetupVoicePreview({ voiceId, name, lang }: { voiceId: string; name: str
   );
 }
 
+// ── SetupTestCall ──
+// Isolated sub-component so useConversation (which uses its own hooks)
+// is always called unconditionally, regardless of which setup step is active.
+interface SetupTestCallProps {
+  lang: Lang;
+  receptionistName: string;
+  onNext: () => void;
+  onBack: () => void;
+}
+
+function SetupTestCall({ lang, receptionistName, onNext, onBack }: SetupTestCallProps) {
+  const t = T[lang];
+  const name = receptionistName || "Maria";
+
+  const [callState, setCallState] = useState<"idle" | "connecting" | "active" | "ended" | "error">("idle");
+  const [elapsed, setElapsed] = useState(0);
+  const [muted, setMuted] = useState(false);
+  const startTimeRef = useRef<number>(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const conversation = useConversation({
+    micMuted: muted,
+    onConnect: () => {
+      setCallState("active");
+    },
+    onDisconnect: () => {
+      setCallState((current) => (current === "active" ? "ended" : current));
+      if (timerRef.current) clearInterval(timerRef.current);
+    },
+    onError: () => {
+      setCallState("error");
+      if (timerRef.current) clearInterval(timerRef.current);
+    },
+  });
+
+  // Elapsed timer while active
+  useEffect(() => {
+    if (callState === "active") {
+      startTimeRef.current = Date.now();
+      timerRef.current = setInterval(() => {
+        const secs = Math.floor((Date.now() - startTimeRef.current) / 1000);
+        setElapsed(secs);
+        // Auto-end at 2 minutes (same as maxDuration from API)
+        if (secs >= 120) {
+          try { conversation.endSession(); } catch { /* ignore */ }
+        }
+      }, 1000);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [callState]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Connection timeout — if stuck in "connecting" for 15s, abort
+  useEffect(() => {
+    if (callState !== "connecting") return;
+    const timeout = setTimeout(async () => {
+      try { await conversation.endSession(); } catch { /* ignore */ }
+      setCallState("error");
+    }, 15_000);
+    return () => clearTimeout(timeout);
+  }, [callState]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      try { conversation.endSession(); } catch { /* ignore */ }
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleStart = useCallback(async () => {
+    setCallState("connecting");
+    setElapsed(0);
+    try {
+      const res = await fetch("/api/setup/test-call", { method: "POST" });
+      if (!res.ok) {
+        setCallState("error");
+        return;
+      }
+      const data = await res.json();
+      await conversation.startSession({ signedUrl: data.signedUrl });
+    } catch {
+      setCallState("error");
+    }
+  }, [conversation]);
+
+  const handleEnd = useCallback(async () => {
+    try { await conversation.endSession(); } catch { /* ignore */ }
+    if (timerRef.current) clearInterval(timerRef.current);
+    setCallState("ended");
+  }, [conversation]);
+
+  const handleReset = useCallback(() => {
+    setCallState("idle");
+    setElapsed(0);
+    setMuted(false);
+  }, []);
+
+  const formatTime = (secs: number) =>
+    `${Math.floor(secs / 60)}:${(secs % 60).toString().padStart(2, "0")}`;
+
+  return (
+    <div className={s.stepContent} key="step5">
+      <h1 className={s.title}>{replaceVars(t.tryMariaTitle, { name })}</h1>
+      <p className={s.subtitle}>{replaceVars(t.tryMariaSub, { name })}</p>
+
+      <div style={{
+        background: "rgba(212,168,67,0.06)",
+        border: "1px solid rgba(212,168,67,0.2)",
+        borderRadius: 16,
+        padding: "32px 24px",
+        textAlign: "center",
+        marginTop: 16,
+      }}>
+
+        {/* IDLE */}
+        {callState === "idle" && (
+          <>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>🎙️</div>
+            <button
+              onClick={handleStart}
+              className={s.primaryBtn}
+              style={{ fontSize: 16, padding: "14px 32px" }}
+            >
+              {t.tryMariaCta}
+            </button>
+            <p style={{ color: "#64748b", fontSize: 12, marginTop: 12 }}>{t.tryMariaMicNote}</p>
+          </>
+        )}
+
+        {/* CONNECTING */}
+        {callState === "connecting" && (
+          <>
+            <div className={s.spinner} style={{ margin: "0 auto 16px" }} />
+            <p style={{ color: "#D4A843", fontSize: 16, fontWeight: 600 }}>{t.tryMariaConnecting}</p>
+          </>
+        )}
+
+        {/* ERROR */}
+        {callState === "error" && (
+          <>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>⚠️</div>
+            <p style={{ color: "#e2e8f0", fontSize: 15, fontWeight: 600, marginBottom: 8 }}>
+              {lang === "en" ? "Voice system unavailable. You can skip this step." : "Sistema de voz no disponible. Puedes omitir este paso."}
+            </p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 16 }}>
+              <button onClick={handleReset} className={s.secondaryBtn}>
+                {t.tryMariaRetry}
+              </button>
+              <button onClick={onNext} className={s.primaryBtn}>
+                {lang === "en" ? "Skip Test Call" : "Omitir Llamada de Prueba"} →
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* ACTIVE */}
+        {callState === "active" && (
+          <>
+            <div style={{
+              width: 80, height: 80, borderRadius: "50%",
+              background: "rgba(212,168,67,0.15)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              margin: "0 auto 16px",
+              animation: "pulse 1.5s ease-in-out infinite",
+            }}>
+              <span style={{ fontSize: 32 }}>🎙️</span>
+            </div>
+            <p style={{ color: "#e2e8f0", fontSize: 15, fontWeight: 500, marginBottom: 8 }}>
+              {replaceVars(t.tryMariaActive, { name })}
+            </p>
+            <p style={{ color: "#D4A843", fontSize: 24, fontWeight: 700, fontVariantNumeric: "tabular-nums", marginBottom: 16 }}>
+              {formatTime(elapsed)}
+            </p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+              <button
+                onClick={() => setMuted((m) => !m)}
+                className={s.secondaryBtn}
+                style={{ fontSize: 14 }}
+              >
+                {muted
+                  ? (lang === "en" ? "Unmute" : "Activar")
+                  : (lang === "en" ? "Mute" : "Silenciar")}
+              </button>
+              <button
+                onClick={handleEnd}
+                className={s.secondaryBtn}
+                style={{ color: "#ef4444", borderColor: "rgba(239,68,68,0.3)" }}
+              >
+                {t.tryMariaEnd}
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* ENDED */}
+        {callState === "ended" && (
+          <>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
+            <h3 style={{ color: "#fff", fontSize: 18, fontWeight: 700, margin: "0 0 8px" }}>
+              {t.tryMariaEnded}
+            </h3>
+            <p style={{ color: "#94a3b8", fontSize: 14, marginBottom: 20 }}>
+              {replaceVars(t.tryMariaEndedSub, { name })}
+            </p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+              <button onClick={handleReset} className={s.secondaryBtn}>
+                {t.tryMariaRetry}
+              </button>
+              <button onClick={onNext} className={s.primaryBtn}>
+                {t.tryMariaContinue} →
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+
+      {callState === "idle" && (
+        <button
+          onClick={onNext}
+          style={{
+            background: "none", border: "none", color: "#64748b",
+            fontSize: 14, cursor: "pointer", marginTop: 16, padding: 8,
+            textDecoration: "underline", display: "block", marginLeft: "auto", marginRight: "auto",
+          }}
+        >
+          {t.tryMariaSkip}
+        </button>
+      )}
+
+      <div style={{ marginTop: 12 }}>
+        <button onClick={onBack} className={s.backBtn}>{t.back}</button>
+      </div>
+    </div>
+  );
+}
+
 function SetupClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -781,12 +1022,6 @@ function SetupClient() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [tradeData, setTradeData] = useState<TradeData | null>(null);
 
-  // Test call
-  const [testCallState, setTestCallState] = useState<"idle" | "connecting" | "active" | "ended" | "error">("idle");
-  const [testCallTimer, setTestCallTimer] = useState(90);
-  const testCallTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const testCallAudioRef = useRef<{ disconnect: () => void } | null>(null);
-  const testCallConnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Audio preview
   const [previewPlaying, setPreviewPlaying] = useState(false);
@@ -818,8 +1053,6 @@ function SetupClient() {
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       if (toastInnerTimerRef.current) clearTimeout(toastInnerTimerRef.current);
       if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-      if (testCallTimerRef.current) clearInterval(testCallTimerRef.current);
-      if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
     };
   }, []);
 
@@ -1808,174 +2041,12 @@ function SetupClient() {
 
         {/* ── STEP 5: Try Maria (test call) ── */}
         {step === 5 && (
-          <div className={s.stepContent} key="step5">
-            <h1 className={s.title}>{replaceVars(t.tryMariaTitle, { name: receptionistName || "Maria" })}</h1>
-            <p className={s.subtitle}>{replaceVars(t.tryMariaSub, { name: receptionistName || "Maria" })}</p>
-
-            <div style={{
-              background: "rgba(212,168,67,0.06)",
-              border: "1px solid rgba(212,168,67,0.2)",
-              borderRadius: 16,
-              padding: "32px 24px",
-              textAlign: "center",
-              marginTop: 16,
-            }}>
-              {testCallState === "idle" && (
-                <>
-                  <div style={{ fontSize: 48, marginBottom: 16 }}>🎙️</div>
-                  <button
-                    onClick={async () => {
-                      setTestCallState("connecting");
-                      // 15-second timeout for connecting state
-                      if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
-                      testCallConnectTimeoutRef.current = setTimeout(() => {
-                        setTestCallState((current) => current === "connecting" ? "error" : current);
-                      }, 15000);
-                      try {
-                        const res = await fetch("/api/setup/test-call", { method: "POST" });
-                        if (!res.ok) {
-                          if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
-                          setTestCallState("error");
-                          return;
-                        }
-                        const data = await res.json();
-                        // Connection established — start the test call session
-                        if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
-                        setTestCallState("active");
-                        setTestCallTimer(90);
-                        // Start countdown
-                        if (testCallTimerRef.current) clearInterval(testCallTimerRef.current);
-                        testCallTimerRef.current = setInterval(() => {
-                          setTestCallTimer((prev) => {
-                            if (prev <= 1) {
-                              if (testCallTimerRef.current) clearInterval(testCallTimerRef.current);
-                              setTestCallState("ended");
-                              return 0;
-                            }
-                            return prev - 1;
-                          });
-                        }, 1000);
-                      } catch {
-                        if (testCallConnectTimeoutRef.current) clearTimeout(testCallConnectTimeoutRef.current);
-                        setTestCallState("error");
-                      }
-                    }}
-                    className={s.primaryBtn}
-                    style={{ fontSize: 16, padding: "14px 32px" }}
-                  >
-                    {t.tryMariaCta}
-                  </button>
-                  <p style={{ color: "#64748b", fontSize: 12, marginTop: 12 }}>{t.tryMariaMicNote}</p>
-                </>
-              )}
-
-              {testCallState === "error" && (
-                <>
-                  <div style={{ fontSize: 48, marginBottom: 12 }}>⚠️</div>
-                  <p style={{ color: "#e2e8f0", fontSize: 15, fontWeight: 600, marginBottom: 8 }}>
-                    {lang === "en" ? "Voice system unavailable. You can skip this step." : "Sistema de voz no disponible. Puedes omitir este paso."}
-                  </p>
-                  <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 16 }}>
-                    <button
-                      onClick={() => { setTestCallState("idle"); }}
-                      className={s.secondaryBtn}
-                    >
-                      {t.tryMariaRetry}
-                    </button>
-                    <button
-                      onClick={() => setStep(6)}
-                      className={s.primaryBtn}
-                    >
-                      {lang === "en" ? "Skip Test Call" : "Omitir Llamada de Prueba"} →
-                    </button>
-                  </div>
-                </>
-              )}
-
-              {testCallState === "connecting" && (
-                <>
-                  <div className={s.spinner} style={{ margin: "0 auto 16px" }} />
-                  <p style={{ color: "#D4A843", fontSize: 16, fontWeight: 600 }}>{t.tryMariaConnecting}</p>
-                </>
-              )}
-
-              {testCallState === "active" && (
-                <>
-                  <div style={{
-                    width: 80, height: 80, borderRadius: "50%",
-                    background: "rgba(212,168,67,0.15)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    margin: "0 auto 16px",
-                    animation: "pulse 1.5s ease-in-out infinite",
-                  }}>
-                    <span style={{ fontSize: 32 }}>🎙️</span>
-                  </div>
-                  <p style={{ color: "#e2e8f0", fontSize: 15, fontWeight: 500, marginBottom: 8 }}>
-                    {replaceVars(t.tryMariaActive, { name: receptionistName || "Maria" })}
-                  </p>
-                  <p style={{ color: "#D4A843", fontSize: 24, fontWeight: 700, fontVariantNumeric: "tabular-nums", marginBottom: 16 }}>
-                    {Math.floor(testCallTimer / 60)}:{(testCallTimer % 60).toString().padStart(2, "0")}
-                  </p>
-                  <button
-                    onClick={() => {
-                      if (testCallTimerRef.current) clearInterval(testCallTimerRef.current);
-                      setTestCallState("ended");
-                    }}
-                    className={s.secondaryBtn}
-                    style={{ color: "#ef4444", borderColor: "rgba(239,68,68,0.3)" }}
-                  >
-                    {t.tryMariaEnd}
-                  </button>
-                </>
-              )}
-
-              {testCallState === "ended" && (
-                <>
-                  <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
-                  <h3 style={{ color: "#fff", fontSize: 18, fontWeight: 700, margin: "0 0 8px" }}>
-                    {t.tryMariaEnded}
-                  </h3>
-                  <p style={{ color: "#94a3b8", fontSize: 14, marginBottom: 20 }}>
-                    {replaceVars(t.tryMariaEndedSub, { name: receptionistName || "Maria" })}
-                  </p>
-                  <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                    <button
-                      onClick={() => {
-                        setTestCallState("idle");
-                        setTestCallTimer(90);
-                      }}
-                      className={s.secondaryBtn}
-                    >
-                      {t.tryMariaRetry}
-                    </button>
-                    <button
-                      onClick={() => setStep(6)}
-                      className={s.primaryBtn}
-                    >
-                      {t.tryMariaContinue} →
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {testCallState === "idle" && (
-              <button
-                onClick={() => setStep(6)}
-                style={{
-                  background: "none", border: "none", color: "#64748b",
-                  fontSize: 14, cursor: "pointer", marginTop: 16, padding: 8,
-                  textDecoration: "underline", display: "block", marginLeft: "auto", marginRight: "auto",
-                }}
-              >
-                {t.tryMariaSkip}
-              </button>
-            )}
-
-            <div style={{ marginTop: 12 }}>
-              <button onClick={() => setStep(4)} className={s.backBtn}>{t.back}</button>
-            </div>
-          </div>
+          <SetupTestCall
+            lang={lang}
+            receptionistName={receptionistName}
+            onNext={() => setStep(6)}
+            onBack={() => setStep(4)}
+          />
         )}
 
         {/* ── STEP 6: Hire / Checkout ── */}

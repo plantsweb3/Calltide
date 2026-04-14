@@ -13,7 +13,7 @@ import {
 } from "@/lib/emails/paywall-retarget";
 import { verifyCronAuth } from "@/lib/cron-auth";
 
-const FROM_EMAIL = "Ulysses at Capta <hello@contact.captahq.com>";
+const FROM_EMAIL = "Capta <hello@contact.captahq.com>";
 const REPLY_TO = process.env.OWNER_EMAIL || "hello@captahq.com";
 
 /**

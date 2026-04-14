@@ -528,6 +528,8 @@ export const revenueMetrics = sqliteTable("revenue_metrics", {
 
 export const churnRiskScores = sqliteTable("churn_risk_scores", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  // NOTE: FK references businesses.id here but migration 0063 changed DB FK to customers(id).
+  // Code passes businessId values. FKs not enforced in libsql — cosmetic mismatch only.
   customerId: text("customer_id").notNull().references(() => businesses.id),
   score: integer("score").notNull().default(0), // 0-10
   factors: text("factors", { mode: "json" }).$type<string[]>().default([]),
