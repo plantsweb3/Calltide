@@ -5,7 +5,7 @@ import { env } from "@/lib/env";
 import { logAgentActivity } from "./tools";
 import { reportError, reportWarning } from "@/lib/error-reporting";
 import { createNotification } from "@/lib/notifications";
-import { getAnthropic, HAIKU_MODEL } from "@/lib/ai/client";
+import { getAnthropic, isAnthropicConfigured, HAIKU_MODEL } from "@/lib/ai/client";
 
 const CLAUDE_MODEL = env.CLAUDE_MODEL ?? HAIKU_MODEL;
 
@@ -104,6 +104,12 @@ export async function triggerQaIfNewClient(
       callRecord.sentiment === "negative" || !!callRecord.transferRequested;
     const randomSample = Math.random() < 0.1;
     if (!shouldReview && !randomSample) return;
+  }
+
+  // Graceful degrade: skip QA scoring when Anthropic key is missing.
+  if (!isAnthropicConfigured()) {
+    reportWarning("QA agent skipped — Anthropic not configured", { callId: callRecord.id });
+    return;
   }
 
   try {

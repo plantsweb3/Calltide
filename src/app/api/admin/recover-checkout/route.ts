@@ -324,9 +324,6 @@ export async function POST(req: NextRequest) {
     }, { status: 201 });
   } catch (err) {
     reportError("[admin] Checkout recovery failed", err);
-    return NextResponse.json(
-      { error: "Recovery failed", detail: err instanceof Error ? err.message : "Unknown error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Recovery failed" }, { status: 500 });
   }
 }

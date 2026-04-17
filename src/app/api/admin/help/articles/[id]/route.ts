@@ -1,8 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { helpArticles, helpArticleFeedback } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+
+const articleUpdateSchema = z.object({
+  categoryId: z.string().uuid().optional(),
+  slug: z.string().min(1).max(200).optional(),
+  title: z.string().min(1).max(300).optional(),
+  titleEs: z.string().max(300).nullable().optional(),
+  excerpt: z.string().max(500).nullable().optional(),
+  excerptEs: z.string().max(500).nullable().optional(),
+  content: z.string().max(100_000).optional(),
+  contentEs: z.string().max(100_000).nullable().optional(),
+  metaTitle: z.string().max(70).nullable().optional(),
+  metaTitleEs: z.string().max(70).nullable().optional(),
+  metaDescription: z.string().max(200).nullable().optional(),
+  metaDescriptionEs: z.string().max(200).nullable().optional(),
+  searchKeywords: z.string().max(500).nullable().optional(),
+  searchKeywordsEs: z.string().max(500).nullable().optional(),
+  relatedArticles: z.array(z.string().uuid()).max(20).nullable().optional(),
+  dashboardContextRoutes: z.array(z.string().max(200)).max(50).nullable().optional(),
+  status: z.enum(["draft", "published", "archived"]).optional(),
+  sortOrder: z.number().int().optional(),
+});
 
 /**
  * GET /api/admin/help/articles/[id]
@@ -53,13 +75,20 @@ export async function PATCH(
       return NextResponse.json({ error: "Article not found" }, { status: 404 });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let body: any;
+    let rawBody: unknown;
     try {
-      body = await req.json();
+      rawBody = await req.json();
     } catch {
       return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
     }
+    const parsed = articleUpdateSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues.map((i) => i.message).join(", ") },
+        { status: 400 },
+      );
+    }
+    const body = parsed.data;
     const updates: Record<string, unknown> = {
       updatedAt: new Date().toISOString(),
     };
@@ -72,8 +101,7 @@ export async function PATCH(
     if (body.excerptEs !== undefined) updates.excerptEs = body.excerptEs;
     if (body.content !== undefined) {
       updates.content = body.content;
-      // Recalculate reading time when content changes
-      if (typeof body.content === "string" && body.content.trim()) {
+      if (body.content.trim()) {
         const wordCount = body.content.trim().split(/\s+/).length;
         updates.readingTimeMinutes = Math.max(1, Math.ceil(wordCount / 200));
       }

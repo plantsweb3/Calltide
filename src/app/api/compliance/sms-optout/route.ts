@@ -5,7 +5,7 @@ import { smsOptOuts } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revokeConsent } from "@/lib/compliance/consent";
 import { normalizePhone } from "@/lib/compliance/sms";
-import { reportWarning } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 
 const STOP_KEYWORDS = ["STOP", "QUIT", "END", "REVOKE", "OPT OUT", "CANCEL", "UNSUBSCRIBE"];
 const START_KEYWORDS = ["START", "YES", "UNSTOP"];
@@ -21,15 +21,17 @@ export async function POST(req: NextRequest) {
     params[key] = String(value);
   }
 
-  // Verify Twilio signature
+  // Verify Twilio signature — fail closed if token missing
   const authToken = process.env.TWILIO_AUTH_TOKEN;
-  if (authToken) {
-    const signature = req.headers.get("x-twilio-signature") || "";
-    const url = `${process.env.NEXT_PUBLIC_APP_URL}/api/compliance/sms-optout`;
-    if (!twilio.validateRequest(authToken, signature, url, params)) {
-      reportWarning("Invalid Twilio signature on sms-optout webhook");
-      return new Response("Forbidden", { status: 403 });
-    }
+  if (!authToken) {
+    reportError("TWILIO_AUTH_TOKEN not set — sms-optout webhook cannot verify signature", null);
+    return new Response("Service Unavailable", { status: 503 });
+  }
+  const signature = req.headers.get("x-twilio-signature") || "";
+  const url = `${process.env.NEXT_PUBLIC_APP_URL}/api/compliance/sms-optout`;
+  if (!twilio.validateRequest(authToken, signature, url, params)) {
+    reportWarning("Invalid Twilio signature on sms-optout webhook");
+    return new Response("Forbidden", { status: 403 });
   }
 
   const from = params.From || "";

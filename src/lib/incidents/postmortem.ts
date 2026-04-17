@@ -6,7 +6,8 @@ import { env } from "@/lib/env";
 import { formatDuration } from "./engine";
 import { notifyClients, notifySubscribers } from "./notifications";
 import { reportError } from "@/lib/error-reporting";
-import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
+import { getAnthropic, isAnthropicConfigured, SONNET_MODEL } from "@/lib/ai/client";
+import { reportWarning } from "@/lib/error-reporting";
 
 const CLAUDE_MODEL = env.CLAUDE_MODEL ?? SONNET_MODEL;
 
@@ -74,6 +75,12 @@ Write the postmortem with these sections:
 ## Action Items
 
 Keep it professional, factual, and under 500 words.`;
+
+  // Graceful degrade: skip postmortem generation when Anthropic isn't configured.
+  if (!isAnthropicConfigured()) {
+    reportWarning(`Postmortem generation skipped — Anthropic not configured`, { incidentId });
+    return;
+  }
 
   try {
     const client = getAnthropic();

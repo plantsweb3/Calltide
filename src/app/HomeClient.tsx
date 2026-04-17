@@ -1,30 +1,32 @@
 "use client";
 
+/**
+ * Capta homepage — workwear/software direction.
+ * Cream paper, editorial serif display where warranted, tabular mono for
+ * money, hairline rules. Honest claims. Zero fake testimonials, zero fake
+ * metrics, zero magazine affectation.
+ */
+
 import { useState, useEffect, useCallback } from "react";
-import { motion, MotionConfig } from "framer-motion";
-import dynamic from "next/dynamic";
-
-import { T, PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
-import { useScrolled, useScrollReveal } from "@/lib/marketing/hooks";
-import { HERO_FEATURE_ICONS, STEP_ICONS } from "@/components/marketing/icons";
 import Image from "next/image";
-import { SpotlightCard } from "@/components/marketing/SpotlightCard";
-import { Counter } from "@/components/marketing/Counter";
-import { ROICalculator } from "@/components/marketing/ROICalculator";
-import RevenueCycle from "@/components/marketing/RevenueCycle";
-import CallShowcase from "@/components/marketing/CallShowcase";
-import { FAQ } from "@/components/marketing/FAQ";
-import { MissedCallCalculator } from "@/components/marketing/MissedCallCalculator";
-import { MobileCTA } from "@/components/marketing/MobileCTA";
-import { Nav } from "@/components/marketing/Nav";
-import { Footer } from "@/components/marketing/Footer";
-import ErrorBoundary from "@/components/error-boundary";
-
-const MariaDemoWidget = dynamic(() => import("@/components/marketing/MariaDemoWidget"), { ssr: false, loading: () => null });
-
-/* ═══════════════════════════════════════════════════════════════
-   PAGE
-   ═══════════════════════════════════════════════════════════════ */
+import { PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
+import {
+  C,
+  Mono,
+  Kicker,
+  Rule,
+  PrimaryButton,
+  SecondaryButton,
+  FieldFrame,
+  FieldNav,
+  FieldFooter,
+  DisplayH1,
+  DisplayH2,
+  Serif,
+  TrustStrip,
+  DemoCtaPair,
+  SkipLink,
+} from "@/components/marketing/field";
 
 export type BlogPostPreview = {
   slug: string;
@@ -35,648 +37,1332 @@ export type BlogPostPreview = {
   publishedAt: string | null;
 };
 
-const CATEGORY_LABELS: Record<string, string> = {
-  pillar: "Pillar", "data-driven": "Data", comparison: "Comparison",
-  "city-specific": "Local", "problem-solution": "Guide", "buying-guide": "Buyer's Guide",
-  "vertical-specific": "By Trade", "pain-point": "Pain Point",
+/* ═══════════════════════════════════════════════════════════════
+   BILINGUAL COPY
+   ═══════════════════════════════════════════════════════════════ */
+
+type PricingPlan = {
+  billing: "monthly" | "annual";
+  price: string;
+  period: string;
+  note: string;
 };
 
-export default function LandingPage({ latestPosts = [] }: { latestPosts?: BlogPostPreview[] }) {
-  const [lang, setLang] = useState<Lang>("en");
-  const [planChoice, setPlanChoice] = useState<"monthly" | "annual">("annual");
-  const scrolled = useScrolled();
-  useScrollReveal();
+type ReplacesColumn = { label: string; cost: string; footnote: string; highlight?: boolean };
+type ReplacesRow = { label: string; values: (boolean | string)[] };
 
-  // Persist language preference
+type Copy = {
+  hero: {
+    kicker: string;
+    h1a: string;
+    h1b: string;
+    sub: string;
+    priceLabel: string;
+    priceAmount: string;
+    pricePeriod: string;
+    priceAside: string;
+    primaryCta: string;
+    secondaryCta: string;
+    phone: string;
+    phoneHref: string;
+    trust: string[];
+  };
+  demo: {
+    kicker: string;
+    h2: string;
+    sub: string;
+    primary: string;
+    secondary: string;
+    note: string;
+  };
+  proof: {
+    kicker: string;
+    h2: string;
+    sub: string;
+    earlyLabel: string;
+    earlyH: string;
+    earlyBody: string;
+    earlyCta: string;
+    earlyCtaHref: string;
+  };
+  sms: {
+    kicker: string;
+    h2: string;
+    sub: string;
+    maria: string;
+    mariaRole: string;
+    thread: { from: "you" | "maria"; time: string; text: string }[];
+    exampleNote: string;
+    bullets: string[];
+  };
+  replaces: {
+    kicker: string;
+    h2: string;
+    sub: string;
+    optionHeader: string;
+    perMonth: string;
+    columns: ReplacesColumn[];
+    rows: ReplacesRow[];
+    footnoteLabel: string;
+    sourceNote: string;
+  };
+  pricing: {
+    kicker: string;
+    h2: string;
+    sub: string;
+    perLocation: string;
+    monthlyTab: string;
+    annualTab: string;
+    included: string;
+    items: string[];
+    guarantee: string;
+    callNow: string;
+    plans: PricingPlan[];
+  };
+  cta: { kicker: string; h2: string; sub: string; callLabel: string; startFree: string; bookDemo: string };
+};
+
+const COPY: Record<Lang, Copy> = {
+  en: {
+    hero: {
+      kicker: "The bilingual receptionist",
+      h1a: "Your phone rings.",
+      h1b: "She answers.",
+      sub:
+        "Capta is a bilingual AI receptionist that books your jobs, recovers your missed calls, and runs your front office from text messages. Answers every call, in English or Spanish, at $497 a month.",
+      priceLabel: "Flat rate, unlimited calls",
+      priceAmount: "$497",
+      pricePeriod: "/ month",
+      priceAside: "No per-minute billing. Cancel any time with a text.",
+      primaryCta: "Start 14-day free trial",
+      secondaryCta: "Or call the live line — you'll talk to Maria",
+      phone: PHONE,
+      phoneHref: PHONE_TEL,
+      trust: ["14-day trial", "No per-minute billing", "Cancel with one text"],
+    },
+    demo: {
+      kicker: "Try her live",
+      h2: "Call the number. She picks up.",
+      sub:
+        "This is the cleanest way to evaluate Capta. Call the line below and talk to Maria as if you were a customer. She'll answer in under two rings. You'll know inside a minute whether this is real.",
+      primary: "Start 14-day free trial",
+      secondary: "Or get a free call audit",
+      note: "Available 24/7 in English and Spanish. Your call is routed to our demo line.",
+    },
+    proof: {
+      kicker: "Customers",
+      h2: "Honest about where we are.",
+      sub:
+        "We're a small team shipping to a small but growing group of contractors in Texas. Below is the current state — not a polished testimonial wall.",
+      earlyLabel: "Early customer program",
+      earlyH: "Talk to one of our contractors before you buy.",
+      earlyBody:
+        "We'll connect you with a current customer in your trade — plumbing, HVAC, electrical, roofing, or general — and you can ask them anything. No sales pitch, no screening, no script. The only ask is that you do the same for the next contractor in line if you become a customer.",
+      earlyCta: "Request a reference call",
+      earlyCtaHref: "mailto:hello@captahq.com?subject=Reference%20call%20request",
+    },
+    sms: {
+      kicker: "Run the office from SMS",
+      h2: "Dispatch. Invoice. Schedule. One text.",
+      sub:
+        "Once a call lands, Maria texts you the job card. You reply with the action — confirm, reassign, call back — and she runs it. Below is an example of the thread you'd see.",
+      maria: "Maria",
+      mariaRole: "AI receptionist · English & Spanish",
+      thread: [
+        { from: "maria", time: "2:08 PM", text: "New job: drain clog at 4521 Oak Lane. ETA 2:15 today. Homeowner is Rick J. Estimate $185–$240." },
+        { from: "maria", time: "2:08 PM", text: "Reply 1 to confirm. 2 to reassign. 3 to call him first." },
+        { from: "you", time: "2:09 PM", text: "1" },
+        { from: "maria", time: "2:09 PM", text: "Confirmed. Rick got the window, Mike is en route. I'll send the invoice when he marks it complete." },
+        { from: "you", time: "3:41 PM", text: "How'd this week go" },
+        { from: "maria", time: "3:41 PM", text: "47 calls answered. 12 estimates sent. 8 booked. Three missed-call recoveries converted." },
+      ],
+      exampleNote: "Example thread. Numbers shown are illustrative.",
+      bullets: [
+        "Answers every call, takes job details, sends estimates",
+        "Texts you a one-tap job card when something lands",
+        "Recovers missed callers inside 60 seconds",
+        "Briefings in the morning, digest on Friday, summary at month-end",
+      ],
+    },
+    replaces: {
+      kicker: "The math",
+      h2: "What $497 a month replaces.",
+      sub: "The other options aren't bad. They're just more expensive, partial, or both.",
+      optionHeader: "Option",
+      perMonth: "/ month",
+      columns: [
+        { label: "Bilingual receptionist", cost: "$3,600", footnote: "Estimated fully-loaded monthly cost of a full-time bilingual receptionist in Texas, based on typical wage + benefits. Your market may vary." },
+        { label: "Answering service", cost: "~$900", footnote: "Typical per-minute billing at ~300 minutes/month with a mid-tier provider. Does not book appointments or send estimates." },
+        { label: "Voicemail", cost: "$0", footnote: "Free to run. Industry consensus is that most callers do not leave voicemails and call a competitor instead." },
+        { label: "Capta", cost: "$497", footnote: "Flat. Unlimited calls. One plan.", highlight: true },
+      ],
+      rows: [
+        { label: "Answers 24 / 7", values: [false, true, false, true] },
+        { label: "Bilingual EN / ES", values: ["costly", "rare", false, true] },
+        { label: "Books appointments", values: ["sometimes", false, false, true] },
+        { label: "Generates estimates", values: [false, false, false, true] },
+        { label: "Texts you job cards", values: [false, false, false, true] },
+        { label: "Recovers missed callers", values: [false, false, false, true] },
+        { label: "Never sick, never quits", values: [false, "partial", "—", true] },
+      ],
+      footnoteLabel: "Notes",
+      sourceNote:
+        "Comparison figures are good-faith estimates of common market alternatives. Actual costs vary by location and provider. See footnotes for sourcing on each column.",
+    },
+    pricing: {
+      kicker: "Pricing",
+      h2: "One rate. One plan. One receptionist.",
+      sub:
+        "Unlimited calls, unlimited SMS, unlimited tools. We don't meter. We don't upsell. The only upgrade is annual, which saves you $1,200.",
+      perLocation: "Per location · Unlimited calls",
+      monthlyTab: "Monthly",
+      annualTab: "Annual · save $1,200",
+      included: "Included",
+      items: [
+        "24 / 7 bilingual AI receptionist on your number",
+        "SMS job cards the instant a call converts",
+        "Estimates, intake, booking, rescheduling, cancellations",
+        "Missed-call recovery within 60 seconds",
+        "Text-to-dispatch, text-to-invoice, text-to-report",
+        "Monthly summary and weekly digest",
+        "Unlimited calls and SMS — no per-minute billing",
+      ],
+      guarantee: "14 days free. Cancel with one text. Keep going only if it's earning its keep.",
+      callNow: "Call her now",
+      plans: [
+        { billing: "monthly", price: "$497", period: "/ month", note: "Paid monthly" },
+        { billing: "annual", price: "$397", period: "/ month", note: "Billed $4,764 annually · save $1,200" },
+      ],
+    },
+    cta: {
+      kicker: "Or just call her.",
+      h2: "She will answer this phone, in this moment, in English or Spanish.",
+      sub: "Two weeks free. Cancel with one text. Your number stays yours.",
+      callLabel: "Call the live line",
+      startFree: "Start 14-day free trial",
+      bookDemo: "Get a free call audit",
+    },
+  },
+  es: {
+    hero: {
+      kicker: "La recepcionista bilingüe",
+      h1a: "Suena tu teléfono.",
+      h1b: "Ella contesta.",
+      sub:
+        "Capta es una recepcionista IA bilingüe que agenda tus trabajos, recupera tus llamadas perdidas, y maneja tu oficina desde mensajes de texto. Contesta cada llamada, en inglés o español, por $497 al mes.",
+      priceLabel: "Tarifa fija, llamadas ilimitadas",
+      priceAmount: "$497",
+      pricePeriod: "/ mes",
+      priceAside: "Sin cobro por minuto. Cancela con un mensaje.",
+      primaryCta: "Comienza tu prueba gratis de 14 días",
+      secondaryCta: "O llama a la línea — vas a hablar con Maria",
+      phone: PHONE,
+      phoneHref: PHONE_TEL,
+      trust: ["Prueba de 14 días", "Sin cobro por minuto", "Cancela con un mensaje"],
+    },
+    demo: {
+      kicker: "Pruébala en vivo",
+      h2: "Llama al número. Contesta.",
+      sub:
+        "Esta es la forma más limpia de evaluar Capta. Llama a la línea de abajo y habla con Maria como si fueras un cliente. Contesta en menos de dos timbres. Vas a saber en un minuto si esto es real.",
+      primary: "Comienza tu prueba gratis de 14 días",
+      secondary: "O pide una auditoría gratis",
+      note: "Disponible 24/7 en inglés y español. Tu llamada se dirige a nuestra línea demo.",
+    },
+    proof: {
+      kicker: "Clientes",
+      h2: "Honestos sobre dónde estamos.",
+      sub:
+        "Somos un equipo pequeño enviando a un grupo pequeño pero creciente de contratistas en Texas. Abajo está el estado actual — no un muro pulido de testimonios.",
+      earlyLabel: "Programa de clientes tempranos",
+      earlyH: "Habla con uno de nuestros contratistas antes de comprar.",
+      earlyBody:
+        "Te conectamos con un cliente actual en tu oficio — plomería, HVAC, eléctrico, techos, o general — y puedes preguntarle lo que quieras. Sin pitch de ventas, sin filtro, sin guion. Lo único que pedimos es que hagas lo mismo por el siguiente contratista en la fila si te vuelves cliente.",
+      earlyCta: "Solicitar llamada de referencia",
+      earlyCtaHref: "mailto:hello@captahq.com?subject=Solicitud%20de%20llamada%20de%20referencia",
+    },
+    sms: {
+      kicker: "Maneja la oficina por SMS",
+      h2: "Despacha. Factura. Agenda. Un mensaje.",
+      sub:
+        "Una vez que entra una llamada, Maria te manda la tarjeta de trabajo. Respondes con la acción — confirmar, reasignar, llamar de regreso — y ella lo maneja. Abajo hay un ejemplo del hilo que verías.",
+      maria: "Maria",
+      mariaRole: "Recepcionista IA · Inglés y español",
+      thread: [
+        { from: "maria", time: "2:08 PM", text: "Trabajo nuevo: tubería tapada en 4521 Oak Lane. Llegada 2:15 hoy. Cliente: Rick J. Estimado $185–$240." },
+        { from: "maria", time: "2:08 PM", text: "Responde 1 para confirmar. 2 para reasignar. 3 para llamarle primero." },
+        { from: "you", time: "2:09 PM", text: "1" },
+        { from: "maria", time: "2:09 PM", text: "Confirmado. Rick tiene la ventana, Mike va en camino. Te mando la factura cuando la marque completa." },
+        { from: "you", time: "3:41 PM", text: "Cómo nos fue esta semana" },
+        { from: "maria", time: "3:41 PM", text: "47 llamadas contestadas. 12 estimados enviados. 8 agendados. Tres recuperaciones de llamada convertidas." },
+      ],
+      exampleNote: "Hilo de ejemplo. Los números mostrados son ilustrativos.",
+      bullets: [
+        "Contesta cada llamada, toma detalles, envía estimados",
+        "Te manda una tarjeta de trabajo de un toque cuando entra algo",
+        "Recupera llamadas perdidas en menos de 60 segundos",
+        "Resumen en la mañana, digest el viernes, resumen a fin de mes",
+      ],
+    },
+    replaces: {
+      kicker: "Las cuentas",
+      h2: "Lo que reemplazan $497 al mes.",
+      sub: "Las otras opciones no son malas. Solo son más caras, parciales, o ambas.",
+      optionHeader: "Opción",
+      perMonth: "/ mes",
+      columns: [
+        { label: "Recepcionista bilingüe", cost: "$3,600", footnote: "Estimado mensual con carga total de una recepcionista bilingüe a tiempo completo en Texas, basado en sueldo típico + beneficios. Tu mercado puede variar." },
+        { label: "Servicio de contestadoras", cost: "~$900", footnote: "Cobro típico por minuto a ~300 min/mes con un proveedor medio. No agenda citas ni envía estimados." },
+        { label: "Buzón de voz", cost: "$0", footnote: "Gratis de operar. El consenso de la industria es que la mayoría no deja mensaje y llama a un competidor." },
+        { label: "Capta", cost: "$497", footnote: "Fijo. Llamadas ilimitadas. Un plan.", highlight: true },
+      ],
+      rows: [
+        { label: "Contesta 24 / 7", values: [false, true, false, true] },
+        { label: "Bilingüe EN / ES", values: ["caro", "raro", false, true] },
+        { label: "Agenda citas", values: ["a veces", false, false, true] },
+        { label: "Genera estimados", values: [false, false, false, true] },
+        { label: "Envía tarjetas de trabajo", values: [false, false, false, true] },
+        { label: "Recupera llamadas perdidas", values: [false, false, false, true] },
+        { label: "Nunca se enferma, nunca renuncia", values: [false, "parcial", "—", true] },
+      ],
+      footnoteLabel: "Notas",
+      sourceNote:
+        "Las cifras comparativas son estimaciones de buena fe de alternativas de mercado comunes. Los costos reales varían por ubicación y proveedor. Ver notas al pie para la fuente de cada columna.",
+    },
+    pricing: {
+      kicker: "Precios",
+      h2: "Una tarifa. Un plan. Una recepcionista.",
+      sub:
+        "Llamadas ilimitadas, SMS ilimitados, herramientas ilimitadas. No cobramos por uso. No vendemos extras. La única mejora es anual, que te ahorra $1,200.",
+      perLocation: "Por ubicación · Llamadas ilimitadas",
+      monthlyTab: "Mensual",
+      annualTab: "Anual · ahorra $1,200",
+      included: "Incluido",
+      items: [
+        "Recepcionista IA bilingüe 24/7 en tu número",
+        "Tarjetas SMS el instante que una llamada convierte",
+        "Estimados, admisión, citas, reprogramaciones, cancelaciones",
+        "Recuperación de llamada perdida en menos de 60 segundos",
+        "Texto para despachar, facturar, y reportar",
+        "Resumen mensual y digest semanal",
+        "Llamadas y SMS ilimitados — sin cobro por minuto",
+      ],
+      guarantee: "14 días gratis. Cancela con un mensaje. Sigue solo si está generando su pago.",
+      callNow: "Llámale ahora",
+      plans: [
+        { billing: "monthly", price: "$497", period: "/ mes", note: "Pago mensual" },
+        { billing: "annual", price: "$397", period: "/ mes", note: "Facturado $4,764 al año · ahorra $1,200" },
+      ],
+    },
+    cta: {
+      kicker: "O simplemente llámale.",
+      h2: "Ella contestará este teléfono, en este momento, en inglés o español.",
+      sub: "Dos semanas gratis. Cancela con un mensaje. Tu número sigue siendo tuyo.",
+      callLabel: "Llama a la línea",
+      startFree: "Comenzar prueba gratis de 14 días",
+      bookDemo: "Pedir auditoría gratis",
+    },
+  },
+};
+
+const LANG_KEY = "capta-lang";
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE
+   ═══════════════════════════════════════════════════════════════ */
+
+export default function LandingPage({
+  initialLang,
+  latestPosts = [],
+}: {
+  latestPosts?: BlogPostPreview[];
+  initialLang?: Lang;
+} = {}) {
+  const [lang, setLang] = useState<Lang>(initialLang ?? "en");
+
+  useEffect(() => {
+    if (initialLang) return;
+    if (typeof window === "undefined") return;
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === "en" || saved === "es") setLang(saved);
+  }, [initialLang]);
+
   const toggleLang = useCallback((l: Lang) => {
     setLang(l);
-    if (typeof window !== "undefined") localStorage.setItem("capta-lang", l);
+    if (typeof window !== "undefined") localStorage.setItem(LANG_KEY, l);
   }, []);
 
-  // Restore saved language on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("capta-lang");
-    if (saved === "en" || saved === "es") setLang(saved);
-  }, []);
-
-  const t = T[lang];
+  const t = COPY[lang];
 
   return (
-    <MotionConfig reducedMotion="user">
-    <div className="relative overflow-x-hidden">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            name: "Capta",
-            applicationCategory: "BusinessApplication",
-            operatingSystem: "Web",
-            offers: { "@type": "Offer", price: "497", priceCurrency: "USD", priceValidUntil: "2027-12-31" },
-            description: "AI front office for home service businesses. Answers calls, generates estimates, recovers missed calls, and manages follow-ups — in English and Spanish, 24/7.",
-          }),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            mainEntity: T.en.faq.items.map((item) => ({
-              "@type": "Question",
-              name: item.q,
-              acceptedAnswer: { "@type": "Answer", text: item.a },
-            })),
-          }),
-        }}
-      />
-      <MobileCTA lang={lang} />
+    <FieldFrame>
+      <JsonLd lang={lang} />
+      <SkipLink lang={lang} />
+      <FieldNav lang={lang} toggleLang={toggleLang} phone={PHONE} phoneHref={PHONE_TEL} />
 
-      {/* ── NAVIGATION ── */}
-      <Nav lang={lang} toggleLang={toggleLang} scrolled={scrolled} />
+      <main id="main">
+        <Hero t={t} />
+        <TrustStrip lang={lang} />
+        <DemoBand t={t} />
+        <Rule />
+        <ProofBand t={t} />
+        <Rule />
+        <SmsBand t={t} />
+        <Rule />
+        <ReplacesTable t={t} />
+        <Rule />
+        <Pricing t={t} />
+        {latestPosts.length > 0 && (
+          <>
+            <Rule />
+            <LatestPosts lang={lang} posts={latestPosts} />
+          </>
+        )}
+        <Rule />
+        <FinalCta t={t} lang={lang} />
+      </main>
 
-      {/* ── 1. HERO ── */}
-      <section className="relative overflow-hidden grain-overlay">
-        <Image src="/images/grit-hvac.webp" alt="" fill className="object-cover object-center" priority />
-        <div className="hero-bg-overlay absolute inset-0" />
-        <div className="section-fade-bottom" />
-        <div className="relative z-10 mx-auto max-w-6xl px-6 sm:px-8 py-24 sm:py-32">
-          <div className="grid items-center gap-16 md:grid-cols-5">
-            <div className="md:col-span-3">
-              <div className="hero-glass">
-                <a href="/status" className="group inline-flex items-center gap-2 mb-6">
-                  <span className="status-dot" />
-                  <span className="text-xs font-medium tracking-wide text-slate-400 transition group-hover:text-white">{lang === "en" ? "Answering calls and running your office right now" : "Contestando llamadas y manejando tu oficina ahora"}</span>
-                </a>
-                <p className="section-label text-amber">{t.hero.badge}</p>
-                <h1 className="mt-6 text-[clamp(28px,5.5vw,64px)] font-black leading-[1.05] tracking-tight text-white">
-                  {t.hero.h1}
-                </h1>
-                <p className="mt-6 max-w-xl text-xl font-medium leading-[1.7] text-slate-300">{t.hero.sub}</p>
+      <FieldFooter lang={lang} phone={PHONE} phoneHref={PHONE_TEL} />
+    </FieldFrame>
+  );
+}
 
-                <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div>
-                    <a href="/setup" className="cta-gold cta-shimmer hero-cta-glow inline-flex items-center justify-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-                      {t.hero.cta} &rarr;
-                    </a>
-                    <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
-                  </div>
-                  <a href={PHONE_TEL} className="text-center text-sm font-medium text-slate-400 transition hover:text-white sm:text-left">
-                    {lang === "en" ? "Or call us" : "O ll\u00E1manos"}: {PHONE} &rarr;
-                  </a>
-                </div>
+/* ═══════════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════════ */
 
-                {/* Trust Bar */}
-                <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2">
-                  {t.hero.trustItems.map((item, i) => (
-                    <span key={i} className="flex items-center gap-2 text-sm text-slate-400">
-                      {i > 0 && <span className="hidden sm:inline text-slate-600">&bull;</span>}
-                      {item}
-                    </span>
-                  ))}
-                </div>
+function Hero({ t }: { t: Copy }) {
+  return (
+    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-10 pb-20 sm:pt-16 sm:pb-28">
+      <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-7">
+          <Kicker>{t.hero.kicker}</Kicker>
+          <DisplayH1 style={{ marginTop: 24 }}>
+            {t.hero.h1a}
+            <br />
+            <em
+              style={{
+                fontStyle: "italic",
+                fontVariationSettings: '"SOFT" 100, "WONK" 1',
+                color: C.amberInk,
+              }}
+            >
+              {t.hero.h1b}
+            </em>
+          </DisplayH1>
+
+          <p style={{ maxWidth: 560, fontSize: 18, lineHeight: 1.55, color: C.inkMuted, marginTop: 24 }}>
+            {t.hero.sub}
+          </p>
+
+          <div
+            style={{
+              marginTop: 32,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 16,
+              padding: "16px 20px",
+              background: C.paperDark,
+              border: `1px solid ${C.rule}`,
+              borderRadius: 2,
+              flexWrap: "wrap",
+            }}
+          >
+            <div>
+              <div style={{ fontSize: 11, letterSpacing: "0.18em", color: C.inkMuted, fontWeight: 600, textTransform: "uppercase" }}>
+                {t.hero.priceLabel}
+              </div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginTop: 4 }}>
+                <Mono style={{ fontSize: 36, fontWeight: 700, color: C.ink, letterSpacing: "-0.02em" }}>
+                  {t.hero.priceAmount}
+                </Mono>
+                <span style={{ fontSize: 15, color: C.inkMuted, fontWeight: 500 }}>{t.hero.pricePeriod}</span>
               </div>
             </div>
-
-            {/* Demo Widget */}
-            <div className="md:col-span-2 relative">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(212,145,10,0.15),transparent_70%)]" />
-              <div className="glass-card-demo relative rounded-2xl p-6">
-                <ErrorBoundary fallback={null}><MariaDemoWidget lang={lang} phoneTel={PHONE_TEL} /></ErrorBoundary>
-              </div>
+            <div aria-hidden style={{ width: 1, height: 48, background: C.rule }} className="hidden sm:block" />
+            <div style={{ fontSize: 12, lineHeight: 1.45, color: C.inkMuted, maxWidth: 200, fontWeight: 500 }}>
+              {t.hero.priceAside}
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ── 2. OUTCOME BAR ── */}
-      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-16 sm:py-20">
-        <div className="mx-auto max-w-5xl">
-          <div className="snap-scroll-mobile grid grid-cols-2 gap-6 sm:grid-cols-4 sm:gap-8">
-            {t.outcomeBar.items.map((item, i) => (
-              <motion.div
-                key={i}
-                className="rounded-2xl border border-slate-200 bg-white px-6 py-8 text-center shadow-sm"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <p className="gold-gradient-text text-[40px] font-extrabold sm:text-[48px]">{item.value}</p>
-                <p className="mt-1 text-sm font-medium text-charcoal-muted">{item.label}</p>
-              </motion.div>
+          <div className="mt-8">
+            <DemoCtaPair lang={t === COPY.en ? "en" : "es"} size="lg" />
+          </div>
+
+          <div className="mt-6">
+            <div style={{ fontSize: 13, color: C.inkMuted, marginBottom: 4, letterSpacing: "0.02em", fontWeight: 500 }}>
+              {t.hero.secondaryCta}
+            </div>
+            <a
+              href={t.hero.phoneHref}
+              style={{
+                fontFamily: "var(--font-mono), ui-monospace, monospace",
+                fontVariantNumeric: "tabular-nums",
+                fontSize: 20,
+                fontWeight: 700,
+                color: C.ink,
+                textDecoration: "underline",
+                textUnderlineOffset: 4,
+                textDecorationColor: C.inkSoft,
+                textDecorationThickness: 1,
+              }}
+            >
+              {t.hero.phone}
+            </a>
+          </div>
+
+          <div
+            style={{
+              marginTop: 28,
+              paddingTop: 18,
+              borderTop: `1px solid ${C.rule}`,
+              fontSize: 12,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: C.inkSoft,
+              fontWeight: 600,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 14,
+            }}
+          >
+            {t.hero.trust.map((item, i) => (
+              <span key={i} className="flex items-center gap-[14px]">
+                {i > 0 && <span aria-hidden style={{ color: C.ruleSoft }}>·</span>}
+                <span>{item}</span>
+              </span>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* ── 2b. SMS AUTOMATION SHOWCASE (THE MONEY SHOT) ── */}
-      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32">
-        <div className="mx-auto max-w-5xl">
-          <div className="reveal text-center mb-16">
-            <p className="section-label text-charcoal-light">{t.officeManager.label}</p>
-            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-tight text-charcoal sm:text-[44px] max-w-3xl mx-auto">
-              {t.officeManager.h2}
-            </h2>
-            <p className="mt-4 text-base text-charcoal-muted">{t.officeManager.sub}</p>
+        {/* Right column — photo only. No fabricated captions. */}
+        <div className="lg:col-span-5">
+          <div
+            style={{
+              position: "relative",
+              borderRadius: 2,
+              overflow: "hidden",
+              border: `1px solid ${C.rule}`,
+              background: C.paperDark,
+              aspectRatio: "4 / 5",
+            }}
+          >
+            <Image
+              src="/images/grit-hvac.webp"
+              alt="A home service contractor on a jobsite"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 42vw"
+              style={{ objectFit: "cover", filter: "saturate(0.92) contrast(1.02)" }}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DEMO BAND (replaces the fake-audio band — real working CTA)
+   ═══════════════════════════════════════════════════════════════ */
+
+function DemoBand({ t }: { t: Copy }) {
+  const lang: Lang = t === COPY.en ? "en" : "es";
+  return (
+    <section style={{ background: C.navy, color: C.paper }} className="py-20 sm:py-28">
+      <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-6">
+            <Kicker tone="dark">{t.demo.kicker}</Kicker>
+            <DisplayH2 tone="dark" style={{ marginTop: 20 }}>
+              {t.demo.h2}
+            </DisplayH2>
+            <p style={{ color: "rgba(248,245,238,0.75)", fontSize: 17, lineHeight: 1.6, marginTop: 20, maxWidth: 520 }}>
+              {t.demo.sub}
+            </p>
           </div>
 
-          <div className="grid gap-12 md:grid-cols-2 items-start">
-            {/* Phone mockup with chat bubbles */}
-            <div className="reveal">
-              <div className="mx-auto max-w-sm rounded-[2rem] p-1" style={{ background: "linear-gradient(145deg, #e8e8e8, #f5f5f5)", boxShadow: "0 20px 60px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04)" }}>
-                <div className="rounded-[1.75rem] bg-white overflow-hidden">
-                  {/* Phone header */}
-                  <div className="bg-[#f8f8f8] px-6 py-4 flex items-center gap-3 border-b border-gray-100">
-                    <div className="h-9 w-9 rounded-full bg-amber/15 flex items-center justify-center">
-                      <span className="text-sm font-bold text-amber">M</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-charcoal">Maria</p>
-                      <p className="text-[11px] text-charcoal-muted">{lang === "en" ? "AI Office Manager" : "Gerente de Oficina IA"}</p>
-                    </div>
-                  </div>
-                  {/* Chat messages */}
-                  <div className="px-4 py-5 space-y-3" style={{ minHeight: "320px" }}>
-                    {t.officeManager.conversation.map((msg, i) => (
-                      <motion.div
-                        key={i}
-                        className={`flex ${msg.from === "you" ? "justify-end" : "justify-start"}`}
-                        initial={{ opacity: 0, y: 12 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-30px" }}
-                        transition={{ delay: i * 0.12, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                      >
-                        <div
-                          className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed ${
-                            msg.from === "you"
-                              ? "bg-[#007AFF] text-white rounded-br-sm"
-                              : "bg-[#E9E9EB] text-charcoal rounded-bl-sm"
-                          }`}
-                        >
-                          {msg.text}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
+          <div className="lg:col-span-6">
+            <div
+              style={{
+                padding: "32px",
+                background: "rgba(248,245,238,0.04)",
+                border: "1px solid rgba(248,245,238,0.12)",
+                borderTop: `3px solid ${C.amber}`,
+              }}
+            >
+              <div style={{ fontSize: 11, letterSpacing: "0.22em", color: "rgba(248,245,238,0.7)", fontWeight: 700, textTransform: "uppercase" }}>
+                {lang === "es" ? "Línea en vivo" : "Live line"}
               </div>
-            </div>
-
-            {/* Feature bullets */}
-            <div className="reveal space-y-5">
-              {t.officeManager.bullets.map((bullet, i) => (
-                <motion.div
-                  key={i}
-                  className="flex items-start gap-3"
-                  initial={{ opacity: 0, x: 16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-30px" }}
-                  transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              <a
+                href={t.hero.phoneHref}
+                style={{
+                  display: "block",
+                  marginTop: 14,
+                  fontFamily: "var(--font-mono), ui-monospace, monospace",
+                  fontVariantNumeric: "tabular-nums",
+                  fontSize: 40,
+                  fontWeight: 700,
+                  color: C.paper,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {t.hero.phone}
+              </a>
+              <p style={{ fontSize: 13, color: "rgba(248,245,238,0.65)", marginTop: 14, lineHeight: 1.55 }}>
+                {t.demo.note}
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href={lang === "es" ? "/es/setup" : "/setup"}
+                  style={{
+                    background: C.amber,
+                    color: C.ink,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    padding: "12px 20px",
+                    borderRadius: 4,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    textDecoration: "none",
+                    minHeight: 44,
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = C.amberHover)}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = C.amber)}
                 >
-                  <span className="mt-1 text-amber shrink-0">&#10003;</span>
-                  <span className="text-base leading-relaxed text-charcoal">{bullet}</span>
-                </motion.div>
-              ))}
-
-              <div className="pt-4">
-                <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-                  {t.hero.cta} &rarr;
+                  {t.demo.primary} →
                 </a>
-                <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
+                <a
+                  href="/audit"
+                  style={{
+                    background: "transparent",
+                    color: C.paper,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    padding: "12px 20px",
+                    borderRadius: 4,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    border: "1px solid rgba(248,245,238,0.3)",
+                    textDecoration: "none",
+                    minHeight: 44,
+                  }}
+                >
+                  {t.demo.secondary} →
+                </a>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* ── 3. DIFFERENTIATOR — Why Capta ── */}
-      <section className="bg-[#1B2A4A] px-6 sm:px-8 py-24 sm:py-32 dark-section">
-        <div className="mx-auto max-w-5xl">
-          <div className="reveal text-center">
-            <p className="section-label text-slate-400">{t.differentiator.label}</p>
-            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">
-              {t.differentiator.h2}
-            </h2>
-            <p className="mt-4 text-base text-slate-400">{t.differentiator.sub}</p>
-          </div>
+/* ═══════════════════════════════════════════════════════════════
+   PROOF — honest early-stage framing
+   ═══════════════════════════════════════════════════════════════ */
 
-          <div className="mt-16 grid gap-8 md:grid-cols-2">
-            {/* Left — Answering Services */}
-            <div className="dark-surface rounded-2xl p-8">
-              <h3 className="text-lg font-bold text-slate-400 mb-6">{t.differentiator.leftTitle}</h3>
-              <ul className="space-y-4">
-                {t.differentiator.leftItems.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-slate-500">
-                    <span className="mt-0.5 text-red-400 shrink-0">&times;</span>
-                    <span className="text-[15px] leading-relaxed">{item}</span>
-                  </li>
-                ))}
-              </ul>
+function ProofBand({ t }: { t: Copy }) {
+  return (
+    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-28">
+      <div className="grid gap-10 lg:grid-cols-12 lg:items-start">
+        <div className="lg:col-span-5">
+          <Kicker>{t.proof.kicker}</Kicker>
+          <DisplayH2 style={{ marginTop: 20 }}>{t.proof.h2}</DisplayH2>
+          <p style={{ fontSize: 17, lineHeight: 1.6, color: C.inkMuted, marginTop: 20, maxWidth: 420 }}>
+            {t.proof.sub}
+          </p>
+        </div>
+
+        <div className="lg:col-span-7">
+          <div
+            style={{
+              border: `1px solid ${C.ink}`,
+              background: C.paper,
+              padding: "32px 32px 36px",
+              borderTop: `3px solid ${C.amber}`,
+            }}
+          >
+            <div style={{ fontSize: 11, letterSpacing: "0.22em", color: C.inkMuted, fontWeight: 700, textTransform: "uppercase" }}>
+              {t.proof.earlyLabel}
             </div>
+            <h3
+              style={{
+                fontFamily: "var(--font-fraunces), Georgia, serif",
+                fontSize: 30,
+                lineHeight: 1.15,
+                fontWeight: 500,
+                color: C.ink,
+                marginTop: 12,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {t.proof.earlyH}
+            </h3>
+            <p style={{ fontSize: 16, lineHeight: 1.7, color: C.inkMuted, marginTop: 16 }}>
+              {t.proof.earlyBody}
+            </p>
+            <div className="mt-8">
+              <PrimaryButton href={t.proof.earlyCtaHref} size="lg">
+                {t.proof.earlyCta}
+              </PrimaryButton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-            {/* Right — Capta */}
-            <div className="dark-surface-amber rounded-2xl p-8">
-              <h3 className="text-lg font-bold text-white mb-6">{t.differentiator.rightTitle}</h3>
-              <ul className="space-y-4">
-                {t.differentiator.rightItems.map((item, i) => (
-                  <motion.li
-                    key={i}
-                    className="flex items-start gap-3"
-                    initial={{ opacity: 0, x: 12 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-30px" }}
-                    transition={{ delay: i * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+/* ═══════════════════════════════════════════════════════════════
+   SMS BAND
+   ═══════════════════════════════════════════════════════════════ */
+
+function SmsBand({ t }: { t: Copy }) {
+  return (
+    <section style={{ background: C.paperDark }} className="py-20 sm:py-28">
+      <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+          <div className="lg:col-span-6 flex justify-center lg:justify-start">
+            <div
+              style={{
+                width: "100%",
+                maxWidth: 340,
+                background: "#0F0F11",
+                borderRadius: 44,
+                padding: 10,
+                border: `1px solid ${C.ink}`,
+                boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 12px 40px -12px rgba(17,19,24,0.25)",
+              }}
+            >
+              <div
+                style={{
+                  background: C.paper,
+                  borderRadius: 34,
+                  overflow: "hidden",
+                  aspectRatio: "9 / 18",
+                  position: "relative",
+                }}
+              >
+                {/* iOS-style status bar */}
+                <div
+                  style={{
+                    height: 36,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "0 22px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: C.ink,
+                    fontFamily: "var(--font-mono), ui-monospace, monospace",
+                    fontVariantNumeric: "tabular-nums",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  <span>9:41</span>
+                  <span aria-hidden style={{ fontSize: 11, letterSpacing: "0.08em" }}>▸ 5G · 84%</span>
+                </div>
+
+                <div
+                  style={{
+                    padding: "12px 18px 14px",
+                    borderBottom: `1px solid ${C.rule}`,
+                    background: C.paper,
+                    textAlign: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      background: C.ink,
+                      color: C.paper,
+                      borderRadius: 999,
+                      margin: "0 auto",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
                   >
-                    <span className="mt-0.5 text-amber shrink-0">&#10003;</span>
-                    <span className="text-[15px] leading-relaxed text-white">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
+                    <Serif style={{ fontSize: 20, fontWeight: 600 }}>M</Serif>
+                  </div>
+                  <div style={{ marginTop: 6, fontSize: 14, fontWeight: 600, color: C.ink }}>{t.sms.maria}</div>
+                  <div
+                    style={{
+                      fontSize: 10,
+                      color: C.inkMuted,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      fontWeight: 600,
+                      marginTop: 2,
+                    }}
+                  >
+                    {t.sms.mariaRole}
+                  </div>
+                </div>
+
+                <div style={{ padding: "14px 10px", display: "flex", flexDirection: "column", gap: 6, background: C.paper, minHeight: 300 }}>
+                  {t.sms.thread.map((m, i) => {
+                    const isYou = m.from === "you";
+                    const prev = t.sms.thread[i - 1];
+                    const showTime = !prev || prev.time !== m.time || prev.from !== m.from;
+                    return (
+                      <div key={i}>
+                        {showTime && (
+                          <div
+                            style={{
+                              textAlign: "center",
+                              fontSize: 10,
+                              color: C.inkSoft,
+                              letterSpacing: "0.12em",
+                              textTransform: "uppercase",
+                              fontWeight: 600,
+                              margin: "6px 0 2px",
+                            }}
+                          >
+                            {m.time}
+                          </div>
+                        )}
+                        <div style={{ display: "flex", justifyContent: isYou ? "flex-end" : "flex-start" }}>
+                          <div
+                            style={{
+                              maxWidth: "82%",
+                              background: isYou ? C.navy : C.paperDarker,
+                              color: isYou ? C.paper : C.ink,
+                              padding: "9px 13px",
+                              borderRadius: 16,
+                              borderTopLeftRadius: isYou ? 16 : 4,
+                              borderTopRightRadius: isYou ? 4 : 16,
+                              fontSize: 13,
+                              lineHeight: 1.4,
+                              fontWeight: 400,
+                            }}
+                          >
+                            {m.text}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* VS divider on mobile */}
-          <div className="md:hidden flex items-center justify-center -mt-4 -mb-4 relative z-10">
-            <span className="rounded-full bg-[#1B2A4A] border border-amber/30 px-4 py-1 text-sm font-bold text-amber">VS</span>
-          </div>
+          <div className="lg:col-span-6">
+            <Kicker>{t.sms.kicker}</Kicker>
+            <DisplayH2 style={{ marginTop: 20 }}>{t.sms.h2}</DisplayH2>
+            <p style={{ fontSize: 18, lineHeight: 1.55, color: C.inkMuted, marginTop: 20, maxWidth: 520 }}>
+              {t.sms.sub}
+            </p>
 
-          {/* Bottom stat */}
-          <div className="reveal mt-12 text-center">
-            <p className="inline-block rounded-2xl px-8 py-4 text-base font-semibold text-amber" style={{ background: "rgba(212,168,67,0.08)", border: "1px solid rgba(212,168,67,0.2)" }}>
-              {t.differentiator.bottomStat}
+            <ul className="mt-8 flex flex-col gap-0">
+              {t.sms.bullets.map((bullet, i) => (
+                <li
+                  key={i}
+                  style={{
+                    display: "flex",
+                    gap: 14,
+                    padding: "14px 0",
+                    borderTop: `1px solid ${C.rule}`,
+                    borderBottom: i === t.sms.bullets.length - 1 ? `1px solid ${C.rule}` : "none",
+                  }}
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={C.amberInk}
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{ marginTop: 4, flexShrink: 0 }}
+                    aria-hidden
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span style={{ fontSize: 16, lineHeight: 1.5, color: C.ink, fontWeight: 500 }}>{bullet}</span>
+                </li>
+              ))}
+            </ul>
+            <p
+              style={{
+                fontSize: 12,
+                color: C.inkSoft,
+                marginTop: 16,
+                lineHeight: 1.55,
+                fontStyle: "italic",
+                fontFamily: "var(--font-fraunces), Georgia, serif",
+              }}
+            >
+              {t.sms.exampleNote}
             </p>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* ── 4. DEMO CTA BANNER ── */}
-      <section className="bg-navy px-6 sm:px-8 py-16 sm:py-20 dark-section">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="section-label text-slate-400">{t.hero.demoSection}</p>
-          <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{t.hero.demoSub}</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">{t.hero.demoDetail}</p>
-          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <div className="text-center">
-              <a href="/setup" className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-                {lang === "en" ? "Start Free Trial" : "Prueba Gratis"} &rarr;
-              </a>
-              <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
+/* ═══════════════════════════════════════════════════════════════
+   REPLACES TABLE
+   ═══════════════════════════════════════════════════════════════ */
+
+function ReplacesTable({ t }: { t: Copy }) {
+  const columns = t.replaces.columns;
+
+  const renderCell = (value: boolean | string) => {
+    if (value === true) {
+      return (
+        <span aria-label="Yes" style={{ width: 20, height: 20, display: "inline-flex", alignItems: "center", justifyContent: "center", color: C.forest }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+      );
+    }
+    if (value === false) {
+      return (
+        <span aria-label="No" style={{ width: 20, height: 20, display: "inline-flex", alignItems: "center", justifyContent: "center", color: C.inkSoft }}>
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
+            <line x1="1" y1="5" x2="9" y2="5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </span>
+      );
+    }
+    return (
+      <span style={{ fontSize: 12, color: C.inkMuted, fontStyle: "italic", fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 400 }}>
+        {value}
+      </span>
+    );
+  };
+
+  return (
+    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-28">
+      <div className="max-w-2xl">
+        <Kicker>{t.replaces.kicker}</Kicker>
+        <DisplayH2 style={{ marginTop: 20 }}>{t.replaces.h2}</DisplayH2>
+        <p style={{ fontSize: 17, lineHeight: 1.55, color: C.inkMuted, marginTop: 20 }}>{t.replaces.sub}</p>
+      </div>
+
+      {/* Desktop table */}
+      <div className="mt-12 hidden overflow-x-auto md:block">
+        <table style={{ width: "100%", minWidth: 720, borderCollapse: "collapse", fontSize: 14, color: C.ink }}>
+          <thead>
+            <tr>
+              <th scope="col" style={{ padding: "20px 18px", textAlign: "left", verticalAlign: "bottom", borderBottom: `2px solid ${C.ink}`, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, color: C.inkMuted, width: "28%" }}>
+                {t.replaces.optionHeader}
+              </th>
+              {columns.map((col, i) => (
+                <th
+                  key={i}
+                  scope="col"
+                  style={{
+                    padding: "20px 18px",
+                    textAlign: "center",
+                    verticalAlign: "bottom",
+                    borderBottom: `2px solid ${col.highlight ? C.amber : C.ink}`,
+                    background: col.highlight ? C.paperDark : "transparent",
+                    borderLeft: `1px solid ${C.rule}`,
+                    width: `${(72 / columns.length).toFixed(2)}%`,
+                  }}
+                >
+                  <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, color: col.highlight ? C.amberInk : C.inkMuted, marginBottom: 6 }}>
+                    {col.label}
+                  </div>
+                  <Mono style={{ fontSize: 22, fontWeight: 700, color: C.ink, letterSpacing: "-0.015em" }} as="div">
+                    {col.cost}
+                  </Mono>
+                  <div style={{ fontSize: 10, color: C.inkSoft, fontWeight: 500, marginTop: 2 }}>
+                    {t.replaces.perMonth}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {t.replaces.rows.map((row, rowIdx) => (
+              <tr key={rowIdx} style={{ background: rowIdx % 2 === 0 ? "transparent" : C.paperDark }}>
+                <th scope="row" style={{ padding: "16px 18px", textAlign: "left", fontSize: 14, fontWeight: 500, color: C.ink, borderBottom: `1px solid ${C.rule}`, verticalAlign: "middle" }}>
+                  {row.label}
+                </th>
+                {row.values.map((val, colIdx) => {
+                  const col = columns[colIdx];
+                  return (
+                    <td key={colIdx} style={{ padding: "16px 18px", textAlign: "center", borderBottom: `1px solid ${C.rule}`, borderLeft: `1px solid ${C.rule}`, background: col.highlight ? C.paperDark : "transparent", verticalAlign: "middle" }}>
+                      {renderCell(val)}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile stacked cards */}
+      <div className="mt-12 flex flex-col gap-5 md:hidden">
+        {columns.map((col, i) => (
+          <div
+            key={i}
+            style={{
+              border: `1px solid ${col.highlight ? C.amber : C.rule}`,
+              background: col.highlight ? C.paperDark : C.paper,
+              padding: "20px 22px",
+              borderRadius: 2,
+              borderTop: col.highlight ? `3px solid ${C.amber}` : `1px solid ${C.rule}`,
+            }}
+          >
+            <div className="flex items-baseline justify-between gap-3">
+              <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, color: col.highlight ? C.amberInk : C.inkMuted }}>
+                {col.label}
+              </div>
+              <div>
+                <Mono style={{ fontSize: 22, fontWeight: 700, color: C.ink, letterSpacing: "-0.015em" }}>{col.cost}</Mono>
+                <span style={{ fontSize: 11, color: C.inkSoft, marginLeft: 4 }}>{t.replaces.perMonth}</span>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 5. HOW IT WORKS ── */}
-      <section id="how-it-works" className="relative bg-navy px-6 sm:px-8 py-24 sm:py-32 dark-section grain-overlay" style={{ background: "#0f1729" }}>
-        <div className="relative z-10 mx-auto max-w-5xl">
-          <div className="reveal text-center">
-            <p className="section-label text-slate-400">{t.howItWorks.label}</p>
-            <h2 className="mt-4 text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[48px]">
-              {t.howItWorks.h2}
-            </h2>
-          </div>
-
-          <div className="mt-20 steps-timeline space-y-14 mx-auto max-w-2xl">
-            {t.howItWorks.steps.map((step, i) => {
-              const StepIcon = STEP_ICONS[i];
-              return (
-                <div key={i} className="reveal flex gap-6">
-                  <div className="step-circle-glow relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber text-white">
-                    <StepIcon size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-[24px] font-extrabold tracking-tight text-white">{step.title}</h3>
-                    <p className="mt-3 text-base leading-[1.7] text-slate-300">{step.desc}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 5b. REVENUE CYCLE ── */}
-      <RevenueCycle lang={lang} />
-
-      {/* ── 5c. CALL SHOWCASE ── */}
-      <CallShowcase lang={lang} />
-
-      {/* ── 6. FEATURES — 4 Hero Cards ── */}
-      <section id="features" className="relative bg-[#1B2A4A] px-6 sm:px-8 py-24 sm:py-32 dark-section grain-overlay">
-        <div className="relative z-10 mx-auto max-w-5xl">
-          <div className="reveal text-center">
-            <p className="section-label text-slate-400">{t.features.label}</p>
-            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">
-              {t.features.h2}
-            </h2>
-          </div>
-
-          <div className="snap-scroll-mobile mt-16 grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
-            {t.features.cards.map((f, i) => {
-              const FeatureIcon = HERO_FEATURE_ICONS[i];
-              return (
-                <SpotlightCard key={i} className="glass-card ambient-edge rounded-xl">
-                  <motion.div
-                    className="p-8 sm:p-10"
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            <ul style={{ marginTop: 14, borderTop: `1px solid ${C.rule}` }}>
+              {t.replaces.rows.map((row, rowIdx) => {
+                const val = row.values[i];
+                return (
+                  <li
+                    key={rowIdx}
+                    style={{
+                      padding: "10px 0",
+                      borderBottom: `1px solid ${C.rule}`,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 10,
+                      fontSize: 13,
+                    }}
                   >
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber/10">
-                      <FeatureIcon size={24} className="text-amber" />
-                    </div>
-                    <h3 className="mt-5 text-xl font-extrabold leading-[1.3] tracking-tight text-white">{f.title}</h3>
-                    <p className="mt-3 text-base leading-[1.7] text-[#B8C4D4]">{f.desc}</p>
-                  </motion.div>
-                </SpotlightCard>
-              );
-            })}
-          </div>
-
-          {/* See all features link */}
-          <div className="mt-10 text-center">
-            <a href="/platform" className="text-sm font-semibold text-amber transition hover:underline">
-              {t.features.allFeatures} &rarr;
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 6b. SOCIAL PROOF ── */}
-      <section className="bg-[#FBFBFC] px-6 sm:px-8 py-16 sm:py-20">
-        <div className="mx-auto max-w-5xl text-center">
-          <p className="section-label text-charcoal-light">
-            {lang === "en" ? "FOUNDING MEMBERS" : "MIEMBROS FUNDADORES"}
-          </p>
-          <h2 className="mt-4 text-[28px] font-extrabold leading-[1.1] tracking-tight text-charcoal sm:text-[36px]">
-            {lang === "en"
-              ? "Built by contractors, for contractors."
-              : "Hecho por contratistas, para contratistas."}
-          </h2>
-          <p className="mt-4 text-base text-charcoal-muted max-w-2xl mx-auto">
-            {lang === "en"
-              ? "We\u2019re onboarding our first wave of home service businesses. Early members shape how Capta works \u2014 and lock in founder pricing."
-              : "Estamos incorporando nuestra primera ola de negocios de servicios. Los miembros iniciales definen c\u00F3mo funciona Capta \u2014 y aseguran precio de fundador."}
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-6">
-            {(lang === "en"
-              ? ["Plumbing", "HVAC", "Electrical", "General Contracting", "Landscaping", "Roofing"]
-              : ["Plomer\u00EDa", "HVAC", "Electricidad", "Contratista General", "Jardiner\u00EDa", "Techos"]
-            ).map((trade, i) => (
-              <span
-                key={i}
-                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-charcoal shadow-sm"
-              >
-                {trade}
-              </span>
-            ))}
-          </div>
-
-          <div className="mt-10">
-            <a
-              href="/setup"
-              className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white"
-            >
-              {lang === "en" ? "Join the Founding Wave" : "\u00DAnete a la Ola Fundadora"} &rarr;
-            </a>
-            <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 8. SOFTWARE REPLACEMENT ── */}
-      <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#111a2e" }}>
-        <div className="mx-auto max-w-3xl">
-          <div className="reveal text-center">
-            <p className="section-label text-slate-400">{t.softwareReplace.label}</p>
-            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[44px]">
-              {t.softwareReplace.h2}
-            </h2>
-          </div>
-
-          <div className="reveal mt-14 space-y-3">
-            {t.softwareReplace.items.map((item, i) => (
-              <motion.div
-                key={i}
-                className="dark-surface flex items-center justify-between rounded-2xl px-6 py-5"
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <span className="text-[15px] text-slate-300">{item.name}</span>
-                <span className="text-[15px] font-semibold text-slate-400">{item.cost}</span>
-              </motion.div>
-            ))}
-
-            {/* Total (struck through) */}
-            <div className="flex items-center justify-between rounded-2xl px-6 py-5 mt-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
-              <span className="text-[15px] text-slate-500">{lang === "en" ? "Total" : "Total"}</span>
-              <span className="text-lg font-bold text-slate-500 line-through">{t.softwareReplace.total}</span>
-            </div>
-
-            {/* Capta price */}
-            <div className="rounded-2xl px-6 py-6 text-center" style={{ background: "rgba(212,168,67,0.08)", border: "1px solid rgba(212,168,67,0.2)" }}>
-              <p className="text-xl font-extrabold text-amber">{t.softwareReplace.captaPrice}</p>
-            </div>
-
-            <p className="text-center text-sm text-slate-500 mt-4">{t.softwareReplace.footer}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 9. ROI CALCULATOR ── */}
-      <section className="relative px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#0f1729" }}>
-        <div className="relative z-10 mx-auto max-w-5xl">
-          <ROICalculator lang={lang} />
-        </div>
-      </section>
-
-      {/* ── 10. PRICING ── */}
-      <section id="pricing" className="bg-[#111317] px-6 sm:px-8 py-24 sm:py-32 dark-section">
-        <div className="mx-auto max-w-3xl">
-          <div className="reveal text-center">
-            <p className="section-label text-slate-400">{t.pricing.label}</p>
-            <h2 className="mt-4 text-[32px] font-extrabold leading-[1.1] tracking-tight text-[#E8E9EB] sm:text-[44px]">
-              {t.pricing.h2}
-            </h2>
-          </div>
-
-          {/* Plan Toggle */}
-          <div className="reveal mt-8 flex items-center justify-center gap-3">
-            <button
-              onClick={() => setPlanChoice("monthly")}
-              className="rounded-full px-5 py-2 text-sm font-semibold transition"
-              style={{
-                background: planChoice === "monthly" ? "#C59A27" : "transparent",
-                color: planChoice === "monthly" ? "#0f0f0f" : "#A0A3A8",
-                border: planChoice === "monthly" ? "1px solid #C59A27" : "1px solid rgba(255,255,255,0.15)",
-              }}
-            >
-              {lang === "en" ? "Monthly" : "Mensual"}
-            </button>
-            <button
-              onClick={() => setPlanChoice("annual")}
-              className="relative rounded-full px-5 py-2 text-sm font-semibold transition"
-              style={{
-                background: planChoice === "annual" ? "#C59A27" : "transparent",
-                color: planChoice === "annual" ? "#0f0f0f" : "#A0A3A8",
-                border: planChoice === "annual" ? "1px solid #C59A27" : "1px solid rgba(255,255,255,0.15)",
-              }}
-            >
-              {lang === "en" ? "Annual" : "Anual"}
-              <span className="absolute -top-2.5 -right-2 rounded-full bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
-                {lang === "en" ? "Save 20%" : "-20%"}
-              </span>
-            </button>
-          </div>
-
-          <div className="reveal mt-8 mx-auto max-w-lg">
-            <div className="pricing-glow ambient-edge relative rounded-2xl border border-[#C59A27]/30 bg-[#1A1D0F] p-10 text-center sm:p-14">
-              <p className="mt-2 text-[56px] font-extrabold tracking-tight text-[#E8E9EB]">
-                {planChoice === "annual" ? "$397" : "$497"}
-              </p>
-              <p className="text-sm text-[#A0A3A8]">
-                {planChoice === "annual"
-                  ? (lang === "en" ? "/mo \u2014 billed annually at $4,764/yr" : "/mes \u2014 facturado anualmente a $4,764/a\u00F1o")
-                  : t.pricing.period}
-              </p>
-              {planChoice === "annual" && (
-                <p className="mt-2 text-sm font-semibold text-green-400">
-                  {lang === "en" ? "Save $1,200/year" : "Ahorra $1,200/a\u00F1o"}
-                </p>
-              )}
-              <p className="mt-4 text-base text-[#A0A3A8]">{t.pricing.sub}</p>
-
-              <ul className="mt-8 space-y-4 text-left text-sm text-[#E8E9EB]">
-                {t.pricing.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="mt-0.5 text-[#C59A27]">&#10003;</span>
-                    {f}
+                    <span style={{ color: C.ink, fontWeight: 500 }}>{row.label}</span>
+                    <span>{renderCell(val)}</span>
                   </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ marginTop: 28, paddingTop: 20, borderTop: `1px solid ${C.rule}` }}>
+        <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: C.inkSoft, fontWeight: 700, marginBottom: 10 }}>
+          {t.replaces.footnoteLabel}
+        </div>
+        <p style={{ fontSize: 12, color: C.inkMuted, lineHeight: 1.6, marginBottom: 14, fontStyle: "italic", fontFamily: "var(--font-fraunces), Georgia, serif" }}>
+          {t.replaces.sourceNote}
+        </p>
+        <ol style={{ fontSize: 12, color: C.inkMuted, lineHeight: 1.55, listStyle: "none", padding: 0 }}>
+          {columns.map((col, i) => (
+            <li key={i} style={{ display: "flex", gap: 10, marginTop: 6 }}>
+              <Mono style={{ color: C.amberInk, fontWeight: 700, flexShrink: 0, width: 24 }}>[{i + 1}]</Mono>
+              <span>
+                <strong style={{ fontWeight: 600, color: C.ink }}>{col.label}.</strong> {col.footnote}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRICING
+   ═══════════════════════════════════════════════════════════════ */
+
+function Pricing({ t }: { t: Copy }) {
+  const [billing, setBilling] = useState<"monthly" | "annual">("annual");
+  const active = t.pricing.plans.find((p) => p.billing === billing) ?? t.pricing.plans[0];
+  const lang: Lang = t === COPY.en ? "en" : "es";
+
+  return (
+    <section style={{ background: C.paper }} className="py-20 sm:py-28">
+      <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
+        <div className="grid gap-14 lg:grid-cols-12 lg:items-start">
+          <div className="lg:col-span-5">
+            <Kicker>{t.pricing.kicker}</Kicker>
+            <DisplayH2 style={{ marginTop: 20 }}>{t.pricing.h2}</DisplayH2>
+            <p style={{ fontSize: 17, lineHeight: 1.55, color: C.inkMuted, marginTop: 20, maxWidth: 420 }}>
+              {t.pricing.sub}
+            </p>
+            <div style={{ marginTop: 28, padding: "16px 18px", background: C.paperDark, borderLeft: `3px solid ${C.amber}` }}>
+              <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: 16, lineHeight: 1.5, fontStyle: "italic", color: C.ink }}>
+                {t.pricing.guarantee}
+              </p>
+            </div>
+          </div>
+
+          <div className="lg:col-span-7">
+            <div style={{ border: `1px solid ${C.ink}`, background: C.paper }}>
+              <div
+                role="tablist"
+                aria-label={lang === "es" ? "Periodo de facturación" : "Billing period"}
+                style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: `1px solid ${C.ink}` }}
+              >
+                {t.pricing.plans.map((plan) => (
+                  <button
+                    key={plan.billing}
+                    role="tab"
+                    aria-selected={billing === plan.billing}
+                    onClick={() => setBilling(plan.billing)}
+                    style={{
+                      padding: "16px 16px",
+                      background: billing === plan.billing ? C.ink : "transparent",
+                      color: billing === plan.billing ? C.paper : C.inkMuted,
+                      fontSize: 11,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      fontWeight: 700,
+                      borderRight: plan.billing === "monthly" ? `1px solid ${C.ink}` : "none",
+                      cursor: "pointer",
+                      minHeight: 48,
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {plan.billing === "monthly" ? t.pricing.monthlyTab : t.pricing.annualTab}
+                  </button>
                 ))}
-              </ul>
+              </div>
 
-              <p className="mt-8 text-sm italic text-[#A0A3A8]">{t.pricing.comparison}</p>
+              <div style={{ padding: "48px 32px 32px", textAlign: "center" }}>
+                <div style={{ fontSize: 11, letterSpacing: "0.22em", color: C.inkMuted, fontWeight: 700, textTransform: "uppercase", marginBottom: 16 }}>
+                  {t.pricing.perLocation}
+                </div>
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 6 }}>
+                  <Mono style={{ fontSize: "clamp(56px, 9vw, 108px)", fontWeight: 700, color: C.ink, letterSpacing: "-0.04em", lineHeight: 1 }}>
+                    {active.price}
+                  </Mono>
+                  <span style={{ fontSize: 18, color: C.inkMuted, fontWeight: 500, marginLeft: 4 }}>{active.period}</span>
+                </div>
+                <div style={{ fontSize: 13, color: C.inkMuted, marginTop: 14, fontWeight: 500 }}>{active.note}</div>
 
-              <a href="/setup" className="cta-gold cta-shimmer mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg px-8 py-4 text-lg font-semibold text-white">
-                {t.pricing.cta} &rarr;
-              </a>
-              <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
+                <div className="mt-7">
+                  <DemoCtaPair lang={lang} size="lg" />
+                </div>
+              </div>
 
-              <p className="mt-4 text-xs text-[#A0A3A8]">{t.pricing.guarantee}</p>
-
-              <div className="mt-6 flex flex-col items-center gap-2">
-                {t.pricing.crossLinks.map((link, i) => (
-                  <a key={i} href={link.href} className="text-xs text-[#A0A3A8] underline underline-offset-4 transition hover:text-amber">
-                    {link.label}
-                  </a>
-                ))}
+              <div style={{ borderTop: `1px solid ${C.rule}`, padding: "24px 32px 32px", background: C.paperDark }}>
+                <div style={{ fontSize: 11, letterSpacing: "0.22em", color: C.inkMuted, fontWeight: 700, textTransform: "uppercase", marginBottom: 14 }}>
+                  {t.pricing.included}
+                </div>
+                <ul style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
+                  {t.pricing.items.map((item, i) => (
+                    <li key={i} style={{ display: "flex", gap: 12, fontSize: 14, lineHeight: 1.5, color: C.ink }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.forest} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginTop: 4, flexShrink: 0 }} aria-hidden>
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span style={{ fontWeight: 500 }}>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* ── 11. FAQ ── */}
-      <section id="faq" className="relative bg-[#FBFBFC] px-6 sm:px-8 py-24 sm:py-32 overflow-hidden">
-        <div className="mx-auto max-w-3xl">
-          <div className="reveal text-center">
-            <h2 className="text-[36px] font-extrabold leading-[1.1] tracking-tight text-charcoal sm:text-[48px]">
-              {t.faq.h2}
-            </h2>
-            <div className="mt-6 inline-flex rounded-full overflow-hidden" style={{ border: "1px solid rgba(0,0,0,0.1)" }}>
-              <button onClick={() => toggleLang("en")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "en" ? "bg-navy text-white" : "text-charcoal-muted hover:bg-cream-dark"}`}>English</button>
-              <button onClick={() => toggleLang("es")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "es" ? "bg-navy text-white" : "text-charcoal-muted hover:bg-cream-dark"}`}>Espa&ntilde;ol</button>
-            </div>
-          </div>
-          <div className="reveal mt-14">
-            <FAQ lang={lang} />
-          </div>
-        </div>
-      </section>
+/* ═══════════════════════════════════════════════════════════════
+   FINAL CTA
+   ═══════════════════════════════════════════════════════════════ */
 
-      {/* ── 12. LATEST FROM THE BLOG ── */}
-      {latestPosts.length > 0 && (
-        <section className="bg-[#FBFBFC] px-6 sm:px-8 py-20 sm:py-24">
-          <div className="mx-auto max-w-5xl">
-            <div className="text-center">
-              <p className="section-label text-charcoal-light">
-                {lang === "en" ? "From the Blog" : "Del Blog"}
-              </p>
-              <h2 className="mt-4 text-[28px] font-extrabold leading-[1.1] tracking-tight text-charcoal sm:text-[36px]">
-                {lang === "en" ? "Tips for Growing Your Business" : "Consejos para Hacer Crecer tu Negocio"}
-              </h2>
+function FinalCta({ t, lang }: { t: Copy; lang: Lang }) {
+  return (
+    <section style={{ background: C.ink, color: C.paper, borderTop: `3px solid ${C.amber}` }} className="py-20 sm:py-28">
+      <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-7">
+            <Kicker tone="dark">{t.cta.kicker}</Kicker>
+            <DisplayH2 tone="dark" style={{ marginTop: 20, maxWidth: 720 }}>
+              {t.cta.h2}
+            </DisplayH2>
+            <p style={{ fontSize: 17, lineHeight: 1.6, color: "rgba(248,245,238,0.7)", marginTop: 20, maxWidth: 520 }}>
+              {t.cta.sub}
+            </p>
+          </div>
+
+          <div className="lg:col-span-5">
+            <div style={{ fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(248,245,238,0.6)", fontWeight: 700 }}>
+              {t.cta.callLabel}
             </div>
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {latestPosts.map((post) => (
-                <a key={post.slug} href={`/blog/${post.slug}`} className="group">
-                  <div className="card-shadow card-hover rounded-2xl border border-cream-border bg-white p-6">
-                    <div className="flex items-center gap-2">
-                      {post.category && (
-                        <span className="rounded-full bg-amber/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber">
-                          {CATEGORY_LABELS[post.category] ?? post.category}
-                        </span>
-                      )}
-                      {post.readingTimeMin && (
-                        <span className="text-xs text-charcoal-light">{post.readingTimeMin} min read</span>
-                      )}
-                    </div>
-                    <h3 className="mt-3 text-base font-bold tracking-tight text-charcoal group-hover:text-amber transition-colors line-clamp-2">
-                      {post.title}
-                    </h3>
-                    {post.metaDescription && (
-                      <p className="mt-2 text-sm leading-relaxed text-charcoal-muted line-clamp-2">{post.metaDescription}</p>
-                    )}
-                  </div>
-                </a>
-              ))}
-            </div>
-            <div className="mt-8 text-center">
-              <a href="/blog" className="text-sm font-semibold text-amber transition hover:underline">
-                {lang === "en" ? "Read all articles" : "Leer todos los artículos"} &rarr;
+            <a
+              href={t.hero.phoneHref}
+              style={{
+                display: "block",
+                marginTop: 12,
+                fontFamily: "var(--font-mono), ui-monospace, monospace",
+                fontVariantNumeric: "tabular-nums",
+                fontSize: 34,
+                fontWeight: 700,
+                color: C.paper,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {t.hero.phone}
+            </a>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <a
+                href={lang === "es" ? "/es/setup" : "/setup"}
+                style={{
+                  background: C.amber,
+                  color: C.ink,
+                  fontSize: 14,
+                  fontWeight: 700,
+                  padding: "12px 20px",
+                  borderRadius: 4,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  textDecoration: "none",
+                  minHeight: 44,
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = C.amberHover)}
+                onMouseLeave={(e) => (e.currentTarget.style.background = C.amber)}
+              >
+                {t.cta.startFree} →
+              </a>
+              <a
+                href="/audit"
+                style={{
+                  background: "transparent",
+                  color: C.paper,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  padding: "12px 20px",
+                  borderRadius: 4,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  border: "1px solid rgba(248,245,238,0.3)",
+                  textDecoration: "none",
+                  minHeight: 44,
+                }}
+              >
+                {t.cta.bookDemo} →
               </a>
             </div>
           </div>
-        </section>
-      )}
-
-      {/* ── 13. MISSED CALL CALCULATOR ── */}
-      <MissedCallCalculator lang={lang} />
-
-      {/* ── 14. FINAL CTA ── */}
-      <section className="relative px-6 sm:px-8 py-24 sm:py-32 overflow-hidden dark-section grain-overlay">
-        <Image src="/images/grit-texture.webp" alt="" fill className="object-cover object-center" loading="lazy" />
-        <div className="grit-overlay-cta absolute inset-0" />
-        <div className="section-fade-top-dark" />
-        <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <h2 className="reveal text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[40px] lg:text-[48px]">
-            {t.cta.h2}
-          </h2>
-
-          <a href="/setup" className="cta-gold cta-shimmer mt-10 inline-flex items-center justify-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
-            {t.hero.cta} &rarr;
-          </a>
-          <p className="mt-2 text-xs text-slate-400">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
-
-          <p className="mt-6 text-sm text-slate-400">{t.cta.sub}</p>
-          <p className="mt-4 text-sm text-slate-500">
-            {lang === "en" ? "Or call us:" : "O ll\u00E1manos:"}{" "}
-            <a href={PHONE_TEL} className="font-semibold text-amber hover:underline">{PHONE}</a>
-          </p>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* ── FOOTER ── */}
-      <Footer lang={lang} />
+/* ═══════════════════════════════════════════════════════════════
+   LATEST POSTS — internal link equity
+   ═══════════════════════════════════════════════════════════════ */
 
-      <div className="h-16 md:hidden" />
-    </div>
-    </MotionConfig>
+function LatestPosts({ lang, posts }: { lang: Lang; posts: BlogPostPreview[] }) {
+  const labels = lang === "es"
+    ? { kicker: "Del blog", h2: "Escrito para contratistas.", all: "Ver todo →" }
+    : { kicker: "From the blog", h2: "Written for contractors.", all: "See all →" };
+  const base = lang === "es" ? "/es/blog" : "/blog";
+
+  return (
+    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-24">
+      <div className="flex items-end justify-between gap-6 flex-wrap">
+        <div>
+          <Kicker>{labels.kicker}</Kicker>
+          <DisplayH2 style={{ marginTop: 18, fontSize: "clamp(28px, 3.2vw, 44px)" }}>
+            {labels.h2}
+          </DisplayH2>
+        </div>
+        <a
+          href={base}
+          style={{
+            fontSize: 14,
+            fontWeight: 600,
+            color: C.ink,
+            textDecoration: "underline",
+            textUnderlineOffset: 4,
+            textDecorationColor: C.rule,
+          }}
+        >
+          {labels.all}
+        </a>
+      </div>
+
+      <ul className="mt-10 grid gap-x-8 gap-y-10 md:grid-cols-3">
+        {posts.slice(0, 3).map((p) => (
+          <li key={p.slug}>
+            <a href={`${base}/${p.slug}`} className="block group">
+              <div
+                style={{
+                  fontSize: 11,
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: C.inkMuted,
+                  fontWeight: 700,
+                  marginBottom: 10,
+                }}
+              >
+                {p.category ?? (lang === "es" ? "Artículo" : "Article")}
+                {p.readingTimeMin ? ` · ${p.readingTimeMin} ${lang === "es" ? "min" : "min"}` : ""}
+              </div>
+              <h3
+                style={{
+                  fontFamily: "var(--font-fraunces), Georgia, serif",
+                  fontSize: 22,
+                  lineHeight: 1.2,
+                  fontWeight: 500,
+                  color: C.ink,
+                  letterSpacing: "-0.015em",
+                }}
+                className="group-hover:underline"
+              >
+                {p.title}
+              </h3>
+              {p.metaDescription && (
+                <p style={{ marginTop: 8, fontSize: 14, lineHeight: 1.6, color: C.inkMuted }}>
+                  {p.metaDescription}
+                </p>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCHEMA
+   ═══════════════════════════════════════════════════════════════ */
+
+function JsonLd({ lang }: { lang: Lang }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "Capta",
+          applicationCategory: "BusinessApplication",
+          operatingSystem: "Web",
+          inLanguage: lang,
+          offers: {
+            "@type": "AggregateOffer",
+            lowPrice: "397",
+            highPrice: "497",
+            priceCurrency: "USD",
+            offerCount: "2",
+          },
+          description:
+            "Bilingual AI receptionist for home service businesses. Answers calls, generates estimates, recovers missed calls, and manages follow-ups in English and Spanish, 24/7. Flat $497/mo.",
+        }),
+      }}
+    />
   );
 }

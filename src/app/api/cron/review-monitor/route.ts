@@ -52,21 +52,19 @@ export async function GET(req: NextRequest) {
 
       for (const biz of activeBiz) {
         try {
-          // Check for any newly stored reviews that haven't been processed for alerts
-          // Reviews can come from:
-          // 1. GBP API (when configured)
-          // 2. Manual entry via admin panel
-          // 3. API import
+          // Atomic claim: mark reviews as alerted BEFORE sending SMS to prevent
+          // concurrent cron runs / retries from re-alerting. Accepts a small
+          // SMS-loss risk on transient Twilio failures in exchange for no dupes.
           const unprocessedReviews = await db
-            .select()
-            .from(googleReviews)
+            .update(googleReviews)
+            .set({ alertedAt: new Date().toISOString() })
             .where(
               and(
                 eq(googleReviews.businessId, biz.id),
-                // Only reviews that haven't been alerted on yet
                 sql`${googleReviews.alertedAt} IS NULL`,
               ),
-            );
+            )
+            .returning();
 
           for (const review of unprocessedReviews) {
             fetched++;
@@ -78,22 +76,20 @@ export async function GET(req: NextRequest) {
               const authorLine = review.authorName ? ` from ${review.authorName}` : "";
               const textPreview = review.text ? `\n\n"${review.text.slice(0, 200)}"` : "";
 
-              await sendSMS({
-                to: biz.ownerPhone,
-                from: biz.twilioNumber || process.env.TWILIO_PHONE_NUMBER || "",
-                body: `Review alert for ${biz.name}: ${stars} (${review.rating}/5)${authorLine}${textPreview}\n\nView and respond in your dashboard.\n\n— ${receptionistName}`,
-                businessId: biz.id,
-                templateType: "review_alert",
-              });
-
-              alerts++;
+              try {
+                await sendSMS({
+                  to: biz.ownerPhone,
+                  from: biz.twilioNumber || process.env.TWILIO_PHONE_NUMBER || "",
+                  body: `Review alert for ${biz.name}: ${stars} (${review.rating}/5)${authorLine}${textPreview}\n\nView and respond in your dashboard.\n\n— ${receptionistName}`,
+                  businessId: biz.id,
+                  templateType: "review_alert",
+                });
+                alerts++;
+              } catch (err) {
+                errors++;
+                reportError(`[review-monitor] SMS send failed for review ${review.id}`, err, { extra: { businessId: biz.id } });
+              }
             }
-
-            // Mark review as processed regardless of rating (prevents re-alerting)
-            await db
-              .update(googleReviews)
-              .set({ alertedAt: new Date().toISOString() })
-              .where(eq(googleReviews.id, review.id));
           }
         } catch (err) {
           errors++;

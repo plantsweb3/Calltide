@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { prospects } from "@/db/schema";
 import { enrichProspect } from "@/lib/scraper/enrichment";
 import { logActivity } from "@/lib/activity";
+import { reportError } from "@/lib/error-reporting";
 
 function parseCsvLine(line: string): string[] {
   const result: string[] = [];
@@ -95,8 +96,9 @@ export async function POST(req: NextRequest) {
         .returning();
 
       if (created) inserted++;
-    } catch {
+    } catch (err) {
       errors++;
+      reportError("prospects/import: row insert failed", err);
     }
   }
 

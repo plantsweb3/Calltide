@@ -87,23 +87,26 @@ function ConfirmationContent() {
         <div className="mt-16">
           <h2 className="text-center text-lg font-semibold text-charcoal">{t.whileYouWait}</h2>
           <div className="mt-8 space-y-4 rounded-xl border border-cream-border bg-white p-6 sm:p-8 card-shadow">
-            {t.transcript.map((line, i) => (
-              <div key={i} className={`flex gap-3 ${line.speaker.includes("Maria") || line.speaker.includes("IA") ? "" : "flex-row-reverse text-right"}`}>
+            {t.transcript.map((line, i) => {
+              const isAi = /\((?:AI|IA)\)/.test(line.speaker);
+              return (
+              <div key={i} className={`flex gap-3 ${isAi ? "" : "flex-row-reverse text-right"}`}>
                 <div
                   className={`shrink-0 flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
-                    line.speaker.includes("Maria") || line.speaker.includes("IA")
+                    isAi
                       ? "bg-amber/10 text-amber"
                       : "bg-slate-100 text-charcoal-muted"
                   }`}
                 >
-                  {line.speaker.includes("Maria") || line.speaker.includes("IA") ? "AI" : "C"}
+                  {isAi ? "AI" : "C"}
                 </div>
                 <div>
                   <p className="text-xs font-medium text-charcoal-light">{line.speaker}</p>
                   <p className="mt-1 text-sm leading-relaxed text-charcoal-muted">{line.text}</p>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

@@ -5,6 +5,7 @@ import { accounts, businesses, calls, appointments } from "@/db/schema";
 import { sql, eq } from "drizzle-orm";
 import { assignReferralCode } from "@/lib/referral";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 const createClientSchema = z.object({
   name: z.string().min(1).max(200),
@@ -119,6 +120,9 @@ const DEFAULT_HOURS: Record<string, { open: string; close: string }> = {
 };
 
 export async function POST(req: NextRequest) {
+  const rl = await rateLimit(`admin-clients-create:${getClientIp(req)}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
+
   let body: unknown;
   try {
     body = await req.json();

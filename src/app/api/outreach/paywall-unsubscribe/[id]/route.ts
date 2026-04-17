@@ -3,18 +3,25 @@ import { db } from "@/db";
 import { businesses } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
+import { verifyPaywallUnsubscribeToken } from "@/lib/outreach/unsubscribe";
 
 /**
- * GET /api/outreach/paywall-unsubscribe/[id]
+ * GET /api/outreach/paywall-unsubscribe/[id]?t=<hmac>
  *
- * Unsubscribes a business from paywall retarget emails.
- * Returns a simple HTML confirmation page.
+ * Unsubscribes a business from paywall retarget emails. The `t` query param
+ * must be an HMAC-SHA256 of `unsub:paywall:<id>` under CLIENT_AUTH_SECRET, so
+ * anyone who guesses a businessId can't silently unsubscribe the customer.
  */
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const token = req.nextUrl.searchParams.get("t") || "";
+
+  if (!token || !verifyPaywallUnsubscribeToken(id, token)) {
+    return new NextResponse("Invalid or expired unsubscribe link", { status: 403 });
+  }
 
   try {
     const [biz] = await db

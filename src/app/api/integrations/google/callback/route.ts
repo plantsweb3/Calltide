@@ -5,6 +5,7 @@ import { googleCalendarConnections } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { reportError } from "@/lib/error-reporting";
+import { encryptToken } from "@/lib/crypto/token-encryption";
 
 const encoder = new TextEncoder();
 
@@ -94,13 +95,16 @@ export async function GET(req: NextRequest) {
       .where(eq(googleCalendarConnections.businessId, businessId))
       .limit(1);
 
+    const encryptedAccess = encryptToken(tokens.access_token);
+    const encryptedRefresh = encryptToken(tokens.refresh_token);
+
     if (existing) {
       await db
         .update(googleCalendarConnections)
         .set({
           googleEmail,
-          accessToken: tokens.access_token,
-          refreshToken: tokens.refresh_token,
+          accessToken: encryptedAccess,
+          refreshToken: encryptedRefresh,
           tokenExpiresAt: expiresAt,
           syncEnabled: true,
           connectedAt: new Date().toISOString(),
@@ -110,8 +114,8 @@ export async function GET(req: NextRequest) {
       await db.insert(googleCalendarConnections).values({
         businessId,
         googleEmail,
-        accessToken: tokens.access_token,
-        refreshToken: tokens.refresh_token,
+        accessToken: encryptedAccess,
+        refreshToken: encryptedRefresh,
         tokenExpiresAt: expiresAt,
       });
     }

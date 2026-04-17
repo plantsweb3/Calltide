@@ -6,6 +6,7 @@ import { eq, and } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 import { env } from "@/lib/env";
+import { hashPortalToken } from "@/lib/portal/auth";
 
 const bodySchema = z.object({
   sendSms: z.boolean().optional().default(false),
@@ -64,7 +65,9 @@ export async function POST(
       );
     }
 
-    // Generate a unique token (30-day expiry)
+    // Generate a unique token (30-day expiry). Store the SHA-256 hash so a DB
+    // leak can't be used to access portals; the raw token is only returned to
+    // the caller and delivered via SMS below.
     const token = crypto.randomUUID();
     const expiresAt = new Date(
       Date.now() + 30 * 24 * 60 * 60 * 1000
@@ -73,7 +76,7 @@ export async function POST(
     await db.insert(customerPortalTokens).values({
       businessId,
       customerId,
-      token,
+      token: hashPortalToken(token),
       expiresAt,
     });
 

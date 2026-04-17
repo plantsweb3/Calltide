@@ -6,6 +6,30 @@ import { buildAgentConfig } from "./agent-config";
 import { getBusinessById } from "@/lib/ai/context-builder";
 import { reportError, reportWarning } from "@/lib/error-reporting";
 
+function isTransientError(err: unknown): boolean {
+  const e = err as { status?: number; statusCode?: number; message?: string };
+  const status = e?.status ?? e?.statusCode;
+  if (status === 429) return true;
+  if (status && status >= 500 && status < 600) return true;
+  const msg = String(e?.message ?? "");
+  return /rate[-\s]?limit|timeout|ECONNRESET|ETIMEDOUT/i.test(msg);
+}
+
+async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      if (!isTransientError(err) || i === attempts - 1) throw err;
+      const delay = 300 * Math.pow(2, i);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw lastErr;
+}
+
 /**
  * Sync a business's ElevenLabs agent.
  * Creates a new agent if none exists, or updates the existing one.
@@ -45,12 +69,12 @@ export async function syncAgent(businessId: string): Promise<string | null> {
     let agentId = record?.elevenlabsAgentId;
 
     if (agentId) {
-      // Update existing agent
-      await client.conversationalAi.updateAgent(agentId, config);
+      // Update existing agent (retry transient 429/5xx)
+      await withRetry(() => client.conversationalAi.updateAgent(agentId!, config));
       reportWarning(`[elevenlabs] updated agent ${agentId} for business ${businessId}`);
     } else {
-      // Create new agent
-      const result = await client.conversationalAi.createAgent(config);
+      // Create new agent (retry transient 429/5xx)
+      const result = await withRetry(() => client.conversationalAi.createAgent(config));
       agentId = result.agent_id;
 
       // Store the agent ID

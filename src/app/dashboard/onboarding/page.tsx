@@ -172,6 +172,10 @@ const T = {
     step: "Step",
     of: "of",
     langToggle: "ES",
+    failedToSave: "Failed to save",
+    failedToStartCheckout: "Failed to start checkout",
+    somethingWentWrong: "Something went wrong",
+    activationFailed: "Activation failed",
   },
   es: {
     step1Title: "Cuéntanos Sobre Tu Negocio",
@@ -296,6 +300,10 @@ const T = {
     step: "Paso",
     of: "de",
     langToggle: "EN",
+    failedToSave: "No se pudo guardar",
+    failedToStartCheckout: "No se pudo iniciar el pago",
+    somethingWentWrong: "Algo salió mal",
+    activationFailed: "Falló la activación",
   },
 };
 
@@ -528,19 +536,19 @@ function OnboardingPage() {
       });
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || "Failed to save");
+        throw new Error(err.error || t.failedToSave);
       }
       setSaveStatus("saved");
       setTimeout(() => setSaveStatus(""), 2000);
       return true;
     } catch (err) {
-      setErrors({ save: err instanceof Error ? err.message : "Failed to save" });
+      setErrors({ save: err instanceof Error ? err.message : t.failedToSave });
       setSaveStatus("");
       return false;
     } finally {
       setSaving(false);
     }
-  }, []);
+  }, [t]);
 
   // ── Step navigation ──
   const goNext = useCallback(async () => {
@@ -708,13 +716,13 @@ function OnboardingPage() {
       } else if (data.url) {
         window.location.href = data.url;
       } else {
-        setErrors({ checkout: data.error || "Failed to start checkout" });
+        setErrors({ checkout: data.error || t.failedToStartCheckout });
       }
     } catch {
-      setErrors({ checkout: "Something went wrong" });
+      setErrors({ checkout: t.somethingWentWrong });
     }
     setCheckoutLoading(false);
-  }, [planToggle, saveProgress]);
+  }, [planToggle, saveProgress, t]);
 
   // ── Step 8: Activate & celebration ──
   const handleActivate = useCallback(async () => {
@@ -722,8 +730,8 @@ function OnboardingPage() {
     try {
       const res = await fetch("/api/dashboard/activate", { method: "POST" });
       if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: "Activation failed" }));
-        setErrors({ activate: err.error || "Activation failed" });
+        const err = await res.json().catch(() => ({ error: t.activationFailed }));
+        setErrors({ activate: err.error || t.activationFailed });
         return;
       }
       setShowConfetti(true);
@@ -731,11 +739,11 @@ function OnboardingPage() {
       trackCompleteRegistration();
       redirectTimerRef.current = setTimeout(() => router.push("/dashboard"), 8000);
     } catch {
-      setErrors({ activate: "Something went wrong" });
+      setErrors({ activate: t.somethingWentWrong });
     } finally {
       setActivating(false);
     }
-  }, [saveProgress, router]);
+  }, [saveProgress, router, t]);
 
   // ── Test forwarding call ──
   const handleTestForwarding = useCallback(async () => {

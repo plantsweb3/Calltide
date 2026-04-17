@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { chatMessages, businessContextNotes, conversationSummaries } from "@/db/schema";
 import { eq, and, desc, asc, count } from "drizzle-orm";
-import { getAnthropic, HAIKU_MODEL } from "@/lib/ai/client";
+import { getAnthropic, isAnthropicConfigured, HAIKU_MODEL } from "@/lib/ai/client";
 import { MARIA_TOOLS, handleToolCall } from "./tools";
 import { buildMariaSystemPrompt } from "./persona";
 import { getBusinessById } from "@/lib/ai/context-builder";
@@ -149,6 +149,20 @@ export async function chat(
       role: m.role as "user" | "assistant",
       content: m.content || " ", // Anthropic requires non-empty content
     });
+  }
+
+  // Graceful degrade: return an apology when Anthropic is unavailable.
+  if (!isAnthropicConfigured()) {
+    const fallbackReply = biz.language === "es"
+      ? "Lo siento, el asistente no está disponible ahora mismo. Por favor, inténtelo de nuevo en unos minutos."
+      : "Sorry, the assistant is temporarily unavailable. Please try again in a few minutes.";
+    await db.insert(chatMessages).values({
+      businessId,
+      role: "assistant",
+      content: fallbackReply,
+      channel,
+    });
+    return { reply: fallbackReply, tokenCount: 0, toolsUsed: [] };
   }
 
   // Call Anthropic with tool support
@@ -308,6 +322,9 @@ async function compactConversation(
   channel: "dashboard" | "sms"
 ): Promise<void> {
   try {
+    const biz = await getBusinessById(businessId);
+    const receptionistName = biz?.receptionistName || "Maria";
+
     const allMessages = await db
       .select({
         id: chatMessages.id,
@@ -327,7 +344,7 @@ async function compactConversation(
 
     const transcript = toSummarize
       .filter((m) => m.content && m.content !== "[tool results]")
-      .map((m) => `${m.role === "user" ? "Owner" : "Maria"}: ${m.content}`)
+      .map((m) => `${m.role === "user" ? "Owner" : receptionistName}: ${m.content}`)
       .join("\n");
 
     if (!transcript.trim()) {

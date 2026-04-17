@@ -11,7 +11,12 @@ type ExportType = "calls" | "customers" | "appointments" | "invoices" | "all";
 
 function escapeCSV(value: unknown): string {
   if (value === null || value === undefined) return "";
-  const str = String(value);
+  let str = String(value);
+  // Formula-injection guard: prefix values starting with =, +, -, @, tab, or CR
+  // with a single quote so spreadsheet apps render them as text, not formulas.
+  if (str.length > 0 && /^[=+\-@\t\r]/.test(str)) {
+    str = `'${str}`;
+  }
   if (str.includes(",") || str.includes('"') || str.includes("\n")) {
     return `"${str.replace(/"/g, '""')}"`;
   }

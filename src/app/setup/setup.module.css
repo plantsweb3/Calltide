@@ -11,16 +11,16 @@
 
 .page {
   min-height: 100vh;
-  background: #0f1729;
+  background: #F8F5EE;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #e2e8f0;
+  color: #111318;
 }
 
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(212,168,67,0.3);
-  border-top-color: #D4A843;
+  border: 3px solid rgba(176,125,41,0.3);
+  border-top-color: #B07D29;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -35,10 +35,11 @@
 }
 
 .logo {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  color: #D4A843;
+  color: #111318;
   letter-spacing: -0.02em;
+  font-family: var(--font-fraunces), Georgia, serif;
 }
 
 .langSwitch {
@@ -61,11 +62,11 @@
 }
 
 .langOption:hover {
-  color: #94a3b8;
+  color: #5C5A52;
 }
 
 .langOptionActive {
-  color: #e2e8f0;
+  color: #111318;
   font-weight: 600;
 }
 
@@ -91,11 +92,11 @@
 }
 
 .progressActive {
-  background: #D4A843;
+  background: #1A2238;
 }
 
 .progressInactive {
-  background: rgba(212,168,67,0.2);
+  background: #D6CFBD;
 }
 
 .container {
@@ -106,7 +107,7 @@
 
 .stepLabel {
   font-size: 13px;
-  color: #64748b;
+  color: #8A867B;
   margin-bottom: 8px;
   font-weight: 500;
 }
@@ -118,14 +119,14 @@
 .title {
   font-size: 24px;
   font-weight: 700;
-  color: #fff;
+  color: #111318;
   margin: 0 0 8px;
   line-height: 1.3;
 }
 
 .subtitle {
   font-size: 15px;
-  color: #94a3b8;
+  color: #5C5A52;
   margin: 0 0 28px;
   line-height: 1.5;
 }
@@ -138,7 +139,7 @@
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #111318;
   margin-bottom: 6px;
 }
 
@@ -151,10 +152,10 @@
 .input {
   width: 100%;
   padding: 12px 14px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: #FFFFFF;
+  border: 1px solid #D6CFBD;
   border-radius: 8px;
-  color: #fff;
+  color: #111318;
   font-size: 15px;
   outline: none;
   box-sizing: border-box;
@@ -162,12 +163,12 @@
 }
 
 .input:focus {
-  border-color: #D4A843;
-  box-shadow: 0 0 0 3px rgba(212,168,67,0.2);
+  border-color: #111318;
+  box-shadow: 0 0 0 3px rgba(17,19,24,0.08);
 }
 
 .input::placeholder {
-  color: #64748b;
+  color: #8A867B;
 }
 
 .inputError {
@@ -190,7 +191,7 @@
 
 .select option {
   background: #1a2540;
-  color: #e2e8f0;
+  color: #111318;
 }
 
 .error {
@@ -201,8 +202,8 @@
 }
 
 .card {
-  background: rgba(255,255,255,0.04);
-  border: 2px solid rgba(255,255,255,0.08);
+  background: #FFFFFF;
+  border: 1px solid #D6CFBD;
   border-radius: 12px;
   padding: 16px;
   transition: border-color 0.2s;
@@ -214,11 +215,12 @@
 }
 
 .cardSelectable:hover {
-  border-color: rgba(212,168,67,0.4);
+  border-color: rgba(176,125,41,0.4);
 }
 
 .cardSelected {
-  border-color: #D4A843 !important;
+  border-color: #1A2238 !important;
+  border-width: 2px !important;
 }
 
 .chipContainer {
@@ -234,10 +236,10 @@
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background: rgba(212,168,67,0.15);
-  border: 1px solid rgba(212,168,67,0.3);
+  background: rgba(176,125,41,0.15);
+  border: 1px solid rgba(176,125,41,0.3);
   border-radius: 20px;
-  color: #D4A843;
+  color: #B07D29;
   font-size: 13px;
   font-weight: 500;
 }
@@ -245,7 +247,7 @@
 .chipRemove {
   background: none;
   border: none;
-  color: #D4A843;
+  color: #B07D29;
   cursor: pointer;
   font-size: 16px;
   padding: 0;
@@ -262,7 +264,7 @@
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  background: rgba(212,168,67,0.08);
+  background: rgba(176,125,41,0.08);
   border-radius: 12px;
   padding: 12px 14px;
   margin-top: 16px;
@@ -282,8 +284,8 @@
 }
 
 .summaryCard {
-  background: rgba(212,168,67,0.06);
-  border: 1px solid rgba(212,168,67,0.2);
+  background: rgba(176,125,41,0.06);
+  border: 1px solid rgba(176,125,41,0.2);
   border-radius: 12px;
   padding: 20px;
 }
@@ -294,7 +296,7 @@
   align-items: center;
   padding: 6px 0;
   font-size: 14px;
-  color: #e2e8f0;
+  color: #111318;
 }
 
 .summaryLabel {
@@ -303,8 +305,9 @@
 
 .planToggleContainer {
   display: flex;
-  background: rgba(255,255,255,0.06);
-  border-radius: 8px;
+  background: #F1EDE3;
+  border: 1px solid #D6CFBD;
+  border-radius: 4px;
   padding: 3px;
   margin-bottom: 16px;
 }
@@ -323,18 +326,18 @@
   cursor: pointer;
   transition: all 0.2s;
   background: transparent;
-  color: #94a3b8;
+  color: #5C5A52;
 }
 
 .planToggleBtnActive {
-  background: #D4A843;
-  color: #0f1729;
+  background: #111318;
+  color: #F8F5EE;
 }
 
 .saveBadge {
   font-size: 11px;
   background: #10b981;
-  color: #fff;
+  color: #111318;
   padding: 2px 6px;
   border-radius: 4px;
   animation: fadeIn 0.3s ease;
@@ -358,23 +361,25 @@
 }
 
 .primaryBtn {
-  background: #D4A843;
-  color: #0f1729;
-  border: none;
-  border-radius: 8px;
+  background: #1A2238;
+  color: #F8F5EE;
+  border: 1px solid #1A2238;
+  border-radius: 4px;
   padding: 14px 28px;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, opacity 0.2s;
+  transition: background 0.15s cubic-bezier(0.2, 0, 0, 1);
+  min-height: 44px;
+  letter-spacing: -0.005em;
 }
 
 .primaryBtn:hover:not(:disabled) {
-  background: #c49a3d;
+  background: #242D47;
 }
 
 .primaryBtn:active:not(:disabled) {
-  background: #b8903a;
+  background: #111318;
 }
 
 .primaryBtn:disabled {
@@ -383,14 +388,14 @@
 }
 
 .primaryBtn:focus-visible {
-  outline: 2px solid #D4A843;
+  outline: 2px solid #1A2238;
   outline-offset: 2px;
 }
 
 .secondaryBtn {
-  background: rgba(212,168,67,0.15);
-  color: #D4A843;
-  border: 1px solid rgba(212,168,67,0.3);
+  background: rgba(176,125,41,0.15);
+  color: #B07D29;
+  border: 1px solid rgba(176,125,41,0.3);
   border-radius: 8px;
   padding: 10px 16px;
   font-size: 14px;
@@ -401,13 +406,13 @@
 }
 
 .secondaryBtn:hover {
-  background: rgba(212,168,67,0.25);
+  background: rgba(176,125,41,0.25);
 }
 
 .backBtn {
   background: transparent;
-  color: #94a3b8;
-  border: 1px solid rgba(255,255,255,0.12);
+  color: #5C5A52;
+  border: 1px solid #D6CFBD;
   border-radius: 8px;
   padding: 14px 24px;
   font-size: 16px;
@@ -417,12 +422,13 @@
 }
 
 .backBtn:hover {
-  border-color: rgba(255,255,255,0.3);
-  color: #e2e8f0;
+  border-color: #111318;
+  color: #111318;
+  color: #111318;
 }
 
 .backBtn:focus-visible {
-  outline: 2px solid #D4A843;
+  outline: 2px solid #1A2238;
   outline-offset: 2px;
 }
 
@@ -471,13 +477,13 @@
 }
 
 .toastTitle {
-  color: #fff;
+  color: #111318;
   font-weight: 600;
   font-size: 14px;
 }
 
 .toastBody {
-  color: rgba(255,255,255,0.85);
+  color: #5C5A52;
   font-size: 13px;
   margin-top: 2px;
 }
@@ -488,20 +494,20 @@
   padding: 24px;
   margin-bottom: 24px;
   text-align: center;
-  border-color: rgba(212,168,67,0.3);
-  background: rgba(212,168,67,0.04);
+  border-color: rgba(176,125,41,0.3);
+  background: rgba(176,125,41,0.04);
 }
 
 .priceAmount {
   font-size: 36px;
   font-weight: 700;
-  color: #fff;
+  color: #111318;
 }
 
 .pricePer {
   font-size: 16px;
   font-weight: 400;
-  color: #94a3b8;
+  color: #5C5A52;
 }
 
 /* Trust badges */
@@ -523,10 +529,10 @@
 
 /* Preview greeting button */
 .previewBtn {
-  background: rgba(212,168,67,0.15);
-  border: 1px solid rgba(212,168,67,0.3);
+  background: rgba(176,125,41,0.15);
+  border: 1px solid rgba(176,125,41,0.3);
   border-radius: 6px;
-  color: #D4A843;
+  color: #B07D29;
   font-size: 13px;
   font-weight: 500;
   padding: 6px 12px;
@@ -536,7 +542,7 @@
 }
 
 .previewBtn:hover {
-  background: rgba(212,168,67,0.25);
+  background: rgba(176,125,41,0.25);
 }
 
 .previewBtn:disabled {
@@ -554,14 +560,14 @@
 /* Help link */
 .helpLink {
   font-size: 12px;
-  color: #64748b;
+  color: #8A867B;
   text-decoration: none;
   transition: color 0.2s;
   white-space: nowrap;
 }
 
 .helpLink:hover {
-  color: #e2e8f0;
+  color: #111318;
 }
 
 /* Phone reassurance bar */
@@ -583,13 +589,13 @@
 .comparisonAnchor {
   text-align: center;
   font-size: 15px;
-  color: #94a3b8;
+  color: #5C5A52;
   margin-bottom: 16px;
 }
 
 .comparisonStrike {
   text-decoration: line-through;
-  color: #64748b;
+  color: #8A867B;
 }
 
 /* Responsive */

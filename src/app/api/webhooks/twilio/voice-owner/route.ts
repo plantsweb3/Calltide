@@ -51,17 +51,34 @@ export async function POST(req: NextRequest) {
     return twimlSay("I'm sorry, I couldn't identify your business. Please try again.");
   }
 
-  // Look up business language preference
+  // Look up business + verify caller is the owner. Owner-mode chat has tool
+  // access, so a stale/misconfigured Gather URL routing a non-owner here must
+  // not get through.
   let bizLang: "en" | "es" = "en";
+  let ownerPhone: string | null = null;
   try {
     const [biz] = await db
-      .select({ defaultLanguage: businesses.defaultLanguage })
+      .select({ defaultLanguage: businesses.defaultLanguage, ownerPhone: businesses.ownerPhone })
       .from(businesses)
       .where(eq(businesses.id, businessId))
       .limit(1);
     if (biz?.defaultLanguage === "es") bizLang = "es";
+    ownerPhone = biz?.ownerPhone ?? null;
   } catch {
-    // Non-fatal — default to English
+    // Non-fatal — default to English, ownerPhone stays null (will reject below)
+  }
+
+  const callerPhone = params.From || "";
+  const normalize = (p: string) => p.replace(/\D/g, "").replace(/^1/, "");
+  if (!ownerPhone || !callerPhone || normalize(ownerPhone) !== normalize(callerPhone)) {
+    reportWarning("voice-owner: caller is not the business owner", {
+      businessId,
+      callerMasked: callerPhone.slice(0, 4) + "***",
+    });
+    const denyMsg = bizLang === "es"
+      ? "Lo siento, solo el propietario puede usar esta línea."
+      : "Sorry, only the business owner can use this line.";
+    return twimlSay(denyMsg, false);
   }
 
   // Get the speech transcription from Twilio

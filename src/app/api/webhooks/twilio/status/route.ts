@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import twilio from "twilio";
-import { reportWarning } from "@/lib/error-reporting";
+import { reportError, reportWarning } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 /**
@@ -17,8 +17,8 @@ export async function POST(req: NextRequest) {
 
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   if (!authToken) {
-    reportWarning("TWILIO_AUTH_TOKEN not set — rejecting status webhook");
-    return new Response("OK", { status: 200 });
+    reportError("TWILIO_AUTH_TOKEN not set — status webhook cannot verify signature", null);
+    return new Response("Service Unavailable", { status: 503 });
   }
 
   const formData = await req.formData();

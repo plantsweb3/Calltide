@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { env } from "@/lib/env";
-import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
+import { getAnthropic, isAnthropicConfigured, SONNET_MODEL } from "@/lib/ai/client";
+
+const generateSchema = z.object({
+  title: z.string().min(1).max(300),
+  titleEs: z.string().max(300).optional(),
+  category: z.string().max(100).optional(),
+  keyPoints: z.array(z.string().max(500)).max(20).optional(),
+  audience: z.string().max(50).optional(),
+});
 
 const ARTICLE_SYSTEM_PROMPT = `You are a bilingual help center content writer for Capta, a bilingual AI receptionist service for Hispanic home service businesses in Texas.
 
@@ -37,16 +46,23 @@ Return a JSON object with these exact fields:
 Return ONLY valid JSON, no extra text.`;
 
 export async function POST(req: NextRequest) {
-  let body: unknown;
+  let rawBody: unknown;
   try {
-    body = await req.json();
+    rawBody = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const { title, titleEs, category, keyPoints, audience } = body as Record<string, unknown>;
+  const parsed = generateSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues.map((i) => i.message).join(", ") },
+      { status: 400 },
+    );
+  }
+  const { title, titleEs, category, keyPoints, audience } = parsed.data;
 
-  if (!title) {
-    return NextResponse.json({ error: "title required" }, { status: 400 });
+  if (!isAnthropicConfigured()) {
+    return NextResponse.json({ error: "Article generation is temporarily unavailable." }, { status: 503 });
   }
 
   const anthropic = getAnthropic();
@@ -77,6 +93,6 @@ export async function POST(req: NextRequest) {
     const article = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(text);
     return NextResponse.json(article);
   } catch {
-    return NextResponse.json({ error: "Failed to parse generated article", raw: text }, { status: 500 });
+    return NextResponse.json({ error: "Failed to parse generated article" }, { status: 500 });
   }
 }

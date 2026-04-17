@@ -1,472 +1,421 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { PHONE, PHONE_TEL } from "@/lib/marketing/translations";
-import type { Lang } from "@/lib/marketing/translations";
+/**
+ * Platform page — Field Manual direction.
+ * Reads like a product manual: chapters, features, proof.
+ */
 
-/* ── Lucide-style SVG icons ── */
-const icons = {
-  phone: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.81.36 1.6.7 2.35a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.75.34 1.54.57 2.35.7A2 2 0 0122 16.92z" /></svg>
-  ),
-  globe: (p: IconProps) => (
-    <svg {...svgProps(p)}><circle cx="12" cy="12" r="10" /><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" /></svg>
-  ),
-  alert: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
-  ),
-  moon: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
-  ),
-  mic: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" /><path d="M19 10v2a7 7 0 01-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></svg>
-  ),
-  userCheck: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="8.5" cy="7" r="4" /><polyline points="17 11 19 13 23 9" /></svg>
-  ),
-  smile: (p: IconProps) => (
-    <svg {...svgProps(p)}><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" /></svg>
-  ),
-  fileText: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" /></svg>
-  ),
-  calendar: (p: IconProps) => (
-    <svg {...svgProps(p)}><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-  ),
-  message: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" /></svg>
-  ),
-  bell: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 01-3.46 0" /></svg>
-  ),
-  users: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87" /><path d="M16 3.13a4 4 0 010 7.75" /></svg>
-  ),
-  kanban: (p: IconProps) => (
-    <svg {...svgProps(p)}><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M8 7v4" /><path d="M12 7v8" /><path d="M16 7v2" /></svg>
-  ),
-  brain: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M9.5 2A2.5 2.5 0 0112 4.5v15a2.5 2.5 0 01-4.96.44A2.5 2.5 0 015 17.5a2.5 2.5 0 01.49-4.89A2.5 2.5 0 014.5 9a2.5 2.5 0 012-4.45A2.5 2.5 0 019.5 2z" /><path d="M14.5 2A2.5 2.5 0 0012 4.5v15a2.5 2.5 0 004.96.44A2.5 2.5 0 0019 17.5a2.5 2.5 0 00-.49-4.89A2.5 2.5 0 0019.5 9a2.5 2.5 0 00-2-4.45A2.5 2.5 0 0014.5 2z" /></svg>
-  ),
-  star: (p: IconProps) => (
-    <svg {...svgProps(p)}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
-  ),
-  layout: (p: IconProps) => (
-    <svg {...svgProps(p)}><rect x="3" y="3" width="18" height="18" rx="2" /><line x1="3" y1="9" x2="21" y2="9" /><line x1="9" y1="21" x2="9" y2="9" /></svg>
-  ),
-  gift: (p: IconProps) => (
-    <svg {...svgProps(p)}><polyline points="20 12 20 22 4 22 4 12" /><rect x="2" y="7" width="20" height="5" /><line x1="12" y1="22" x2="12" y2="7" /><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z" /><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z" /></svg>
-  ),
-  activity: (p: IconProps) => (
-    <svg {...svgProps(p)}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>
-  ),
-  shield: (p: IconProps) => (
-    <svg {...svgProps(p)}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-  ),
-  lock: (p: IconProps) => (
-    <svg {...svgProps(p)}><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>
-  ),
+import { useState, useEffect, useCallback } from "react";
+import { PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
+import {
+  C,
+  Mono,
+  Kicker,
+  Rule,
+  PrimaryButton,
+  SecondaryButton,
+  FieldFrame,
+  FieldNav,
+  FieldFooter,
+  DisplayH1,
+  DisplayH2,
+  TrustStrip,
+  SkipLink,
+} from "@/components/marketing/field";
+
+/* ═══════════════════════════════════════════════════════════════
+   COPY
+   ═══════════════════════════════════════════════════════════════ */
+
+type Feature = { label: string; title: string; desc: string };
+type Chapter = { id: string; num: string; title: string; kicker: string; features: Feature[] };
+
+type Copy = {
+  hero: { kicker: string; h1a: string; h1b: string; sub: string };
+  chapters: Chapter[];
+  tabLabel: string;
+  includedLabel: string;
+  includedSuffix: (n: number) => string;
+  cta: { kicker: string; h2: string; sub: string; primary: string; secondary: string };
 };
 
-type IconProps = { size?: number; className?: string };
-function svgProps({ size = 24, className = "" }: IconProps) {
-  return { className, width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
-}
-
-/* ── Additional icons for new categories ── */
-const iconPhoneMissed = (p: IconProps) => (
-  <svg {...svgProps(p)}><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
-);
-const iconCalculator = (p: IconProps) => (
-  <svg {...svgProps(p)}><rect x="4" y="2" width="16" height="20" rx="2" /><line x1="8" y1="6" x2="16" y2="6" /><line x1="8" y1="10" x2="8" y2="10.01" /><line x1="12" y1="10" x2="12" y2="10.01" /><line x1="16" y1="10" x2="16" y2="10.01" /><line x1="8" y1="14" x2="8" y2="14.01" /><line x1="12" y1="14" x2="12" y2="14.01" /><line x1="16" y1="14" x2="16" y2="14.01" /><line x1="8" y1="18" x2="16" y2="18" /></svg>
-);
-const iconCamera = (p: IconProps) => (
-  <svg {...svgProps(p)}><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" /><circle cx="12" cy="13" r="4" /></svg>
-);
-const iconSmartphone = (p: IconProps) => (
-  <svg {...svgProps(p)}><rect x="5" y="2" width="14" height="20" rx="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></svg>
-);
-const iconRefreshCw = (p: IconProps) => (
-  <svg {...svgProps(p)}><polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" /><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" /></svg>
-);
-const iconTrendingUp = (p: IconProps) => (
-  <svg {...svgProps(p)}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
-);
-const iconMail = (p: IconProps) => (
-  <svg {...svgProps(p)}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
-);
-const iconUpload = (p: IconProps) => (
-  <svg {...svgProps(p)}><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
-);
-const iconPhoneOutgoing = (p: IconProps) => (
-  <svg {...svgProps(p)}><polyline points="23 7 23 1 17 1" /><line x1="16" y1="8" x2="23" y2="1" /><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.81.36 1.6.7 2.35a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.75.34 1.54.57 2.35.7A2 2 0 0122 16.92z" /></svg>
-);
-const iconMapPin = (p: IconProps) => (
-  <svg {...svgProps(p)}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg>
-);
-
-/* ── Bilingual content ── */
-const T = {
+const COPY: Record<Lang, Copy> = {
   en: {
-    heroLabel: "Platform",
-    heroH1: "30+ Automations. One AI. One Text Message.",
-    heroSub: "Every automation runs on its own — answering calls, generating estimates, recovering missed calls, and growing your business. You just text Maria.",
-    tradeLabel: "See It In Action",
-    tradeH2: "How She Handles Real Calls",
-    trades: [
-      { trade: "Plumbing", emoji: "\u{1F527}", scenario: "\"I've got water leaking from under the kitchen sink.\" She collects the address, asks for photos, generates a $250\u2013$400 estimate for a supply line repair, and texts it to the owner for one-tap approval." },
-      { trade: "HVAC", emoji: "\u2744\uFE0F", scenario: "\"My AC stopped cooling and it's 95 degrees.\" She flags the urgency, collects the unit age and model, generates a diagnostic visit estimate, and books the next available slot on the owner's calendar." },
-      { trade: "Electrical", emoji: "\u26A1", scenario: "\"Half my outlets stopped working after the storm.\" She asks about the panel and breaker status, generates an estimate for a circuit troubleshoot, and sends the owner a text with photos the caller took of the panel." },
-      { trade: "Roofing", emoji: "\u{1F3E0}", scenario: "\"I've got a leak in my attic after the rain.\" She collects the roof age, damage area, and insurance info, generates an inspection estimate, and schedules a visit \u2014 all within the same call." },
-    ],
-    ctaH2: "Everything included. One plan. $497/month.",
-    ctaSub: "No tiers, no upsells. Everything on this page is included.",
-    ctaPricing: "See Pricing",
-    ctaGet: "Start Free Trial",
-    ctaCall: "Or call us:",
-    screenshot: "Platform screenshot",
-    categories: [
+    hero: {
+      kicker: "Platform",
+      h1a: "Everything included",
+      h1b: "for a front office that runs itself.",
+      sub:
+        "Capta is 24 core capabilities organized into four areas — answering, running the office by SMS, recovering revenue, and closing new customers. Every one included at $497 a month.",
+    },
+    tabLabel: "Category",
+    includedLabel: "Included in your $497 / month plan",
+    includedSuffix: (n) => `${n} capabilities, already wired`,
+    chapters: [
       {
-        id: "revenue", label: "Revenue Automations", icon: iconPhoneMissed,
+        id: "answering",
+        num: "01",
+        title: "Answering",
+        kicker: "Every call. In any language. Immediately.",
         features: [
-          { icon: iconPhoneMissed, title: "Missed Call Recovery SMS", desc: "When a caller hangs up, she auto-texts them within 60 seconds to bring them back. Runs automatically — no manual follow-up needed." },
-          { icon: icons.fileText, title: "AI Job Intake", desc: "She asks the right questions — problem type, property address, urgency, photos — and creates a complete job card automatically. Zero data entry." },
-          { icon: iconCalculator, title: "AI Estimate Generation", desc: "Based on job details and your pricing rules, she generates a price range on the call and texts it to the customer for review. Automatic." },
-          { icon: iconCamera, title: "Job Cards with Photo Intake", desc: "Callers text photos of the job site. Images attach to the job card alongside all details automatically, giving you full context before arriving." },
-          { icon: iconSmartphone, title: "Owner SMS Response Loop", desc: "You get a text with the job summary and estimate. Approve, adjust, or decline with one tap — the customer is notified via SMS instantly." },
-          { icon: iconRefreshCw, title: "Estimate Follow-Up Automation", desc: "Cold estimates get automatic SMS follow-ups on a schedule you set. She re-engages leads that haven't responded — hands-free." },
+          { label: "01", title: "Bilingual voice", desc: "Maria detects the caller's language on the first word and answers in English or Spanish. Same phone, same Maria, no separate line." },
+          { label: "02", title: "24 / 7 coverage", desc: "She answers after hours, on weekends, during holidays, during jobs. Every call. No voicemail." },
+          { label: "03", title: "Trade-aware intake", desc: "She knows HVAC from plumbing from electrical. Asks the right questions, captures the right details." },
+          { label: "04", title: "Emergency detection", desc: "Detects \"no AC with a baby\" or \"water through the ceiling\" and escalates to your on-call tech the same minute." },
+          { label: "05", title: "Live transfer", desc: "If a caller needs a human right now, she bridges the call to your phone cleanly. No hold music." },
+          { label: "06", title: "Job-card SMS", desc: "Every call that converts becomes a one-tap text to you with name, address, service, and estimate range." },
         ],
       },
       {
-        id: "growth", label: "Growth & Automation", icon: iconTrendingUp,
+        id: "ops",
+        num: "02",
+        title: "Run the office",
+        kicker: "Dispatch, invoice, schedule — by text.",
         features: [
-          { icon: iconRefreshCw, title: "Customer Recall", desc: "Automatically re-engage past customers for seasonal maintenance, annual inspections, or follow-up work. Turns one-time jobs into recurring revenue." },
-          { icon: icons.star, title: "Google Review Requests", desc: "After a completed job, she texts the customer asking for a Google review. Builds your online reputation on autopilot." },
-          { icon: iconMail, title: "Weekly Digest", desc: "Your dashboard shows a comprehensive weekly summary \u2014 calls, appointments, estimates, revenue recovered, and key metrics at a glance." },
-          { icon: icons.users, title: "Partner Referral Network", desc: "Get referrals from other trades when they can't handle a job. A plumber refers HVAC leads, an electrician refers plumbing leads." },
-          { icon: iconPhoneOutgoing, title: "Outbound Call Automation", desc: "She makes outbound calls for appointment confirmations, follow-ups, and customer re-engagement \u2014 not just inbound." },
+          { label: "07", title: "Text-to-dispatch", desc: "\"Send Mike to the 2pm emergency\" — she notifies the tech, sends the address, confirms receipt." },
+          { label: "08", title: "Text-to-invoice", desc: "\"$450 to Garcia for today's job\" — invoice sent via SMS with a payment link. Due in 30." },
+          { label: "09", title: "Text-to-schedule", desc: "\"What's on Thursday?\" — she reads back the day in one message. Move jobs by text." },
+          { label: "10", title: "Morning briefing", desc: "Daily SMS at the hour you pick. Today's jobs, yesterday's close rate, this week's outstanding estimates." },
+          { label: "11", title: "Weekly digest", desc: "Friday: calls answered, appointments booked, revenue, after-hours catch, language mix, win rate." },
+          { label: "12", title: "Monthly ROI", desc: "First of the month: what Capta made you, what it would have cost to get it another way." },
         ],
       },
       {
-        id: "calls", label: "Voice AI", icon: icons.phone,
+        id: "recovery",
+        num: "03",
+        title: "Recover revenue",
+        kicker: "The jobs you thought you lost.",
         features: [
-          { icon: icons.phone, title: "24/7 Bilingual Answering", desc: "Every call answered in English or Spanish automatically. Auto-detects the caller's language — no phone menus, no press-1-for-English." },
-          { icon: icons.userCheck, title: "Returning Caller Recognition", desc: "Recognizes repeat callers automatically. Greets them by context and picks up where the last conversation left off." },
-          { icon: icons.alert, title: "Emergency Detection + Live Transfer", desc: "Automatically detects emergency keywords like 'gas leak' or 'flooding' and immediately transfers the call to your emergency number." },
-          { icon: icons.moon, title: "After-Hours Intelligent Routing", desc: "Automatically adjusts behavior for business hours vs. nights and weekends. Takes messages, books next-day appointments, or transfers urgencies." },
-          { icon: icons.smile, title: "Custom Greetings & Personality", desc: "Name her, pick a personality (friendly, professional, warm), set preferred phrases, and define off-limits topics." },
-          { icon: icons.fileText, title: "Recordings + Transcripts", desc: "Full audio recording and AI-generated transcript for every call. Created automatically, searchable and exportable from your dashboard." },
+          { label: "13", title: "Missed-call recovery", desc: "Any call under 15 seconds gets a personalized SMS within 60 seconds: \"Sorry we missed you — what can we help with?\"" },
+          { label: "14", title: "Estimate follow-up", desc: "Three-step drip to quoted leads who didn't book. Stops the moment they respond or book." },
+          { label: "15", title: "Callback scheduler", desc: "When Maria can't close, she schedules you a callback window the caller committed to." },
+          { label: "16", title: "Review requests", desc: "Automatic Google review ask after completed jobs. Negative reviews routed to you before they post." },
+          { label: "17", title: "Seasonal re-engagement", desc: "Contacts past customers before their trade's peak season. AC tune-ups in March. Drain cleaning in November." },
+          { label: "18", title: "Customer recall", desc: "If a customer hasn't been back in 12 months, Maria reaches out with the service they last bought." },
         ],
       },
       {
-        id: "scheduling", label: "Scheduling Automations", icon: icons.calendar,
+        id: "growth",
+        num: "04",
+        title: "Close new customers",
+        kicker: "Captured, qualified, booked.",
         features: [
-          { icon: icons.calendar, title: "Appointment Management", desc: "She books, reschedules, and cancels appointments through natural conversation. Your schedule stays organized without any manual entry." },
-          { icon: icons.mic, title: "Voice Booking", desc: "Callers book appointments naturally through conversation — no app downloads, no online forms, no hold music." },
-          { icon: icons.message, title: "SMS Confirmations", desc: "Automatic text confirmation sent to the caller with appointment details, your business info, and the service address. No manual texting." },
-          { icon: icons.bell, title: "Appointment Reminders", desc: "Automated SMS reminders reduce no-shows. Sent at configurable intervals before each appointment — completely hands-free." },
-        ],
-      },
-      {
-        id: "tools", label: "Smart Tools", icon: icons.kanban,
-        features: [
-          { icon: icons.users, title: "Auto-Populated CRM", desc: "Every caller becomes a customer record automatically. Phone, name, call history, appointments, and notes — all populated without data entry." },
-          { icon: icons.kanban, title: "Estimate Pipeline", desc: "Track every estimate from request to signed. Status, follow-up history, and close rates — updated automatically as Maria works." },
-          { icon: icons.brain, title: "AI-Powered Call Summaries", desc: "AI reads the transcript and generates a concise summary with action items automatically. Know what happened without listening to the call." },
-          { icon: iconUpload, title: "CSV Import", desc: "Import your existing customer database from any CRM or spreadsheet. Capta maps the fields and gives your receptionist full context from day one." },
-        ],
-      },
-      {
-        id: "ops", label: "Operations & Reporting", icon: icons.layout,
-        features: [
-          { icon: icons.layout, title: "Dashboard + Analytics", desc: "Real-time metrics updated automatically: calls answered, appointments booked, revenue recovered, response times, and trends over time." },
-          { icon: icons.gift, title: "Referral Program ($497 Credit)", desc: "Refer another business and earn a full month free ($497 credit). They get 50% off their first month." },
-          { icon: iconMapPin, title: "Multi-Location Support", desc: "Manage multiple business locations from one account. Each location gets its own number, settings, and automated reporting." },
-          { icon: icons.activity, title: "Status Page + Incident Engine", desc: "Public status page shows real-time service health. Automatic incident detection, escalation, and postmortem generation." },
-        ],
-      },
-      {
-        id: "compliance", label: "Compliance", icon: icons.shield,
-        features: [
-          { icon: icons.shield, title: "You're Protected", desc: "Capta handles the legal stuff \u2014 GDPR, CCPA, and TCPA compliance built in so you don't have to think about it." },
-          { icon: icons.mic, title: "Call Recording Notices", desc: "Every call starts with a recording disclosure so you're always covered. Configurable by state." },
-          { icon: icons.lock, title: "Your Data Is Secure", desc: "Encrypted connections, secure login, and strict access controls. Your business data and customer info stay private." },
+          { label: "19", title: "Google Calendar sync", desc: "Real-time availability — Maria books into your calendar live, never double-books." },
+          { label: "20", title: "Customer CRM", desc: "Every caller becomes a record: name, phone, language, lifetime value, last 10 calls, notes." },
+          { label: "21", title: "Lead scoring", desc: "Hot / warm / cold scored on call content, job size, urgency, and past customer value." },
+          { label: "22", title: "Referral program", desc: "Automated partner referrals — plumbers send HVAC leads, electricians send plumbing leads." },
+          { label: "23", title: "Self-service portal", desc: "Every customer gets a magic link to view invoices, estimates, appointments, and send questions." },
+          { label: "24", title: "Analytics dashboard", desc: "Calls, trends, close rate, average ticket, top services, language mix — all in one place." },
         ],
       },
     ],
+    cta: {
+      kicker: "All capabilities included",
+      h2: "Ready to hand over the phone?",
+      sub: "14 days free. No setup. Your number stays yours.",
+      primary: "Start 14-day free trial",
+      secondary: "See pricing",
+    },
   },
   es: {
-    heroLabel: "Plataforma",
-    heroH1: "30+ Automatizaciones. Una IA. Un Mensaje de Texto.",
-    heroSub: "Cada automatización corre sola — contestando llamadas, generando presupuestos, recuperando llamadas perdidas y haciendo crecer tu negocio. Solo envíale un texto a Maria.",
-    tradeLabel: "Míralo en Acción",
-    tradeH2: "Cómo Maneja Llamadas Reales",
-    trades: [
-      { trade: "Plomería", emoji: "\u{1F527}", scenario: "\"Tengo una fuga de agua debajo del fregadero.\" Recopila la dirección, pide fotos, genera un presupuesto de $250\u2013$400 para reparación de tubería, y se lo envía al dueño para aprobación con un toque." },
-      { trade: "Aire Acondicionado", emoji: "\u2744\uFE0F", scenario: "\"Mi aire acondicionado dejó de enfriar y estamos a 35 grados.\" Marca la urgencia, recopila la edad y modelo del equipo, genera un presupuesto de diagnóstico, y agenda la siguiente cita disponible." },
-      { trade: "Electricidad", emoji: "\u26A1", scenario: "\"La mitad de mis enchufes dejaron de funcionar después de la tormenta.\" Pregunta sobre el panel y los breakers, genera un presupuesto para diagnóstico de circuito, y envía al dueño las fotos del panel." },
-      { trade: "Techos", emoji: "\u{1F3E0}", scenario: "\"Tengo una gotera en el ático después de la lluvia.\" Recopila la edad del techo, el área dañada y la info del seguro, genera un presupuesto de inspección, y agenda una visita \u2014 todo en la misma llamada." },
-    ],
-    ctaH2: "Todo incluido. Un plan. $497/mes.",
-    ctaSub: "Sin niveles, sin ventas adicionales. Todo en esta página está incluido.",
-    ctaPricing: "Ver Precios",
-    ctaGet: "Prueba Gratis",
-    ctaCall: "O llámanos:",
-    screenshot: "Captura de la plataforma",
-    categories: [
+    hero: {
+      kicker: "Plataforma",
+      h1a: "Todo incluido",
+      h1b: "para una oficina que se maneja sola.",
+      sub:
+        "Capta son 24 capacidades principales organizadas en cuatro áreas — contestar, manejar la oficina por SMS, recuperar ingresos, y cerrar clientes nuevos. Cada una incluida por $497 al mes.",
+    },
+    tabLabel: "Categoría",
+    includedLabel: "Incluido en tu plan de $497 / mes",
+    includedSuffix: (n) => `${n} capacidades, ya conectadas`,
+    chapters: [
       {
-        id: "revenue", label: "Automatizaciones de Ingresos", icon: iconPhoneMissed,
+        id: "answering",
+        num: "01",
+        title: "Contestar",
+        kicker: "Cada llamada. En cualquier idioma. Inmediatamente.",
         features: [
-          { icon: iconPhoneMissed, title: "SMS de Llamadas Perdidas", desc: "Cuando un llamante cuelga, le envía un texto en 60 segundos automáticamente para traerlo de vuelta. Sin seguimiento manual." },
-          { icon: icons.fileText, title: "Intake de Trabajo IA", desc: "Hace las preguntas correctas — tipo de problema, dirección, urgencia, fotos — y crea una tarjeta de trabajo completa automáticamente. Cero entrada de datos." },
-          { icon: iconCalculator, title: "Generación de Presupuestos IA", desc: "Basándose en los detalles del trabajo y tus reglas de precios, genera un rango de precio en la llamada y se lo envía al cliente automáticamente." },
-          { icon: iconCamera, title: "Tarjetas de Trabajo con Fotos", desc: "Los llamantes envían fotos del sitio por texto. Las imágenes se adjuntan a la tarjeta de trabajo automáticamente con todos los detalles." },
-          { icon: iconSmartphone, title: "Respuesta del Dueño por SMS", desc: "Recibes un texto con el resumen del trabajo y presupuesto. Aprueba, ajusta o rechaza con un toque — el cliente es notificado por SMS al instante." },
-          { icon: iconRefreshCw, title: "Seguimiento Automático de Presupuestos", desc: "Los presupuestos fríos reciben seguimiento automático por SMS en el horario que configures. Sin intervención manual." },
+          { label: "01", title: "Voz bilingüe", desc: "Maria detecta el idioma del llamante en la primera palabra y contesta en inglés o español. Mismo teléfono, misma Maria, sin línea separada." },
+          { label: "02", title: "Cobertura 24 / 7", desc: "Contesta fuera de horario, fines de semana, días festivos, durante los trabajos. Cada llamada. Sin buzón de voz." },
+          { label: "03", title: "Admisión por oficio", desc: "Conoce HVAC de plomería de eléctrico. Hace las preguntas correctas, captura los detalles correctos." },
+          { label: "04", title: "Detección de emergencias", desc: "Detecta \"sin aire con un bebé\" o \"agua por el techo\" y escala al técnico de guardia en el mismo minuto." },
+          { label: "05", title: "Transferencia en vivo", desc: "Si un llamante necesita una persona en ese momento, conecta la llamada a tu teléfono limpiamente. Sin música de espera." },
+          { label: "06", title: "Tarjeta SMS del trabajo", desc: "Cada llamada que convierte se vuelve un texto de un toque con nombre, dirección, servicio, y rango de estimado." },
         ],
       },
       {
-        id: "growth", label: "Crecimiento y Automatización", icon: iconTrendingUp,
+        id: "ops",
+        num: "02",
+        title: "Manejar la oficina",
+        kicker: "Despacha, factura, agenda — por texto.",
         features: [
-          { icon: iconRefreshCw, title: "Reactivación de Clientes", desc: "Vuelve a contactar clientes anteriores para mantenimiento estacional, inspecciones anuales o trabajo de seguimiento. Convierte trabajos únicos en ingresos recurrentes." },
-          { icon: icons.star, title: "Solicitud de Reseñas en Google", desc: "Después de un trabajo completado, envía un texto al cliente pidiendo una reseña en Google. Construye tu reputación en piloto automático." },
-          { icon: iconMail, title: "Resumen Semanal", desc: "Tu panel muestra un resumen semanal completo \u2014 llamadas, citas, presupuestos, ingresos recuperados y métricas clave." },
-          { icon: icons.users, title: "Red de Referidos entre Oficios", desc: "Recibe referidos de otros oficios cuando no pueden manejar un trabajo. Un plomero refiere leads de HVAC, un electricista refiere leads de plomería." },
-          { icon: iconPhoneOutgoing, title: "Llamadas Salientes Automatizadas", desc: "Hace llamadas salientes para confirmaciones de citas, seguimientos y reactivación de clientes \u2014 no solo entrantes." },
+          { label: "07", title: "Texto-a-despacho", desc: "\"Manda a Mike a la emergencia de las 2pm\" — notifica al técnico, manda la dirección, confirma recepción." },
+          { label: "08", title: "Texto-a-factura", desc: "\"$450 a Garcia por el trabajo de hoy\" — factura enviada por SMS con enlace de pago. Vence en 30 días." },
+          { label: "09", title: "Texto-a-agenda", desc: "\"¿Qué hay el jueves?\" — te lee el día en un mensaje. Mueve trabajos por texto." },
+          { label: "10", title: "Resumen matutino", desc: "SMS diario a la hora que eliges. Trabajos de hoy, tasa de cierre de ayer, estimados pendientes de esta semana." },
+          { label: "11", title: "Digest semanal", desc: "Viernes: llamadas contestadas, citas agendadas, ingresos, captura fuera de horario, mezcla de idiomas, tasa de cierre." },
+          { label: "12", title: "ROI mensual", desc: "Primero del mes: lo que Capta te generó, y lo que habría costado conseguirlo de otra manera." },
         ],
       },
       {
-        id: "calls", label: "Voz IA", icon: icons.phone,
+        id: "recovery",
+        num: "03",
+        title: "Recuperar ingresos",
+        kicker: "Los trabajos que creías perdidos.",
         features: [
-          { icon: icons.phone, title: "Respuesta Bilingüe 24/7", desc: "Cada llamada contestada automáticamente en inglés o español. Detecta el idioma al instante — sin menús telefónicos, sin presionar 1 para inglés." },
-          { icon: icons.userCheck, title: "Reconocimiento de Llamantes", desc: "Reconoce llamantes repetidos automáticamente. Los saluda por contexto y continúa donde quedó la última conversación." },
-          { icon: icons.alert, title: "Detección de Emergencias", desc: "Detecta automáticamente palabras clave de emergencia como 'fuga de gas' o 'inundación' y transfiere la llamada inmediatamente." },
-          { icon: icons.moon, title: "Ruteo Inteligente Fuera de Horario", desc: "Ajusta el comportamiento automáticamente para horario laboral vs. noches y fines de semana. Toma mensajes, agenda citas, o transfiere urgencias." },
-          { icon: icons.smile, title: "Saludos y Personalidad", desc: "Ponle nombre, elige su personalidad (amigable, profesional, cálida), configura frases preferidas y temas prohibidos." },
-          { icon: icons.fileText, title: "Grabaciones + Transcripciones", desc: "Grabación completa y transcripción generada por IA automáticamente para cada llamada. Buscable y exportable desde tu panel." },
+          { label: "13", title: "Recuperación de llamada perdida", desc: "Cualquier llamada menor a 15 segundos recibe un SMS personalizado en 60 segundos: \"Disculpa que no pudimos contestar — ¿en qué te ayudamos?\"" },
+          { label: "14", title: "Seguimiento de estimado", desc: "Secuencia de tres pasos a clientes cotizados que no agendaron. Para en el momento que responden o agendan." },
+          { label: "15", title: "Agendar llamada de vuelta", desc: "Cuando Maria no puede cerrar, te agenda una ventana de llamada que el cliente aceptó." },
+          { label: "16", title: "Solicitudes de reseña", desc: "Pide reseña en Google automática después de trabajos terminados. Reseñas negativas se enrutan a ti antes de publicar." },
+          { label: "17", title: "Re-compromiso estacional", desc: "Contacta a clientes pasados antes de la temporada alta de su oficio. Mantenimientos de AC en marzo. Limpieza de drenajes en noviembre." },
+          { label: "18", title: "Recuerdo de cliente", desc: "Si un cliente no ha vuelto en 12 meses, Maria contacta con el servicio que compró la última vez." },
         ],
       },
       {
-        id: "scheduling", label: "Automatizaciones de Agenda", icon: icons.calendar,
+        id: "growth",
+        num: "04",
+        title: "Cerrar clientes nuevos",
+        kicker: "Capturado, calificado, agendado.",
         features: [
-          { icon: icons.calendar, title: "Gestión de Citas", desc: "Agenda, reprograma y cancela citas a través de conversación natural. Tu agenda se mantiene organizada sin entrada manual." },
-          { icon: icons.mic, title: "Reserva por Voz", desc: "Los llamantes agendan citas naturalmente por conversación — sin descargar apps, sin formularios, sin música de espera." },
-          { icon: icons.message, title: "Confirmaciones por SMS", desc: "Confirmación automática por texto enviada al llamante con detalles de la cita, info de tu negocio y la dirección. Sin textos manuales." },
-          { icon: icons.bell, title: "Recordatorios de Citas", desc: "Recordatorios automáticos por SMS reducen las ausencias. Enviados en intervalos configurables — completamente sin intervención." },
-        ],
-      },
-      {
-        id: "tools", label: "Herramientas Inteligentes", icon: icons.kanban,
-        features: [
-          { icon: icons.users, title: "CRM Automático", desc: "Cada llamante se convierte en un registro de cliente automáticamente. Teléfono, nombre, historial, citas y notas — todo poblado sin entrada de datos." },
-          { icon: icons.kanban, title: "Pipeline de Presupuestos", desc: "Rastrea cada presupuesto desde la solicitud hasta la firma. Estado e historial de seguimiento — actualizado automáticamente mientras Maria trabaja." },
-          { icon: icons.brain, title: "Resúmenes de Llamadas IA", desc: "La IA lee la transcripción y genera un resumen conciso con acciones automáticamente. Sabe qué pasó sin escuchar la llamada." },
-          { icon: iconUpload, title: "Importación CSV", desc: "Importa tu base de datos de clientes existente desde cualquier CRM o hoja de cálculo. Capta mapea los campos y le da a tu recepcionista contexto completo." },
-        ],
-      },
-      {
-        id: "ops", label: "Operaciones y Reportes", icon: icons.layout,
-        features: [
-          { icon: icons.layout, title: "Panel + Analíticas", desc: "Métricas actualizadas automáticamente en tiempo real: llamadas contestadas, citas agendadas, ingresos recuperados y tendencias." },
-          { icon: icons.gift, title: "Programa de Referidos ($497)", desc: "Refiere otro negocio y gana un mes gratis ($497 de crédito). Ellos reciben 50% de descuento en su primer mes." },
-          { icon: iconMapPin, title: "Soporte Multi-Ubicación", desc: "Administra múltiples ubicaciones desde una cuenta. Cada ubicación tiene su propio número, configuración y reportes automáticos." },
-          { icon: icons.activity, title: "Página de Estado", desc: "Página pública de estado muestra la salud del servicio en tiempo real. Detección automática de incidentes y escalación." },
-        ],
-      },
-      {
-        id: "compliance", label: "Cumplimiento", icon: icons.shield,
-        features: [
-          { icon: icons.shield, title: "Estás Protegido", desc: "Capta maneja lo legal \u2014 cumplimiento con GDPR, CCPA y TCPA integrado para que no tengas que pensar en eso." },
-          { icon: icons.mic, title: "Avisos de Grabación", desc: "Cada llamada comienza con un aviso de grabación para que siempre estés cubierto. Configurable por estado." },
-          { icon: icons.lock, title: "Tus Datos Están Seguros", desc: "Conexiones encriptadas, inicio de sesión seguro y controles de acceso estrictos. Tu información de negocio y clientes se mantiene privada." },
+          { label: "19", title: "Sincronización con Google Calendar", desc: "Disponibilidad en tiempo real — Maria agenda en tu calendario en vivo, nunca agenda doble." },
+          { label: "20", title: "CRM de clientes", desc: "Cada llamante se vuelve un registro: nombre, teléfono, idioma, valor de vida, últimas 10 llamadas, notas." },
+          { label: "21", title: "Puntaje de prospectos", desc: "Caliente / tibio / frío según contenido de llamada, tamaño del trabajo, urgencia, y valor pasado del cliente." },
+          { label: "22", title: "Programa de referidos", desc: "Referidos automáticos entre oficios — plomeros mandan HVAC, electricistas mandan plomería." },
+          { label: "23", title: "Portal de auto-servicio", desc: "Cada cliente recibe un enlace mágico para ver facturas, estimados, citas, y enviar preguntas." },
+          { label: "24", title: "Panel de analíticas", desc: "Llamadas, tendencias, tasa de cierre, ticket promedio, servicios principales, mezcla de idiomas — todo en un lugar." },
         ],
       },
     ],
+    cta: {
+      kicker: "Todas las capacidades incluidas",
+      h2: "¿Listo para entregar el teléfono?",
+      sub: "14 días gratis. Sin instalación. Tu número sigue siendo tuyo.",
+      primary: "Comenzar prueba gratis de 14 días",
+      secondary: "Ver precios",
+    },
   },
 };
 
-export default function PlatformClient() {
-  const [activeTab, setActiveTab] = useState("revenue");
-  const [lang, setLang] = useState<Lang>("en");
+const LANG_KEY = "capta-lang";
 
-  // Restore language preference
+export default function PlatformClient({ initialLang }: { initialLang?: Lang } = {}) {
+  const [lang, setLang] = useState<Lang>(initialLang ?? "en");
+  const [activeChapter, setActiveChapter] = useState("answering");
+
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("capta-lang");
-      if (saved === "en" || saved === "es") setLang(saved);
-    }
-  }, []);
+    if (initialLang) return;
+    if (typeof window === "undefined") return;
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === "en" || saved === "es") setLang(saved);
+  }, [initialLang]);
 
   const toggleLang = useCallback((l: Lang) => {
     setLang(l);
-    if (typeof window !== "undefined") localStorage.setItem("capta-lang", l);
+    if (typeof window !== "undefined") localStorage.setItem(LANG_KEY, l);
   }, []);
 
-  const t = T[lang];
-  const categories = t.categories;
-  const activeCategory = categories.find((c) => c.id === activeTab) ?? categories[0];
+  const t = COPY[lang];
+  const active = t.chapters.find((c) => c.id === activeChapter) ?? t.chapters[0];
 
   return (
-    <>
-      {/* Language toggle */}
-      <div className="flex justify-center pt-6" style={{ background: "#0f1729" }}>
-        <div className="inline-flex rounded-full overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.15)" }}>
-          <button onClick={() => toggleLang("en")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "en" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>English</button>
-          <button onClick={() => toggleLang("es")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "es" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>Espa&ntilde;ol</button>
-        </div>
-      </div>
+    <FieldFrame>
+      <SkipLink lang={lang} />
+      <FieldNav lang={lang} toggleLang={toggleLang} phone={PHONE} phoneHref={PHONE_TEL} />
 
-      {/* Hero */}
-      <section className="relative px-6 sm:px-8 pt-24 pb-12 sm:pt-32 sm:pb-16" style={{ background: "#0f1729" }}>
-        <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <p className="section-label text-slate-400">{t.heroLabel}</p>
-          <h1 className="mt-4 text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[52px]">
-            {t.heroH1}
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-400">
-            {t.heroSub}
-          </p>
-        </div>
-      </section>
+      <main id="main">
+      <Hero t={t} />
+      <TrustStrip lang={lang} />
 
-      {/* Tabs */}
-      <section className="px-6 sm:px-8 pb-24 sm:pb-32" style={{ background: "#0f1729" }}>
-        <div className="mx-auto max-w-5xl">
-          {/* Tab bar */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-14">
-            {categories.map((cat) => {
-              const Icon = cat.icon;
-              const isActive = cat.id === activeTab;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveTab(cat.id)}
-                  className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all"
-                  style={{
-                    background: isActive ? "rgba(212,168,67,0.15)" : "rgba(255,255,255,0.04)",
-                    color: isActive ? "#d4a843" : "#94a3b8",
-                    border: isActive ? "1px solid rgba(212,168,67,0.3)" : "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <Icon size={16} className={isActive ? "text-[#d4a843]" : "text-slate-500"} />
-                  {cat.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Feature cards grid */}
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {activeCategory.features.map((feature, i) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={`${activeTab}-${i}`}
-                  className="rounded-2xl p-8 transition-all duration-200 hover:scale-[1.02]"
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ background: "rgba(212,168,67,0.1)" }}>
-                    <Icon size={20} className="text-[#d4a843]" />
-                  </div>
-                  <h3 className="mt-4 text-lg font-extrabold tracking-tight text-white">{feature.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-400">{feature.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Feature summary for active category */}
-          <div
-            className="mt-14 rounded-2xl px-8 py-10 text-center"
-            style={{ background: "rgba(212,168,67,0.06)", border: "1px solid rgba(212,168,67,0.15)" }}
-          >
-            <p className="text-base font-semibold text-white">{activeCategory.label}</p>
-            <p className="mt-2 text-sm text-slate-400">
-              {lang === "en"
-                ? `${activeCategory.features.length} automations included in your $497/mo plan`
-                : `${activeCategory.features.length} automatizaciones incluidas en tu plan de $497/mes`}
-            </p>
-          </div>
-
-          {/* SMS tools callout */}
-          <div
-            className="mt-10 rounded-2xl px-8 py-10 text-center"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
-          >
-            <div className="flex justify-center mb-4">
-              {iconSmartphone({ size: 32, className: "text-[#d4a843]" })}
-            </div>
-            <p className="text-lg font-extrabold tracking-tight text-white">
-              {lang === "en"
-                ? "All of this \u2014 accessible from your texts."
-                : "Todo esto \u2014 accesible desde tus mensajes de texto."}
-            </p>
-            <p className="mt-3 text-sm leading-relaxed text-slate-400 max-w-lg mx-auto">
-              {lang === "en"
-                ? "Text Maria to dispatch your crew, send invoices, check your schedule, pull up a customer\u2019s history \u2014 all from one conversation. No app to open, no dashboard to log into."
-                : "Escr\u00EDbele a Maria para despachar a tu equipo, enviar facturas, revisar tu agenda, consultar el historial de un cliente \u2014 todo desde una conversaci\u00F3n. Sin abrir apps, sin iniciar sesi\u00F3n."}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Trade Examples */}
-      <section className="px-6 sm:px-8 py-24 sm:py-32" style={{ background: "#111a2e" }}>
-        <div className="mx-auto max-w-5xl">
-          <div className="text-center mb-14">
-            <p className="section-label text-slate-400">{t.tradeLabel}</p>
-            <h2 className="mt-4 text-[28px] font-extrabold tracking-tight text-white sm:text-[36px]">
-              {t.tradeH2}
-            </h2>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {t.trades.map((ex) => (
-              <div
-                key={ex.trade}
-                className="rounded-2xl p-8 transition-all duration-200 hover:scale-[1.02]"
+      <section className="mx-auto max-w-[1280px] px-6 sm:px-10 py-16 sm:py-24">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "stretch",
+            borderTop: `1px solid ${C.ink}`,
+            borderBottom: `1px solid ${C.rule}`,
+            gap: 0,
+            overflowX: "auto",
+          }}
+        >
+          {t.chapters.map((ch) => {
+            const isActive = ch.id === activeChapter;
+            return (
+              <button
+                key={ch.id}
+                onClick={() => setActiveChapter(ch.id)}
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  backdropFilter: "blur(12px)",
+                  flex: "1 1 auto",
+                  minWidth: 180,
+                  padding: "20px 22px",
+                  textAlign: "left",
+                  background: isActive ? C.ink : "transparent",
+                  color: isActive ? C.paper : C.ink,
+                  cursor: "pointer",
+                  transition: "all 150ms",
+                  borderRight: `1px solid ${isActive ? C.ink : C.rule}`,
                 }}
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-2xl">{ex.emoji}</span>
-                  <h3 className="text-lg font-extrabold tracking-tight text-white">{ex.trade}</h3>
+                <div
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: "0.22em",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    color: isActive ? "rgba(248,245,238,0.6)" : C.inkMuted,
+                    marginBottom: 6,
+                  }}
+                >
+                  {t.tabLabel} {ch.num}
                 </div>
-                <p className="text-sm leading-relaxed text-slate-400 italic">{ex.scenario}</p>
-              </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-fraunces), Georgia, serif",
+                    fontSize: 22,
+                    fontWeight: 500,
+                    letterSpacing: "-0.015em",
+                    color: isActive ? C.paper : C.ink,
+                  }}
+                >
+                  {ch.title}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Active chapter content */}
+        <div className="mt-16">
+          <div className="max-w-2xl">
+            <Kicker>
+              {t.tabLabel} {active.num}
+            </Kicker>
+            <DisplayH2 style={{ marginTop: 20 }}>{active.kicker}</DisplayH2>
+          </div>
+
+          <div className="mt-14 grid gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
+            {active.features.map((f) => (
+              <article
+                key={f.label}
+                style={{
+                  padding: "24px 22px 26px",
+                  background: C.paper,
+                  border: `1px solid ${C.rule}`,
+                  borderRadius: 2,
+                  position: "relative",
+                }}
+              >
+                <Mono
+                  style={{
+                    position: "absolute",
+                    top: 24,
+                    right: 22,
+                    fontSize: 10,
+                    letterSpacing: "0.14em",
+                    color: C.inkSoft,
+                    fontWeight: 700,
+                  }}
+                >
+                  {f.label}
+                </Mono>
+                <h3
+                  style={{
+                    fontFamily: "var(--font-fraunces), Georgia, serif",
+                    fontSize: 22,
+                    fontWeight: 500,
+                    color: C.ink,
+                    letterSpacing: "-0.015em",
+                    lineHeight: 1.15,
+                    paddingRight: 40,
+                  }}
+                >
+                  {f.title}
+                </h3>
+                <p
+                  style={{
+                    marginTop: 12,
+                    fontSize: 14,
+                    lineHeight: 1.6,
+                    color: C.inkMuted,
+                  }}
+                >
+                  {f.desc}
+                </p>
+              </article>
             ))}
+          </div>
+
+          <div
+            style={{
+              marginTop: 36,
+              padding: "18px 24px",
+              background: C.paperDark,
+              borderLeft: `3px solid ${C.amber}`,
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 16,
+            }}
+          >
+            <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: C.inkMuted, fontWeight: 700 }}>
+              {t.includedLabel}
+            </div>
+            <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: 16, color: C.ink, fontStyle: "italic" }}>
+              {t.includedSuffix(active.features.length)}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Bottom CTAs */}
-      <section className="px-6 sm:px-8 py-20 sm:py-28" style={{ background: "#0f1729" }}>
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-            {t.ctaH2}
-          </h2>
-          <p className="mt-4 text-base text-slate-400">
-            {t.ctaSub}
-          </p>
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <a href="/pricing" className="rounded-xl border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:border-white/40">
-              {t.ctaPricing} &rarr;
-            </a>
-            <a href="/setup" className="cta-gold cta-shimmer rounded-xl px-8 py-4 text-base font-semibold text-white">
-              {t.ctaGet} &rarr;
-            </a>
+      <Rule />
+
+      <section style={{ background: C.ink, color: C.paper, borderTop: `3px solid ${C.amber}` }} className="py-24 sm:py-32">
+        <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
+          <div className="grid gap-16 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-7">
+              <Kicker tone="dark">{t.cta.kicker}</Kicker>
+              <DisplayH2 tone="dark" style={{ marginTop: 20, maxWidth: 720 }}>
+                {t.cta.h2}
+              </DisplayH2>
+              <p style={{ fontSize: 18, lineHeight: 1.55, color: "rgba(248,245,238,0.7)", marginTop: 24, maxWidth: 520 }}>
+                {t.cta.sub}
+              </p>
+            </div>
+            <div className="lg:col-span-5 flex flex-col gap-3" style={{ maxWidth: 420 }}>
+              <PrimaryButton href={lang === "es" ? "/es/setup" : "/setup"} size="lg">
+                {t.cta.primary}
+              </PrimaryButton>
+              <SecondaryButton href={lang === "es" ? "/es/pricing" : "/pricing"} size="lg">
+                {t.cta.secondary}
+              </SecondaryButton>
+            </div>
           </div>
-          <p className="mt-8 text-sm text-slate-500">
-            {t.ctaCall}{" "}
-            <a href={PHONE_TEL} className="font-semibold transition hover:underline" style={{ color: "#d4a843" }}>{PHONE}</a>
-          </p>
         </div>
       </section>
-    </>
+
+      </main>
+
+      <FieldFooter lang={lang} phone={PHONE} phoneHref={PHONE_TEL} />
+    </FieldFrame>
+  );
+}
+
+function Hero({ t }: { t: Copy }) {
+  return (
+    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-16 sm:pt-20 sm:pb-20">
+      <div className="max-w-3xl">
+        <Kicker>{t.hero.kicker}</Kicker>
+        <DisplayH1 style={{ marginTop: 28 }}>
+          {t.hero.h1a}
+          <br />
+          <em style={{ fontStyle: "italic", fontVariationSettings: '"SOFT" 100, "WONK" 1', color: C.amberInk }}>
+            {t.hero.h1b}
+          </em>
+        </DisplayH1>
+        <p style={{ fontSize: 18, lineHeight: 1.55, color: C.inkMuted, marginTop: 28, maxWidth: 620 }}>
+          {t.hero.sub}
+        </p>
+      </div>
+    </section>
   );
 }

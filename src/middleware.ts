@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit as sharedRateLimit } from "@/lib/rate-limit";
+
+// Run middleware on Node.js runtime so we can use the Turso-backed rate limiter
+// (shared across Vercel instances) instead of a per-instance in-memory Map.
+export const runtime = "nodejs";
 
 const ADMIN_COOKIE = "capta_admin";
 const CLIENT_COOKIE = "capta_client";
 
-// ── Constant-time string comparison (Edge-compatible, prevents timing attacks) ──
+// ── Constant-time string comparison (prevents timing attacks) ──
 function constantTimeEqual(a: string, b: string): boolean {
   const maxLen = Math.max(a.length, b.length);
   let result = a.length ^ b.length; // non-zero if lengths differ
@@ -13,26 +18,24 @@ function constantTimeEqual(a: string, b: string): boolean {
   return result === 0;
 }
 
-// ── Lightweight rate limiter for middleware (Edge-compatible) ──
-const rlStore = new Map<string, { count: number; resetAt: number }>();
-const RL_WINDOW = 60_000;
+// ── Shared rate-limit configs (durable via Turso, cross-instance) ──
+const RL = {
+  voiceToken: { limit: 5, windowSeconds: 60 },
+  admin: { limit: 200, windowSeconds: 60 },
+  dashboard: { limit: 200, windowSeconds: 60 },
+  smsOptout: { limit: 50, windowSeconds: 60 },
+} as const;
 
-function rateLimit(ip: string, prefix: string, limit: number): boolean {
-  const key = `${prefix}:${ip}`;
-  const now = Date.now();
-  const entry = rlStore.get(key);
-  if (!entry || entry.resetAt < now) {
-    rlStore.set(key, { count: 1, resetAt: now + RL_WINDOW });
+async function checkRate(prefix: string, ip: string, cfg: { limit: number; windowSeconds: number }): Promise<boolean> {
+  try {
+    const result = await sharedRateLimit(`mw:${prefix}:${ip}`, cfg);
+    return result.success;
+  } catch {
+    // If the shared limiter errors (e.g. DB down), fail open — availability over
+    // strict rate limiting. Downstream per-route limits still apply.
     return true;
   }
-  entry.count++;
-  if (entry.count > limit) return false;
-  return true;
 }
-
-const VOICE_TOKEN_RL_LIMIT = 5; // strict limit for token endpoint
-const ADMIN_RL_LIMIT = 200;
-const DASHBOARD_RL_LIMIT = 200; // higher — dashboards make many parallel fetches
 
 function getIp(req: NextRequest): string {
   return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
@@ -199,30 +202,51 @@ async function middlewareCore(req: NextRequest): Promise<NextResponse> {
   const { pathname } = req.nextUrl;
 
   // ── CSRF protection for state-changing API requests ──
+  // Exemptions: webhook endpoints (signature-verified), and the narrow set of
+  // auth routes that must accept cross-origin bootstrap POSTs or carry their
+  // own signed token in the URL (login, magic link verify, password reset).
+  // Notably NOT exempt: logout, forgot-password, send-link — protecting those
+  // prevents CSRF-triggered email spam and forced logout.
+  const CSRF_EXEMPT_AUTH_ROUTES = new Set([
+    "/api/admin/auth",
+    "/api/dashboard/auth/login",
+    "/api/dashboard/auth/demo",
+    "/api/dashboard/auth/verify",
+    "/api/dashboard/auth/reset-password",
+  ]);
+
   if (
     pathname.startsWith("/api/") &&
     !pathname.startsWith("/api/webhooks/") &&
     !pathname.startsWith("/api/outreach/webhook/") &&
     !pathname.startsWith("/api/stripe/webhook") &&
-    !pathname.startsWith("/api/admin/auth") &&
-    !pathname.startsWith("/api/dashboard/auth") &&
+    !CSRF_EXEMPT_AUTH_ROUTES.has(pathname) &&
     ["POST", "PUT", "PATCH", "DELETE"].includes(req.method)
   ) {
     const origin = req.headers.get("origin");
+    const referer = req.headers.get("referer");
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-    if (!origin) {
-      // In production, reject requests without Origin header (CSRF protection)
-      if (process.env.NODE_ENV === "production") {
+    // Enforce outside local development so preview/staging are protected too.
+    const enforce = process.env.NODE_ENV !== "development";
+
+    if (enforce) {
+      if (!appUrl) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
-    } else if (!appUrl) {
-      // In production, reject cross-origin requests if APP_URL is not configured
-      if (process.env.NODE_ENV === "production") {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      const normalizeOrigin = (u: string) =>
+        u.replace(/\/+$/, "").replace(/^https?:\/\/www\./, (m) => m.replace("www.", ""));
+      const normalizedApp = normalizeOrigin(appUrl);
+      let allowed = false;
+      if (origin) {
+        allowed = normalizeOrigin(origin) === normalizedApp;
+      } else if (referer) {
+        try {
+          allowed = normalizeOrigin(new URL(referer).origin) === normalizedApp;
+        } catch {
+          allowed = false;
+        }
       }
-    } else {
-      const normalizeOrigin = (u: string) => u.replace(/\/+$/, "").replace(/^https?:\/\/www\./, (m) => m.replace("www.", ""));
-      if (normalizeOrigin(origin) !== normalizeOrigin(appUrl)) {
+      if (!allowed) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
     }
@@ -234,7 +258,7 @@ async function middlewareCore(req: NextRequest): Promise<NextResponse> {
       return NextResponse.next();
     }
     if (pathname.startsWith("/api/admin")) {
-      if (!rateLimit(getIp(req), "admin", ADMIN_RL_LIMIT)) {
+      if (!(await checkRate("admin", getIp(req), RL.admin))) {
         return NextResponse.json({ error: "Too many requests" }, { status: 429 });
       }
     }
@@ -264,7 +288,7 @@ async function middlewareCore(req: NextRequest): Promise<NextResponse> {
 
   // ── Compliance SMS opt-out webhook ──
   if (pathname === "/api/compliance/sms-optout") {
-    if (!rateLimit(getIp(req), "sms-optout", 50)) {
+    if (!(await checkRate("sms-optout", getIp(req), RL.smsOptout))) {
       return new NextResponse("Too many requests", { status: 429 });
     }
     return NextResponse.next();
@@ -282,14 +306,14 @@ async function middlewareCore(req: NextRequest): Promise<NextResponse> {
 
     // Rate limit dashboard API routes
     if (pathname.startsWith("/api/dashboard")) {
-      if (!rateLimit(getIp(req), "dashboard", DASHBOARD_RL_LIMIT)) {
+      if (!(await checkRate("dashboard", getIp(req), RL.dashboard))) {
         return NextResponse.json({ error: "Too many requests" }, { status: 429 });
       }
     }
 
     // For /api/voice/token, apply strict rate limiting and also accept admin cookie
     if (pathname === "/api/voice/token") {
-      if (!rateLimit(getIp(req), "voice-token", VOICE_TOKEN_RL_LIMIT)) {
+      if (!(await checkRate("voice-token", getIp(req), RL.voiceToken))) {
         return NextResponse.json({ error: "Too many requests" }, { status: 429 });
       }
       const adminPassword = process.env.ADMIN_PASSWORD;

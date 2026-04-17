@@ -1,4 +1,5 @@
 import { BRAND_COLOR, COMPANY_ADDRESS } from "@/lib/constants";
+import { buildPaywallUnsubscribeUrl } from "@/lib/outreach/unsubscribe";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
 
@@ -105,7 +106,8 @@ interface EmailData {
 }
 
 function baseLayout(content: string, businessId: string): string {
-  const unsubscribeUrl = `${APP_URL}/api/outreach/paywall-unsubscribe/${businessId}`;
+  const unsubscribeUrl = buildPaywallUnsubscribeUrl(APP_URL, businessId)
+    ?? `${APP_URL}/api/outreach/paywall-unsubscribe/${businessId}`;
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -128,7 +130,8 @@ ${content}
 }
 
 function baseLayoutEs(content: string, businessId: string): string {
-  const unsubscribeUrl = `${APP_URL}/api/outreach/paywall-unsubscribe/${businessId}`;
+  const unsubscribeUrl = buildPaywallUnsubscribeUrl(APP_URL, businessId)
+    ?? `${APP_URL}/api/outreach/paywall-unsubscribe/${businessId}`;
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>

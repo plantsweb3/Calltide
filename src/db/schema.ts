@@ -1001,6 +1001,7 @@ export const processedStripeEvents = sqliteTable("processed_stripe_events", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   stripeEventId: text("stripe_event_id").unique().notNull(),
   eventType: text("event_type").notNull(),
+  status: text("status").notNull().default("pending"), // pending | completed
   processedAt: text("processed_at").notNull().default(sql`(datetime('now'))`),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -1867,4 +1868,11 @@ export const usageAlerts = sqliteTable("usage_alerts", {
   sentAt: text("sent_at").notNull().default(sql`(datetime('now'))`),
   metricValue: text("metric_value"),
   acknowledged: integer("acknowledged", { mode: "boolean" }).default(false),
+});
+
+export const voiceToolIdempotency = sqliteTable("voice_tool_idempotency", {
+  key: text("key").primaryKey(),
+  status: text("status").notNull().default("pending"), // pending | completed
+  result: text("result"), // JSON stringified
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });

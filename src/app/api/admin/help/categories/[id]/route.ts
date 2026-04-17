@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { helpCategories, helpArticles } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
+
+const categoryUpdateSchema = z.object({
+  slug: z.string().min(1).max(200).optional(),
+  name: z.string().min(1).max(200).optional(),
+  nameEs: z.string().max(200).nullable().optional(),
+  description: z.string().max(500).nullable().optional(),
+  descriptionEs: z.string().max(500).nullable().optional(),
+  icon: z.string().max(50).nullable().optional(),
+  sortOrder: z.number().int().optional(),
+});
 
 /**
  * PATCH /api/admin/help/categories/[id]
@@ -25,13 +36,20 @@ export async function PATCH(
       return NextResponse.json({ error: "Category not found" }, { status: 404 });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let body: any;
+    let rawBody: unknown;
     try {
-      body = await req.json();
+      rawBody = await req.json();
     } catch {
       return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
     }
+    const parsed = categoryUpdateSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues.map((i) => i.message).join(", ") },
+        { status: 400 },
+      );
+    }
+    const body = parsed.data;
     const updates: Record<string, unknown> = {
       updatedAt: new Date().toISOString(),
     };

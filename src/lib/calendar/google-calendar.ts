@@ -4,6 +4,7 @@ import { googleCalendarConnections, appointments } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { reportError } from "@/lib/error-reporting";
+import { encryptToken, decryptToken } from "@/lib/crypto/token-encryption";
 
 type CalendarConnection = typeof googleCalendarConnections.$inferSelect;
 
@@ -22,13 +23,13 @@ async function refreshTokenIfNeeded(connection: CalendarConnection): Promise<str
   const expiresAt = new Date(connection.tokenExpiresAt).getTime();
   // Refresh 5 minutes before expiry
   if (Date.now() < expiresAt - 5 * 60 * 1000) {
-    return connection.accessToken;
+    return decryptToken(connection.accessToken);
   }
 
   const oauth2 = getOAuth2Client();
   if (!oauth2) throw new Error("Google OAuth not configured");
 
-  oauth2.setCredentials({ refresh_token: connection.refreshToken });
+  oauth2.setCredentials({ refresh_token: decryptToken(connection.refreshToken) });
   const { credentials } = await oauth2.refreshAccessToken();
 
   const newAccessToken = credentials.access_token!;
@@ -37,7 +38,7 @@ async function refreshTokenIfNeeded(connection: CalendarConnection): Promise<str
   await db
     .update(googleCalendarConnections)
     .set({
-      accessToken: newAccessToken,
+      accessToken: encryptToken(newAccessToken),
       tokenExpiresAt: newExpiresAt,
     })
     .where(eq(googleCalendarConnections.id, connection.id));

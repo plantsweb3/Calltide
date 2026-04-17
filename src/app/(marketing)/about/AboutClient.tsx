@@ -1,181 +1,331 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
-import { useScrollReveal } from "@/lib/marketing/hooks";
+/**
+ * About page — Field Manual direction.
+ * An editorial piece about why Capta exists and who it's for.
+ */
 
-const content = {
+import { useState, useEffect, useCallback } from "react";
+import { PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
+import {
+  C,
+  Mono,
+  Kicker,
+  Rule,
+  PrimaryButton,
+  FieldFrame,
+  FieldNav,
+  FieldFooter,
+  DisplayH1,
+  DisplayH2,
+  TrustStrip,
+  SkipLink,
+} from "@/components/marketing/field";
+
+type Copy = {
+  hero: { kicker: string; h1a: string; h1b: string; dek: string };
+  story: {
+    kicker: string;
+    h2: string;
+    paragraphs: string[];
+  };
+  stats: { kicker: string; h2: string; items: { value: string; label: string; note: string }[] };
+  mission: {
+    kicker: string;
+    h2: string;
+    body: string;
+    pull: string;
+    pullAttribution: string;
+  };
+  cta: { kicker: string; h2: string; sub: string; primary: string };
+};
+
+const COPY: Record<Lang, Copy> = {
   en: {
-    badge: "About Capta",
-    hero: "Built in San Antonio.\nBuilt for You.",
-    heroSub: "We started Capta because too many great contractors lose jobs to missed calls and manual busywork.",
-    storyLabel: "The Story",
-    storyH: "A Problem We Saw Every Day",
-    storyP1: "We watched plumbers, electricians, and HVAC technicians lose thousands of dollars every month — not because their work was bad, but because nobody picked up the phone. While they were on a job, calls went to voicemail. And 80% of those callers? They never called back. They called a competitor.",
-    storyP2: "Hiring a bilingual receptionist costs $3,000-$4,000 per month. Answering services are impersonal and expensive. Most owners just let the calls go to voicemail and hope for the best.",
-    storyP3: "We built Capta to fix that. An AI that answers every call AND automates your entire front office — dispatching, invoicing, follow-ups — all from your text messages. Zero busywork.",
-    numbersLabel: "The Numbers",
-    numbersH: "Why This Matters",
-    stats: [
-      { value: "52M+", label: "Spanish Speakers", desc: "Spanish speakers in the U.S. — and growing. If you can't serve them, someone else will." },
-      { value: "62%", label: "Calls Missed", desc: "Of incoming calls to small service businesses go unanswered. Every one is a lost job." },
-      { value: "80%", label: "Won't Leave VM", desc: "Of callers won't leave a voicemail. They hang up and call your competitor instead." },
-      { value: "$3-4K", label: "Receptionist Cost", desc: "Monthly cost of a bilingual receptionist. Capta does it for $497/mo." },
-    ],
-    missionLabel: "Our Mission",
-    missionH: "Your entire front office, automated.",
-    missionP: "Every home service business deserves a professional front office. Not just the ones who can afford a receptionist, a CRM, an estimating tool, and a follow-up system. Capta gives every contractor an AI that answers calls AND runs their office — dispatching technicians, generating estimates, sending follow-ups, scoring leads, and managing customers — all controllable from your text messages.",
-    ctaH: "Ready to automate your front office?",
-    ctaSub: "Calls answered. Follow-ups sent. Office managed by text. Live in 5 minutes.",
-    ctaButton: "Start Free Trial",
-    ctaBook: "Start Free Trial",
+    hero: {
+      kicker: "About Capta",
+      h1a: "Built in San Antonio.",
+      h1b: "Built for you.",
+      dek:
+        "We started Capta because too many good contractors lose jobs to missed calls and manual busywork. The phone rings at the wrong time. The right word gets said in the wrong language. A customer who would have spent five thousand dollars ends up hanging up.",
+    },
+    story: {
+      kicker: "The story",
+      h2: "A problem we saw every day.",
+      paragraphs: [
+        "Watch a plumber for a week and you will see the same ten dollar bill fall out of his pocket a dozen times. His hands are under a sink. The phone rings. The caller is a new customer with a burst pipe — a two-thousand-dollar job. The plumber's voicemail picks up. The caller hangs up. The caller calls three more plumbers before he finds one who answers. The first plumber never knew the call happened.",
+        "Hiring a bilingual receptionist to cover that gap costs thirty-six hundred a month. Answering services cost nine hundred and read messages back instead of booking the job. Most owners give up and let the voicemail do the work, because the alternative is another payroll line they can't afford. That's the math that built Capta.",
+        "We built a receptionist that answers every call, in English or Spanish, forever, for less than a single truck's insurance. She takes the details of the job while the caller is still on the line. She books into your calendar. She texts you the job card the second the call ends. She recovers missed callers inside sixty seconds. She runs your front office from your text messages.",
+      ],
+    },
+    stats: {
+      kicker: "The numbers",
+      h2: "Why this matters.",
+      items: [
+        { value: "52M+", label: "Spanish speakers in the US", note: "Per U.S. Census. A third of Texas. If you can't serve them, a competitor will." },
+        { value: "62%", label: "Calls unanswered", note: "To small service businesses. Evenings, weekends, lunch, on jobs. Every one is a lost opportunity." },
+        { value: "80%", label: "Won't leave voicemail", note: "They hang up and call the next number on the list. They call your competitor." },
+        { value: "$3-4K", label: "Receptionist cost", note: "Bilingual, full-time, in Texas. Capta is less than the difference between $497 and zero." },
+      ],
+    },
+    mission: {
+      kicker: "The mission",
+      h2: "Your entire front office, automated.",
+      body:
+        "Every home service business deserves a professional front office. Not just the ones who can afford a receptionist, a CRM, an estimating tool, a follow-up system, and a lead scoring engine. One flat rate. One platform. One receptionist who does all of it. That's what we built. That's the only thing we're building.",
+      pull: "\"If the trades ran the world, the world would get done faster.\"",
+      pullAttribution: "— Ulysses Munoz, founder, Capta",
+    },
+    cta: {
+      kicker: "Try her out.",
+      h2: "Two weeks free. One phone number.",
+      sub: "If she doesn't earn her keep in the first fourteen days, walk away with zero owed.",
+      primary: "Start 14-day free trial",
+    },
   },
   es: {
-    badge: "Acerca de Capta",
-    hero: "Hecho en San Antonio.\nHecho para Ti.",
-    heroSub: "Empezamos Capta porque demasiados grandes contratistas pierden trabajos por llamadas perdidas y trabajo manual.",
-    storyLabel: "La Historia",
-    storyH: "Un Problema que Vimos Todos los Días",
-    storyP1: "Vimos a plomeros, electricistas y técnicos HVAC perder miles de dólares cada mes — no porque su trabajo fuera malo, sino porque nadie contestó el teléfono. Mientras estaban en un trabajo, las llamadas iban al buzón de voz. ¿Y el 80% de esos llamantes? Nunca volvieron a llamar. Llamaron a la competencia.",
-    storyP2: "Contratar una recepcionista bilingüe cuesta $3,000-$4,000 por mes. Los servicios telefónicos son impersonales y caros. La mayoría de los dueños simplemente dejan que las llamadas vayan al buzón de voz.",
-    storyP3: "Construimos Capta para resolver eso. Una IA que contesta cada llamada Y automatiza toda tu oficina — desde despacho hasta facturación y seguimientos — todo desde tus mensajes de texto. Despacho, facturación, seguimientos — todo desde tus textos.",
-    numbersLabel: "Los Números",
-    numbersH: "Por Qué Esto Importa",
-    stats: [
-      { value: "52M+", label: "Hispanohablantes", desc: "Hispanohablantes en EE.UU. — y creciendo. Si no los puedes atender, alguien más lo hará." },
-      { value: "62%", label: "Llamadas Perdidas", desc: "De las llamadas entrantes a pequeños negocios de servicio no se contestan. Cada una es un trabajo perdido." },
-      { value: "80%", label: "No Dejan Mensaje", desc: "De los llamantes no dejan mensaje de voz. Cuelgan y llaman a tu competencia." },
-      { value: "$3-4K", label: "Costo Recepcionista", desc: "Costo mensual de una recepcionista bilingüe. Capta lo hace por $497/mes." },
-    ],
-    missionLabel: "Nuestra Misión",
-    missionH: "Toda tu oficina, automatizada.",
-    missionP: "Cada negocio de servicio del hogar merece una oficina profesional. No solo los que pueden pagar una recepcionista, un CRM, una herramienta de presupuestos y un sistema de seguimiento. Capta le da a cada contratista una IA que contesta llamadas Y maneja su oficina \u2014 despachando t\u00E9cnicos, generando presupuestos, enviando seguimientos, calificando prospectos y gestionando clientes \u2014 todo controlable desde tus mensajes de texto.",
-    ctaH: "¿Listo para automatizar tu oficina?",
-    ctaSub: "Llamadas contestadas. Seguimientos enviados. Oficina gestionada por texto. En 5 minutos.",
-    ctaButton: "Prueba Gratis",
-    ctaBook: "Prueba Gratis",
+    hero: {
+      kicker: "Acerca de Capta",
+      h1a: "Hecho en San Antonio.",
+      h1b: "Hecho para ti.",
+      dek:
+        "Empezamos Capta porque demasiados buenos contratistas pierden trabajos por llamadas perdidas y trabajo manual. El teléfono suena en el momento equivocado. La palabra correcta se dice en el idioma equivocado. Un cliente que habría gastado cinco mil dólares termina colgando.",
+    },
+    story: {
+      kicker: "La historia",
+      h2: "Un problema que veíamos todos los días.",
+      paragraphs: [
+        "Observa a un plomero por una semana y verás cómo el mismo billete de diez dólares se le cae del bolsillo una docena de veces. Sus manos están bajo un fregadero. El teléfono suena. El que llama es un cliente nuevo con una tubería rota — un trabajo de dos mil dólares. El buzón del plomero contesta. El cliente cuelga. El cliente llama a tres plomeros más hasta que encuentra a uno que contesta. El primer plomero nunca supo que la llamada pasó.",
+        "Contratar una recepcionista bilingüe para cubrir ese hueco cuesta tres mil seiscientos al mes. Los servicios de contestadoras cuestan novecientos y solo leen mensajes en lugar de agendar el trabajo. La mayoría de los dueños se rinden y dejan que el buzón haga el trabajo, porque la alternativa es otro sueldo que no pueden pagar. Esas son las cuentas que construyeron Capta.",
+        "Construimos una recepcionista que contesta cada llamada, en inglés o español, para siempre, por menos del seguro de un solo camión. Toma los detalles del trabajo mientras el cliente sigue en la línea. Agenda en tu calendario. Te manda la tarjeta del trabajo al segundo que termina la llamada. Recupera llamadas perdidas en menos de sesenta segundos. Maneja tu oficina desde tus mensajes de texto.",
+      ],
+    },
+    stats: {
+      kicker: "Los números",
+      h2: "Por qué esto importa.",
+      items: [
+        { value: "52M+", label: "Hispanohablantes en EE.UU.", note: "Según el Censo. Un tercio de Texas. Si no les puedes servir, un competidor lo hará." },
+        { value: "62%", label: "Llamadas sin contestar", note: "A negocios pequeños de servicios. Tardes, fines de semana, comida, durante trabajos. Cada una es una oportunidad perdida." },
+        { value: "80%", label: "No dejan buzón", note: "Cuelgan y llaman al siguiente número de la lista. Llaman a tu competidor." },
+        { value: "$3-4K", label: "Costo de recepcionista", note: "Bilingüe, tiempo completo, en Texas. Capta es menos que la diferencia entre $497 y cero." },
+      ],
+    },
+    mission: {
+      kicker: "La misión",
+      h2: "Tu oficina entera, automatizada.",
+      body:
+        "Cada negocio de servicios del hogar merece una oficina profesional. No solo los que pueden pagar una recepcionista, un CRM, una herramienta de estimados, un sistema de seguimiento, y un motor de puntaje de prospectos. Una tarifa fija. Una plataforma. Una recepcionista que hace todo. Eso es lo que construimos. Es lo único que construimos.",
+      pull: "\"Si los oficios manejaran el mundo, el mundo se haría más rápido.\"",
+      pullAttribution: "— Ulysses Munoz, fundador, Capta",
+    },
+    cta: {
+      kicker: "Pruébala.",
+      h2: "Dos semanas gratis. Un número de teléfono.",
+      sub: "Si no se gana su pago en los primeros catorce días, vete sin deberle nada.",
+      primary: "Comenzar prueba gratis de 14 días",
+    },
   },
 };
 
-export default function AboutPage() {
-  const [lang, setLang] = useState<Lang>("en");
+const LANG_KEY = "capta-lang";
+
+export default function AboutPage({ initialLang }: { initialLang?: Lang } = {}) {
+  const [lang, setLang] = useState<Lang>(initialLang ?? "en");
 
   useEffect(() => {
-    const saved = localStorage.getItem("capta-lang");
+    if (initialLang) return;
+    if (typeof window === "undefined") return;
+    const saved = localStorage.getItem(LANG_KEY);
     if (saved === "en" || saved === "es") setLang(saved);
-  }, []);
+  }, [initialLang]);
 
   const toggleLang = useCallback((l: Lang) => {
     setLang(l);
-    if (typeof window !== "undefined") localStorage.setItem("capta-lang", l);
+    if (typeof window !== "undefined") localStorage.setItem(LANG_KEY, l);
   }, []);
 
-  useScrollReveal();
-
-  const c = content[lang];
+  const t = COPY[lang];
 
   return (
-    <>
-      {/* Language toggle */}
-      <div className="flex justify-center pt-6" style={{ background: "#0f1729" }}>
-        <div className="inline-flex rounded-full overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.15)" }}>
-          <button onClick={() => toggleLang("en")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "en" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>English</button>
-          <button onClick={() => toggleLang("es")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "es" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>Espa&ntilde;ol</button>
-        </div>
-      </div>
+    <FieldFrame>
+      <SkipLink lang={lang} />
+      <FieldNav lang={lang} toggleLang={toggleLang} phone={PHONE} phoneHref={PHONE_TEL} />
+
+      <main id="main">
+      <TrustStrip lang={lang} />
 
       {/* Hero */}
-      <section className="relative px-6 sm:px-8 py-28 sm:py-36 dark-section grain-overlay" style={{ background: "#0f1729" }}>
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(212,168,67,0.06) 0%, transparent 70%)" }} />
-        <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <p className="section-label text-slate-400">{c.badge}</p>
-          <h1 className="mt-6 text-[36px] font-black leading-[1.1] tracking-tight text-white sm:text-[56px] whitespace-pre-line">
-            {c.hero}
-          </h1>
-          <p className="mt-6 text-lg text-slate-300 max-w-xl mx-auto">{c.heroSub}</p>
+      <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-16 sm:pt-20 sm:pb-24">
+        <div className="max-w-3xl">
+          <Kicker>{t.hero.kicker}</Kicker>
+          <DisplayH1 style={{ marginTop: 28 }}>
+            {t.hero.h1a}
+            <br />
+            <em style={{ fontStyle: "italic", fontVariationSettings: '"SOFT" 100, "WONK" 1', color: C.amberInk }}>
+              {t.hero.h1b}
+            </em>
+          </DisplayH1>
+          <p
+            style={{
+              fontFamily: "var(--font-fraunces), Georgia, serif",
+              fontSize: 22,
+              lineHeight: 1.45,
+              color: C.ink,
+              marginTop: 32,
+              maxWidth: 720,
+              fontWeight: 400,
+              fontStyle: "italic",
+            }}
+          >
+            {t.hero.dek}
+          </p>
         </div>
       </section>
 
-      {/* The Story */}
-      <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#0f1729" }}>
-        <div className="reveal mx-auto max-w-3xl">
-          <p className="section-label text-slate-400">{c.storyLabel}</p>
-          <h2 className="mt-4 text-[28px] font-extrabold tracking-tight text-white sm:text-[36px]">{c.storyH}</h2>
-          <div className="mt-8 space-y-5">
-            <p className="text-base leading-[1.8] text-slate-300">{c.storyP1}</p>
-            <p className="text-base leading-[1.8] text-slate-300">{c.storyP2}</p>
-            <p className="text-base leading-[1.8] text-slate-300">{c.storyP3}</p>
-          </div>
-        </div>
-      </section>
+      <Rule />
 
-      {/* The Numbers */}
-      <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#111827" }}>
-        <div className="reveal mx-auto max-w-5xl">
-          <div className="text-center mb-14">
-            <p className="section-label text-slate-400">{c.numbersLabel}</p>
-            <h2 className="mt-4 text-[28px] font-extrabold tracking-tight text-white sm:text-[36px]">{c.numbersH}</h2>
+      {/* Story */}
+      <section className="mx-auto max-w-[1280px] px-6 sm:px-10 py-24 sm:py-32">
+        <div className="grid gap-16 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <Kicker>{t.story.kicker}</Kicker>
+            <DisplayH2 style={{ marginTop: 20 }}>{t.story.h2}</DisplayH2>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {c.stats.map((s) => (
-              <div
-                key={s.label}
-                className="rounded-2xl p-6 text-center transition-all duration-200 hover:scale-[1.02]"
+          <div className="lg:col-span-7 lg:col-start-6">
+            {t.story.paragraphs.map((p, i) => (
+              <p
+                key={i}
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  fontSize: 17,
+                  lineHeight: 1.75,
+                  color: C.ink,
+                  marginBottom: 24,
                 }}
               >
-                <p className="text-[40px] font-black tracking-tight" style={{ color: "#d4a843" }}>{s.value}</p>
-                <p className="mt-1 text-sm font-semibold text-white">{s.label}</p>
-                <p className="mt-3 text-sm leading-relaxed text-slate-400">{s.desc}</p>
+                {p}
+              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Rule />
+
+      {/* Stats */}
+      <section style={{ background: C.paperDark }} className="py-24 sm:py-32">
+        <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
+          <div className="max-w-2xl">
+            <Kicker>{t.stats.kicker}</Kicker>
+            <DisplayH2 style={{ marginTop: 20 }}>{t.stats.h2}</DisplayH2>
+          </div>
+
+          <div className="mt-14 grid gap-0 md:grid-cols-2 lg:grid-cols-4" style={{ borderTop: `1px solid ${C.rule}`, borderBottom: `1px solid ${C.rule}` }}>
+            {t.stats.items.map((item, i) => (
+              <div
+                key={i}
+                style={{
+                  padding: "28px 24px",
+                  borderLeft: i > 0 ? `1px solid ${C.rule}` : "none",
+                  background: C.paper,
+                }}
+                className={i > 0 ? "lg:border-l border-t lg:border-t-0" : "border-t lg:border-t-0"}
+              >
+                <Mono
+                  style={{
+                    fontSize: 40,
+                    fontWeight: 700,
+                    color: C.ink,
+                    letterSpacing: "-0.03em",
+                    lineHeight: 1,
+                  }}
+                  as="div"
+                >
+                  {item.value}
+                </Mono>
+                <div
+                  style={{
+                    fontSize: 11,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: C.inkMuted,
+                    fontWeight: 700,
+                    marginTop: 12,
+                  }}
+                >
+                  {item.label}
+                </div>
+                <p style={{ fontSize: 13, color: C.inkMuted, marginTop: 8, lineHeight: 1.55 }}>
+                  {item.note}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      <Rule />
+
       {/* Mission */}
-      <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#0f1729" }}>
-        <div className="reveal mx-auto max-w-3xl text-center">
-          <p className="section-label text-slate-400">{c.missionLabel}</p>
-          <h2 className="mt-4 text-[32px] font-black leading-[1.1] tracking-tight text-white sm:text-[44px]">
-            {c.missionH}
-          </h2>
-          <p className="mt-6 text-lg leading-[1.8] text-slate-300 max-w-2xl mx-auto">{c.missionP}</p>
+      <section className="mx-auto max-w-[1280px] px-6 sm:px-10 py-24 sm:py-32">
+        <div className="grid gap-16 lg:grid-cols-12 lg:items-start">
+          <div className="lg:col-span-5">
+            <Kicker>{t.mission.kicker}</Kicker>
+            <DisplayH2 style={{ marginTop: 20 }}>{t.mission.h2}</DisplayH2>
+          </div>
+          <div className="lg:col-span-7">
+            <p style={{ fontSize: 18, lineHeight: 1.7, color: C.ink, fontWeight: 400 }}>
+              {t.mission.body}
+            </p>
+            <blockquote
+              style={{
+                marginTop: 40,
+                paddingTop: 28,
+                borderTop: `1px solid ${C.rule}`,
+                fontFamily: "var(--font-fraunces), Georgia, serif",
+                fontSize: 28,
+                lineHeight: 1.3,
+                fontWeight: 500,
+                fontStyle: "italic",
+                color: C.ink,
+                letterSpacing: "-0.01em",
+              }}
+            >
+              {t.mission.pull}
+            </blockquote>
+            <div style={{ marginTop: 12, fontSize: 12, color: C.inkMuted, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              {t.mission.pullAttribution}
+            </div>
+          </div>
         </div>
       </section>
 
+      <Rule />
+
       {/* CTA */}
-      <section className="relative px-6 sm:px-8 py-24 sm:py-32 dark-section grain-overlay" style={{ background: "#0f1729" }}>
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 60%, rgba(212,168,67,0.06) 0%, transparent 70%)" }} />
-        <div className="relative z-10 mx-auto max-w-xl text-center">
-          <h2 className="reveal text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[40px]">
-            {c.ctaH}
-          </h2>
-          <p className="mt-4 text-slate-400">{c.ctaSub}</p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="/setup"
-              className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white"
-            >
-              {c.ctaButton} &rarr;
-            </a>
-            <a
-              href="/pricing"
-              className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-lg font-semibold text-slate-300 hover:text-white transition-colors"
-              style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-            >
-              {lang === "en" ? "See Pricing" : "Ver Precios"} &rarr;
-            </a>
+      <section style={{ background: C.ink, color: C.paper, borderTop: `3px solid ${C.amber}` }} className="py-24 sm:py-32">
+        <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
+          <div className="grid gap-16 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-8">
+              <Kicker tone="dark">{t.cta.kicker}</Kicker>
+              <DisplayH2 tone="dark" style={{ marginTop: 20 }}>
+                {t.cta.h2}
+              </DisplayH2>
+              <p style={{ fontSize: 18, lineHeight: 1.55, color: "rgba(248,245,238,0.7)", marginTop: 24, maxWidth: 520 }}>
+                {t.cta.sub}
+              </p>
+            </div>
+            <div className="lg:col-span-4">
+              <PrimaryButton href={lang === "es" ? "/es/setup" : "/setup"} size="lg">
+                {t.cta.primary}
+              </PrimaryButton>
+            </div>
           </div>
-          <p className="mt-3 text-xs text-slate-400 text-center">{lang === "en" ? "No charge for 14 days \u00B7 Cancel anytime" : "Sin cargo por 14 d\u00EDas \u00B7 Cancela cuando quieras"}</p>
-          <p className="mt-6 text-sm text-slate-500">
-            {lang === "en" ? "Or call us:" : "O llámanos:"}{" "}
-            <a href={PHONE_TEL} className="font-semibold hover:underline" style={{ color: "#d4a843" }}>{PHONE}</a>
-          </p>
         </div>
       </section>
-    </>
+
+      </main>
+
+      <FieldFooter lang={lang} phone={PHONE} phoneHref={PHONE_TEL} />
+    </FieldFrame>
   );
 }

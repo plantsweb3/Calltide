@@ -111,24 +111,58 @@ export function formatJobCardSMS(
   card: JobCard,
   receptionistName: string = "Maria",
   urgency: string = "normal",
+  lang: "en" | "es" = "en",
 ): string {
   const lines: string[] = [];
   const isCommercial = card.scopeLevel === "commercial";
+  const es = lang === "es";
 
-  lines.push(isCommercial ? "\u{1F4CB} NEW LEAD \u2014 COMMERCIAL" : "\u{1F4CB} NEW LEAD");
+  const L = es
+    ? {
+        newLead: "\u{1F4CB} NUEVO PROSPECTO",
+        newLeadCommercial: "\u{1F4CB} NUEVO PROSPECTO \u2014 COMERCIAL",
+        talkedTo: (r: string, c: string, p: string) => `${r} acaba de hablar con ${c}${p}`,
+        unknownCaller: "llamante desconocido",
+        jobLabel: "Trabajo",
+        serviceRequested: "Servicio solicitado",
+        estimateLabel: "Estimado",
+        breakdownLabel: "Desglose",
+        urgencyLabel: "Urgencia",
+        urgencyEmergency: "EMERGENCIA",
+        urgencyUrgent: "Urgente",
+        urgencyNormal: "Normal",
+        reply: "Responda 1 para confirmar | 2 para ajustar | 3 para programar visita",
+      }
+    : {
+        newLead: "\u{1F4CB} NEW LEAD",
+        newLeadCommercial: "\u{1F4CB} NEW LEAD \u2014 COMMERCIAL",
+        talkedTo: (r: string, c: string, p: string) => `${r} just talked to ${c}${p}`,
+        unknownCaller: "Unknown caller",
+        jobLabel: "Job",
+        serviceRequested: "Service requested",
+        estimateLabel: "Estimate",
+        breakdownLabel: "Breakdown",
+        urgencyLabel: "Urgency",
+        urgencyEmergency: "EMERGENCY",
+        urgencyUrgent: "Urgent",
+        urgencyNormal: "Normal",
+        reply: "Reply 1 to confirm | 2 to adjust | 3 to schedule site visit",
+      };
+
+  lines.push(isCommercial ? L.newLeadCommercial : L.newLead);
 
   // Caller line
-  const callerInfo = card.callerName || "Unknown caller";
+  const callerInfo = card.callerName || L.unknownCaller;
   const phonePart = card.callerPhone ? ` (${card.callerPhone})` : "";
-  lines.push(`${receptionistName} just talked to ${callerInfo}${phonePart}`);
+  lines.push(L.talkedTo(receptionistName, callerInfo, phonePart));
 
   // Job line
-  const jobLine = card.scopeDescription || card.jobTypeLabel || "Service requested";
-  lines.push(`Job: ${jobLine}`);
+  const jobLine = card.scopeDescription || card.jobTypeLabel || L.serviceRequested;
+  lines.push(`${L.jobLabel}: ${jobLine}`);
 
   // Estimate line
   if (card.estimateMin != null && card.estimateMax != null) {
-    lines.push(`Estimate: ${formatDollars(card.estimateMin)}\u2013${formatDollars(card.estimateMax)}`);
+    lines.push(`${L.estimateLabel}: ${formatDollars(card.estimateMin)}\u2013${formatDollars(card.estimateMax)}`);
 
     // Breakdown for advanced mode
     if (card.estimateMode === "advanced" && card.estimateCalculationJson) {
@@ -144,16 +178,16 @@ export function formatJobCardSMS(
           breakdown += ` + $${add.amount.toLocaleString()} ${add.label}`;
         }
       }
-      lines.push(`Breakdown: ${breakdown}`);
+      lines.push(`${L.breakdownLabel}: ${breakdown}`);
     }
   }
 
   // Urgency
-  const urgencyLabel = urgency === "emergency" ? "EMERGENCY" : urgency === "urgent" ? "Urgent" : "Normal";
-  lines.push(`Urgency: ${urgencyLabel}`);
+  const urgencyLabel = urgency === "emergency" ? L.urgencyEmergency : urgency === "urgent" ? L.urgencyUrgent : L.urgencyNormal;
+  lines.push(`${L.urgencyLabel}: ${urgencyLabel}`);
 
   // Action buttons
-  lines.push("Reply 1 to confirm | 2 to adjust | 3 to schedule site visit");
+  lines.push(L.reply);
 
   const replyLine = lines[lines.length - 1]; // "Reply 1 to confirm | 2 to adjust | 3 to schedule site visit"
   const result = lines.join("\n");

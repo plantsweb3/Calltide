@@ -1,7 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { db } from "@/db";
 import { agentConfig } from "@/db/schema";
 import { eq } from "drizzle-orm";
+
+const cronExpressionSchema = z
+  .string()
+  .trim()
+  .refine((s) => {
+    const parts = s.split(/\s+/);
+    return parts.length >= 5 && parts.length <= 6 && /^[0-9*,\-\/]+$/.test(parts.join(""));
+  }, { message: "Invalid cron expression" });
+
+const configPatchSchema = z.object({
+  agentName: z.string().min(1).max(100),
+  enabled: z.boolean().optional(),
+  cronExpression: cronExpressionSchema.optional(),
+  escalationThreshold: z.number().int().min(0).max(100).optional(),
+  systemPromptOverride: z.string().max(2000).nullable().optional(),
+});
 
 /**
  * GET /api/admin/agents/config
@@ -20,17 +37,20 @@ export async function GET() {
  * Body: { agentName: string, enabled?: boolean, cronExpression?: string, escalationThreshold?: number, systemPromptOverride?: string }
  */
 export async function PATCH(req: NextRequest) {
-  let body: unknown;
+  let rawBody: unknown;
   try {
-    body = await req.json();
+    rawBody = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const { agentName, ...updates } = body as Record<string, unknown>;
-
-  if (!agentName || typeof agentName !== "string") {
-    return NextResponse.json({ error: "agentName is required" }, { status: 400 });
+  const parsed = configPatchSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues.map((i) => i.message).join(", ") },
+      { status: 400 },
+    );
   }
+  const { agentName, enabled, cronExpression, escalationThreshold, systemPromptOverride } = parsed.data;
 
   let [existing] = await db
     .select({ id: agentConfig.id })
@@ -48,27 +68,10 @@ export async function PATCH(req: NextRequest) {
   }
 
   const allowedFields: Record<string, unknown> = {};
-  if (typeof updates.enabled === "boolean") allowedFields.enabled = updates.enabled;
-  if (typeof updates.cronExpression === "string") {
-    // Validate cron format: 5 or 6 space-separated fields (min hr dom mon dow [yr])
-    const cronParts = updates.cronExpression.trim().split(/\s+/);
-    if (cronParts.length < 5 || cronParts.length > 6 || !/^[0-9*,\-\/]+$/.test(cronParts.join(""))) {
-      return NextResponse.json({ error: "Invalid cron expression" }, { status: 400 });
-    }
-    allowedFields.cronExpression = updates.cronExpression.trim();
-  }
-  if (typeof updates.escalationThreshold === "number") {
-    if (updates.escalationThreshold < 0 || updates.escalationThreshold > 100) {
-      return NextResponse.json({ error: "escalationThreshold must be 0-100" }, { status: 400 });
-    }
-    allowedFields.escalationThreshold = updates.escalationThreshold;
-  }
-  if (typeof updates.systemPromptOverride === "string" || updates.systemPromptOverride === null) {
-    if (typeof updates.systemPromptOverride === "string" && updates.systemPromptOverride.length > 2000) {
-      return NextResponse.json({ error: "systemPromptOverride max 2000 characters" }, { status: 400 });
-    }
-    allowedFields.systemPromptOverride = updates.systemPromptOverride;
-  }
+  if (enabled !== undefined) allowedFields.enabled = enabled;
+  if (cronExpression !== undefined) allowedFields.cronExpression = cronExpression;
+  if (escalationThreshold !== undefined) allowedFields.escalationThreshold = escalationThreshold;
+  if (systemPromptOverride !== undefined) allowedFields.systemPromptOverride = systemPromptOverride;
 
   if (Object.keys(allowedFields).length === 0) {
     return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });

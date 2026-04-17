@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { estimates, customers, businesses, leads } from "@/db/schema";
-import { eq, and, lte, lt, inArray, count } from "drizzle-orm";
+import { and, lte, lt, inArray, count, sql } from "drizzle-orm";
 import { sendSMS } from "@/lib/twilio/sms";
 import { canSendSms } from "@/lib/compliance/sms";
 import { getEstimateFollowUpMessage } from "@/lib/sms-templates";
@@ -20,10 +20,18 @@ export async function GET(req: NextRequest) {
     let expired = 0;
 
     try {
-      // Find estimates due for follow-up
+      // Atomic claim: advance nextFollowUpAt + increment count + flip status in a
+      // single UPDATE so concurrent cron runs / retries never double-send.
+      const nextFollowUp = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
       const dueEstimates = await db
-        .select()
-        .from(estimates)
+        .update(estimates)
+        .set({
+          followUpCount: sql`${estimates.followUpCount} + 1`,
+          lastFollowUpAt: nowStr,
+          nextFollowUpAt: nextFollowUp,
+          status: "follow_up",
+          updatedAt: nowStr,
+        })
         .where(
           and(
             lte(estimates.nextFollowUpAt, nowStr),
@@ -31,7 +39,7 @@ export async function GET(req: NextRequest) {
             lt(estimates.followUpCount, 3),
           )
         )
-        .limit(50);
+        .returning();
 
       // Batch-fetch customers and businesses to avoid N+1 queries
       const customerIds = [...new Set(dueEstimates.map((e) => e.customerId).filter(Boolean))] as string[];
@@ -94,14 +102,7 @@ export async function GET(req: NextRequest) {
           });
 
           if (smsResult.success) {
-            const nextFollowUp = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
-            await db.update(estimates).set({
-              followUpCount: (est.followUpCount || 0) + 1,
-              lastFollowUpAt: nowStr,
-              nextFollowUpAt: nextFollowUp,
-              status: "follow_up",
-              updatedAt: nowStr,
-            }).where(eq(estimates.id, est.id));
+            // Claim already advanced counters — just count the outcome.
             sent++;
           }
         } catch (err) {

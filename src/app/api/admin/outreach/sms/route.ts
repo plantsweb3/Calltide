@@ -6,6 +6,7 @@ import { eq, inArray } from "drizzle-orm";
 import { sendProspectSms } from "@/lib/outreach/sms-outreach";
 import { logActivity } from "@/lib/activity";
 import { reportError } from "@/lib/error-reporting";
+import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 const smsSchema = z.object({
   prospectIds: z.array(z.string()).min(1).max(100),
@@ -21,6 +22,9 @@ export async function POST(req: NextRequest) {
   if (!req.cookies.has("capta_admin")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`admin-outreach-sms:${getClientIp(req)}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;
   try {

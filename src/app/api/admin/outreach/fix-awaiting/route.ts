@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { prospects, manualTouches } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
+import { reportError } from "@/lib/error-reporting";
 
 /**
  * POST /api/admin/outreach/fix-awaiting
@@ -29,40 +30,47 @@ export async function POST(req: NextRequest) {
     );
 
   let fixed = 0;
+  const errors: string[] = [];
 
   for (const prospect of stuckProspects) {
-    // Move to awaiting
-    await db
-      .update(prospects)
-      .set({
-        outreachStatus: "awaiting",
-        updatedAt: new Date().toISOString(),
-      })
-      .where(eq(prospects.id, prospect.id));
+    try {
+      await db
+        .update(prospects)
+        .set({
+          outreachStatus: "awaiting",
+          updatedAt: new Date().toISOString(),
+        })
+        .where(eq(prospects.id, prospect.id));
 
-    // Check if they already have a touch logged today
-    const [existingTouch] = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(manualTouches)
-      .where(
-        and(
-          eq(manualTouches.prospectId, prospect.id),
-          sql`${manualTouches.createdAt} >= ${todayStart.toISOString()}`
-        )
-      );
+      const [existingTouch] = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(manualTouches)
+        .where(
+          and(
+            eq(manualTouches.prospectId, prospect.id),
+            sql`${manualTouches.createdAt} >= ${todayStart.toISOString()}`
+          )
+        );
 
-    // If no touch exists, create one
-    if ((existingTouch?.count ?? 0) === 0) {
-      await db.insert(manualTouches).values({
-        prospectId: prospect.id,
-        channel: "sms",
-        outcome: "awaiting_response",
-        notes: "SMS sent (backfilled)",
-      });
+      if ((existingTouch?.count ?? 0) === 0) {
+        await db.insert(manualTouches).values({
+          prospectId: prospect.id,
+          channel: "sms",
+          outcome: "awaiting_response",
+          notes: "SMS sent (backfilled)",
+        });
+      }
+
+      fixed++;
+    } catch (err) {
+      reportError("fix-awaiting: per-prospect update failed", err, { extra: { prospectId: prospect.id } });
+      errors.push(prospect.id);
     }
-
-    fixed++;
   }
 
-  return NextResponse.json({ fixed, prospects: stuckProspects.map((p) => p.businessName) });
+  return NextResponse.json({
+    fixed,
+    errorCount: errors.length,
+    prospects: stuckProspects.map((p) => p.businessName),
+  });
 }

@@ -14,6 +14,7 @@ import { reportError } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 import { createNotification } from "@/lib/notifications";
 import { canSendSms } from "@/lib/compliance/sms";
+import { buildTestimonialUrl } from "@/lib/testimonials/signed-url";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
@@ -156,7 +157,11 @@ async function handlePromoter(businessId: string) {
     }
 
     const shareLink = `${BASE_URL}/r/${business.referralCode}`;
-    const testimonialLink = `${BASE_URL}/api/testimonial/submit?businessId=${businessId}`;
+    const testimonialLink = buildTestimonialUrl(BASE_URL, businessId);
+    if (!testimonialLink) {
+      reportError("NPS: testimonial link could not be built (CLIENT_AUTH_SECRET missing)", null);
+      return;
+    }
     const resend = getResend();
 
     await resend.emails.send({

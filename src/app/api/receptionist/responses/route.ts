@@ -3,6 +3,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { receptionistCustomResponses } from "@/db/schema";
 import { eq, and, count } from "drizzle-orm";
+import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
 
 const CATEGORIES = ["faq", "off_limits", "phrase", "emergency_keyword"] as const;
 const MAX_RESPONSES = 50;
@@ -48,6 +49,9 @@ export async function POST(req: NextRequest) {
   if (!businessId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = await rateLimit(`receptionist-responses:${businessId}`, RATE_LIMITS.write);
+  if (!rl.success) return rateLimitResponse(rl);
 
   let body: unknown;
   try {

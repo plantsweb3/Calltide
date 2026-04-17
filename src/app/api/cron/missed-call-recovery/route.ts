@@ -68,11 +68,22 @@ export async function GET(req: NextRequest) {
             continue;
           }
 
-          // Mark as abandoned regardless of whether we send SMS
-          await db.update(calls).set({
+          // Atomic claim — mark as abandoned only if not already claimed by a
+          // concurrent cron run. Prevents duplicate recovery SMS on overlap.
+          const claim = await db.update(calls).set({
             isAbandoned: true,
             updatedAt: now.toISOString(),
-          }).where(eq(calls.id, call.callId));
+          }).where(
+            and(
+              eq(calls.id, call.callId),
+              eq(calls.isAbandoned, false),
+            ),
+          ).returning({ id: calls.id });
+
+          if (claim.length === 0) {
+            skipped++;
+            continue;
+          }
 
           // Check if caller called back within the delay window
           const [callback] = await db

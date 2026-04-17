@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { pendingJobs } from "@/db/schema";
-import { eq, and, lte, sql } from "drizzle-orm";
+import { eq, and, lte, sql, inArray } from "drizzle-orm";
 import { reportError } from "@/lib/error-reporting";
 
 export type JobType = "twilio_provision" | "agent_sync" | "call_summary" | "consent_record" | "email_send" | "photo_request" | "webhook_delivery";
@@ -36,8 +36,24 @@ export async function processRetryQueue(
 ): Promise<{ processed: number; succeeded: number; failed: number }> {
   const now = new Date().toISOString();
 
-  const jobs = await db
-    .select()
+  // Recover stale "running" claims (e.g., function timeouts) after 10 minutes
+  // so orphaned jobs retry instead of being stuck forever.
+  const staleCutoff = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+  await db
+    .update(pendingJobs)
+    .set({ status: "pending" })
+    .where(
+      and(
+        eq(pendingJobs.status, "running"),
+        lte(pendingJobs.nextRetryAt, staleCutoff),
+      ),
+    );
+
+  // Find candidate ids, then atomically claim by flipping status → "running".
+  // Two concurrent cron runs cannot both claim the same job, so side-effecting
+  // handlers (Twilio provisioning, photo_request SMS, agent sync) don't fire twice.
+  const candidates = await db
+    .select({ id: pendingJobs.id })
     .from(pendingJobs)
     .where(
       and(
@@ -47,6 +63,17 @@ export async function processRetryQueue(
     )
     .orderBy(pendingJobs.nextRetryAt)
     .limit(batchSize);
+
+  const jobs = candidates.length === 0 ? [] : await db
+    .update(pendingJobs)
+    .set({ status: "running" })
+    .where(
+      and(
+        inArray(pendingJobs.id, candidates.map((c) => c.id)),
+        eq(pendingJobs.status, "pending"),
+      ),
+    )
+    .returning();
 
   let succeeded = 0;
   let failed = 0;
@@ -98,6 +125,7 @@ export async function processRetryQueue(
         await db
           .update(pendingJobs)
           .set({
+            status: "pending",
             attempts,
             lastError: errorMessage,
             nextRetryAt: nextRetry,

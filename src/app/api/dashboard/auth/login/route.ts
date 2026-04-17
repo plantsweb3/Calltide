@@ -67,12 +67,15 @@ export async function POST(req: NextRequest) {
     // Verify password
     const valid = await verifyPassword(password, account.passwordHash);
     if (!valid) {
-      // Atomic increment to prevent race condition under concurrent requests
-      await db.update(accounts).set({
+      // Atomic increment + use RETURNING so we see the real post-increment value,
+      // not a stale read that would let >5 concurrent attempts slip past the lock.
+      const [updatedRow] = await db.update(accounts).set({
         failedLoginAttempts: sql`COALESCE(${accounts.failedLoginAttempts}, 0) + 1`,
-      }).where(eq(accounts.id, account.id));
+      }).where(eq(accounts.id, account.id)).returning({
+        failedLoginAttempts: accounts.failedLoginAttempts,
+      });
 
-      const newAttempts = (account.failedLoginAttempts ?? 0) + 1;
+      const newAttempts = updatedRow?.failedLoginAttempts ?? ((account.failedLoginAttempts ?? 0) + 1);
       if (newAttempts >= MAX_FAILED_ATTEMPTS) {
         await db.update(accounts).set({
           lockedUntil: new Date(Date.now() + LOCKOUT_DURATION_MS).toISOString(),

@@ -48,7 +48,8 @@ export async function sendJobCardToOwner(jobCardId: string): Promise<boolean> {
   }
 
   const receptionistName = biz.receptionistName || "Maria";
-  const smsBody = formatJobCardSMS(card as unknown as JobCard, receptionistName);
+  const lang = biz.defaultLanguage === "es" ? "es" : "en";
+  const smsBody = formatJobCardSMS(card as unknown as JobCard, receptionistName, "normal", lang);
   const fromNumber = biz.twilioNumber || env.TWILIO_PHONE_NUMBER;
 
   try {

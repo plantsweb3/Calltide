@@ -1116,29 +1116,32 @@ async function handleCancelAppointment(
     };
   }
 
-  // Verify caller owns this appointment via leadId or phone match
-  if (ctx.leadId && appt.leadId && appt.leadId !== ctx.leadId) {
-    return {
-      success: false,
-      error: ctx.language === "es"
-        ? "No tiene permiso para cancelar esa cita."
-        : "You don't have permission to cancel that appointment.",
-    };
+  // Verify caller owns this appointment — require positive identification
+  const cancelDeny = () => ({
+    success: false as const,
+    error: ctx.language === "es"
+      ? "No tiene permiso para cancelar esa cita."
+      : "You don't have permission to cancel that appointment.",
+  });
+  if ((!ctx.leadId && !ctx.callerPhone) || !appt.leadId) {
+    return cancelDeny();
   }
-  // When leadId is missing, fall back to phone match for ownership
-  if (!ctx.leadId && appt.leadId) {
+  if (ctx.leadId) {
+    // Path 1: leadId match (strongest identifier)
+    if (ctx.leadId !== appt.leadId) return cancelDeny();
+  } else {
+    // Path 2: phone match (when no leadId available)
     const [apptLead] = await db
       .select({ phone: leads.phone })
       .from(leads)
       .where(eq(leads.id, appt.leadId))
       .limit(1);
-    if (apptLead?.phone && ctx.callerPhone && normalizePhone(apptLead.phone) !== normalizePhone(ctx.callerPhone)) {
-      return {
-        success: false,
-        error: ctx.language === "es"
-          ? "No tiene permiso para cancelar esa cita."
-          : "You don't have permission to cancel that appointment.",
-      };
+    if (
+      !apptLead?.phone ||
+      !ctx.callerPhone ||
+      normalizePhone(apptLead.phone) !== normalizePhone(ctx.callerPhone)
+    ) {
+      return cancelDeny();
     }
   }
 
@@ -1244,29 +1247,30 @@ async function handleRescheduleAppointment(
     };
   }
 
-  // Verify caller owns this appointment via leadId or phone match
-  if (ctx.leadId && appt.leadId && appt.leadId !== ctx.leadId) {
-    return {
-      success: false,
-      error: ctx.language === "es"
-        ? "No tiene permiso para reprogramar esa cita."
-        : "You don't have permission to reschedule that appointment.",
-    };
+  // Verify caller owns this appointment — require positive identification
+  const rescheduleDeny = () => ({
+    success: false as const,
+    error: ctx.language === "es"
+      ? "No tiene permiso para reprogramar esa cita."
+      : "You don't have permission to reschedule that appointment.",
+  });
+  if ((!ctx.leadId && !ctx.callerPhone) || !appt.leadId) {
+    return rescheduleDeny();
   }
-  // When leadId is missing, fall back to phone match for ownership
-  if (!ctx.leadId && appt.leadId) {
+  if (ctx.leadId) {
+    if (ctx.leadId !== appt.leadId) return rescheduleDeny();
+  } else {
     const [apptLead] = await db
       .select({ phone: leads.phone })
       .from(leads)
       .where(eq(leads.id, appt.leadId))
       .limit(1);
-    if (apptLead?.phone && ctx.callerPhone && normalizePhone(apptLead.phone) !== normalizePhone(ctx.callerPhone)) {
-      return {
-        success: false,
-        error: ctx.language === "es"
-          ? "No tiene permiso para reprogramar esa cita."
-          : "You don't have permission to reschedule that appointment.",
-      };
+    if (
+      !apptLead?.phone ||
+      !ctx.callerPhone ||
+      normalizePhone(apptLead.phone) !== normalizePhone(ctx.callerPhone)
+    ) {
+      return rescheduleDeny();
     }
   }
 

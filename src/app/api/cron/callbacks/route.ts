@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { callbacks, businesses, smsOptOuts } from "@/db/schema";
-import { eq, and, lte, isNull } from "drizzle-orm";
+import { eq, and, lte, isNull, inArray } from "drizzle-orm";
 import { verifyCronAuth } from "@/lib/cron-auth";
 import { reportError } from "@/lib/error-reporting";
 import { sendSMS } from "@/lib/twilio/sms";
@@ -25,9 +25,10 @@ export async function GET(req: NextRequest) {
     let failed = 0;
 
     try {
-      // Find callbacks that are due (requested_time <= now) and still scheduled
-      const dueCallbacks = await db
-        .select()
+      // Find candidates then atomically claim by id + status so concurrent cron
+      // runs don't double-process the same callback.
+      const candidates = await db
+        .select({ id: callbacks.id })
         .from(callbacks)
         .where(
           and(
@@ -35,16 +36,21 @@ export async function GET(req: NextRequest) {
             lte(callbacks.requestedTime, now),
           ),
         )
-        .limit(10); // Process max 10 per run to avoid timeout
+        .limit(10);
+
+      const dueCallbacks = candidates.length === 0 ? [] : await db
+        .update(callbacks)
+        .set({ status: "calling", updatedAt: now })
+        .where(
+          and(
+            inArray(callbacks.id, candidates.map((c) => c.id)),
+            eq(callbacks.status, "scheduled"),
+          ),
+        )
+        .returning();
 
       for (const cb of dueCallbacks) {
         try {
-          // Mark as calling
-          await db
-            .update(callbacks)
-            .set({ status: "calling", updatedAt: now })
-            .where(eq(callbacks.id, cb.id));
-
           // Look up business for Twilio number and owner phone
           const [biz] = await db
             .select()

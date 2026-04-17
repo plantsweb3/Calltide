@@ -1,16 +1,23 @@
+import crypto from "crypto";
 import { db } from "@/db";
 import { customerPortalTokens, customers, businesses } from "@/db/schema";
 import { eq, and, gt } from "drizzle-orm";
 
+/** Hash a portal token for at-rest storage / lookup. */
+export function hashPortalToken(token: string): string {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
 export async function validatePortalToken(token: string) {
   const now = new Date().toISOString();
+  const tokenHash = hashPortalToken(token);
 
   const [tokenRecord] = await db
     .select()
     .from(customerPortalTokens)
     .where(
       and(
-        eq(customerPortalTokens.token, token),
+        eq(customerPortalTokens.token, tokenHash),
         gt(customerPortalTokens.expiresAt, now)
       )
     )

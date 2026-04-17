@@ -59,6 +59,7 @@ export async function GET(req: NextRequest) {
 
           const delivery = biz.digestDeliveryMethod ?? "both";
           const receptionistName = biz.receptionistName || "Maria";
+          const lang = biz.defaultLanguage === "es" ? "es" : "en";
           const bizHours = (biz.businessHours ?? {}) as Record<string, { open: string; close: string; closed?: boolean }>;
           const tz = biz.timezone || "America/Chicago";
 
@@ -235,6 +236,7 @@ export async function GET(req: NextRequest) {
               weekEndDate,
               stats,
               dashboardUrl: `${dashboardBase}/dashboard`,
+              lang,
             });
 
             const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
@@ -258,7 +260,7 @@ export async function GET(req: NextRequest) {
           // ── Send SMS ──
           if ((delivery === "sms" || delivery === "both") && biz.ownerPhone) {
             try {
-              const smsBody = buildDigestSms({ receptionistName, stats });
+              const smsBody = buildDigestSms({ receptionistName, stats, lang });
               const twilio = getTwilioClient();
               await twilio.messages.create({
                 to: biz.ownerPhone,

@@ -20,8 +20,8 @@ export async function POST(req: NextRequest) {
 
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   if (!authToken) {
-    reportWarning("TWILIO_AUTH_TOKEN not set — rejecting recording webhook");
-    return new Response("OK", { status: 200 });
+    reportError("TWILIO_AUTH_TOKEN not set — recording webhook cannot verify signature", null);
+    return new Response("Service Unavailable", { status: 503 });
   }
 
   const formData = await req.formData();

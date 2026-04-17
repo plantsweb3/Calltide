@@ -92,6 +92,7 @@ export async function GET(req: NextRequest) {
           }
 
           const receptionistName = biz.receptionistName || "Maria";
+          const lang = biz.defaultLanguage === "es" ? "es" : "en";
           const delivery = biz.digestDeliveryMethod ?? "both";
 
           // ── Aggregate metrics ──
@@ -180,6 +181,7 @@ export async function GET(req: NextRequest) {
               monthLabel,
               stats,
               dashboardUrl: `${dashboardBase}/dashboard`,
+              lang,
             });
 
             const from = env.OUTREACH_FROM_EMAIL ?? "Capta <hello@contact.captahq.com>";
@@ -203,7 +205,7 @@ export async function GET(req: NextRequest) {
           // ── Send SMS ──
           if ((delivery === "sms" || delivery === "both") && biz.ownerPhone) {
             try {
-              const smsBody = buildMonthlyRoiSms({ receptionistName, stats, monthLabel });
+              const smsBody = buildMonthlyRoiSms({ receptionistName, stats, monthLabel, lang });
               const twilio = getTwilioClient();
               await twilio.messages.create({
                 to: biz.ownerPhone,

@@ -1,402 +1,474 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+/**
+ * FAQ page — Field Manual direction.
+ * Reading-friendly accordion organized by chapter.
+ */
+
+import { useState, useEffect, useCallback } from "react";
 import { PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
-import { useScrollReveal } from "@/lib/marketing/hooks";
+import {
+  C,
+  Mono,
+  Kicker,
+  Rule,
+  PrimaryButton,
+  SecondaryButton,
+  FieldFrame,
+  FieldNav,
+  FieldFooter,
+  DisplayH1,
+  DisplayH2,
+  TrustStrip,
+  SkipLink,
+} from "@/components/marketing/field";
 
-interface FAQItem {
-  q: string;
-  a: string;
-}
+type FaqItem = { q: string; a: string };
+type FaqChapter = { num: string; title: string; items: FaqItem[] };
 
-interface Category {
-  title: string;
-  items: FAQItem[];
-}
+type Copy = {
+  hero: { kicker: string; h1a: string; h1b: string; sub: string };
+  chapters: FaqChapter[];
+  cta: { kicker: string; h2: string; sub: string; primary: string; secondary: string };
+};
 
-const content = {
+const COPY: Record<Lang, Copy> = {
   en: {
-    badge: "Frequently Asked Questions",
-    hero: "Got Questions?\nWe've Got Answers.",
-    heroSub: "Everything you need to know about Capta, your AI front office.",
-    categories: [
+    hero: {
+      kicker: "Questions",
+      h1a: "Real questions.",
+      h1b: "Real answers.",
+      sub:
+        "Pulled from sales calls, setup conversations, and emails we get at 6 AM. If yours isn't here, text the number at the bottom of this page.",
+    },
+    chapters: [
       {
-        title: "Getting Started",
+        num: "01",
+        title: "The basics",
         items: [
+          {
+            q: "How does Capta work?",
+            a: "You forward your existing number to the dedicated Twilio line we provision for your business. Every call routes to Maria, who answers in English or Spanish based on the caller's first word, takes the details, books into your calendar, and texts you a one-tap job card the second the call ends.",
+          },
+          {
+            q: "Do I have to port my number?",
+            a: "No. You keep your number. Call-forwarding takes about two minutes with any carrier — we send you the exact dial codes during setup.",
+          },
+          {
+            q: "What does Maria sound like?",
+            a: "Human. Indistinguishable from a thoughtful receptionist on a good call day. We use ElevenLabs voice synthesis tuned specifically for trades vocabulary.",
+          },
           {
             q: "How long does setup take?",
-            a: "Most businesses are fully set up in under 10 minutes. Name your receptionist, customize her greeting, forward your number, and you're live.",
-          },
-          {
-            q: "Do I need special equipment?",
-            a: "No. Just forward your existing business phone number to the number we give you. You can do it from your phone's settings or by calling your carrier. Takes about 2 minutes.",
-          },
-          {
-            q: "Can I try it before committing?",
-            a: "Yes — every plan starts with a 14-day free trial. Your card won't be charged until day 15. If Capta doesn't work for you, cancel anytime during the trial.",
+            a: "About fifteen minutes. Seven steps: business info, hours, services, receptionist name, voice, trade-specific questions, payment. She's live the moment you forward your number.",
           },
         ],
       },
       {
-        title: "About Your Receptionist",
+        num: "02",
+        title: "Pricing + billing",
         items: [
           {
-            q: "Will my callers know they're talking to AI?",
-            a: "Your receptionist is designed to sound natural and warm — like someone who's worked at your business for years. She uses natural speech patterns, handles interruptions, and adapts her tone to the caller. Most callers don't notice.",
+            q: "Is the 14-day trial actually free?",
+            a: "Yes. Card on file, but no charge for 14 days. Cancel by texting the word cancel to the number we give you. You keep any leads she booked.",
           },
           {
-            q: "Can I customize what she says?",
-            a: "Yes! You choose her name, personality, greeting, and train her with custom responses for your specific services. She'll learn your business hours, service area, pricing ranges, and how you want different situations handled.",
+            q: "Is there a per-minute charge?",
+            a: "No. $497 a month covers unlimited calls, unlimited SMS, unlimited tool use. We eat the carrier costs. The only upgrade is annual ($397/mo, save $1,200).",
           },
           {
-            q: "What happens if there's an emergency?",
-            a: "She detects emergency keywords like 'gas leak', 'burst pipe', 'flooding', or 'fire' and immediately transfers the call to your designated emergency contact number. You set the rules for what qualifies as an emergency.",
+            q: "What if I have multiple locations?",
+            a: "One plan per location. We can set up multi-location billing with a call — each location gets its own Maria, trained on its own trade, hours, and service area.",
           },
           {
-            q: "Does she actually book appointments?",
-            a: "Yes. She books appointments in real-time based on your availability. Callers get an instant SMS confirmation with the appointment details. All appointments are managed right in your Capta dashboard.",
+            q: "Do you offer refunds after the trial?",
+            a: "Pro-rate refunds on annual plans for the unused portion. Monthly plans: cancel any time by text and you stop being billed the next cycle.",
           },
         ],
       },
       {
-        title: "Features & Capabilities",
+        num: "03",
+        title: "What she can do",
         items: [
           {
-            q: "Can she generate estimates?",
-            a: "Yes. She collects job details during the call — problem type, property info, urgency — then generates a price range based on your pricing rules. The estimate is texted to you for one-tap approval before being sent to the customer.",
+            q: "Can she book into my calendar?",
+            a: "Yes. We connect Google Calendar during setup. Maria sees real-time availability and never double-books. Outlook support coming Q2 2026.",
           },
           {
-            q: "What are job cards?",
-            a: "Every call creates a job card with the caller's info, job details, photos, estimate, and status. Think of it as an automatic work order for every inquiry — no manual data entry required.",
+            q: "Can she handle emergencies?",
+            a: "Yes. She detects emergency language (\"water through ceiling,\" \"no AC with a baby,\" etc.) and escalates to your on-call tech by SMS inside the same minute.",
           },
           {
-            q: "How do estimate follow-ups work?",
-            a: "She automatically follows up on estimates that haven't been responded to. You set the timing and frequency. She re-engages the lead via text, keeping your pipeline warm without any manual effort.",
+            q: "Can she send estimates?",
+            a: "Yes. We train her on your pricing during setup — either ballpark ranges per service, or a full calculation engine with base rates and add-ons. She sends the estimate via SMS before the caller hangs up.",
           },
           {
-            q: "Can I import my existing customer data?",
-            a: "Yes. Upload a CSV from your current CRM or spreadsheet. Capta maps the fields and imports your customers so your receptionist has full context — names, addresses, past jobs — from day one.",
+            q: "Will she transfer calls to me?",
+            a: "Yes, if a caller needs a human in that moment and you've set a transfer number. She bridges the call cleanly. No hold music.",
           },
           {
-            q: "What happens if a caller hangs up?",
-            a: "She auto-texts them within 60 seconds with a friendly message and a link to continue the conversation. Most callers re-engage, recovering jobs that would otherwise go to a competitor.",
-          },
-          {
-            q: "Does she re-engage past customers?",
-            a: "Yes. The customer recall feature automatically reaches out to past customers for seasonal maintenance, annual inspections, or follow-up work — turning one-time jobs into recurring revenue.",
+            q: "Can I text her to run the office?",
+            a: "Yes. Dispatch techs, send invoices, check the schedule, approve estimates, see stats — all by texting Maria back. The full manual is at /platform.",
           },
         ],
       },
       {
-        title: "Billing & Pricing",
+        num: "04",
+        title: "Spanish + bilingual",
         items: [
           {
-            q: "What does Capta cost?",
-            a: "One plan: $497/month or $4,764/year (save $1,200). Everything included — unlimited calls, bilingual support, booking, CRM, analytics, compliance. No per-minute charges, no hidden fees.",
+            q: "How does she switch languages?",
+            a: "She detects the caller's language on their very first word and responds in kind. Same phone number. Same Maria. No separate line, no menu, no press-1-for-English.",
           },
           {
-            q: "What if I want to cancel?",
-            a: "Cancel anytime from your dashboard. No contracts, no cancellation fees, no phone calls required. Your account stays active until the end of your billing period.",
+            q: "Does she speak Mexican Spanish or South American?",
+            a: "We tune for the region you tell us. Default is Mexican Spanish for Texas contractors. If you serve a different community, we retune the vocabulary and idioms during setup.",
+          },
+          {
+            q: "Do Spanish calls get the same features?",
+            a: "Identical. Estimates, booking, intake, emergency detection, SMS job cards — all work in Spanish. The dashboard shows you which calls came in Spanish so you can track the split.",
           },
         ],
       },
       {
-        title: "Technical",
+        num: "05",
+        title: "Data + privacy",
         items: [
           {
-            q: "Is my data secure?",
-            a: "Yes. We use encryption in transit and at rest, comply with TCPA regulations, and follow data privacy best practices. We never share or sell your data. Full details in our Privacy Policy and Data Processing Agreement.",
+            q: "Who owns the call data?",
+            a: "You do. Every recording, transcript, lead record, customer note — yours to export at any time. We use the data to run your business only; we do not train on your calls.",
           },
           {
-            q: "What languages does she speak?",
-            a: "English and Spanish — natively. She detects the caller's language automatically and responds in kind. This isn't a translation layer — she's fully conversational in both languages.",
+            q: "Is the service TCPA-compliant?",
+            a: "Yes. We follow TCPA for all SMS. Consent is captured at the point of call, opt-outs are honored immediately, quiet hours are enforced per state, and we maintain audit logs. If you're acquired or sold, the data is transferable.",
           },
           {
-            q: "Can she handle multiple calls at the same time?",
-            a: "Yes. Unlike a human receptionist, your AI receptionist can handle multiple simultaneous calls. No busy signals, no hold music, no missed calls.",
-          },
-          {
-            q: "What if the internet or your servers go down?",
-            a: "We have redundancy built in. If our primary systems experience issues, calls are routed to backup systems. We monitor uptime 24/7 and our status page is always available at captahq.com/status.",
+            q: "What about HIPAA?",
+            a: "We don't currently sign BAAs. If you serve a regulated trade (medical, legal), we're not the right fit yet.",
           },
         ],
       },
-    ] as Category[],
-    ctaH: "Still have questions?",
-    ctaSub: "Talk to us — or better yet, talk to your receptionist.",
-    ctaButton: "Start Free Trial",
-    ctaBook: "Start Free Trial",
-    ctaCall: "Or call us:",
+    ],
+    cta: {
+      kicker: "More questions?",
+      h2: "Text the number. We answer in minutes.",
+      sub: "You'll get a real person during business hours, and Maria after hours.",
+      primary: "Start 14-day free trial",
+      secondary: "Read the platform manual",
+    },
   },
   es: {
-    badge: "Preguntas Frecuentes",
-    hero: "¿Tienes Preguntas?\nTenemos Respuestas.",
-    heroSub: "Todo lo que necesitas saber sobre Capta, tu oficina IA.",
-    categories: [
+    hero: {
+      kicker: "Preguntas",
+      h1a: "Preguntas reales.",
+      h1b: "Respuestas reales.",
+      sub:
+        "Sacadas de llamadas de venta, conversaciones de instalación, y correos que recibimos a las 6 AM. Si la tuya no está, escribe al número al pie de esta página.",
+    },
+    chapters: [
       {
-        title: "Primeros Pasos",
+        num: "01",
+        title: "Lo básico",
         items: [
           {
-            q: "¿Cuánto tiempo toma la configuración?",
-            a: "La mayoría de los negocios están completamente configurados en menos de 10 minutos. Nombra tu recepcionista, personaliza su saludo, redirige tu número, y estás en vivo.",
+            q: "¿Cómo funciona Capta?",
+            a: "Desvías tu número actual al número de Twilio dedicado que te damos. Cada llamada va a Maria, quien contesta en inglés o español según la primera palabra del llamante, toma los detalles, agenda en tu calendario, y te manda una tarjeta de trabajo por SMS al segundo que termina la llamada.",
           },
           {
-            q: "¿Necesito equipo especial?",
-            a: "No. Solo redirige tu número de negocio existente al número que te damos. Puedes hacerlo desde la configuración de tu teléfono o llamando a tu operador. Toma unos 2 minutos.",
+            q: "¿Tengo que portar mi número?",
+            a: "No. Te quedas con tu número. El desvío toma unos dos minutos con cualquier operador — te mandamos los códigos exactos durante la instalación.",
           },
           {
-            q: "¿Puedo probarlo antes de comprometerme?",
-            a: "Sí — cada plan comienza con una prueba gratuita de 14 días. Tu tarjeta no será cobrada hasta el día 15. Si Capta no funciona para ti, cancela cuando quieras durante la prueba.",
+            q: "¿Cómo suena Maria?",
+            a: "Humana. Indistinguible de una recepcionista atenta en un buen día. Usamos síntesis de voz de ElevenLabs afinada específicamente para vocabulario de oficios.",
+          },
+          {
+            q: "¿Cuánto tarda la instalación?",
+            a: "Unos quince minutos. Siete pasos: información del negocio, horas, servicios, nombre de la recepcionista, voz, preguntas del oficio, pago. Está en vivo al momento que desvías tu número.",
           },
         ],
       },
       {
-        title: "Sobre Tu Recepcionista",
+        num: "02",
+        title: "Precios + facturación",
         items: [
           {
-            q: "¿Sabrán mis clientes que están hablando con IA?",
-            a: "Tu recepcionista está diseñada para sonar natural y cálida — como alguien que ha trabajado en tu negocio por años. Usa patrones de habla naturales, maneja interrupciones y adapta su tono al llamante. La mayoría no lo nota.",
+            q: "¿La prueba de 14 días es de verdad gratis?",
+            a: "Sí. Tarjeta registrada, pero sin cargo por 14 días. Cancela escribiendo la palabra cancelar al número que te damos. Te quedas con cualquier prospecto que agendó.",
           },
           {
-            q: "¿Puedo personalizar lo que dice?",
-            a: "¡Sí! Tú eliges su nombre, personalidad, saludo y la entrenas con respuestas personalizadas para tus servicios específicos. Ella aprenderá tus horarios, área de servicio, rangos de precios y cómo quieres que maneje diferentes situaciones.",
+            q: "¿Hay cargo por minuto?",
+            a: "No. $497 al mes cubre llamadas, SMS, y uso de herramientas ilimitados. Nosotros absorbemos el costo del operador. La única mejora es anual ($397/mes, ahorras $1,200).",
           },
           {
-            q: "¿Qué pasa si hay una emergencia?",
-            a: "Ella detecta palabras clave de emergencia como 'fuga de gas', 'tubería rota', 'inundación' o 'incendio' y transfiere la llamada inmediatamente a tu número de contacto de emergencia designado. Tú defines las reglas de lo que califica como emergencia.",
+            q: "¿Qué pasa si tengo varias ubicaciones?",
+            a: "Un plan por ubicación. Podemos configurar facturación multi-ubicación con una llamada — cada ubicación recibe su propia Maria, entrenada en su propio oficio, horas, y área de servicio.",
           },
           {
-            q: "¿Realmente agenda citas?",
-            a: "Sí. Agenda citas en tiempo real basándose en tu disponibilidad. Los llamantes reciben una confirmación SMS instantánea con los detalles de la cita. Todas las citas se administran directamente en tu panel de Capta.",
+            q: "¿Dan reembolsos después de la prueba?",
+            a: "Reembolsos prorrateados en planes anuales por la porción no usada. Planes mensuales: cancela en cualquier momento por texto y dejas de ser facturado el siguiente ciclo.",
           },
         ],
       },
       {
-        title: "Funciones y Capacidades",
+        num: "03",
+        title: "Lo que puede hacer",
         items: [
           {
-            q: "¿Puede generar presupuestos?",
-            a: "Sí. Recopila detalles del trabajo durante la llamada — tipo de problema, información de la propiedad, urgencia — y genera un rango de precio basado en tus reglas de precios. El presupuesto se te envía por texto para aprobación con un toque antes de enviarlo al cliente.",
+            q: "¿Puede agendar en mi calendario?",
+            a: "Sí. Conectamos Google Calendar durante la instalación. Maria ve disponibilidad en tiempo real y nunca agenda doble. Soporte de Outlook viene en Q2 2026.",
           },
           {
-            q: "¿Qué son las tarjetas de trabajo?",
-            a: "Cada llamada crea una tarjeta de trabajo con la información del llamante, detalles del trabajo, fotos, presupuesto y estado. Piénsalo como una orden de trabajo automática para cada consulta — sin entrada manual de datos.",
+            q: "¿Puede manejar emergencias?",
+            a: "Sí. Detecta lenguaje de emergencia (\"agua por el techo\", \"sin aire con un bebé\", etc.) y escala al técnico de guardia por SMS en el mismo minuto.",
           },
           {
-            q: "¿Cómo funcionan los seguimientos de presupuestos?",
-            a: "Automáticamente da seguimiento a presupuestos que no han sido respondidos. Tú defines el tiempo y frecuencia. Re-contacta al prospecto por texto, manteniendo tu pipeline activo sin esfuerzo manual.",
+            q: "¿Puede mandar estimados?",
+            a: "Sí. La entrenamos con tus precios durante la instalación — ya sea rangos aproximados por servicio, o un motor de cálculo completo con tarifas base y adicionales. Manda el estimado por SMS antes de que el cliente cuelgue.",
           },
           {
-            q: "¿Puedo importar mis datos de clientes existentes?",
-            a: "Sí. Sube un CSV de tu CRM actual o hoja de cálculo. Capta mapea los campos e importa tus clientes para que tu recepcionista tenga contexto completo — nombres, direcciones, trabajos anteriores — desde el primer día.",
+            q: "¿Va a transferir llamadas a mí?",
+            a: "Sí, si un cliente necesita una persona en ese momento y configuraste un número de transferencia. Puentea la llamada limpiamente. Sin música de espera.",
           },
           {
-            q: "¿Qué pasa si un llamante cuelga?",
-            a: "Les envía un texto automáticamente en 60 segundos con un mensaje amigable y un enlace para continuar la conversación. La mayoría vuelve a interactuar, recuperando trabajos que de otra forma irían a la competencia.",
-          },
-          {
-            q: "¿Reactiva a clientes anteriores?",
-            a: "Sí. La función de reactivación de clientes contacta automáticamente a clientes anteriores para mantenimiento estacional, inspecciones anuales o trabajo de seguimiento — convirtiendo trabajos únicos en ingresos recurrentes.",
+            q: "¿Puedo escribirle para manejar la oficina?",
+            a: "Sí. Despacha técnicos, manda facturas, revisa la agenda, aprueba estimados, ve estadísticas — todo escribiéndole a Maria. El manual completo está en /platform.",
           },
         ],
       },
       {
-        title: "Facturación y Precios",
+        num: "04",
+        title: "Español + bilingüe",
         items: [
           {
-            q: "¿Cuánto cuesta Capta?",
-            a: "Un plan: $497/mes o $4,764/año (ahorra $1,200). Todo incluido — llamadas ilimitadas, soporte bilingüe, agendamiento, CRM, analíticas, cumplimiento. Sin cargos por minuto, sin costos ocultos.",
+            q: "¿Cómo cambia idiomas?",
+            a: "Detecta el idioma del llamante en la primera palabra y responde en consecuencia. Mismo número de teléfono. Misma Maria. Sin línea separada, sin menú, sin presione-1-para-español.",
           },
           {
-            q: "¿Qué pasa si quiero cancelar?",
-            a: "Cancela en cualquier momento desde tu panel. Sin contratos, sin cuotas de cancelación, sin llamadas telefónicas requeridas. Tu cuenta permanece activa hasta el final de tu período de facturación.",
+            q: "¿Habla español mexicano o sudamericano?",
+            a: "La afinamos para la región que nos digas. Por defecto es español mexicano para contratistas de Texas. Si sirves a otra comunidad, re-afinamos el vocabulario y las expresiones durante la instalación.",
+          },
+          {
+            q: "¿Las llamadas en español reciben las mismas funciones?",
+            a: "Idénticas. Estimados, agenda, admisión, detección de emergencia, tarjetas SMS — todo funciona en español. El panel te muestra qué llamadas entraron en español para que puedas rastrear la proporción.",
           },
         ],
       },
       {
-        title: "Técnico",
+        num: "05",
+        title: "Datos + privacidad",
         items: [
           {
-            q: "¿Mis datos están seguros?",
-            a: "Sí. Usamos encriptación en tránsito y en reposo, cumplimos con las regulaciones TCPA y seguimos las mejores prácticas de privacidad de datos. Nunca compartimos ni vendemos tus datos. Detalles completos en nuestra Política de Privacidad y Acuerdo de Procesamiento de Datos.",
+            q: "¿Quién es dueño de los datos de las llamadas?",
+            a: "Tú. Cada grabación, transcripción, registro de prospecto, nota de cliente — tuyos para exportar en cualquier momento. Usamos los datos solo para manejar tu negocio; no entrenamos con tus llamadas.",
           },
           {
-            q: "¿Qué idiomas habla?",
-            a: "Inglés y español — de forma nativa. Detecta el idioma del llamante automáticamente y responde en el mismo idioma. Esto no es una capa de traducción — es completamente conversacional en ambos idiomas.",
+            q: "¿El servicio cumple con TCPA?",
+            a: "Sí. Seguimos TCPA para todos los SMS. El consentimiento se captura al momento de la llamada, las cancelaciones se respetan inmediatamente, las horas de silencio se aplican por estado, y mantenemos registros de auditoría. Si te adquieren o vendes, los datos son transferibles.",
           },
           {
-            q: "¿Puede manejar múltiples llamadas al mismo tiempo?",
-            a: "Sí. A diferencia de una recepcionista humana, tu recepcionista IA puede manejar múltiples llamadas simultáneas. Sin señales de ocupado, sin música de espera, sin llamadas perdidas.",
-          },
-          {
-            q: "¿Qué pasa si se cae el internet o sus servidores?",
-            a: "Tenemos redundancia incorporada. Si nuestros sistemas principales experimentan problemas, las llamadas se enrutan a sistemas de respaldo. Monitoreamos el tiempo de actividad 24/7 y nuestra página de estado siempre está disponible en captahq.com/status.",
+            q: "¿Y HIPAA?",
+            a: "Actualmente no firmamos BAAs. Si sirves un oficio regulado (médico, legal), aún no somos la opción correcta.",
           },
         ],
       },
-    ] as Category[],
-    ctaH: "¿Todavía tienes preguntas?",
-    ctaSub: "Habla con nosotros — o mejor aún, habla con tu recepcionista.",
-    ctaButton: "Prueba Gratis",
-    ctaBook: "Prueba Gratis",
-    ctaCall: "O llámanos:",
+    ],
+    cta: {
+      kicker: "¿Más preguntas?",
+      h2: "Escribe al número. Contestamos en minutos.",
+      sub: "Recibes una persona real durante horario de oficina, y Maria fuera de horario.",
+      primary: "Comenzar prueba gratis de 14 días",
+      secondary: "Leer el manual de la plataforma",
+    },
   },
 };
 
-function ChevronIcon({ open }: { open: boolean }) {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      className={`flex-shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-    >
-      <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+const LANG_KEY = "capta-lang";
 
-function AccordionItem({ item, isOpen, onToggle }: { item: FAQItem; isOpen: boolean; onToggle: () => void }) {
-  return (
-    <div
-      style={{
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-      }}
-    >
-      <button
-        onClick={onToggle}
-        className="w-full flex items-center justify-between gap-4 py-5 text-left group"
-      >
-        <span className="text-base font-semibold text-white group-hover:text-[#d4a843] transition-colors">
-          {item.q}
-        </span>
-        <span className="text-slate-400">
-          <ChevronIcon open={isOpen} />
-        </span>
-      </button>
-      <div
-        className="overflow-hidden transition-all duration-300"
-        style={{
-          maxHeight: isOpen ? "2000px" : "0",
-          opacity: isOpen ? 1 : 0,
-        }}
-      >
-        <p className="pb-5 text-sm leading-relaxed text-slate-400">{item.a}</p>
-      </div>
-    </div>
-  );
-}
-
-export default function FAQClient() {
-  const [lang, setLang] = useState<Lang>("en");
+export default function FAQClient({ initialLang }: { initialLang?: Lang } = {}) {
+  const [lang, setLang] = useState<Lang>(initialLang ?? "en");
 
   useEffect(() => {
-    const saved = localStorage.getItem("capta-lang");
+    if (initialLang) return;
+    if (typeof window === "undefined") return;
+    const saved = localStorage.getItem(LANG_KEY);
     if (saved === "en" || saved === "es") setLang(saved);
-  }, []);
+  }, [initialLang]);
 
   const toggleLang = useCallback((l: Lang) => {
     setLang(l);
-    if (typeof window !== "undefined") localStorage.setItem("capta-lang", l);
+    if (typeof window !== "undefined") localStorage.setItem(LANG_KEY, l);
   }, []);
 
-  useScrollReveal();
+  const t = COPY[lang];
 
-  const c = content[lang];
-
-  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
-
-  const toggleItem = (key: string) => {
-    setOpenItems((prev) => ({ ...prev, [key]: !prev[key] }));
+  // Flatten all chapters into one FAQPage schema — Google rich results
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: t.chapters.flatMap((ch) =>
+      ch.items.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: { "@type": "Answer", text: item.a },
+      })),
+    ),
   };
 
   return (
-    <>
-      {/* Language toggle */}
-      <div className="flex justify-center pt-6" style={{ background: "#0f1729" }}>
-        <div className="inline-flex rounded-full overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.15)" }}>
-          <button onClick={() => toggleLang("en")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "en" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>English</button>
-          <button onClick={() => toggleLang("es")} className={`px-5 py-2 text-sm font-semibold transition ${lang === "es" ? "bg-amber text-black" : "text-slate-400 hover:text-white"}`}>Espa&ntilde;ol</button>
-        </div>
-      </div>
+    <FieldFrame>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <SkipLink lang={lang} />
+      <FieldNav lang={lang} toggleLang={toggleLang} phone={PHONE} phoneHref={PHONE_TEL} />
+
+      <main id="main">
+      <TrustStrip lang={lang} />
 
       {/* Hero */}
-      <section className="relative px-6 sm:px-8 py-28 sm:py-36 dark-section grain-overlay" style={{ background: "#0f1729" }}>
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(212,168,67,0.06) 0%, transparent 70%)" }} />
-        <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <p className="section-label text-slate-400">{c.badge}</p>
-          <h1 className="mt-6 text-[36px] font-black leading-[1.1] tracking-tight text-white sm:text-[52px] whitespace-pre-line">
-            {c.hero}
-          </h1>
-          <p className="mt-6 text-lg text-slate-300 max-w-xl mx-auto">{c.heroSub}</p>
-        </div>
-      </section>
-
-      {/* FAQ Categories */}
-      <section className="px-6 sm:px-8 py-24 sm:py-32 dark-section" style={{ background: "#0f1729" }}>
-        <div className="mx-auto max-w-3xl space-y-16">
-          {c.categories.map((cat, catIdx) => (
-            <div key={cat.title} className="reveal">
-              <h2
-                className="text-[22px] font-extrabold tracking-tight sm:text-[26px] mb-6"
-                style={{ color: "#d4a843" }}
-              >
-                {cat.title}
-              </h2>
-              <div
-                className="rounded-2xl overflow-hidden px-6 transition-all duration-200"
-                style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                }}
-              >
-                {cat.items.map((item, itemIdx) => {
-                  const key = `${catIdx}-${itemIdx}`;
-                  return (
-                    <AccordionItem
-                      key={key}
-                      item={item}
-                      isOpen={!!openItems[key]}
-                      onToggle={() => toggleItem(key)}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="relative px-6 sm:px-8 py-24 sm:py-32 dark-section grain-overlay" style={{ background: "#111827" }}>
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 60%, rgba(212,168,67,0.06) 0%, transparent 70%)" }} />
-        <div className="relative z-10 mx-auto max-w-xl text-center">
-          <h2 className="reveal text-[32px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[40px]">
-            {c.ctaH}
-          </h2>
-          <p className="mt-4 text-slate-400">{c.ctaSub}</p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="/pricing"
-              className="cta-gold cta-shimmer inline-flex items-center justify-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white"
-            >
-              {c.ctaButton} &rarr;
-            </a>
-            <a
-              href="/setup"
-              className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-lg font-semibold text-slate-300 hover:text-white transition-colors"
-              style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-            >
-              {c.ctaBook} &rarr;
-            </a>
-          </div>
-          <p className="mt-6 text-sm text-slate-500">
-            {c.ctaCall}{" "}
-            <a href={PHONE_TEL} className="font-semibold hover:underline" style={{ color: "#d4a843" }}>{PHONE}</a>
+      <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-16 sm:pt-20 sm:pb-20">
+        <div className="max-w-3xl">
+          <Kicker>{t.hero.kicker}</Kicker>
+          <DisplayH1 style={{ marginTop: 28 }}>
+            {t.hero.h1a}
+            <br />
+            <em style={{ fontStyle: "italic", fontVariationSettings: '"SOFT" 100, "WONK" 1', color: C.amberInk }}>
+              {t.hero.h1b}
+            </em>
+          </DisplayH1>
+          <p style={{ fontSize: 18, lineHeight: 1.55, color: C.inkMuted, marginTop: 28, maxWidth: 620 }}>
+            {t.hero.sub}
           </p>
         </div>
       </section>
-    </>
+
+      <Rule />
+
+      {/* Chapters */}
+      {t.chapters.map((ch, chIdx) => (
+        <ChapterSection key={ch.num} chapter={ch} isLast={chIdx === t.chapters.length - 1} />
+      ))}
+
+      <Rule />
+
+      {/* CTA */}
+      <section style={{ background: C.ink, color: C.paper, borderTop: `3px solid ${C.amber}` }} className="py-24 sm:py-32">
+        <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
+          <div className="grid gap-16 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-7">
+              <Kicker tone="dark">{t.cta.kicker}</Kicker>
+              <DisplayH2 tone="dark" style={{ marginTop: 20, maxWidth: 720 }}>
+                {t.cta.h2}
+              </DisplayH2>
+              <p style={{ fontSize: 18, lineHeight: 1.55, color: "rgba(248,245,238,0.7)", marginTop: 24, maxWidth: 520 }}>
+                {t.cta.sub}
+              </p>
+              <a
+                href={PHONE_TEL}
+                style={{
+                  display: "inline-block",
+                  marginTop: 20,
+                  fontFamily: "var(--font-mono), ui-monospace, monospace",
+                  fontVariantNumeric: "tabular-nums",
+                  fontSize: 28,
+                  fontWeight: 700,
+                  color: C.paper,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {PHONE}
+              </a>
+            </div>
+            <div className="lg:col-span-5 flex flex-col gap-3" style={{ maxWidth: 420 }}>
+              <PrimaryButton href={lang === "es" ? "/es/setup" : "/setup"} size="lg">
+                {t.cta.primary}
+              </PrimaryButton>
+              <SecondaryButton href={lang === "es" ? "/es/platform" : "/platform"} size="lg">
+                {t.cta.secondary}
+              </SecondaryButton>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      </main>
+
+      <FieldFooter lang={lang} phone={PHONE} phoneHref={PHONE_TEL} />
+    </FieldFrame>
+  );
+}
+
+function ChapterSection({ chapter, isLast }: { chapter: FaqChapter; isLast: boolean }) {
+  const [open, setOpen] = useState<number | null>(0);
+
+  return (
+    <section
+      style={{
+        borderBottom: isLast ? "none" : `1px solid ${C.rule}`,
+      }}
+      className="py-20 sm:py-24"
+    >
+      <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
+        <div className="grid gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <DisplayH2 style={{ fontSize: "clamp(28px, 3vw, 44px)" }}>{chapter.title}</DisplayH2>
+          </div>
+
+          <div className="lg:col-span-8">
+            <ul style={{ borderTop: `1px solid ${C.rule}` }}>
+              {chapter.items.map((item, i) => {
+                const isOpen = open === i;
+                return (
+                  <li key={i} style={{ borderBottom: `1px solid ${C.rule}` }}>
+                    <button
+                      onClick={() => setOpen(isOpen ? null : i)}
+                      style={{
+                        width: "100%",
+                        padding: "22px 0",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "baseline",
+                        gap: 20,
+                        background: "transparent",
+                        textAlign: "left",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <div style={{ display: "flex", gap: 16, alignItems: "baseline" }}>
+                        <Mono style={{ fontSize: 11, color: C.inkSoft, fontWeight: 700, letterSpacing: "0.08em", flexShrink: 0 }}>
+                          {String(i + 1).padStart(2, "0")}
+                        </Mono>
+                        <span style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: 20, fontWeight: 500, color: C.ink, letterSpacing: "-0.01em", lineHeight: 1.3 }}>
+                          {item.q}
+                        </span>
+                      </div>
+                      <span
+                        aria-hidden
+                        style={{
+                          fontSize: 22,
+                          color: C.inkMuted,
+                          transition: "transform 150ms ease",
+                          transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+                          flexShrink: 0,
+                        }}
+                      >
+                        +
+                      </span>
+                    </button>
+                    {isOpen && (
+                      <div style={{ paddingLeft: 40, paddingBottom: 22, fontSize: 15, color: C.inkMuted, lineHeight: 1.65, maxWidth: 640 }}>
+                        {item.a}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

@@ -670,7 +670,7 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
 
 // ── Main Component ──
 
-export default function SetupClientWrapper() {
+export default function SetupClientWrapper({ initialLang }: { initialLang?: Lang } = {}) {
   return (
     <Suspense
       fallback={
@@ -679,7 +679,7 @@ export default function SetupClientWrapper() {
         </div>
       }
     >
-      <SetupClient />
+      <SetupClient initialLang={initialLang} />
     </Suspense>
   );
 }
@@ -964,10 +964,11 @@ function SetupTestCall({ lang, receptionistName, onNext, onBack }: SetupTestCall
   );
 }
 
-function SetupClient() {
+function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [lang, setLang] = useState<Lang>(() => {
+    if (initialLang) return initialLang;
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("capta-lang");
       if (saved === "es") return "es";

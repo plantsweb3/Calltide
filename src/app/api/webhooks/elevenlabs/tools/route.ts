@@ -1,34 +1,31 @@
 import { NextRequest } from "next/server";
 import { createHash, timingSafeEqual } from "crypto";
+import { z } from "zod";
 import { dispatchToolCall } from "@/lib/voice/tool-handlers";
 import { db } from "@/db";
-import { calls } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { calls, voiceToolIdempotency } from "@/db/schema";
+import { eq, and, sql } from "drizzle-orm";
 import { reportError, reportWarning } from "@/lib/error-reporting";
 import { rateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
-// ── Idempotency cache ──
-// Prevents ElevenLabs retries from causing double bookings, double SMS, etc.
-const idempotencyCache = new Map<string, { result: unknown; timestamp: number }>();
-const CACHE_TTL = 60 * 60 * 1000; // 1 hour — prevents double-bookings from late retries
-const MAX_CACHE_SIZE = 1000;
+const toolCallSchema = z.object({
+  tool_name: z.string().min(1).max(100),
+  parameters: z.record(z.string(), z.unknown()).default({}),
+  conversation_id: z.string().min(1).max(200),
+});
 
-function cleanupIdempotencyCache() {
-  const now = Date.now();
-  for (const [key, entry] of idempotencyCache) {
-    if (now - entry.timestamp > CACHE_TTL) idempotencyCache.delete(key);
-  }
-  // LRU eviction if still too large
-  if (idempotencyCache.size > MAX_CACHE_SIZE) {
-    const entries = [...idempotencyCache.entries()].sort((a, b) => a[1].timestamp - b[1].timestamp);
-    const toDelete = entries.slice(0, idempotencyCache.size - MAX_CACHE_SIZE);
-    for (const [key] of toDelete) idempotencyCache.delete(key);
-  }
-}
+// Durable idempotency via voice_tool_idempotency — safe across Vercel instances.
+const IDEMPOTENCY_TTL_MS = 60 * 60 * 1000; // 1 hour
+const CLAIM_POLL_ATTEMPTS = 10;
+const CLAIM_POLL_INTERVAL_MS = 300;
 
 function buildIdempotencyKey(conversationId: string, toolName: string, params: Record<string, unknown>): string {
   const raw = `${conversationId}:${toolName}:${JSON.stringify(params)}`;
   return createHash("sha256").update(raw).digest("hex");
+}
+
+async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -70,36 +67,79 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  let body: {
-    tool_name: string;
-    parameters: Record<string, unknown>;
-    conversation_id: string;
-  };
-
+  let rawBody: unknown;
   try {
-    body = await req.json();
+    rawBody = await req.json();
   } catch {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { tool_name: toolName, parameters, conversation_id: conversationId } = body;
-
-  if (!toolName || !conversationId) {
-    return Response.json({ error: "Missing tool_name or conversation_id" }, { status: 400 });
+  const parsed = toolCallSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return Response.json({ error: "Invalid tool call payload" }, { status: 400 });
   }
+  const { tool_name: toolName, parameters, conversation_id: conversationId } = parsed.data;
 
   reportWarning("[elevenlabs/tools] tool call", { toolName, conversationId });
 
-  // ── Idempotency check ──
-  // Periodic cleanup of expired entries
-  cleanupIdempotencyCache();
-
+  // ── Idempotency check (DB-backed, cross-instance safe) ──
   const idempotencyKey = buildIdempotencyKey(conversationId, toolName, parameters);
-  const cached = idempotencyCache.get(idempotencyKey);
-  if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
-    reportWarning("[elevenlabs/tools] idempotent hit — returning cached result", { toolName });
-    return Response.json(cached.result);
+  const ttlCutoff = new Date(Date.now() - IDEMPOTENCY_TTL_MS).toISOString();
+
+  // Short-circuit on an already-completed key (handles duplicates after the
+  // first instance has finished executing the tool).
+  {
+    const [existing] = await db
+      .select()
+      .from(voiceToolIdempotency)
+      .where(eq(voiceToolIdempotency.key, idempotencyKey))
+      .limit(1);
+    if (existing && existing.createdAt > ttlCutoff && existing.status === "completed" && existing.result) {
+      reportWarning("[elevenlabs/tools] idempotent hit — returning cached result", { toolName });
+      return Response.json(JSON.parse(existing.result));
+    }
   }
+
+  // Atomic claim: try to insert with status='pending'. If another instance already
+  // claimed, we lost the race — poll briefly for its result.
+  const claim = await db
+    .insert(voiceToolIdempotency)
+    .values({ key: idempotencyKey, status: "pending" })
+    .onConflictDoNothing()
+    .returning({ key: voiceToolIdempotency.key });
+
+  if (claim.length === 0) {
+    // Another instance is executing this tool call. Poll for its result.
+    for (let i = 0; i < CLAIM_POLL_ATTEMPTS; i++) {
+      await sleep(CLAIM_POLL_INTERVAL_MS);
+      const [row] = await db
+        .select()
+        .from(voiceToolIdempotency)
+        .where(eq(voiceToolIdempotency.key, idempotencyKey))
+        .limit(1);
+      if (row?.status === "completed" && row.result) {
+        return Response.json(JSON.parse(row.result));
+      }
+    }
+    reportWarning("[elevenlabs/tools] concurrent tool call did not complete in time", { toolName });
+    return Response.json({ error: "Tool call in progress" }, { status: 409 });
+  }
+
+  const finalizeIdempotency = async (responseData: unknown) => {
+    try {
+      await db
+        .update(voiceToolIdempotency)
+        .set({ status: "completed", result: JSON.stringify(responseData) })
+        .where(eq(voiceToolIdempotency.key, idempotencyKey));
+    } catch (err) {
+      reportError("Failed to finalize voice tool idempotency", err, { extra: { toolName, conversationId } });
+    }
+  };
+
+  // Best-effort cleanup of old entries — fire-and-forget.
+  db.delete(voiceToolIdempotency)
+    .where(sql`${voiceToolIdempotency.createdAt} < ${ttlCutoff}`)
+    .catch(() => {});
 
   // Extract business_id from parameters (injected as dynamic variable by ElevenLabs agent config)
   const businessIdParam = parameters?.business_id as string | undefined;
@@ -161,14 +201,7 @@ export async function POST(req: NextRequest) {
     });
 
     const responseData = result.data || { error: result.error };
-    // Cache successful results for idempotency
-    if (result.success) {
-      idempotencyCache.set(idempotencyKey, {
-        result: responseData,
-        timestamp: Date.now(),
-      });
-    }
-
+    await finalizeIdempotency(responseData);
     return Response.json(responseData);
   }
 
@@ -182,13 +215,6 @@ export async function POST(req: NextRequest) {
   });
 
   const responseData = result.data || { error: result.error };
-  // Cache successful results for idempotency
-  if (result.success) {
-    idempotencyCache.set(idempotencyKey, {
-      result: responseData,
-      timestamp: Date.now(),
-    });
-  }
-
+  await finalizeIdempotency(responseData);
   return Response.json(responseData);
 }

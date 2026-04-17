@@ -5,7 +5,8 @@ import { agentConfig } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { executeTool, logAgentActivity } from "./tools";
 import { reportError } from "@/lib/error-reporting";
-import { getAnthropic, SONNET_MODEL } from "@/lib/ai/client";
+import { getAnthropic, isAnthropicConfigured, SONNET_MODEL } from "@/lib/ai/client";
+import { reportWarning } from "@/lib/error-reporting";
 import type { AgentName, AgentResult, TargetType, ToolDefinition, ActionType } from "./types";
 
 const CLAUDE_MODEL = env.CLAUDE_MODEL ?? SONNET_MODEL;
@@ -33,6 +34,12 @@ export async function runAgent(params: {
 
   if (config && !config.enabled) {
     return { actions: [], escalated: false, toolsCalled: [], summary: `Agent "${agentName}" is disabled` };
+  }
+
+  // Graceful degrade: skip agent run when Anthropic key is missing/placeholder.
+  if (!isAnthropicConfigured()) {
+    reportWarning(`Agent ${agentName} skipped — Anthropic not configured`);
+    return { actions: [], escalated: false, toolsCalled: [], summary: `Agent "${agentName}" skipped: LLM unavailable` };
   }
 
   const anthropic = getAnthropic();

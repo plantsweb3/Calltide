@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { googleReviews, businesses } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
-import { getAnthropic, HAIKU_MODEL } from "@/lib/ai/client";
+import { getAnthropic, isAnthropicConfigured, HAIKU_MODEL } from "@/lib/ai/client";
 import { rateLimit, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-reporting";
 import { z } from "zod";
@@ -43,6 +43,10 @@ export async function POST(
 
   const receptionistName = biz?.receptionistName || "Maria";
   const businessName = biz?.name || "the business";
+
+  if (!isAnthropicConfigured()) {
+    return NextResponse.json({ error: "AI drafting is temporarily unavailable. Please try again later." }, { status: 503 });
+  }
 
   try {
     const anthropic = getAnthropic();

@@ -62,18 +62,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Event too old" }, { status: 400 });
   }
 
-  // Atomic idempotency: INSERT OR IGNORE avoids SELECT-then-INSERT race condition
+  // Atomic idempotency: INSERT OR IGNORE avoids SELECT-then-INSERT race condition.
+  // Rows default to status='pending'. Only status='completed' blocks handler retries.
   const [inserted] = await db
     .insert(processedStripeEvents)
     .values({
       stripeEventId: event.id,
       eventType: event.type,
+      status: "pending",
     })
     .onConflictDoNothing()
     .returning({ id: processedStripeEvents.id });
 
   if (!inserted) {
-    return NextResponse.json({ received: true, duplicate: true });
+    // Either another instance is processing this event concurrently, or a previous
+    // attempt succeeded. Skip if completed; otherwise allow handler to retry.
+    const [existing] = await db
+      .select({ status: processedStripeEvents.status })
+      .from(processedStripeEvents)
+      .where(eq(processedStripeEvents.stripeEventId, event.id))
+      .limit(1);
+    if (existing?.status === "completed") {
+      return NextResponse.json({ received: true, duplicate: true });
+    }
+    // Pending — allow retry. Handlers must be idempotent.
   }
 
   // Route event — each handler isolated so one failure doesn't block others
@@ -96,6 +108,11 @@ export async function POST(request: Request) {
   if (handler) {
     try {
       await handler();
+      // Mark completed so future retries for this event short-circuit.
+      await db
+        .update(processedStripeEvents)
+        .set({ status: "completed" })
+        .where(eq(processedStripeEvents.stripeEventId, event.id));
     } catch (err) {
       reportError(`[stripe] Error handling ${event.type}`, err, {
         extra: { eventId: event.id, eventType: event.type },
@@ -108,17 +125,28 @@ export async function POST(request: Request) {
         actionUrl: "/admin/ops",
       }).catch(() => {});
 
-      // For critical events (checkout, payment), return 500 so Stripe retries
+      // For critical events, return 500 so Stripe retries. Idempotency row stays
+      // at status='pending' so the retry passes our dedupe gate; handlers must be
+      // idempotent (check for existing rows before insert).
       const criticalEvents = ["checkout.session.completed", "invoice.payment_succeeded", "invoice.payment_failed"];
       if (criticalEvents.includes(event.type)) {
-        // Remove from processed events so retry is allowed
-        await db.delete(processedStripeEvents)
-          .where(eq(processedStripeEvents.stripeEventId, event.id))
-          .catch(() => {});
         return NextResponse.json({ error: "Handler failed" }, { status: 500 });
       }
-      // Non-critical events: return 200 to prevent unnecessary retries
+      // Non-critical events: return 200 to prevent unnecessary retries. Mark
+      // completed so we don't reprocess on a later replay.
+      await db
+        .update(processedStripeEvents)
+        .set({ status: "completed" })
+        .where(eq(processedStripeEvents.stripeEventId, event.id))
+        .catch(() => {});
     }
+  } else {
+    // No handler for this event type — still mark as processed.
+    await db
+      .update(processedStripeEvents)
+      .set({ status: "completed" })
+      .where(eq(processedStripeEvents.stripeEventId, event.id))
+      .catch(() => {});
   }
 
   return NextResponse.json({ received: true });

@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
         slugToId[post.slug] = inserted.id;
       } catch (err) {
         reportError(`Failed to seed post: ${post.slug}`, err);
-        return NextResponse.json({ error: `Failed to seed: ${post.slug}`, detail: String(err) }, { status: 500 });
+        return NextResponse.json({ error: `Failed to seed: ${post.slug}` }, { status: 500 });
       }
     }
 
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     reportError("Blog seed error", err);
-    return NextResponse.json({ error: "Seed failed", detail: String(err) }, { status: 500 });
+    return NextResponse.json({ error: "Seed failed" }, { status: 500 });
   }
 }
 
