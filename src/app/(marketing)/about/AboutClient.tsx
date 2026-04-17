@@ -18,7 +18,6 @@ import {
   FieldFooter,
   DisplayH1,
   DisplayH2,
-  TrustStrip,
   SkipLink,
 } from "@/components/marketing/field";
 
@@ -55,7 +54,7 @@ const COPY: Record<Lang, Copy> = {
       paragraphs: [
         "Watch a plumber for a week and you will see the same ten dollar bill fall out of his pocket a dozen times. His hands are under a sink. The phone rings. The caller is a new customer with a burst pipe — a two-thousand-dollar job. The plumber's voicemail picks up. The caller hangs up. The caller calls three more plumbers before he finds one who answers. The first plumber never knew the call happened.",
         "Hiring a bilingual receptionist to cover that gap costs thirty-six hundred a month. Answering services cost nine hundred and read messages back instead of booking the job. Most owners give up and let the voicemail do the work, because the alternative is another payroll line they can't afford. That's the math that built Capta.",
-        "We built a receptionist that answers every call, in English or Spanish, forever, for less than a single truck's insurance. She takes the details of the job while the caller is still on the line. She books into your calendar. She texts you the job card the second the call ends. She recovers missed callers inside sixty seconds. She runs your front office from your text messages.",
+        "We built Capta to answer every call, in English or Spanish, forever, for less than a single truck's insurance. Capta takes the details of the job while the caller is still on the line. It books into your calendar. It texts you the job card the second the call ends. It recovers missed callers inside sixty seconds. It runs your front office from your text messages.",
       ],
     },
     stats: {
@@ -77,9 +76,9 @@ const COPY: Record<Lang, Copy> = {
       pullAttribution: "— Ulysses Munoz, founder, Capta",
     },
     cta: {
-      kicker: "Try her out.",
+      kicker: "Try Capta out.",
       h2: "Two weeks free. One phone number.",
-      sub: "If she doesn't earn her keep in the first fourteen days, walk away with zero owed.",
+      sub: "If Capta doesn't earn its keep in the first fourteen days, walk away with zero owed.",
       primary: "Start 14-day free trial",
     },
   },
@@ -97,7 +96,7 @@ const COPY: Record<Lang, Copy> = {
       paragraphs: [
         "Observa a un plomero por una semana y verás cómo el mismo billete de diez dólares se le cae del bolsillo una docena de veces. Sus manos están bajo un fregadero. El teléfono suena. El que llama es un cliente nuevo con una tubería rota — un trabajo de dos mil dólares. El buzón del plomero contesta. El cliente cuelga. El cliente llama a tres plomeros más hasta que encuentra a uno que contesta. El primer plomero nunca supo que la llamada pasó.",
         "Contratar una recepcionista bilingüe para cubrir ese hueco cuesta tres mil seiscientos al mes. Los servicios de contestadoras cuestan novecientos y solo leen mensajes en lugar de agendar el trabajo. La mayoría de los dueños se rinden y dejan que el buzón haga el trabajo, porque la alternativa es otro sueldo que no pueden pagar. Esas son las cuentas que construyeron Capta.",
-        "Construimos una recepcionista que contesta cada llamada, en inglés o español, para siempre, por menos del seguro de un solo camión. Toma los detalles del trabajo mientras el cliente sigue en la línea. Agenda en tu calendario. Te manda la tarjeta del trabajo al segundo que termina la llamada. Recupera llamadas perdidas en menos de sesenta segundos. Maneja tu oficina desde tus mensajes de texto.",
+        "Construimos Capta para contestar cada llamada, en inglés o español, para siempre, por menos del seguro de un solo camión. Capta toma los detalles del trabajo mientras el cliente sigue en la línea. Agenda en tu calendario. Te manda la tarjeta del trabajo al segundo que termina la llamada. Recupera llamadas perdidas en menos de sesenta segundos. Maneja tu oficina desde tus mensajes de texto.",
       ],
     },
     stats: {
@@ -119,9 +118,9 @@ const COPY: Record<Lang, Copy> = {
       pullAttribution: "— Ulysses Munoz, fundador, Capta",
     },
     cta: {
-      kicker: "Pruébala.",
+      kicker: "Prueba Capta.",
       h2: "Dos semanas gratis. Un número de teléfono.",
-      sub: "Si no se gana su pago en los primeros catorce días, vete sin deberle nada.",
+      sub: "Si Capta no se gana su pago en los primeros catorce días, vete sin deberle nada.",
       primary: "Comenzar prueba gratis de 14 días",
     },
   },
@@ -152,8 +151,6 @@ export default function AboutPage({ initialLang }: { initialLang?: Lang } = {}) 
       <FieldNav lang={lang} toggleLang={toggleLang} phone={PHONE} phoneHref={PHONE_TEL} />
 
       <main id="main">
-      <TrustStrip lang={lang} />
-
       {/* Hero */}
       <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-16 sm:pt-20 sm:pb-24">
         <div className="max-w-3xl">

@@ -18,7 +18,6 @@ import {
   FieldFooter,
   DisplayH1,
   DisplayH2,
-  TrustStrip,
   SkipLink,
 } from "@/components/marketing/field";
 
@@ -158,7 +157,7 @@ const COPY: Record<Lang, Copy> = {
     },
     cta: {
       kicker: "Satisfied with the math?",
-      h2: "Hire her.",
+      h2: "Hire Capta.",
       sub: "14 days free. Your number stays yours. Cancel with one text.",
       primary: "Start 14-day free trial",
     },
@@ -218,7 +217,7 @@ const COPY: Record<Lang, Copy> = {
       assumptions: [
         "Tasa de cierre del 25% en prospectos por teléfono (mediana de la industria; mayor en emergencias de HVAC, menor en jardinería).",
         "4.33 semanas por mes. Llamadas perdidas se asumen distribuidas uniformemente.",
-        "Se asume que Capta captura el 100% de llamadas perdidas — en la práctica Maria contesta cada llamada, así que este es el techo, no una exageración.",
+        "Se asume que Capta captura el 100% de llamadas perdidas — en la práctica Capta contesta cada llamada, así que este es el techo, no una exageración.",
       ],
     },
     math: {
@@ -227,12 +226,12 @@ const COPY: Record<Lang, Copy> = {
       paragraphs: [
         "Llamadas perdidas al mes = tasa semanal × 4.33. Un contratista que pierde 10 llamadas por semana está filtrando 43 al mes al buzón o a competidores. Las matemáticas no importan si las perdiste porque estabas en una escalera o porque eran las 7 PM.",
         "Ingresos perdidos = llamadas perdidas × valor promedio del trabajo × tasa de cierre del 25%. 25% es la mediana para prospectos solo por teléfono en servicios del hogar — un propietario que levanta el teléfono está caliente, pero no cada prospecto caliente agenda. Oficios de mayor urgencia (emergencias HVAC, daño por agua) corren más cerca del 40%. Oficios de menor ticket (jardinería) más cerca del 15%.",
-        "Neto con Capta = ingresos recuperados − $497. Si Maria captura cada llamada perdida, te quedas con el total recuperado menos el plan. Las tasas reales de conversión también suben cuando las llamadas se contestan, porque una llamada contestada cierra mejor que un buzón devuelto — pero no modelamos ese aumento aquí. El número de arriba es conservador a propósito.",
+        "Neto con Capta = ingresos recuperados − $497. Si Capta captura cada llamada perdida, te quedas con el total recuperado menos el plan. Las tasas reales de conversión también suben cuando las llamadas se contestan, porque una llamada contestada cierra mejor que un buzón devuelto — pero no modelamos ese aumento aquí. El número de arriba es conservador a propósito.",
       ],
     },
     cta: {
       kicker: "¿Satisfecho con las matemáticas?",
-      h2: "Contrátala.",
+      h2: "Contrata Capta.",
       sub: "14 días gratis. Tu número sigue siendo tuyo. Cancela con un mensaje.",
       primary: "Comenzar prueba gratis de 14 días",
     },
@@ -292,8 +291,6 @@ export default function ROICalculatorPage({ initialLang }: { initialLang?: Lang 
       <FieldNav lang={lang} toggleLang={toggleLang} phone={PHONE} phoneHref={PHONE_TEL} />
 
       <main id="main">
-      <TrustStrip lang={lang} />
-
       {/* Hero */}
       <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-16 sm:pt-20 sm:pb-20">
         <div className="max-w-3xl">

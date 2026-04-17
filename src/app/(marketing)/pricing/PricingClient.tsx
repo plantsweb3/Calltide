@@ -19,7 +19,6 @@ import {
   FieldFooter,
   DisplayH1,
   DisplayH2,
-  TrustStrip,
   SkipLink,
 } from "@/components/marketing/field";
 
@@ -151,12 +150,12 @@ const COPY: Record<Lang, Copy> = {
           a: "No. You forward your existing number to the Twilio line we provision for you. Takes about two minutes with your carrier. You keep your number.",
         },
         {
-          q: "What if she books a job I can't do?",
-          a: "We train the receptionist on your services, hours, and service area during setup. If a call falls outside, she takes a message and escalates to you. You can edit the rules by texting her.",
+          q: "What if Capta books a job I can't do?",
+          a: "We train Capta on your services, hours, and service area during setup. If a call falls outside, Capta takes a message and escalates to you. You can edit the rules by texting the line.",
         },
         {
-          q: "How does she answer Spanish calls?",
-          a: "She detects the caller's language within the first word and switches. Same phone number. No separate line.",
+          q: "How does Capta answer Spanish calls?",
+          a: "Capta detects the caller's language within the first word and switches. Same phone number. No separate line.",
         },
         {
           q: "Is there a per-minute charge?",
@@ -169,8 +168,8 @@ const COPY: Record<Lang, Copy> = {
       ],
     },
     cta: {
-      kicker: "Or just call her.",
-      h2: "She is answering this line right now.",
+      kicker: "Or just call the line.",
+      h2: "Capta is answering right now.",
       sub: "You'll know inside a minute whether this is worth $497 a month.",
       primary: "Start 14-day free trial",
       secondary: "Read the platform overview",
@@ -278,8 +277,8 @@ const COPY: Record<Lang, Copy> = {
       ],
     },
     cta: {
-      kicker: "O simplemente llámale.",
-      h2: "Ella está contestando esta línea ahora mismo.",
+      kicker: "O simplemente llama a la línea.",
+      h2: "Capta está contestando ahora mismo.",
       sub: "Vas a saber en menos de un minuto si vale $497 al mes.",
       primary: "Comenzar prueba gratis de 14 días",
       secondary: "Leer la descripción de la plataforma",
@@ -350,7 +349,6 @@ export default function PricingClient({ initialLang }: { initialLang?: Lang } = 
 
       <main id="main">
         <Hero t={t} />
-        <TrustStrip lang={lang} />
         <PricingCard t={t} />
         <Rule />
         <CompareTable t={t} />

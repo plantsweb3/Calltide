@@ -389,7 +389,7 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
           <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
             {city.climate}. Weather-driven emergencies don&apos;t call during business hours.
             Capta answers every call — at 2 AM, on weekends, during holidays — in both English and Spanish.
-            Then she books the appointment, sends the customer an SMS confirmation, and dispatches your on-call tech — all before you wake up.
+            Then Capta books the appointment, sends the customer an SMS confirmation, and dispatches your on-call tech — all before you wake up.
           </p>
         </div>
       </section>

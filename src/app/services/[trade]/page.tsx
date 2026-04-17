@@ -227,10 +227,10 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
         <section className="px-6 sm:px-8 py-16 sm:py-20">
           <div className="mx-auto max-w-4xl">
             <h2 className="text-center text-[28px] font-extrabold tracking-tight text-charcoal sm:text-[32px]">
-              Maria Knows {profile.label}
+              Capta Knows {profile.label}
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-center text-base text-charcoal-muted">
-              Your AI office manager is trained on {profile.label.toLowerCase()} terminology, services, and pricing. She answers calls, books appointments, sends SMS follow-ups, and speaks your customers&apos; language — literally.
+              Capta is trained on {profile.label.toLowerCase()} terminology, services, and pricing. Capta answers calls, books appointments, sends SMS follow-ups, and speaks your customers&apos; language — literally.
             </p>
             <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {profile.commonServices.map((service, i) => (
@@ -330,7 +330,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
           </h2>
           <p className="mt-4 text-base leading-relaxed text-charcoal-muted">
             {profile.seasonalPeak}. During peak season, call volume spikes {profile.tier === 1 ? "2-3x" : "2x"} — that&apos;s when you need Capta most.
-            She handles unlimited concurrent calls, auto-books appointments, sends confirmation texts, dispatches your crew, and scores every lead — without breaking a sweat.
+            Capta handles unlimited concurrent calls, auto-books appointments, sends confirmation texts, dispatches your crew, and scores every lead — without breaking a sweat.
           </p>
         </div>
       </section>

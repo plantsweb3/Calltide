@@ -40,7 +40,7 @@ const faqSchema = {
       name: "Does Capta speak Spanish?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. Capta's AI receptionist is natively bilingual in English and Spanish. She automatically detects the caller's language and responds fluently. This is not a translation layer — she speaks natural, colloquial Spanish and English.",
+        text: "Yes. Capta's AI receptionist is natively bilingual in English and Spanish. Capta automatically detects the caller's language and responds fluently. This is not a translation layer — Capta speaks natural, colloquial Spanish and English.",
       },
     },
     {
@@ -64,7 +64,7 @@ const faqSchema = {
       name: "Will my callers know they're talking to AI?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Your receptionist is designed to sound natural and warm — like someone who's worked at your business for years. She uses natural speech patterns, handles interruptions, and adapts her tone to the caller. Most callers don't notice.",
+        text: "Capta is designed to sound natural and warm — like someone who's worked at your business for years. It uses natural speech patterns, handles interruptions, and adapts tone to the caller. Most callers don't notice.",
       },
     },
     {
@@ -96,15 +96,15 @@ const faqSchema = {
       name: "What happens if there's an emergency call?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "She detects emergency keywords like gas leak, burst pipe, flooding, or fire and immediately transfers the call to your designated emergency contact number. She also sends you an SMS alert. You set the rules for what qualifies as an emergency.",
+        text: "Capta detects emergency keywords like gas leak, burst pipe, flooding, or fire and immediately transfers the call to your designated emergency contact number. Capta also sends you an SMS alert. You set the rules for what qualifies as an emergency.",
       },
     },
     {
       "@type": "Question",
-      name: "Does she actually book appointments?",
+      name: "Does Capta actually book appointments?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. She books appointments in real-time based on your availability calendar. Callers get an instant SMS confirmation with the appointment details. Appointments sync to Google Calendar automatically.",
+        text: "Yes. Capta books appointments in real-time based on your availability calendar. Callers get an instant SMS confirmation with the appointment details. Appointments sync to Google Calendar automatically.",
       },
     },
     {
@@ -117,10 +117,10 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Can I customize what she says?",
+      name: "Can I customize what Capta says?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. You choose her name, personality (professional, friendly, or warm), greeting, and train her with custom responses for your specific services. She'll learn your business hours, service area, pricing ranges, and how you want different situations handled.",
+        text: "Yes. You choose the receptionist name, personality (professional, friendly, or warm), greeting, and train Capta with custom responses for your specific services. Capta learns your business hours, service area, pricing ranges, and how you want different situations handled.",
       },
     },
     {
@@ -128,7 +128,7 @@ const faqSchema = {
       name: "What if a caller hangs up before completing the call?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "She auto-texts them within 60 seconds with a friendly message and a link to continue the conversation. Most callers re-engage, recovering jobs that would otherwise go to a competitor.",
+        text: "Capta auto-texts them within 60 seconds with a friendly message and a link to continue the conversation. Most callers re-engage, recovering jobs that would otherwise go to a competitor.",
       },
     },
     {
@@ -141,7 +141,7 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Can she handle multiple calls at the same time?",
+      name: "Can Capta handle multiple calls at the same time?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "Yes. Unlike a human receptionist who can only take one call at a time, Capta handles unlimited simultaneous calls. No busy signals, no hold music, no missed calls.",
@@ -157,10 +157,10 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Can she generate estimates?",
+      name: "Can Capta generate estimates?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. She collects job details during the call — problem type, property info, urgency — then generates a price range based on your pricing rules. The estimate is texted to you for one-tap approval before being sent to the customer.",
+        text: "Yes. Capta collects job details during the call — problem type, property info, urgency — then generates a price range based on your pricing rules. The estimate is texted to you for one-tap approval before being sent to the customer.",
       },
     },
     {
@@ -168,7 +168,7 @@ const faqSchema = {
       name: "Does Capta work after hours?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. Your receptionist works 24/7/365. After-hours calls are actually some of the most valuable — emergency plumbing at 2 AM, AC failures on weekends, heating emergencies on holidays. She catches all of them.",
+        text: "Yes. Capta works 24/7/365. After-hours calls are actually some of the most valuable — emergency plumbing at 2 AM, AC failures on weekends, heating emergencies on holidays. Capta catches all of them.",
       },
     },
     {

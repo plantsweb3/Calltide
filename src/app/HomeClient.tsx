@@ -23,7 +23,6 @@ import {
   DisplayH1,
   DisplayH2,
   Serif,
-  TrustStrip,
   DemoCtaPair,
   SkipLink,
 } from "@/components/marketing/field";
@@ -75,16 +74,6 @@ type Copy = {
     secondary: string;
     note: string;
   };
-  proof: {
-    kicker: string;
-    h2: string;
-    sub: string;
-    earlyLabel: string;
-    earlyH: string;
-    earlyBody: string;
-    earlyCta: string;
-    earlyCtaHref: string;
-  };
   sms: {
     kicker: string;
     h2: string;
@@ -127,7 +116,7 @@ const COPY: Record<Lang, Copy> = {
     hero: {
       kicker: "The bilingual receptionist",
       h1a: "Your phone rings.",
-      h1b: "She answers.",
+      h1b: "Capta answers.",
       sub:
         "Capta is a bilingual AI receptionist that books your jobs, recovers your missed calls, and runs your front office from text messages. Answers every call, in English or Spanish, at $497 a month.",
       priceLabel: "Flat rate, unlimited calls",
@@ -135,37 +124,25 @@ const COPY: Record<Lang, Copy> = {
       pricePeriod: "/ month",
       priceAside: "No per-minute billing. Cancel any time with a text.",
       primaryCta: "Start 14-day free trial",
-      secondaryCta: "Or call the live line — you'll talk to Maria",
+      secondaryCta: "Or call the live line — Capta is on",
       phone: PHONE,
       phoneHref: PHONE_TEL,
       trust: ["14-day trial", "No per-minute billing", "Cancel with one text"],
     },
     demo: {
-      kicker: "Try her live",
-      h2: "Call the number. She picks up.",
+      kicker: "Try Capta live",
+      h2: "Call the number. Capta picks up.",
       sub:
-        "This is the cleanest way to evaluate Capta. Call the line below and talk to Maria as if you were a customer. She'll answer in under two rings. You'll know inside a minute whether this is real.",
+        "This is the cleanest way to evaluate Capta. Call the line below and talk to Capta as if you were a customer. It answers in under two rings. You'll know inside a minute whether this is real.",
       primary: "Start 14-day free trial",
       secondary: "Or get a free call audit",
       note: "Available 24/7 in English and Spanish. Your call is routed to our demo line.",
-    },
-    proof: {
-      kicker: "Customers",
-      h2: "Honest about where we are.",
-      sub:
-        "We're a small team shipping to a small but growing group of contractors in Texas. Below is the current state — not a polished testimonial wall.",
-      earlyLabel: "Early customer program",
-      earlyH: "Talk to one of our contractors before you buy.",
-      earlyBody:
-        "We'll connect you with a current customer in your trade — plumbing, HVAC, electrical, roofing, or general — and you can ask them anything. No sales pitch, no screening, no script. The only ask is that you do the same for the next contractor in line if you become a customer.",
-      earlyCta: "Request a reference call",
-      earlyCtaHref: "mailto:hello@captahq.com?subject=Reference%20call%20request",
     },
     sms: {
       kicker: "Run the office from SMS",
       h2: "Dispatch. Invoice. Schedule. One text.",
       sub:
-        "Once a call lands, Maria texts you the job card. You reply with the action — confirm, reassign, call back — and she runs it. Below is an example of the thread you'd see.",
+        "Once a call lands, Capta texts you the job card. You reply with the action — confirm, reassign, call back — and Capta runs it. Below is an example of the thread you'd see.",
       maria: "Maria",
       mariaRole: "AI receptionist · English & Spanish",
       thread: [
@@ -228,15 +205,15 @@ const COPY: Record<Lang, Copy> = {
         "Unlimited calls and SMS — no per-minute billing",
       ],
       guarantee: "14 days free. Cancel with one text. Keep going only if it's earning its keep.",
-      callNow: "Call her now",
+      callNow: "Call Capta now",
       plans: [
         { billing: "monthly", price: "$497", period: "/ month", note: "Paid monthly" },
         { billing: "annual", price: "$397", period: "/ month", note: "Billed $4,764 annually · save $1,200" },
       ],
     },
     cta: {
-      kicker: "Or just call her.",
-      h2: "She will answer this phone, in this moment, in English or Spanish.",
+      kicker: "Or just call the line.",
+      h2: "Capta will answer this phone, in this moment, in English or Spanish.",
       sub: "Two weeks free. Cancel with one text. Your number stays yours.",
       callLabel: "Call the live line",
       startFree: "Start 14-day free trial",
@@ -247,7 +224,7 @@ const COPY: Record<Lang, Copy> = {
     hero: {
       kicker: "La recepcionista bilingüe",
       h1a: "Suena tu teléfono.",
-      h1b: "Ella contesta.",
+      h1b: "Capta contesta.",
       sub:
         "Capta es una recepcionista IA bilingüe que agenda tus trabajos, recupera tus llamadas perdidas, y maneja tu oficina desde mensajes de texto. Contesta cada llamada, en inglés o español, por $497 al mes.",
       priceLabel: "Tarifa fija, llamadas ilimitadas",
@@ -255,37 +232,25 @@ const COPY: Record<Lang, Copy> = {
       pricePeriod: "/ mes",
       priceAside: "Sin cobro por minuto. Cancela con un mensaje.",
       primaryCta: "Comienza tu prueba gratis de 14 días",
-      secondaryCta: "O llama a la línea — vas a hablar con Maria",
+      secondaryCta: "O llama a la línea — Capta está activo",
       phone: PHONE,
       phoneHref: PHONE_TEL,
       trust: ["Prueba de 14 días", "Sin cobro por minuto", "Cancela con un mensaje"],
     },
     demo: {
-      kicker: "Pruébala en vivo",
-      h2: "Llama al número. Contesta.",
+      kicker: "Prueba Capta en vivo",
+      h2: "Llama al número. Capta contesta.",
       sub:
-        "Esta es la forma más limpia de evaluar Capta. Llama a la línea de abajo y habla con Maria como si fueras un cliente. Contesta en menos de dos timbres. Vas a saber en un minuto si esto es real.",
+        "Esta es la forma más limpia de evaluar Capta. Llama a la línea de abajo y habla con Capta como si fueras un cliente. Contesta en menos de dos timbres. Vas a saber en un minuto si esto es real.",
       primary: "Comienza tu prueba gratis de 14 días",
       secondary: "O pide una auditoría gratis",
       note: "Disponible 24/7 en inglés y español. Tu llamada se dirige a nuestra línea demo.",
-    },
-    proof: {
-      kicker: "Clientes",
-      h2: "Honestos sobre dónde estamos.",
-      sub:
-        "Somos un equipo pequeño enviando a un grupo pequeño pero creciente de contratistas en Texas. Abajo está el estado actual — no un muro pulido de testimonios.",
-      earlyLabel: "Programa de clientes tempranos",
-      earlyH: "Habla con uno de nuestros contratistas antes de comprar.",
-      earlyBody:
-        "Te conectamos con un cliente actual en tu oficio — plomería, HVAC, eléctrico, techos, o general — y puedes preguntarle lo que quieras. Sin pitch de ventas, sin filtro, sin guion. Lo único que pedimos es que hagas lo mismo por el siguiente contratista en la fila si te vuelves cliente.",
-      earlyCta: "Solicitar llamada de referencia",
-      earlyCtaHref: "mailto:hello@captahq.com?subject=Solicitud%20de%20llamada%20de%20referencia",
     },
     sms: {
       kicker: "Maneja la oficina por SMS",
       h2: "Despacha. Factura. Agenda. Un mensaje.",
       sub:
-        "Una vez que entra una llamada, Maria te manda la tarjeta de trabajo. Respondes con la acción — confirmar, reasignar, llamar de regreso — y ella lo maneja. Abajo hay un ejemplo del hilo que verías.",
+        "Una vez que entra una llamada, Capta te manda la tarjeta de trabajo. Respondes con la acción — confirmar, reasignar, llamar de regreso — y Capta lo maneja. Abajo hay un ejemplo del hilo que verías.",
       maria: "Maria",
       mariaRole: "Recepcionista IA · Inglés y español",
       thread: [
@@ -348,15 +313,15 @@ const COPY: Record<Lang, Copy> = {
         "Llamadas y SMS ilimitados — sin cobro por minuto",
       ],
       guarantee: "14 días gratis. Cancela con un mensaje. Sigue solo si está generando su pago.",
-      callNow: "Llámale ahora",
+      callNow: "Llama a Capta",
       plans: [
         { billing: "monthly", price: "$497", period: "/ mes", note: "Pago mensual" },
         { billing: "annual", price: "$397", period: "/ mes", note: "Facturado $4,764 al año · ahorra $1,200" },
       ],
     },
     cta: {
-      kicker: "O simplemente llámale.",
-      h2: "Ella contestará este teléfono, en este momento, en inglés o español.",
+      kicker: "O simplemente llama a la línea.",
+      h2: "Capta contestará este teléfono, en este momento, en inglés o español.",
       sub: "Dos semanas gratis. Cancela con un mensaje. Tu número sigue siendo tuyo.",
       callLabel: "Llama a la línea",
       startFree: "Comenzar prueba gratis de 14 días",
@@ -402,10 +367,7 @@ export default function LandingPage({
 
       <main id="main">
         <Hero t={t} />
-        <TrustStrip lang={lang} />
         <DemoBand t={t} />
-        <Rule />
-        <ProofBand t={t} />
         <Rule />
         <SmsBand t={t} />
         <Rule />
@@ -653,62 +615,6 @@ function DemoBand({ t }: { t: Copy }) {
                   {t.demo.secondary} →
                 </a>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   PROOF — honest early-stage framing
-   ═══════════════════════════════════════════════════════════════ */
-
-function ProofBand({ t }: { t: Copy }) {
-  return (
-    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-28">
-      <div className="grid gap-10 lg:grid-cols-12 lg:items-start">
-        <div className="lg:col-span-5">
-          <Kicker>{t.proof.kicker}</Kicker>
-          <DisplayH2 style={{ marginTop: 20 }}>{t.proof.h2}</DisplayH2>
-          <p style={{ fontSize: 17, lineHeight: 1.6, color: C.inkMuted, marginTop: 20, maxWidth: 420 }}>
-            {t.proof.sub}
-          </p>
-        </div>
-
-        <div className="lg:col-span-7">
-          <div
-            style={{
-              border: `1px solid ${C.ink}`,
-              background: C.paper,
-              padding: "32px 32px 36px",
-              borderTop: `3px solid ${C.amber}`,
-            }}
-          >
-            <div style={{ fontSize: 11, letterSpacing: "0.22em", color: C.inkMuted, fontWeight: 700, textTransform: "uppercase" }}>
-              {t.proof.earlyLabel}
-            </div>
-            <h3
-              style={{
-                fontFamily: "var(--font-fraunces), Georgia, serif",
-                fontSize: 30,
-                lineHeight: 1.15,
-                fontWeight: 500,
-                color: C.ink,
-                marginTop: 12,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              {t.proof.earlyH}
-            </h3>
-            <p style={{ fontSize: 16, lineHeight: 1.7, color: C.inkMuted, marginTop: 16 }}>
-              {t.proof.earlyBody}
-            </p>
-            <div className="mt-8">
-              <PrimaryButton href={t.proof.earlyCtaHref} size="lg">
-                {t.proof.earlyCta}
-              </PrimaryButton>
             </div>
           </div>
         </div>

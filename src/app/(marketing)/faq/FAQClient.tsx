@@ -19,7 +19,6 @@ import {
   FieldFooter,
   DisplayH1,
   DisplayH2,
-  TrustStrip,
   SkipLink,
 } from "@/components/marketing/field";
 
@@ -55,12 +54,12 @@ const COPY: Record<Lang, Copy> = {
             a: "No. You keep your number. Call-forwarding takes about two minutes with any carrier — we send you the exact dial codes during setup.",
           },
           {
-            q: "What does Maria sound like?",
+            q: "What does Capta sound like?",
             a: "Human. Indistinguishable from a thoughtful receptionist on a good call day. We use ElevenLabs voice synthesis tuned specifically for trades vocabulary.",
           },
           {
             q: "How long does setup take?",
-            a: "About fifteen minutes. Seven steps: business info, hours, services, receptionist name, voice, trade-specific questions, payment. She's live the moment you forward your number.",
+            a: "About fifteen minutes. Seven steps: business info, hours, services, receptionist name, voice, trade-specific questions, payment. Capta is live the moment you forward your number.",
           },
         ],
       },
@@ -70,7 +69,7 @@ const COPY: Record<Lang, Copy> = {
         items: [
           {
             q: "Is the 14-day trial actually free?",
-            a: "Yes. Card on file, but no charge for 14 days. Cancel by texting the word cancel to the number we give you. You keep any leads she booked.",
+            a: "Yes. Card on file, but no charge for 14 days. Cancel by texting the word cancel to the number we give you. You keep any leads Capta booked.",
           },
           {
             q: "Is there a per-minute charge?",
@@ -78,7 +77,7 @@ const COPY: Record<Lang, Copy> = {
           },
           {
             q: "What if I have multiple locations?",
-            a: "One plan per location. We can set up multi-location billing with a call — each location gets its own Maria, trained on its own trade, hours, and service area.",
+            a: "One plan per location. We can set up multi-location billing with a call — each location gets its own dedicated Capta instance, trained on its own trade, hours, and service area.",
           },
           {
             q: "Do you offer refunds after the trial?",
@@ -88,27 +87,27 @@ const COPY: Record<Lang, Copy> = {
       },
       {
         num: "03",
-        title: "What she can do",
+        title: "What Capta can do",
         items: [
           {
-            q: "Can she book into my calendar?",
-            a: "Yes. We connect Google Calendar during setup. Maria sees real-time availability and never double-books. Outlook support coming Q2 2026.",
+            q: "Can Capta book into my calendar?",
+            a: "Yes. We connect Google Calendar during setup. Capta sees real-time availability and never double-books. Outlook support is on the roadmap.",
           },
           {
-            q: "Can she handle emergencies?",
-            a: "Yes. She detects emergency language (\"water through ceiling,\" \"no AC with a baby,\" etc.) and escalates to your on-call tech by SMS inside the same minute.",
+            q: "Can Capta handle emergencies?",
+            a: "Yes. Capta detects emergency language (\"water through ceiling,\" \"no AC with a baby,\" etc.) and escalates to your on-call tech by SMS inside the same minute.",
           },
           {
-            q: "Can she send estimates?",
-            a: "Yes. We train her on your pricing during setup — either ballpark ranges per service, or a full calculation engine with base rates and add-ons. She sends the estimate via SMS before the caller hangs up.",
+            q: "Can Capta send estimates?",
+            a: "Yes. We train Capta on your pricing during setup — either ballpark ranges per service, or a full calculation engine with base rates and add-ons. The estimate goes via SMS before the caller hangs up.",
           },
           {
-            q: "Will she transfer calls to me?",
-            a: "Yes, if a caller needs a human in that moment and you've set a transfer number. She bridges the call cleanly. No hold music.",
+            q: "Will Capta transfer calls to me?",
+            a: "Yes, if a caller needs a human in that moment and you've set a transfer number. Capta bridges the call cleanly. No hold music.",
           },
           {
-            q: "Can I text her to run the office?",
-            a: "Yes. Dispatch techs, send invoices, check the schedule, approve estimates, see stats — all by texting Maria back. The full manual is at /platform.",
+            q: "Can I text Capta to run the office?",
+            a: "Yes. Dispatch techs, send invoices, check the schedule, approve estimates, see stats — all by texting back. The full manual is at /platform.",
           },
         ],
       },
@@ -117,11 +116,11 @@ const COPY: Record<Lang, Copy> = {
         title: "Spanish + bilingual",
         items: [
           {
-            q: "How does she switch languages?",
-            a: "She detects the caller's language on their very first word and responds in kind. Same phone number. Same Maria. No separate line, no menu, no press-1-for-English.",
+            q: "How does Capta switch languages?",
+            a: "Capta detects the caller's language on their very first word and responds in kind. Same phone number. No separate line, no menu, no press-1-for-English.",
           },
           {
-            q: "Does she speak Mexican Spanish or South American?",
+            q: "Does Capta speak Mexican Spanish or South American?",
             a: "We tune for the region you tell us. Default is Mexican Spanish for Texas contractors. If you serve a different community, we retune the vocabulary and idioms during setup.",
           },
           {
@@ -172,19 +171,19 @@ const COPY: Record<Lang, Copy> = {
         items: [
           {
             q: "¿Cómo funciona Capta?",
-            a: "Desvías tu número actual al número de Twilio dedicado que te damos. Cada llamada va a Maria, quien contesta en inglés o español según la primera palabra del llamante, toma los detalles, agenda en tu calendario, y te manda una tarjeta de trabajo por SMS al segundo que termina la llamada.",
+            a: "Desvías tu número actual al número de Twilio dedicado que te damos. Cada llamada va a Capta, que contesta en inglés o español según la primera palabra del llamante, toma los detalles, agenda en tu calendario, y te manda una tarjeta de trabajo por SMS al segundo que termina la llamada.",
           },
           {
             q: "¿Tengo que portar mi número?",
             a: "No. Te quedas con tu número. El desvío toma unos dos minutos con cualquier operador — te mandamos los códigos exactos durante la instalación.",
           },
           {
-            q: "¿Cómo suena Maria?",
+            q: "¿Cómo suena Capta?",
             a: "Humana. Indistinguible de una recepcionista atenta en un buen día. Usamos síntesis de voz de ElevenLabs afinada específicamente para vocabulario de oficios.",
           },
           {
             q: "¿Cuánto tarda la instalación?",
-            a: "Unos quince minutos. Siete pasos: información del negocio, horas, servicios, nombre de la recepcionista, voz, preguntas del oficio, pago. Está en vivo al momento que desvías tu número.",
+            a: "Unos quince minutos. Siete pasos: información del negocio, horas, servicios, nombre de la recepcionista, voz, preguntas del oficio, pago. Capta está en vivo al momento que desvías tu número.",
           },
         ],
       },
@@ -202,7 +201,7 @@ const COPY: Record<Lang, Copy> = {
           },
           {
             q: "¿Qué pasa si tengo varias ubicaciones?",
-            a: "Un plan por ubicación. Podemos configurar facturación multi-ubicación con una llamada — cada ubicación recibe su propia Maria, entrenada en su propio oficio, horas, y área de servicio.",
+            a: "Un plan por ubicación. Podemos configurar facturación multi-ubicación con una llamada — cada ubicación recibe su propio Capta, entrenado en su propio oficio, horas, y área de servicio.",
           },
           {
             q: "¿Dan reembolsos después de la prueba?",
@@ -216,23 +215,23 @@ const COPY: Record<Lang, Copy> = {
         items: [
           {
             q: "¿Puede agendar en mi calendario?",
-            a: "Sí. Conectamos Google Calendar durante la instalación. Maria ve disponibilidad en tiempo real y nunca agenda doble. Soporte de Outlook viene en Q2 2026.",
+            a: "Sí. Conectamos Google Calendar durante la instalación. Capta ve disponibilidad en tiempo real y nunca agenda doble. Soporte de Outlook está en el roadmap.",
           },
           {
             q: "¿Puede manejar emergencias?",
-            a: "Sí. Detecta lenguaje de emergencia (\"agua por el techo\", \"sin aire con un bebé\", etc.) y escala al técnico de guardia por SMS en el mismo minuto.",
+            a: "Sí. Capta detecta lenguaje de emergencia (\"agua por el techo\", \"sin aire con un bebé\", etc.) y escala al técnico de guardia por SMS en el mismo minuto.",
           },
           {
             q: "¿Puede mandar estimados?",
-            a: "Sí. La entrenamos con tus precios durante la instalación — ya sea rangos aproximados por servicio, o un motor de cálculo completo con tarifas base y adicionales. Manda el estimado por SMS antes de que el cliente cuelgue.",
+            a: "Sí. Entrenamos a Capta con tus precios durante la instalación — ya sea rangos aproximados por servicio, o un motor de cálculo completo con tarifas base y adicionales. Manda el estimado por SMS antes de que el cliente cuelgue.",
           },
           {
             q: "¿Va a transferir llamadas a mí?",
-            a: "Sí, si un cliente necesita una persona en ese momento y configuraste un número de transferencia. Puentea la llamada limpiamente. Sin música de espera.",
+            a: "Sí, si un cliente necesita una persona en ese momento y configuraste un número de transferencia. Capta puentea la llamada limpiamente. Sin música de espera.",
           },
           {
             q: "¿Puedo escribirle para manejar la oficina?",
-            a: "Sí. Despacha técnicos, manda facturas, revisa la agenda, aprueba estimados, ve estadísticas — todo escribiéndole a Maria. El manual completo está en /platform.",
+            a: "Sí. Despacha técnicos, manda facturas, revisa la agenda, aprueba estimados, ve estadísticas — todo escribiéndole a Capta. El manual completo está en /platform.",
           },
         ],
       },
@@ -242,11 +241,11 @@ const COPY: Record<Lang, Copy> = {
         items: [
           {
             q: "¿Cómo cambia idiomas?",
-            a: "Detecta el idioma del llamante en la primera palabra y responde en consecuencia. Mismo número de teléfono. Misma Maria. Sin línea separada, sin menú, sin presione-1-para-español.",
+            a: "Capta detecta el idioma del llamante en la primera palabra y responde en consecuencia. Mismo número de teléfono. Sin línea separada, sin menú, sin presione-1-para-español.",
           },
           {
             q: "¿Habla español mexicano o sudamericano?",
-            a: "La afinamos para la región que nos digas. Por defecto es español mexicano para contratistas de Texas. Si sirves a otra comunidad, re-afinamos el vocabulario y las expresiones durante la instalación.",
+            a: "Lo afinamos para la región que nos digas. Por defecto es español mexicano para contratistas de Texas. Si sirves a otra comunidad, re-afinamos el vocabulario y las expresiones durante la instalación.",
           },
           {
             q: "¿Las llamadas en español reciben las mismas funciones?",
@@ -325,8 +324,6 @@ export default function FAQClient({ initialLang }: { initialLang?: Lang } = {}) 
       <FieldNav lang={lang} toggleLang={toggleLang} phone={PHONE} phoneHref={PHONE_TEL} />
 
       <main id="main">
-      <TrustStrip lang={lang} />
-
       {/* Hero */}
       <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-16 sm:pt-20 sm:pb-20">
         <div className="max-w-3xl">

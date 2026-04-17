@@ -19,7 +19,6 @@ import {
   FieldFooter,
   DisplayH1,
   DisplayH2,
-  TrustStrip,
   SkipLink,
 } from "@/components/marketing/field";
 
@@ -58,11 +57,11 @@ const COPY: Record<Lang, Copy> = {
         title: "Answering",
         kicker: "Every call. In any language. Immediately.",
         features: [
-          { label: "01", title: "Bilingual voice", desc: "Maria detects the caller's language on the first word and answers in English or Spanish. Same phone, same Maria, no separate line." },
-          { label: "02", title: "24 / 7 coverage", desc: "She answers after hours, on weekends, during holidays, during jobs. Every call. No voicemail." },
-          { label: "03", title: "Trade-aware intake", desc: "She knows HVAC from plumbing from electrical. Asks the right questions, captures the right details." },
+          { label: "01", title: "Bilingual voice", desc: "Capta detects the caller's language on the first word and answers in English or Spanish. Same phone, same receptionist, no separate line." },
+          { label: "02", title: "24 / 7 coverage", desc: "Capta answers after hours, on weekends, during holidays, during jobs. Every call. No voicemail." },
+          { label: "03", title: "Trade-aware intake", desc: "Capta knows HVAC from plumbing from electrical. Asks the right questions, captures the right details." },
           { label: "04", title: "Emergency detection", desc: "Detects \"no AC with a baby\" or \"water through the ceiling\" and escalates to your on-call tech the same minute." },
-          { label: "05", title: "Live transfer", desc: "If a caller needs a human right now, she bridges the call to your phone cleanly. No hold music." },
+          { label: "05", title: "Live transfer", desc: "If a caller needs a human right now, Capta bridges the call to your phone cleanly. No hold music." },
           { label: "06", title: "Job-card SMS", desc: "Every call that converts becomes a one-tap text to you with name, address, service, and estimate range." },
         ],
       },
@@ -72,9 +71,9 @@ const COPY: Record<Lang, Copy> = {
         title: "Run the office",
         kicker: "Dispatch, invoice, schedule — by text.",
         features: [
-          { label: "07", title: "Text-to-dispatch", desc: "\"Send Mike to the 2pm emergency\" — she notifies the tech, sends the address, confirms receipt." },
+          { label: "07", title: "Text-to-dispatch", desc: "\"Send Mike to the 2pm emergency\" — Capta notifies the tech, sends the address, confirms receipt." },
           { label: "08", title: "Text-to-invoice", desc: "\"$450 to Garcia for today's job\" — invoice sent via SMS with a payment link. Due in 30." },
-          { label: "09", title: "Text-to-schedule", desc: "\"What's on Thursday?\" — she reads back the day in one message. Move jobs by text." },
+          { label: "09", title: "Text-to-schedule", desc: "\"What's on Thursday?\" — Capta reads back the day in one message. Move jobs by text." },
           { label: "10", title: "Morning briefing", desc: "Daily SMS at the hour you pick. Today's jobs, yesterday's close rate, this week's outstanding estimates." },
           { label: "11", title: "Weekly digest", desc: "Friday: calls answered, appointments booked, revenue, after-hours catch, language mix, win rate." },
           { label: "12", title: "Monthly ROI", desc: "First of the month: what Capta made you, what it would have cost to get it another way." },
@@ -88,10 +87,10 @@ const COPY: Record<Lang, Copy> = {
         features: [
           { label: "13", title: "Missed-call recovery", desc: "Any call under 15 seconds gets a personalized SMS within 60 seconds: \"Sorry we missed you — what can we help with?\"" },
           { label: "14", title: "Estimate follow-up", desc: "Three-step drip to quoted leads who didn't book. Stops the moment they respond or book." },
-          { label: "15", title: "Callback scheduler", desc: "When Maria can't close, she schedules you a callback window the caller committed to." },
+          { label: "15", title: "Callback scheduler", desc: "When Capta can't close, it schedules you a callback window the caller committed to." },
           { label: "16", title: "Review requests", desc: "Automatic Google review ask after completed jobs. Negative reviews routed to you before they post." },
           { label: "17", title: "Seasonal re-engagement", desc: "Contacts past customers before their trade's peak season. AC tune-ups in March. Drain cleaning in November." },
-          { label: "18", title: "Customer recall", desc: "If a customer hasn't been back in 12 months, Maria reaches out with the service they last bought." },
+          { label: "18", title: "Customer recall", desc: "If a customer hasn't been back in 12 months, Capta reaches out with the service they last bought." },
         ],
       },
       {
@@ -100,7 +99,7 @@ const COPY: Record<Lang, Copy> = {
         title: "Close new customers",
         kicker: "Captured, qualified, booked.",
         features: [
-          { label: "19", title: "Google Calendar sync", desc: "Real-time availability — Maria books into your calendar live, never double-books." },
+          { label: "19", title: "Google Calendar sync", desc: "Real-time availability — Capta books into your calendar live, never double-books." },
           { label: "20", title: "Customer CRM", desc: "Every caller becomes a record: name, phone, language, lifetime value, last 10 calls, notes." },
           { label: "21", title: "Lead scoring", desc: "Hot / warm / cold scored on call content, job size, urgency, and past customer value." },
           { label: "22", title: "Referral program", desc: "Automated partner referrals — plumbers send HVAC leads, electricians send plumbing leads." },
@@ -135,7 +134,7 @@ const COPY: Record<Lang, Copy> = {
         title: "Contestar",
         kicker: "Cada llamada. En cualquier idioma. Inmediatamente.",
         features: [
-          { label: "01", title: "Voz bilingüe", desc: "Maria detecta el idioma del llamante en la primera palabra y contesta en inglés o español. Mismo teléfono, misma Maria, sin línea separada." },
+          { label: "01", title: "Voz bilingüe", desc: "Capta detecta el idioma del llamante en la primera palabra y contesta en inglés o español. Mismo teléfono, mismo número, sin línea separada." },
           { label: "02", title: "Cobertura 24 / 7", desc: "Contesta fuera de horario, fines de semana, días festivos, durante los trabajos. Cada llamada. Sin buzón de voz." },
           { label: "03", title: "Admisión por oficio", desc: "Conoce HVAC de plomería de eléctrico. Hace las preguntas correctas, captura los detalles correctos." },
           { label: "04", title: "Detección de emergencias", desc: "Detecta \"sin aire con un bebé\" o \"agua por el techo\" y escala al técnico de guardia en el mismo minuto." },
@@ -165,7 +164,7 @@ const COPY: Record<Lang, Copy> = {
         features: [
           { label: "13", title: "Recuperación de llamada perdida", desc: "Cualquier llamada menor a 15 segundos recibe un SMS personalizado en 60 segundos: \"Disculpa que no pudimos contestar — ¿en qué te ayudamos?\"" },
           { label: "14", title: "Seguimiento de estimado", desc: "Secuencia de tres pasos a clientes cotizados que no agendaron. Para en el momento que responden o agendan." },
-          { label: "15", title: "Agendar llamada de vuelta", desc: "Cuando Maria no puede cerrar, te agenda una ventana de llamada que el cliente aceptó." },
+          { label: "15", title: "Agendar llamada de vuelta", desc: "Cuando Capta no puede cerrar, te agenda una ventana de llamada que el cliente aceptó." },
           { label: "16", title: "Solicitudes de reseña", desc: "Pide reseña en Google automática después de trabajos terminados. Reseñas negativas se enrutan a ti antes de publicar." },
           { label: "17", title: "Re-compromiso estacional", desc: "Contacta a clientes pasados antes de la temporada alta de su oficio. Mantenimientos de AC en marzo. Limpieza de drenajes en noviembre." },
           { label: "18", title: "Recuerdo de cliente", desc: "Si un cliente no ha vuelto en 12 meses, Maria contacta con el servicio que compró la última vez." },
@@ -224,7 +223,6 @@ export default function PlatformClient({ initialLang }: { initialLang?: Lang } =
 
       <main id="main">
       <Hero t={t} />
-      <TrustStrip lang={lang} />
 
       <section className="mx-auto max-w-[1280px] px-6 sm:px-10 py-16 sm:py-24">
         <div

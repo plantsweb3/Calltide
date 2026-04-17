@@ -19,7 +19,6 @@ import {
   DisplayH1,
   DisplayH2,
   Serif,
-  TrustStrip,
   SkipLink,
 } from "@/components/marketing/field";
 
@@ -295,8 +294,6 @@ export function PlaybookLanding({ initialLang }: { initialLang?: Lang } = {}) {
       <FieldNav lang={lang} toggleLang={toggleLang} phone={PHONE} phoneHref={PHONE_TEL} />
 
       <main id="main">
-      <TrustStrip lang={lang} />
-
       {/* Hero */}
       <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-20 sm:pt-20 sm:pb-24">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
