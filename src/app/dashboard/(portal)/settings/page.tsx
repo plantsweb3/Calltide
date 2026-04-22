@@ -521,19 +521,35 @@ export default function SettingsPage() {
         </div>
         <div className="flex items-center gap-3">
           {isDirty && (
-            <span style={{ color: "var(--db-warning)", fontSize: 13 }}>
+            <span
+              className="pl-2"
+              style={{
+                color: "var(--db-warning)",
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                borderLeft: "2px solid var(--db-warning)",
+              }}
+            >
               {lang === "es" ? "Cambios sin guardar" : "Unsaved changes"}
             </span>
           )}
           <button
             onClick={handleSave}
             disabled={!isDirty || saving}
-            className="rounded-lg px-5 py-2.5 text-sm font-medium transition-all"
+            className="px-5 py-2.5 transition-all"
             style={{
               background: isDirty ? "var(--db-accent)" : "var(--db-hover)",
-              color: isDirty ? "#fff" : "var(--db-text-muted)",
+              color: isDirty ? "var(--db-bg)" : "var(--db-text-muted)",
               cursor: isDirty && !saving ? "pointer" : "not-allowed",
-              opacity: isDirty ? 1 : 0.6,
+              opacity: isDirty ? 1 : 0.55,
+              borderRadius: 4,
+              fontSize: 14,
+              fontWeight: 800,
+              letterSpacing: "-0.005em",
+              border: `1px solid ${isDirty ? "var(--db-accent)" : "transparent"}`,
+              minHeight: 44,
             }}
           >
             {saving ? (
@@ -547,6 +563,61 @@ export default function SettingsPage() {
           </button>
         </div>
       </div>
+
+      {/* Sticky save bar — surfaces Save when the user is scrolling deep */}
+      {isDirty && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 16,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 40,
+            background: "var(--db-card)",
+            border: "1px solid var(--db-accent)",
+            borderRadius: 4,
+            padding: "10px 14px",
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            boxShadow: "0 12px 32px rgba(0,0,0,0.15)",
+            pointerEvents: "auto",
+          }}
+          role="status"
+          aria-live="polite"
+        >
+          <span
+            style={{
+              fontSize: 11,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "var(--db-accent)",
+              fontWeight: 800,
+            }}
+          >
+            {lang === "es" ? "Cambios pendientes" : "Unsaved changes"}
+          </span>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            style={{
+              background: "var(--db-accent)",
+              color: "var(--db-bg)",
+              padding: "8px 16px",
+              borderRadius: 4,
+              fontSize: 13,
+              fontWeight: 800,
+              letterSpacing: "-0.005em",
+              cursor: saving ? "not-allowed" : "pointer",
+              opacity: saving ? 0.55 : 1,
+              border: "1px solid var(--db-accent)",
+              minHeight: 40,
+            }}
+          >
+            {saving ? t("settings.saving", lang) : t("settings.save", lang)}
+          </button>
+        </div>
+      )}
 
       {/* Success Banner */}
       {successMsg && (
@@ -621,7 +692,7 @@ export default function SettingsPage() {
       {activeTab === "general" && <>
 
       {/* ── Section: Business Information ── */}
-      <Card title={t("settings.businessInfo", lang)}>
+      <Card serial="01" title={t("settings.businessInfo", lang)}>
         <div className="grid gap-4 sm:grid-cols-2">
           <InputField
             label={t("settings.businessName", lang)}
@@ -703,7 +774,7 @@ export default function SettingsPage() {
       {activeTab === "receptionist" && <>
 
       {/* ── Section: Your Receptionist ── */}
-      <Card title={t("settings.yourReceptionist", lang)}>
+      <Card serial="02" title={t("settings.yourReceptionist", lang)}>
         <div className="space-y-4">
           <InputField
             label={t("settings.receptionistNameField", lang)}
@@ -739,7 +810,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Voice ── */}
-      <Card title={t("settings.voiceTitle", lang, { name: rName })}>
+      <Card serial="03" title={t("settings.voiceTitle", lang, { name: rName })}>
         <p className="text-sm mb-3" style={{ color: "var(--db-text-muted)" }}>
           {t("settings.voiceDesc", lang, { name: rName })}
         </p>
@@ -775,7 +846,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Special Instructions ── */}
-      <Card title={t("settings.specialInstructionsTitle", lang, { name: rName })}>
+      <Card serial="04" title={t("settings.specialInstructionsTitle", lang, { name: rName })}>
         <p className="text-sm mb-3" style={{ color: "var(--db-text-muted)" }}>
           {t("settings.specialInstructionsDesc", lang, { name: rName })}
         </p>
@@ -801,7 +872,7 @@ export default function SettingsPage() {
       {activeTab === "general" && <>
 
       {/* ── Section: Owner Contact ── */}
-      <Card title={t("settings.ownerContact", lang)}>
+      <Card serial="05" title={t("settings.ownerContact", lang)}>
         <div className="grid gap-4 sm:grid-cols-2">
           <InputField
             label={t("settings.ownerName", lang)}
@@ -836,7 +907,7 @@ export default function SettingsPage() {
       <SecuritySection lang={lang} />
 
       {/* ── Section: Weekly Digest ── */}
-      <Card title={t("settings.weeklyDigest", lang)}>
+      <Card serial="06" title={t("settings.weeklyDigest", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
             {t("settings.weeklyDigestLong", lang)}
@@ -885,7 +956,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Daily Report ── */}
-      <Card title={t("settings.dailyReport", lang)}>
+      <Card serial="07" title={t("settings.dailyReport", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
             {t("settings.dailySummaryDesc", lang, { name: data.receptionistName || "Maria" })}
@@ -951,7 +1022,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Automations ── */}
-      <Card title={t("settings.automatedFeatures", lang)}>
+      <Card serial="08" title={t("settings.automatedFeatures", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
             {t("settings.automatedFeaturesDesc", lang)}
@@ -981,7 +1052,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Call Notifications ── */}
-      <Card title={t("settings.callNotifications", lang)}>
+      <Card serial="09" title={t("settings.callNotifications", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
             {t("settings.callNotificationsDesc", lang)}
@@ -1057,7 +1128,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Quiet Hours ── */}
-      <Card title={t("settings.quietHours", lang)}>
+      <Card serial="10" title={t("settings.quietHours", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
             {t("settings.quietHoursDesc", lang)}
@@ -1104,7 +1175,7 @@ export default function SettingsPage() {
       {activeTab === "integrations" && <>
 
       {/* ── Section: Google Review Requests ── */}
-      <Card title={t("settings.googleReviewRequests", lang)}>
+      <Card serial="11" title={t("settings.googleReviewRequests", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
             {t("settings.googleReviewAutoDesc", lang)}
@@ -1150,7 +1221,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Missed Call Recovery ── */}
-      <Card title={t("settings.missedCallRecovery", lang)}>
+      <Card serial="12" title={t("settings.missedCallRecovery", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
             {t("settings.missedCallRecoveryAutoDesc", lang)}
@@ -1184,7 +1255,7 @@ export default function SettingsPage() {
       {activeTab === "general" && <>
 
       {/* ── Section: Business Hours ── */}
-      <Card title={t("settings.businessHours", lang)}>
+      <Card serial="13" title={t("settings.businessHours", lang)}>
         <div className="space-y-3">
           {DAY_KEYS.map((day) => {
             const hours = data.businessHours[day];
@@ -1244,7 +1315,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Services ── */}
-      <Card title={t("settings.servicesCanBook", lang)}>
+      <Card serial="14" title={t("settings.servicesCanBook", lang)}>
         <div className="flex flex-wrap gap-2 mb-3">
           {data.services.map((service, i) => (
             <span
@@ -1304,7 +1375,7 @@ export default function SettingsPage() {
       {activeTab === "integrations" && <>
 
       {/* ── Section: Service Pricing ── */}
-      <Card title={t("settings.servicePricing", lang)}>
+      <Card serial="15" title={t("settings.servicePricing", lang)}>
         <div className="space-y-4">
           {/* Master toggle */}
           <div className="flex items-center justify-between">
@@ -1569,7 +1640,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Import Data ── */}
-      <Card title={t("settings.importData", lang)}>
+      <Card serial="16" title={t("settings.importData", lang)}>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm" style={{ color: "var(--db-text)" }}>
@@ -1595,7 +1666,7 @@ export default function SettingsPage() {
       {activeTab === "receptionist" && <>
 
       {/* ── Section: Greeting ── */}
-      <Card title={t("settings.greetingTitle", lang, { name: rName })}>
+      <Card serial="17" title={t("settings.greetingTitle", lang, { name: rName })}>
         <div className="space-y-4">
           <div>
             <label className="db-label">
@@ -1680,7 +1751,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Language Preference ── */}
-      <Card title={t("settings.languagePreference", lang)}>
+      <Card serial="18" title={t("settings.languagePreference", lang)}>
         <div className="flex gap-4">
           {(["en", "es"] as const).map((langOpt) => (
             <label
@@ -1711,7 +1782,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Emergency Contact ── */}
-      <Card title={t("settings.emergencyContact", lang)}>
+      <Card serial="19" title={t("settings.emergencyContact", lang)}>
         <InputField
           label={t("settings.emergencyPhoneLabel", lang)}
           value={data.emergencyPhone || ""}
@@ -1726,7 +1797,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Train Your Receptionist ── */}
-      <Card title={t("settings.trainReceptionist", lang, { name: rName })}>
+      <Card serial="20" title={t("settings.trainReceptionist", lang, { name: rName })}>
         <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
           {t("settings.trainDesc", lang, { name: rName })}
         </p>
@@ -1864,7 +1935,7 @@ export default function SettingsPage() {
       {activeTab === "pricing" && <>
 
       {/* ── Section: Estimate Mode ── */}
-      <Card title={t("settings.estimateMode", lang)}>
+      <Card serial="21" title={t("settings.estimateMode", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
             {t("settings.estimateModeDesc", lang, { name: data?.receptionistName || "Maria" })}
@@ -1901,7 +1972,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── Section: Quick Pricing Ranges ── */}
-      <Card title={t("settings.pricingRanges", lang)}>
+      <Card serial="22" title={t("settings.pricingRanges", lang)}>
         <div className="space-y-4">
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
             {t("settings.pricingRangesDesc", lang, { name: data?.receptionistName || "Maria" })}
@@ -2047,7 +2118,7 @@ export default function SettingsPage() {
 
       {/* ── Section: Advanced Formula Builder ── */}
       {(estimateMode === "advanced" || estimateMode === "both") && (
-        <Card title={t("settings.advancedFormulas", lang)}>
+        <Card serial="23" title={t("settings.advancedFormulas", lang)}>
           <div className="space-y-4">
             <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>
               {t("settings.advancedFormulasDesc", lang)}
@@ -2643,7 +2714,7 @@ function OutboundSettingsSection({ lang }: { lang: Lang }) {
   if (!settings) return null;
 
   return (
-    <Card title={t("settings.outboundCalling", lang)}>
+    <Card serial="24" title={t("settings.outboundCalling", lang)}>
       <div className="space-y-4">
         {/* Master toggle */}
         <div className="flex items-center justify-between">
@@ -2976,7 +3047,7 @@ function SecuritySection({ lang }: { lang: Lang }) {
   }
 
   return (
-    <Card title={t("settings.security", lang)}>
+    <Card serial="25" title={t("settings.security", lang)}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -3202,7 +3273,7 @@ function DataExportSection({ lang }: { lang: Lang }) {
   ];
 
   return (
-    <Card title={t("settings.export.title", lang)}>
+    <Card serial="26" title={t("settings.export.title", lang)}>
       <p className="text-sm mb-4" style={{ color: "var(--db-text-muted)" }}>
         {t("settings.export.description", lang)}
       </p>
@@ -3330,7 +3401,7 @@ function GoogleCalendarSection({ lang }: { lang: Lang }) {
 
   if (loading) {
     return (
-      <Card title={t("settings.integrations", lang)}>
+      <Card serial="27" title={t("settings.integrations", lang)}>
         <div className="flex items-center gap-2">
           <CaptaSpinnerInline />
           <span className="text-sm" style={{ color: "var(--db-text-muted)" }}>{t("action.loading", lang)}</span>
@@ -3340,7 +3411,7 @@ function GoogleCalendarSection({ lang }: { lang: Lang }) {
   }
 
   return (
-    <Card title={t("settings.googleCalendar", lang)}>
+    <Card serial="28" title={t("settings.googleCalendar", lang)}>
       <div className="space-y-4">
         {status?.connected ? (
           <>

@@ -30,9 +30,9 @@ export default async function SubProcessorsPage() {
   } catch { /* static fallback */ }
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-14" style={{ background: "#FBFBFC" }}>
+    <main className="mx-auto max-w-4xl px-4 py-14" style={{ background: "#F8FAFC" }}>
       <div className="mb-2">
-        <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: "#1A1D24" }}>Sub-Processors</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: "#0F1729" }}>Sub-Processors</h1>
       </div>
       <p className="mb-8 text-sm leading-relaxed" style={{ color: "#64748B" }}>
         The following third-party service providers process data on behalf of Capta as part of delivering our AI receptionist platform.
@@ -56,7 +56,7 @@ export default async function SubProcessorsPage() {
                 className="border-t transition-colors hover:bg-gray-50/50"
                 style={{ borderColor: "#F1F5F9" }}
               >
-                <td className="px-5 py-4 font-semibold" style={{ color: "#1A1D24" }}>{proc.name}</td>
+                <td className="px-5 py-4 font-semibold" style={{ color: "#0F1729" }}>{proc.name}</td>
                 <td className="px-5 py-4" style={{ color: "#64748B" }}>{proc.purpose}</td>
                 <td className="px-5 py-4 hidden md:table-cell">
                   <div className="flex flex-wrap gap-1">
@@ -80,7 +80,7 @@ export default async function SubProcessorsPage() {
         </table>
       </div>
 
-      <p className="mt-6 text-xs" style={{ color: "#94A3B8" }}>
+      <p className="mt-6 text-xs" style={{ color: "#64748B" }}>
         Last reviewed: {lastReviewed
           ? new Date(lastReviewed).toLocaleDateString("en", { month: "long", day: "numeric", year: "numeric" })
           : new Date().toLocaleDateString("en", { month: "long", day: "numeric", year: "numeric" })}

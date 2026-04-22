@@ -22,15 +22,15 @@ export default async function PrivacyPage() {
   } catch { /* static fallback */ }
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-14" style={{ background: "#FBFBFC" }}>
+    <main className="mx-auto max-w-4xl px-4 py-14" style={{ background: "#F8FAFC" }}>
       <div className="mb-2">
-        <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: "#1A1D24" }}>Privacy Policy</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: "#0F1729" }}>Privacy Policy</h1>
       </div>
       <div className="mb-10 flex items-center gap-3">
-        <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: "rgba(197,154,39,0.1)", color: "#B8860B" }}>
+        <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: "rgba(197,154,39,0.1)", color: "#A17D1F" }}>
           v{version}
         </span>
-        <span className="text-sm" style={{ color: "#94A3B8" }}>
+        <span className="text-sm" style={{ color: "#64748B" }}>
           Effective {new Date(effectiveDate).toLocaleDateString("en", { month: "long", day: "numeric", year: "numeric" })}
         </span>
       </div>
