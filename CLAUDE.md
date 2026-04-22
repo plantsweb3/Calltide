@@ -126,17 +126,35 @@ npm run db:migrate   # Apply migrations
 
 ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers. 14-day free trial (card upfront).
 
-## Style
+## Style — Industrial direction (Brand Kit - March 2026)
 
-- Font: Inter only (no serifs)
-- Colors: Navy #1B2A4A, Gold #D4A843, Dark #0f1729
-- Tailwind + Lucide icons
-- Voice: "jobs" not "conversions", "answers your phone" not "handles inbound"
+Source of truth: `~/Desktop/HQ/Capta/Capta Brand Kit - Official.md` + `~/Desktop/HQ/Capta/Website Redesign Plan - March 2026.md`.
+
+**Homepage (`src/app/HomeClient.tsx`) uses the industrial aesthetic:**
+- **Palette:** Navy `#1B2A4A` (primary), Catch Gold `#D4A843` (accent — logo dot, CTAs, pricing numbers), Truck White `#F8FAFC` (light backgrounds), Midnight `#0F1729` (dark sections + body ink), Action Green `#16A34A` (success states only). No gradients, no drop shadows.
+- **Typography:** Inter weight 800/900 for display (Gotham-equivalent stand-in), Inter 400/500/600 for body, tabular-nums via `font-variant-numeric` for money/phone/timestamps. **No serif fonts.** Website Redesign Plan is explicit: "STRICT geometric sans-serif only... NO serif fonts anywhere. Non-negotiable."
+- **CTAs:** "Get Capta →" in gold (`#D4A843`) with Midnight text. **Never** "Start Free Trial" — the brand plan is explicit that at $497/mo this is a considered purchase. 14-day trial is messaged as a benefit near the CTA, not as the CTA itself.
+- **Motion:** static. No scroll reveals, no shimmer. Hover state = color transition only.
+- **Industrial components:** `src/components/marketing/industrial/DemoWidget.tsx` (the live ElevenLabs demo, navy/gold palette).
+
+**Other marketing pages (`/pricing`, `/platform`, `/about`, `/faq`, `/growth-playbook`, `/roi-calculator`, `/es/*`) currently use the Field Manual palette** (cream/amber/Fraunces) from an earlier session. These need to be migrated to the industrial direction to match the brand kit. Components live in `src/components/marketing/field/` — treat as legacy until migrated.
+
+**Dashboard + admin portal** keep the original dark-theme `--db-*` palette. Brand kit applies to marketing only.
+
+### Brand voice
+- Primary VP: **"Never miss a call again."**
+- Canonical pitch: **"She answers. She quotes. She follows up. You do the work."**
+- Archetype: The Expert Tradesman — technically deep, practically smart, earns trust through competence.
+- Lexicon: dispatch, estimate, job site, revenue, capture, crew, truck, off-hours.
+- Voice: "jobs" not "conversions", "answers your phone" not "handles inbound".
 
 ## Do NOT
 
-- Use serif fonts or dev metrics in UI
-- Add pricing tiers — single plan only
+- Use serif fonts anywhere in marketing (non-negotiable per Website Redesign Plan)
+- Use "Start Free Trial" as CTA copy — use "Get Capta →" in gold
+- Add gradients, glows, or drop shadows to brand elements (Brand Kit explicit)
+- Use dev metrics ("52 database tables", "155 API routes", "SOC 2") in user-facing UI
+- Add pricing tiers — single plan only: $497/mo or $4,764/yr
 - Lower the price below $497
 - Use "Get Capta →" — always "Start Free Trial →" / "Prueba Gratis →"
 

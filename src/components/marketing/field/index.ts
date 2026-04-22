@@ -13,6 +13,6 @@ export {
 } from "./atoms";
 export { FieldNav } from "./FieldNav";
 export { FieldFooter } from "./FieldFooter";
-export { TrustStrip } from "./TrustStrip";
 export { DemoCtaPair } from "./DemoCtaPair";
+export { FieldDemoWidget } from "./FieldDemoWidget";
 export { SkipLink } from "./SkipLink";

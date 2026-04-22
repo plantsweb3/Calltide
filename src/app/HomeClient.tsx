@@ -1,1274 +1,1633 @@
 "use client";
 
 /**
- * Capta homepage — workwear/software direction.
- * Cream paper, editorial serif display where warranted, tabular mono for
- * money, hairline rules. Honest claims. Zero fake testimonials, zero fake
- * metrics, zero magazine affectation.
+ * Capta homepage — brand-kit industrial aesthetic.
+ *
+ * Per Capta Brand Kit - Official (March 10, 2026) + Website Redesign
+ * Plan March 2026:
+ *  - Navy #1B2A4A + Catch Gold #D4A843 + Truck White #F8FAFC
+ *  - Inter bold/black for display (Gotham-equivalent); NO serifs
+ *  - Primary VP: "Never miss a call again"
+ *  - Gold "Get Capta →" CTAs (no "Start Free Trial" copy)
+ *  - 14-day free trial as benefit (no 30-day guarantee)
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { PHONE, PHONE_TEL, type Lang } from "@/lib/marketing/translations";
-import {
-  C,
-  Mono,
-  Kicker,
-  Rule,
-  PrimaryButton,
-  SecondaryButton,
-  FieldFrame,
-  FieldNav,
-  FieldFooter,
-  DisplayH1,
-  DisplayH2,
-  Serif,
-  DemoCtaPair,
-  SkipLink,
-} from "@/components/marketing/field";
 
-export type BlogPostPreview = {
-  slug: string;
-  title: string;
-  metaDescription: string | null;
-  category: string | null;
-  readingTimeMin: number | null;
-  publishedAt: string | null;
+// Demo widget is client-only (useConversation touches window).
+const IndustrialDemoWidget = dynamic(
+  () =>
+    import("@/components/marketing/industrial/DemoWidget").then(
+      (m) => m.IndustrialDemoWidget,
+    ),
+  { ssr: false },
+);
+
+/* ═══════════════════════════════════════════════════════════════════
+   PALETTE
+   ═══════════════════════════════════════════════════════════════════ */
+
+const C = {
+  navy: "#1B2A4A",
+  navyLight: "#263556",
+  midnight: "#0F1729",
+  gold: "#D4A843",
+  goldDark: "#A17D1F",
+  goldSoft: "#F5E6BC",
+  truck: "#F8FAFC",
+  white: "#FFFFFF",
+  ink: "#0F1729",
+  inkMuted: "#475569",
+  inkSoft: "#64748B",
+  border: "#E2E8F0",
+  borderSoft: "#F1F5F9",
+  green: "#16A34A",
 };
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════════
    BILINGUAL COPY
-   ═══════════════════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════════════ */
 
-type PricingPlan = {
-  billing: "monthly" | "annual";
-  price: string;
-  period: string;
-  note: string;
-};
-
-type ReplacesColumn = { label: string; cost: string; footnote: string; highlight?: boolean };
-type ReplacesRow = { label: string; values: (boolean | string)[] };
+type Feature = { title: string; body: string };
+type Step = { title: string; body: string };
+type FAQ = { q: string; a: string };
 
 type Copy = {
+  nav: {
+    platform: string;
+    pricing: string;
+    about: string;
+    faq: string;
+    blog: string;
+    login: string;
+    cta: string;
+  };
   hero: {
     kicker: string;
-    h1a: string;
-    h1b: string;
+    h1: string;
     sub: string;
-    priceLabel: string;
-    priceAmount: string;
-    pricePeriod: string;
-    priceAside: string;
-    primaryCta: string;
-    secondaryCta: string;
-    phone: string;
-    phoneHref: string;
-    trust: string[];
-  };
-  demo: {
-    kicker: string;
-    h2: string;
-    sub: string;
+    pitch: string;
     primary: string;
     secondary: string;
-    note: string;
+    orCall: string;
+    trust: string[];
   };
-  sms: {
+  problem: {
+    kicker: string;
+    h2a: string;
+    h2b: string;
+    stat1Num: string;
+    stat1Label: string;
+    stat2Num: string;
+    stat2Label: string;
+    body: string;
+    roiPre: string;
+    roiLink: string;
+  };
+  how: {
     kicker: string;
     h2: string;
     sub: string;
-    maria: string;
-    mariaRole: string;
-    thread: { from: "you" | "maria"; time: string; text: string }[];
-    exampleNote: string;
-    bullets: string[];
+    steps: Step[];
   };
-  replaces: {
+  features: {
     kicker: string;
     h2: string;
     sub: string;
-    optionHeader: string;
-    perMonth: string;
-    columns: ReplacesColumn[];
-    rows: ReplacesRow[];
-    footnoteLabel: string;
-    sourceNote: string;
+    items: Feature[];
+  };
+  demoSection: {
+    kicker: string;
+    h2: string;
+    sub: string;
   };
   pricing: {
     kicker: string;
     h2: string;
     sub: string;
-    perLocation: string;
-    monthlyTab: string;
-    annualTab: string;
-    included: string;
-    items: string[];
-    guarantee: string;
-    callNow: string;
-    plans: PricingPlan[];
+    price: string;
+    period: string;
+    annual: string;
+    includes: string[];
+    primary: string;
+    trial: string;
+    vsHuman: string;
+    vsHumanDetail: string;
   };
-  cta: { kicker: string; h2: string; sub: string; callLabel: string; startFree: string; bookDemo: string };
+  faq: {
+    kicker: string;
+    h2: string;
+    sub: string;
+    items: FAQ[];
+    more: string;
+  };
+  finalCta: {
+    kicker: string;
+    h2a: string;
+    h2b: string;
+    sub: string;
+    primary: string;
+    note: string;
+  };
+  footer: {
+    tagline: string;
+    product: string;
+    company: string;
+    legal: string;
+    compliance: string;
+    copyright: string;
+  };
 };
 
 const COPY: Record<Lang, Copy> = {
   en: {
+    nav: {
+      platform: "Platform",
+      pricing: "Pricing",
+      about: "About",
+      faq: "FAQ",
+      blog: "Blog",
+      login: "Log in",
+      cta: "Get Capta",
+    },
     hero: {
-      kicker: "The bilingual receptionist",
-      h1a: "Your phone rings.",
-      h1b: "Capta answers.",
+      kicker: "AI Receptionist for Home Service",
+      h1: "Never miss a call again.",
       sub:
-        "Capta is a bilingual AI receptionist that books your jobs, recovers your missed calls, and runs your front office from text messages. Answers every call, in English or Spanish, at $497 a month.",
-      priceLabel: "Flat rate, unlimited calls",
-      priceAmount: "$497",
-      pricePeriod: "/ month",
-      priceAside: "No per-minute billing. Cancel any time with a text.",
-      primaryCta: "Start 14-day free trial",
-      secondaryCta: "Or call the live line — Capta is on",
-      phone: PHONE,
-      phoneHref: PHONE_TEL,
-      trust: ["14-day trial", "No per-minute billing", "Cancel with one text"],
+        "Maria answers your phone in English and Spanish, 24/7 — books jobs, takes messages, and texts you the details before the customer hangs up.",
+      pitch: "She answers. She quotes. She follows up. You do the work.",
+      primary: "Get Capta",
+      secondary: "See how it works",
+      orCall: "Or call",
+      trust: ["24/7 coverage", "Bilingual EN / ES", "$497/mo flat", "14-day free trial"],
     },
-    demo: {
-      kicker: "Try Capta live",
-      h2: "Call the number. Capta picks up.",
-      sub:
-        "This is the cleanest way to evaluate Capta. Call the line below and talk to Capta as if you were a customer. It answers in under two rings. You'll know inside a minute whether this is real.",
-      primary: "Start 14-day free trial",
-      secondary: "Or get a free call audit",
-      note: "Available 24/7 in English and Spanish. Your call is routed to our demo line.",
+    problem: {
+      kicker: "The problem",
+      h2a: "Every missed call is a job",
+      h2b: "going to the next shop on the list.",
+      stat1Num: "62%",
+      stat1Label: "of calls to home service businesses go unanswered.",
+      stat2Num: "80%",
+      stat2Label: "of those callers won't leave a voicemail.",
+      body:
+        "You're on a roof. Your phone rings. You can't answer. The caller hangs up and calls the next plumber, HVAC tech, or electrician on the search result. That's the job you just lost — and the three referrals after it.",
+      roiPre: "3 missed calls a week × $800 average job = ",
+      roiLink: "run your own numbers",
     },
-    sms: {
-      kicker: "Run the office from SMS",
-      h2: "Dispatch. Invoice. Schedule. One text.",
-      sub:
-        "Once a call lands, Capta texts you the job card. You reply with the action — confirm, reassign, call back — and Capta runs it. Below is an example of the thread you'd see.",
-      maria: "Maria",
-      mariaRole: "AI receptionist · English & Spanish",
-      thread: [
-        { from: "maria", time: "2:08 PM", text: "New job: drain clog at 4521 Oak Lane. ETA 2:15 today. Homeowner is Rick J. Estimate $185–$240." },
-        { from: "maria", time: "2:08 PM", text: "Reply 1 to confirm. 2 to reassign. 3 to call him first." },
-        { from: "you", time: "2:09 PM", text: "1" },
-        { from: "maria", time: "2:09 PM", text: "Confirmed. Rick got the window, Mike is en route. I'll send the invoice when he marks it complete." },
-        { from: "you", time: "3:41 PM", text: "How'd this week go" },
-        { from: "maria", time: "3:41 PM", text: "47 calls answered. 12 estimates sent. 8 booked. Three missed-call recoveries converted." },
-      ],
-      exampleNote: "Example thread. Numbers shown are illustrative.",
-      bullets: [
-        "Answers every call, takes job details, sends estimates",
-        "Texts you a one-tap job card when something lands",
-        "Recovers missed callers inside 60 seconds",
-        "Briefings in the morning, digest on Friday, summary at month-end",
+    how: {
+      kicker: "How it works",
+      h2: "Three steps. Live by tomorrow.",
+      sub: "No app for your customers to download. No new phone number to memorize. You forward your existing line and Maria picks up.",
+      steps: [
+        {
+          title: "1 — Sign up in 5 minutes",
+          body: "Tell Maria your business name, hours, and the services you offer. Pick a voice. She's trained on your trade.",
+        },
+        {
+          title: "2 — Forward your number",
+          body: "One call to your carrier or a tap in your iPhone settings. Your existing number stays the same. Your customers don't notice a thing.",
+        },
+        {
+          title: "3 — She answers. You get texts.",
+          body: "Every call: the job, the address, the language, the urgency — texted to you before the customer hangs up. Appointments land on your calendar.",
+        },
       ],
     },
-    replaces: {
-      kicker: "The math",
-      h2: "What $497 a month replaces.",
-      sub: "The other options aren't bad. They're just more expensive, partial, or both.",
-      optionHeader: "Option",
-      perMonth: "/ month",
-      columns: [
-        { label: "Bilingual receptionist", cost: "$3,600", footnote: "Estimated fully-loaded monthly cost of a full-time bilingual receptionist in Texas, based on typical wage + benefits. Your market may vary." },
-        { label: "Answering service", cost: "~$900", footnote: "Typical per-minute billing at ~300 minutes/month with a mid-tier provider. Does not book appointments or send estimates." },
-        { label: "Voicemail", cost: "$0", footnote: "Free to run. Industry consensus is that most callers do not leave voicemails and call a competitor instead." },
-        { label: "Capta", cost: "$497", footnote: "Flat. Unlimited calls. One plan.", highlight: true },
+    features: {
+      kicker: "What she does",
+      h2: "Everything a receptionist does. Plus the hours.",
+      sub: "A human receptionist costs $3,600/month, speaks one language, works 40 hours a week, and calls in sick. Maria is $497/month and runs 168 hours a week in two languages.",
+      items: [
+        {
+          title: "24 / 7 answering",
+          body: "Unlimited call volume, no busy signal, no after-hours voicemail. She picks up in under two rings every time.",
+        },
+        {
+          title: "Native bilingual",
+          body: "English and Spanish, switched mid-call. Not translation — native speech patterns for both languages, built in.",
+        },
+        {
+          title: "Books appointments",
+          body: "Live access to your calendar. Maria offers available windows, confirms the job, and sends the customer an SMS with the time.",
+        },
+        {
+          title: "Qualifies the lead",
+          body: "Asks the right questions for your trade — problem, property type, urgency — and scores the lead before it hits your phone.",
+        },
+        {
+          title: "Emergency detection",
+          body: "Keywords like flooding, gas leak, no heat, or burst route straight to your on-call tech. You set the rules.",
+        },
+        {
+          title: "Texts you the job",
+          body: "Every call ends with an SMS: caller name, number, service, language, urgency, next step. One thumb to dispatch.",
+        },
       ],
-      rows: [
-        { label: "Answers 24 / 7", values: [false, true, false, true] },
-        { label: "Bilingual EN / ES", values: ["costly", "rare", false, true] },
-        { label: "Books appointments", values: ["sometimes", false, false, true] },
-        { label: "Generates estimates", values: [false, false, false, true] },
-        { label: "Texts you job cards", values: [false, false, false, true] },
-        { label: "Recovers missed callers", values: [false, false, false, true] },
-        { label: "Never sick, never quits", values: [false, "partial", "—", true] },
-      ],
-      footnoteLabel: "Notes",
-      sourceNote:
-        "Comparison figures are good-faith estimates of common market alternatives. Actual costs vary by location and provider. See footnotes for sourcing on each column.",
+    },
+    demoSection: {
+      kicker: "Hear her handle a real call",
+      h2: "Don't trust us. Trust your own ears.",
+      sub: "Click below. Talk to Maria the way your customers will. Try English or Spanish — she switches mid-sentence. Under a minute, no signup, mic on.",
     },
     pricing: {
       kicker: "Pricing",
-      h2: "One rate. One plan. One receptionist.",
-      sub:
-        "Unlimited calls, unlimited SMS, unlimited tools. We don't meter. We don't upsell. The only upgrade is annual, which saves you $1,200.",
-      perLocation: "Per location · Unlimited calls",
-      monthlyTab: "Monthly",
-      annualTab: "Annual · save $1,200",
-      included: "Included",
-      items: [
-        "24 / 7 bilingual AI receptionist on your number",
-        "SMS job cards the instant a call converts",
-        "Estimates, intake, booking, rescheduling, cancellations",
-        "Missed-call recovery within 60 seconds",
-        "Text-to-dispatch, text-to-invoice, text-to-report",
-        "Monthly summary and weekly digest",
-        "Unlimited calls and SMS — no per-minute billing",
+      h2: "One plan. Flat rate. No per-call surprises.",
+      sub: "Every feature above is included. Unlimited calls. Bilingual included. No setup fees. No per-minute charges.",
+      price: "$497",
+      period: "/month",
+      annual: "Or $4,764 a year — that's $397/mo and saves you $1,200.",
+      includes: [
+        "Unlimited calls",
+        "Bilingual EN / ES",
+        "Appointment booking",
+        "Emergency detection",
+        "SMS job briefs",
+        "Forward your existing number",
       ],
-      guarantee: "14 days free. Cancel with one text. Keep going only if it's earning its keep.",
-      callNow: "Call Capta now",
-      plans: [
-        { billing: "monthly", price: "$497", period: "/ month", note: "Paid monthly" },
-        { billing: "annual", price: "$397", period: "/ month", note: "Billed $4,764 annually · save $1,200" },
-      ],
+      primary: "Get Capta",
+      trial: "14-day free trial · card required · cancel anytime before day 14",
+      vsHuman: "A bilingual receptionist costs $3,600 / month.",
+      vsHumanDetail: "Full-time compensation in Texas metros ($45–55k/yr) plus payroll tax and benefits. She works 40 hours a week. Maria runs 168 for $497.",
     },
-    cta: {
-      kicker: "Or just call the line.",
-      h2: "Capta will answer this phone, in this moment, in English or Spanish.",
-      sub: "Two weeks free. Cancel with one text. Your number stays yours.",
-      callLabel: "Call the live line",
-      startFree: "Start 14-day free trial",
-      bookDemo: "Get a free call audit",
+    faq: {
+      kicker: "Common questions",
+      h2: "The real objections.",
+      sub: "The things every contractor asks before handing their phone to an AI.",
+      items: [
+        {
+          q: "Will my customers know they're talking to AI?",
+          a: "Most don't. Maria uses natural speech, handles interruptions, and adapts tone. If a caller asks directly whether they're talking to a human, she answers honestly — that's the law in most states, and it's the right move for trust.",
+        },
+        {
+          q: "What if she screws up a call and I lose a customer?",
+          a: "Every call is transcribed and summarized. You see exactly what she said and what the caller said. If you spot a mistake, tell us once — she learns. In the first two weeks of your trial, we review every flagged call with you personally.",
+        },
+        {
+          q: "What if there's a real emergency?",
+          a: "Maria is trained to detect emergency keywords — flooding, gas leak, no heat in winter, burst pipe, fire. She immediately transfers the call to your designated emergency number and sends you an SMS alert.",
+        },
+        {
+          q: "Do I have to change my phone number?",
+          a: "No. You keep your existing business number. You forward the calls to Maria. Your customers dial the same number they've always dialed — they just notice someone always picks up now.",
+        },
+        {
+          q: "What if I want to cancel?",
+          a: "Cancel anytime before day 14 of your trial and pay nothing — from your dashboard, no phone call required. After the trial, cancel any month with no fees.",
+        },
+      ],
+      more: "See all questions",
+    },
+    finalCta: {
+      kicker: "14-day free trial · No setup fees",
+      h2a: "Your phone is ringing.",
+      h2b: "Let Maria answer it.",
+      sub: "Forward your number today. She's live tomorrow. Every call answered, every job texted to you — $497 a month, flat.",
+      primary: "Get Capta",
+      note: "Flat $497/mo · Unlimited calls · Bilingual EN/ES · Cancel anytime",
+    },
+    footer: {
+      tagline: "The AI receptionist that never misses a call. Built for home service businesses. San Antonio, Texas.",
+      product: "Product",
+      company: "Company",
+      legal: "Legal",
+      compliance: "TCPA compliant · Data encrypted in transit and at rest",
+      copyright: "© 2026 Capta LLC. All rights reserved.",
     },
   },
+
   es: {
+    nav: {
+      platform: "Plataforma",
+      pricing: "Precios",
+      about: "Acerca",
+      faq: "Preguntas",
+      blog: "Blog",
+      login: "Entrar",
+      cta: "Obtener Capta",
+    },
     hero: {
-      kicker: "La recepcionista bilingüe",
-      h1a: "Suena tu teléfono.",
-      h1b: "Capta contesta.",
+      kicker: "Recepcionista IA para oficios",
+      h1: "Nunca pierdas una llamada.",
       sub:
-        "Capta es una recepcionista IA bilingüe que agenda tus trabajos, recupera tus llamadas perdidas, y maneja tu oficina desde mensajes de texto. Contesta cada llamada, en inglés o español, por $497 al mes.",
-      priceLabel: "Tarifa fija, llamadas ilimitadas",
-      priceAmount: "$497",
-      pricePeriod: "/ mes",
-      priceAside: "Sin cobro por minuto. Cancela con un mensaje.",
-      primaryCta: "Comienza tu prueba gratis de 14 días",
-      secondaryCta: "O llama a la línea — Capta está activo",
-      phone: PHONE,
-      phoneHref: PHONE_TEL,
-      trust: ["Prueba de 14 días", "Sin cobro por minuto", "Cancela con un mensaje"],
+        "María contesta tu teléfono en inglés y español, 24/7 — agenda trabajos, toma mensajes y te manda los detalles por SMS antes de que el cliente cuelgue.",
+      pitch: "Ella contesta. Ella cotiza. Ella da seguimiento. Tú haces el trabajo.",
+      primary: "Obtener Capta",
+      secondary: "Cómo funciona",
+      orCall: "O llama al",
+      trust: ["Cobertura 24/7", "Bilingüe EN / ES", "$497/mes fijo", "Prueba de 14 días"],
     },
-    demo: {
-      kicker: "Prueba Capta en vivo",
-      h2: "Llama al número. Capta contesta.",
-      sub:
-        "Esta es la forma más limpia de evaluar Capta. Llama a la línea de abajo y habla con Capta como si fueras un cliente. Contesta en menos de dos timbres. Vas a saber en un minuto si esto es real.",
-      primary: "Comienza tu prueba gratis de 14 días",
-      secondary: "O pide una auditoría gratis",
-      note: "Disponible 24/7 en inglés y español. Tu llamada se dirige a nuestra línea demo.",
+    problem: {
+      kicker: "El problema",
+      h2a: "Cada llamada perdida es un trabajo",
+      h2b: "que se va al siguiente negocio de la lista.",
+      stat1Num: "62%",
+      stat1Label: "de llamadas a negocios de servicios del hogar no se contestan.",
+      stat2Num: "80%",
+      stat2Label: "de esos clientes no dejan mensaje de voz.",
+      body:
+        "Estás en un techo. Tu teléfono suena. No puedes contestar. El cliente cuelga y llama al siguiente plomero, técnico de HVAC o electricista en los resultados. Ese es el trabajo que perdiste — y las tres referencias después.",
+      roiPre: "3 llamadas perdidas a la semana × $800 trabajo promedio = ",
+      roiLink: "calcula tus propios números",
     },
-    sms: {
-      kicker: "Maneja la oficina por SMS",
-      h2: "Despacha. Factura. Agenda. Un mensaje.",
-      sub:
-        "Una vez que entra una llamada, Capta te manda la tarjeta de trabajo. Respondes con la acción — confirmar, reasignar, llamar de regreso — y Capta lo maneja. Abajo hay un ejemplo del hilo que verías.",
-      maria: "Maria",
-      mariaRole: "Recepcionista IA · Inglés y español",
-      thread: [
-        { from: "maria", time: "2:08 PM", text: "Trabajo nuevo: tubería tapada en 4521 Oak Lane. Llegada 2:15 hoy. Cliente: Rick J. Estimado $185–$240." },
-        { from: "maria", time: "2:08 PM", text: "Responde 1 para confirmar. 2 para reasignar. 3 para llamarle primero." },
-        { from: "you", time: "2:09 PM", text: "1" },
-        { from: "maria", time: "2:09 PM", text: "Confirmado. Rick tiene la ventana, Mike va en camino. Te mando la factura cuando la marque completa." },
-        { from: "you", time: "3:41 PM", text: "Cómo nos fue esta semana" },
-        { from: "maria", time: "3:41 PM", text: "47 llamadas contestadas. 12 estimados enviados. 8 agendados. Tres recuperaciones de llamada convertidas." },
-      ],
-      exampleNote: "Hilo de ejemplo. Los números mostrados son ilustrativos.",
-      bullets: [
-        "Contesta cada llamada, toma detalles, envía estimados",
-        "Te manda una tarjeta de trabajo de un toque cuando entra algo",
-        "Recupera llamadas perdidas en menos de 60 segundos",
-        "Resumen en la mañana, digest el viernes, resumen a fin de mes",
+    how: {
+      kicker: "Cómo funciona",
+      h2: "Tres pasos. En vivo mañana.",
+      sub: "Sin app para tus clientes. Sin número nuevo que memorizar. Reenvías tu línea actual y María contesta.",
+      steps: [
+        {
+          title: "1 — Regístrate en 5 minutos",
+          body: "Dile a María el nombre de tu negocio, tus horas y los servicios que ofreces. Elige una voz. Está entrenada en tu oficio.",
+        },
+        {
+          title: "2 — Reenvía tu número",
+          body: "Una llamada a tu proveedor o un ajuste en tu iPhone. Tu número actual se queda igual. Tus clientes no notan la diferencia.",
+        },
+        {
+          title: "3 — Ella contesta. Tú recibes SMS.",
+          body: "Cada llamada: el trabajo, la dirección, el idioma, la urgencia — por SMS antes de que el cliente cuelgue. Las citas llegan a tu calendario.",
+        },
       ],
     },
-    replaces: {
-      kicker: "Las cuentas",
-      h2: "Lo que reemplazan $497 al mes.",
-      sub: "Las otras opciones no son malas. Solo son más caras, parciales, o ambas.",
-      optionHeader: "Opción",
-      perMonth: "/ mes",
-      columns: [
-        { label: "Recepcionista bilingüe", cost: "$3,600", footnote: "Estimado mensual con carga total de una recepcionista bilingüe a tiempo completo en Texas, basado en sueldo típico + beneficios. Tu mercado puede variar." },
-        { label: "Servicio de contestadoras", cost: "~$900", footnote: "Cobro típico por minuto a ~300 min/mes con un proveedor medio. No agenda citas ni envía estimados." },
-        { label: "Buzón de voz", cost: "$0", footnote: "Gratis de operar. El consenso de la industria es que la mayoría no deja mensaje y llama a un competidor." },
-        { label: "Capta", cost: "$497", footnote: "Fijo. Llamadas ilimitadas. Un plan.", highlight: true },
+    features: {
+      kicker: "Qué hace ella",
+      h2: "Todo lo que hace una recepcionista. Más las horas.",
+      sub: "Una recepcionista humana cuesta $3,600 al mes, habla un idioma, trabaja 40 horas a la semana y se enferma. María cuesta $497 al mes y trabaja 168 horas en dos idiomas.",
+      items: [
+        {
+          title: "Contestación 24 / 7",
+          body: "Volumen de llamadas ilimitado, sin tono de ocupado, sin buzón. Contesta en menos de dos timbres siempre.",
+        },
+        {
+          title: "Nativamente bilingüe",
+          body: "Inglés y español, cambio a mitad de llamada. No es traducción — habla nativa en ambos idiomas.",
+        },
+        {
+          title: "Agenda citas",
+          body: "Acceso en vivo a tu calendario. María ofrece ventanas disponibles, confirma el trabajo y le manda SMS al cliente con la hora.",
+        },
+        {
+          title: "Califica el lead",
+          body: "Hace las preguntas correctas para tu oficio — problema, tipo de propiedad, urgencia — y califica antes de que llegue a tu teléfono.",
+        },
+        {
+          title: "Detecta emergencias",
+          body: "Palabras como inundación, fuga de gas, sin calefacción o reventado se enrutan directo a tu técnico de guardia. Tú pones las reglas.",
+        },
+        {
+          title: "Te manda el trabajo por SMS",
+          body: "Cada llamada termina con un SMS: nombre, número, servicio, idioma, urgencia, siguiente paso. Un pulgar para despachar.",
+        },
       ],
-      rows: [
-        { label: "Contesta 24 / 7", values: [false, true, false, true] },
-        { label: "Bilingüe EN / ES", values: ["caro", "raro", false, true] },
-        { label: "Agenda citas", values: ["a veces", false, false, true] },
-        { label: "Genera estimados", values: [false, false, false, true] },
-        { label: "Envía tarjetas de trabajo", values: [false, false, false, true] },
-        { label: "Recupera llamadas perdidas", values: [false, false, false, true] },
-        { label: "Nunca se enferma, nunca renuncia", values: [false, "parcial", "—", true] },
-      ],
-      footnoteLabel: "Notas",
-      sourceNote:
-        "Las cifras comparativas son estimaciones de buena fe de alternativas de mercado comunes. Los costos reales varían por ubicación y proveedor. Ver notas al pie para la fuente de cada columna.",
+    },
+    demoSection: {
+      kicker: "Escucha una llamada real",
+      h2: "No nos creas. Cree a tus oídos.",
+      sub: "Haz clic abajo. Habla con María como lo harán tus clientes. Prueba en inglés o español — cambia a mitad de frase. Menos de un minuto, sin registro, micrófono activo.",
     },
     pricing: {
       kicker: "Precios",
-      h2: "Una tarifa. Un plan. Una recepcionista.",
-      sub:
-        "Llamadas ilimitadas, SMS ilimitados, herramientas ilimitadas. No cobramos por uso. No vendemos extras. La única mejora es anual, que te ahorra $1,200.",
-      perLocation: "Por ubicación · Llamadas ilimitadas",
-      monthlyTab: "Mensual",
-      annualTab: "Anual · ahorra $1,200",
-      included: "Incluido",
-      items: [
-        "Recepcionista IA bilingüe 24/7 en tu número",
-        "Tarjetas SMS el instante que una llamada convierte",
-        "Estimados, admisión, citas, reprogramaciones, cancelaciones",
-        "Recuperación de llamada perdida en menos de 60 segundos",
-        "Texto para despachar, facturar, y reportar",
-        "Resumen mensual y digest semanal",
-        "Llamadas y SMS ilimitados — sin cobro por minuto",
+      h2: "Un plan. Tarifa fija. Sin sorpresas.",
+      sub: "Todo lo de arriba está incluido. Llamadas ilimitadas. Bilingüe incluido. Sin costos de instalación. Sin cargos por minuto.",
+      price: "$497",
+      period: "/mes",
+      annual: "O $4,764 al año — eso es $397/mes y te ahorra $1,200.",
+      includes: [
+        "Llamadas ilimitadas",
+        "Bilingüe EN / ES",
+        "Agenda de citas",
+        "Detección de emergencias",
+        "Resúmenes por SMS",
+        "Reenvía tu número actual",
       ],
-      guarantee: "14 días gratis. Cancela con un mensaje. Sigue solo si está generando su pago.",
-      callNow: "Llama a Capta",
-      plans: [
-        { billing: "monthly", price: "$497", period: "/ mes", note: "Pago mensual" },
-        { billing: "annual", price: "$397", period: "/ mes", note: "Facturado $4,764 al año · ahorra $1,200" },
-      ],
+      primary: "Obtener Capta",
+      trial: "Prueba gratis de 14 días · tarjeta requerida · cancela antes del día 14",
+      vsHuman: "Una recepcionista bilingüe cuesta $3,600 al mes.",
+      vsHumanDetail: "Compensación a tiempo completo en metros de Texas ($45–55k/año) más impuestos y beneficios. Trabaja 40 horas a la semana. María trabaja 168 por $497.",
     },
-    cta: {
-      kicker: "O simplemente llama a la línea.",
-      h2: "Capta contestará este teléfono, en este momento, en inglés o español.",
-      sub: "Dos semanas gratis. Cancela con un mensaje. Tu número sigue siendo tuyo.",
-      callLabel: "Llama a la línea",
-      startFree: "Comenzar prueba gratis de 14 días",
-      bookDemo: "Pedir auditoría gratis",
+    faq: {
+      kicker: "Preguntas comunes",
+      h2: "Las objeciones reales.",
+      sub: "Lo que todo contratista pregunta antes de poner su teléfono en manos de una IA.",
+      items: [
+        {
+          q: "¿Mis clientes sabrán que están hablando con una IA?",
+          a: "La mayoría no. María usa habla natural, maneja interrupciones y adapta el tono. Si un cliente pregunta directamente si está hablando con un humano, ella contesta con honestidad — es la ley en la mayoría de estados y es lo correcto para la confianza.",
+        },
+        {
+          q: "¿Qué pasa si se equivoca y pierdo un cliente?",
+          a: "Cada llamada se transcribe y se resume. Ves exactamente qué dijo ella y qué dijo el cliente. Si detectas un error, nos dices una vez — ella aprende. En las primeras dos semanas de tu prueba, revisamos cada llamada marcada contigo personalmente.",
+        },
+        {
+          q: "¿Qué pasa si hay una emergencia real?",
+          a: "María detecta palabras de emergencia — inundación, fuga de gas, sin calefacción en invierno, tubería rota, fuego. Transfiere la llamada inmediatamente a tu número de emergencia y te manda una alerta por SMS.",
+        },
+        {
+          q: "¿Tengo que cambiar mi número de teléfono?",
+          a: "No. Mantienes tu número actual. Reenvías las llamadas a María. Tus clientes marcan el mismo número de siempre — solo notan que alguien siempre contesta ahora.",
+        },
+        {
+          q: "¿Qué pasa si quiero cancelar?",
+          a: "Cancela antes del día 14 de tu prueba y no pagas nada — desde tu panel, sin llamadas. Después de la prueba, cancela cualquier mes sin cargos.",
+        },
+      ],
+      more: "Ver todas las preguntas",
+    },
+    finalCta: {
+      kicker: "Prueba gratis de 14 días · Sin costos de instalación",
+      h2a: "Tu teléfono está sonando.",
+      h2b: "Deja que María conteste.",
+      sub: "Reenvía tu número hoy. Está en vivo mañana. Cada llamada contestada, cada trabajo por SMS — $497 al mes, fijo.",
+      primary: "Obtener Capta",
+      note: "$497/mes fijo · Llamadas ilimitadas · Bilingüe EN/ES · Cancela cuando quieras",
+    },
+    footer: {
+      tagline: "La recepcionista IA que nunca pierde una llamada. Hecha para negocios de servicios del hogar. San Antonio, Texas.",
+      product: "Producto",
+      company: "Empresa",
+      legal: "Legal",
+      compliance: "Cumple con TCPA · Datos encriptados en tránsito y en reposo",
+      copyright: "© 2026 Capta LLC. Todos los derechos reservados.",
     },
   },
 };
 
-const LANG_KEY = "capta-lang";
+/* ═══════════════════════════════════════════════════════════════════
+   COMPONENT
+   ═══════════════════════════════════════════════════════════════════ */
 
-/* ═══════════════════════════════════════════════════════════════
-   PAGE
-   ═══════════════════════════════════════════════════════════════ */
+type Props = { initialLang?: Lang };
 
-export default function LandingPage({
-  initialLang,
-  latestPosts = [],
-}: {
-  latestPosts?: BlogPostPreview[];
-  initialLang?: Lang;
-} = {}) {
-  const [lang, setLang] = useState<Lang>(initialLang ?? "en");
+export default function HomeClient({ initialLang = "en" }: Props) {
+  const [lang, setLang] = useState<Lang>(initialLang);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
-    if (initialLang) return;
     if (typeof window === "undefined") return;
-    const saved = localStorage.getItem(LANG_KEY);
-    if (saved === "en" || saved === "es") setLang(saved);
-  }, [initialLang]);
+    const stored = window.localStorage.getItem("capta-lang");
+    if (stored === "en" || stored === "es") setLang(stored);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") document.documentElement.lang = lang;
+  }, [lang]);
 
   const toggleLang = useCallback((l: Lang) => {
     setLang(l);
-    if (typeof window !== "undefined") localStorage.setItem(LANG_KEY, l);
+    if (typeof window !== "undefined") window.localStorage.setItem("capta-lang", l);
   }, []);
 
   const t = COPY[lang];
+  const setupHref = lang === "es" ? "/es/setup" : "/setup";
+  const base = lang === "es" ? "/es" : "";
 
   return (
-    <FieldFrame>
-      <JsonLd lang={lang} />
-      <SkipLink lang={lang} />
-      <FieldNav lang={lang} toggleLang={toggleLang} phone={PHONE} phoneHref={PHONE_TEL} />
+    <div
+      style={{
+        background: C.truck,
+        color: C.ink,
+        fontFamily: "var(--font-inter), system-ui, sans-serif",
+        fontFeatureSettings: '"ss01", "cv11"',
+      }}
+      className="min-h-screen overflow-x-hidden"
+    >
+      {/* Skip link */}
+      <a
+        href="#main"
+        style={{
+          position: "absolute",
+          top: -40,
+          left: 0,
+          background: C.ink,
+          color: C.truck,
+          padding: "8px 12px",
+          fontSize: 14,
+          fontWeight: 700,
+          zIndex: 100,
+          textDecoration: "none",
+        }}
+        onFocus={(e) => (e.currentTarget.style.top = "0")}
+        onBlur={(e) => (e.currentTarget.style.top = "-40px")}
+      >
+        {lang === "es" ? "Saltar al contenido" : "Skip to content"}
+      </a>
+
+      {/* ═══════════════════════════════════════════════════════════
+          NAV — sticky white bg, navy text, gold CTA
+          ═══════════════════════════════════════════════════════════ */}
+      <header
+        style={{
+          background: C.white,
+          borderBottom: `1px solid ${C.border}`,
+          position: "sticky",
+          top: 0,
+          zIndex: 40,
+        }}
+      >
+        <nav className="mx-auto flex max-w-[1280px] items-center justify-between px-6 sm:px-10 py-4">
+          <a href={base === "" ? "/" : "/es"} className="flex items-center">
+            <Image
+              src="/images/logo-inline-navy.webp"
+              alt="Capta"
+              width={120}
+              height={32}
+              priority
+              className="h-8 w-auto"
+            />
+          </a>
+
+          <div
+            className="hidden items-center gap-8 md:flex"
+            style={{ fontSize: 14, fontWeight: 600, color: C.inkMuted }}
+          >
+            {[
+              { label: t.nav.platform, href: base + "/platform" },
+              { label: t.nav.pricing, href: base + "/pricing" },
+              { label: t.nav.about, href: base + "/about" },
+              { label: t.nav.faq, href: base + "/faq" },
+              { label: t.nav.blog, href: base + "/blog" },
+            ].map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                style={{ color: C.inkMuted, transition: "color 150ms" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = C.ink)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = C.inkMuted)}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-1" style={{ fontSize: 11 }}>
+              <button
+                onClick={() => toggleLang("en")}
+                aria-pressed={lang === "en"}
+                style={{
+                  padding: "4px 8px",
+                  fontWeight: lang === "en" ? 800 : 500,
+                  color: lang === "en" ? C.ink : C.inkSoft,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.14em",
+                  minHeight: 44,
+                  minWidth: 44,
+                }}
+              >
+                EN
+              </button>
+              <span style={{ color: C.inkSoft }}>/</span>
+              <button
+                onClick={() => toggleLang("es")}
+                aria-pressed={lang === "es"}
+                style={{
+                  padding: "4px 8px",
+                  fontWeight: lang === "es" ? 800 : 500,
+                  color: lang === "es" ? C.ink : C.inkSoft,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.14em",
+                  minHeight: 44,
+                  minWidth: 44,
+                }}
+              >
+                ES
+              </button>
+            </div>
+
+            <a
+              href="/dashboard/login"
+              className="hidden text-sm font-semibold md:inline-block"
+              style={{ color: C.inkMuted }}
+            >
+              {t.nav.login}
+            </a>
+
+            <GoldButton href={setupHref} size="sm">
+              {t.nav.cta}
+            </GoldButton>
+
+            <button
+              type="button"
+              className="md:hidden"
+              aria-label="Menu"
+              aria-expanded={mobileOpen}
+              onClick={() => setMobileOpen(!mobileOpen)}
+              style={{
+                padding: 10,
+                color: C.ink,
+                border: `1px solid ${C.border}`,
+                background: C.white,
+                minHeight: 44,
+                minWidth: 44,
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                {mobileOpen ? <path d="M18 6L6 18M6 6l12 12" /> : (
+                  <>
+                    <path d="M4 6h16" />
+                    <path d="M4 12h16" />
+                    <path d="M4 18h16" />
+                  </>
+                )}
+              </svg>
+            </button>
+          </div>
+        </nav>
+
+        {mobileOpen && (
+          <div
+            className="md:hidden"
+            style={{
+              borderTop: `1px solid ${C.border}`,
+              background: C.white,
+              padding: "20px 24px 24px",
+            }}
+          >
+            <div className="flex flex-col gap-4" style={{ fontSize: 15, fontWeight: 600, color: C.ink }}>
+              {[
+                { label: t.nav.platform, href: base + "/platform" },
+                { label: t.nav.pricing, href: base + "/pricing" },
+                { label: t.nav.about, href: base + "/about" },
+                { label: t.nav.faq, href: base + "/faq" },
+                { label: t.nav.blog, href: base + "/blog" },
+                { label: t.nav.login, href: "/dashboard/login" },
+              ].map((l) => (
+                <a key={l.href} href={l.href} onClick={() => setMobileOpen(false)}>
+                  {l.label}
+                </a>
+              ))}
+              <div
+                className="flex items-center gap-2 pt-3"
+                style={{ borderTop: `1px solid ${C.border}` }}
+              >
+                <button
+                  onClick={() => toggleLang("en")}
+                  style={{ padding: "8px 14px", fontWeight: lang === "en" ? 800 : 500, color: lang === "en" ? C.ink : C.inkSoft, textTransform: "uppercase", letterSpacing: "0.14em", fontSize: 12, minHeight: 44 }}
+                >
+                  EN
+                </button>
+                <span style={{ color: C.inkSoft }}>/</span>
+                <button
+                  onClick={() => toggleLang("es")}
+                  style={{ padding: "8px 14px", fontWeight: lang === "es" ? 800 : 500, color: lang === "es" ? C.ink : C.inkSoft, textTransform: "uppercase", letterSpacing: "0.14em", fontSize: 12, minHeight: 44 }}
+                >
+                  ES
+                </button>
+                <a
+                  href={PHONE_TEL}
+                  style={{
+                    marginLeft: "auto",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: C.ink,
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {PHONE}
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
 
       <main id="main">
-        <Hero t={t} />
-        <DemoBand t={t} />
-        <Rule />
-        <SmsBand t={t} />
-        <Rule />
-        <ReplacesTable t={t} />
-        <Rule />
-        <Pricing t={t} />
-        {latestPosts.length > 0 && (
-          <>
-            <Rule />
-            <LatestPosts lang={lang} posts={latestPosts} />
-          </>
-        )}
-        <Rule />
-        <FinalCta t={t} lang={lang} />
-      </main>
+        {/* ═══════════════════════════════════════════════════════════
+            HERO — Truck White
+            ═══════════════════════════════════════════════════════════ */}
+        <section style={{ background: C.truck }}>
+          <div className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 sm:pt-20 pb-20 sm:pb-28">
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-start">
+              {/* Left — copy */}
+              <div className="lg:col-span-7 flex flex-col">
+                <Kicker>{t.hero.kicker}</Kicker>
 
-      <FieldFooter lang={lang} phone={PHONE} phoneHref={PHONE_TEL} />
-    </FieldFrame>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   HERO
-   ═══════════════════════════════════════════════════════════════ */
-
-function Hero({ t }: { t: Copy }) {
-  return (
-    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-10 pb-20 sm:pt-16 sm:pb-28">
-      <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-        <div className="lg:col-span-7">
-          <Kicker>{t.hero.kicker}</Kicker>
-          <DisplayH1 style={{ marginTop: 24 }}>
-            {t.hero.h1a}
-            <br />
-            <em
-              style={{
-                fontStyle: "italic",
-                fontVariationSettings: '"SOFT" 100, "WONK" 1',
-                color: C.amberInk,
-              }}
-            >
-              {t.hero.h1b}
-            </em>
-          </DisplayH1>
-
-          <p style={{ maxWidth: 560, fontSize: 18, lineHeight: 1.55, color: C.inkMuted, marginTop: 24 }}>
-            {t.hero.sub}
-          </p>
-
-          <div
-            style={{
-              marginTop: 32,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 16,
-              padding: "16px 20px",
-              background: C.paperDark,
-              border: `1px solid ${C.rule}`,
-              borderRadius: 2,
-              flexWrap: "wrap",
-            }}
-          >
-            <div>
-              <div style={{ fontSize: 11, letterSpacing: "0.18em", color: C.inkMuted, fontWeight: 600, textTransform: "uppercase" }}>
-                {t.hero.priceLabel}
-              </div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginTop: 4 }}>
-                <Mono style={{ fontSize: 36, fontWeight: 700, color: C.ink, letterSpacing: "-0.02em" }}>
-                  {t.hero.priceAmount}
-                </Mono>
-                <span style={{ fontSize: 15, color: C.inkMuted, fontWeight: 500 }}>{t.hero.pricePeriod}</span>
-              </div>
-            </div>
-            <div aria-hidden style={{ width: 1, height: 48, background: C.rule }} className="hidden sm:block" />
-            <div style={{ fontSize: 12, lineHeight: 1.45, color: C.inkMuted, maxWidth: 200, fontWeight: 500 }}>
-              {t.hero.priceAside}
-            </div>
-          </div>
-
-          <div className="mt-8">
-            <DemoCtaPair lang={t === COPY.en ? "en" : "es"} size="lg" />
-          </div>
-
-          <div className="mt-6">
-            <div style={{ fontSize: 13, color: C.inkMuted, marginBottom: 4, letterSpacing: "0.02em", fontWeight: 500 }}>
-              {t.hero.secondaryCta}
-            </div>
-            <a
-              href={t.hero.phoneHref}
-              style={{
-                fontFamily: "var(--font-mono), ui-monospace, monospace",
-                fontVariantNumeric: "tabular-nums",
-                fontSize: 20,
-                fontWeight: 700,
-                color: C.ink,
-                textDecoration: "underline",
-                textUnderlineOffset: 4,
-                textDecorationColor: C.inkSoft,
-                textDecorationThickness: 1,
-              }}
-            >
-              {t.hero.phone}
-            </a>
-          </div>
-
-          <div
-            style={{
-              marginTop: 28,
-              paddingTop: 18,
-              borderTop: `1px solid ${C.rule}`,
-              fontSize: 12,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: C.inkSoft,
-              fontWeight: 600,
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 14,
-            }}
-          >
-            {t.hero.trust.map((item, i) => (
-              <span key={i} className="flex items-center gap-[14px]">
-                {i > 0 && <span aria-hidden style={{ color: C.ruleSoft }}>·</span>}
-                <span>{item}</span>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Right column — photo only. No fabricated captions. */}
-        <div className="lg:col-span-5">
-          <div
-            style={{
-              position: "relative",
-              borderRadius: 2,
-              overflow: "hidden",
-              border: `1px solid ${C.rule}`,
-              background: C.paperDark,
-              aspectRatio: "4 / 5",
-            }}
-          >
-            <Image
-              src="/images/grit-hvac.webp"
-              alt="A home service contractor on a jobsite"
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 42vw"
-              style={{ objectFit: "cover", filter: "saturate(0.92) contrast(1.02)" }}
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   DEMO BAND (replaces the fake-audio band — real working CTA)
-   ═══════════════════════════════════════════════════════════════ */
-
-function DemoBand({ t }: { t: Copy }) {
-  const lang: Lang = t === COPY.en ? "en" : "es";
-  return (
-    <section style={{ background: C.navy, color: C.paper }} className="py-20 sm:py-28">
-      <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-6">
-            <Kicker tone="dark">{t.demo.kicker}</Kicker>
-            <DisplayH2 tone="dark" style={{ marginTop: 20 }}>
-              {t.demo.h2}
-            </DisplayH2>
-            <p style={{ color: "rgba(248,245,238,0.75)", fontSize: 17, lineHeight: 1.6, marginTop: 20, maxWidth: 520 }}>
-              {t.demo.sub}
-            </p>
-          </div>
-
-          <div className="lg:col-span-6">
-            <div
-              style={{
-                padding: "32px",
-                background: "rgba(248,245,238,0.04)",
-                border: "1px solid rgba(248,245,238,0.12)",
-                borderTop: `3px solid ${C.amber}`,
-              }}
-            >
-              <div style={{ fontSize: 11, letterSpacing: "0.22em", color: "rgba(248,245,238,0.7)", fontWeight: 700, textTransform: "uppercase" }}>
-                {lang === "es" ? "Línea en vivo" : "Live line"}
-              </div>
-              <a
-                href={t.hero.phoneHref}
-                style={{
-                  display: "block",
-                  marginTop: 14,
-                  fontFamily: "var(--font-mono), ui-monospace, monospace",
-                  fontVariantNumeric: "tabular-nums",
-                  fontSize: 40,
-                  fontWeight: 700,
-                  color: C.paper,
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                {t.hero.phone}
-              </a>
-              <p style={{ fontSize: 13, color: "rgba(248,245,238,0.65)", marginTop: 14, lineHeight: 1.55 }}>
-                {t.demo.note}
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href={lang === "es" ? "/es/setup" : "/setup"}
+                <h1
+                  className="mt-6"
                   style={{
-                    background: C.amber,
+                    fontSize: "clamp(44px, 6.5vw, 88px)",
+                    fontWeight: 900,
+                    lineHeight: 0.95,
+                    letterSpacing: "-0.035em",
                     color: C.ink,
-                    fontSize: 14,
+                  }}
+                >
+                  {t.hero.h1}
+                </h1>
+
+                <p
+                  className="mt-8 max-w-[560px]"
+                  style={{ fontSize: 19, lineHeight: 1.5, color: C.inkMuted, fontWeight: 500 }}
+                >
+                  {t.hero.sub}
+                </p>
+
+                <p
+                  className="mt-5 max-w-[560px]"
+                  style={{
+                    fontSize: 16,
+                    lineHeight: 1.5,
+                    color: C.ink,
                     fontWeight: 700,
-                    padding: "12px 20px",
-                    borderRadius: 4,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    textDecoration: "none",
-                    minHeight: 44,
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = C.amberHover)}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = C.amber)}
-                >
-                  {t.demo.primary} →
-                </a>
-                <a
-                  href="/audit"
-                  style={{
-                    background: "transparent",
-                    color: C.paper,
-                    fontSize: 14,
-                    fontWeight: 600,
-                    padding: "12px 20px",
-                    borderRadius: 4,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    border: "1px solid rgba(248,245,238,0.3)",
-                    textDecoration: "none",
-                    minHeight: 44,
                   }}
                 >
-                  {t.demo.secondary} →
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+                  {t.hero.pitch}
+                </p>
 
-/* ═══════════════════════════════════════════════════════════════
-   SMS BAND
-   ═══════════════════════════════════════════════════════════════ */
-
-function SmsBand({ t }: { t: Copy }) {
-  return (
-    <section style={{ background: C.paperDark }} className="py-20 sm:py-28">
-      <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
-        <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-          <div className="lg:col-span-6 flex justify-center lg:justify-start">
-            <div
-              style={{
-                width: "100%",
-                maxWidth: 340,
-                background: "#0F0F11",
-                borderRadius: 44,
-                padding: 10,
-                border: `1px solid ${C.ink}`,
-                boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 12px 40px -12px rgba(17,19,24,0.25)",
-              }}
-            >
-              <div
-                style={{
-                  background: C.paper,
-                  borderRadius: 34,
-                  overflow: "hidden",
-                  aspectRatio: "9 / 18",
-                  position: "relative",
-                }}
-              >
-                {/* iOS-style status bar */}
-                <div
-                  style={{
-                    height: 36,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "0 22px",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: C.ink,
-                    fontFamily: "var(--font-mono), ui-monospace, monospace",
-                    fontVariantNumeric: "tabular-nums",
-                    letterSpacing: "-0.01em",
-                  }}
-                >
-                  <span>9:41</span>
-                  <span aria-hidden style={{ fontSize: 11, letterSpacing: "0.08em" }}>▸ 5G · 84%</span>
+                <div className="mt-10 flex flex-wrap items-center gap-3">
+                  <GoldButton href={setupHref} size="lg">
+                    {t.hero.primary}
+                  </GoldButton>
+                  <OutlineButton href="#how" size="lg">
+                    {t.hero.secondary}
+                  </OutlineButton>
                 </div>
 
                 <div
-                  style={{
-                    padding: "12px 18px 14px",
-                    borderBottom: `1px solid ${C.rule}`,
-                    background: C.paper,
-                    textAlign: "center",
-                  }}
+                  className="mt-5 flex items-center gap-2"
+                  style={{ fontSize: 14, color: C.inkMuted, fontWeight: 500 }}
                 >
-                  <div
+                  <span>{t.hero.orCall}</span>
+                  <a
+                    href={PHONE_TEL}
                     style={{
-                      width: 48,
-                      height: 48,
-                      background: C.ink,
-                      color: C.paper,
-                      borderRadius: 999,
-                      margin: "0 auto",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Serif style={{ fontSize: 20, fontWeight: 600 }}>M</Serif>
-                  </div>
-                  <div style={{ marginTop: 6, fontSize: 14, fontWeight: 600, color: C.ink }}>{t.sms.maria}</div>
-                  <div
-                    style={{
-                      fontSize: 10,
-                      color: C.inkMuted,
-                      letterSpacing: "0.12em",
-                      textTransform: "uppercase",
-                      fontWeight: 600,
-                      marginTop: 2,
-                    }}
-                  >
-                    {t.sms.mariaRole}
-                  </div>
-                </div>
-
-                <div style={{ padding: "14px 10px", display: "flex", flexDirection: "column", gap: 6, background: C.paper, minHeight: 300 }}>
-                  {t.sms.thread.map((m, i) => {
-                    const isYou = m.from === "you";
-                    const prev = t.sms.thread[i - 1];
-                    const showTime = !prev || prev.time !== m.time || prev.from !== m.from;
-                    return (
-                      <div key={i}>
-                        {showTime && (
-                          <div
-                            style={{
-                              textAlign: "center",
-                              fontSize: 10,
-                              color: C.inkSoft,
-                              letterSpacing: "0.12em",
-                              textTransform: "uppercase",
-                              fontWeight: 600,
-                              margin: "6px 0 2px",
-                            }}
-                          >
-                            {m.time}
-                          </div>
-                        )}
-                        <div style={{ display: "flex", justifyContent: isYou ? "flex-end" : "flex-start" }}>
-                          <div
-                            style={{
-                              maxWidth: "82%",
-                              background: isYou ? C.navy : C.paperDarker,
-                              color: isYou ? C.paper : C.ink,
-                              padding: "9px 13px",
-                              borderRadius: 16,
-                              borderTopLeftRadius: isYou ? 16 : 4,
-                              borderTopRightRadius: isYou ? 4 : 16,
-                              fontSize: 13,
-                              lineHeight: 1.4,
-                              fontWeight: 400,
-                            }}
-                          >
-                            {m.text}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-6">
-            <Kicker>{t.sms.kicker}</Kicker>
-            <DisplayH2 style={{ marginTop: 20 }}>{t.sms.h2}</DisplayH2>
-            <p style={{ fontSize: 18, lineHeight: 1.55, color: C.inkMuted, marginTop: 20, maxWidth: 520 }}>
-              {t.sms.sub}
-            </p>
-
-            <ul className="mt-8 flex flex-col gap-0">
-              {t.sms.bullets.map((bullet, i) => (
-                <li
-                  key={i}
-                  style={{
-                    display: "flex",
-                    gap: 14,
-                    padding: "14px 0",
-                    borderTop: `1px solid ${C.rule}`,
-                    borderBottom: i === t.sms.bullets.length - 1 ? `1px solid ${C.rule}` : "none",
-                  }}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke={C.amberInk}
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    style={{ marginTop: 4, flexShrink: 0 }}
-                    aria-hidden
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span style={{ fontSize: 16, lineHeight: 1.5, color: C.ink, fontWeight: 500 }}>{bullet}</span>
-                </li>
-              ))}
-            </ul>
-            <p
-              style={{
-                fontSize: 12,
-                color: C.inkSoft,
-                marginTop: 16,
-                lineHeight: 1.55,
-                fontStyle: "italic",
-                fontFamily: "var(--font-fraunces), Georgia, serif",
-              }}
-            >
-              {t.sms.exampleNote}
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   REPLACES TABLE
-   ═══════════════════════════════════════════════════════════════ */
-
-function ReplacesTable({ t }: { t: Copy }) {
-  const columns = t.replaces.columns;
-
-  const renderCell = (value: boolean | string) => {
-    if (value === true) {
-      return (
-        <span aria-label="Yes" style={{ width: 20, height: 20, display: "inline-flex", alignItems: "center", justifyContent: "center", color: C.forest }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        </span>
-      );
-    }
-    if (value === false) {
-      return (
-        <span aria-label="No" style={{ width: 20, height: 20, display: "inline-flex", alignItems: "center", justifyContent: "center", color: C.inkSoft }}>
-          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
-            <line x1="1" y1="5" x2="9" y2="5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </span>
-      );
-    }
-    return (
-      <span style={{ fontSize: 12, color: C.inkMuted, fontStyle: "italic", fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 400 }}>
-        {value}
-      </span>
-    );
-  };
-
-  return (
-    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-28">
-      <div className="max-w-2xl">
-        <Kicker>{t.replaces.kicker}</Kicker>
-        <DisplayH2 style={{ marginTop: 20 }}>{t.replaces.h2}</DisplayH2>
-        <p style={{ fontSize: 17, lineHeight: 1.55, color: C.inkMuted, marginTop: 20 }}>{t.replaces.sub}</p>
-      </div>
-
-      {/* Desktop table */}
-      <div className="mt-12 hidden overflow-x-auto md:block">
-        <table style={{ width: "100%", minWidth: 720, borderCollapse: "collapse", fontSize: 14, color: C.ink }}>
-          <thead>
-            <tr>
-              <th scope="col" style={{ padding: "20px 18px", textAlign: "left", verticalAlign: "bottom", borderBottom: `2px solid ${C.ink}`, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, color: C.inkMuted, width: "28%" }}>
-                {t.replaces.optionHeader}
-              </th>
-              {columns.map((col, i) => (
-                <th
-                  key={i}
-                  scope="col"
-                  style={{
-                    padding: "20px 18px",
-                    textAlign: "center",
-                    verticalAlign: "bottom",
-                    borderBottom: `2px solid ${col.highlight ? C.amber : C.ink}`,
-                    background: col.highlight ? C.paperDark : "transparent",
-                    borderLeft: `1px solid ${C.rule}`,
-                    width: `${(72 / columns.length).toFixed(2)}%`,
-                  }}
-                >
-                  <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, color: col.highlight ? C.amberInk : C.inkMuted, marginBottom: 6 }}>
-                    {col.label}
-                  </div>
-                  <Mono style={{ fontSize: 22, fontWeight: 700, color: C.ink, letterSpacing: "-0.015em" }} as="div">
-                    {col.cost}
-                  </Mono>
-                  <div style={{ fontSize: 10, color: C.inkSoft, fontWeight: 500, marginTop: 2 }}>
-                    {t.replaces.perMonth}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {t.replaces.rows.map((row, rowIdx) => (
-              <tr key={rowIdx} style={{ background: rowIdx % 2 === 0 ? "transparent" : C.paperDark }}>
-                <th scope="row" style={{ padding: "16px 18px", textAlign: "left", fontSize: 14, fontWeight: 500, color: C.ink, borderBottom: `1px solid ${C.rule}`, verticalAlign: "middle" }}>
-                  {row.label}
-                </th>
-                {row.values.map((val, colIdx) => {
-                  const col = columns[colIdx];
-                  return (
-                    <td key={colIdx} style={{ padding: "16px 18px", textAlign: "center", borderBottom: `1px solid ${C.rule}`, borderLeft: `1px solid ${C.rule}`, background: col.highlight ? C.paperDark : "transparent", verticalAlign: "middle" }}>
-                      {renderCell(val)}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Mobile stacked cards */}
-      <div className="mt-12 flex flex-col gap-5 md:hidden">
-        {columns.map((col, i) => (
-          <div
-            key={i}
-            style={{
-              border: `1px solid ${col.highlight ? C.amber : C.rule}`,
-              background: col.highlight ? C.paperDark : C.paper,
-              padding: "20px 22px",
-              borderRadius: 2,
-              borderTop: col.highlight ? `3px solid ${C.amber}` : `1px solid ${C.rule}`,
-            }}
-          >
-            <div className="flex items-baseline justify-between gap-3">
-              <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, color: col.highlight ? C.amberInk : C.inkMuted }}>
-                {col.label}
-              </div>
-              <div>
-                <Mono style={{ fontSize: 22, fontWeight: 700, color: C.ink, letterSpacing: "-0.015em" }}>{col.cost}</Mono>
-                <span style={{ fontSize: 11, color: C.inkSoft, marginLeft: 4 }}>{t.replaces.perMonth}</span>
-              </div>
-            </div>
-            <ul style={{ marginTop: 14, borderTop: `1px solid ${C.rule}` }}>
-              {t.replaces.rows.map((row, rowIdx) => {
-                const val = row.values[i];
-                return (
-                  <li
-                    key={rowIdx}
-                    style={{
-                      padding: "10px 0",
-                      borderBottom: `1px solid ${C.rule}`,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      gap: 10,
-                      fontSize: 13,
-                    }}
-                  >
-                    <span style={{ color: C.ink, fontWeight: 500 }}>{row.label}</span>
-                    <span>{renderCell(val)}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      <div style={{ marginTop: 28, paddingTop: 20, borderTop: `1px solid ${C.rule}` }}>
-        <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: C.inkSoft, fontWeight: 700, marginBottom: 10 }}>
-          {t.replaces.footnoteLabel}
-        </div>
-        <p style={{ fontSize: 12, color: C.inkMuted, lineHeight: 1.6, marginBottom: 14, fontStyle: "italic", fontFamily: "var(--font-fraunces), Georgia, serif" }}>
-          {t.replaces.sourceNote}
-        </p>
-        <ol style={{ fontSize: 12, color: C.inkMuted, lineHeight: 1.55, listStyle: "none", padding: 0 }}>
-          {columns.map((col, i) => (
-            <li key={i} style={{ display: "flex", gap: 10, marginTop: 6 }}>
-              <Mono style={{ color: C.amberInk, fontWeight: 700, flexShrink: 0, width: 24 }}>[{i + 1}]</Mono>
-              <span>
-                <strong style={{ fontWeight: 600, color: C.ink }}>{col.label}.</strong> {col.footnote}
-              </span>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   PRICING
-   ═══════════════════════════════════════════════════════════════ */
-
-function Pricing({ t }: { t: Copy }) {
-  const [billing, setBilling] = useState<"monthly" | "annual">("annual");
-  const active = t.pricing.plans.find((p) => p.billing === billing) ?? t.pricing.plans[0];
-  const lang: Lang = t === COPY.en ? "en" : "es";
-
-  return (
-    <section style={{ background: C.paper }} className="py-20 sm:py-28">
-      <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
-        <div className="grid gap-14 lg:grid-cols-12 lg:items-start">
-          <div className="lg:col-span-5">
-            <Kicker>{t.pricing.kicker}</Kicker>
-            <DisplayH2 style={{ marginTop: 20 }}>{t.pricing.h2}</DisplayH2>
-            <p style={{ fontSize: 17, lineHeight: 1.55, color: C.inkMuted, marginTop: 20, maxWidth: 420 }}>
-              {t.pricing.sub}
-            </p>
-            <div style={{ marginTop: 28, padding: "16px 18px", background: C.paperDark, borderLeft: `3px solid ${C.amber}` }}>
-              <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: 16, lineHeight: 1.5, fontStyle: "italic", color: C.ink }}>
-                {t.pricing.guarantee}
-              </p>
-            </div>
-          </div>
-
-          <div className="lg:col-span-7">
-            <div style={{ border: `1px solid ${C.ink}`, background: C.paper }}>
-              <div
-                role="tablist"
-                aria-label={lang === "es" ? "Periodo de facturación" : "Billing period"}
-                style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderBottom: `1px solid ${C.ink}` }}
-              >
-                {t.pricing.plans.map((plan) => (
-                  <button
-                    key={plan.billing}
-                    role="tab"
-                    aria-selected={billing === plan.billing}
-                    onClick={() => setBilling(plan.billing)}
-                    style={{
-                      padding: "16px 16px",
-                      background: billing === plan.billing ? C.ink : "transparent",
-                      color: billing === plan.billing ? C.paper : C.inkMuted,
-                      fontSize: 11,
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
+                      color: C.ink,
                       fontWeight: 700,
-                      borderRight: plan.billing === "monthly" ? `1px solid ${C.ink}` : "none",
-                      cursor: "pointer",
-                      minHeight: 48,
-                      lineHeight: 1.3,
+                      textDecoration: "underline",
+                      textUnderlineOffset: 3,
+                      textDecorationColor: C.border,
+                      fontVariantNumeric: "tabular-nums",
                     }}
                   >
-                    {plan.billing === "monthly" ? t.pricing.monthlyTab : t.pricing.annualTab}
-                  </button>
-                ))}
-              </div>
+                    {PHONE}
+                  </a>
+                </div>
 
-              <div style={{ padding: "48px 32px 32px", textAlign: "center" }}>
-                <div style={{ fontSize: 11, letterSpacing: "0.22em", color: C.inkMuted, fontWeight: 700, textTransform: "uppercase", marginBottom: 16 }}>
-                  {t.pricing.perLocation}
-                </div>
-                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 6 }}>
-                  <Mono style={{ fontSize: "clamp(56px, 9vw, 108px)", fontWeight: 700, color: C.ink, letterSpacing: "-0.04em", lineHeight: 1 }}>
-                    {active.price}
-                  </Mono>
-                  <span style={{ fontSize: 18, color: C.inkMuted, fontWeight: 500, marginLeft: 4 }}>{active.period}</span>
-                </div>
-                <div style={{ fontSize: 13, color: C.inkMuted, marginTop: 14, fontWeight: 500 }}>{active.note}</div>
-
-                <div className="mt-7">
-                  <DemoCtaPair lang={lang} size="lg" />
-                </div>
-              </div>
-
-              <div style={{ borderTop: `1px solid ${C.rule}`, padding: "24px 32px 32px", background: C.paperDark }}>
-                <div style={{ fontSize: 11, letterSpacing: "0.22em", color: C.inkMuted, fontWeight: 700, textTransform: "uppercase", marginBottom: 14 }}>
-                  {t.pricing.included}
-                </div>
-                <ul style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
-                  {t.pricing.items.map((item, i) => (
-                    <li key={i} style={{ display: "flex", gap: 12, fontSize: 14, lineHeight: 1.5, color: C.ink }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.forest} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginTop: 4, flexShrink: 0 }} aria-hidden>
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                      <span style={{ fontWeight: 500 }}>{item}</span>
+                {/* Trust bar */}
+                <ul
+                  className="mt-10 flex flex-wrap gap-x-6 gap-y-3"
+                  style={{ fontSize: 13, color: C.inkMuted, fontWeight: 600 }}
+                >
+                  {t.hero.trust.map((item) => (
+                    <li key={item} className="flex items-center gap-2">
+                      <span
+                        aria-hidden
+                        style={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: 999,
+                          background: C.gold,
+                          display: "inline-block",
+                        }}
+                      />
+                      <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
-/* ═══════════════════════════════════════════════════════════════
-   FINAL CTA
-   ═══════════════════════════════════════════════════════════════ */
-
-function FinalCta({ t, lang }: { t: Copy; lang: Lang }) {
-  return (
-    <section style={{ background: C.ink, color: C.paper, borderTop: `3px solid ${C.amber}` }} className="py-20 sm:py-28">
-      <div className="mx-auto max-w-[1280px] px-6 sm:px-10">
-        <div className="grid gap-12 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-7">
-            <Kicker tone="dark">{t.cta.kicker}</Kicker>
-            <DisplayH2 tone="dark" style={{ marginTop: 20, maxWidth: 720 }}>
-              {t.cta.h2}
-            </DisplayH2>
-            <p style={{ fontSize: 17, lineHeight: 1.6, color: "rgba(248,245,238,0.7)", marginTop: 20, maxWidth: 520 }}>
-              {t.cta.sub}
-            </p>
-          </div>
-
-          <div className="lg:col-span-5">
-            <div style={{ fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(248,245,238,0.6)", fontWeight: 700 }}>
-              {t.cta.callLabel}
-            </div>
-            <a
-              href={t.hero.phoneHref}
-              style={{
-                display: "block",
-                marginTop: 12,
-                fontFamily: "var(--font-mono), ui-monospace, monospace",
-                fontVariantNumeric: "tabular-nums",
-                fontSize: 34,
-                fontWeight: 700,
-                color: C.paper,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              {t.hero.phone}
-            </a>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <a
-                href={lang === "es" ? "/es/setup" : "/setup"}
-                style={{
-                  background: C.amber,
-                  color: C.ink,
-                  fontSize: 14,
-                  fontWeight: 700,
-                  padding: "12px 20px",
-                  borderRadius: 4,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  textDecoration: "none",
-                  minHeight: 44,
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = C.amberHover)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = C.amber)}
-              >
-                {t.cta.startFree} →
-              </a>
-              <a
-                href="/audit"
-                style={{
-                  background: "transparent",
-                  color: C.paper,
-                  fontSize: 14,
-                  fontWeight: 600,
-                  padding: "12px 20px",
-                  borderRadius: 4,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  border: "1px solid rgba(248,245,238,0.3)",
-                  textDecoration: "none",
-                  minHeight: 44,
-                }}
-              >
-                {t.cta.bookDemo} →
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   LATEST POSTS — internal link equity
-   ═══════════════════════════════════════════════════════════════ */
-
-function LatestPosts({ lang, posts }: { lang: Lang; posts: BlogPostPreview[] }) {
-  const labels = lang === "es"
-    ? { kicker: "Del blog", h2: "Escrito para contratistas.", all: "Ver todo →" }
-    : { kicker: "From the blog", h2: "Written for contractors.", all: "See all →" };
-  const base = lang === "es" ? "/es/blog" : "/blog";
-
-  return (
-    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-24">
-      <div className="flex items-end justify-between gap-6 flex-wrap">
-        <div>
-          <Kicker>{labels.kicker}</Kicker>
-          <DisplayH2 style={{ marginTop: 18, fontSize: "clamp(28px, 3.2vw, 44px)" }}>
-            {labels.h2}
-          </DisplayH2>
-        </div>
-        <a
-          href={base}
-          style={{
-            fontSize: 14,
-            fontWeight: 600,
-            color: C.ink,
-            textDecoration: "underline",
-            textUnderlineOffset: 4,
-            textDecorationColor: C.rule,
-          }}
-        >
-          {labels.all}
-        </a>
-      </div>
-
-      <ul className="mt-10 grid gap-x-8 gap-y-10 md:grid-cols-3">
-        {posts.slice(0, 3).map((p) => (
-          <li key={p.slug}>
-            <a href={`${base}/${p.slug}`} className="block group">
-              <div
-                style={{
-                  fontSize: 11,
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
-                  color: C.inkMuted,
-                  fontWeight: 700,
-                  marginBottom: 10,
-                }}
-              >
-                {p.category ?? (lang === "es" ? "Artículo" : "Article")}
-                {p.readingTimeMin ? ` · ${p.readingTimeMin} ${lang === "es" ? "min" : "min"}` : ""}
+              {/* Right — live demo widget */}
+              <div className="lg:col-span-5">
+                <IndustrialDemoWidget lang={lang} phone={PHONE} phoneHref={PHONE_TEL} />
               </div>
-              <h3
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            PROBLEM — Navy (the dark moment #1)
+            ═══════════════════════════════════════════════════════════ */}
+        <section style={{ background: C.navy, color: C.truck }}>
+          <div className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-28">
+            <div className="max-w-[880px]">
+              <Kicker tone="dark">{t.problem.kicker}</Kicker>
+              <h2
+                className="mt-6"
                 style={{
-                  fontFamily: "var(--font-fraunces), Georgia, serif",
-                  fontSize: 22,
-                  lineHeight: 1.2,
-                  fontWeight: 500,
-                  color: C.ink,
-                  letterSpacing: "-0.015em",
+                  fontSize: "clamp(36px, 5vw, 64px)",
+                  fontWeight: 900,
+                  lineHeight: 1,
+                  letterSpacing: "-0.03em",
+                  color: C.white,
                 }}
-                className="group-hover:underline"
               >
-                {p.title}
-              </h3>
-              {p.metaDescription && (
-                <p style={{ marginTop: 8, fontSize: 14, lineHeight: 1.6, color: C.inkMuted }}>
-                  {p.metaDescription}
+                <span>{t.problem.h2a} </span>
+                <span style={{ color: C.gold }}>{t.problem.h2b}</span>
+              </h2>
+            </div>
+
+            <div className="mt-14 grid gap-10 lg:grid-cols-12 lg:gap-14">
+              <div className="lg:col-span-7">
+                <div className="flex flex-wrap gap-x-12 gap-y-8">
+                  <StatBlock num={t.problem.stat1Num} label={t.problem.stat1Label} />
+                  <StatBlock num={t.problem.stat2Num} label={t.problem.stat2Label} />
+                </div>
+
+                <p
+                  className="mt-10 max-w-[560px]"
+                  style={{
+                    fontSize: 18,
+                    lineHeight: 1.55,
+                    color: "rgba(248,250,252,0.82)",
+                    fontWeight: 500,
+                  }}
+                >
+                  {t.problem.body}
                 </p>
-              )}
+              </div>
+
+              {/* ROI tease card */}
+              <div className="lg:col-span-5 lg:mt-2">
+                <div
+                  style={{
+                    border: `1px solid rgba(212,168,67,0.35)`,
+                    background: C.midnight,
+                    padding: 28,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 11,
+                      letterSpacing: "0.2em",
+                      textTransform: "uppercase",
+                      color: C.gold,
+                      fontWeight: 800,
+                    }}
+                  >
+                    {lang === "es" ? "Haz la cuenta" : "Do the math"}
+                  </div>
+                  <div className="mt-4" style={{ fontSize: 15, color: "rgba(248,250,252,0.82)", lineHeight: 1.5 }}>
+                    {t.problem.roiPre}
+                  </div>
+                  <div
+                    className="mt-2"
+                    style={{
+                      fontSize: 52,
+                      fontWeight: 900,
+                      color: C.gold,
+                      letterSpacing: "-0.03em",
+                      lineHeight: 1,
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    $10,396
+                  </div>
+                  <div className="mt-3" style={{ fontSize: 13, color: "rgba(248,250,252,0.6)", fontWeight: 500 }}>
+                    {lang === "es" ? "perdidos cada mes." : "lost every month."}
+                  </div>
+
+                  <a
+                    href={base + "/roi-calculator"}
+                    className="mt-6 inline-flex items-center gap-1.5"
+                    style={{
+                      color: C.white,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      textDecoration: "underline",
+                      textUnderlineOffset: 3,
+                      textDecorationColor: "rgba(212,168,67,0.6)",
+                    }}
+                  >
+                    {t.problem.roiLink}
+                    <span>→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            HOW IT WORKS — Truck White
+            ═══════════════════════════════════════════════════════════ */}
+        <section id="how" style={{ background: C.truck }}>
+          <div className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-28">
+            <div className="max-w-[760px]">
+              <Kicker>{t.how.kicker}</Kicker>
+              <h2 className="mt-6" style={displayH2(C.ink)}>
+                {t.how.h2}
+              </h2>
+              <p className="mt-6 max-w-[560px]" style={bodyLead(C.inkMuted)}>
+                {t.how.sub}
+              </p>
+            </div>
+
+            <div className="mt-14 grid gap-8 md:grid-cols-3 md:gap-6">
+              {t.how.steps.map((step, i) => (
+                <div
+                  key={i}
+                  style={{
+                    border: `1px solid ${C.border}`,
+                    background: C.white,
+                    padding: 28,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 11,
+                      letterSpacing: "0.22em",
+                      textTransform: "uppercase",
+                      color: C.gold,
+                      fontWeight: 800,
+                    }}
+                  >
+                    {step.title}
+                  </div>
+                  <p className="mt-4" style={{ fontSize: 15, lineHeight: 1.55, color: C.ink, fontWeight: 500 }}>
+                    {step.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            FEATURES — Truck White, bento
+            ═══════════════════════════════════════════════════════════ */}
+        <section style={{ background: C.white, borderTop: `1px solid ${C.border}` }}>
+          <div className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-28">
+            <div className="max-w-[760px]">
+              <Kicker>{t.features.kicker}</Kicker>
+              <h2 className="mt-6" style={displayH2(C.ink)}>
+                {t.features.h2}
+              </h2>
+              <p className="mt-6 max-w-[640px]" style={bodyLead(C.inkMuted)}>
+                {t.features.sub}
+              </p>
+            </div>
+
+            <div className="mt-14 grid gap-0 md:grid-cols-3" style={{ border: `1px solid ${C.border}` }}>
+              {t.features.items.map((item, i) => (
+                <div
+                  key={item.title}
+                  style={{
+                    padding: 28,
+                    borderRight:
+                      i % 3 !== 2 ? `1px solid ${C.border}` : "none",
+                    borderBottom:
+                      i < 3 ? `1px solid ${C.border}` : "none",
+                    background: C.white,
+                    minHeight: 220,
+                  }}
+                >
+                  <div
+                    aria-hidden
+                    style={{
+                      width: 8,
+                      height: 8,
+                      background: C.gold,
+                      marginBottom: 18,
+                    }}
+                  />
+                  <h3
+                    style={{
+                      fontSize: 19,
+                      fontWeight: 800,
+                      color: C.ink,
+                      letterSpacing: "-0.015em",
+                      lineHeight: 1.15,
+                    }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p className="mt-3" style={{ fontSize: 14, lineHeight: 1.55, color: C.inkMuted, fontWeight: 500 }}>
+                    {item.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            PRICING — Navy
+            ═══════════════════════════════════════════════════════════ */}
+        <section id="pricing" style={{ background: C.navy, color: C.truck }}>
+          <div className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-28">
+            <div className="max-w-[760px]">
+              <Kicker tone="dark">{t.pricing.kicker}</Kicker>
+              <h2 className="mt-6" style={displayH2(C.white)}>
+                {t.pricing.h2}
+              </h2>
+              <p className="mt-6 max-w-[640px]" style={bodyLead("rgba(248,250,252,0.75)")}>
+                {t.pricing.sub}
+              </p>
+            </div>
+
+            <div className="mt-14 grid gap-10 lg:grid-cols-12 lg:gap-14 items-start">
+              {/* Price card */}
+              <div
+                className="lg:col-span-7"
+                style={{
+                  background: C.midnight,
+                  border: `1px solid rgba(212,168,67,0.35)`,
+                  padding: 40,
+                }}
+              >
+                <div className="flex items-baseline gap-2">
+                  <span
+                    style={{
+                      fontSize: "clamp(64px, 8vw, 96px)",
+                      fontWeight: 900,
+                      color: C.gold,
+                      letterSpacing: "-0.04em",
+                      lineHeight: 0.9,
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {t.pricing.price}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 22,
+                      color: "rgba(248,250,252,0.72)",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {t.pricing.period}
+                  </span>
+                </div>
+
+                <p
+                  className="mt-4"
+                  style={{
+                    fontSize: 15,
+                    color: "rgba(248,250,252,0.72)",
+                    fontWeight: 500,
+                  }}
+                >
+                  {t.pricing.annual}
+                </p>
+
+                <ul
+                  className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2"
+                  style={{ fontSize: 14, color: C.truck }}
+                >
+                  {t.pricing.includes.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span
+                        aria-hidden
+                        style={{
+                          color: C.green,
+                          fontWeight: 800,
+                          flexShrink: 0,
+                          marginTop: 1,
+                        }}
+                      >
+                        ✓
+                      </span>
+                      <span style={{ fontWeight: 500 }}>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-10 flex flex-wrap items-center gap-3">
+                  <GoldButton href={setupHref} size="lg">
+                    {t.pricing.primary}
+                  </GoldButton>
+                </div>
+                <div
+                  className="mt-4"
+                  style={{
+                    fontSize: 13,
+                    color: "rgba(248,250,252,0.65)",
+                    fontWeight: 500,
+                  }}
+                >
+                  {t.pricing.trial}
+                </div>
+              </div>
+
+              {/* VS human */}
+              <div className="lg:col-span-5">
+                <div
+                  style={{
+                    borderLeft: `3px solid ${C.gold}`,
+                    paddingLeft: 24,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "clamp(24px, 2.6vw, 32px)",
+                      fontWeight: 800,
+                      color: C.white,
+                      letterSpacing: "-0.02em",
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    {t.pricing.vsHuman}
+                  </div>
+                  <p
+                    className="mt-5"
+                    style={{
+                      fontSize: 15,
+                      lineHeight: 1.6,
+                      color: "rgba(248,250,252,0.72)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {t.pricing.vsHumanDetail}
+                  </p>
+
+                  <div className="mt-8 grid grid-cols-2 gap-6">
+                    <div>
+                      <div style={{ fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(248,250,252,0.55)", fontWeight: 700 }}>
+                        {lang === "es" ? "Humana" : "Human"}
+                      </div>
+                      <div
+                        className="mt-2"
+                        style={{
+                          fontSize: 26,
+                          fontWeight: 900,
+                          color: C.white,
+                          letterSpacing: "-0.02em",
+                          fontVariantNumeric: "tabular-nums",
+                        }}
+                      >
+                        $3,600
+                      </div>
+                      <div style={{ fontSize: 12, color: "rgba(248,250,252,0.55)", marginTop: 2, fontWeight: 500 }}>
+                        {lang === "es" ? "40 hrs/sem · 1 idioma" : "40 hrs/wk · 1 language"}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: C.gold, fontWeight: 800 }}>
+                        {lang === "es" ? "María" : "Maria"}
+                      </div>
+                      <div
+                        className="mt-2"
+                        style={{
+                          fontSize: 26,
+                          fontWeight: 900,
+                          color: C.gold,
+                          letterSpacing: "-0.02em",
+                          fontVariantNumeric: "tabular-nums",
+                        }}
+                      >
+                        $497
+                      </div>
+                      <div style={{ fontSize: 12, color: "rgba(248,250,252,0.55)", marginTop: 2, fontWeight: 500 }}>
+                        {lang === "es" ? "168 hrs/sem · 2 idiomas" : "168 hrs/wk · 2 languages"}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            FAQ — Truck White
+            ═══════════════════════════════════════════════════════════ */}
+        <section style={{ background: C.truck }}>
+          <div className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-28">
+            <div className="grid gap-10 lg:grid-cols-12 lg:gap-16 items-start">
+              <div className="lg:col-span-5 lg:sticky lg:top-24">
+                <Kicker>{t.faq.kicker}</Kicker>
+                <h2 className="mt-6" style={displayH2(C.ink)}>
+                  {t.faq.h2}
+                </h2>
+                <p className="mt-6 max-w-[400px]" style={bodyLead(C.inkMuted)}>
+                  {t.faq.sub}
+                </p>
+                <a
+                  href={base + "/faq"}
+                  className="mt-8 inline-flex items-center gap-1.5"
+                  style={{
+                    color: C.ink,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    textDecoration: "underline",
+                    textUnderlineOffset: 4,
+                    textDecorationColor: C.gold,
+                    textDecorationThickness: 2,
+                  }}
+                >
+                  {t.faq.more}
+                  <span>→</span>
+                </a>
+              </div>
+
+              <div className="lg:col-span-7">
+                <div style={{ borderTop: `1px solid ${C.border}` }}>
+                  {t.faq.items.map((item, i) => (
+                    <details
+                      key={i}
+                      open={openFaq === i}
+                      onToggle={(e) => {
+                        if ((e.target as HTMLDetailsElement).open) setOpenFaq(i);
+                        else if (openFaq === i) setOpenFaq(null);
+                      }}
+                      style={{
+                        borderBottom: `1px solid ${C.border}`,
+                        background: C.white,
+                      }}
+                    >
+                      <summary
+                        style={{
+                          listStyle: "none",
+                          cursor: "pointer",
+                          padding: "20px 24px",
+                          fontSize: 17,
+                          fontWeight: 700,
+                          color: C.ink,
+                          letterSpacing: "-0.005em",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 16,
+                        }}
+                      >
+                        <span>{item.q}</span>
+                        <span
+                          aria-hidden
+                          style={{
+                            fontSize: 20,
+                            fontWeight: 800,
+                            color: C.gold,
+                            flexShrink: 0,
+                            transition: "transform 200ms",
+                            transform: openFaq === i ? "rotate(45deg)" : "rotate(0deg)",
+                            display: "inline-block",
+                          }}
+                        >
+                          +
+                        </span>
+                      </summary>
+                      <div
+                        style={{
+                          padding: "0 24px 24px",
+                          fontSize: 15,
+                          lineHeight: 1.6,
+                          color: C.inkMuted,
+                          fontWeight: 500,
+                          maxWidth: 620,
+                        }}
+                      >
+                        {item.a}
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            FINAL CTA — Navy
+            ═══════════════════════════════════════════════════════════ */}
+        <section style={{ background: C.navy, color: C.truck }}>
+          <div className="mx-auto max-w-[1280px] px-6 sm:px-10 py-20 sm:py-28">
+            <div className="max-w-[880px]">
+              <Kicker tone="dark">{t.finalCta.kicker}</Kicker>
+              <h2
+                className="mt-6"
+                style={{
+                  fontSize: "clamp(40px, 6vw, 80px)",
+                  fontWeight: 900,
+                  lineHeight: 0.95,
+                  letterSpacing: "-0.035em",
+                  color: C.white,
+                }}
+              >
+                <span style={{ display: "block" }}>{t.finalCta.h2a}</span>
+                <span style={{ display: "block", color: C.gold }}>{t.finalCta.h2b}</span>
+              </h2>
+
+              <p
+                className="mt-8 max-w-[640px]"
+                style={{
+                  fontSize: 19,
+                  lineHeight: 1.5,
+                  color: "rgba(248,250,252,0.82)",
+                  fontWeight: 500,
+                }}
+              >
+                {t.finalCta.sub}
+              </p>
+
+              <div className="mt-10 flex flex-wrap items-center gap-3">
+                <GoldButton href={setupHref} size="lg">
+                  {t.finalCta.primary}
+                </GoldButton>
+                <a
+                  href={PHONE_TEL}
+                  style={{
+                    color: C.white,
+                    fontSize: 15,
+                    fontWeight: 700,
+                    textDecoration: "underline",
+                    textUnderlineOffset: 4,
+                    textDecorationColor: "rgba(212,168,67,0.6)",
+                    textDecorationThickness: 2,
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {PHONE}
+                </a>
+              </div>
+
+              <div
+                className="mt-8 pt-6"
+                style={{
+                  borderTop: `1px solid rgba(248,250,252,0.18)`,
+                  fontSize: 13,
+                  color: "rgba(248,250,252,0.65)",
+                  fontWeight: 500,
+                }}
+              >
+                {t.finalCta.note}
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* ═══════════════════════════════════════════════════════════
+          FOOTER — Midnight
+          ═══════════════════════════════════════════════════════════ */}
+      <footer style={{ background: C.midnight, color: "rgba(248,250,252,0.72)" }}>
+        <div className="mx-auto max-w-[1280px] px-6 sm:px-10 py-14">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-5">
+              <Image
+                src="/images/logo-inline-white.webp"
+                alt="Capta"
+                width={120}
+                height={32}
+                className="h-8 w-auto"
+              />
+              <p className="mt-6 max-w-[360px]" style={{ fontSize: 14, lineHeight: 1.55, color: "rgba(248,250,252,0.55)" }}>
+                {t.footer.tagline}
+              </p>
+            </div>
+
+            <FooterColumn
+              title={t.footer.product}
+              links={[
+                { label: t.nav.platform, href: base + "/platform" },
+                { label: t.nav.pricing, href: base + "/pricing" },
+                { label: lang === "es" ? "ROI" : "ROI calculator", href: base + "/roi-calculator" },
+                { label: lang === "es" ? "Estado" : "Status", href: "/status" },
+              ]}
+            />
+
+            <FooterColumn
+              title={t.footer.company}
+              links={[
+                { label: t.nav.about, href: base + "/about" },
+                { label: t.nav.blog, href: base + "/blog" },
+                { label: t.nav.faq, href: base + "/faq" },
+                { label: lang === "es" ? "Ayuda" : "Help", href: base + "/help" },
+              ]}
+            />
+
+            <FooterColumn
+              title={t.footer.legal}
+              links={[
+                { label: lang === "es" ? "Términos" : "Terms", href: "/legal/terms" },
+                { label: lang === "es" ? "Privacidad" : "Privacy", href: "/legal/privacy" },
+                { label: "DPA", href: "/legal/dpa" },
+                { label: lang === "es" ? "Sub-procesadores" : "Sub-processors", href: "/legal/subprocessors" },
+              ]}
+            />
+          </div>
+
+          <div
+            className="mt-14 pt-8 flex flex-wrap items-center justify-between gap-4"
+            style={{
+              borderTop: `1px solid rgba(248,250,252,0.1)`,
+              fontSize: 12,
+              color: "rgba(248,250,252,0.45)",
+              fontWeight: 500,
+            }}
+          >
+            <div>{t.footer.copyright}</div>
+            <div className="flex items-center gap-3">
+              <span style={{ color: "rgba(212,168,67,0.75)" }}>●</span>
+              <span>{t.footer.compliance}</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LOCAL PRIMITIVES
+   ═══════════════════════════════════════════════════════════════════ */
+
+function displayH2(color: string): React.CSSProperties {
+  return {
+    fontSize: "clamp(34px, 4.2vw, 56px)",
+    fontWeight: 900,
+    lineHeight: 1,
+    letterSpacing: "-0.03em",
+    color,
+  };
+}
+
+function bodyLead(color: string): React.CSSProperties {
+  return {
+    fontSize: 18,
+    lineHeight: 1.55,
+    color,
+    fontWeight: 500,
+  };
+}
+
+function Kicker({
+  children,
+  tone = "light",
+}: {
+  children: React.ReactNode;
+  tone?: "light" | "dark";
+}) {
+  return (
+    <div
+      style={{
+        color: C.gold,
+        fontSize: 12,
+        letterSpacing: "0.22em",
+        fontWeight: 800,
+        textTransform: "uppercase",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+      }}
+    >
+      <span
+        aria-hidden
+        style={{
+          width: 24,
+          height: 2,
+          background: C.gold,
+          display: "inline-block",
+        }}
+      />
+      <span style={{ color: tone === "dark" ? C.gold : C.gold }}>{children}</span>
+    </div>
+  );
+}
+
+function StatBlock({ num, label }: { num: string; label: string }) {
+  return (
+    <div style={{ maxWidth: 280 }}>
+      <div
+        style={{
+          fontSize: "clamp(56px, 7vw, 88px)",
+          fontWeight: 900,
+          color: C.gold,
+          letterSpacing: "-0.04em",
+          lineHeight: 0.9,
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {num}
+      </div>
+      <div
+        className="mt-3"
+        style={{
+          fontSize: 15,
+          color: "rgba(248,250,252,0.82)",
+          lineHeight: 1.4,
+          fontWeight: 500,
+          maxWidth: 260,
+        }}
+      >
+        {label}
+      </div>
+    </div>
+  );
+}
+
+function GoldButton({
+  href,
+  children,
+  size = "md",
+}: {
+  href: string;
+  children: React.ReactNode;
+  size?: "sm" | "md" | "lg";
+}) {
+  const pad = size === "lg" ? "15px 24px" : size === "sm" ? "9px 16px" : "12px 20px";
+  const fs = size === "lg" ? 16 : size === "sm" ? 13 : 14;
+  return (
+    <a
+      href={href}
+      style={{
+        background: C.gold,
+        color: C.midnight,
+        fontSize: fs,
+        fontWeight: 800,
+        padding: pad,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        border: `1px solid ${C.gold}`,
+        textDecoration: "none",
+        letterSpacing: "-0.005em",
+        transition: "background 150ms",
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = C.goldDark)}
+      onMouseLeave={(e) => (e.currentTarget.style.background = C.gold)}
+    >
+      {children}
+      <span style={{ fontWeight: 700 }}>→</span>
+    </a>
+  );
+}
+
+function OutlineButton({
+  href,
+  children,
+  size = "md",
+}: {
+  href: string;
+  children: React.ReactNode;
+  size?: "md" | "lg";
+}) {
+  const pad = size === "lg" ? "14px 22px" : "11px 18px";
+  const fs = size === "lg" ? 16 : 14;
+  return (
+    <a
+      href={href}
+      style={{
+        background: "transparent",
+        color: C.ink,
+        fontSize: fs,
+        fontWeight: 700,
+        padding: pad,
+        border: `1px solid ${C.ink}`,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        textDecoration: "none",
+        letterSpacing: "-0.005em",
+        transition: "all 150ms",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = C.ink;
+        e.currentTarget.style.color = C.white;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = "transparent";
+        e.currentTarget.style.color = C.ink;
+      }}
+    >
+      {children}
+    </a>
+  );
+}
+
+function FooterColumn({
+  title,
+  links,
+}: {
+  title: string;
+  links: { label: string; href: string }[];
+}) {
+  return (
+    <div className="lg:col-span-2">
+      <div
+        style={{
+          fontSize: 11,
+          letterSpacing: "0.22em",
+          textTransform: "uppercase",
+          color: "rgba(248,250,252,0.55)",
+          fontWeight: 800,
+          marginBottom: 14,
+        }}
+      >
+        {title}
+      </div>
+      <ul className="flex flex-col gap-3">
+        {links.map((link) => (
+          <li key={link.href}>
+            <a
+              href={link.href}
+              style={{
+                fontSize: 14,
+                color: "rgba(248,250,252,0.72)",
+                fontWeight: 500,
+                textDecoration: "none",
+                transition: "color 150ms",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = C.gold)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(248,250,252,0.72)")}
+            >
+              {link.label}
             </a>
           </li>
         ))}
       </ul>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SCHEMA
-   ═══════════════════════════════════════════════════════════════ */
-
-function JsonLd({ lang }: { lang: Lang }) {
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          name: "Capta",
-          applicationCategory: "BusinessApplication",
-          operatingSystem: "Web",
-          inLanguage: lang,
-          offers: {
-            "@type": "AggregateOffer",
-            lowPrice: "397",
-            highPrice: "497",
-            priceCurrency: "USD",
-            offerCount: "2",
-          },
-          description:
-            "Bilingual AI receptionist for home service businesses. Answers calls, generates estimates, recovers missed calls, and manages follow-ups in English and Spanish, 24/7. Flat $497/mo.",
-        }),
-      }}
-    />
+    </div>
   );
 }

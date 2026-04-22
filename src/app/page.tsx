@@ -1,18 +1,9 @@
 import { db } from "@/db";
-import { blogPosts, testimonials } from "@/db/schema";
+import { testimonials } from "@/db/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 import LandingPage from "./HomeClient";
 
 export const dynamic = "force-dynamic";
-
-type PostRow = {
-  slug: string;
-  title: string;
-  metaDescription: string | null;
-  category: string | null;
-  readingTimeMin: number | null;
-  publishedAt: string | null;
-};
 
 type ReviewRow = {
   ownerName: string;
@@ -25,27 +16,8 @@ type ReviewRow = {
 export default async function HomePage() {
   // Guard against a missing database (local dev without TURSO_DATABASE_URL).
   // The homepage should still render; marketing copy is static.
-  let posts: PostRow[] = [];
   let approvedReviews: ReviewRow[] = [];
   let ratingAgg: { avg: number; count: number } | null = null;
-
-  try {
-    posts = await db
-      .select({
-        slug: blogPosts.slug,
-        title: blogPosts.title,
-        metaDescription: blogPosts.metaDescription,
-        category: blogPosts.category,
-        readingTimeMin: blogPosts.readingTimeMin,
-        publishedAt: blogPosts.publishedAt,
-      })
-      .from(blogPosts)
-      .where(and(eq(blogPosts.published, true), eq(blogPosts.language, "en")))
-      .orderBy(desc(blogPosts.publishedAt))
-      .limit(3);
-  } catch {
-    // DB unavailable — render without blog posts.
-  }
 
   try {
     approvedReviews = await db
@@ -110,7 +82,7 @@ export default async function HomePage() {
           dangerouslySetInnerHTML={{ __html: reviewSchemaScript }}
         />
       )}
-      <LandingPage latestPosts={posts} />
+      <LandingPage />
     </>
   );
 }

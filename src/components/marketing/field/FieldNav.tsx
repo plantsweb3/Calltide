@@ -69,6 +69,14 @@ export function FieldNav({
     return () => document.removeEventListener("mousedown", onClick);
   }, [resourcesOpen]);
 
+  // Keep <html lang> in sync with the user's language toggle so assistive tech
+  // and search engines see the correct language without a full page load.
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = lang;
+    }
+  }, [lang]);
+
   const primaryLinks = [
     { label: t.platform, href: lang === "es" ? "/es/platform" : "/platform" },
     { label: t.pricing, href: lang === "es" ? "/es/pricing" : "/pricing" },
