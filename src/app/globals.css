@@ -773,22 +773,27 @@ select:focus-visible,
   animation: modal-content-in var(--duration-normal) var(--ease-out);
 }
 
-/* Dashboard table row / interactive element hover */
+/* Dashboard table row / interactive element hover — brand-kit affordance:
+   subtle gold left-border stamp so hover is visible at a glance. */
 .db-table-row,
 .db-hover-bg {
-  transition: background-color var(--duration-fast) var(--ease-out);
+  transition: background-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+  box-shadow: inset 3px 0 0 transparent;
 }
 .db-table-row:hover,
 .db-hover-bg:hover {
   background: var(--db-hover);
+  box-shadow: inset 3px 0 0 var(--db-accent);
 }
 
-/* Dashboard card with hover elevation */
+/* Dashboard card — industrial brand-kit (April 2026):
+   radius capped at 4px (sharp-edge bias), strokes over shadows. */
 .db-card {
   background: var(--db-card);
   border: 1px solid var(--db-border);
   box-shadow: var(--db-card-shadow);
-  border-radius: 0.75rem;
+  border-radius: 4px;
   transition: box-shadow var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
 }
 a.db-card:hover,

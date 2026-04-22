@@ -128,7 +128,7 @@ ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers.
 
 ## Style — Industrial direction (Brand Kit - March 2026)
 
-**Read `BRAND.md` at repo root first. That's the primary source of truth for all design decisions — palette, typography, spacing, stroke, radius, motion, voice, CTA rules.**
+**Read `BRAND.md` and `VOICE.md` at repo root first. BRAND is how it looks; VOICE is how it sounds. Both are primary sources of truth — palette, typography, spacing, stroke, radius, motion, CTA verbs, capitalization, lexicon, number formatting.**
 
 Source: `~/Desktop/HQ/Capta/Capta Brand Kit - Official.md` + `~/Desktop/HQ/Capta/Website Redesign Plan - March 2026.md`.
 
