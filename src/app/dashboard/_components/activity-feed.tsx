@@ -164,7 +164,7 @@ export default function ActivityFeed({
   if (events.length === 0) {
     return (
       <div
-        className="rounded-xl p-5 transition-colors duration-300"
+        className="rounded-[4px] p-5 transition-colors duration-300"
         style={{
           background: "var(--db-card)",
           border: "1px solid var(--db-border)",
@@ -203,7 +203,7 @@ export default function ActivityFeed({
 
   return (
     <div
-      className="rounded-xl p-5 transition-colors duration-300"
+      className="rounded-[4px] p-5 transition-colors duration-300"
       style={{
         background: "var(--db-card)",
         border: "1px solid var(--db-border)",

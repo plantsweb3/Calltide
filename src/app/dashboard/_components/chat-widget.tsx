@@ -385,7 +385,7 @@ export default function ChatWidget() {
                   )}
                   <div className={`max-w-[80%] ${msg.role === "user" ? "flex flex-col items-end" : ""}`}>
                     <div
-                      className={`rounded-2xl px-3.5 py-2.5 ${
+                      className={`rounded-[4px] px-3.5 py-2.5 ${
                         msg.role === "user" ? "rounded-br-md" : "rounded-bl-md"
                       }`}
                       style={
@@ -429,7 +429,7 @@ export default function ChatWidget() {
                     {receptionistName[0]}
                   </div>
                   <div
-                    className="rounded-2xl rounded-bl-md px-4 py-3"
+                    className="rounded-[4px] rounded-bl-md px-4 py-3"
                     style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}
                   >
                     <div className="flex items-center gap-1">
@@ -447,7 +447,7 @@ export default function ChatWidget() {
             {/* Input — clean, no border gimmicks */}
             <div className="px-4 pb-4 pt-2">
               <div
-                className="flex items-center gap-2 rounded-2xl px-4 py-1"
+                className="flex items-center gap-2 rounded-[4px] px-4 py-1"
                 style={{
                   background: "var(--db-surface)",
                   border: "1px solid var(--db-border)",

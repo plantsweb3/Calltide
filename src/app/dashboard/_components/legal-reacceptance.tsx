@@ -64,7 +64,7 @@ export default function LegalReacceptanceModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div
-        className="mx-4 w-full max-w-lg rounded-xl border p-6 shadow-xl"
+        className="mx-4 w-full max-w-lg rounded-[4px] border p-6 shadow-xl"
         style={{ background: "var(--db-surface)", borderColor: "var(--db-border)" }}
       >
         <div className="mb-4 flex items-center gap-2">

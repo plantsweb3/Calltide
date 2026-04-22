@@ -78,7 +78,7 @@ export default function PaymentBanner({ callsHandled, appointmentsBooked, recept
 
     return (
       <div
-        className="flex items-center gap-3 rounded-xl px-4 py-3 mb-4"
+        className="flex items-center gap-3 rounded-[4px] px-4 py-3 mb-4"
         style={{
           background: isUrgent ? "var(--db-warning-bg)" : "var(--db-accent-bg)",
           border: `1px solid ${isUrgent ? "var(--db-warning)" : "var(--db-accent)"}`,
@@ -122,7 +122,7 @@ export default function PaymentBanner({ callsHandled, appointmentsBooked, recept
 
   return (
     <div
-      className="flex items-center gap-3 rounded-xl px-4 py-3 mb-4"
+      className="flex items-center gap-3 rounded-[4px] px-4 py-3 mb-4"
       style={{
         background: isGrace ? "var(--db-warning-bg)" : "var(--db-danger-bg)",
         border: `1px solid ${isGrace ? "var(--db-warning)" : "var(--db-danger)"}`,

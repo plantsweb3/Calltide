@@ -180,7 +180,7 @@ export default function AppointmentCalendar({
   if (isMobile) {
     return (
       <div
-        className="rounded-xl overflow-hidden transition-colors duration-300"
+        className="rounded-[4px] overflow-hidden transition-colors duration-300"
         style={{
           background: "var(--db-card)",
           border: "1px solid var(--db-border)",
@@ -309,7 +309,7 @@ export default function AppointmentCalendar({
   // Desktop: full week view
   return (
     <div
-      className="rounded-xl overflow-hidden transition-colors duration-300"
+      className="rounded-[4px] overflow-hidden transition-colors duration-300"
       style={{
         background: "var(--db-card)",
         border: "1px solid var(--db-border)",

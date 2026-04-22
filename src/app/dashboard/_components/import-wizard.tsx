@@ -256,7 +256,7 @@ export default function ImportWizard({ initialType, lang }: { initialType?: Impo
               <button
                 key={key}
                 onClick={() => { setImportType(key); setStep("upload"); }}
-                className="flex flex-col items-start gap-3 rounded-xl p-5 text-left transition-all"
+                className="flex flex-col items-start gap-3 rounded-[4px] p-5 text-left transition-all"
                 style={{
                   background: "var(--db-surface)",
                   border: "1px solid var(--db-border)",
@@ -304,7 +304,7 @@ export default function ImportWizard({ initialType, lang }: { initialType?: Impo
 
           {/* Download template */}
           <div
-            className="rounded-xl p-4 mb-6 flex items-center justify-between"
+            className="rounded-[4px] p-4 mb-6 flex items-center justify-between"
             style={{ background: "var(--db-hover)", border: "1px solid var(--db-border)" }}
           >
             <div>
@@ -331,7 +331,7 @@ export default function ImportWizard({ initialType, lang }: { initialType?: Impo
 
           {/* Drop zone */}
           <div
-            className="rounded-xl border-2 border-dashed p-12 text-center transition-colors cursor-pointer"
+            className="rounded-[4px] border-2 border-dashed p-12 text-center transition-colors cursor-pointer"
             style={{
               borderColor: dragOver ? "var(--db-accent)" : "var(--db-border)",
               background: dragOver ? "color-mix(in srgb, var(--db-accent) 5%, transparent)" : "var(--db-surface)",
@@ -369,7 +369,7 @@ export default function ImportWizard({ initialType, lang }: { initialType?: Impo
           </div>
 
           {/* Tips */}
-          <div className="mt-6 rounded-xl p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
+          <div className="mt-6 rounded-[4px] p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
             <p className="text-xs font-medium mb-2" style={{ color: "var(--db-text)" }}>
               {t("import.tipsTitle", lang)}
             </p>
@@ -421,7 +421,7 @@ export default function ImportWizard({ initialType, lang }: { initialType?: Impo
             </div>
           </div>
 
-          <div className="overflow-auto rounded-xl border" style={{ borderColor: "var(--db-border)" }}>
+          <div className="overflow-auto rounded-[4px] border" style={{ borderColor: "var(--db-border)" }}>
             <table className="w-full text-xs">
               <thead>
                 <tr style={{ background: "var(--db-hover)" }}>
@@ -488,7 +488,7 @@ export default function ImportWizard({ initialType, lang }: { initialType?: Impo
           </h2>
 
           <div className="grid gap-4 sm:grid-cols-3 mb-6">
-            <div className="rounded-xl p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
+            <div className="rounded-[4px] p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
               <div className="text-2xl font-bold" style={{ color: "var(--db-success)" }}>
                 {results.imported}
               </div>
@@ -496,7 +496,7 @@ export default function ImportWizard({ initialType, lang }: { initialType?: Impo
                 {t("import.successfullyImported", lang)}
               </div>
             </div>
-            <div className="rounded-xl p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
+            <div className="rounded-[4px] p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
               <div className="text-2xl font-bold" style={{ color: "var(--db-text-muted)" }}>
                 {results.skipped}
               </div>
@@ -504,7 +504,7 @@ export default function ImportWizard({ initialType, lang }: { initialType?: Impo
                 {t("import.skippedDuplicates", lang)}
               </div>
             </div>
-            <div className="rounded-xl p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
+            <div className="rounded-[4px] p-4" style={{ background: "var(--db-surface)", border: "1px solid var(--db-border)" }}>
               <div className="text-2xl font-bold" style={{ color: results.errors.length > 0 ? "var(--db-danger)" : "var(--db-text-muted)" }}>
                 {results.errors.length}
               </div>
@@ -516,7 +516,7 @@ export default function ImportWizard({ initialType, lang }: { initialType?: Impo
 
           {/* Error details */}
           {results.errors.length > 0 && (
-            <div className="mb-6 rounded-xl overflow-hidden" style={{ border: "1px solid var(--db-danger)" }}>
+            <div className="mb-6 rounded-[4px] overflow-hidden" style={{ border: "1px solid var(--db-danger)" }}>
               <div className="px-4 py-3" style={{ background: "var(--db-danger-bg)" }}>
                 <p className="text-sm font-medium" style={{ color: "var(--db-danger)" }}>
                   {results.errors.length !== 1
