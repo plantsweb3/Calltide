@@ -82,6 +82,8 @@ export default function DesignCatalog() {
         <Rule />
         <KickerSection />
         <Rule />
+        <PatternsSection />
+        <Rule />
         <BandSection />
         <Rule />
         <DoNotSection />
@@ -539,6 +541,199 @@ function KickerSection() {
         </Card>
         <Snippet>{`<Kicker>Pricing</Kicker>
 <CatalogMarker section="01 · Pricing" rev="2026.04" />`}</Snippet>
+      </div>
+    </Section>
+  );
+}
+
+function PatternsSection() {
+  return (
+    <Section title="Patterns" num="10">
+      <p style={{ fontSize: 15, color: C.inkMuted, maxWidth: 640, marginBottom: 24, fontWeight: 500 }}>
+        Primitives composed into real screens. Copy and paste.
+      </p>
+
+      <div className="flex flex-col gap-10">
+        {/* Invoice row */}
+        <div>
+          <Mono style={{ fontSize: 11, color: C.gold, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", display: "block", marginBottom: 10 }}>
+            Invoice row
+          </Mono>
+          <div style={{ border: `1px solid ${C.ink}`, background: C.white }}>
+            {[
+              { n: "INV-0001", customer: "Reyes HVAC", date: "Apr 22", amount: "$1,240.00", status: "Paid" },
+              { n: "INV-0002", customer: "Salinas Plumbing", date: "Apr 19", amount: "$680.00", status: "Sent" },
+              { n: "INV-0003", customer: "Calloway Electric", date: "Apr 18", amount: "$2,800.00", status: "Draft" },
+            ].map((row, i) => (
+              <div
+                key={row.n}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "100px 1fr 100px 120px 80px",
+                  gap: 16,
+                  padding: "14px 18px",
+                  alignItems: "center",
+                  borderBottom: i < 2 ? `1px solid ${C.ruleSoft}` : "none",
+                }}
+              >
+                <Serial n={row.n} size="sm" />
+                <div style={{ fontSize: 14, fontWeight: 600, color: C.ink }}>{row.customer}</div>
+                <Mono style={{ fontSize: 12, color: C.inkMuted }}>{row.date}</Mono>
+                <Mono style={{ fontSize: 14, fontWeight: 800, color: C.ink, textAlign: "right" }}>{row.amount}</Mono>
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 800,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: row.status === "Paid" ? C.success : row.status === "Sent" ? C.gold : C.inkSoft,
+                  }}
+                >
+                  {row.status}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Job card */}
+        <div>
+          <Mono style={{ fontSize: 11, color: C.gold, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", display: "block", marginBottom: 10 }}>
+            Job card
+          </Mono>
+          <div
+            style={{
+              border: `1px solid ${C.ink}`,
+              background: C.white,
+              padding: 24,
+              position: "relative",
+              maxWidth: 520,
+            }}
+          >
+            <Stamp />
+            <div className="flex items-center justify-between">
+              <Serial n="JC-0042" size="md" />
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 800,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: C.danger,
+                }}
+              >
+                Urgent
+              </div>
+            </div>
+            <div className="mt-4" style={{ fontSize: 18, fontWeight: 800, color: C.ink, letterSpacing: "-0.015em" }}>
+              Drain clog · 4521 Oak Lane
+            </div>
+            <div className="mt-1" style={{ fontSize: 13, color: C.inkMuted, fontWeight: 500 }}>
+              Maria López · (210) 555-0182 · Spanish
+            </div>
+            <div className="mt-4" style={{ borderTop: `1px solid ${C.ruleSoft}` }}>
+              <SpecRow label="ETA" value="Today 2:15 PM" />
+              <SpecRow label="Tech" value="Juan" />
+              <SpecRow label="Scope" value="Kitchen main line" />
+              <SpecRow label="Estimate" value="$280 – $420" />
+            </div>
+          </div>
+        </div>
+
+        {/* Call log row */}
+        <div>
+          <Mono style={{ fontSize: 11, color: C.gold, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", display: "block", marginBottom: 10 }}>
+            Call log row
+          </Mono>
+          <div style={{ border: `1px solid ${C.ink}`, background: C.white }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "60px 100px 1fr 80px 60px 100px",
+                gap: 12,
+                padding: "10px 18px",
+                background: C.paperDark,
+                borderBottom: `1px solid ${C.ink}`,
+              }}
+            >
+              {["№", "Time", "Caller", "Dur.", "Lang", "Status"].map((h) => (
+                <div key={h} style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: C.inkMuted }}>
+                  {h}
+                </div>
+              ))}
+            </div>
+            {[
+              { n: 1, time: "2:04 PM", caller: "Unknown · (512) 555-0142", dur: "1:47", lang: "EN", status: "Booked" },
+              { n: 2, time: "11:17 AM", caller: "Maria López", dur: "2:12", lang: "ES", status: "Booked" },
+              { n: 3, time: "8:42 AM", caller: "Unknown · (830) 555-9821", dur: "0:48", lang: "EN", status: "Missed" },
+            ].map((row, i) => (
+              <div
+                key={row.n}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "60px 100px 1fr 80px 60px 100px",
+                  gap: 12,
+                  padding: "12px 18px",
+                  alignItems: "center",
+                  borderBottom: i < 2 ? `1px solid ${C.ruleSoft}` : "none",
+                  background: i % 2 === 1 ? C.paperDark : "transparent",
+                }}
+              >
+                <Serial n={row.n} size="sm" />
+                <Mono style={{ fontSize: 12, color: C.inkMuted }}>{row.time}</Mono>
+                <div style={{ fontSize: 13, fontWeight: 600, color: C.ink }}>{row.caller}</div>
+                <Mono style={{ fontSize: 12, color: C.inkMuted }}>{row.dur}</Mono>
+                <Mono style={{ fontSize: 11, fontWeight: 800, color: C.gold, letterSpacing: "0.1em" }}>
+                  {row.lang}
+                </Mono>
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 800,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: row.status === "Booked" ? C.success : C.danger,
+                  }}
+                >
+                  {row.status}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Receipt / spec summary */}
+        <div>
+          <Mono style={{ fontSize: 11, color: C.gold, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", display: "block", marginBottom: 10 }}>
+            Subscription receipt
+          </Mono>
+          <div style={{ maxWidth: 420 }}>
+            <div
+              style={{
+                border: `1px solid ${C.ink}`,
+                background: C.white,
+                padding: "20px 24px",
+                position: "relative",
+              }}
+            >
+              <Stamp />
+              <div className="flex items-baseline justify-between">
+                <Serial n="SUB-2026-04" size="sm" />
+                <Mono style={{ fontSize: 11, color: C.inkMuted }}>Apr 22, 2026</Mono>
+              </div>
+              <div className="mt-4" style={{ fontSize: 18, fontWeight: 800, color: C.ink, letterSpacing: "-0.015em" }}>
+                Monthly subscription · Capta
+              </div>
+              <div className="mt-3" style={{ borderTop: `1px solid ${C.ruleSoft}` }}>
+                <SpecRow label="Plan" value="Flat · Unlimited" />
+                <SpecRow label="Billing" value="Monthly" />
+                <SpecRow label="Amount" value="$497.00" />
+                <SpecRow label="Card" value="···· 4242" />
+                <SpecRow label="Status" value={<span style={{ color: C.success }}>Paid</span>} mono={false} />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </Section>
   );

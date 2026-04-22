@@ -57,10 +57,20 @@ VIOLATIONS=$(
     || true
 )
 
+# Baseline — the count of known-tolerated drift at the time of writing.
+# Rule: new PRs can't push the count above this number. When we clean up
+# more drift, lower this number in the same PR. Never raise it without
+# a review comment explaining why (e.g. adding a new functional color).
+BASELINE=103
+
+COUNT=0
 if [ -n "$VIOLATIONS" ]; then
   COUNT=$(echo "$VIOLATIONS" | wc -l | tr -d ' ')
+fi
+
+if [ "$COUNT" -gt "$BASELINE" ]; then
   echo ""
-  echo "✗ Brand drift — $COUNT raw non-palette hex value(s):"
+  echo "✗ Brand drift — $COUNT raw non-palette hex value(s), above baseline ($BASELINE):"
   echo ""
   echo "$VIOLATIONS" | head -40
   if [ "$COUNT" -gt 40 ]; then
@@ -71,7 +81,17 @@ if [ -n "$VIOLATIONS" ]; then
   echo "Fix: use a Brand Kit hex (see src/design/tokens.ts) or reference a"
   echo "     token via CSS var: \"var(--db-text, #0F1729)\"."
   echo ""
+  echo "Or, if the new colors are legitimate (functional / external brand /"
+  echo "data-viz), lower the baseline in scripts/brand-drift.sh and note why."
+  echo ""
   exit 1
 fi
 
-echo "✓ Brand drift clean. No non-palette hexes outside tokens."
+if [ "$COUNT" -gt 0 ]; then
+  echo "◦ Brand drift — $COUNT known violations (≤ baseline $BASELINE). Ship-ok."
+  echo "  Top offenders:"
+  echo "$VIOLATIONS" | cut -d: -f1 | sort | uniq -c | sort -rn | head -5 | sed 's/^/    /'
+else
+  echo "✓ Brand drift clean. No non-palette hexes outside tokens."
+fi
+exit 0

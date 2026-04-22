@@ -147,7 +147,7 @@ async function generateFirstWeekReport(business: Business, now: Date): Promise<s
 
   const headline = isEn ? "Your First Week with Capta" : "Su Primera Semana con Capta";
 
-  const gradeColor = grade === "A" ? "#22c55e" : grade === "B" ? "#3b82f6" : grade === "C" ? "#f59e0b" : "#ef4444";
+  const gradeColor = grade === "A" ? "#16A34A" : grade === "B" ? "#3b82f6" : grade === "C" ? "#f59e0b" : "#DC2626";
 
   const body = isEn
     ? `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;">
@@ -350,19 +350,19 @@ async function generateMonthlyReport(business: Business, now: Date): Promise<str
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;color:#0f172a;font-size:14px;">Calls</td>
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;color:#0f172a;">${thisMonthCalls?.count ?? 0}</td>
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;color:#64748b;">${lastMonthCalls?.count ?? 0}</td>
-              <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:600;color:${callChange.startsWith("+") ? BRAND_COLOR : "#ef4444"};">${callChange}</td>
+              <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:600;color:${callChange.startsWith("+") ? BRAND_COLOR : "#DC2626"};">${callChange}</td>
             </tr>
             <tr>
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;color:#0f172a;font-size:14px;">Appointments</td>
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;color:#0f172a;">${thisMonthAppts?.count ?? 0}</td>
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;color:#64748b;">${lastMonthAppts?.count ?? 0}</td>
-              <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:600;color:${apptChange.startsWith("+") ? BRAND_COLOR : "#ef4444"};">${apptChange}</td>
+              <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:600;color:${apptChange.startsWith("+") ? BRAND_COLOR : "#DC2626"};">${apptChange}</td>
             </tr>
             <tr>
               <td style="padding:12px;color:#0f172a;font-size:14px;">Est. Revenue</td>
               <td style="padding:12px;text-align:right;font-weight:700;color:${BRAND_COLOR};">${fmt$(thisRev)}</td>
               <td style="padding:12px;text-align:right;color:#64748b;">${fmt$(lastRev)}</td>
-              <td style="padding:12px;text-align:right;font-weight:600;color:${revChange.startsWith("+") ? BRAND_COLOR : "#ef4444"};">${revChange}</td>
+              <td style="padding:12px;text-align:right;font-weight:600;color:${revChange.startsWith("+") ? BRAND_COLOR : "#DC2626"};">${revChange}</td>
             </tr>
           </tbody>
         </table>
@@ -395,19 +395,19 @@ async function generateMonthlyReport(business: Business, now: Date): Promise<str
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;color:#0f172a;font-size:14px;">Llamadas</td>
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;color:#0f172a;">${thisMonthCalls?.count ?? 0}</td>
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;color:#64748b;">${lastMonthCalls?.count ?? 0}</td>
-              <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:600;color:${callChange.startsWith("+") ? BRAND_COLOR : "#ef4444"};">${callChange}</td>
+              <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:600;color:${callChange.startsWith("+") ? BRAND_COLOR : "#DC2626"};">${callChange}</td>
             </tr>
             <tr>
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;color:#0f172a;font-size:14px;">Citas</td>
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;color:#0f172a;">${thisMonthAppts?.count ?? 0}</td>
               <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;color:#64748b;">${lastMonthAppts?.count ?? 0}</td>
-              <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:600;color:${apptChange.startsWith("+") ? BRAND_COLOR : "#ef4444"};">${apptChange}</td>
+              <td style="padding:12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:600;color:${apptChange.startsWith("+") ? BRAND_COLOR : "#DC2626"};">${apptChange}</td>
             </tr>
             <tr>
               <td style="padding:12px;color:#0f172a;font-size:14px;">Ingresos Est.</td>
               <td style="padding:12px;text-align:right;font-weight:700;color:${BRAND_COLOR};">${fmt$(thisRev)}</td>
               <td style="padding:12px;text-align:right;color:#64748b;">${fmt$(lastRev)}</td>
-              <td style="padding:12px;text-align:right;font-weight:600;color:${revChange.startsWith("+") ? BRAND_COLOR : "#ef4444"};">${revChange}</td>
+              <td style="padding:12px;text-align:right;font-weight:600;color:${revChange.startsWith("+") ? BRAND_COLOR : "#DC2626"};">${revChange}</td>
             </tr>
           </tbody>
         </table>

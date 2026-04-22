@@ -26,6 +26,11 @@ jobs:
       - name: Type Check
         run: npm run typecheck
 
+      - name: Brand drift
+        # Guardrail against non-palette hex values sneaking back in.
+        # See BRAND.md, scripts/brand-drift.sh, and src/design/tokens.ts.
+        run: npm run brand:check
+
       - name: Test
         run: npm test
 
