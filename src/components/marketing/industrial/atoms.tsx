@@ -99,6 +99,37 @@ export function Rule({ className = "" }: { className?: string }) {
 }
 
 /* ────────────────────────────────────────────────────────────────
+   Catalog marker — spec-sheet metadata strip. Lives at the top of
+   a hero. Signals "this is documentation" rather than "marketing."
+   ──────────────────────────────────────────────────────────────── */
+
+export function CatalogMarker({
+  section,
+  rev = "2026.04",
+  tone = "light",
+}: {
+  section: string;
+  rev?: string;
+  tone?: "light" | "dark";
+}) {
+  return (
+    <div
+      className="hidden sm:flex items-center justify-between"
+      style={{
+        fontFamily: "var(--font-mono), ui-monospace, Menlo, monospace",
+        fontSize: 11,
+        color: tone === "dark" ? "rgba(248,250,252,0.55)" : C.inkSoft,
+        letterSpacing: "0.16em",
+        textTransform: "uppercase",
+      }}
+    >
+      <span>§ {section}</span>
+      <span>Cat · Rev {rev}</span>
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────
    Buttons — gold primary, navy outline, text tertiary
    ──────────────────────────────────────────────────────────────── */
 

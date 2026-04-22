@@ -12,6 +12,7 @@ import {
   Mono,
   Kicker,
   Rule,
+  CatalogMarker,
   PrimaryButton,
   SecondaryButton,
   FieldFrame,
@@ -326,14 +327,17 @@ export default function FAQClient({ initialLang }: { initialLang?: Lang } = {}) 
       <main id="main">
       {/* Hero */}
       <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-16 sm:pt-20 sm:pb-20">
+        <div style={{ marginBottom: 32 }}>
+          <CatalogMarker section="04 · Questions" />
+        </div>
         <div className="max-w-3xl">
           <Kicker>{t.hero.kicker}</Kicker>
           <DisplayH1 style={{ marginTop: 28 }}>
             {t.hero.h1a}
             <br />
-            <em style={{ fontStyle: "italic", color: C.amberInk }}>
+            <span style={{ fontStyle: "normal", borderBottom: "4px solid #D4A843", paddingBottom: 6, display: "inline-block", lineHeight: 1 }}>
               {t.hero.h1b}
-            </em>
+            </span>
           </DisplayH1>
           <p style={{ fontSize: 18, lineHeight: 1.55, color: C.inkMuted, marginTop: 28, maxWidth: 620 }}>
             {t.hero.sub}

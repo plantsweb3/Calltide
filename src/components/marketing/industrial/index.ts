@@ -4,6 +4,7 @@ export {
   Mono,
   Kicker,
   Rule,
+  CatalogMarker,
   PrimaryButton,
   SecondaryButton,
   TertiaryLink,

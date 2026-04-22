@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { C } from "./palette";
 import { PrimaryButton } from "./atoms";
 import type { Lang } from "@/lib/marketing/translations";
@@ -55,6 +56,12 @@ export function Nav({
   const resourcesRef = useRef<HTMLDivElement | null>(null);
   const t = NAV_COPY[lang];
   const base = lang === "es" ? "/es" : "";
+  const pathname = usePathname() || "/";
+  const isActive = (href: string) => {
+    // Exact root match, plus startsWith for nested pages (e.g. /blog/slug).
+    if (href === "/" || href === "/es") return pathname === href;
+    return pathname === href || pathname.startsWith(href + "/");
+  };
 
   useEffect(() => {
     if (!resourcesOpen) return;
@@ -108,17 +115,26 @@ export function Nav({
           className="hidden items-center gap-8 md:flex"
           style={{ fontSize: 14, fontWeight: 600, color: C.inkMuted }}
         >
-          {primaryLinks.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              style={{ color: C.inkMuted, transition: "color 150ms" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = C.ink)}
-              onMouseLeave={(e) => (e.currentTarget.style.color = C.inkMuted)}
-            >
-              {l.label}
-            </a>
-          ))}
+          {primaryLinks.map((l) => {
+            const active = isActive(l.href);
+            return (
+              <a
+                key={l.href}
+                href={l.href}
+                style={{
+                  color: active ? C.ink : C.inkMuted,
+                  transition: "color 150ms",
+                  paddingBottom: 4,
+                  borderBottom: active ? `2px solid ${C.amber}` : `2px solid transparent`,
+                  fontWeight: active ? 700 : 600,
+                }}
+                onMouseEnter={(e) => !active && (e.currentTarget.style.color = C.ink)}
+                onMouseLeave={(e) => !active && (e.currentTarget.style.color = C.inkMuted)}
+              >
+                {l.label}
+              </a>
+            );
+          })}
 
           <div ref={resourcesRef} style={{ position: "relative" }}>
             <button
@@ -135,6 +151,8 @@ export function Nav({
                 alignItems: "center",
                 gap: 4,
                 cursor: "pointer",
+                paddingBottom: 4,
+                borderBottom: resourceLinks.some((r) => isActive(r.href)) ? `2px solid ${C.amber}` : `2px solid transparent`,
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = C.ink)}
               onMouseLeave={(e) => !resourcesOpen && (e.currentTarget.style.color = C.inkMuted)}
@@ -179,7 +197,22 @@ export function Nav({
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          <a
+            href={phoneHref}
+            className="hidden lg:inline-flex items-center gap-2"
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              color: C.ink,
+              letterSpacing: "-0.005em",
+              fontVariantNumeric: "tabular-nums",
+              fontFamily: "var(--font-mono), ui-monospace, Menlo, monospace",
+            }}
+          >
+            {phone}
+          </a>
+
           <div className="hidden md:flex items-center gap-1" style={{ fontSize: 11 }}>
             <button
               onClick={() => toggleLang("en")}

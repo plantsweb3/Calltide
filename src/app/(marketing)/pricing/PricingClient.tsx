@@ -348,7 +348,7 @@ export default function PricingClient({ initialLang }: { initialLang?: Lang } = 
       <FieldNav lang={lang} toggleLang={toggleLang} phone={PHONE} phoneHref={PHONE_TEL} />
 
       <main id="main">
-        <Hero t={t} />
+        <Hero t={t} lang={lang} />
         <PricingCard t={t} />
         <Rule />
         <CompareTable t={t} />
@@ -369,21 +369,171 @@ export default function PricingClient({ initialLang }: { initialLang?: Lang } = 
    SECTIONS
    ═══════════════════════════════════════════════════════════════ */
 
-function Hero({ t }: { t: Copy }) {
+function Hero({ t, lang }: { t: Copy; lang: Lang }) {
+  const setupHref = lang === "es" ? "/es/setup" : "/setup";
+  const specs = [
+    { label: "Plan", value: "Flat" },
+    { label: "Price", value: "$497" },
+    { label: "Billing", value: lang === "es" ? "Mes / año" : "Monthly / yr" },
+    { label: "Calls", value: lang === "es" ? "Ilimitadas" : "Unlimited" },
+    { label: "Languages", value: "EN · ES" },
+  ];
   return (
-    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-16 sm:pt-20 sm:pb-20">
-      <div className="max-w-3xl">
-        <Kicker>{t.hero.kicker}</Kicker>
-        <DisplayH1 style={{ marginTop: 28 }}>
-          {t.hero.h1a}
-          <br />
-          <em style={{ fontStyle: "italic", color: C.amberInk }}>
+    <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-12 sm:pt-20">
+      {/* Catalog marker */}
+      <div
+        className="hidden sm:flex items-center justify-between"
+        style={{
+          fontFamily: "var(--font-mono), ui-monospace, Menlo, monospace",
+          fontSize: 11,
+          color: C.inkSoft,
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          marginBottom: 32,
+        }}
+      >
+        <span>§ 01 · Pricing</span>
+        <span>Cat · Rev 2026.04</span>
+      </div>
+
+      <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-end">
+        <div className="lg:col-span-7">
+          <Kicker>{t.hero.kicker}</Kicker>
+          <DisplayH1 style={{ marginTop: 24 }}>
+            {t.hero.h1a}
+            <br />
             {t.hero.h1b}
-          </em>
-        </DisplayH1>
-        <p style={{ fontSize: 18, lineHeight: 1.55, color: C.inkMuted, marginTop: 28, maxWidth: 620 }}>
-          {t.hero.sub}
-        </p>
+          </DisplayH1>
+          <p
+            style={{
+              fontSize: 18,
+              lineHeight: 1.55,
+              color: C.inkMuted,
+              marginTop: 24,
+              maxWidth: 560,
+              fontWeight: 500,
+            }}
+          >
+            {t.hero.sub}
+          </p>
+        </div>
+
+        {/* Price anchor + primary CTA */}
+        <div className="lg:col-span-5">
+          <div
+            style={{
+              border: `1px solid ${C.ink}`,
+              background: C.white,
+              padding: "28px 28px 24px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 11,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: C.amber,
+                fontWeight: 800,
+              }}
+            >
+              {t.card.perLocation}
+            </div>
+            <div className="mt-4 flex items-baseline gap-2">
+              <Mono
+                style={{
+                  fontSize: 64,
+                  fontWeight: 900,
+                  letterSpacing: "-0.03em",
+                  color: C.ink,
+                  lineHeight: 0.9,
+                }}
+              >
+                $497
+              </Mono>
+              <span style={{ fontSize: 18, color: C.inkMuted, fontWeight: 600 }}>
+                {lang === "es" ? "/ mes" : "/ month"}
+              </span>
+            </div>
+            <div
+              className="mt-2"
+              style={{ fontSize: 13, color: C.inkMuted, fontWeight: 500 }}
+            >
+              {lang === "es"
+                ? "O $397/mes anual · ahorra $1,200"
+                : "Or $397/mo annual · save $1,200"}
+            </div>
+            <div className="mt-6">
+              <PrimaryButton href={setupHref} size="lg">
+                {t.card.primaryCta}
+              </PrimaryButton>
+            </div>
+            <div
+              className="mt-4"
+              style={{
+                fontSize: 12,
+                color: C.inkMuted,
+                fontWeight: 500,
+              }}
+            >
+              {lang === "es"
+                ? "14 días gratis · Cancela antes del día 14 · Sin costos de instalación"
+                : "14-day free trial · Cancel before day 14 · No setup fee"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Specs strip */}
+      <div
+        className="mt-14"
+        style={{
+          borderTop: `1px solid ${C.ink}`,
+          borderBottom: `1px solid ${C.ink}`,
+          background: C.paperDark,
+        }}
+      >
+        <div className="grid grid-cols-2 sm:grid-cols-5">
+          {specs.map((spec, i) => (
+            <div
+              key={spec.label}
+              style={{
+                padding: "14px 18px",
+                borderRight:
+                  i < specs.length - 1 && (i + 1) % 5 !== 0
+                    ? `1px solid ${C.rule}`
+                    : "none",
+                borderBottom:
+                  i < 3 && specs.length > 2
+                    ? `1px solid ${C.rule}`
+                    : "none",
+              }}
+              className={i < 3 ? "sm:!border-b-0" : ""}
+            >
+              <div
+                style={{
+                  fontSize: 10,
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: C.inkSoft,
+                  fontWeight: 700,
+                  marginBottom: 4,
+                }}
+              >
+                {spec.label}
+              </div>
+              <Mono
+                style={{
+                  fontSize: 15,
+                  fontWeight: 800,
+                  color: C.ink,
+                  letterSpacing: "-0.005em",
+                }}
+              >
+                {spec.value}
+              </Mono>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -398,7 +548,7 @@ function PricingCard({ t }: { t: Copy }) {
       <div className="grid gap-16 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <div style={{ padding: "18px 20px", background: C.paperDark, borderLeft: `3px solid ${C.amber}` }}>
-            <p style={{ fontSize: 17, lineHeight: 1.5, fontStyle: "italic", color: C.ink }}>
+            <p style={{ fontSize: 17, lineHeight: 1.5, color: C.ink }}>
               {t.card.guarantee}
             </p>
           </div>
@@ -409,9 +559,16 @@ function PricingCard({ t }: { t: Copy }) {
             <ul style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {t.card.items.map((item, i) => (
                 <li key={i} style={{ display: "flex", gap: 12, fontSize: 14, lineHeight: 1.5, color: C.ink }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.forest} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginTop: 5, flexShrink: 0 }}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+                  <span
+                    aria-hidden
+                    style={{
+                      width: 8,
+                      height: 8,
+                      background: C.amber,
+                      marginTop: 8,
+                      flexShrink: 0,
+                    }}
+                  />
                   <span style={{ fontWeight: 500 }}>{item}</span>
                 </li>
               ))}
@@ -496,7 +653,7 @@ function CompareTable({ t }: { t: Copy }) {
       );
     }
     return (
-      <span style={{ fontSize: 12, color: C.inkMuted, fontStyle: "italic", fontWeight: 400 }}>
+      <span style={{ fontSize: 12, color: C.inkMuted, fontWeight: 400 }}>
         {value}
       </span>
     );
@@ -679,7 +836,7 @@ function Ledger({ t }: { t: Copy }) {
                 </tbody>
               </table>
             </div>
-            <p style={{ fontSize: 12, color: C.inkMuted, marginTop: 16, lineHeight: 1.55, fontStyle: "italic", }}>
+            <p style={{ fontSize: 12, color: C.inkMuted, marginTop: 16, lineHeight: 1.55, }}>
               {t.math.totalNote}
             </p>
           </div>

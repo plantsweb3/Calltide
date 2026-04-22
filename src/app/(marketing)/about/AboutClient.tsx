@@ -12,6 +12,7 @@ import {
   Mono,
   Kicker,
   Rule,
+  CatalogMarker,
   PrimaryButton,
   FieldFrame,
   FieldNav,
@@ -153,14 +154,17 @@ export default function AboutPage({ initialLang }: { initialLang?: Lang } = {}) 
       <main id="main">
       {/* Hero */}
       <section className="mx-auto max-w-[1280px] px-6 sm:px-10 pt-14 pb-16 sm:pt-20 sm:pb-24">
+        <div style={{ marginBottom: 32 }}>
+          <CatalogMarker section="02 · About" />
+        </div>
         <div className="max-w-3xl">
           <Kicker>{t.hero.kicker}</Kicker>
           <DisplayH1 style={{ marginTop: 28 }}>
             {t.hero.h1a}
             <br />
-            <em style={{ fontStyle: "italic", color: C.amberInk }}>
+            <span style={{ fontStyle: "normal", borderBottom: "4px solid #D4A843", paddingBottom: 6, display: "inline-block", lineHeight: 1 }}>
               {t.hero.h1b}
-            </em>
+            </span>
           </DisplayH1>
           <p
             style={{
@@ -171,7 +175,7 @@ export default function AboutPage({ initialLang }: { initialLang?: Lang } = {}) 
               marginTop: 32,
               maxWidth: 720,
               fontWeight: 400,
-              fontStyle: "italic",
+              
             }}
           >
             {t.hero.dek}
@@ -282,7 +286,7 @@ export default function AboutPage({ initialLang }: { initialLang?: Lang } = {}) 
                 fontSize: 28,
                 lineHeight: 1.3,
                 fontWeight: 500,
-                fontStyle: "italic",
+                
                 color: C.ink,
                 letterSpacing: "-0.01em",
               }}
