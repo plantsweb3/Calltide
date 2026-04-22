@@ -93,6 +93,7 @@ export default function ReferralsPage() {
   return (
     <div className="space-y-8">
       <PageHeader
+        catalog="Referrals"
         title={t("referrals.title", lang)}
         description={t("referrals.description", lang)}
         actions={

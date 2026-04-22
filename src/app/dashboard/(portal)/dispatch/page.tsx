@@ -214,6 +214,7 @@ export default function DispatchPage() {
   return (
     <div>
       <PageHeader
+        catalog="Dispatch"
         title={t("dispatch.title", lang)}
         description={
           isToday

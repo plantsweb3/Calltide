@@ -225,6 +225,7 @@ export default function CustomersPage() {
   return (
     <div>
       <PageHeader
+        catalog="Customers"
         title={t("customers.title", lang)}
         description={`${total} ${t("metric.totalCustomers", lang).toLowerCase()}`}
         actions={
@@ -359,6 +360,7 @@ export default function CustomersPage() {
         </div>
       ) : (
         <DataTable
+          serials
           columns={columns}
           data={customers}
           selectable

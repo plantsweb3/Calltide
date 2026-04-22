@@ -282,6 +282,7 @@ export default function CallbacksPage() {
   return (
     <div>
       <PageHeader
+        catalog="Callbacks"
         title={t("callbacks.title", lang)}
         description={
           scheduledCount > 0
@@ -406,6 +407,7 @@ export default function CallbacksPage() {
         />
       ) : (
         <DataTable
+          serials
           columns={columns}
           data={callbacks}
           pagination={

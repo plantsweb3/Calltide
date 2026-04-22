@@ -1,28 +1,37 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Premium palette — Midnight & Gold */
-  --color-cream: #FBFBFC;
-  --color-cream-dark: #F5F5F0;
-  --color-cream-border: #E2E8F0;
-  --color-charcoal: #1A1D24;
-  --color-charcoal-muted: #475569;
-  --color-charcoal-light: #64748B;
+  /* Capta Brand Kit tokens — canonical source: src/design/tokens.ts.
+     These Tailwind-exposed aliases carry the same values so legacy code
+     referencing `bg-navy`, `text-amber`, `text-charcoal`, etc. stays aligned
+     with brand. Any hex drift must be reconciled here. */
 
-  /* Brand colors */
-  --color-navy: #111827;
-  --color-navy-light: #1E293B;
-  --color-navy-dark: #0B0F19;
-  --color-navy-card: #1E293B;
-  --color-navy-border: #1E293B;
-  --color-amber: #C59A27;
-  --color-amber-light: #D4A832;
+  /* Surfaces */
+  --color-cream: #F8FAFC;         /* Truck White */
+  --color-cream-dark: #F1F5F9;    /* slate-100 */
+  --color-cream-border: #E2E8F0;  /* slate-200 */
+
+  /* Text */
+  --color-charcoal: #0F1729;      /* Midnight — primary text */
+  --color-charcoal-muted: #475569;/* slate-600 — body (AA) */
+  --color-charcoal-light: #64748B;/* slate-500 — tertiary meta only */
+
+  /* Brand — primary */
+  --color-navy: #1B2A4A;          /* Capta Navy */
+  --color-navy-light: #263556;
+  --color-navy-dark: #12182B;
+  --color-navy-card: #263556;
+  --color-navy-border: #3A4870;
+
+  /* Brand — accent (Catch Gold) */
+  --color-amber: #D4A843;
+  --color-amber-light: #E3BB5A;
   --color-amber-dark: #A17D1F;
 
-  /* Deep dark for alternating sections */
-  --color-deep-dark: #111317;
+  /* Deep dark for alternating sections (= Midnight) */
+  --color-deep-dark: #0F1729;
 
-  /* Typography — Inter only */
+  /* Typography — Inter only per Brand Kit */
   --font-body: var(--font-inter);
 }
 

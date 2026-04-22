@@ -115,6 +115,7 @@ export default function BillingPage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        catalog="Billing"
         title={t("billing.title", lang)}
         description={t("billing.description", lang)}
       />

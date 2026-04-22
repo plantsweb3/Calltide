@@ -183,6 +183,7 @@ export default function JobCardsPage() {
   return (
     <div>
       <PageHeader
+        catalog="Job cards"
         title={t("jobCards.title", lang)}
         actions={
           <div className="flex items-center gap-3">

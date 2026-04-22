@@ -17,7 +17,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ci": "vitest run --reporter=junit --outputFile=test-results.xml",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "brand:check": "./scripts/brand-drift.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.77.0",

@@ -232,6 +232,7 @@ export default function SmsTemplatesPage() {
   return (
     <div>
       <PageHeader
+        catalog="SMS templates"
         title={t("smsTemplates.title", lang)}
         description={t("smsTemplates.description", lang)}
         actions={

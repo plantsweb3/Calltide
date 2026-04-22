@@ -31,6 +31,12 @@ interface DataTableProps<T extends { id: string }> {
   emptyMessage?: string;
   prevLabel?: string;
   nextLabel?: string;
+  /**
+   * Render a gold mono serial as the first column.
+   * `true` → auto-increment (01, 02, ...).
+   * Function → custom per-row serial (e.g. `JC-0042`, `INV-0001`).
+   */
+  serials?: boolean | ((row: T, index: number) => string);
 }
 
 export default function DataTable<T extends { id: string }>({
@@ -49,8 +55,19 @@ export default function DataTable<T extends { id: string }>({
   emptyMessage = "No data",
   prevLabel = "Prev",
   nextLabel = "Next",
+  serials,
 }: DataTableProps<T>) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const serializeRow = (row: T, index: number): string => {
+    if (typeof serials === "function") return serials(row, index);
+    if (serials === true) {
+      const page = pagination?.page ?? 1;
+      const pageSize = Math.ceil(data.length) || 10;
+      return String((page - 1) * pageSize + index + 1).padStart(2, "0");
+    }
+    return "";
+  };
 
   const allSelected =
     data.length > 0 && data.every((row) => selectedIds?.has(row.id));
@@ -73,7 +90,7 @@ export default function DataTable<T extends { id: string }>({
   }
 
   const selected = selectedIds ? Array.from(selectedIds) : [];
-  const colSpan = columns.length + (selectable ? 1 : 0);
+  const colSpan = columns.length + (selectable ? 1 : 0) + (serials ? 1 : 0);
   const isClickable = !!expandedContent || !!onRowClick;
 
   return (
@@ -119,6 +136,15 @@ export default function DataTable<T extends { id: string }>({
                   />
                 </th>
               )}
+              {serials && (
+                <th
+                  className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider"
+                  style={{ color: "var(--db-text-muted)", width: 64 }}
+                  aria-label="Serial"
+                >
+                  №
+                </th>
+              )}
               {columns.map((col) => (
                 <th
                   key={col.key}
@@ -152,7 +178,7 @@ export default function DataTable<T extends { id: string }>({
                 </td>
               </tr>
             )}
-            {data.map((row) => (
+            {data.map((row, idx) => (
               <Fragment key={row.id}>
                 <tr
                   className={`db-table-row transition-colors duration-100 ${isClickable ? "cursor-pointer" : ""}`}
@@ -196,6 +222,23 @@ export default function DataTable<T extends { id: string }>({
                         className="rounded"
                         style={{ accentColor: "var(--db-accent)" }}
                       />
+                    </td>
+                  )}
+                  {serials && (
+                    <td
+                      className="px-4 py-3"
+                      style={{
+                        fontFamily:
+                          "var(--font-mono), ui-monospace, Menlo, monospace",
+                        fontVariantNumeric: "tabular-nums",
+                        fontSize: 12,
+                        fontWeight: 800,
+                        color: "var(--db-accent)",
+                        letterSpacing: "0.04em",
+                        width: 64,
+                      }}
+                    >
+                      {serializeRow(row, idx)}
                     </td>
                   )}
                   {columns.map((col) => (

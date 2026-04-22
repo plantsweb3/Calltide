@@ -64,7 +64,7 @@ export default function ReportingPage() {
   if (loading) {
     return (
       <div>
-        <PageHeader title={t("reporting.title", lang)} />
+        <PageHeader catalog="Reporting" title={t("reporting.title", lang)} />
         <div className="mt-6">
           <PageSkeleton />
         </div>

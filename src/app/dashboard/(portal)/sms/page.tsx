@@ -163,6 +163,7 @@ export default function SmsPage() {
   return (
     <div>
       <PageHeader
+        catalog="SMS"
         title={t("sms.title", lang)}
         actions={
           <>
@@ -238,6 +239,7 @@ export default function SmsPage() {
 
       {messages.length > 0 && (
         <DataTable
+          serials
           columns={columns}
           data={messages}
           pagination={{

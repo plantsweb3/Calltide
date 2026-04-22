@@ -271,6 +271,7 @@ export default function CallsPage() {
     <div>
       <PageHeader
         title={t("calls.title", lang)}
+        catalog="Calls"
         actions={
           <div className="flex items-center gap-2">
             <div className="flex gap-1">
@@ -619,6 +620,7 @@ export default function CallsPage() {
         <DataTable
           columns={columns}
           data={calls}
+          serials
           pagination={{
             page,
             totalPages,

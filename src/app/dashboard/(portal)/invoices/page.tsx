@@ -524,6 +524,7 @@ export default function InvoicesPage() {
   return (
     <div>
       <PageHeader
+        catalog="Invoices"
         title={t("invoices.title", lang)}
         description={t("invoices.description", lang)}
         actions={
@@ -666,6 +667,7 @@ export default function InvoicesPage() {
 
       {invoices.length > 0 && (
         <DataTable
+          serials
           columns={columns}
           data={invoices}
           pagination={totalPages > 1 ? {

@@ -238,6 +238,7 @@ export default function EstimatesPage() {
   return (
     <div>
       <PageHeader
+        catalog="Estimates"
         title={t("estimates.title", lang)}
         actions={
           <div className="flex items-center gap-2">
@@ -320,6 +321,7 @@ export default function EstimatesPage() {
         </div>
       ) : (
         <DataTable
+          serials
           columns={[
             {
               key: "customerName",

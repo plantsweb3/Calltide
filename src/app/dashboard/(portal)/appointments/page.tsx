@@ -241,6 +241,7 @@ export default function AppointmentsPage() {
   return (
     <div>
       <PageHeader
+        catalog="Appointments"
         title={t("appointments.title", lang)}
         actions={
           <div className="flex items-center gap-3">
@@ -343,6 +344,7 @@ export default function AppointmentsPage() {
 
       {filteredAppointments.length > 0 && showListView && (
         <DataTable
+          serials
           columns={columns}
           data={filteredAppointments}
           onRowClick={(row) => setSelected(row)}

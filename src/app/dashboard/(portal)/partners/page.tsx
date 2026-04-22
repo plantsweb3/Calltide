@@ -253,6 +253,7 @@ export default function PartnersPage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        catalog="Partners"
         title={t("partners.title", lang)}
         description={t("partners.description", lang)}
         actions={

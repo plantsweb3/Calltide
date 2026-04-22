@@ -248,6 +248,7 @@ export default function FollowUpsPage() {
   return (
     <div>
       <PageHeader
+        catalog="Follow-ups"
         title={t("followUps.title", lang)}
         description={
           pendingCount > 0
@@ -347,6 +348,7 @@ export default function FollowUpsPage() {
         />
       ) : (
         <DataTable
+          serials
           columns={columns}
           data={followUps}
           onRowClick={(row) => setEditingFollowUp(row)}

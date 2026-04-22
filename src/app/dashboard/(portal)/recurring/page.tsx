@@ -268,6 +268,7 @@ export default function RecurringPage() {
   return (
     <div>
       <PageHeader
+        catalog="Recurring"
         title={t("recurring.title", lang)}
         actions={
           <div className="flex items-center gap-3">
@@ -348,6 +349,7 @@ export default function RecurringPage() {
       {/* Table */}
       {rules.length > 0 && (
         <DataTable
+          serials
           columns={columns}
           data={rules}
           pagination={

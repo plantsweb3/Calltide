@@ -129,6 +129,7 @@ export default function ClientFeedbackPage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        catalog="Feedback"
         title={t("feedback.title", lang)}
         description={t("feedback.description", lang)}
         actions={

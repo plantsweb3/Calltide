@@ -449,6 +449,7 @@ export default function TeamPage() {
   return (
     <div>
       <PageHeader
+        catalog="Team"
         title={t("team.title", lang)}
         description={`${activeTechs.length} ${activeTechs.length !== 1 ? t("team.techniciansPlural", lang) : t("team.technicians", lang)}${onCallTechs.length > 0 ? ` \u00B7 ${onCallTechs.length} ${t("team.onCallCount", lang)}` : ""}${unavailableTechs.length > 0 ? ` \u00B7 ${unavailableTechs.length} ${t("team.unavailableCount", lang)}` : ""}`}
         actions={
@@ -513,6 +514,7 @@ export default function TeamPage() {
       {/* Data Table */}
       {filteredTechs.length > 0 && (
         <DataTable
+          serials
           columns={columns}
           data={filteredTechs}
           onRowClick={openEditModal}

@@ -266,6 +266,7 @@ export default function ComplaintsPage() {
   return (
     <div>
       <PageHeader
+        catalog="Complaints"
         title={t("complaints.title", lang)}
         description={
           openCount > 0
@@ -321,6 +322,7 @@ export default function ComplaintsPage() {
         />
       ) : (
         <DataTable
+          serials
           columns={columns}
           data={complaints}
           onRowClick={(row) => setDetailComplaint(row)}
