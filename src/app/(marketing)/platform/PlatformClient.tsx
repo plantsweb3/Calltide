@@ -291,56 +291,83 @@ export default function PlatformClient({ initialLang }: { initialLang?: Lang } =
             <DisplayH2 style={{ marginTop: 20 }}>{active.kicker}</DisplayH2>
           </div>
 
-          <div className="mt-14 grid gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
-            {active.features.map((f) => (
-              <article
-                key={f.label}
-                style={{
-                  padding: "24px 22px 26px",
-                  background: C.paper,
-                  border: `1px solid ${C.rule}`,
-                  borderRadius: 2,
-                  position: "relative",
-                }}
-              >
-                <Mono
+          <div
+            className="mt-14 grid md:grid-cols-2 lg:grid-cols-3"
+            style={{
+              border: `1px solid ${C.ink}`,
+              background: C.white,
+            }}
+          >
+            {active.features.map((f, i) => {
+              const col = i % 3;
+              const row = Math.floor(i / 3);
+              const lastRow = row === Math.floor((active.features.length - 1) / 3);
+              return (
+                <article
+                  key={f.label}
                   style={{
-                    position: "absolute",
-                    top: 24,
-                    right: 22,
-                    fontSize: 10,
-                    letterSpacing: "0.14em",
-                    color: C.inkSoft,
-                    fontWeight: 700,
+                    padding: "36px 28px 32px",
+                    background: C.white,
+                    borderRight: col !== 2 ? `1px solid ${C.ink}` : "none",
+                    borderBottom: !lastRow ? `1px solid ${C.ink}` : "none",
+                    position: "relative",
+                    minHeight: 240,
                   }}
+                  className={
+                    col !== 2
+                      ? "lg:!border-r max-lg:!border-r-0"
+                      : ""
+                  }
                 >
-                  {f.label}
-                </Mono>
-                <h3
-                  style={{
-                    
-                    fontSize: 22,
-                    fontWeight: 500,
-                    color: C.ink,
-                    letterSpacing: "-0.015em",
-                    lineHeight: 1.15,
-                    paddingRight: 40,
-                  }}
-                >
-                  {f.title}
-                </h3>
-                <p
-                  style={{
-                    marginTop: 12,
-                    fontSize: 14,
-                    lineHeight: 1.6,
-                    color: C.inkMuted,
-                  }}
-                >
-                  {f.desc}
-                </p>
-              </article>
-            ))}
+                  {/* Gold stamp at top-left */}
+                  <div
+                    aria-hidden
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: 56,
+                      height: 4,
+                      background: C.amber,
+                    }}
+                  />
+                  <Mono
+                    style={{
+                      fontSize: 26,
+                      fontWeight: 900,
+                      color: C.amber,
+                      letterSpacing: "-0.01em",
+                      display: "block",
+                      marginBottom: 18,
+                    }}
+                  >
+                    {f.label}
+                  </Mono>
+                  <h3
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 800,
+                      color: C.ink,
+                      letterSpacing: "-0.025em",
+                      lineHeight: 1.15,
+                    }}
+                  >
+                    {f.title}
+                  </h3>
+                  <p
+                    style={{
+                      marginTop: 12,
+                      fontSize: 14,
+                      lineHeight: 1.55,
+                      color: C.inkMuted,
+                      fontWeight: 500,
+                    }}
+                  >
+                    {f.desc}
+                  </p>
+                </article>
+              );
+            })}
           </div>
 
           <div

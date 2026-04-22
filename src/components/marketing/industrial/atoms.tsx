@@ -77,22 +77,29 @@ export function Kicker({
         fontWeight: 800,
         textTransform: "uppercase",
       }}
-      className="flex items-center gap-3"
+      className="flex items-center gap-4"
     >
       <span
         aria-hidden
-        style={{ width: 24, height: 2, background: C.amber, display: "inline-block" }}
+        style={{ width: 40, height: 4, background: C.amber, display: "inline-block" }}
       />
       <span style={{ color: tone === "dark" ? C.amber : C.amber }}>{children}</span>
     </div>
   );
 }
 
-export function Rule({ className = "" }: { className?: string }) {
+export function Rule({
+  className = "",
+  weight = "soft",
+}: {
+  className?: string;
+  weight?: "soft" | "heavy";
+}) {
+  const border = weight === "heavy" ? `2px solid ${C.ink}` : `1px solid ${C.rule}`;
   return (
     <div
       aria-hidden
-      style={{ borderTop: `1px solid ${C.rule}` }}
+      style={{ borderTop: border }}
       className={`mx-auto max-w-[1280px] px-6 sm:px-10 ${className}`}
     />
   );

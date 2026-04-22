@@ -556,19 +556,44 @@ function PricingCard({ t }: { t: Copy }) {
             <div style={{ fontSize: 11, letterSpacing: "0.22em", color: C.inkMuted, fontWeight: 700, textTransform: "uppercase", marginBottom: 14 }}>
               {t.card.included}
             </div>
-            <ul style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <ul
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                border: `1px solid ${C.rule}`,
+              }}
+            >
               {t.card.items.map((item, i) => (
-                <li key={i} style={{ display: "flex", gap: 12, fontSize: 14, lineHeight: 1.5, color: C.ink }}>
-                  <span
-                    aria-hidden
+                <li
+                  key={i}
+                  style={{
+                    display: "flex",
+                    gap: 12,
+                    fontSize: 14,
+                    lineHeight: 1.5,
+                    color: C.ink,
+                    background: i % 2 === 0 ? C.white : C.paperDark,
+                    padding: "12px 14px",
+                    borderBottom:
+                      i < t.card.items.length - 1
+                        ? `1px solid ${C.ruleSoft}`
+                        : "none",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Mono
                     style={{
-                      width: 8,
-                      height: 8,
-                      background: C.amber,
-                      marginTop: 8,
+                      fontSize: 11,
+                      color: C.amber,
+                      fontWeight: 800,
+                      letterSpacing: "0.04em",
+                      width: 24,
                       flexShrink: 0,
+                      marginTop: 2,
                     }}
-                  />
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </Mono>
                   <span style={{ fontWeight: 500 }}>{item}</span>
                 </li>
               ))}
