@@ -23,16 +23,35 @@ function formatDuration(seconds: number): string {
 export default function WeeklySummary({ data, lang = "en" }: { data: WeeklySummaryData; lang?: Lang }) {
   return (
     <div
-      className="rounded-xl p-5 transition-colors duration-300"
+      className="relative p-5 transition-colors duration-300"
       style={{
         background: "var(--db-card)",
         border: "1px solid var(--db-border)",
+        borderRadius: 4,
         boxShadow: "var(--db-card-shadow)",
+        paddingTop: 22,
       }}
     >
+      <span
+        aria-hidden
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 40,
+          height: 3,
+          background: "var(--db-accent)",
+        }}
+      />
       <h3
-        className="mb-4 text-sm font-semibold uppercase tracking-wider"
-        style={{ color: "var(--db-text-muted)" }}
+        className="mb-4"
+        style={{
+          fontSize: 11,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          color: "var(--db-text-muted)",
+          fontWeight: 800,
+        }}
       >
         {t("weeklySummary.title", lang)}
       </h3>

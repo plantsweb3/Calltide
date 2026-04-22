@@ -65,8 +65,8 @@ export default function SetupChecklist({
 
   return (
     <div
-      className="rounded-xl p-5"
-      style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}
+      className="p-5"
+      style={{ background: "var(--db-card)", borderRadius: 4, border: "1px solid var(--db-border)" }}
     >
       <div className="flex items-center justify-between mb-4">
         <div>

@@ -2467,9 +2467,19 @@ function InputField({
 }) {
   return (
     <div>
-      <label className="db-label">
+      <label
+        style={{
+          display: "block",
+          fontSize: 10,
+          letterSpacing: "0.22em",
+          textTransform: "uppercase",
+          color: "var(--db-text-muted)",
+          fontWeight: 800,
+          marginBottom: 6,
+        }}
+      >
         {label}
-        {required && <span style={{ color: "var(--db-danger)" }}> *</span>}
+        {required && <span style={{ color: "var(--db-danger)", marginLeft: 3 }}> *</span>}
       </label>
       <input
         type={type}
@@ -2478,9 +2488,21 @@ function InputField({
         onBlur={onBlur}
         placeholder={placeholder}
         className="db-input"
-        style={error ? { borderColor: "var(--db-danger)" } : undefined}
+        style={error ? { borderColor: "var(--db-danger)", borderWidth: 1 } : undefined}
       />
-      {error && <p className="mt-1 text-xs" style={{ color: "var(--db-danger)" }}>{error}</p>}
+      {error && (
+        <p
+          className="mt-1.5 pl-2"
+          style={{
+            fontSize: 12,
+            color: "var(--db-danger)",
+            fontWeight: 600,
+            borderLeft: "2px solid var(--db-danger)",
+          }}
+        >
+          {error}
+        </p>
+      )}
     </div>
   );
 }

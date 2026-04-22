@@ -281,11 +281,50 @@ export default function ClientDetailPage({
         </div>
       )}
 
-      {/* Header */}
+      {/* Catalog marker — client admin detail */}
+      <div
+        className="hidden sm:flex items-center justify-between"
+        style={{
+          fontFamily: "var(--font-mono), ui-monospace, Menlo, monospace",
+          fontSize: 11,
+          color: "var(--db-text-muted)",
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          fontWeight: 600,
+        }}
+      >
+        <span style={{ color: "var(--db-accent)", fontWeight: 800 }}>
+          § Client · {business.id.slice(0, 8).toUpperCase()}
+        </span>
+        <span>CAT · REV 2026.04</span>
+      </div>
+
+      {/* Header — brand-kit stamped */}
       <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">{business.name}</h1>
-          <div className="mt-1 flex items-center gap-3 text-sm" style={{ color: "var(--db-text-muted)" }}>
+        <div className="relative" style={{ paddingTop: 12 }}>
+          <span
+            aria-hidden
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 48,
+              height: 3,
+              background: "var(--db-accent)",
+            }}
+          />
+          <h1
+            style={{
+              fontSize: 28,
+              fontWeight: 900,
+              color: "var(--db-text)",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+            }}
+          >
+            {business.name}
+          </h1>
+          <div className="mt-2 flex items-center gap-3 text-sm" style={{ color: "var(--db-text-muted)", fontWeight: 500 }}>
             <span className="capitalize">{business.type}</span>
             <span>·</span>
             <span>{business.ownerName}</span>

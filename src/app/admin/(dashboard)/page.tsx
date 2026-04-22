@@ -100,15 +100,44 @@ export default function FounderHQPage() {
 
   return (
     <div className="space-y-6">
-      {/* Section A: Game Bar */}
+      {/* Catalog marker — Founder HQ */}
       <div
-        className="sticky top-0 z-10 rounded-xl p-4"
+        className="hidden sm:flex items-center justify-between"
+        style={{
+          fontFamily: "var(--font-mono), ui-monospace, Menlo, monospace",
+          fontSize: 11,
+          color: "var(--db-text-muted)",
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          fontWeight: 600,
+        }}
+      >
+        <span style={{ color: "var(--db-accent)", fontWeight: 800 }}>§ Founder HQ · Admin</span>
+        <span>CAT · REV 2026.04</span>
+      </div>
+
+      {/* Section A: Game Bar — brand-kit stamped */}
+      <div
+        className="sticky top-0 z-10 relative p-4"
         style={{
           background: "var(--db-surface)",
           border: "1px solid var(--db-border)",
+          borderRadius: 4,
           boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          paddingTop: 20,
         }}
       >
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: 56,
+            height: 4,
+            background: "var(--db-accent)",
+          }}
+        />
         <div className="flex flex-wrap items-center gap-4">
           {/* Level Badge */}
           <div

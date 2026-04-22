@@ -79,9 +79,9 @@ export default function BusinessInsights({
     <div className="space-y-4">
       {/* Insights Card */}
       <div
-        className="rounded-xl p-5 transition-colors duration-300"
+        className="p-5 transition-colors duration-300"
         style={{
-          background: "var(--db-card)",
+          background: "var(--db-card)", borderRadius: 4,
           border: "1px solid var(--db-border)",
           boxShadow: "var(--db-card-shadow)",
         }}
@@ -109,9 +109,9 @@ export default function BusinessInsights({
       {/* Bilingual Impact Card */}
       {bilingualStats && (
         <div
-          className="rounded-xl p-5 transition-colors duration-300"
+          className="p-5 transition-colors duration-300"
           style={{
-            background: "var(--db-card)",
+            background: "var(--db-card)", borderRadius: 4,
             border: "1px solid var(--db-border)",
             boxShadow: "var(--db-card-shadow)",
           }}
