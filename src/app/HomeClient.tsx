@@ -1460,14 +1460,14 @@ function Kicker({
         textTransform: "uppercase",
         display: "flex",
         alignItems: "center",
-        gap: 12,
+        gap: 16,
       }}
     >
       <span
         aria-hidden
         style={{
-          width: 24,
-          height: 2,
+          width: 40,
+          height: 4,
           background: C.gold,
           display: "inline-block",
         }}

@@ -107,7 +107,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
   return (
-    <div className="min-h-screen bg-[#FBFBFC]">
+    <div className="min-h-screen bg-cream">
       <StaticNav lang="en" langHref="/es" />
 
       {/* JSON-LD Service */}
@@ -246,7 +246,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
 
       {/* Pricing Ballparks */}
       {Object.keys(profile.pricingBallparks).length > 0 && (
-        <section className="bg-[#F5F5F7] px-6 sm:px-8 py-16 sm:py-20">
+        <section className="bg-cream-dark px-6 sm:px-8 py-16 sm:py-20">
           <div className="mx-auto max-w-3xl">
             <h2 className="text-center text-[24px] font-extrabold tracking-tight text-charcoal sm:text-[28px]">
               Typical {profile.label} Job Values
@@ -323,7 +323,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
       </section>
 
       {/* Seasonal Context */}
-      <section className="bg-[#F5F5F7] px-6 sm:px-8 py-16 sm:py-20">
+      <section className="bg-cream-dark px-6 sm:px-8 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-[24px] font-extrabold tracking-tight text-charcoal sm:text-[28px]">
             Peak Season Automation

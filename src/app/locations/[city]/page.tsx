@@ -260,7 +260,7 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
   return (
-    <div className="min-h-screen bg-[#FBFBFC]">
+    <div className="min-h-screen bg-cream">
       <StaticNav lang="en" langHref="/es" />
 
       {/* JSON-LD LocalBusiness */}
@@ -362,7 +362,7 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
       </section>
 
       {/* Why This City Needs Capta */}
-      <section className="bg-[#F5F5F7] px-6 sm:px-8 py-16 sm:py-20">
+      <section className="bg-cream-dark px-6 sm:px-8 py-16 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-center text-[28px] font-extrabold tracking-tight text-charcoal sm:text-[36px]">
             Why {city.name} Contractors Need AI-Powered Automation
@@ -395,7 +395,7 @@ export default async function CityLandingPage({ params }: { params: Promise<{ ci
       </section>
 
       {/* Automation Capabilities */}
-      <section className="bg-[#F5F5F7] px-6 sm:px-8 py-16 sm:py-20">
+      <section className="bg-cream-dark px-6 sm:px-8 py-16 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-center text-[28px] font-extrabold tracking-tight text-charcoal sm:text-[36px]">
             More Than a Receptionist — Your AI Office Manager

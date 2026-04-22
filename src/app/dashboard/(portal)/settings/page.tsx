@@ -2386,19 +2386,65 @@ export default function SettingsPage() {
 
 /* ── Reusable sub-components ── */
 
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
+function Card({
+  title,
+  children,
+  serial,
+}: {
+  title: string;
+  children: React.ReactNode;
+  serial?: string;
+}) {
   return (
     <div
-      className="rounded-xl p-5"
+      className="relative p-5"
       style={{
         background: "var(--db-card)",
         border: "1px solid var(--db-border)",
+        borderRadius: 4,
         boxShadow: "var(--db-card-shadow)",
+        paddingTop: 22,
       }}
     >
+      {/* Gold stamp — brand-kit structural mark */}
+      <span
+        aria-hidden
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 40,
+          height: 3,
+          background: "var(--db-accent)",
+        }}
+      />
+      {serial && (
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 16,
+            fontFamily: "var(--font-mono), ui-monospace, Menlo, monospace",
+            fontVariantNumeric: "tabular-nums",
+            fontSize: 11,
+            fontWeight: 800,
+            letterSpacing: "0.14em",
+            color: "var(--db-accent)",
+          }}
+        >
+          {serial}
+        </span>
+      )}
       <h3
-        className="mb-4 text-sm font-semibold uppercase tracking-wider"
-        style={{ color: "var(--db-text-muted)" }}
+        className="mb-4"
+        style={{
+          fontSize: 11,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          color: "var(--db-text-muted)",
+          fontWeight: 800,
+        }}
       >
         {title}
       </h3>
