@@ -32,7 +32,7 @@ export default async function ReferralPage({
   // Invalid referral code — show friendly fallback
   return (
     <div
-      className="flex min-h-screen items-center justify-center bg-[#FBFBFC] px-6"
+      className="flex min-h-screen items-center justify-center bg-[#F8FAFC] px-6"
       style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}
     >
       <div
@@ -41,7 +41,7 @@ export default async function ReferralPage({
       >
         <div
           className="mx-auto flex h-16 w-16 items-center justify-center rounded-full"
-          style={{ backgroundColor: "#fef3c7" }}
+          style={{ backgroundColor: "#F5E6BC" }}
         >
           <svg
             width="28"
@@ -61,7 +61,7 @@ export default async function ReferralPage({
 
         <h1
           className="mt-6 text-xl font-extrabold tracking-tight"
-          style={{ color: "#1a1a2e" }}
+          style={{ color: "#0F1729" }}
         >
           This referral link is no longer valid
         </h1>

@@ -84,7 +84,7 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://captahq.com";
 
   return (
-    <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
+    <div className="min-h-screen" style={{ background: "#F8FAFC" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -119,12 +119,12 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
       />
       <div className="mx-auto max-w-3xl px-4 py-10">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-1.5 text-sm" style={{ color: "#94A3B8" }}>
+        <nav className="flex items-center gap-1.5 text-sm" style={{ color: "#64748B" }}>
           <Link href="/es/help" className="transition hover:text-charcoal" style={{ color: "#64748B" }}>Centro de Ayuda</Link>
           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
           <Link href={`/es/help/${catSlug}`} className="transition hover:text-charcoal" style={{ color: "#64748B" }}>{category.nameEs || category.name}</Link>
           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-          <span className="truncate font-medium" style={{ color: "#1A1D24" }}>{article.titleEs || article.title}</span>
+          <span className="truncate font-medium" style={{ color: "#0F1729" }}>{article.titleEs || article.title}</span>
         </nav>
 
         {!hasSpanish && (
@@ -135,10 +135,10 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
 
         {/* Article Header */}
         <div className="mt-8">
-          <h1 className="text-2xl font-extrabold tracking-tight md:text-3xl" style={{ color: "#1A1D24" }}>
+          <h1 className="text-2xl font-extrabold tracking-tight md:text-3xl" style={{ color: "#0F1729" }}>
             {article.titleEs || article.title}
           </h1>
-          <div className="mt-3 flex items-center gap-3 text-sm" style={{ color: "#94A3B8" }}>
+          <div className="mt-3 flex items-center gap-3 text-sm" style={{ color: "#64748B" }}>
             <span className="inline-flex items-center gap-1.5">
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
               {article.readingTimeMinutes} min
@@ -162,8 +162,8 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
         {related.length > 0 && (
           <div className="mt-14">
             <div className="flex items-center gap-3 mb-5">
-              <div className="h-5 w-1 rounded-full" style={{ background: "#C59A27" }} />
-              <h2 className="text-base font-bold" style={{ color: "#1A1D24" }}>Artículos Relacionados</h2>
+              <div className="h-5 w-1 rounded-full" style={{ background: "#D4A843" }} />
+              <h2 className="text-base font-bold" style={{ color: "#0F1729" }}>Artículos Relacionados</h2>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
@@ -173,8 +173,8 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
                   className="group rounded-xl border p-4 shadow-sm transition-all hover:shadow-md hover:border-amber-300 hover:-translate-y-px"
                   style={{ borderColor: "#E2E8F0", background: "white" }}
                 >
-                  <p className="text-sm font-semibold leading-snug" style={{ color: "#1A1D24" }}>{r.titleEs || r.title}</p>
-                  <div className="mt-2 flex items-center gap-1 text-xs font-medium" style={{ color: "#C59A27" }}>
+                  <p className="text-sm font-semibold leading-snug" style={{ color: "#0F1729" }}>{r.titleEs || r.title}</p>
+                  <div className="mt-2 flex items-center gap-1 text-xs font-medium" style={{ color: "#D4A843" }}>
                     <span>{r.readingTimeMinutes} min</span>
                     <svg className="h-3 w-3 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                   </div>
@@ -190,13 +190,13 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
             <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 50% 80% at 50% 100%, rgba(197,154,39,0.1) 0%, transparent 60%)" }} />
             <div className="relative">
               <p className="text-xl font-bold text-white">¿Listo para dejar de perder llamadas?</p>
-              <p className="mt-2 text-sm" style={{ color: "#94A3B8" }}>
+              <p className="mt-2 text-sm" style={{ color: "#64748B" }}>
                 Configura tu recepcionista IA en minutos. Pruébalo gratis por 14 días.
               </p>
               <Link
                 href="/setup?utm_source=help&utm_medium=prospect-cta"
                 className="mt-5 inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:brightness-110"
-                style={{ background: "#C59A27" }}
+                style={{ background: "#D4A843" }}
               >
                 Empieza Gratis
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
@@ -207,9 +207,9 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
 
         {/* Still need help */}
         <div className="relative mt-14 overflow-hidden rounded-2xl border p-8 text-center" style={{ background: "white", borderColor: "#E2E8F0" }}>
-          <p className="font-semibold" style={{ color: "#1A1D24" }}>¿Aún necesitas ayuda?</p>
+          <p className="font-semibold" style={{ color: "#0F1729" }}>¿Aún necesitas ayuda?</p>
           <p className="mt-1 text-sm" style={{ color: "#64748B" }}>Nuestro equipo de soporte está listo para asistirte.</p>
-          <a href="mailto:support@captahq.com" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold transition hover:brightness-110" style={{ color: "#C59A27" }}>
+          <a href="mailto:support@captahq.com" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold transition hover:brightness-110" style={{ color: "#D4A843" }}>
             Contacta a nuestro equipo de soporte
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </a>

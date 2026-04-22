@@ -53,7 +53,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
     {
       items: [
         { href: "/admin", label: "HQ", icon: <svg {...ip}><polygon points="12 2 2 7 12 12 22 7" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" /></svg> },
-        { href: "/admin/live", label: "Live Monitor", badge: liveCallCount, badgeColor: "#22c55e", icon: <svg {...ip}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" fill="currentColor" /><path d="M12 2v4M12 18v4M2 12h4M18 12h4" /></svg> },
+        { href: "/admin/live", label: "Live Monitor", badge: liveCallCount, badgeColor: "var(--db-success, #16A34A)", icon: <svg {...ip}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" fill="currentColor" /><path d="M12 2v4M12 18v4M2 12h4M18 12h4" /></svg> },
       ],
     },
     {
@@ -138,7 +138,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
         {item.badge != null && item.badge > 0 && (
           <span
             className="rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none"
-            style={{ background: item.badgeColor ?? "#ef4444", color: "#fff", minWidth: 18, textAlign: "center" }}
+            style={{ background: item.badgeColor ?? "var(--db-danger, #DC2626)", color: "var(--db-text, #fff)", minWidth: 18, textAlign: "center" }}
           >
             {item.badge > 99 ? "99+" : item.badge}
           </span>
@@ -211,7 +211,7 @@ export default function AdminNav({ open, onClose }: { open: boolean; onClose: ()
           <button
             onClick={handleLogout}
             className="db-hover-bg flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
-            style={{ color: "#f87171" }}
+            style={{ color: "var(--db-danger, #DC2626)" }}
           >
             <svg {...ip}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
             Logout

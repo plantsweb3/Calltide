@@ -26,17 +26,17 @@ export default async function HelpCenterPage() {
   ]);
 
   return (
-    <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
+    <div className="min-h-screen" style={{ background: "#F8FAFC" }}>
       {/* Hero + Search */}
       <section className="relative overflow-hidden py-20 md:py-28" style={{ background: "#111827" }}>
         <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(197,154,39,0.08) 0%, transparent 70%)" }} />
         <div className="pointer-events-none absolute inset-0 grain-overlay" />
         <div className="relative mx-auto max-w-3xl px-4 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: "#C59A27" }}>Help Center</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: "#D4A843" }}>Help Center</p>
           <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-white md:text-5xl lg:text-6xl">
             How can we help?
           </h1>
-          <p className="mt-4 text-lg" style={{ color: "#94A3B8" }}>
+          <p className="mt-4 text-lg" style={{ color: "#64748B" }}>
             Search our knowledge base or browse categories below
           </p>
           <div className="mt-10">
@@ -50,8 +50,8 @@ export default async function HelpCenterPage() {
         {popular.length > 0 && (
           <section>
             <div className="flex items-center gap-3 mb-6">
-              <div className="h-5 w-1 rounded-full" style={{ background: "#C59A27" }} />
-              <h2 className="text-lg font-bold tracking-tight" style={{ color: "#1A1D24" }}>
+              <div className="h-5 w-1 rounded-full" style={{ background: "#D4A843" }} />
+              <h2 className="text-lg font-bold tracking-tight" style={{ color: "#0F1729" }}>
                 Popular Articles
               </h2>
             </div>
@@ -63,17 +63,17 @@ export default async function HelpCenterPage() {
                   className="group relative rounded-xl border p-5 shadow-sm transition-all hover:shadow-lg hover:-translate-y-0.5"
                   style={{ borderColor: "#E2E8F0", background: "white" }}
                 >
-                  <p className="font-semibold leading-snug" style={{ color: "#1A1D24" }}>{a.title}</p>
+                  <p className="font-semibold leading-snug" style={{ color: "#0F1729" }}>{a.title}</p>
                   {a.excerpt && (
                     <p className="mt-2 text-sm line-clamp-2 leading-relaxed" style={{ color: "#64748B" }}>{a.excerpt}</p>
                   )}
-                  <div className="mt-4 flex items-center gap-2 text-xs" style={{ color: "#94A3B8" }}>
+                  <div className="mt-4 flex items-center gap-2 text-xs" style={{ color: "#64748B" }}>
                     <span className="rounded-full px-2.5 py-1 font-medium" style={{ background: "rgba(197,154,39,0.08)", color: "#B8860B" }}>
                       {a.categoryName}
                     </span>
                     <span>{a.readingTimeMinutes} min read</span>
                   </div>
-                  <svg className="absolute right-4 top-5 h-4 w-4 opacity-0 transition-all group-hover:opacity-60 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="#94A3B8" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                  <svg className="absolute right-4 top-5 h-4 w-4 opacity-0 transition-all group-hover:opacity-60 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="#64748B" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                 </Link>
               ))}
             </div>
@@ -83,8 +83,8 @@ export default async function HelpCenterPage() {
         {/* Category Grid */}
         <section>
           <div className="flex items-center gap-3 mb-6">
-            <div className="h-5 w-1 rounded-full" style={{ background: "#C59A27" }} />
-            <h2 className="text-lg font-bold tracking-tight" style={{ color: "#1A1D24" }}>
+            <div className="h-5 w-1 rounded-full" style={{ background: "#D4A843" }} />
+            <h2 className="text-lg font-bold tracking-tight" style={{ color: "#0F1729" }}>
               Browse by Category
             </h2>
           </div>
@@ -96,12 +96,12 @@ export default async function HelpCenterPage() {
                 className="group rounded-xl border p-6 shadow-sm transition-all hover:shadow-lg hover:-translate-y-0.5 hover:border-amber-300"
                 style={{ borderColor: "#E2E8F0", background: "white" }}
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ background: "rgba(197,154,39,0.08)", color: "#C59A27" }}>
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ background: "rgba(197,154,39,0.08)", color: "#D4A843" }}>
                   <HelpCategoryIcon slug={cat.slug} size={20} />
                 </div>
-                <h3 className="mt-3 font-semibold" style={{ color: "#1A1D24" }}>{cat.name}</h3>
+                <h3 className="mt-3 font-semibold" style={{ color: "#0F1729" }}>{cat.name}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed" style={{ color: "#64748B" }}>{cat.description}</p>
-                <div className="mt-4 flex items-center gap-1 text-xs font-semibold" style={{ color: "#C59A27" }}>
+                <div className="mt-4 flex items-center gap-1 text-xs font-semibold" style={{ color: "#D4A843" }}>
                   <span>{cat.articleCount} {cat.articleCount === 1 ? "article" : "articles"}</span>
                   <svg className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                 </div>
@@ -116,7 +116,7 @@ export default async function HelpCenterPage() {
           <Link
             href="/blog"
             className="text-sm font-semibold transition-colors hover:underline"
-            style={{ color: "#C59A27" }}
+            style={{ color: "#D4A843" }}
           >
             Browse our Blog &rarr;
           </Link>
@@ -127,13 +127,13 @@ export default async function HelpCenterPage() {
           <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 50% 80% at 50% 100%, rgba(197,154,39,0.1) 0%, transparent 60%)" }} />
           <div className="relative">
             <h2 className="text-xl font-bold text-white">Still need help?</h2>
-            <p className="mt-2 text-sm" style={{ color: "#94A3B8" }}>
+            <p className="mt-2 text-sm" style={{ color: "#64748B" }}>
               Our support team typically responds within a few hours.
             </p>
             <a
               href="mailto:support@captahq.com"
               className="mt-5 inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:brightness-110"
-              style={{ background: "#C59A27" }}
+              style={{ background: "#D4A843" }}
             >
               Contact Support
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>

@@ -144,34 +144,34 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
   // ── Loading ──
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#FBFBFC" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#F8FAFC" }}>
         <div className="flex items-center gap-3">
           <CaptaSpinner size={20} />
-          <p className="text-sm" style={{ color: "#94A3B8" }}>{text.loading}</p>
+          <p className="text-sm" style={{ color: "#64748B" }}>{text.loading}</p>
         </div>
       </div>
     );
   }
 
   const statusColors: Record<string, string> = {
-    green: "#22c55e",
-    amber: "#f59e0b",
-    red: "#ef4444",
+    green: "var(--db-success, #16A34A)",
+    amber: "var(--db-warning, #f59e0b)",
+    red: "var(--db-danger, #DC2626)",
   };
-  const overallDotColor = statusColors[data.overallColor] ?? "#22c55e";
+  const overallDotColor = statusColors[data.overallColor] ?? "var(--db-success, #16A34A)";
 
   return (
-    <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
+    <div className="min-h-screen" style={{ background: "#F8FAFC" }}>
       {/* ── Header ── */}
       <header style={{ borderBottom: "1px solid #E2E8F0" }}>
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-5">
           <Link href="/" className="flex items-center gap-2.5">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <rect width="24" height="24" rx="6" fill="#C59A27" />
+              <rect width="24" height="24" rx="6" fill="#D4A843" />
               <path d="M7 8.5C7 7.67 7.67 7 8.5 7h7c.83 0 1.5.67 1.5 1.5v0c0 .83-.67 1.5-1.5 1.5h-7C7.67 10 7 9.33 7 8.5zM7 12c0-.83.67-1.5 1.5-1.5h3c.83 0 1.5.67 1.5 1.5v0c0 .83-.67 1.5-1.5 1.5h-3C7.67 13.5 7 12.83 7 12zM7 15.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5v0c0 .83-.67 1.5-1.5 1.5h-5C7.67 17 7 16.33 7 15.5z" fill="white"/>
             </svg>
-            <span className="text-lg font-bold tracking-tight" style={{ color: "#1A1D24" }}>
-              Capta <span className="font-normal" style={{ color: "#94A3B8" }}>Status</span>
+            <span className="text-lg font-bold tracking-tight" style={{ color: "#0F1729" }}>
+              Capta <span className="font-normal" style={{ color: "#64748B" }}>Status</span>
             </span>
           </Link>
           <div className="flex items-center gap-5">
@@ -181,7 +181,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
             <a
               href="#subscribe"
               className="text-sm font-medium"
-              style={{ color: "#C59A27" }}
+              style={{ color: "#D4A843" }}
             >
               {text.subscribe}
             </a>
@@ -219,7 +219,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
               )}
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight" style={{ color: "#1A1D24" }}>
+              <h1 className="text-xl font-bold tracking-tight" style={{ color: "#0F1729" }}>
                 {data.overallStatus}
               </h1>
               <p className="mt-0.5 text-sm" style={{ color: "#64748B" }}>
@@ -268,14 +268,14 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
 
           {/* "Uptime over the past 90 days" label */}
           {Object.keys(data.dailyHealth).length > 0 && (
-            <p className="text-right text-sm mb-3" style={{ color: "#94A3B8" }}>
+            <p className="text-right text-sm mb-3" style={{ color: "#64748B" }}>
               {text.uptimeHeading}
             </p>
           )}
 
           <div className="space-y-0 rounded-xl overflow-hidden" style={{ border: "1px solid #E2E8F0" }}>
             {data.services.map((svc, idx) => {
-              const sColor = svc.status === "operational" ? "#22c55e" : svc.status === "degraded" ? "#f59e0b" : "#ef4444";
+              const sColor = svc.status === "operational" ? "var(--db-success, #16A34A)" : svc.status === "degraded" ? "var(--db-warning, #f59e0b)" : "var(--db-danger, #DC2626)";
               const days = data.dailyHealth[svc.name] || [];
               const uptimePct = days.length > 0
                 ? ((days.filter((d) => d.status === "operational").length / days.length) * 100).toFixed(2)
@@ -293,9 +293,9 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
                   {/* Name + description + status text */}
                   <div className="flex items-center justify-between mb-2">
                     <div>
-                      <span className="font-bold text-[15px]" style={{ color: "#1A1D24" }}>{svc.name}</span>
+                      <span className="font-bold text-[15px]" style={{ color: "#0F1729" }}>{svc.name}</span>
                       {text.categoryDescriptions?.[svc.name] && (
-                        <span className="ml-2 text-xs" style={{ color: "#94A3B8" }}>{text.categoryDescriptions[svc.name]}</span>
+                        <span className="ml-2 text-xs" style={{ color: "#64748B" }}>{text.categoryDescriptions[svc.name]}</span>
                       )}
                     </div>
                     <span className="text-sm font-medium" style={{ color: sColor }}>
@@ -308,7 +308,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
                     <>
                       <div className="flex gap-[2px] h-[34px]">
                         {days.map((d, i) => {
-                          const barColor = d.status === "operational" ? "#22c55e" : d.status === "degraded" ? "#f59e0b" : "#ef4444";
+                          const barColor = d.status === "operational" ? "var(--db-success, #16A34A)" : d.status === "degraded" ? "var(--db-warning, #f59e0b)" : "var(--db-danger, #DC2626)";
                           return (
                             <div
                               key={i}
@@ -328,7 +328,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
                       </div>
 
                       {/* "90 days ago ── XX.XX % uptime ── Today" */}
-                      <div className="flex items-center mt-1.5 text-xs" style={{ color: "#94A3B8" }}>
+                      <div className="flex items-center mt-1.5 text-xs" style={{ color: "#64748B" }}>
                         <span className="shrink-0">{text.daysAgo}</span>
                         <span className="flex-1 mx-3 h-px" style={{ background: "#E2E8F0" }} />
                         <span className="shrink-0 tabular-nums">{uptimePct}{text.uptimeSuffix}</span>
@@ -346,7 +346,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
         {/* ── No Active Incidents Note ── */}
         {data.activeIncidents.length === 0 && (
           <div className="flex items-center gap-3 rounded-xl px-5 py-4" style={{ background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.12)" }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--db-success, #16A34A)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
             <span className="text-sm" style={{ color: "#64748B" }}>{text.noActiveIncidents}</span>
@@ -357,7 +357,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
         <section>
           <SectionHeading>{text.pastIncidents}</SectionHeading>
           {data.recentIncidents.length === 0 ? (
-            <p className="text-sm" style={{ color: "#94A3B8" }}>{text.noPastIncidents}</p>
+            <p className="text-sm" style={{ color: "#64748B" }}>{text.noPastIncidents}</p>
           ) : (
             <div className="space-y-3">
               {data.recentIncidents.map((inc) => (
@@ -386,18 +386,18 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
                 style={{ background: "rgba(197,154,39,0.08)" }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4A843" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
               </div>
               <div className="flex-1">
-                <h2 className="text-base font-semibold" style={{ color: "#1A1D24" }}>{text.subscribe}</h2>
+                <h2 className="text-base font-semibold" style={{ color: "#0F1729" }}>{text.subscribe}</h2>
                 <p className="mt-1 text-sm leading-relaxed" style={{ color: "#64748B" }}>
                   {text.subscribeDesc}
                 </p>
                 {subscribeMsg && (
-                  <p className="mt-3 text-sm font-medium" style={{ color: "#C59A27" }}>{subscribeMsg}</p>
+                  <p className="mt-3 text-sm font-medium" style={{ color: "#D4A843" }}>{subscribeMsg}</p>
                 )}
                 <form onSubmit={handleSubscribe} className="mt-4 flex gap-2">
                   <input
@@ -407,7 +407,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
                     placeholder={text.subscribePlaceholder}
                     required
                     className="flex-1 rounded-lg border px-4 py-2.5 text-sm outline-none transition-colors"
-                    style={{ borderColor: "#E2E8F0", background: "#FBFBFC" }}
+                    style={{ borderColor: "#E2E8F0", background: "#F8FAFC" }}
                   />
                   <button
                     type="submit"
@@ -426,14 +426,14 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
       {/* ── Footer ── */}
       <footer style={{ borderTop: "1px solid #E2E8F0" }}>
         <div className="mx-auto max-w-4xl px-6 py-6 flex items-center justify-between">
-          <p className="text-xs" style={{ color: "#94A3B8" }}>
+          <p className="text-xs" style={{ color: "#64748B" }}>
             &copy; {new Date().getFullYear()} Capta
           </p>
           <div className="flex items-center gap-5">
-            <Link href="/" className="text-xs" style={{ color: "#94A3B8" }}>Home</Link>
-            <Link href="/help" className="text-xs" style={{ color: "#94A3B8" }}>Help</Link>
-            <Link href="/legal/privacy" className="text-xs" style={{ color: "#94A3B8" }}>Privacy</Link>
-            <Link href="/legal/terms" className="text-xs" style={{ color: "#94A3B8" }}>Terms</Link>
+            <Link href="/" className="text-xs" style={{ color: "#64748B" }}>Home</Link>
+            <Link href="/help" className="text-xs" style={{ color: "#64748B" }}>Help</Link>
+            <Link href="/legal/privacy" className="text-xs" style={{ color: "#64748B" }}>Privacy</Link>
+            <Link href="/legal/terms" className="text-xs" style={{ color: "#64748B" }}>Terms</Link>
           </div>
         </div>
       </footer>
@@ -445,7 +445,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
           style={{
             left: Math.max(8, Math.min(hoveredDay.x - 80, typeof window !== "undefined" ? window.innerWidth - 170 : 600)),
             top: hoveredDay.y - 52,
-            background: "#1A1D24",
+            background: "#0F1729",
             border: "1px solid #334155",
           }}
         >
@@ -453,13 +453,13 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
             <span
               className="h-2 w-2 rounded-full"
               style={{
-                background: hoveredDay.day.status === "operational" ? "#22c55e" : hoveredDay.day.status === "degraded" ? "#f59e0b" : "#ef4444",
+                background: hoveredDay.day.status === "operational" ? "var(--db-success, #16A34A)" : hoveredDay.day.status === "degraded" ? "var(--db-warning, #f59e0b)" : "var(--db-danger, #DC2626)",
               }}
             />
             <span className="text-xs font-medium text-white">
               {new Date(hoveredDay.day.date + "T12:00:00").toLocaleDateString(lang === "es" ? "es" : "en", { month: "short", day: "numeric" })}
             </span>
-            <span className="text-xs capitalize" style={{ color: "#94A3B8" }}>
+            <span className="text-xs capitalize" style={{ color: "#64748B" }}>
               {hoveredDay.day.status}
             </span>
           </div>
@@ -482,7 +482,7 @@ export function StatusPageInner({ lang, t: text }: { lang: string; t: typeof t }
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-5">
-      <h2 className="text-xs font-bold uppercase tracking-[0.15em]" style={{ color: "#94A3B8" }}>
+      <h2 className="text-xs font-bold uppercase tracking-[0.15em]" style={{ color: "#64748B" }}>
         {children}
       </h2>
       <div className="flex-1 h-px" style={{ background: "#E2E8F0" }} />
@@ -508,8 +508,8 @@ function IncidentCard({
   showPostmortem?: boolean;
 }) {
   const sevColors: Record<string, string> = {
-    critical: "#ef4444",
-    major: "#f59e0b",
+    critical: "var(--db-danger, #DC2626)",
+    major: "var(--db-warning, #f59e0b)",
     minor: "#3b82f6",
     maintenance: "#6366f1",
   };
@@ -538,11 +538,11 @@ function IncidentCard({
         <div className="flex items-center gap-3 min-w-0">
           <span
             className="h-2.5 w-2.5 rounded-full flex-shrink-0"
-            style={{ background: isResolved ? "#22c55e" : sevColor }}
+            style={{ background: isResolved ? "var(--db-success, #16A34A)" : sevColor }}
           />
           <div className="min-w-0">
-            <p className="font-semibold text-sm truncate" style={{ color: "#1A1D24" }}>{title}</p>
-            <p className="text-xs mt-0.5 truncate" style={{ color: "#94A3B8" }}>
+            <p className="font-semibold text-sm truncate" style={{ color: "#0F1729" }}>{title}</p>
+            <p className="text-xs mt-0.5 truncate" style={{ color: "#64748B" }}>
               {incident.affectedServices.join(", ")} &middot;{" "}
               {new Date(incident.startedAt).toLocaleDateString(lang === "es" ? "es" : "en", {
                 month: "short",
@@ -556,7 +556,7 @@ function IncidentCard({
         <div className="flex items-center gap-2 flex-shrink-0 ml-3">
           <span
             className="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide"
-            style={{ background: `${isResolved ? "#22c55e" : sevColor}10`, color: isResolved ? "#22c55e" : sevColor }}
+            style={{ background: `${isResolved ? "var(--db-success, #16A34A)" : sevColor}10`, color: isResolved ? "var(--db-success, #16A34A)" : sevColor }}
           >
             {statusLabels[incident.status] || incident.status}
           </span>
@@ -565,7 +565,7 @@ function IncidentCard({
             height={14}
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#94A3B8"
+            stroke="#64748B"
             strokeWidth={2.5}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -587,7 +587,7 @@ function IncidentCard({
                   <div className="flex flex-col items-center pt-1">
                     <span
                       className="h-2 w-2 rounded-full flex-shrink-0"
-                      style={{ background: i === 0 ? "#C59A27" : "#CBD5E1" }}
+                      style={{ background: i === 0 ? "#D4A843" : "#CBD5E1" }}
                     />
                     {!isLast && <span className="flex-1 w-px mt-1" style={{ background: "#E2E8F0" }} />}
                   </div>
@@ -596,7 +596,7 @@ function IncidentCard({
                       <span className="text-xs font-semibold capitalize" style={{ color: "#475569" }}>
                         {upd.status.replace(/_/g, " ")}
                       </span>
-                      <span className="text-[11px]" style={{ color: "#94A3B8" }}>
+                      <span className="text-[11px]" style={{ color: "#64748B" }}>
                         {new Date(upd.createdAt).toLocaleString(lang === "es" ? "es" : "en", {
                           month: "short",
                           day: "numeric",
@@ -616,8 +616,8 @@ function IncidentCard({
 
           {/* Postmortem */}
           {showPostmortem && incident.postmortem && (
-            <div className="mt-5 rounded-lg p-4" style={{ background: "#FBFBFC", border: "1px solid #E2E8F0" }}>
-              <p className="text-xs font-bold uppercase tracking-[0.1em] mb-3" style={{ color: "#C59A27" }}>
+            <div className="mt-5 rounded-lg p-4" style={{ background: "#F8FAFC", border: "1px solid #E2E8F0" }}>
+              <p className="text-xs font-bold uppercase tracking-[0.1em] mb-3" style={{ color: "#D4A843" }}>
                 {text.postmortem}
               </p>
               <div

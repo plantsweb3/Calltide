@@ -36,7 +36,7 @@ export default function PortalExpired() {
               href="https://captahq.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#D4A843] hover:text-[#c49a38] font-medium"
+              className="text-amber hover:text-amber-dark font-medium"
             >
               Capta
             </a>

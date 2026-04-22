@@ -585,7 +585,7 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
           {/* Job Value */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
-              <span style={{ color: "#475569", fontSize: 13 }}>{l.jobLabel}</span>
+              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 13 }}>{l.jobLabel}</span>
               <span style={{ color: "var(--db-text, #fff)", fontWeight: 700, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>
                 ${jobValue.toLocaleString()}
               </span>
@@ -601,15 +601,15 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
               style={{ "--fill": `${jobPct}%` } as React.CSSProperties}
             />
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-              <span style={{ color: "#475569", fontSize: 11 }}>$100</span>
-              <span style={{ color: "#475569", fontSize: 11 }}>$5,000</span>
+              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>$100</span>
+              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>$5,000</span>
             </div>
           </div>
 
           {/* Missed Calls */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
-              <span style={{ color: "#475569", fontSize: 13 }}>{l.callsLabel}</span>
+              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 13 }}>{l.callsLabel}</span>
               <span style={{ color: "var(--db-text, #fff)", fontWeight: 700, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>
                 {missedCalls}
               </span>
@@ -625,8 +625,8 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
               style={{ "--fill": `${callsPct}%` } as React.CSSProperties}
             />
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-              <span style={{ color: "#475569", fontSize: 11 }}>1</span>
-              <span style={{ color: "#475569", fontSize: 11 }}>10</span>
+              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>1</span>
+              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>10</span>
             </div>
           </div>
         </div>
@@ -637,29 +637,29 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
         {/* Output */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, textAlign: "center" }}>
           <div>
-            <p style={{ color: "#475569", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.losing}</p>
+            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.losing}</p>
             <p style={{ color: "var(--db-danger, #ef4444)", fontSize: 22, fontWeight: 800, margin: 0, fontVariantNumeric: "tabular-nums" }}>
               ${monthlyLoss.toLocaleString()}
             </p>
-            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
+            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
           </div>
           <div>
-            <p style={{ color: "#475569", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.costs}</p>
+            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.costs}</p>
             <p style={{ color: "var(--db-text, #fff)", fontSize: 22, fontWeight: 800, margin: 0 }}>$497</p>
-            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
+            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
           </div>
           <div>
-            <p style={{ color: "#475569", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.roi}</p>
+            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.roi}</p>
             <p style={{ color: "var(--db-accent, #d4a843)", fontSize: 22, fontWeight: 800, margin: 0 }}>
               {roiMultiple > 0 ? `${roiMultiple.toFixed(1)}x` : "—"}
             </p>
-            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.returnLabel}</p>
+            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 10, margin: "2px 0 0" }}>{l.returnLabel}</p>
           </div>
         </div>
 
         {/* Source note */}
         {tradeName && city && (
-          <p style={{ textAlign: "center", color: "#475569", fontSize: 11, margin: "16px 0 0" }}>
+          <p style={{ textAlign: "center", color: "var(--db-text-muted, #475569)", fontSize: 11, margin: "16px 0 0" }}>
             {l.source}
           </p>
         )}
@@ -718,7 +718,7 @@ function SetupVoicePreview({ voiceId, name, lang }: { voiceId: string; name: str
   };
 
   return (
-    <button onClick={play} style={{ marginTop: 4, fontSize: 12, fontWeight: 500, color: playing ? "#D4A843" : "#475569", background: "none", border: "none", cursor: "pointer" }}>
+    <button onClick={play} style={{ marginTop: 4, fontSize: 12, fontWeight: 500, color: playing ? "var(--db-accent, #D4A843)" : "var(--db-text-muted, #475569)", background: "none", border: "none", cursor: "pointer" }}>
       {playing ? (lang === "es" ? "Detener" : "Stop") : (lang === "es" ? "Escuchar" : "Preview")}
     </button>
   );
@@ -853,7 +853,7 @@ function SetupTestCall({ lang, receptionistName, onNext, onBack }: SetupTestCall
             >
               {t.tryMariaCta}
             </button>
-            <p style={{ color: "#64748b", fontSize: 12, marginTop: 12 }}>{t.tryMariaMicNote}</p>
+            <p style={{ color: "var(--db-text-muted, #64748b)", fontSize: 12, marginTop: 12 }}>{t.tryMariaMicNote}</p>
           </>
         )}
 
@@ -861,7 +861,7 @@ function SetupTestCall({ lang, receptionistName, onNext, onBack }: SetupTestCall
         {callState === "connecting" && (
           <>
             <div className={s.spinner} style={{ margin: "0 auto 16px" }} />
-            <p style={{ color: "#D4A843", fontSize: 16, fontWeight: 600 }}>{t.tryMariaConnecting}</p>
+            <p style={{ color: "var(--db-accent, #D4A843)", fontSize: 16, fontWeight: 600 }}>{t.tryMariaConnecting}</p>
           </>
         )}
 
@@ -869,7 +869,7 @@ function SetupTestCall({ lang, receptionistName, onNext, onBack }: SetupTestCall
         {callState === "error" && (
           <>
             <div style={{ fontSize: 48, marginBottom: 12 }}>⚠️</div>
-            <p style={{ color: "#e2e8f0", fontSize: 15, fontWeight: 600, marginBottom: 8 }}>
+            <p style={{ color: "var(--db-text, #e2e8f0)", fontSize: 15, fontWeight: 600, marginBottom: 8 }}>
               {lang === "en" ? "Voice system unavailable. You can skip this step." : "Sistema de voz no disponible. Puedes omitir este paso."}
             </p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 16 }}>
@@ -895,10 +895,10 @@ function SetupTestCall({ lang, receptionistName, onNext, onBack }: SetupTestCall
             }}>
               <span style={{ fontSize: 32 }}>🎙️</span>
             </div>
-            <p style={{ color: "#e2e8f0", fontSize: 15, fontWeight: 500, marginBottom: 8 }}>
+            <p style={{ color: "var(--db-text, #e2e8f0)", fontSize: 15, fontWeight: 500, marginBottom: 8 }}>
               {replaceVars(t.tryMariaActive, { name })}
             </p>
-            <p style={{ color: "#D4A843", fontSize: 24, fontWeight: 700, fontVariantNumeric: "tabular-nums", marginBottom: 16 }}>
+            <p style={{ color: "var(--db-accent, #D4A843)", fontSize: 24, fontWeight: 700, fontVariantNumeric: "tabular-nums", marginBottom: 16 }}>
               {formatTime(elapsed)}
             </p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
@@ -914,7 +914,7 @@ function SetupTestCall({ lang, receptionistName, onNext, onBack }: SetupTestCall
               <button
                 onClick={handleEnd}
                 className={s.secondaryBtn}
-                style={{ color: "#ef4444", borderColor: "rgba(239,68,68,0.3)" }}
+                style={{ color: "var(--db-danger, #DC2626)", borderColor: "rgba(239,68,68,0.3)" }}
               >
                 {t.tryMariaEnd}
               </button>
@@ -929,7 +929,7 @@ function SetupTestCall({ lang, receptionistName, onNext, onBack }: SetupTestCall
             <h3 style={{ color: "#fff", fontSize: 18, fontWeight: 700, margin: "0 0 8px" }}>
               {t.tryMariaEnded}
             </h3>
-            <p style={{ color: "#475569", fontSize: 14, marginBottom: 20 }}>
+            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 14, marginBottom: 20 }}>
               {replaceVars(t.tryMariaEndedSub, { name })}
             </p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -948,7 +948,7 @@ function SetupTestCall({ lang, receptionistName, onNext, onBack }: SetupTestCall
         <button
           onClick={onNext}
           style={{
-            background: "none", border: "none", color: "#64748b",
+            background: "none", border: "none", color: "var(--db-text-muted, #64748b)",
             fontSize: 14, cursor: "pointer", marginTop: 16, padding: 8,
             textDecoration: "underline", display: "block", marginLeft: "auto", marginRight: "auto",
           }}
@@ -1508,22 +1508,22 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
               : `¡Bienvenido! ${receptionistName} está lista para contestar llamadas, gestionar seguimientos, despacho y facturación — todo por texto. 24/7, bilingüe.`}
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", margin: "12px 0 8px" }}>
-            <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
+            <span style={{ color: "var(--db-success, #16A34A)", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
               ✓ {services.length || 0} {lang === "es" ? "servicios configurados" : "services configured"}
             </span>
-            <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
+            <span style={{ color: "var(--db-success, #16A34A)", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
               ✓ {t.bilingualLabel}
             </span>
-            <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
+            <span style={{ color: "var(--db-success, #16A34A)", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
               ✓ {lang === "es" ? "Funciona Solo" : "Runs Automatically"}
             </span>
-            <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
+            <span style={{ color: "var(--db-success, #16A34A)", fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
               ✓ {lang === "es" ? "Gestiona por Texto" : "Manage by Text"}
             </span>
           </div>
 
           <div className={s.summaryCard}>
-            <h3 style={{ color: "#D4A843", margin: "0 0 16px", fontSize: 16 }}>{t.configSummary}</h3>
+            <h3 style={{ color: "var(--db-accent, #D4A843)", margin: "0 0 16px", fontSize: 16 }}>{t.configSummary}</h3>
             {bizName && <div className={s.summaryRow}><span className={s.summaryLabel}>{t.businessLabel}:</span> <span>{bizName}</span></div>}
             <div className={s.summaryRow}><span className={s.summaryLabel}>{t.receptionistLabel}:</span> <span>{receptionistName}</span></div>
             <div className={s.summaryRow}><span className={s.summaryLabel}>{t.personalityLabel}:</span> <span style={{ textTransform: "capitalize" }}>{personalityPreset}</span></div>
@@ -1538,17 +1538,17 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
 
           <div className={s.card} style={{ marginTop: 24, padding: 20 }}>
             <h3 style={{ color: "#fff", margin: "0 0 8px", fontSize: 16 }}>{t.whatsNext}</h3>
-            <p style={{ color: "#475569", margin: "0 0 20px", fontSize: 14 }}>
+            <p style={{ color: "var(--db-text-muted, #475569)", margin: "0 0 20px", fontSize: 14 }}>
               {replaceVars(t.whatsNextDesc, { name: receptionistName })}
             </p>
             {authState === "pending" && (
               <div>
-                <p style={{ color: "#D4A843", fontSize: 14 }}>
+                <p style={{ color: "var(--db-accent, #D4A843)", fontSize: 14 }}>
                   {t.authenticating}
                 </p>
                 {pollAttempt >= 3 && (
                   <div style={{ marginTop: 12 }}>
-                    <p style={{ color: "#475569", fontSize: 13, marginBottom: 8 }}>
+                    <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 13, marginBottom: 8 }}>
                       {lang === "en"
                         ? "Payment processing is taking longer than expected. Click below to check status."
                         : "El procesamiento del pago está tomando más tiempo de lo esperado. Haz clic para verificar."}
@@ -1568,14 +1568,14 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
               <>
                 {credentials && (
                   <div style={{ background: "rgba(212,168,67,0.1)", border: "1px solid rgba(212,168,67,0.3)", borderRadius: 8, padding: "12px 16px", marginBottom: 16, textAlign: "left" }}>
-                    <p style={{ color: "#D4A843", fontSize: 13, fontWeight: 600, margin: "0 0 8px" }}>
+                    <p style={{ color: "var(--db-accent, #D4A843)", fontSize: 13, fontWeight: 600, margin: "0 0 8px" }}>
                       {lang === "en" ? "Save your login credentials:" : "Guarda tus credenciales:"}
                     </p>
-                    <p style={{ color: "#e2e8f0", fontSize: 13, margin: "0 0 4px" }}>
-                      <span style={{ color: "#475569" }}>Email:</span> {credentials.email}
+                    <p style={{ color: "var(--db-text, #e2e8f0)", fontSize: 13, margin: "0 0 4px" }}>
+                      <span style={{ color: "var(--db-text-muted, #475569)" }}>Email:</span> {credentials.email}
                     </p>
-                    <p style={{ color: "#e2e8f0", fontSize: 13, margin: 0, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                      <span style={{ color: "#475569" }}>{lang === "en" ? "Password:" : "Contraseña:"}</span>{" "}
+                    <p style={{ color: "var(--db-text, #e2e8f0)", fontSize: 13, margin: 0, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <span style={{ color: "var(--db-text-muted, #475569)" }}>{lang === "en" ? "Password:" : "Contraseña:"}</span>{" "}
                       <code style={{ background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: 4, fontFamily: "monospace" }}>{credentials.password}</code>
                       <button
                         type="button"
@@ -1589,7 +1589,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                           background: passwordCopied ? "rgba(16,185,129,0.2)" : "rgba(212,168,67,0.2)",
                           border: `1px solid ${passwordCopied ? "rgba(16,185,129,0.4)" : "rgba(212,168,67,0.4)"}`,
                           borderRadius: 4,
-                          color: passwordCopied ? "#10b981" : "#D4A843",
+                          color: passwordCopied ? "var(--db-success, #16A34A)" : "var(--db-accent, #D4A843)",
                           fontSize: 12,
                           padding: "2px 8px",
                           cursor: "pointer",
@@ -1612,7 +1612,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
             )}
             {authState === "failed" && (
               <div>
-                <p style={{ color: "#475569", fontSize: 14, lineHeight: 1.6, marginBottom: 12 }}>
+                <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 14, lineHeight: 1.6, marginBottom: 12 }}>
                   {lang === "en"
                     ? "We're still processing your payment. This usually takes a few seconds — try refreshing."
                     : "Aún estamos procesando tu pago. Esto normalmente toma unos segundos — intenta refrescar."}
@@ -1828,7 +1828,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                 style={{ textAlign: "center", padding: "16px 12px" }}
                 aria-pressed={useCustomName}
               >
-                <div style={{ color: useCustomName ? "#fff" : "#475569", fontWeight: 600 }}>{t.customName}</div>
+                <div style={{ color: useCustomName ? "var(--db-text, #fff)" : "var(--db-text-muted, #475569)", fontWeight: 600 }}>{t.customName}</div>
               </button>
             </div>
             {useCustomName && (
@@ -1863,7 +1863,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                     aria-pressed={personalityPreset === preset}
                   >
                     <div style={{ color: "#fff", fontWeight: 600, marginBottom: 4 }}>{l.name}</div>
-                    <div style={{ color: "#475569", fontSize: 14 }}>{l.desc}</div>
+                    <div style={{ color: "var(--db-text-muted, #475569)", fontSize: 14 }}>{l.desc}</div>
                   </button>
                 );
               })}
@@ -1886,7 +1886,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                     aria-pressed={selectedVoiceId === voice.id}
                   >
                     <div style={{ color: "#fff", fontWeight: 600, marginBottom: 2 }}>{voice.name}</div>
-                    <div style={{ color: "#475569", fontSize: 13 }}>{voice.desc}</div>
+                    <div style={{ color: "var(--db-text-muted, #475569)", fontSize: 13 }}>{voice.desc}</div>
                   </button>
                   <SetupVoicePreview voiceId={voice.id} name={voice.name} lang={lang} />
                 </div>
@@ -1896,10 +1896,10 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
             {/* Greeting preview bubble */}
             {receptionistName.trim() && (
               <div className={s.previewBubble}>
-                <div className={s.previewAvatar} style={{ background: "rgba(212,168,67,0.15)", color: "#D4A843", fontSize: 16, fontWeight: 700 }}>{receptionistName.charAt(0).toUpperCase()}</div>
+                <div className={s.previewAvatar} style={{ background: "rgba(212,168,67,0.15)", color: "var(--db-accent, #D4A843)", fontSize: 16, fontWeight: 700 }}>{receptionistName.charAt(0).toUpperCase()}</div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ color: "#D4A843", fontWeight: 600, fontSize: 13, marginBottom: 4 }}>{receptionistName}</div>
-                  <div style={{ color: "#e2e8f0", fontSize: 14 }}>
+                  <div style={{ color: "var(--db-accent, #D4A843)", fontWeight: 600, fontSize: 13, marginBottom: 4 }}>{receptionistName}</div>
+                  <div style={{ color: "var(--db-text, #e2e8f0)", fontSize: 14 }}>
                     &ldquo;{replaceVars(
                       personalityPreset === "professional" ? t.professionalSample
                         : personalityPreset === "warm" ? t.warmSample
@@ -1916,7 +1916,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                     background: "none",
                     border: "1px solid rgba(212,168,67,0.3)",
                     borderRadius: 8,
-                    color: previewPlaying ? "#ef4444" : "#D4A843",
+                    color: previewPlaying ? "var(--db-danger, #DC2626)" : "var(--db-accent, #D4A843)",
                     padding: "6px 12px",
                     fontSize: 13,
                     cursor: "pointer",
@@ -1933,7 +1933,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
               </div>
             )}
             {receptionistName.trim() && (
-              <p style={{ color: "#64748b", fontSize: 12, textAlign: "center", margin: "4px 0 0" }}>{t.previewNote}</p>
+              <p style={{ color: "var(--db-text-muted, #64748b)", fontSize: 12, textAlign: "center", margin: "4px 0 0" }}>{t.previewNote}</p>
             )}
           </div>
         )}
@@ -2019,7 +2019,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
 
             <div style={{ marginTop: 24 }}>
               <label className={s.label}>{t.offLimitsTitle}</label>
-              <p style={{ color: "#475569", fontSize: 13, margin: "0 0 12px" }}>{t.offLimitsSub}</p>
+              <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 13, margin: "0 0 12px" }}>{t.offLimitsSub}</p>
               {[
                 { key: "pricing", label: t.offLimitsPricing },
                 { key: "competitors", label: t.offLimitsCompetitors },
@@ -2031,9 +2031,9 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                     type="checkbox"
                     checked={offLimits[key] || false}
                     onChange={(e) => setOffLimits({ ...offLimits, [key]: e.target.checked })}
-                    style={{ accentColor: "#D4A843" }}
+                    style={{ accentColor: "var(--db-accent, #D4A843)" }}
                   />
-                  <span style={{ color: "#e2e8f0", fontSize: 14 }}>{label}</span>
+                  <span style={{ color: "var(--db-text, #e2e8f0)", fontSize: 14 }}>{label}</span>
                 </label>
               ))}
             </div>
@@ -2101,12 +2101,12 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
 
             {/* Summary */}
             <div className={s.summaryCard}>
-              <h3 style={{ color: "#D4A843", margin: "0 0 12px", fontSize: 14 }}>{t.configSummary}</h3>
-              <div className={s.summaryRow}><span className={s.summaryLabel}>✓ {receptionistName}</span> <span style={{ color: "#475569", textTransform: "capitalize" }}>{personalityPreset}</span></div>
+              <h3 style={{ color: "var(--db-accent, #D4A843)", margin: "0 0 12px", fontSize: 14 }}>{t.configSummary}</h3>
+              <div className={s.summaryRow}><span className={s.summaryLabel}>✓ {receptionistName}</span> <span style={{ color: "var(--db-text-muted, #475569)", textTransform: "capitalize" }}>{personalityPreset}</span></div>
               {bizType && (
                 <div className={s.summaryRow}>
                   <span className={s.summaryLabel}>✓ {TRADE_OPTIONS.find((o) => o.value === bizType)?.[lang] || bizType}</span>
-                  <span style={{ color: "#475569" }}>{city}, {state}</span>
+                  <span style={{ color: "var(--db-text-muted, #475569)" }}>{city}, {state}</span>
                 </div>
               )}
               {services.length > 0 && (
@@ -2117,14 +2117,14 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
 
             {/* Trust badges */}
             <div className={s.trustBadges}>
-              <span style={{ color: "#10b981", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ color: "var(--db-success, #16A34A)", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   <path d="M9 12l2 2 4-4" />
                 </svg>
                 {t.cancelAnytime} · {t.guarantee}
               </span>
-              <span style={{ color: "#10b981", fontSize: 12, display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ color: "var(--db-success, #16A34A)", fontSize: 12, display: "flex", alignItems: "center", gap: 6 }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                   <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
                 </svg>
@@ -2184,7 +2184,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
             {loginUrl && (
               <>
                 {" "}
-                <a href={loginUrl} style={{ color: "#D4A843", textDecoration: "underline", fontWeight: 600 }}>
+                <a href={loginUrl} style={{ color: "var(--db-accent, #D4A843)", textDecoration: "underline", fontWeight: 600 }}>
                   {lang === "en" ? "Log in here" : "Inicia sesión aquí"}
                 </a>
               </>

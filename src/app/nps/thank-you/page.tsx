@@ -46,7 +46,7 @@ function ThankYouContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBFBFC]" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
+    <div className="min-h-screen bg-[#F8FAFC]" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
       {/* Nav */}
       <nav className="border-b border-[#E2E8F0] bg-white px-6 py-3">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
@@ -65,7 +65,7 @@ function ThankYouContent() {
           <div className="flex justify-center">
             <div
               className="flex h-16 w-16 items-center justify-center rounded-full"
-              style={{ backgroundColor: "#f0fdf4" }}
+              style={{ backgroundColor: "rgba(22,163,74,0.08)" }}
             >
               <svg
                 width="32"
@@ -84,7 +84,7 @@ function ThankYouContent() {
 
           <h1
             className="mt-6 text-center text-2xl font-extrabold tracking-tight sm:text-3xl"
-            style={{ color: "#1a1a2e" }}
+            style={{ color: "#0F1729" }}
           >
             Thank you for your feedback!
           </h1>
@@ -104,7 +104,7 @@ function ThankYouContent() {
               <label
                 htmlFor="feedback"
                 className="mb-2 block text-sm font-medium"
-                style={{ color: "#1a1a2e" }}
+                style={{ color: "#0F1729" }}
               >
                 Any additional feedback? What could we improve?
               </label>
@@ -118,7 +118,7 @@ function ThankYouContent() {
                 className="w-full rounded-lg border px-4 py-3 text-sm transition-colors focus:outline-none focus:ring-2"
                 style={{
                   borderColor: "#E2E8F0",
-                  color: "#1a1a2e",
+                  color: "#0F1729",
                   resize: "vertical",
                 }}
                 onFocus={(e) => {
@@ -147,7 +147,7 @@ function ThankYouContent() {
               </button>
             </form>
           ) : (
-            <div className="mt-8 rounded-lg p-4 text-center" style={{ backgroundColor: "#f0fdf4" }}>
+            <div className="mt-8 rounded-lg p-4 text-center" style={{ backgroundColor: "rgba(22,163,74,0.08)" }}>
               <p className="text-sm font-medium" style={{ color: "#16a34a" }}>
                 Thank you! Your feedback helps us improve.
               </p>

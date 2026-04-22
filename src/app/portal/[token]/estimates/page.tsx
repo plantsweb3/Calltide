@@ -215,7 +215,7 @@ function EstimateCard({
               <button
                 onClick={onAccept}
                 disabled={isAccepting}
-                className="px-4 py-2 text-sm font-medium bg-[#1B2A4A] text-white rounded-lg hover:bg-[#243758] transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium bg-navy text-white rounded-lg hover:bg-navy-light transition-colors disabled:opacity-50"
               >
                 {isAccepting ? "Accepting..." : "Accept"}
               </button>

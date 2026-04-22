@@ -224,15 +224,46 @@ export default function OverviewPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1
-            className="text-2xl font-semibold"
-            style={{ color: "var(--db-text)" }}
+          <div
+            className="hidden sm:flex items-center justify-between mb-3"
+            style={{
+              fontFamily: "var(--font-mono), ui-monospace, Menlo, monospace",
+              fontSize: 11,
+              color: "var(--db-text-muted)",
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              fontWeight: 600,
+            }}
           >
-            {getGreeting(lang)}, {t("greeting.welcome", lang)}
-          </h1>
-          <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
-            {t("overview.noCallsSub", lang, { name: receptionistName })}
-          </p>
+            <span style={{ color: "var(--db-accent)", fontWeight: 800 }}>§ Overview</span>
+            <span>CAT · REV 2026.04</span>
+          </div>
+          <div className="relative" style={{ paddingTop: 12 }}>
+            <span aria-hidden style={{ position: "absolute", top: 0, left: 0, width: 48, height: 3, background: "var(--db-accent)" }} />
+            <h1
+              style={{
+                fontSize: 28,
+                fontWeight: 900,
+                color: "var(--db-text)",
+                letterSpacing: "-0.02em",
+                lineHeight: 1.1,
+              }}
+            >
+              {getGreeting(lang)}, {t("greeting.welcome", lang)}
+            </h1>
+            <p
+              className="mt-2"
+              style={{
+                color: "var(--db-text-muted)",
+                fontSize: 14,
+                lineHeight: 1.55,
+                fontWeight: 500,
+                maxWidth: 640,
+              }}
+            >
+              {t("overview.noCallsSub", lang, { name: receptionistName })}
+            </p>
+          </div>
         </div>
 
         <div
@@ -278,10 +309,30 @@ export default function OverviewPage() {
     <div className="space-y-6">
       {/* Greeting */}
       <div>
-        <div className="flex items-center gap-3">
+        <div
+          className="hidden sm:flex items-center justify-between mb-3"
+          style={{
+            fontFamily: "var(--font-mono), ui-monospace, Menlo, monospace",
+            fontSize: 11,
+            color: "var(--db-text-muted)",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            fontWeight: 600,
+          }}
+        >
+          <span style={{ color: "var(--db-accent)", fontWeight: 800 }}>§ Overview</span>
+          <span>CAT · REV 2026.04</span>
+        </div>
+        <div className="relative flex flex-wrap items-center gap-3" style={{ paddingTop: 12 }}>
+          <span aria-hidden style={{ position: "absolute", top: 0, left: 0, width: 48, height: 3, background: "var(--db-accent)" }} />
           <h1
-            className="text-2xl font-semibold"
-            style={{ color: "var(--db-text)" }}
+            style={{
+              fontSize: 28,
+              fontWeight: 900,
+              color: "var(--db-text)",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+            }}
           >
             {getGreeting(lang)}, {data.businessName?.split(" ")[0] || "there"}
           </h1>

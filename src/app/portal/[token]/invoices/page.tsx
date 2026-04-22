@@ -99,7 +99,7 @@ export default function PortalInvoices() {
         <>
           {/* Outstanding summary */}
           {outstanding.length > 0 && (
-            <div className="bg-gradient-to-r from-[#1B2A4A] to-[#243758] rounded-xl p-5 text-white shadow-lg">
+            <div className="bg-gradient-to-r from-navy to-navy-light rounded-xl p-5 text-white shadow-lg">
               <p className="text-sm font-medium text-white/70">
                 Outstanding Balance
               </p>
@@ -232,7 +232,7 @@ function InvoiceCard({
                 href={invoice.paymentLinkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 text-sm font-medium bg-[#D4A843] text-white rounded-lg hover:bg-[#c49a38] transition-colors shadow-sm"
+                className="px-4 py-2 text-sm font-medium bg-amber text-white rounded-lg hover:bg-amber-dark transition-colors shadow-sm"
               >
                 Pay Now
               </a>

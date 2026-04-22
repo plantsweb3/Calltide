@@ -33,7 +33,7 @@ export function PortalShell({
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-[#1B2A4A] flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-navy flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold text-sm">
                   {businessName.charAt(0).toUpperCase()}
                 </span>
@@ -71,7 +71,7 @@ export function PortalShell({
                     px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors
                     ${
                       isActive
-                        ? "border-[#D4A843] text-[#1B2A4A]"
+                        ? "border-amber text-navy"
                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                     }
                   `}
@@ -98,7 +98,7 @@ export function PortalShell({
               href="https://captahq.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#D4A843] hover:text-[#c49a38] font-medium"
+              className="text-amber hover:text-amber-dark font-medium"
             >
               Capta
             </a>

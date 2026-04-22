@@ -10,22 +10,24 @@ interface Activity {
   createdAt: string;
 }
 
+// Activity type → semantic color role. Bound to --db-* tokens so
+// activity dots dynamically theme with the dashboard.
 const typeColors: Record<string, string> = {
-  prospect_scraped: "#3b82f6",
-  audit_call: "#fbbf24",
-  audit_result: "#fbbf24",
-  email_sent: "#a855f7",
-  email_opened: "#c084fc",
-  email_clicked: "#4ade80",
-  sms_sent: "#60a5fa",
-  sms_opt_out: "#f87171",
-  demo_booked: "#4ade80",
-  demo_updated: "#4ade80",
-  outreach_started: "#a855f7",
-  outreach_paused: "#fbbf24",
-  status_change: "#94a3b8",
-  csv_import: "#3b82f6",
-  bulk_status_change: "#94a3b8",
+  prospect_scraped: "var(--db-info, #3b82f6)",
+  audit_call: "var(--db-warning, #f59e0b)",
+  audit_result: "var(--db-warning, #f59e0b)",
+  email_sent: "var(--db-info, #a855f7)",
+  email_opened: "var(--db-info, #c084fc)",
+  email_clicked: "var(--db-success, #16A34A)",
+  sms_sent: "var(--db-info, #60a5fa)",
+  sms_opt_out: "var(--db-danger, #DC2626)",
+  demo_booked: "var(--db-success, #16A34A)",
+  demo_updated: "var(--db-success, #16A34A)",
+  outreach_started: "var(--db-info, #a855f7)",
+  outreach_paused: "var(--db-warning, #f59e0b)",
+  status_change: "var(--db-text-muted, #94a3b8)",
+  csv_import: "var(--db-info, #3b82f6)",
+  bulk_status_change: "var(--db-text-muted, #94a3b8)",
 };
 
 function formatTime(dateStr: string): string {

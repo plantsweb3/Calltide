@@ -105,7 +105,7 @@ export default function PortalAppointments() {
           onClick={() => setTab("upcoming")}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
             tab === "upcoming"
-              ? "bg-[#1B2A4A] text-white"
+              ? "bg-navy text-white"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
         >
@@ -115,7 +115,7 @@ export default function PortalAppointments() {
           onClick={() => setTab("past")}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
             tab === "past"
-              ? "bg-[#1B2A4A] text-white"
+              ? "bg-navy text-white"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
         >

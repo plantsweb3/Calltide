@@ -196,7 +196,7 @@ export default function AddClientModal({
           {error && (
             <div
               className="rounded-lg px-3 py-2 text-sm"
-              style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+              style={{ background: "rgba(248,113,113,0.1)", color: "var(--db-text, #f87171)" }}
             >
               {error}
             </div>
