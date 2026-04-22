@@ -61,7 +61,7 @@ VIOLATIONS=$(
 # Rule: new PRs can't push the count above this number. When we clean up
 # more drift, lower this number in the same PR. Never raise it without
 # a review comment explaining why (e.g. adding a new functional color).
-BASELINE=103
+BASELINE=80
 
 COUNT=0
 if [ -n "$VIOLATIONS" ]; then

@@ -167,7 +167,7 @@ export default function BillingPage() {
               }}
               formatter={(value?: number) => [`$${(value ?? 0).toLocaleString()}`, "MRR"]}
             />
-            <Area type="monotone" dataKey="mrr" stroke="#C59A27" fill="#C59A27" fillOpacity={0.1} />
+            <Area type="monotone" dataKey="mrr" stroke="#D4A843" fill="#D4A843" fillOpacity={0.1} />
           </AreaChart>
         </ResponsiveContainer>
       </div>

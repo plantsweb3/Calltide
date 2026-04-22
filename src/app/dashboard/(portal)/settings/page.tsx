@@ -72,9 +72,9 @@ interface CustomResponse {
 }
 
 const PERSONALITY_OPTIONS = [
-  { key: "professional", labelKey: "settings.professional" as const, descKey: "settings.professionalDesc" as const, color: "#3B82F6", icon: "briefcase" },
-  { key: "friendly", labelKey: "settings.friendly" as const, descKey: "settings.friendlyDesc" as const, color: "#10B981", icon: "smile" },
-  { key: "warm", labelKey: "settings.warmCaring" as const, descKey: "settings.warmCaringDesc" as const, color: "#F59E0B", icon: "heart" },
+  { key: "professional", labelKey: "settings.professional" as const, descKey: "settings.professionalDesc" as const, color: "var(--db-info, #3B82F6)", icon: "briefcase" },
+  { key: "friendly", labelKey: "settings.friendly" as const, descKey: "settings.friendlyDesc" as const, color: "var(--db-success, #10B981)", icon: "smile" },
+  { key: "warm", labelKey: "settings.warmCaring" as const, descKey: "settings.warmCaringDesc" as const, color: "var(--db-warning, #F59E0B)", icon: "heart" },
 ] as const;
 
 interface PricingEntry {
@@ -465,16 +465,57 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      {/* Catalog marker */}
+      <div
+        className="hidden sm:flex items-center justify-between"
+        style={{
+          fontFamily: "var(--font-mono), ui-monospace, Menlo, monospace",
+          fontSize: 11,
+          color: "var(--db-text-muted)",
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          fontWeight: 600,
+        }}
+      >
+        <span style={{ color: "var(--db-accent)", fontWeight: 800 }}>§ Settings</span>
+        <span>CAT · REV 2026.04</span>
+      </div>
+
+      {/* Header — brand-kit stamped */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="relative" style={{ paddingTop: 12 }}>
+          <span
+            aria-hidden
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 48,
+              height: 3,
+              background: "var(--db-accent)",
+            }}
+          />
           <h1
-            className="text-2xl font-semibold"
-            style={{ color: "var(--db-text)" }}
+            style={{
+              fontSize: 28,
+              fontWeight: 900,
+              color: "var(--db-text)",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+            }}
           >
             {t("settings.title", lang)}
           </h1>
-          <p className="mt-1 text-sm" style={{ color: "var(--db-text-muted)" }}>
+          <p
+            className="mt-2"
+            style={{
+              color: "var(--db-text-muted)",
+              fontSize: 14,
+              lineHeight: 1.55,
+              fontWeight: 500,
+              maxWidth: 640,
+            }}
+          >
             {t("settings.subtitle", lang, { name: rName })}
           </p>
         </div>

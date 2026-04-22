@@ -560,12 +560,12 @@ async function notifyOwnerOfSms(businessId: string, businessName: string, ownerE
     to: ownerEmail,
     subject: `New SMS received — ${escapeHtml(businessName)}`,
     html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;">
-  <div style="margin-bottom:24px;"><span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span></div>
+  <div style="margin-bottom:24px;"><span style="font-size:20px;font-weight:700;color:#D4A843;">Capta</span></div>
   <p style="color:#475569;">You received a new text message for <strong>${escapeHtml(businessName)}</strong>:</p>
   <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin:16px 0;">
     <p style="color:#1e293b;margin:0;white-space:pre-wrap;">${preview}</p>
   </div>
-  <a href="${env.NEXT_PUBLIC_APP_URL}/dashboard/sms" style="display:inline-block;background:#C59A27;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:500;">View in Dashboard</a>
+  <a href="${env.NEXT_PUBLIC_APP_URL}/dashboard/sms" style="display:inline-block;background:#D4A843;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:500;">View in Dashboard</a>
 </div>`,
   });
 }

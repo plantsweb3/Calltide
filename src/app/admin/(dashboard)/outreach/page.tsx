@@ -66,12 +66,12 @@ const WORKED_STATUSES = [
 
 const CHANNELS = ["call", "sms", "email", "dm"] as const;
 const OUTCOMES = [
-  { value: "interested", label: "Interested", color: "#4ade80" },
+  { value: "interested", label: "Interested", color: "var(--db-success, #4ade80)" },
   { value: "no_answer", label: "No Answer", color: "#94a3b8" },
-  { value: "left_voicemail", label: "Voicemail", color: "#60a5fa" },
-  { value: "circle_back", label: "Circle Back", color: "#fbbf24" },
+  { value: "left_voicemail", label: "Voicemail", color: "var(--db-info, #60a5fa)" },
+  { value: "circle_back", label: "Circle Back", color: "var(--db-warning, #fbbf24)" },
   { value: "booked_demo", label: "Booked Demo", color: "#a855f7" },
-  { value: "not_interested", label: "Not Interested", color: "#f87171" },
+  { value: "not_interested", label: "Not Interested", color: "var(--db-danger, #f87171)" },
   { value: "gatekeeper", label: "Gatekeeper", color: "#fb923c" },
   { value: "wrong_number", label: "Wrong Number", color: "#ef4444" },
 ] as const;
@@ -85,14 +85,14 @@ const FOLLOW_UP_PRESETS = [
 
 const outreachStatusColors: Record<string, { bg: string; text: string }> = {
   fresh: { bg: "rgba(148,163,184,0.15)", text: "#94a3b8" },
-  awaiting: { bg: "rgba(251,191,36,0.15)", text: "#fbbf24" },
-  attempted: { bg: "rgba(96,165,250,0.15)", text: "#60a5fa" },
-  interested: { bg: "rgba(74,222,128,0.15)", text: "#4ade80" },
-  follow_up: { bg: "rgba(251,191,36,0.15)", text: "#fbbf24" },
+  awaiting: { bg: "rgba(251,191,36,0.15)", text: "var(--db-warning, #fbbf24)" },
+  attempted: { bg: "rgba(96,165,250,0.15)", text: "var(--db-info, #60a5fa)" },
+  interested: { bg: "rgba(74,222,128,0.15)", text: "var(--db-success, #4ade80)" },
+  follow_up: { bg: "rgba(251,191,36,0.15)", text: "var(--db-warning, #fbbf24)" },
   demo_booked: { bg: "rgba(168,85,247,0.15)", text: "#a855f7" },
   onboarded: { bg: "rgba(74,222,128,0.2)", text: "#22c55e" },
-  not_interested: { bg: "rgba(248,113,113,0.15)", text: "#f87171" },
-  disqualified: { bg: "rgba(248,113,113,0.1)", text: "#f87171" },
+  not_interested: { bg: "rgba(248,113,113,0.15)", text: "var(--db-danger, #f87171)" },
+  disqualified: { bg: "rgba(248,113,113,0.1)", text: "var(--db-danger, #f87171)" },
 };
 
 // ── Call Script Steps ──
@@ -190,7 +190,7 @@ function ProgressRing({ value, max }: { value: number; max: number }) {
   const r = 20;
   const c = 2 * Math.PI * r;
   const offset = c - pct * c;
-  const color = value >= max ? "#4ade80" : "#D4A843";
+  const color = value >= max ? "var(--db-success, #4ade80)" : "#D4A843";
 
   return (
     <svg width="56" height="56" viewBox="0 0 56 56">
@@ -250,13 +250,13 @@ function SmsTemplate({ collapsed, onToggle }: { collapsed: boolean; onToggle: ()
         style={{ borderBottom: collapsed ? "none" : "1px solid var(--db-border)" }}
       >
         <div className="flex items-center gap-2">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--db-info, #60a5fa)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
           <span className="text-sm font-semibold" style={{ color: "var(--db-text)" }}>
             SMS Template
           </span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(96,165,250,0.15)", color: "#60a5fa" }}>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(96,165,250,0.15)", color: "var(--db-info, #60a5fa)" }}>
             copy & paste
           </span>
         </div>
@@ -286,7 +286,7 @@ function SmsTemplate({ collapsed, onToggle }: { collapsed: boolean; onToggle: ()
               className="rounded px-3 py-1 text-xs font-medium transition-colors"
               style={{
                 background: copied ? "rgba(74,222,128,0.15)" : "rgba(96,165,250,0.15)",
-                color: copied ? "#4ade80" : "#60a5fa",
+                color: copied ? "var(--db-success, #4ade80)" : "var(--db-info, #60a5fa)",
               }}
             >
               {copied ? "Copied!" : "Copy"}
@@ -350,13 +350,13 @@ function CallScript({ collapsed, onToggle }: { collapsed: boolean; onToggle: () 
 
           {/* Objection handlers */}
           <div>
-            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider" style={{ color: "#f87171" }}>
+            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--db-danger, #f87171)" }}>
               Objection Handlers
             </p>
             <div className="grid grid-cols-1 gap-1.5 lg:grid-cols-2 xl:grid-cols-3">
               {OBJECTION_HANDLERS.map((o) => (
                 <div key={o.trigger} className="rounded-lg p-2.5" style={{ background: "rgba(248,113,113,0.05)", border: "1px solid rgba(248,113,113,0.1)" }}>
-                  <p className="text-[10px] font-semibold" style={{ color: "#f87171" }}>
+                  <p className="text-[10px] font-semibold" style={{ color: "var(--db-danger, #f87171)" }}>
                     {o.trigger}
                   </p>
                   <p className="mt-1 text-xs leading-relaxed" style={{ color: "var(--db-text)" }}>
@@ -569,7 +569,7 @@ function ExpandedRow({
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
                     </svg>
                     {prospect.phone}
-                    {copied && <span className="text-xs" style={{ color: "#4ade80" }}>Copied!</span>}
+                    {copied && <span className="text-xs" style={{ color: "var(--db-success, #4ade80)" }}>Copied!</span>}
                   </button>
                   <button
                     onClick={sendWarmupSms}
@@ -577,7 +577,7 @@ function ExpandedRow({
                     className="rounded px-2 py-0.5 text-[10px] font-medium transition-colors"
                     style={{
                       background: smsSent ? "rgba(74,222,128,0.15)" : "rgba(96,165,250,0.15)",
-                      color: smsSent ? "#4ade80" : "#60a5fa",
+                      color: smsSent ? "var(--db-success, #4ade80)" : "var(--db-info, #60a5fa)",
                     }}
                   >
                     {smsSent ? "SMS Sent" : smsSending ? "Sending..." : "Send SMS"}
@@ -682,7 +682,7 @@ function ExpandedRow({
                 onClick={handleNoResponse}
                 className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
                 style={{
-                  background: outcome === "awaiting_response" ? "#fbbf24" : "var(--db-hover)",
+                  background: outcome === "awaiting_response" ? "var(--db-warning, #fbbf24)" : "var(--db-hover)",
                   color: outcome === "awaiting_response" ? "#000" : "#fb923c",
                   border: outcome === "awaiting_response" ? "1px solid #fbbf24" : "1px dashed #fb923c",
                 }}
@@ -909,7 +909,7 @@ export default function OutreachPage() {
       key: "nextFollowUpAt",
       label: "Follow-up",
       render: (r) => (
-        <span style={{ color: isOverdue(r.nextFollowUpAt) ? "#f87171" : "var(--db-text)", fontWeight: isOverdue(r.nextFollowUpAt) ? 600 : 400 }}>
+        <span style={{ color: isOverdue(r.nextFollowUpAt) ? "var(--db-danger, #f87171)" : "var(--db-text)", fontWeight: isOverdue(r.nextFollowUpAt) ? 600 : 400 }}>
           {formatDate(r.nextFollowUpAt)}
           {isOverdue(r.nextFollowUpAt) && " (overdue)"}
         </span>
@@ -972,7 +972,7 @@ export default function OutreachPage() {
               onClick={sendBulkWarmupSms}
               disabled={bulkSmsStatus === "sending" || prospects.length === 0}
               className="rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-40"
-              style={{ background: "#60a5fa", color: "#fff" }}
+              style={{ background: "var(--db-info, #60a5fa)", color: "#fff" }}
             >
               {bulkSmsStatus === "sending"
                 ? "Sending..."

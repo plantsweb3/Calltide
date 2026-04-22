@@ -62,22 +62,22 @@ const CATEGORIES = [
 const CONTENT_STATUSES = ["draft", "approved", "published"] as const;
 
 const PLATFORM_COLORS: Record<string, { bg: string; color: string }> = {
-  FB: { bg: "rgba(59,130,246,0.15)", color: "#60a5fa" },
+  FB: { bg: "rgba(59,130,246,0.15)", color: "var(--db-info, #60a5fa)" },
   IG: { bg: "rgba(236,72,153,0.15)", color: "#f472b6" },
   LinkedIn: { bg: "rgba(14,165,233,0.15)", color: "#38bdf8" },
 };
 
 const CONTENT_STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   draft: { bg: "rgba(148,163,184,0.15)", color: "#94a3b8" },
-  approved: { bg: "rgba(251,191,36,0.15)", color: "#fbbf24" },
-  published: { bg: "rgba(74,222,128,0.15)", color: "#4ade80" },
+  approved: { bg: "rgba(251,191,36,0.15)", color: "var(--db-warning, #fbbf24)" },
+  published: { bg: "rgba(74,222,128,0.15)", color: "var(--db-success, #4ade80)" },
 };
 
 const AUDIT_STATUS_COLORS: Record<string, { bg: string; color: string }> = {
-  scheduled: { bg: "rgba(96,165,250,0.15)", color: "#60a5fa" },
-  calling: { bg: "rgba(251,191,36,0.15)", color: "#fbbf24" },
-  missed: { bg: "rgba(248,113,113,0.15)", color: "#f87171" },
-  answered: { bg: "rgba(74,222,128,0.15)", color: "#4ade80" },
+  scheduled: { bg: "rgba(96,165,250,0.15)", color: "var(--db-info, #60a5fa)" },
+  calling: { bg: "rgba(251,191,36,0.15)", color: "var(--db-warning, #fbbf24)" },
+  missed: { bg: "rgba(248,113,113,0.15)", color: "var(--db-danger, #f87171)" },
+  answered: { bg: "rgba(74,222,128,0.15)", color: "var(--db-success, #4ade80)" },
   voicemail: { bg: "rgba(168,85,247,0.15)", color: "#a855f7" },
 };
 
@@ -257,7 +257,7 @@ function NewContentModal({ onClose, onComplete }: NewContentModalProps) {
           {error && (
             <div
               className="rounded-lg px-3 py-2 text-sm"
-              style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+              style={{ background: "rgba(248,113,113,0.1)", color: "var(--db-danger, #f87171)" }}
             >
               {error}
             </div>
@@ -307,7 +307,7 @@ function YesNo({ value }: { value: boolean }) {
       className="rounded-full px-1.5 py-0.5 text-[10px] font-medium"
       style={
         value
-          ? { background: "rgba(74,222,128,0.1)", color: "#4ade80" }
+          ? { background: "rgba(74,222,128,0.1)", color: "var(--db-success, #4ade80)" }
           : { background: "var(--db-hover)", color: "var(--db-text-muted)" }
       }
     >
@@ -566,7 +566,7 @@ export default function MarketingPage() {
             <button
               onClick={(e) => { e.stopPropagation(); approveContent(row.id); }}
               className="db-hover-bg rounded px-2 py-1 text-xs font-medium transition-colors"
-              style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}
+              style={{ background: "rgba(74,222,128,0.1)", color: "var(--db-success, #4ade80)" }}
             >
               Approve
             </button>
@@ -574,7 +574,7 @@ export default function MarketingPage() {
           <button
             onClick={(e) => { e.stopPropagation(); setConfirmDeleteContentId(row.id); }}
             className="db-hover-bg rounded px-2 py-1 text-xs font-medium transition-colors"
-            style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+            style={{ background: "rgba(248,113,113,0.1)", color: "var(--db-danger, #f87171)" }}
           >
             Delete
           </button>
@@ -601,7 +601,7 @@ export default function MarketingPage() {
 
       {error && (
         <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <p className="text-sm" style={{ color: "var(--db-danger, #f87171)" }}>{error}</p>
         </div>
       )}
 

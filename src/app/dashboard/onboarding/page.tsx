@@ -817,7 +817,7 @@ function OnboardingPage() {
       <header className="sticky top-0 z-30 border-b border-gray-200 bg-white px-4 py-3 sm:px-6">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <div className="flex items-center gap-2">
-            <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#111827" /><path d="M8 16c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8" stroke="#C59A27" strokeWidth="2.5" strokeLinecap="round" /><circle cx="16" cy="16" r="3" fill="#C59A27" /></svg>
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#111827" /><path d="M8 16c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8" stroke="#D4A843" strokeWidth="2.5" strokeLinecap="round" /><circle cx="16" cy="16" r="3" fill="#D4A843" /></svg>
             <span className="text-lg font-bold text-gray-900">Capta</span>
           </div>
           <div className="flex items-center gap-3">
@@ -838,7 +838,7 @@ function OnboardingPage() {
           <div className="flex gap-1">
             {Array.from({ length: TOTAL_STEPS }, (_, i) => (
               <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300"
-                style={{ background: i < step ? "var(--db-accent, #C59A27)" : "var(--db-border, #E5E7EB)" }} />
+                style={{ background: i < step ? "var(--db-accent, #D4A843)" : "var(--db-border, #E5E7EB)" }} />
             ))}
           </div>
         </div>
@@ -1397,7 +1397,7 @@ function OnboardingPage() {
           <div className="flex flex-1 flex-col items-center text-center">
             {/* Hero */}
             <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-amber-50">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C59A27" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4A843" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
             </div>
             <h1 className="mb-1 text-2xl font-bold text-gray-900 sm:text-3xl">
               {t.step6Title} {rName} {t.step6TitleSuffix}
@@ -1633,7 +1633,7 @@ function OnboardingPage() {
                 animation: onb-fadeInUp 0.6s ease-out 0.6s both;
               }
               .gold-shimmer {
-                background: linear-gradient(90deg, #C59A27, #F0D78C, #D4A843, #F0D78C, #C59A27);
+                background: linear-gradient(90deg, #D4A843, #F0D78C, #D4A843, #F0D78C, #D4A843);
                 background-size: 200% auto;
                 animation: onb-shimmer 3s linear infinite;
                 -webkit-background-clip: text;
@@ -1658,7 +1658,7 @@ function OnboardingPage() {
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `-${Math.random() * 20}px`,
-                  background: ["#D4A843", "#C59A27", "#10b981", "#3b82f6", "#ef4444", "#8b5cf6"][i % 6],
+                  background: ["#D4A843", "#D4A843", "#10b981", "#3b82f6", "#ef4444", "#8b5cf6"][i % 6],
                   width: `${4 + Math.random() * 8}px`,
                   height: `${4 + Math.random() * 8}px`,
                   borderRadius: Math.random() > 0.5 ? "50%" : "2px",
@@ -1710,7 +1710,7 @@ function OnboardingPage() {
             <div className="celebration-actions flex flex-col gap-3 sm:flex-row">
               <button onClick={() => router.push("/dashboard")}
                 className="rounded-lg px-8 py-3 text-sm font-bold text-white transition-all hover:scale-[1.02]"
-                style={{ background: "linear-gradient(135deg, var(--db-accent, #C59A27), #D4A82E)", boxShadow: "0 4px 14px rgba(212,168,67,0.4)" }}>
+                style={{ background: "linear-gradient(135deg, var(--db-accent, #D4A843), #D4A82E)", boxShadow: "0 4px 14px rgba(212,168,67,0.4)" }}>
                 {t.goToDashboard}
               </button>
               <button onClick={() => router.push("/dashboard/settings")}

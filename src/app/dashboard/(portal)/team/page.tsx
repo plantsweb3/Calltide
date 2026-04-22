@@ -34,10 +34,10 @@ interface Technician {
 /* ── Color Palette ── */
 
 const COLOR_OPTIONS = [
-  { label: "Blue", value: "#3B82F6" },
-  { label: "Green", value: "#10B981" },
-  { label: "Amber", value: "#F59E0B" },
-  { label: "Red", value: "#EF4444" },
+  { label: "Blue", value: "var(--db-info, #3B82F6)" },
+  { label: "Green", value: "var(--db-success, #10B981)" },
+  { label: "Amber", value: "var(--db-warning, #F59E0B)" },
+  { label: "Red", value: "var(--db-danger, #EF4444)" },
   { label: "Purple", value: "#8B5CF6" },
   { label: "Pink", value: "#EC4899" },
   { label: "Teal", value: "#14B8A6" },
@@ -292,7 +292,7 @@ export default function TeamPage() {
         <div className="flex items-center gap-2.5">
           <span
             className="h-3 w-3 rounded-full flex-shrink-0"
-            style={{ background: row.color || "#3B82F6" }}
+            style={{ background: row.color || "var(--db-info, #3B82F6)" }}
             aria-hidden="true"
           />
           <div>
@@ -383,7 +383,7 @@ export default function TeamPage() {
                 }}
                 title={t("team.markAvailable", lang)}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#10B981" }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--db-success, #10B981)" }}>
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </Button>

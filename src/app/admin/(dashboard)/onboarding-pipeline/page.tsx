@@ -36,11 +36,11 @@ const STEP_LABELS: Record<number, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  not_started: "#9CA3AF",
-  in_progress: "#3B82F6",
-  paywall_reached: "#F59E0B",
-  completed: "#10B981",
-  abandoned: "#EF4444",
+  not_started: "var(--db-text-muted, #9CA3AF)",
+  in_progress: "var(--db-info, #3B82F6)",
+  paywall_reached: "var(--db-warning, #F59E0B)",
+  completed: "var(--db-success, #10B981)",
+  abandoned: "var(--db-danger, #EF4444)",
 };
 
 function timeAgo(dateStr: string): string {
@@ -204,11 +204,11 @@ export default function OnboardingPipelinePage() {
                       <span
                         className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium"
                         style={{
-                          background: `${STATUS_COLORS[biz.onboardingStatus] || "#9CA3AF"}20`,
-                          color: STATUS_COLORS[biz.onboardingStatus] || "#9CA3AF",
+                          background: `${STATUS_COLORS[biz.onboardingStatus] || "var(--db-text-muted, #9CA3AF)"}20`,
+                          color: STATUS_COLORS[biz.onboardingStatus] || "var(--db-text-muted, #9CA3AF)",
                         }}
                       >
-                        <span className="h-1.5 w-1.5 rounded-full" style={{ background: STATUS_COLORS[biz.onboardingStatus] || "#9CA3AF" }} />
+                        <span className="h-1.5 w-1.5 rounded-full" style={{ background: STATUS_COLORS[biz.onboardingStatus] || "var(--db-text-muted, #9CA3AF)" }} />
                         {biz.onboardingStatus?.replace(/_/g, " ") || "not started"}
                       </span>
                     </td>
@@ -217,19 +217,19 @@ export default function OnboardingPipelinePage() {
                     </td>
                     <td className="px-4 py-3">
                       {biz.twilioNumber ? (
-                        <span className="inline-flex items-center gap-1 text-xs" style={{ color: "#10B981" }}>
-                          <span className="h-1.5 w-1.5 rounded-full" style={{ background: "#10B981" }} />
+                        <span className="inline-flex items-center gap-1 text-xs" style={{ color: "var(--db-success, #10B981)" }}>
+                          <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--db-success, #10B981)" }} />
                           Provisioned
                         </span>
                       ) : (
-                        <span className="text-xs" style={{ color: "#EF4444" }}>Not yet</span>
+                        <span className="text-xs" style={{ color: "var(--db-danger, #EF4444)" }}>Not yet</span>
                       )}
                     </td>
                     <td className="px-4 py-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
                       {biz.hasLoggedIn ? (
-                        <span style={{ color: "#10B981" }}>Yes</span>
+                        <span style={{ color: "var(--db-success, #10B981)" }}>Yes</span>
                       ) : (
-                        <span style={{ color: "#9CA3AF" }}>No</span>
+                        <span style={{ color: "var(--db-text-muted, #9CA3AF)" }}>No</span>
                       )}
                     </td>
                     <td className="px-4 py-3 text-xs" style={{ color: "var(--db-text-muted)" }}>
@@ -239,7 +239,7 @@ export default function OnboardingPipelinePage() {
                       <div className="flex items-center gap-1">
                         {biz.stripeCustomerId && !biz.paymentStatus && (
                           <button
-                            style={{ ...btnStyle, borderColor: "#EF4444", color: "#EF4444" }}
+                            style={{ ...btnStyle, borderColor: "var(--db-danger, #EF4444)", color: "var(--db-danger, #EF4444)" }}
                             disabled={actionLoading === `recover-${biz.id}`}
                             onClick={() => handleAction("recover", biz.id)}
                           >

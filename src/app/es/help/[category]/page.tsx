@@ -53,31 +53,31 @@ export default async function HelpCategoryEsPage({ params }: { params: Promise<{
   ]);
 
   return (
-    <div className="min-h-screen" style={{ background: "#FBFBFC" }}>
+    <div className="min-h-screen" style={{ background: "#F8FAFC" }}>
       <div className="mx-auto max-w-5xl px-4 py-10">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-1.5 text-sm" style={{ color: "#94A3B8" }}>
+        <nav className="flex items-center gap-1.5 text-sm" style={{ color: "#64748B" }}>
           <Link href="/es/help" className="transition hover:text-charcoal" style={{ color: "#64748B" }}>Centro de Ayuda</Link>
           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-          <span className="font-medium" style={{ color: "#1A1D24" }}>{cat.nameEs || cat.name}</span>
+          <span className="font-medium" style={{ color: "#0F1729" }}>{cat.nameEs || cat.name}</span>
         </nav>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_260px]">
           {/* Main content */}
           <div>
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: "rgba(197,154,39,0.08)", color: "#C59A27" }}>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: "rgba(197,154,39,0.08)", color: "#D4A843" }}>
                 <HelpCategoryIcon slug={cat.slug} size={24} />
               </div>
               <div>
-                <h1 className="text-2xl font-bold tracking-tight" style={{ color: "#1A1D24" }}>{cat.nameEs || cat.name}</h1>
+                <h1 className="text-2xl font-bold tracking-tight" style={{ color: "#0F1729" }}>{cat.nameEs || cat.name}</h1>
                 {(cat.descriptionEs || cat.description) && <p className="mt-1 text-sm leading-relaxed" style={{ color: "#64748B" }}>{cat.descriptionEs || cat.description}</p>}
               </div>
             </div>
 
             <div className="mt-8 space-y-3">
               {articles.length === 0 && (
-                <p className="py-12 text-center text-sm" style={{ color: "#94A3B8" }}>
+                <p className="py-12 text-center text-sm" style={{ color: "#64748B" }}>
                   No hay artículos en esta categoría aún.
                 </p>
               )}
@@ -91,10 +91,10 @@ export default async function HelpCategoryEsPage({ params }: { params: Promise<{
                     style={{ borderColor: "#E2E8F0", background: "white" }}
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold leading-snug" style={{ color: "#1A1D24" }}>{a.titleEs || a.title}</p>
+                      <p className="font-semibold leading-snug" style={{ color: "#0F1729" }}>{a.titleEs || a.title}</p>
                       {(a.excerptEs || a.excerpt) && <p className="mt-1.5 text-sm line-clamp-2 leading-relaxed" style={{ color: "#64748B" }}>{a.excerptEs || a.excerpt}</p>}
                       <div className="mt-2 flex items-center gap-2">
-                        <span className="text-xs" style={{ color: "#94A3B8" }}>{a.readingTimeMinutes} min</span>
+                        <span className="text-xs" style={{ color: "#64748B" }}>{a.readingTimeMinutes} min</span>
                         {!hasEs && (
                           <span className="rounded px-1.5 py-0.5 text-[10px]" style={{ background: "#FEF3C7", color: "#92400E" }}>
                             Solo en inglés
@@ -102,7 +102,7 @@ export default async function HelpCategoryEsPage({ params }: { params: Promise<{
                         )}
                       </div>
                     </div>
-                    <svg className="h-5 w-5 flex-shrink-0 opacity-0 transition-all group-hover:opacity-40 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="#94A3B8" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    <svg className="h-5 w-5 flex-shrink-0 opacity-0 transition-all group-hover:opacity-40 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="#64748B" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                   </Link>
                 );
               })}
@@ -112,7 +112,7 @@ export default async function HelpCategoryEsPage({ params }: { params: Promise<{
           {/* Sidebar */}
           <aside className="hidden lg:block">
             <div className="sticky top-24 rounded-xl border p-5 shadow-sm" style={{ borderColor: "#E2E8F0", background: "white" }}>
-              <h3 className="text-xs font-bold uppercase tracking-[0.15em]" style={{ color: "#94A3B8" }}>Categorías</h3>
+              <h3 className="text-xs font-bold uppercase tracking-[0.15em]" style={{ color: "#64748B" }}>Categorías</h3>
               <div className="mt-4 space-y-1">
                 {allCategories.map((c) => (
                   <Link
@@ -121,14 +121,14 @@ export default async function HelpCategoryEsPage({ params }: { params: Promise<{
                     className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-colors"
                     style={{
                       background: c.slug === slug ? "rgba(197,154,39,0.08)" : "transparent",
-                      color: c.slug === slug ? "#1A1D24" : "#64748B",
+                      color: c.slug === slug ? "#0F1729" : "#64748B",
                       fontWeight: c.slug === slug ? 600 : 400,
-                      borderLeft: c.slug === slug ? "2px solid #C59A27" : "2px solid transparent",
+                      borderLeft: c.slug === slug ? "2px solid #D4A843" : "2px solid transparent",
                     }}
                   >
                     <HelpCategoryIcon slug={c.slug} size={16} />
                     <span>{c.nameEs || c.name}</span>
-                    <span className="ml-auto text-xs" style={{ color: "#94A3B8" }}>{c.articleCount}</span>
+                    <span className="ml-auto text-xs" style={{ color: "#64748B" }}>{c.articleCount}</span>
                   </Link>
                 ))}
               </div>

@@ -185,7 +185,7 @@ export default function AdminOutboundPage() {
           className="rounded px-1.5 py-0.5 text-[10px] font-medium"
           style={{
             background: row.language === "es" ? "rgba(197,154,39,0.15)" : "rgba(96,165,250,0.1)",
-            color: row.language === "es" ? "#C59A27" : "#60a5fa",
+            color: row.language === "es" ? "#D4A843" : "#60a5fa",
           }}
         >
           {(row.language ?? "en").toUpperCase()}

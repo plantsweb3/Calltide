@@ -69,11 +69,11 @@ export async function GET(req: NextRequest) {
     .sub { color: #64748b; font-size: 15px; margin-bottom: 24px; line-height: 1.6; }
     label { display: block; font-size: 14px; font-weight: 600; color: #334155; margin-bottom: 6px; }
     textarea { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; font-size: 15px; line-height: 1.6; resize: vertical; min-height: 120px; }
-    textarea:focus { outline: none; border-color: #C59A27; box-shadow: 0 0 0 3px rgba(197,154,39,0.15); }
+    textarea:focus { outline: none; border-color: #D4A843; box-shadow: 0 0 0 3px rgba(197,154,39,0.15); }
     .stars { display: flex; gap: 4px; margin-bottom: 20px; }
     .star { width: 32px; height: 32px; cursor: pointer; background: none; border: none; font-size: 24px; color: #d1d5db; transition: color 0.15s; }
     .star.active { color: #f59e0b; }
-    button[type="submit"] { width: 100%; background: linear-gradient(135deg, #C59A27, #A17D1F); color: #fff; border: none; border-radius: 8px; padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 16px; }
+    button[type="submit"] { width: 100%; background: linear-gradient(135deg, #D4A843, #A17D1F); color: #fff; border: none; border-radius: 8px; padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 16px; }
     button[type="submit"]:hover { filter: brightness(1.1); }
     .success { text-align: center; padding: 40px 0; }
     .success h2 { color: #16a34a; margin-bottom: 8px; }

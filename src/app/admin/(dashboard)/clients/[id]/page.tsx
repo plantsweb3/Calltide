@@ -209,12 +209,12 @@ export default function ClientDetailPage({
 
   const statusColor = (status: string) => {
     const map: Record<string, { background: string; color: string }> = {
-      completed: { background: "rgba(74,222,128,0.1)", color: "#4ade80" },
-      confirmed: { background: "rgba(74,222,128,0.1)", color: "#4ade80" },
-      missed: { background: "rgba(251,191,36,0.1)", color: "#fbbf24" },
-      no_show: { background: "rgba(251,191,36,0.1)", color: "#fbbf24" },
-      failed: { background: "rgba(248,113,113,0.1)", color: "#f87171" },
-      cancelled: { background: "rgba(248,113,113,0.1)", color: "#f87171" },
+      completed: { background: "rgba(74,222,128,0.1)", color: "var(--db-success, #4ade80)" },
+      confirmed: { background: "rgba(74,222,128,0.1)", color: "var(--db-success, #4ade80)" },
+      missed: { background: "rgba(251,191,36,0.1)", color: "var(--db-warning, #fbbf24)" },
+      no_show: { background: "rgba(251,191,36,0.1)", color: "var(--db-warning, #fbbf24)" },
+      failed: { background: "rgba(248,113,113,0.1)", color: "var(--db-danger, #f87171)" },
+      cancelled: { background: "rgba(248,113,113,0.1)", color: "var(--db-danger, #f87171)" },
     };
     return map[status] || { background: "var(--db-hover)", color: "var(--db-text-secondary)" };
   };
@@ -270,11 +270,11 @@ export default function ClientDetailPage({
 
       {error && (
         <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-          <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+          <p className="text-sm" style={{ color: "var(--db-danger, #f87171)" }}>{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-            style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+            style={{ background: "rgba(248,113,113,0.15)", color: "var(--db-danger, #f87171)" }}
           >
             Retry
           </button>
@@ -311,11 +311,11 @@ export default function ClientDetailPage({
         </div>
         <div className="rounded-lg p-3" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Completed</p>
-          <p className="mt-1 text-lg font-semibold" style={{ color: "#4ade80" }}>{business.stats.calls.completed}</p>
+          <p className="mt-1 text-lg font-semibold" style={{ color: "var(--db-success, #4ade80)" }}>{business.stats.calls.completed}</p>
         </div>
         <div className="rounded-lg p-3" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Missed</p>
-          <p className="mt-1 text-lg font-semibold" style={{ color: "#fbbf24" }}>{business.stats.calls.missed}</p>
+          <p className="mt-1 text-lg font-semibold" style={{ color: "var(--db-warning, #fbbf24)" }}>{business.stats.calls.missed}</p>
         </div>
         <div className="rounded-lg p-3" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
           <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Avg Duration</p>
@@ -334,7 +334,7 @@ export default function ClientDetailPage({
       {/* Digest config */}
       <div className="flex items-center gap-4 rounded-lg p-3 text-sm" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
         <span style={{ color: "var(--db-text-muted)" }}>Daily Digest:</span>
-        <span className="rounded-full px-2 py-0.5 text-xs font-medium" style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80" }}>
+        <span className="rounded-full px-2 py-0.5 text-xs font-medium" style={{ background: "rgba(74,222,128,0.1)", color: "var(--db-success, #4ade80)" }}>
           {business.digestPreference || "sms"}
         </span>
         <span style={{ color: "var(--db-text-muted)" }}>at {business.digestTime || "18:00"}</span>
@@ -348,7 +348,7 @@ export default function ClientDetailPage({
       {/* Churn risk factors */}
       {business.churnRisk && business.churnRisk.score > 3 && (
         <div className="rounded-lg p-4" style={{ border: "1px solid rgba(251,191,36,0.2)", background: "rgba(251,191,36,0.05)" }}>
-          <p className="text-sm font-medium" style={{ color: "#fbbf24" }}>
+          <p className="text-sm font-medium" style={{ color: "var(--db-warning, #fbbf24)" }}>
             Churn Risk: {business.churnRisk.score}/10
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -356,7 +356,7 @@ export default function ClientDetailPage({
               <span
                 key={i}
                 className="rounded-full px-2 py-0.5 text-xs"
-                style={{ background: "rgba(251,191,36,0.1)", color: "#fbbf24" }}
+                style={{ background: "rgba(251,191,36,0.1)", color: "var(--db-warning, #fbbf24)" }}
               >
                 {f}
               </span>
@@ -436,8 +436,8 @@ export default function ClientDetailPage({
                       {call.language && <span className="text-xs" style={{ color: "var(--db-text-muted)" }}>{call.language.toUpperCase()}</span>}
                       {call.sentiment && (
                         <span className="text-xs" style={{
-                          color: call.sentiment === "positive" ? "#4ade80" :
-                                call.sentiment === "negative" ? "#f87171" : "var(--db-text-muted)"
+                          color: call.sentiment === "positive" ? "var(--db-success, #4ade80)" :
+                                call.sentiment === "negative" ? "var(--db-danger, #f87171)" : "var(--db-text-muted)"
                         }}>
                           {call.sentiment}
                         </span>
@@ -460,8 +460,8 @@ export default function ClientDetailPage({
                               className="shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium"
                               style={
                                 line.speaker === "ai"
-                                  ? { background: "rgba(197,154,39,0.15)", color: "#C59A27" }
-                                  : { background: "rgba(96,165,250,0.1)", color: "#60a5fa" }
+                                  ? { background: "rgba(197,154,39,0.15)", color: "#D4A843" }
+                                  : { background: "rgba(96,165,250,0.1)", color: "var(--db-info, #60a5fa)" }
                               }
                             >
                               {line.speaker === "ai" ? "AI" : "Caller"}
@@ -528,7 +528,7 @@ export default function ClientDetailPage({
                 </div>
                 <div className="rounded-lg p-3" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
                   <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Completed</p>
-                  <p className="mt-1 text-lg font-semibold" style={{ color: "#4ade80" }}>{intakesData.completed}</p>
+                  <p className="mt-1 text-lg font-semibold" style={{ color: "var(--db-success, #4ade80)" }}>{intakesData.completed}</p>
                 </div>
                 <div className="rounded-lg p-3" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
                   <p className="text-xs" style={{ color: "var(--db-text-muted)" }}>Completion Rate</p>
@@ -554,7 +554,7 @@ export default function ClientDetailPage({
                     </span>
                     <span
                       className="rounded-full px-2 py-0.5 text-[10px] font-medium capitalize"
-                      style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa" }}
+                      style={{ background: "rgba(96,165,250,0.1)", color: "var(--db-info, #60a5fa)" }}
                     >
                       {intake.scopeLevel}
                     </span>
@@ -562,7 +562,7 @@ export default function ClientDetailPage({
                       className="rounded-full px-2 py-0.5 text-[10px] font-medium"
                       style={{
                         background: intake.intakeComplete ? "rgba(74,222,128,0.1)" : "rgba(251,191,36,0.1)",
-                        color: intake.intakeComplete ? "#4ade80" : "#fbbf24",
+                        color: intake.intakeComplete ? "var(--db-success, #4ade80)" : "var(--db-warning, #fbbf24)",
                       }}
                     >
                       {intake.intakeComplete ? "Complete" : "Partial"}
@@ -572,7 +572,7 @@ export default function ClientDetailPage({
                         className="rounded-full px-2 py-0.5 text-[10px] font-medium capitalize"
                         style={{
                           background: intake.urgency === "emergency" ? "rgba(248,113,113,0.1)" : "rgba(251,191,36,0.1)",
-                          color: intake.urgency === "emergency" ? "#f87171" : "#fbbf24",
+                          color: intake.urgency === "emergency" ? "var(--db-danger, #f87171)" : "var(--db-warning, #fbbf24)",
                         }}
                       >
                         {intake.urgency}
@@ -618,8 +618,8 @@ export default function ClientDetailPage({
                   <div className="flex items-center gap-2">
                     <span className="rounded-full px-1.5 py-0.5 text-[10px] font-medium" style={
                       msg.direction === "outbound"
-                        ? { background: "rgba(96,165,250,0.1)", color: "#60a5fa" }
-                        : { background: "rgba(74,222,128,0.1)", color: "#4ade80" }
+                        ? { background: "rgba(96,165,250,0.1)", color: "var(--db-info, #60a5fa)" }
+                        : { background: "rgba(74,222,128,0.1)", color: "var(--db-success, #4ade80)" }
                     }>
                       {msg.direction}
                     </span>
@@ -682,7 +682,7 @@ export default function ClientDetailPage({
               <p className="py-8 text-center text-xs" style={{ color: "var(--db-text-muted)" }}>No QA scores yet</p>
             )}
             {qaScores.map((qa) => {
-              const scoreColor = qa.score >= 80 ? "#4ade80" : qa.score >= 60 ? "#fbbf24" : "#f87171";
+              const scoreColor = qa.score >= 80 ? "var(--db-success, #4ade80)" : qa.score >= 60 ? "var(--db-warning, #fbbf24)" : "var(--db-danger, #f87171)";
               return (
                 <div
                   key={qa.callId + qa.createdAt}
@@ -703,7 +703,7 @@ export default function ClientDetailPage({
                             <span
                               key={i}
                               className="rounded px-1.5 py-0.5 text-[10px]"
-                              style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+                              style={{ background: "rgba(248,113,113,0.1)", color: "var(--db-danger, #f87171)" }}
                             >
                               {flag}
                             </span>
@@ -717,7 +717,7 @@ export default function ClientDetailPage({
                     <p className="mt-2 text-xs leading-relaxed" style={{ color: "var(--db-text-secondary)" }}>{qa.summary}</p>
                   )}
                   {qa.fixRecommendation && (
-                    <p className="mt-1.5 text-xs" style={{ color: "#fbbf24" }}>
+                    <p className="mt-1.5 text-xs" style={{ color: "var(--db-warning, #fbbf24)" }}>
                       Fix: {qa.fixRecommendation}
                     </p>
                   )}
@@ -735,8 +735,8 @@ export default function ClientDetailPage({
             )}
             {npsHistory.map((nps) => {
               const classColor =
-                nps.classification === "promoter" ? "#4ade80" :
-                nps.classification === "passive" ? "#fbbf24" : "#f87171";
+                nps.classification === "promoter" ? "var(--db-success, #4ade80)" :
+                nps.classification === "passive" ? "var(--db-warning, #fbbf24)" : "var(--db-danger, #f87171)";
               return (
                 <div
                   key={nps.id}
@@ -799,9 +799,9 @@ export default function ClientDetailPage({
               <div className="space-y-2">
                 {referralData.referrals.map((ref) => {
                   const refColor =
-                    ref.status === "activated" ? "#4ade80" :
-                    ref.status === "signed_up" ? "#60a5fa" :
-                    ref.status === "churned" ? "#f87171" : "var(--db-text-muted)";
+                    ref.status === "activated" ? "var(--db-success, #4ade80)" :
+                    ref.status === "signed_up" ? "var(--db-info, #60a5fa)" :
+                    ref.status === "churned" ? "var(--db-danger, #f87171)" : "var(--db-text-muted)";
                   return (
                     <div
                       key={ref.id}
@@ -896,7 +896,7 @@ export default function ClientDetailPage({
                         className="rounded-full px-2 py-0.5 text-xs"
                         style={{
                           background: p.relationship === "preferred" ? "rgba(212,168,67,0.15)" : "rgba(96,165,250,0.15)",
-                          color: p.relationship === "preferred" ? "#D4A843" : "#60a5fa",
+                          color: p.relationship === "preferred" ? "#D4A843" : "var(--db-info, #60a5fa)",
                         }}
                       >
                         {p.relationship}
@@ -922,7 +922,7 @@ export default function ClientDetailPage({
                           className="rounded-full px-2 py-0.5 text-xs"
                           style={{
                             background: r.outcome === "connected" ? "rgba(74,222,128,0.15)" : "rgba(148,163,184,0.15)",
-                            color: r.outcome === "connected" ? "#4ade80" : "#94a3b8",
+                            color: r.outcome === "connected" ? "var(--db-success, #4ade80)" : "#94a3b8",
                           }}
                         >
                           {r.outcome}
@@ -953,10 +953,10 @@ export default function ClientDetailPage({
             )}
             {timeline.map((event) => {
               const typeLabels: Record<string, { label: string; color: string }> = {
-                first_week_report: { label: "First Week Report", color: "#60a5fa" },
+                first_week_report: { label: "First Week Report", color: "var(--db-info, #60a5fa)" },
                 monthly_report: { label: "Monthly Report", color: "#a78bfa" },
-                nps_survey_sent: { label: "NPS Survey Sent", color: "#fbbf24" },
-                nps_response: { label: "NPS Response", color: "#4ade80" },
+                nps_survey_sent: { label: "NPS Survey Sent", color: "var(--db-warning, #fbbf24)" },
+                nps_response: { label: "NPS Response", color: "var(--db-success, #4ade80)" },
                 milestone: { label: "Milestone", color: "#f59e0b" },
                 quarterly_review: { label: "Quarterly Review", color: "#8b5cf6" },
                 anniversary: { label: "Anniversary", color: "#ec4899" },

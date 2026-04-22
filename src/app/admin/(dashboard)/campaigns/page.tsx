@@ -162,7 +162,7 @@ export default function CampaignsPage() {
                     >
                       <div
                         className="h-full rounded-full transition-all"
-                        style={{ width: `${pct}%`, background: "#C59A27" }}
+                        style={{ width: `${pct}%`, background: "#D4A843" }}
                       />
                     </div>
                     <span className="w-10 text-right text-xs" style={{ color: "var(--db-text-secondary)" }}>

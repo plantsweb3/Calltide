@@ -122,7 +122,7 @@ function ThankYouContent() {
                   resize: "vertical",
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = "#C59A27";
+                  e.target.style.borderColor = "#D4A843";
                   e.target.style.boxShadow = "0 0 0 2px rgba(200,169,81,0.15)";
                 }}
                 onBlur={(e) => {
@@ -141,7 +141,7 @@ function ThankYouContent() {
                 type="submit"
                 disabled={submitting || !feedback.trim()}
                 className="mt-4 w-full rounded-lg px-6 py-3 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
-                style={{ backgroundColor: "#C59A27" }}
+                style={{ backgroundColor: "#D4A843" }}
               >
                 {submitting ? "Submitting..." : "Submit Feedback"}
               </button>
@@ -160,7 +160,7 @@ function ThankYouContent() {
           <Link
             href="/"
             className="text-sm font-semibold transition-colors hover:underline"
-            style={{ color: "#C59A27" }}
+            style={{ color: "#D4A843" }}
           >
             Back to Capta
           </Link>

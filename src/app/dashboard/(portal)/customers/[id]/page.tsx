@@ -499,15 +499,57 @@ export default function CustomerDetailPage() {
         {t("action.back", lang)} {t("nav.customers", lang)}
       </button>
 
-      {/* Header card */}
+      {/* Catalog marker — customer detail */}
       <div
-        className="rounded-xl border p-6 mb-6"
-        style={{ background: "var(--db-card)", borderColor: "var(--db-border)" }}
+        className="hidden sm:flex items-center justify-between mb-3"
+        style={{
+          fontFamily: "var(--font-mono), ui-monospace, Menlo, monospace",
+          fontSize: 11,
+          color: "var(--db-text-muted)",
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          fontWeight: 600,
+        }}
       >
+        <span style={{ color: "var(--db-accent)", fontWeight: 800 }}>
+          § Customer · {customer.id.slice(0, 8).toUpperCase()}
+        </span>
+        <span>CAT · REV 2026.04</span>
+      </div>
+
+      {/* Header card — brand-kit stamped container */}
+      <div
+        className="relative mb-6"
+        style={{
+          background: "var(--db-card)",
+          border: "1px solid var(--db-border)",
+          borderRadius: 4,
+          padding: "28px 24px 22px",
+        }}
+      >
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: 56,
+            height: 4,
+            background: "var(--db-accent)",
+          }}
+        />
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div>
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold" style={{ color: "var(--db-text)" }}>
+              <h1
+                style={{
+                  fontSize: 28,
+                  fontWeight: 900,
+                  color: "var(--db-text)",
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1.1,
+                }}
+              >
                 {customer.name || t("customerDetail.unknownCustomer", lang)}
               </h1>
               {customer.language === "es" && (

@@ -68,8 +68,8 @@ export default function FounderHQPage() {
       <div className="space-y-4">
         {error ? (
           <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-            <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
-            <button onClick={fetchData} className="rounded-lg px-3 py-1.5 text-xs font-medium" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}>
+            <p className="text-sm" style={{ color: "var(--db-danger, #f87171)" }}>{error}</p>
+            <button onClick={fetchData} className="rounded-lg px-3 py-1.5 text-xs font-medium" style={{ background: "rgba(248,113,113,0.15)", color: "var(--db-danger, #f87171)" }}>
               Retry
             </button>
           </div>
@@ -114,7 +114,7 @@ export default function FounderHQPage() {
           <div
             className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold"
             style={{
-              background: "linear-gradient(135deg, #D4A843, #C59A27)",
+              background: "linear-gradient(135deg, #D4A843, #D4A843)",
               color: "#1B2A4A",
               boxShadow: "0 2px 8px rgba(212,168,67,0.4)",
             }}
@@ -193,7 +193,7 @@ export default function FounderHQPage() {
           <span
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg font-bold"
             style={{
-              background: "linear-gradient(135deg, #D4A843, #C59A27)",
+              background: "linear-gradient(135deg, #D4A843, #D4A843)",
               color: "#1B2A4A",
             }}
           >
@@ -243,7 +243,7 @@ export default function FounderHQPage() {
       <div className="rounded-xl p-4" style={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }}>
         <div className="flex items-center justify-between text-sm mb-2">
           <span className="font-medium" style={{ color: "var(--db-text)" }}>Rule of 100</span>
-          <span style={{ color: touchesRemaining === 0 ? "#4ade80" : "var(--db-text-muted)" }}>
+          <span style={{ color: touchesRemaining === 0 ? "var(--db-success, #4ade80)" : "var(--db-text-muted)" }}>
             {data.metrics.todayTouches}/100 touches
           </span>
         </div>
@@ -269,10 +269,10 @@ export default function FounderHQPage() {
           {(
             [
               { key: "fresh", label: "Fresh", color: "#94a3b8" },
-              { key: "contacted", label: "Contacted", color: "#60a5fa" },
+              { key: "contacted", label: "Contacted", color: "var(--db-info, #60a5fa)" },
               { key: "interested", label: "Interested", color: "#D4A843" },
               { key: "demo", label: "Demo Booked", color: "#a78bfa" },
-              { key: "won", label: "Won", color: "#4ade80" },
+              { key: "won", label: "Won", color: "var(--db-success, #4ade80)" },
             ] as const
           ).map((stage, i) => {
             const stageData = data.pipeline[stage.key];

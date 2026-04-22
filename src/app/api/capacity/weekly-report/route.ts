@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     const html = `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;background:#ffffff;">
   <div style="margin-bottom:24px;">
-    <span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span>
+    <span style="font-size:20px;font-weight:700;color:#D4A843;">Capta</span>
     <span style="color:#94A3B8;font-size:14px;margin-left:8px;">Weekly Capacity Report</span>
   </div>
 
@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
   <h3 style="color:#1A1D24;margin-bottom:12px;">Estimated Monthly Cost</h3>
   <p style="color:#1A1D24;font-size:24px;font-weight:700;">$${(costs.total / 100).toFixed(0)}</p>
 
-  <a href="${env.NEXT_PUBLIC_APP_URL}/admin/capacity" style="display:inline-block;background:#C59A27;color:#ffffff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
+  <a href="${env.NEXT_PUBLIC_APP_URL}/admin/capacity" style="display:inline-block;background:#D4A843;color:#ffffff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">
     View Full Dashboard
   </a>
 

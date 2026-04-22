@@ -153,7 +153,7 @@ export default async function HelpArticleEsPage({ params }: { params: Promise<{ 
         </div>
 
         {/* Divider */}
-        <div className="mt-6 h-px" style={{ background: "linear-gradient(to right, #C59A27, #E2E8F0 40%)" }} />
+        <div className="mt-6 h-px" style={{ background: "linear-gradient(to right, #D4A843, #E2E8F0 40%)" }} />
 
         {/* Article Content */}
         <ArticleBody articleId={article.id} content={content} lang="es" />

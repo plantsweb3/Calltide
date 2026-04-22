@@ -31,7 +31,7 @@ export default function GlobalError({
         <div style={{ textAlign: "center", padding: "2rem" }}>
           <h1
             style={{
-              color: "#C59A27",
+              color: "#D4A843",
               fontSize: "1.5rem",
               fontWeight: 600,
               marginBottom: "0.5rem",
@@ -57,7 +57,7 @@ export default function GlobalError({
             <button
               onClick={reset}
               style={{
-                backgroundColor: "#C59A27",
+                backgroundColor: "#D4A843",
                 color: "#fff",
                 border: "none",
                 borderRadius: "0.5rem",

@@ -97,7 +97,7 @@ export default function CallTranscript({
                   className="rounded px-1.5 py-0.5 text-xs font-medium uppercase"
                   style={{
                     background: call.language === "es" ? "var(--db-accent-bg)" : "rgba(96,165,250,0.1)",
-                    color: call.language === "es" ? "#C59A27" : "#60a5fa",
+                    color: call.language === "es" ? "#D4A843" : "#60a5fa",
                   }}
                 >
                   {call.language}

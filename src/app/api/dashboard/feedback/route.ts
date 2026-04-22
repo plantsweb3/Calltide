@@ -126,7 +126,7 @@ async function sendFeedbackAck(businessId: string, feedbackTitle: string) {
     html: `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;background:#ffffff;">
   <div style="margin-bottom:24px;">
-    <span style="font-size:20px;font-weight:700;color:#C59A27;">Capta</span>
+    <span style="font-size:20px;font-weight:700;color:#D4A843;">Capta</span>
   </div>
   <h2 style="color:#1A1D24;margin-bottom:8px;">${t.heading}</h2>
   <p style="color:#475569;line-height:1.7;margin-bottom:24px;">${t.body}</p>

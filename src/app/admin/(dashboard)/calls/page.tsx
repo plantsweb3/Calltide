@@ -46,7 +46,7 @@ interface CallAnalytics {
   }>;
 }
 
-const PIE_COLORS = ["#C59A27", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"];
+const PIE_COLORS = ["#D4A843", "var(--db-info, #3b82f6)", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"];
 const SENTIMENT_COLORS: Record<string, string> = {
   positive: "#22c55e",
   neutral: "#64748b",
@@ -75,11 +75,11 @@ export default function CallAnalyticsPage() {
       <div className="space-y-4">
         {error ? (
           <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
-            <p className="text-sm" style={{ color: "#f87171" }}>{error}</p>
+            <p className="text-sm" style={{ color: "var(--db-danger, #f87171)" }}>{error}</p>
             <button
               onClick={fetchData}
               className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-              style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}
+              style={{ background: "rgba(248,113,113,0.15)", color: "var(--db-danger, #f87171)" }}
             >
               Retry
             </button>
@@ -143,10 +143,10 @@ export default function CallAnalyticsPage() {
       label: "Status",
       render: (row) => {
         const statusStyles: Record<string, { background: string; color: string }> = {
-          completed: { background: "rgba(74,222,128,0.1)", color: "#4ade80" },
-          missed: { background: "rgba(251,191,36,0.1)", color: "#fbbf24" },
+          completed: { background: "rgba(74,222,128,0.1)", color: "var(--db-success, #4ade80)" },
+          missed: { background: "rgba(251,191,36,0.1)", color: "var(--db-warning, #fbbf24)" },
           failed: { background: "rgba(239,68,68,0.1)", color: "#ef4444" },
-          in_progress: { background: "rgba(96,165,250,0.1)", color: "#60a5fa" },
+          in_progress: { background: "rgba(96,165,250,0.1)", color: "var(--db-info, #60a5fa)" },
         };
         const style = statusStyles[row.status] || { background: "var(--db-hover)", color: "var(--db-text-secondary)" };
         return (
@@ -168,7 +168,7 @@ export default function CallAnalyticsPage() {
       label: "Sentiment",
       render: (row) => (
         <span className="text-xs" style={{
-          color: row.sentiment === "positive" ? "#4ade80" :
+          color: row.sentiment === "positive" ? "var(--db-success, #4ade80)" :
                  row.sentiment === "negative" ? "#ef4444" : "var(--db-text-muted)"
         }}>
           {row.sentiment || "—"}
@@ -224,7 +224,7 @@ export default function CallAnalyticsPage() {
               <Tooltip
                 contentStyle={{ background: "var(--db-surface)", border: "1px solid var(--db-border)", borderRadius: 8, color: "var(--db-text)", fontSize: 12 }}
               />
-              <Area type="monotone" dataKey="count" stroke="#C59A27" fill="#C59A27" fillOpacity={0.1} />
+              <Area type="monotone" dataKey="count" stroke="#D4A843" fill="#D4A843" fillOpacity={0.1} />
             </AreaChart>
           </ResponsiveContainer>
         </div>

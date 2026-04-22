@@ -63,7 +63,7 @@ export async function GET(
 <body>
   <div class="card">
     <h1>You've been unsubscribed</h1>
-    <p>You won't receive any more emails about your receptionist setup. If you change your mind, you can resume anytime at <a href="https://captahq.com/setup" style="color:#C59A27;">captahq.com/setup</a>.</p>
+    <p>You won't receive any more emails about your receptionist setup. If you change your mind, you can resume anytime at <a href="https://captahq.com/setup" style="color:#D4A843;">captahq.com/setup</a>.</p>
   </div>
 </body>
 </html>`;

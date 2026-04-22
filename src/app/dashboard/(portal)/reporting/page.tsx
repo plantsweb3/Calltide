@@ -97,7 +97,7 @@ export default function ReportingPage() {
   const maxDailyVolume = Math.max(...dailyVolumeSlice.map((d) => d.total), 1);
 
   const pipelineLabels: Record<string, string> = { new: t("reporting.pipelineNew", lang), sent: t("reporting.pipelineSent", lang), follow_up: t("reporting.pipelineFollowUp", lang), won: t("reporting.pipelineWon", lang), lost: t("reporting.pipelineLost", lang) };
-  const pipelineColors: Record<string, string> = { new: "#3B82F6", sent: "#F59E0B", follow_up: "#8B5CF6", won: "#10B981", lost: "#EF4444" };
+  const pipelineColors: Record<string, string> = { new: "var(--db-info, #3B82F6)", sent: "var(--db-warning, #F59E0B)", follow_up: "#8B5CF6", won: "var(--db-success, #10B981)", lost: "var(--db-danger, #EF4444)" };
 
   return (
     <div className="space-y-6">
@@ -273,7 +273,7 @@ export default function ReportingPage() {
             {data.languageBreakdown.map((l) => {
               const pct = totalLang > 0 ? Math.round((l.total / totalLang) * 100) : 0;
               const langLabel = l.language === "en" ? t("reporting.english", lang) : l.language === "es" ? t("reporting.spanish", lang) : l.language;
-              const langColor = l.language === "en" ? "var(--db-accent)" : "#10B981";
+              const langColor = l.language === "en" ? "var(--db-accent)" : "var(--db-success, #10B981)";
               return (
                 <div key={l.language}>
                   <div className="flex items-center justify-between mb-1.5">
@@ -378,13 +378,13 @@ export default function ReportingPage() {
                   <>
                     <circle
                       cx="18" cy="18" r="15.915" fill="none" strokeWidth="3.5"
-                      stroke="#3B82F6"
+                      stroke="var(--db-info, #3B82F6)"
                       strokeDasharray={`${(data.callerStats.new / data.callerStats.total) * 100} ${100 - (data.callerStats.new / data.callerStats.total) * 100}`}
                       strokeDashoffset="0"
                     />
                     <circle
                       cx="18" cy="18" r="15.915" fill="none" strokeWidth="3.5"
-                      stroke="#10B981"
+                      stroke="var(--db-success, #10B981)"
                       strokeDasharray={`${(data.callerStats.repeat / data.callerStats.total) * 100} ${100 - (data.callerStats.repeat / data.callerStats.total) * 100}`}
                       strokeDashoffset={`${-(data.callerStats.new / data.callerStats.total) * 100}`}
                     />
@@ -399,11 +399,11 @@ export default function ReportingPage() {
           </div>
           <div className="flex justify-center gap-6">
             <div className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded-full" style={{ background: "#3B82F6" }} />
+              <span className="h-3 w-3 rounded-full" style={{ background: "var(--db-info, #3B82F6)" }} />
               <span className="text-xs font-medium" style={{ color: "var(--db-text)" }}>{t("reporting.new", lang)} ({data.callerStats.new})</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded-full" style={{ background: "#10B981" }} />
+              <span className="h-3 w-3 rounded-full" style={{ background: "var(--db-success, #10B981)" }} />
               <span className="text-xs font-medium" style={{ color: "var(--db-text)" }}>{t("reporting.repeat", lang)} ({data.callerStats.repeat})</span>
             </div>
           </div>

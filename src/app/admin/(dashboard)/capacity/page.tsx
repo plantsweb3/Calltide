@@ -289,7 +289,7 @@ function UtilizationTab({ data }: { data: CapacityData | null }) {
               <XAxis dataKey="date" tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} tickFormatter={(v) => v.slice(5)} />
               <YAxis tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} />
               <Tooltip contentStyle={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }} />
-              <Area type="monotone" dataKey="humeMinutesMtd" name="Minutes" stroke="#C59A27" fill="rgba(197,154,39,0.1)" />
+              <Area type="monotone" dataKey="humeMinutesMtd" name="Minutes" stroke="#D4A843" fill="rgba(197,154,39,0.1)" />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -345,7 +345,7 @@ function GrowthTab({ data }: { data: CapacityData | null }) {
               <YAxis yAxisId="right" orientation="right" tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} />
               <Tooltip contentStyle={{ background: "var(--db-card)", border: "1px solid var(--db-border)" }} />
               <Legend />
-              <Line yAxisId="left" type="monotone" dataKey="clients" name="Clients" stroke="#C59A27" strokeWidth={2} dot={false} />
+              <Line yAxisId="left" type="monotone" dataKey="clients" name="Clients" stroke="#D4A843" strokeWidth={2} dot={false} />
               <Line yAxisId="right" type="monotone" dataKey="calls" name="Calls/Day" stroke="#60a5fa" dot={false} />
             </LineChart>
           </ResponsiveContainer>
@@ -367,7 +367,7 @@ function CostsTab({ data }: { data: CapacityData | null }) {
   const cost = data.costEstimate ?? { elevenlabs: 0, anthropic: 0, twilio: 0, turso: 0, vercel: 0, total: 0 };
 
   const breakdown = [
-    { provider: "ElevenLabs", cost: cost.elevenlabs, color: "#C59A27" },
+    { provider: "ElevenLabs", cost: cost.elevenlabs, color: "#D4A843" },
     { provider: "Anthropic", cost: cost.anthropic, color: "#8b5cf6" },
     { provider: "Twilio", cost: cost.twilio, color: "#ef4444" },
     { provider: "Turso", cost: cost.turso, color: "#3b82f6" },
@@ -468,7 +468,7 @@ function PlaybookTab({ data }: { data: CapacityData | null }) {
             className="flex-shrink-0 rounded-lg px-4 py-2 text-xs font-medium"
             style={{
               background: g.isCurrent ? "rgba(197,154,39,0.15)" : g.isPast ? "rgba(74,222,128,0.1)" : "var(--db-hover)",
-              color: g.isCurrent ? "#C59A27" : g.isPast ? "#4ade80" : "var(--db-text-muted)",
+              color: g.isCurrent ? "#D4A843" : g.isPast ? "#4ade80" : "var(--db-text-muted)",
               border: g.isCurrent ? "1px solid rgba(197,154,39,0.3)" : "1px solid transparent",
             }}
           >
@@ -481,11 +481,11 @@ function PlaybookTab({ data }: { data: CapacityData | null }) {
         <div key={g.tier}>
           <h3
             className="text-sm font-medium mb-3 flex items-center gap-2"
-            style={{ color: g.isCurrent ? "#C59A27" : "var(--db-text)" }}
+            style={{ color: g.isCurrent ? "#D4A843" : "var(--db-text)" }}
           >
             <StatusBadge status={g.tier} />
             {g.label} Tier
-            {g.isCurrent && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(197,154,39,0.15)", color: "#C59A27" }}>Current</span>}
+            {g.isCurrent && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(197,154,39,0.15)", color: "#D4A843" }}>Current</span>}
           </h3>
           <div className="space-y-2">
             {g.items.map((item: PlaybookItem) => (

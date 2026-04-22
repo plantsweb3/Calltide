@@ -26,14 +26,14 @@ export function LegalNav({ lang = "en" }: { lang?: "en" | "es" }) {
               href={href}
               className="relative whitespace-nowrap px-4 py-3.5 font-medium transition-colors"
               style={{
-                color: isActive ? "#C59A27" : "#64748B",
+                color: isActive ? "#D4A843" : "#64748B",
               }}
             >
               {lang === "es" ? link.labelEs : link.label}
               {isActive && (
                 <span
                   className="absolute inset-x-4 bottom-0 h-0.5 rounded-full"
-                  style={{ background: "#C59A27" }}
+                  style={{ background: "#D4A843" }}
                 />
               )}
             </Link>

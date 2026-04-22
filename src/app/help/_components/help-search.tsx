@@ -80,7 +80,7 @@ export default function HelpSearch({ lang = "en" }: { lang?: "en" | "es" }) {
           style={{ background: "white", color: "#1A1D24" }}
         />
         {loading && (
-          <span className="absolute right-4 top-1/2 -translate-y-1/2" style={{ color: "#C59A27" }}><CaptaSpinnerInline size={16} /></span>
+          <span className="absolute right-4 top-1/2 -translate-y-1/2" style={{ color: "#D4A843" }}><CaptaSpinnerInline size={16} /></span>
         )}
       </div>
 

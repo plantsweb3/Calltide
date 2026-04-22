@@ -93,23 +93,23 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 
 function healthColor(score: number): string {
-  if (score > 70) return "#4ade80";
-  if (score >= 50) return "#fbbf24";
+  if (score > 70) return "var(--db-success, #4ade80)";
+  if (score >= 50) return "var(--db-warning, #fbbf24)";
   return "#ef4444";
 }
 
 function gradeColor(grade: string | null): string {
   if (!grade) return "var(--db-text-muted)";
   const g = grade.toUpperCase();
-  if (g === "A" || g === "A+") return "#4ade80";
-  if (g === "B" || g === "B+") return "#60a5fa";
-  if (g === "C" || g === "C+") return "#fbbf24";
+  if (g === "A" || g === "A+") return "var(--db-success, #4ade80)";
+  if (g === "B" || g === "B+") return "var(--db-info, #60a5fa)";
+  if (g === "C" || g === "C+") return "var(--db-warning, #fbbf24)";
   return "#ef4444";
 }
 
 function npsColor(score: number): string {
-  if (score >= 9) return "#4ade80";
-  if (score >= 7) return "#fbbf24";
+  if (score >= 9) return "var(--db-success, #4ade80)";
+  if (score >= 7) return "var(--db-warning, #fbbf24)";
   return "#ef4444";
 }
 
@@ -173,7 +173,7 @@ export default function ClientSuccessPage() {
   if (error) {
     return (
       <div className="flex h-64 flex-col items-center justify-center gap-3">
-        <p style={{ color: "#f87171" }}>{error}</p>
+        <p style={{ color: "var(--db-danger, #f87171)" }}>{error}</p>
         <button
           onClick={() => {
             setError(null);
@@ -318,7 +318,7 @@ export default function ClientSuccessPage() {
           <span
             className="text-xs font-medium"
             style={{
-              color: isUp ? "#4ade80" : isDown ? "#ef4444" : "var(--db-text-muted)",
+              color: isUp ? "var(--db-success, #4ade80)" : isDown ? "#ef4444" : "var(--db-text-muted)",
             }}
           >
             {row.callVolumeTrend}
@@ -450,8 +450,8 @@ export default function ClientSuccessPage() {
       label: "Classification",
       render: (row) => {
         const styles: Record<string, { bg: string; color: string }> = {
-          promoter: { bg: "rgba(74,222,128,0.1)", color: "#4ade80" },
-          passive: { bg: "rgba(251,191,36,0.1)", color: "#fbbf24" },
+          promoter: { bg: "rgba(74,222,128,0.1)", color: "var(--db-success, #4ade80)" },
+          passive: { bg: "rgba(251,191,36,0.1)", color: "var(--db-warning, #fbbf24)" },
           detractor: { bg: "rgba(239,68,68,0.1)", color: "#ef4444" },
         };
         const s = styles[row.classification] || {
@@ -499,7 +499,7 @@ export default function ClientSuccessPage() {
           style={
             row.escalated
               ? { background: "rgba(239,68,68,0.1)", color: "#ef4444" }
-              : { background: "rgba(74,222,128,0.1)", color: "#4ade80" }
+              : { background: "rgba(74,222,128,0.1)", color: "var(--db-success, #4ade80)" }
           }
         >
           {row.escalated ? "Yes" : "No"}
@@ -532,7 +532,7 @@ export default function ClientSuccessPage() {
       key: "conversions",
       label: "Conversions",
       render: (row) => (
-        <span className="text-sm tabular-nums" style={{ color: "#4ade80" }}>
+        <span className="text-sm tabular-nums" style={{ color: "var(--db-success, #4ade80)" }}>
           {row.conversions}
         </span>
       ),
@@ -598,7 +598,7 @@ export default function ClientSuccessPage() {
                     <span
                       key={i}
                       className="rounded px-1.5 py-0.5 text-[10px]"
-                      style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}
+                      style={{ background: "rgba(239,68,68,0.1)", color: "var(--db-danger, #f87171)" }}
                     >
                       {flag}
                     </span>
@@ -848,9 +848,9 @@ export default function ClientSuccessPage() {
               >
                 {d.referralStats.recentActivity.map((activity) => {
                   const statusStyle: Record<string, { bg: string; color: string }> = {
-                    visited: { bg: "rgba(96,165,250,0.1)", color: "#60a5fa" },
-                    signed_up: { bg: "rgba(251,191,36,0.1)", color: "#fbbf24" },
-                    activated: { bg: "rgba(74,222,128,0.1)", color: "#4ade80" },
+                    visited: { bg: "rgba(96,165,250,0.1)", color: "var(--db-info, #60a5fa)" },
+                    signed_up: { bg: "rgba(251,191,36,0.1)", color: "var(--db-warning, #fbbf24)" },
+                    activated: { bg: "rgba(74,222,128,0.1)", color: "var(--db-success, #4ade80)" },
                   };
                   const s = statusStyle[activity.status] || {
                     bg: "var(--db-hover)",

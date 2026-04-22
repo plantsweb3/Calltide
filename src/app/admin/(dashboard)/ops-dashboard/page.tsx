@@ -457,8 +457,8 @@ export default function OpsDashboardPage() {
               <Area
                 type="monotone"
                 dataKey="count"
-                stroke="#C59A27"
-                fill="#C59A27"
+                stroke="#D4A843"
+                fill="#D4A843"
                 fillOpacity={0.1}
               />
             </AreaChart>
@@ -484,7 +484,7 @@ export default function OpsDashboardPage() {
               />
               <YAxis tick={{ fill: "var(--db-text-muted)", fontSize: 11 }} />
               <Tooltip contentStyle={tooltipStyle} />
-              <Bar dataKey="value" fill="#C59A27" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="value" fill="#D4A843" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -84,7 +84,7 @@ button:focus-visible,
 [role="link"]:focus-visible,
 [role="menuitem"]:focus-visible,
 summary:focus-visible {
-  outline: 2px solid var(--db-accent, #C59A27);
+  outline: 2px solid var(--db-accent, #D4A843);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -96,13 +96,13 @@ select:focus-visible,
 [role="checkbox"]:focus-visible,
 [role="radio"]:focus-visible,
 [contenteditable="true"]:focus-visible {
-  outline: 2px solid var(--db-accent, #C59A27);
+  outline: 2px solid var(--db-accent, #D4A843);
   outline-offset: 2px;
 }
 
 /* Tab-focusable elements (anything with tabindex >= 0) */
 [tabindex="0"]:focus-visible {
-  outline: 2px solid var(--db-accent, #C59A27);
+  outline: 2px solid var(--db-accent, #D4A843);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -324,7 +324,7 @@ select:focus-visible,
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(180deg, #C59A27, rgba(197, 154, 39, 0.1));
+  background: linear-gradient(180deg, #D4A843, rgba(197, 154, 39, 0.1));
   pointer-events: none;
 }
 
@@ -414,11 +414,11 @@ select:focus-visible,
   transition: all var(--duration-slow) var(--ease-out);
 }
 .faq-item:hover {
-  border-left-color: #C59A27;
+  border-left-color: #D4A843;
   padding-left: 12px;
 }
 .faq-item:hover .faq-plus {
-  color: #C59A27 !important;
+  color: #D4A843 !important;
 }
 
 /* ── Scroll Reveal Animations (Part 10) ── */
@@ -590,7 +590,7 @@ select:focus-visible,
   --db-text-secondary: #475569;
   --db-text-muted: #64748B;
   --db-hover: rgba(241,245,249,0.6);
-  --db-accent: #C59A27;
+  --db-accent: #D4A843;
   --db-accent-hover: #A17D1F;
   --db-card-shadow: 0px 4px 16px rgba(15, 23, 42, 0.08), 0px 12px 32px rgba(15, 23, 42, 0.06);
   --db-success: #16a34a;
@@ -896,14 +896,14 @@ button.db-card:hover,
 .prose-help h2 { font-size: 1.25rem; }
 .prose-help h3 { font-size: 1.1rem; }
 .prose-help p { margin-bottom: 1rem; }
-.prose-help a { color: #C59A27; text-decoration: underline; text-underline-offset: 2px; }
+.prose-help a { color: #D4A843; text-decoration: underline; text-underline-offset: 2px; }
 .prose-help a:hover { opacity: 0.8; }
 .prose-help ul, .prose-help ol { margin-bottom: 1rem; padding-left: 1.5rem; }
 .prose-help li { margin-bottom: 0.375rem; }
 .prose-help ul li { list-style-type: disc; }
 .prose-help ol li { list-style-type: decimal; }
 .prose-help blockquote {
-  border-left: 3px solid #C59A27;
+  border-left: 3px solid #D4A843;
   padding-left: 1rem;
   margin: 1.5rem 0;
   color: #475569;
@@ -1004,7 +1004,7 @@ button.db-card:hover,
 }
 .legal-prose p, .legal-prose br + br { margin-bottom: 0; }
 .legal-prose a {
-  color: #C59A27;
+  color: #D4A843;
   text-decoration: underline;
   text-underline-offset: 2px;
   transition: opacity var(--duration-fast);
@@ -1113,7 +1113,7 @@ button.db-card:hover,
 /* ═══ Activity feed pulse animation ═══ */
 @keyframes feed-pulse-border {
   0%, 100% { border-left-color: transparent; }
-  50% { border-left-color: #C59A27; }
+  50% { border-left-color: #D4A843; }
 }
 .feed-pulse {
   border-left: 3px solid transparent;
