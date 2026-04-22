@@ -20,7 +20,7 @@ import {
   DisplayH1,
   DisplayH2,
   SkipLink,
-} from "@/components/marketing/field";
+} from "@/components/marketing/industrial";
 
 type FaqItem = { q: string; a: string };
 type FaqChapter = { num: string; title: string; items: FaqItem[] };
@@ -152,7 +152,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "More questions?",
       h2: "Text the number. We answer in minutes.",
       sub: "You'll get a real person during business hours, and Maria after hours.",
-      primary: "Start 14-day free trial",
+      primary: "Get Capta",
       secondary: "Read the platform manual",
     },
   },
@@ -276,7 +276,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "¿Más preguntas?",
       h2: "Escribe al número. Contestamos en minutos.",
       sub: "Recibes una persona real durante horario de oficina, y Maria fuera de horario.",
-      primary: "Comenzar prueba gratis de 14 días",
+      primary: "Obtener Capta",
       secondary: "Leer el manual de la plataforma",
     },
   },
@@ -331,7 +331,7 @@ export default function FAQClient({ initialLang }: { initialLang?: Lang } = {}) 
           <DisplayH1 style={{ marginTop: 28 }}>
             {t.hero.h1a}
             <br />
-            <em style={{ fontStyle: "italic", fontVariationSettings: '"SOFT" 100, "WONK" 1', color: C.amberInk }}>
+            <em style={{ fontStyle: "italic", color: C.amberInk }}>
               {t.hero.h1b}
             </em>
           </DisplayH1>
@@ -437,7 +437,7 @@ function ChapterSection({ chapter, isLast }: { chapter: FaqChapter; isLast: bool
                         <Mono style={{ fontSize: 11, color: C.inkSoft, fontWeight: 700, letterSpacing: "0.08em", flexShrink: 0 }}>
                           {String(i + 1).padStart(2, "0")}
                         </Mono>
-                        <span style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: 20, fontWeight: 500, color: C.ink, letterSpacing: "-0.01em", lineHeight: 1.3 }}>
+                        <span style={{ fontSize: 20, fontWeight: 500, color: C.ink, letterSpacing: "-0.01em", lineHeight: 1.3 }}>
                           {item.q}
                         </span>
                       </div>

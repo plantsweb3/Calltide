@@ -20,7 +20,7 @@ import {
   DisplayH2,
   Serif,
   SkipLink,
-} from "@/components/marketing/field";
+} from "@/components/marketing/industrial";
 
 type Chapter = { num: string; title: string; desc: string };
 type Stat = { value: string; label: string; note: string };
@@ -151,7 +151,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "Already sold on the math?",
       h2: "Skip the PDF. Hire the receptionist.",
       sub: "14 days free. One phone number. Cancel with one text.",
-      primary: "Start 14-day free trial",
+      primary: "Get Capta",
     },
   },
   es: {
@@ -236,7 +236,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "¿Ya te convencieron las cuentas?",
       h2: "Salta el PDF. Contrata la recepcionista.",
       sub: "14 días gratis. Un número de teléfono. Cancela con un mensaje.",
-      primary: "Comenzar prueba gratis de 14 días",
+      primary: "Obtener Capta",
     },
   },
 };
@@ -307,7 +307,7 @@ export function PlaybookLanding({ initialLang }: { initialLang?: Lang } = {}) {
             <DisplayH1 style={{ marginTop: 28 }}>
               {t.hero.h1a}
               <br />
-              <em style={{ fontStyle: "italic", fontVariationSettings: '"SOFT" 100, "WONK" 1', color: C.amberInk }}>
+              <em style={{ fontStyle: "italic", color: C.amberInk }}>
                 {t.hero.h1b}
               </em>
             </DisplayH1>
@@ -362,7 +362,7 @@ export function PlaybookLanding({ initialLang }: { initialLang?: Lang } = {}) {
                   </div>
                   <h2
                     style={{
-                      fontFamily: "var(--font-fraunces), Georgia, serif",
+                      
                       fontSize: 26,
                       lineHeight: 1.15,
                       fontWeight: 500,
@@ -431,7 +431,7 @@ export function PlaybookLanding({ initialLang }: { initialLang?: Lang } = {}) {
                     <PrimaryButton type="submit" size="lg" disabled={sending}>
                       {sending ? t.form.sending : t.form.submit}
                     </PrimaryButton>
-                    <p style={{ fontSize: 12, color: C.inkMuted, lineHeight: 1.55, marginTop: 4, fontStyle: "italic", fontFamily: "var(--font-fraunces), Georgia, serif" }}>
+                    <p style={{ fontSize: 12, color: C.inkMuted, lineHeight: 1.55, marginTop: 4, fontStyle: "italic", }}>
                       {t.form.footer}
                     </p>
                   </form>
@@ -443,7 +443,7 @@ export function PlaybookLanding({ initialLang }: { initialLang?: Lang } = {}) {
                   </Mono>
                   <h2
                     style={{
-                      fontFamily: "var(--font-fraunces), Georgia, serif",
+                      
                       fontSize: 26,
                       lineHeight: 1.15,
                       fontWeight: 500,
@@ -533,7 +533,7 @@ export function PlaybookLanding({ initialLang }: { initialLang?: Lang } = {}) {
                 <div className="lg:col-span-4">
                   <h3
                     style={{
-                      fontFamily: "var(--font-fraunces), Georgia, serif",
+                      
                       fontSize: 24,
                       lineHeight: 1.15,
                       fontWeight: 500,
@@ -595,7 +595,7 @@ export function PlaybookLanding({ initialLang }: { initialLang?: Lang } = {}) {
             <Kicker>{t.forYou.kicker}</Kicker>
             <DisplayH2 style={{ marginTop: 20 }}>
               {t.forYou.h2.split("…")[0]}
-              <em style={{ fontStyle: "italic", fontVariationSettings: '"SOFT" 100, "WONK" 1', color: C.amberInk }}>…</em>
+              <em style={{ fontStyle: "italic", color: C.amberInk }}>…</em>
             </DisplayH2>
           </div>
           <div className="lg:col-span-7">

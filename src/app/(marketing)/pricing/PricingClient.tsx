@@ -20,7 +20,7 @@ import {
   DisplayH1,
   DisplayH2,
   SkipLink,
-} from "@/components/marketing/field";
+} from "@/components/marketing/industrial";
 
 /* ═══════════════════════════════════════════════════════════════
    COPY
@@ -95,7 +95,7 @@ const COPY: Record<Lang, Copy> = {
       ],
       guarantee:
         "14 days free. Cancel with a single text. You walk away owing nothing. Keep going only if it's earning its keep.",
-      primaryCta: "Start 14-day free trial",
+      primaryCta: "Get Capta",
       callNow: "Call the line",
     },
     compare: {
@@ -171,7 +171,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "Or just call the line.",
       h2: "Capta is answering right now.",
       sub: "You'll know inside a minute whether this is worth $497 a month.",
-      primary: "Start 14-day free trial",
+      primary: "Get Capta",
       secondary: "Read the platform overview",
     },
   },
@@ -204,7 +204,7 @@ const COPY: Record<Lang, Copy> = {
       ],
       guarantee:
         "14 días gratis. Cancela con un solo mensaje. Te vas sin deberle nada. Sigue solo si está generando su pago.",
-      primaryCta: "Comenzar prueba gratis de 14 días",
+      primaryCta: "Obtener Capta",
       callNow: "Llama a la línea",
     },
     compare: {
@@ -280,7 +280,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "O simplemente llama a la línea.",
       h2: "Capta está contestando ahora mismo.",
       sub: "Vas a saber en menos de un minuto si vale $497 al mes.",
-      primary: "Comenzar prueba gratis de 14 días",
+      primary: "Obtener Capta",
       secondary: "Leer la descripción de la plataforma",
     },
   },
@@ -377,7 +377,7 @@ function Hero({ t }: { t: Copy }) {
         <DisplayH1 style={{ marginTop: 28 }}>
           {t.hero.h1a}
           <br />
-          <em style={{ fontStyle: "italic", fontVariationSettings: '"SOFT" 100, "WONK" 1', color: C.amberInk }}>
+          <em style={{ fontStyle: "italic", color: C.amberInk }}>
             {t.hero.h1b}
           </em>
         </DisplayH1>
@@ -398,7 +398,7 @@ function PricingCard({ t }: { t: Copy }) {
       <div className="grid gap-16 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <div style={{ padding: "18px 20px", background: C.paperDark, borderLeft: `3px solid ${C.amber}` }}>
-            <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: 17, lineHeight: 1.5, fontStyle: "italic", color: C.ink }}>
+            <p style={{ fontSize: 17, lineHeight: 1.5, fontStyle: "italic", color: C.ink }}>
               {t.card.guarantee}
             </p>
           </div>
@@ -496,7 +496,7 @@ function CompareTable({ t }: { t: Copy }) {
       );
     }
     return (
-      <span style={{ fontSize: 12, color: C.inkMuted, fontStyle: "italic", fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 400 }}>
+      <span style={{ fontSize: 12, color: C.inkMuted, fontStyle: "italic", fontWeight: 400 }}>
         {value}
       </span>
     );
@@ -679,7 +679,7 @@ function Ledger({ t }: { t: Copy }) {
                 </tbody>
               </table>
             </div>
-            <p style={{ fontSize: 12, color: C.inkMuted, marginTop: 16, lineHeight: 1.55, fontStyle: "italic", fontFamily: "var(--font-fraunces), Georgia, serif" }}>
+            <p style={{ fontSize: 12, color: C.inkMuted, marginTop: 16, lineHeight: 1.55, fontStyle: "italic", }}>
               {t.math.totalNote}
             </p>
           </div>
@@ -718,7 +718,7 @@ function Faq({ t }: { t: Copy }) {
                       cursor: "pointer",
                     }}
                   >
-                    <span style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: 20, fontWeight: 500, color: C.ink, letterSpacing: "-0.01em" }}>
+                    <span style={{ fontSize: 20, fontWeight: 500, color: C.ink, letterSpacing: "-0.01em" }}>
                       {item.q}
                     </span>
                     <span

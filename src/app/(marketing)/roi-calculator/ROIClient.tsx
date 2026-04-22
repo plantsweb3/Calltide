@@ -19,7 +19,7 @@ import {
   DisplayH1,
   DisplayH2,
   SkipLink,
-} from "@/components/marketing/field";
+} from "@/components/marketing/industrial";
 
 /* ═══════════════════════════════════════════════════════════════
    CONSTANTS + MATH
@@ -159,7 +159,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "Satisfied with the math?",
       h2: "Hire Capta.",
       sub: "14 days free. Your number stays yours. Cancel with one text.",
-      primary: "Start 14-day free trial",
+      primary: "Get Capta",
     },
   },
   es: {
@@ -233,7 +233,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "¿Satisfecho con las matemáticas?",
       h2: "Contrata Capta.",
       sub: "14 días gratis. Tu número sigue siendo tuyo. Cancela con un mensaje.",
-      primary: "Comenzar prueba gratis de 14 días",
+      primary: "Obtener Capta",
     },
   },
 };
@@ -298,7 +298,7 @@ export default function ROICalculatorPage({ initialLang }: { initialLang?: Lang 
           <DisplayH1 style={{ marginTop: 28 }}>
             {t.hero.h1a}
             <br />
-            <em style={{ fontStyle: "italic", fontVariationSettings: '"SOFT" 100, "WONK" 1', color: C.amberInk }}>
+            <em style={{ fontStyle: "italic", color: C.amberInk }}>
               {t.hero.h1b}
             </em>
           </DisplayH1>
@@ -399,7 +399,7 @@ export default function ROICalculatorPage({ initialLang }: { initialLang?: Lang 
                       </button>
                     );
                   })}
-                  <p style={{ fontSize: 12, color: C.inkMuted, marginTop: 4, lineHeight: 1.55, fontStyle: "italic", fontFamily: "var(--font-fraunces), Georgia, serif" }}>
+                  <p style={{ fontSize: 12, color: C.inkMuted, marginTop: 4, lineHeight: 1.55, fontStyle: "italic", }}>
                     {t.inputs.coverageNotes[coverage]}
                   </p>
                 </div>
@@ -453,7 +453,7 @@ export default function ROICalculatorPage({ initialLang }: { initialLang?: Lang 
                   background: C.paper,
                   fontSize: 13,
                   fontStyle: "italic",
-                  fontFamily: "var(--font-fraunces), Georgia, serif",
+                  
                   color: C.inkMuted,
                   textAlign: "center",
                 }}

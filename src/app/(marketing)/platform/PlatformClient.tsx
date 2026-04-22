@@ -20,7 +20,7 @@ import {
   DisplayH1,
   DisplayH2,
   SkipLink,
-} from "@/components/marketing/field";
+} from "@/components/marketing/industrial";
 
 /* ═══════════════════════════════════════════════════════════════
    COPY
@@ -112,7 +112,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "All capabilities included",
       h2: "Ready to hand over the phone?",
       sub: "14 days free. No setup. Your number stays yours.",
-      primary: "Start 14-day free trial",
+      primary: "Get Capta",
       secondary: "See pricing",
     },
   },
@@ -189,7 +189,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "Todas las capacidades incluidas",
       h2: "¿Listo para entregar el teléfono?",
       sub: "14 días gratis. Sin instalación. Tu número sigue siendo tuyo.",
-      primary: "Comenzar prueba gratis de 14 días",
+      primary: "Obtener Capta",
       secondary: "Ver precios",
     },
   },
@@ -267,7 +267,7 @@ export default function PlatformClient({ initialLang }: { initialLang?: Lang } =
                 </div>
                 <div
                   style={{
-                    fontFamily: "var(--font-fraunces), Georgia, serif",
+                    
                     fontSize: 22,
                     fontWeight: 500,
                     letterSpacing: "-0.015em",
@@ -317,7 +317,7 @@ export default function PlatformClient({ initialLang }: { initialLang?: Lang } =
                 </Mono>
                 <h3
                   style={{
-                    fontFamily: "var(--font-fraunces), Georgia, serif",
+                    
                     fontSize: 22,
                     fontWeight: 500,
                     color: C.ink,
@@ -358,7 +358,7 @@ export default function PlatformClient({ initialLang }: { initialLang?: Lang } =
             <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: C.inkMuted, fontWeight: 700 }}>
               {t.includedLabel}
             </div>
-            <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: 16, color: C.ink, fontStyle: "italic" }}>
+            <div style={{ fontSize: 16, color: C.ink, fontStyle: "italic" }}>
               {t.includedSuffix(active.features.length)}
             </div>
           </div>
@@ -406,7 +406,7 @@ function Hero({ t }: { t: Copy }) {
         <DisplayH1 style={{ marginTop: 28 }}>
           {t.hero.h1a}
           <br />
-          <em style={{ fontStyle: "italic", fontVariationSettings: '"SOFT" 100, "WONK" 1', color: C.amberInk }}>
+          <em style={{ fontStyle: "italic", color: C.amberInk }}>
             {t.hero.h1b}
           </em>
         </DisplayH1>

@@ -19,7 +19,7 @@ import {
   DisplayH1,
   DisplayH2,
   SkipLink,
-} from "@/components/marketing/field";
+} from "@/components/marketing/industrial";
 
 type Copy = {
   hero: { kicker: string; h1a: string; h1b: string; dek: string };
@@ -79,7 +79,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "Try Capta out.",
       h2: "Two weeks free. One phone number.",
       sub: "If Capta doesn't earn its keep in the first fourteen days, walk away with zero owed.",
-      primary: "Start 14-day free trial",
+      primary: "Get Capta",
     },
   },
   es: {
@@ -121,7 +121,7 @@ const COPY: Record<Lang, Copy> = {
       kicker: "Prueba Capta.",
       h2: "Dos semanas gratis. Un número de teléfono.",
       sub: "Si Capta no se gana su pago en los primeros catorce días, vete sin deberle nada.",
-      primary: "Comenzar prueba gratis de 14 días",
+      primary: "Obtener Capta",
     },
   },
 };
@@ -158,13 +158,13 @@ export default function AboutPage({ initialLang }: { initialLang?: Lang } = {}) 
           <DisplayH1 style={{ marginTop: 28 }}>
             {t.hero.h1a}
             <br />
-            <em style={{ fontStyle: "italic", fontVariationSettings: '"SOFT" 100, "WONK" 1', color: C.amberInk }}>
+            <em style={{ fontStyle: "italic", color: C.amberInk }}>
               {t.hero.h1b}
             </em>
           </DisplayH1>
           <p
             style={{
-              fontFamily: "var(--font-fraunces), Georgia, serif",
+              
               fontSize: 22,
               lineHeight: 1.45,
               color: C.ink,
@@ -278,7 +278,7 @@ export default function AboutPage({ initialLang }: { initialLang?: Lang } = {}) 
                 marginTop: 40,
                 paddingTop: 28,
                 borderTop: `1px solid ${C.rule}`,
-                fontFamily: "var(--font-fraunces), Georgia, serif",
+                
                 fontSize: 28,
                 lineHeight: 1.3,
                 fontWeight: 500,
