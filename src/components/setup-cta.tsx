@@ -13,23 +13,23 @@ const copy = {
   en: {
     inline: {
       text: "Ready to stop missing calls? Try Capta free for 14 days",
-      cta: "Start Free Trial",
+      cta: "Get Capta",
     },
     full: {
       title: "Stop Missing Calls Today",
       subtitle: "Set up your AI receptionist in minutes. Free for 14 days.",
-      cta: "Start Free Trial",
+      cta: "Get Capta",
     },
   },
   es: {
     inline: {
       text: "¿Listo para dejar de perder llamadas? Prueba Capta gratis por 14 días",
-      cta: "Prueba Gratis",
+      cta: "Obtener Capta",
     },
     full: {
       title: "Deja de Perder Llamadas Hoy",
       subtitle: "Configura tu recepcionista IA en minutos. Gratis por 14 días.",
-      cta: "Prueba Gratis",
+      cta: "Obtener Capta",
     },
   },
 };

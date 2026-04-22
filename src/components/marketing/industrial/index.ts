@@ -12,6 +12,7 @@ export {
   DisplayH1,
   DisplayH2,
 } from "./atoms";
+export { Stamp, Serial, SpecRow, SpecSheet, Band } from "./primitives";
 export { Nav, FieldNav } from "./Nav";
 export { Footer, FieldFooter } from "./Footer";
 export { DemoCtaPair } from "./DemoCtaPair";

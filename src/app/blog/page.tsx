@@ -124,7 +124,7 @@ export default async function BlogIndexPage({
             href="/setup?utm_source=blog&utm_medium=banner"
             className="cta-gold cta-shimmer mt-4 inline-block rounded-lg px-6 py-2.5 text-sm font-semibold text-white"
           >
-            Start Free Trial &rarr;
+            Get Capta &rarr;
           </Link>
         </div>
 

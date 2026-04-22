@@ -77,7 +77,7 @@ export default async function ReferralPage({
             className="rounded-lg px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             style={{ backgroundColor: "#C59A27" }}
           >
-            Start Free Trial &rarr;
+            Get Capta &rarr;
           </Link>
           <Link
             href="/"

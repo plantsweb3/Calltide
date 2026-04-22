@@ -14,5 +14,4 @@ export {
 export { FieldNav } from "./FieldNav";
 export { FieldFooter } from "./FieldFooter";
 export { DemoCtaPair } from "./DemoCtaPair";
-export { FieldDemoWidget } from "./FieldDemoWidget";
 export { SkipLink } from "./SkipLink";

@@ -164,7 +164,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link href={`/setup?utm_source=services&utm_medium=landing&utm_campaign=${tradeSlug}`} className="cta-gold cta-shimmer inline-flex items-center gap-2 rounded-lg px-8 py-4 text-base font-semibold text-white">
-              Start Free Trial &rarr;
+              Get Capta &rarr;
             </Link>
             <Link href="/platform" className="text-sm font-medium text-slate-400 transition hover:text-white">
               See all features &rarr;
@@ -345,7 +345,7 @@ export default async function TradeLandingPage({ params }: { params: Promise<{ t
             Free for 14 days, then $497/month. Unlimited calls, SMS automation, scheduling, lead scoring, and CRM — bilingual.
           </p>
           <Link href={`/setup?utm_source=services&utm_medium=landing&utm_campaign=${tradeSlug}`} className="cta-gold cta-shimmer mt-8 inline-flex items-center gap-2 rounded-lg px-10 py-4 text-lg font-semibold text-white">
-            Start Free Trial &rarr;
+            Get Capta &rarr;
           </Link>
           {meta.blogSlug && (
             <p className="mt-6">

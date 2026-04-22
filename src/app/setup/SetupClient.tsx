@@ -129,7 +129,7 @@ const T = {
     annualPrice: "$397",
     annualPer: "/month billed annually",
     annualSave: "Save $1,200",
-    hireCta: "Start Free Trial with",
+    hireCta: "Get Capta for",
     missedCallsTitle: "You're Losing Money Right Now",
     roiMonthlyLoss: "/month in missed calls",
     roiMultiple: "x return on investment",
@@ -248,7 +248,7 @@ const T = {
     annualPrice: "$397",
     annualPer: "/mes facturado anualmente",
     annualSave: "Ahorra $1,200",
-    hireCta: "Comenzar Prueba Gratuita con",
+    hireCta: "Obtener Capta para",
     missedCallsTitle: "Estás Perdiendo Dinero Ahora Mismo",
     roiMonthlyLoss: "/mes en llamadas perdidas",
     roiMultiple: "x retorno de inversión",
@@ -585,7 +585,7 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
           {/* Job Value */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
-              <span style={{ color: "var(--db-text-muted, #94a3b8)", fontSize: 13 }}>{l.jobLabel}</span>
+              <span style={{ color: "#475569", fontSize: 13 }}>{l.jobLabel}</span>
               <span style={{ color: "var(--db-text, #fff)", fontWeight: 700, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>
                 ${jobValue.toLocaleString()}
               </span>
@@ -601,15 +601,15 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
               style={{ "--fill": `${jobPct}%` } as React.CSSProperties}
             />
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>$100</span>
-              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>$5,000</span>
+              <span style={{ color: "#475569", fontSize: 11 }}>$100</span>
+              <span style={{ color: "#475569", fontSize: 11 }}>$5,000</span>
             </div>
           </div>
 
           {/* Missed Calls */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
-              <span style={{ color: "var(--db-text-muted, #94a3b8)", fontSize: 13 }}>{l.callsLabel}</span>
+              <span style={{ color: "#475569", fontSize: 13 }}>{l.callsLabel}</span>
               <span style={{ color: "var(--db-text, #fff)", fontWeight: 700, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>
                 {missedCalls}
               </span>
@@ -625,8 +625,8 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
               style={{ "--fill": `${callsPct}%` } as React.CSSProperties}
             />
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>1</span>
-              <span style={{ color: "var(--db-text-muted, #475569)", fontSize: 11 }}>10</span>
+              <span style={{ color: "#475569", fontSize: 11 }}>1</span>
+              <span style={{ color: "#475569", fontSize: 11 }}>10</span>
             </div>
           </div>
         </div>
@@ -637,29 +637,29 @@ function SetupROI({ lang, defaultMissed, defaultJobValue, tradeName, city }: {
         {/* Output */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, textAlign: "center" }}>
           <div>
-            <p style={{ color: "var(--db-text-muted, #94a3b8)", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.losing}</p>
+            <p style={{ color: "#475569", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.losing}</p>
             <p style={{ color: "var(--db-danger, #ef4444)", fontSize: 22, fontWeight: 800, margin: 0, fontVariantNumeric: "tabular-nums" }}>
               ${monthlyLoss.toLocaleString()}
             </p>
-            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
+            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
           </div>
           <div>
-            <p style={{ color: "var(--db-text-muted, #94a3b8)", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.costs}</p>
+            <p style={{ color: "#475569", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.costs}</p>
             <p style={{ color: "var(--db-text, #fff)", fontSize: 22, fontWeight: 800, margin: 0 }}>$497</p>
-            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
+            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.perMonth}</p>
           </div>
           <div>
-            <p style={{ color: "var(--db-text-muted, #94a3b8)", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.roi}</p>
+            <p style={{ color: "#475569", fontSize: 11, margin: "0 0 4px", fontWeight: 500 }}>{l.roi}</p>
             <p style={{ color: "var(--db-accent, #d4a843)", fontSize: 22, fontWeight: 800, margin: 0 }}>
               {roiMultiple > 0 ? `${roiMultiple.toFixed(1)}x` : "—"}
             </p>
-            <p style={{ color: "var(--db-text-muted, #475569)", fontSize: 10, margin: "2px 0 0" }}>{l.returnLabel}</p>
+            <p style={{ color: "#475569", fontSize: 10, margin: "2px 0 0" }}>{l.returnLabel}</p>
           </div>
         </div>
 
         {/* Source note */}
         {tradeName && city && (
-          <p style={{ textAlign: "center", color: "var(--db-text-muted, #475569)", fontSize: 11, margin: "16px 0 0" }}>
+          <p style={{ textAlign: "center", color: "#475569", fontSize: 11, margin: "16px 0 0" }}>
             {l.source}
           </p>
         )}
@@ -718,7 +718,7 @@ function SetupVoicePreview({ voiceId, name, lang }: { voiceId: string; name: str
   };
 
   return (
-    <button onClick={play} style={{ marginTop: 4, fontSize: 12, fontWeight: 500, color: playing ? "#D4A843" : "#94a3b8", background: "none", border: "none", cursor: "pointer" }}>
+    <button onClick={play} style={{ marginTop: 4, fontSize: 12, fontWeight: 500, color: playing ? "#D4A843" : "#475569", background: "none", border: "none", cursor: "pointer" }}>
       {playing ? (lang === "es" ? "Detener" : "Stop") : (lang === "es" ? "Escuchar" : "Preview")}
     </button>
   );
@@ -929,7 +929,7 @@ function SetupTestCall({ lang, receptionistName, onNext, onBack }: SetupTestCall
             <h3 style={{ color: "#fff", fontSize: 18, fontWeight: 700, margin: "0 0 8px" }}>
               {t.tryMariaEnded}
             </h3>
-            <p style={{ color: "#94a3b8", fontSize: 14, marginBottom: 20 }}>
+            <p style={{ color: "#475569", fontSize: 14, marginBottom: 20 }}>
               {replaceVars(t.tryMariaEndedSub, { name })}
             </p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -1538,7 +1538,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
 
           <div className={s.card} style={{ marginTop: 24, padding: 20 }}>
             <h3 style={{ color: "#fff", margin: "0 0 8px", fontSize: 16 }}>{t.whatsNext}</h3>
-            <p style={{ color: "#94a3b8", margin: "0 0 20px", fontSize: 14 }}>
+            <p style={{ color: "#475569", margin: "0 0 20px", fontSize: 14 }}>
               {replaceVars(t.whatsNextDesc, { name: receptionistName })}
             </p>
             {authState === "pending" && (
@@ -1548,7 +1548,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                 </p>
                 {pollAttempt >= 3 && (
                   <div style={{ marginTop: 12 }}>
-                    <p style={{ color: "#94a3b8", fontSize: 13, marginBottom: 8 }}>
+                    <p style={{ color: "#475569", fontSize: 13, marginBottom: 8 }}>
                       {lang === "en"
                         ? "Payment processing is taking longer than expected. Click below to check status."
                         : "El procesamiento del pago está tomando más tiempo de lo esperado. Haz clic para verificar."}
@@ -1572,10 +1572,10 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                       {lang === "en" ? "Save your login credentials:" : "Guarda tus credenciales:"}
                     </p>
                     <p style={{ color: "#e2e8f0", fontSize: 13, margin: "0 0 4px" }}>
-                      <span style={{ color: "#94a3b8" }}>Email:</span> {credentials.email}
+                      <span style={{ color: "#475569" }}>Email:</span> {credentials.email}
                     </p>
                     <p style={{ color: "#e2e8f0", fontSize: 13, margin: 0, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                      <span style={{ color: "#94a3b8" }}>{lang === "en" ? "Password:" : "Contraseña:"}</span>{" "}
+                      <span style={{ color: "#475569" }}>{lang === "en" ? "Password:" : "Contraseña:"}</span>{" "}
                       <code style={{ background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: 4, fontFamily: "monospace" }}>{credentials.password}</code>
                       <button
                         type="button"
@@ -1612,7 +1612,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
             )}
             {authState === "failed" && (
               <div>
-                <p style={{ color: "#94a3b8", fontSize: 14, lineHeight: 1.6, marginBottom: 12 }}>
+                <p style={{ color: "#475569", fontSize: 14, lineHeight: 1.6, marginBottom: 12 }}>
                   {lang === "en"
                     ? "We're still processing your payment. This usually takes a few seconds — try refreshing."
                     : "Aún estamos procesando tu pago. Esto normalmente toma unos segundos — intenta refrescar."}
@@ -1828,7 +1828,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                 style={{ textAlign: "center", padding: "16px 12px" }}
                 aria-pressed={useCustomName}
               >
-                <div style={{ color: useCustomName ? "#fff" : "#94a3b8", fontWeight: 600 }}>{t.customName}</div>
+                <div style={{ color: useCustomName ? "#fff" : "#475569", fontWeight: 600 }}>{t.customName}</div>
               </button>
             </div>
             {useCustomName && (
@@ -1863,7 +1863,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                     aria-pressed={personalityPreset === preset}
                   >
                     <div style={{ color: "#fff", fontWeight: 600, marginBottom: 4 }}>{l.name}</div>
-                    <div style={{ color: "#94a3b8", fontSize: 14 }}>{l.desc}</div>
+                    <div style={{ color: "#475569", fontSize: 14 }}>{l.desc}</div>
                   </button>
                 );
               })}
@@ -1886,7 +1886,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
                     aria-pressed={selectedVoiceId === voice.id}
                   >
                     <div style={{ color: "#fff", fontWeight: 600, marginBottom: 2 }}>{voice.name}</div>
-                    <div style={{ color: "#94a3b8", fontSize: 13 }}>{voice.desc}</div>
+                    <div style={{ color: "#475569", fontSize: 13 }}>{voice.desc}</div>
                   </button>
                   <SetupVoicePreview voiceId={voice.id} name={voice.name} lang={lang} />
                 </div>
@@ -2019,7 +2019,7 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
 
             <div style={{ marginTop: 24 }}>
               <label className={s.label}>{t.offLimitsTitle}</label>
-              <p style={{ color: "#94a3b8", fontSize: 13, margin: "0 0 12px" }}>{t.offLimitsSub}</p>
+              <p style={{ color: "#475569", fontSize: 13, margin: "0 0 12px" }}>{t.offLimitsSub}</p>
               {[
                 { key: "pricing", label: t.offLimitsPricing },
                 { key: "competitors", label: t.offLimitsCompetitors },
@@ -2102,11 +2102,11 @@ function SetupClient({ initialLang }: { initialLang?: Lang } = {}) {
             {/* Summary */}
             <div className={s.summaryCard}>
               <h3 style={{ color: "#D4A843", margin: "0 0 12px", fontSize: 14 }}>{t.configSummary}</h3>
-              <div className={s.summaryRow}><span className={s.summaryLabel}>✓ {receptionistName}</span> <span style={{ color: "#94a3b8", textTransform: "capitalize" }}>{personalityPreset}</span></div>
+              <div className={s.summaryRow}><span className={s.summaryLabel}>✓ {receptionistName}</span> <span style={{ color: "#475569", textTransform: "capitalize" }}>{personalityPreset}</span></div>
               {bizType && (
                 <div className={s.summaryRow}>
                   <span className={s.summaryLabel}>✓ {TRADE_OPTIONS.find((o) => o.value === bizType)?.[lang] || bizType}</span>
-                  <span style={{ color: "#94a3b8" }}>{city}, {state}</span>
+                  <span style={{ color: "#475569" }}>{city}, {state}</span>
                 </div>
               )}
               {services.length > 0 && (

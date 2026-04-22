@@ -128,7 +128,9 @@ ONE plan: $497/month or $4,764/year ($397/mo effective, saves $1,200). No tiers.
 
 ## Style — Industrial direction (Brand Kit - March 2026)
 
-Source of truth: `~/Desktop/HQ/Capta/Capta Brand Kit - Official.md` + `~/Desktop/HQ/Capta/Website Redesign Plan - March 2026.md`.
+**Read `BRAND.md` at repo root first. That's the primary source of truth for all design decisions — palette, typography, spacing, stroke, radius, motion, voice, CTA rules.**
+
+Source: `~/Desktop/HQ/Capta/Capta Brand Kit - Official.md` + `~/Desktop/HQ/Capta/Website Redesign Plan - March 2026.md`.
 
 **Homepage (`src/app/HomeClient.tsx`) uses the industrial aesthetic:**
 - **Palette:** Navy `#1B2A4A` (primary), Catch Gold `#D4A843` (accent — logo dot, CTAs, pricing numbers), Truck White `#F8FAFC` (light backgrounds), Midnight `#0F1729` (dark sections + body ink), Action Green `#16A34A` (success states only). No gradients, no drop shadows.

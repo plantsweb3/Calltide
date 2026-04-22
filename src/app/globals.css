@@ -544,17 +544,20 @@ select:focus-visible,
 
 /* ── Dashboard Theme Variables ── */
 [data-theme="dark"] {
-  --db-bg: #020617;
-  --db-surface: #0f172a;
-  --db-card: #1e293b;
-  --db-border: #334155;
-  --db-border-light: rgba(30,41,59,0.5);
-  --db-text: #f1f5f9;
-  --db-text-secondary: #94a3b8;
-  --db-text-muted: #7c8ca1;
-  --db-hover: rgba(30,41,59,0.4);
-  --db-accent: #D4A843;
-  --db-accent-hover: #C59A27;
+  /* Aligned to Capta Brand Kit: Midnight + Navy + Catch Gold + Action Green.
+     Was slate-based (#020617/#0f172a/#1e293b) — now uses brand navy family
+     so dashboard carries brand continuity from marketing. */
+  --db-bg: #0F1729;           /* Midnight */
+  --db-surface: #1B2A4A;      /* Navy */
+  --db-card: #263556;         /* Navy Light */
+  --db-border: #3A4870;
+  --db-border-light: rgba(26,34,72,0.5);
+  --db-text: #F8FAFC;          /* Truck White */
+  --db-text-secondary: #B9C2D6;
+  --db-text-muted: #8F9BB8;
+  --db-hover: rgba(38,53,86,0.7);  /* higher alpha for visible hover */
+  --db-accent: #D4A843;        /* Catch Gold */
+  --db-accent-hover: #A17D1F;
   --db-card-shadow: none;
   --db-success: #4ade80;
   --db-success-bg: rgba(74,222,128,0.12);

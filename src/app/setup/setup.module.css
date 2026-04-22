@@ -1,4 +1,8 @@
-/* ── Setup Hiring Flow Styles ── */
+/* ────────────────────────────────────────────────────────────────
+   Setup Hiring Flow — Capta Brand Kit (industrial aesthetic).
+   Navy #1B2A4A · Catch Gold #D4A843 · Truck White #F8FAFC ·
+   Midnight #0F1729. No serifs. Sharp edges (max radius 4px).
+   ──────────────────────────────────────────────────────────────── */
 
 @keyframes spin {
   to { transform: rotate(360deg); }
@@ -11,125 +15,174 @@
 
 .page {
   min-height: 100vh;
-  background: #F8F5EE;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #111318;
+  background: #F8FAFC;
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #0F1729;
 }
 
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(176,125,41,0.3);
-  border-top-color: #B07D29;
+  border: 3px solid rgba(212,168,67,0.25);
+  border-top-color: #D4A843;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+
+/* ── Nav ────────────────────────────────────────────────────── */
 
 .nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
+  border-bottom: 1px solid #E2E8F0;
 }
 
 .logo {
-  font-size: 22px;
-  font-weight: 700;
-  color: #111318;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: #0F1729;
   letter-spacing: -0.02em;
-  font-family: var(--font-fraunces), Georgia, serif;
+  text-transform: none;
 }
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.helpLink {
+  font-size: 12px;
+  color: #475569;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: color 150ms;
+  white-space: nowrap;
+}
+
+.helpLink:hover {
+  color: #0F1729;
+}
+
+/* ── Language switch ───────────────────────────────────────── */
 
 .langSwitch {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
 }
 
 .langOption {
   background: none;
   border: none;
-  padding: 4px 6px;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   cursor: pointer;
-  color: #475569;
-  transition: color 0.2s;
-  border-radius: 4px;
+  color: #64748B;
+  transition: color 150ms;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .langOption:hover {
-  color: #5C5A52;
+  color: #0F1729;
 }
 
 .langOptionActive {
-  color: #111318;
-  font-weight: 600;
+  color: #0F1729;
+  font-weight: 800;
 }
 
 .langDivider {
-  color: #334155;
+  color: #64748B;
   font-size: 11px;
   user-select: none;
 }
 
+/* ── Progress bar ──────────────────────────────────────────── */
+
 .progressContainer {
   display: flex;
-  gap: 4px;
+  gap: 3px;
   padding: 0 24px;
-  max-width: 600px;
-  margin: 0 auto 24px;
+  max-width: 640px;
+  margin: 20px auto 24px;
 }
 
 .progressSegment {
   flex: 1;
   height: 4px;
-  border-radius: 2px;
-  transition: background 0.3s ease;
+  border-radius: 0;
+  transition: background 200ms ease;
 }
 
 .progressActive {
-  background: #1A2238;
+  background: #D4A843;
 }
 
 .progressInactive {
-  background: #D6CFBD;
+  background: #E2E8F0;
 }
 
+/* ── Container ─────────────────────────────────────────────── */
+
 .container {
-  max-width: 520px;
+  max-width: 560px;
   margin: 0 auto;
   padding: 0 24px 60px;
 }
 
 .stepLabel {
-  font-size: 13px;
-  color: #8A867B;
-  margin-bottom: 8px;
-  font-weight: 500;
+  font-size: 11px;
+  color: #D4A843;
+  margin-bottom: 12px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stepLabel::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  background: #D4A843;
+  display: inline-block;
 }
 
 .stepContent {
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 200ms ease;
 }
 
 .title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #111318;
+  font-size: 32px;
+  font-weight: 900;
+  color: #0F1729;
   margin: 0 0 8px;
-  line-height: 1.3;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
 }
 
 .subtitle {
   font-size: 15px;
-  color: #5C5A52;
+  color: #475569;
   margin: 0 0 28px;
-  line-height: 1.5;
+  line-height: 1.55;
+  font-weight: 500;
 }
+
+/* ── Form fields ───────────────────────────────────────────── */
 
 .field {
   margin-bottom: 20px;
@@ -137,76 +190,82 @@
 
 .label {
   display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: #111318;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0F1729;
   margin-bottom: 6px;
+  letter-spacing: -0.005em;
 }
 
 .required {
-  color: #f87171;
+  color: #DC2626;
   margin-left: 3px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .input {
   width: 100%;
   padding: 12px 14px;
   background: #FFFFFF;
-  border: 1px solid #D6CFBD;
-  border-radius: 8px;
-  color: #111318;
+  border: 1px solid #0F1729;
+  border-radius: 2px;
+  color: #0F1729;
   font-size: 15px;
+  font-weight: 500;
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 150ms, box-shadow 150ms;
+  font-family: inherit;
 }
 
 .input:focus {
-  border-color: #111318;
-  box-shadow: 0 0 0 3px rgba(17,19,24,0.08);
+  border-color: #D4A843;
+  box-shadow: 0 0 0 3px rgba(212,168,67,0.25);
 }
 
 .input::placeholder {
-  color: #8A867B;
+  color: #64748B;
+  font-weight: 400;
 }
 
 .inputError {
-  border-color: #ef4444;
+  border-color: #DC2626;
 }
 
 .inputError:focus {
-  box-shadow: 0 0 0 3px rgba(239,68,68,0.2);
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.2);
 }
 
-/* Fix select dropdown in dark mode */
 .select {
   composes: input;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
   padding-right: 36px;
 }
 
 .select option {
-  background: #1a2540;
-  color: #111318;
+  background: #FFFFFF;
+  color: #0F1729;
 }
 
 .error {
-  color: #ef4444;
-  font-size: 13px;
-  margin-top: 4px;
+  color: #DC2626;
+  font-size: 12px;
+  margin-top: 6px;
   display: block;
+  font-weight: 600;
 }
+
+/* ── Cards ─────────────────────────────────────────────────── */
 
 .card {
   background: #FFFFFF;
-  border: 1px solid #D6CFBD;
-  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  border-radius: 2px;
   padding: 16px;
-  transition: border-color 0.2s;
+  transition: border-color 150ms;
 }
 
 .cardSelectable {
@@ -215,13 +274,16 @@
 }
 
 .cardSelectable:hover {
-  border-color: rgba(176,125,41,0.4);
+  border-color: #0F1729;
 }
 
 .cardSelected {
-  border-color: #1A2238 !important;
+  border-color: #D4A843 !important;
   border-width: 2px !important;
+  background: #FFFFFF;
 }
+
+/* ── Chips ─────────────────────────────────────────────────── */
 
 .chipContainer {
   display: flex;
@@ -236,44 +298,50 @@
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background: rgba(176,125,41,0.15);
-  border: 1px solid rgba(176,125,41,0.3);
-  border-radius: 20px;
-  color: #B07D29;
+  background: #FFFFFF;
+  border: 1px solid #0F1729;
+  border-radius: 2px;
+  color: #0F1729;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .chipRemove {
   background: none;
   border: none;
-  color: #B07D29;
+  color: #475569;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   padding: 0;
   line-height: 1;
-  opacity: 0.7;
-  transition: opacity 0.2s;
+  opacity: 0.85;
+  transition: color 150ms;
 }
 
 .chipRemove:hover {
+  color: #0F1729;
   opacity: 1;
 }
+
+/* ── Preview bubble (greeting sample) ──────────────────────── */
 
 .previewBubble {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  background: rgba(176,125,41,0.08);
-  border-radius: 12px;
-  padding: 12px 14px;
+  background: #F1F5F9;
+  border-left: 3px solid #D4A843;
+  border-radius: 0;
+  padding: 14px 16px;
   margin-top: 16px;
 }
 
 .previewAvatar {
-  font-size: 24px;
+  font-size: 22px;
   flex-shrink: 0;
 }
+
+/* ── Toggle row ────────────────────────────────────────────── */
 
 .toggle {
   display: flex;
@@ -283,31 +351,44 @@
   cursor: pointer;
 }
 
+/* ── Summary card (spec-sheet style) ───────────────────────── */
+
 .summaryCard {
-  background: rgba(176,125,41,0.06);
-  border: 1px solid rgba(176,125,41,0.2);
-  border-radius: 12px;
+  background: #FFFFFF;
+  border: 1px solid #0F1729;
+  border-radius: 0;
   padding: 20px;
 }
 
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
+  align-items: baseline;
+  padding: 10px 0;
   font-size: 14px;
-  color: #111318;
+  color: #0F1729;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.summaryRow:last-child {
+  border-bottom: none;
 }
 
 .summaryLabel {
-  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #475569;
+  font-weight: 700;
 }
+
+/* ── Plan toggle (annual / monthly) ────────────────────────── */
 
 .planToggleContainer {
   display: flex;
-  background: #F1EDE3;
-  border: 1px solid #D6CFBD;
-  border-radius: 4px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 0;
   padding: 3px;
   margin-bottom: 16px;
 }
@@ -318,41 +399,52 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 0;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 150ms;
   background: transparent;
-  color: #5C5A52;
+  color: #475569;
+  letter-spacing: -0.005em;
+  min-height: 44px;
+}
+
+.planToggleBtn:hover {
+  color: #0F1729;
 }
 
 .planToggleBtnActive {
-  background: #111318;
-  color: #F8F5EE;
+  background: #0F1729;
+  color: #F8FAFC;
 }
 
 .saveBadge {
-  font-size: 11px;
-  background: #10b981;
-  color: #111318;
+  font-size: 10px;
+  background: #D4A843;
+  color: #0F1729;
   padding: 2px 6px;
-  border-radius: 4px;
-  animation: fadeIn 0.3s ease;
+  border-radius: 0;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: fadeIn 200ms ease;
 }
 
 .recommendedLabel {
   display: block;
   text-align: center;
-  font-size: 11px;
-  font-weight: 600;
-  color: #10b981;
-  margin-bottom: 6px;
-  letter-spacing: 0.05em;
+  font-size: 10px;
+  font-weight: 800;
+  color: #D4A843;
+  margin-bottom: 8px;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
 }
+
+/* ── Nav buttons ───────────────────────────────────────────── */
 
 .navButtons {
   display: flex;
@@ -361,85 +453,95 @@
 }
 
 .primaryBtn {
-  background: #1A2238;
-  color: #F8F5EE;
-  border: 1px solid #1A2238;
-  border-radius: 4px;
-  padding: 14px 28px;
+  background: #D4A843;
+  color: #0F1729;
+  border: 1px solid #D4A843;
+  border-radius: 0;
+  padding: 14px 24px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
-  transition: background 0.15s cubic-bezier(0.2, 0, 0, 1);
-  min-height: 44px;
+  transition: background 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 48px;
   letter-spacing: -0.005em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .primaryBtn:hover:not(:disabled) {
-  background: #242D47;
+  background: #A17D1F;
+  border-color: #A17D1F;
 }
 
 .primaryBtn:active:not(:disabled) {
-  background: #111318;
+  background: #A17D1F;
 }
 
 .primaryBtn:disabled {
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .primaryBtn:focus-visible {
-  outline: 2px solid #1A2238;
+  outline: 2px solid #0F1729;
   outline-offset: 2px;
 }
 
 .secondaryBtn {
-  background: rgba(176,125,41,0.15);
-  color: #B07D29;
-  border: 1px solid rgba(176,125,41,0.3);
-  border-radius: 8px;
+  background: transparent;
+  color: #0F1729;
+  border: 1px solid #0F1729;
+  border-radius: 0;
   padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.2s;
+  transition: all 150ms;
+  letter-spacing: -0.005em;
+  min-height: 44px;
 }
 
 .secondaryBtn:hover {
-  background: rgba(176,125,41,0.25);
+  background: #0F1729;
+  color: #F8FAFC;
 }
 
 .backBtn {
   background: transparent;
-  color: #5C5A52;
-  border: 1px solid #D6CFBD;
-  border-radius: 8px;
-  padding: 14px 24px;
-  font-size: 16px;
-  font-weight: 500;
+  color: #475569;
+  border: 1px solid #E2E8F0;
+  border-radius: 0;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  transition: border-color 150ms, color 150ms;
+  min-height: 48px;
+  letter-spacing: -0.005em;
 }
 
 .backBtn:hover {
-  border-color: #111318;
-  color: #111318;
-  color: #111318;
+  border-color: #0F1729;
+  color: #0F1729;
 }
 
 .backBtn:focus-visible {
-  outline: 2px solid #1A2238;
+  outline: 2px solid #0F1729;
   outline-offset: 2px;
 }
 
-/* Toast */
+/* ── Toast ─────────────────────────────────────────────────── */
+
 .toast {
   position: fixed;
   top: max(24px, env(safe-area-inset-top, 24px));
   left: 50%;
-  background: rgba(16,185,129,0.95);
-  backdrop-filter: blur(12px);
-  border-radius: 12px;
+  background: #0F1729;
+  border: 1px solid #D4A843;
+  border-radius: 0;
   padding: 14px 20px;
   display: flex;
   align-items: center;
@@ -447,8 +549,8 @@
   z-index: 1000;
   max-width: 440px;
   width: 90%;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  box-shadow: 0 8px 24px rgba(15,23,41,0.25);
+  transition: transform 300ms ease, opacity 300ms ease;
 }
 
 .toastVisible {
@@ -465,149 +567,159 @@
 .toastCheck {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  background: #fff;
-  color: #10b981;
+  border-radius: 0;
+  background: #D4A843;
+  color: #0F1729;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 16px;
+  font-weight: 900;
+  font-size: 15px;
   flex-shrink: 0;
 }
 
 .toastTitle {
-  color: #111318;
-  font-weight: 600;
+  color: #F8FAFC;
+  font-weight: 800;
   font-size: 14px;
+  letter-spacing: -0.005em;
 }
 
 .toastBody {
-  color: #5C5A52;
-  font-size: 13px;
+  color: rgba(248,250,252,0.75);
+  font-size: 12px;
   margin-top: 2px;
+  font-weight: 500;
 }
 
-/* Price card */
+/* ── Price card (spec-sheet style) ─────────────────────────── */
+
 .priceCard {
-  composes: card;
-  padding: 24px;
+  background: #FFFFFF;
+  border: 1px solid #0F1729;
+  border-radius: 0;
+  padding: 28px 24px;
   margin-bottom: 24px;
   text-align: center;
-  border-color: rgba(176,125,41,0.3);
-  background: rgba(176,125,41,0.04);
+  position: relative;
+}
+
+.priceCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 56px;
+  height: 4px;
+  background: #D4A843;
 }
 
 .priceAmount {
-  font-size: 36px;
-  font-weight: 700;
-  color: #111318;
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 44px;
+  font-weight: 900;
+  color: #0F1729;
+  letter-spacing: -0.025em;
+  line-height: 1;
 }
 
 .pricePer {
   font-size: 16px;
-  font-weight: 400;
-  color: #5C5A52;
+  font-weight: 600;
+  color: #475569;
 }
 
-/* Trust badges */
+/* ── Trust badges ──────────────────────────────────────────── */
+
 .trustBadges {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   margin: 20px 0;
   align-items: center;
 }
 
-/* Name grid */
+/* ── Name grid ─────────────────────────────────────────────── */
+
 .nameGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 16px;
 }
 
-/* Preview greeting button */
+/* ── Preview greeting button ───────────────────────────────── */
+
 .previewBtn {
-  background: rgba(176,125,41,0.15);
-  border: 1px solid rgba(176,125,41,0.3);
-  border-radius: 6px;
-  color: #B07D29;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid #D4A843;
+  border-radius: 0;
+  color: #A17D1F;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 14px;
   cursor: pointer;
-  transition: background 0.2s;
-  margin-top: 8px;
+  transition: all 150ms;
+  margin-top: 10px;
+  letter-spacing: 0.02em;
+  min-height: 36px;
 }
 
 .previewBtn:hover {
-  background: rgba(176,125,41,0.25);
+  background: #D4A843;
+  color: #0F1729;
 }
 
 .previewBtn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Nav right container */
-.navRight {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+/* ── Phone reassurance bar ─────────────────────────────────── */
 
-/* Help link */
-.helpLink {
-  font-size: 12px;
-  color: #8A867B;
-  text-decoration: none;
-  transition: color 0.2s;
-  white-space: nowrap;
-}
-
-.helpLink:hover {
-  color: #111318;
-}
-
-/* Phone reassurance bar */
 .phoneReassurance {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(16,185,129,0.08);
-  border: 1px solid rgba(16,185,129,0.2);
-  border-radius: 8px;
+  background: rgba(22,163,74,0.06);
+  border: 1px solid rgba(22,163,74,0.2);
+  border-left: 3px solid #16A34A;
+  border-radius: 0;
   padding: 10px 14px;
   margin-top: 8px;
   font-size: 13px;
-  color: #10b981;
+  color: #0F1729;
   line-height: 1.4;
+  font-weight: 500;
 }
 
-/* Comparison anchor */
+/* ── Comparison anchor ─────────────────────────────────────── */
+
 .comparisonAnchor {
   text-align: center;
-  font-size: 15px;
-  color: #5C5A52;
+  font-size: 14px;
+  color: #475569;
   margin-bottom: 16px;
+  font-weight: 500;
 }
 
 .comparisonStrike {
   text-decoration: line-through;
-  color: #8A867B;
+  color: #64748B;
 }
 
-/* Responsive */
+/* ── Responsive ────────────────────────────────────────────── */
+
 @media (max-width: 380px) {
   .container {
     padding: 0 16px 40px;
   }
   .title {
-    font-size: 20px;
+    font-size: 26px;
   }
   .priceAmount {
-    font-size: 28px;
+    font-size: 34px;
   }
   .nameGrid {
     grid-template-columns: repeat(2, 1fr);
