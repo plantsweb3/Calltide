@@ -246,14 +246,24 @@ export async function POST(req: NextRequest) {
     return ratio >= 0.5 ? "es" as const : "en" as const;
   })();
 
-  // Generate AI summary from transcript (fire-and-forget, with retry on failure)
+  // Generate AI summary from transcript (fire-and-forget, with retry on failure).
+  // If the summary fails AND the basic-notification fallback also fails, the
+  // owner never hears the call happened — that's a critical trust breach,
+  // so both fallbacks now report to Sentry.
   processCallSummary(call.id, conversationId, transcript, detectedLanguage).catch(async (err) => {
     reportError("Background call summary failed", err, {
       extra: { callId: call.id, conversationId },
     });
-    // Fallback: send basic notification so owner knows about the call
-    sendBasicCallNotification(call.id, call.callerPhone, durationSeconds).catch(() => {});
-    await enqueueJob("call_summary", { callId: call.id, chatId: conversationId }).catch(() => {});
+    sendBasicCallNotification(call.id, call.callerPhone, durationSeconds).catch((notifyErr) =>
+      reportError("CRITICAL: basic call notification fallback failed — owner not notified of call", notifyErr, {
+        extra: { callId: call.id, conversationId, businessId: call.businessId },
+      }),
+    );
+    await enqueueJob("call_summary", { callId: call.id, chatId: conversationId }).catch((enqueueErr) =>
+      reportError("call_summary enqueue failed — no retry will run", enqueueErr, {
+        extra: { callId: call.id, conversationId },
+      }),
+    );
   });
 
   // Remove from active calls (fire-and-forget)

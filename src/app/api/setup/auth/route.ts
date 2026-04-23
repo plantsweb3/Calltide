@@ -261,9 +261,20 @@ async function generateCredentialsAndRespond(
 
   response.cookies.set(CLIENT_COOKIE, cookieValue, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "lax",
     maxAge: SESSION_30D / 1000,
+    path: "/",
+  });
+
+  // Clear the setup-session cookie. Otherwise a bookmarked /setup URL
+  // reloads the completed session and could let the user re-submit a
+  // second Stripe checkout for the same account.
+  response.cookies.set(SETUP_COOKIE, "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: 0,
     path: "/",
   });
 

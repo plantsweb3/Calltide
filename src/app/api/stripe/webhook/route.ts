@@ -864,11 +864,15 @@ async function handleTrialWillEnd(sub: Stripe.Subscription) {
       .where(eq(businesses.id, business.id));
   }
 
+  // Tell the truth in the admin notification. If email didn't send (or no
+  // ownerEmail on file), escalate so we can reach out manually.
   await createNotification({
     source: "financial",
-    severity: "info",
-    title: "Trial ending soon",
-    message: `${business.name} trial ends in ${daysLeft} days. Email notification sent.`,
+    severity: emailSent ? "info" : "warning",
+    title: emailSent ? "Trial ending soon" : "Trial ending — email NOT delivered",
+    message: emailSent
+      ? `${business.name} trial ends in ${daysLeft} days. Email notification sent.`
+      : `${business.name} trial ends in ${daysLeft} days but we could not email them (${business.ownerEmail ? "Resend failed" : "no ownerEmail on file"}). Reach out manually.`,
     actionUrl: "/admin/billing",
   });
 }

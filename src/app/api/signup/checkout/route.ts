@@ -31,7 +31,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { email, plan } = result.data;
+  // Normalize email so `John@example.com` and `john@example.com` can't
+  // create two separate paying accounts.
+  const email = result.data.email.trim().toLowerCase();
+  const { plan } = result.data;
 
   // Prevent duplicate checkout for existing accounts
   const [existing] = await db
@@ -49,9 +52,17 @@ export async function POST(req: NextRequest) {
   const priceId = getPriceId(plan as PlanType);
 
   if (!priceId) {
+    // Friendly fallback: something is misconfigured server-side, but don't
+    // leave the customer staring at a generic 500 at the exact moment of
+    // payment intent. Point them to phone support.
+    reportError("Stripe price ID not configured for signup checkout", new Error("Missing STRIPE_PRICE_ID"), {
+      extra: { plan, email },
+    });
     return NextResponse.json(
-      { error: "Stripe price not configured" },
-      { status: 500 }
+      {
+        error: "We're having trouble opening checkout right now. Call us at (830) 521-7133 and we'll get you set up directly.",
+      },
+      { status: 503 },
     );
   }
 

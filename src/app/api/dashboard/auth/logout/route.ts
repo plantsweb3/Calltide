@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   const response = NextResponse.json({ message: "Logged out" });
   response.cookies.set("capta_client", "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "lax",
     maxAge: 0,
     path: "/",

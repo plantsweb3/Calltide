@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
   const response = NextResponse.redirect(new URL("/dashboard", req.url));
   response.cookies.set("capta_client", cookieValue, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 7,
     path: "/",

@@ -5,7 +5,7 @@ export async function POST() {
 
   response.cookies.set("capta_admin", "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "lax",
     path: "/",
     maxAge: 0,

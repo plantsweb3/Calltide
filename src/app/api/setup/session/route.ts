@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     cookieStore.set(COOKIE_NAME, session.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "lax",
       maxAge: COOKIE_MAX_AGE,
       path: "/",
@@ -154,7 +154,7 @@ export async function GET(req: NextRequest) {
     if (tokenParam && tokenParam !== cookieToken) {
       cookieStore.set(COOKIE_NAME, session.token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         sameSite: "lax",
         maxAge: COOKIE_MAX_AGE,
         path: "/",
