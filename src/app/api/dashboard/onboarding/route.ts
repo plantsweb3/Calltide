@@ -7,6 +7,7 @@ import { logActivity } from "@/lib/activity";
 import { syncAgent } from "@/lib/elevenlabs/sync-agent";
 import { DEMO_BUSINESS_ID } from "../demo-data";
 import { rateLimit, RATE_LIMITS, rateLimitResponse } from "@/lib/rate-limit";
+import { reportError } from "@/lib/error-reporting";
 
 const progressSchema = z.object({
   step: z.number().int().min(1).max(8),
@@ -199,8 +200,12 @@ export async function PUT(req: NextRequest) {
         : "All steps completed",
     });
 
-    // Create/update ElevenLabs voice agent
-    syncAgent(businessId).catch(() => {});
+    // Create/update ElevenLabs voice agent. Report failures — if this
+    // silently fails, the new business gets no agent and the first call
+    // fails with dead air.
+    syncAgent(businessId).catch((err) =>
+      reportError("ElevenLabs agent creation failed during onboarding", err, { businessId }),
+    );
   }
 
   await db

@@ -271,8 +271,12 @@ export async function PUT(req: NextRequest) {
       detail: "Client updated business settings via self-service portal",
     });
 
-    // Sync ElevenLabs voice agent with updated settings
-    syncAgent(businessId).catch(() => {});
+    // Sync ElevenLabs voice agent with updated settings. Fire-and-forget,
+    // but report failures — if this silently fails the next call uses
+    // stale personality/FAQ. Non-blocking to avoid slowing settings save.
+    syncAgent(businessId).catch((err) =>
+      reportError("ElevenLabs agent resync failed after settings update", err, { businessId }),
+    );
   } catch (error) {
     reportError("Settings update failed", error, { businessId });
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

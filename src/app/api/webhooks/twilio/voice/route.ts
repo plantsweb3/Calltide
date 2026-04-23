@@ -213,16 +213,37 @@ export async function POST(req: NextRequest) {
       ),
     );
   if (activeCallCount && activeCallCount.count > 3) {
-    // Over limit — keep status as "in_progress" (the queue retry will re-check concurrency).
-    // We don't change the status to avoid writing an invalid value not in the schema enum.
+    // Over limit. Retry up to QUEUE_RETRY_MAX times, then fall back to a
+    // voicemail-style message so callers aren't stuck in an infinite redirect
+    // loop when all slots stay occupied.
+    const QUEUE_RETRY_MAX = 3;
+    const queueRetryParam = params.queue_retry || parsedUrl.searchParams.get("queue_retry") || "0";
+    const queueRetry = Math.max(0, parseInt(String(queueRetryParam), 10) || 0);
 
     const receptionistName = biz.receptionistName || "Maria";
     const queueAppUrl = process.env.NEXT_PUBLIC_APP_URL || "https://captahq.com";
+
+    if (queueRetry >= QUEUE_RETRY_MAX) {
+      reportWarning("Call hit queue retry ceiling — routing to voicemail-style message", {
+        businessId: biz.id,
+        callSid,
+        retries: queueRetry,
+      });
+      const fallbackTwiml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say language="en-US" voice="Polly.Joanna">Thank you for calling ${escapeXml(biz.name)}. All of our lines are still busy. Please send us a text at this number and ${escapeXml(receptionistName)} will get right back to you.</Say>
+</Response>`;
+      return new Response(fallbackTwiml, {
+        status: 200,
+        headers: { "Content-Type": "text/xml" },
+      });
+    }
+
     const queueTwiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say language="en-US" voice="Polly.Joanna">Thank you for calling ${escapeXml(biz.name)}. This is ${escapeXml(receptionistName)}. All of our lines are currently busy. Please hold and I'll be with you shortly.</Say>
   <Pause length="20"/>
-  <Redirect method="POST">${escapeXml(queueAppUrl)}/api/webhooks/twilio/voice?queue_retry=1</Redirect>
+  <Redirect method="POST">${escapeXml(queueAppUrl)}/api/webhooks/twilio/voice?queue_retry=${queueRetry + 1}</Redirect>
 </Response>`;
     return new Response(queueTwiml, {
       status: 200,

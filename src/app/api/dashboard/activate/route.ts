@@ -83,8 +83,11 @@ export async function POST(req: NextRequest) {
       actionUrl: "/admin/clients",
     });
 
-    // Sync ElevenLabs agent to ensure it's ready
-    syncAgent(businessId).catch(() => {});
+    // Sync ElevenLabs agent to ensure it's ready. Report failures — a
+    // silent sync failure here means the customer's first live call fails.
+    syncAgent(businessId).catch((err) =>
+      reportError("ElevenLabs agent resync failed on activation", err, { businessId }),
+    );
 
     return NextResponse.json({
       success: true,
